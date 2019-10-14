@@ -16,19 +16,25 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.simulator.server;
+package org.apache.plc4x.java.s7.protocol;
 
-import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import io.netty.channel.ChannelHandlerContext;
+import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.s7.readwrite.S7Message;
 
-public interface ServerModule {
+import java.util.List;
 
-    /**
-     * @return the name of the server module
-     */
-    String getName();
+public class S7Step7ClientAdapter extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
 
-    void start() throws SimulatorExcepiton;
+    @Override
+    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
 
-    void stop() throws SimulatorExcepiton;
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws Exception {
+
+    }
 
 }

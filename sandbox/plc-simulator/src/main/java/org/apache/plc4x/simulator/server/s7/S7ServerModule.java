@@ -18,15 +18,25 @@ under the License.
 */
 package org.apache.plc4x.simulator.server.s7;
 
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.plc4x.java.s7.protocol.S7Step7Protocol;
+import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
 import org.apache.plc4x.simulator.server.ServerModule;
+import org.apache.plc4x.simulator.server.s7.protocol.S7Step7ServerAdapter;
 
 public class S7ServerModule implements ServerModule {
 
-    private S7Server server;
+    private static final int ISO_ON_TCP_PORT = 102;
 
-    public S7ServerModule() {
-        this.server = new S7Server();
-    }
+    private EventLoopGroup loopGroup;
+    private EventLoopGroup workerGroup;
 
     @Override
     public String getName() {
@@ -34,22 +44,43 @@ public class S7ServerModule implements ServerModule {
     }
 
     @Override
-    public void start() {
+    public void start() throws SimulatorExcepiton {
+        if(loopGroup != null) {
+            return;
+        }
 
         try {
-            server.start();
-        } catch(Exception e) {
-            e.printStackTrace();
+            loopGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup();
+
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(loopGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel channel) {
+                        ChannelPipeline pipeline = channel.pipeline();
+                        pipeline.addLast(new S7Step7Protocol());
+                        pipeline.addLast(new S7Step7ServerAdapter());
+                    }
+                }).option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+            bootstrap.bind(ISO_ON_TCP_PORT).sync();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new SimulatorExcepiton(e);
         }
     }
 
     @Override
     public void stop() {
-        try {
-            server.stop();
-        } catch(Exception e) {
-            e.printStackTrace();
+        if(workerGroup == null) {
+            return;
         }
+
+        workerGroup.shutdownGracefully();
+        loopGroup.shutdownGracefully();
     }
 
 }

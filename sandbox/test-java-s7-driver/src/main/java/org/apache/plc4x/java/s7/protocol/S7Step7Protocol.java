@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.simulator.server.s7.protocol;
+package org.apache.plc4x.java.s7.protocol;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;

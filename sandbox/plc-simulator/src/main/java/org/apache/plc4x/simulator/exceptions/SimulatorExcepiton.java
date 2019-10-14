@@ -16,19 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.simulator.server;
+package org.apache.plc4x.simulator.exceptions;
 
-import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+public class SimulatorExcepiton extends Exception {
 
-public interface ServerModule {
+    public SimulatorExcepiton(String message) {
+        super(message);
+    }
 
-    /**
-     * @return the name of the server module
-     */
-    String getName();
+    public SimulatorExcepiton(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    void start() throws SimulatorExcepiton;
-
-    void stop() throws SimulatorExcepiton;
+    public SimulatorExcepiton(Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -24,9 +24,9 @@ import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
+public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerProtocol.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerAdapter.class);
 
     private State state = State.INITIAL;
 
@@ -52,9 +52,9 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if(msg instanceof TPKTPacket) {
             TPKTPacket packet = (TPKTPacket) msg;
+            final COTPPacket cotpPacket = packet.getPayload();
             switch (state) {
                 case INITIAL: {
-                    final COTPPacket cotpPacket = packet.getPayload();
                     if (!(cotpPacket instanceof COTPPacketConnectionRequest)) {
                         LOGGER.error("Expecting COTP Connection-Request");
                         return;
@@ -64,7 +64,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                     COTPPacketConnectionRequest cotpConnectionRequest = (COTPPacketConnectionRequest) cotpPacket;
                     for (COTPParameter parameter : cotpConnectionRequest.getParameters()) {
                         if (parameter instanceof COTPParameterCalledTsap) {
-                            COTPParameterCalledTsap calledTsapParameter = (COTPParameterCalledTsap) parameter;
+                            // this is actually ignored as it doesn't contain any information.
                         } else if (parameter instanceof COTPParameterCallingTsap) {
                             COTPParameterCallingTsap callingTsapParameter = (COTPParameterCallingTsap) parameter;
                             remoteTsapId = callingTsapParameter.getTsapId();
@@ -72,8 +72,8 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                             COTPParameterTpduSize tpduSizeParameter = (COTPParameterTpduSize) parameter;
                             proposedTpduSize = tpduSizeParameter.getTpduSize();
                         } else {
-                            LOGGER.error(
-                                "Unexpected COTP Connection-Request Parameter " + parameter.getClass().getName());
+                            LOGGER.error(String.format("Unexpected COTP Connection-Request Parameter %s",
+                                parameter.getClass().getName()));
                             return;
                         }
                     }
@@ -84,6 +84,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
 
                     remoteReference = cotpConnectionRequest.getSourceReference();
                     protocolClass = cotpConnectionRequest.getProtocolClass();
+                    assert proposedTpduSize != null;
                     tpduSize = (proposedTpduSize.getSizeInBytes() > maxTpduSize.getSizeInBytes()) ? maxTpduSize : proposedTpduSize;
 
                     // Prepare a response and send it back to the remote.
@@ -99,7 +100,6 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                     break;
                 }
                 case COTP_CONNECTED: {
-                    final COTPPacket cotpPacket = packet.getPayload();
                     if (!(cotpPacket instanceof COTPPacketData)) {
                         LOGGER.error("Expecting COTP Data packet");
                         return;
@@ -136,7 +136,6 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                     break;
                 }
                 case S7_CONNECTED: {
-                    final COTPPacket cotpPacket = packet.getPayload();
                     if (!(cotpPacket instanceof COTPPacketData)) {
                         LOGGER.error("Expecting COTP Data packet");
                         return;
@@ -180,7 +179,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
 
                                                 S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
                                                     new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, szlId,
+                                                        DataTransportErrorCode.OK, PayloadSize.OCTET_STRING, szlId,
                                                         readSzlRequestPayload.getSzlIndex(), items);
 
                                                 S7ParameterUserDataItem[] responseParameterItems =
@@ -210,14 +209,42 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                         } else {
                             LOGGER.error("Unsupported type of S7MessageUserData parameter " +
                                 s7Parameter.getClass().getName());
-                            return;
                         }
                     } else {
-                        LOGGER.error("Unsupported type of message " + payload.getClass().getName());
-                        return;
+                        if(cotpPacket.getPayload() instanceof S7MessageRequest) {
+                            S7MessageRequest request = (S7MessageRequest) cotpPacket.getPayload();
+                            if(request.getParameter() instanceof S7ParameterReadVarRequest) {
+                                S7ParameterReadVarRequest readVarRequestParameter =
+                                    (S7ParameterReadVarRequest) request.getParameter();
+                                final S7VarRequestParameterItem[] items = readVarRequestParameter.getItems();
+                                for (S7VarRequestParameterItem item : items) {
+                                    if(item instanceof S7VarRequestParameterItemAddress) {
+                                        S7VarRequestParameterItemAddress address =
+                                            (S7VarRequestParameterItemAddress) item;
+                                        final S7Address address1 = address.getAddress();
+                                        if(address1 instanceof S7AddressAny) {
+                                            S7AddressAny addressAny = (S7AddressAny) address1;
+
+                                        }
+                                    }
+                                }
+                            }
+                            else if(request.getParameter() instanceof S7ParameterWriteVarRequest) {
+                                S7ParameterWriteVarRequest writeVarRequestParameter =
+                                    (S7ParameterWriteVarRequest) request.getParameter();
+
+                            } else {
+                                LOGGER.error("Unsupported type of S7MessageRequest parameter " +
+                                    request.getParameter().getClass().getName());
+                            }
+                        } else {
+                            LOGGER.error("Unsupported type of message " + payload.getClass().getName());
+                        }
                     }
                     break;
                 }
+                default:
+                    throw new IllegalStateException("Unexpected value: " + state);
             }
         }
     }
