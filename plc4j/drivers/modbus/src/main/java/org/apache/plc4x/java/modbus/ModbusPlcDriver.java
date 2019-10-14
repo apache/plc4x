@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
 import org.apache.plc4x.java.spi.PlcDriver;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -34,6 +35,7 @@ import java.util.regex.Pattern;
  * Implementation of the Modbus protocol, based on:
  * - Modbus Protocol (http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf)
  */
+@Component(service = PlcDriver.class, immediate = true)
 public class ModbusPlcDriver implements PlcDriver {
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");

@@ -43,9 +43,9 @@
     <module>karaf-ads-feature</module>
     <module>karaf-ethernet-ip-feature</module>
     <module>karaf-modbus-feature</module>
+    <module>karaf-opcua-feature</module>
     <module>karaf-s7-feature</module>
     <module>karaf-simulated-feature</module>
-    <!-- TODO: karaf-demo doesn't compile right now as slf4-api bundle dependency can't be resolved -->
     <module>karaf-demo-server</module>
   </modules>
 
