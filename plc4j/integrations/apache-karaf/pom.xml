@@ -86,15 +86,29 @@
           <artifactId>karaf-maven-plugin</artifactId>
           <version>${karaf-maven-plugin.version}</version>
           <extensions>true</extensions>
-          <configuration>
-            <enableGeneration>true</enableGeneration>
-          </configuration>
           <executions>
+            <!--
+              Generate the feature.xml used by the bundle based on the modules dependencies and transitive
+              dependencies.
+            -->
             <execution>
               <id>default-features-generate-descriptor</id>
               <phase>package</phase>
               <goals>
                 <goal>features-generate-descriptor</goal>
+              </goals>
+              <configuration>
+                <enableGeneration>true</enableGeneration>
+              </configuration>
+            </execution>
+            <!--
+              Verifies and validates a features XML descriptor by checking if all the required imports for the
+              bundles defined in the features can be matched to a provided export.
+            -->
+            <execution>
+              <id>default-verify</id>
+              <phase>package</phase>
+              <goals>
                 <goal>verify</goal>
               </goals>
             </execution>
