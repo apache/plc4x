@@ -24,7 +24,7 @@
     </details>
     <feature prerequisite="true" dependency="false">wrap</feature>
     <feature>scr</feature>
-    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/0.5.0-SNAPSHOT</bundle>
+<!--    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/0.5.0-SNAPSHOT</bundle>-->
     <bundle>mvn:org.apache.plc4x/plc4j-api/0.5.0-SNAPSHOT</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-on-tcp/0.5.0-SNAPSHOT</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-tp/0.5.0-SNAPSHOT</bundle>
