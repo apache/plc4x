@@ -21,14 +21,20 @@ package org.apache.plc4x.simulator.server.s7.protocol;
 import io.netty.channel.*;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.types.*;
+import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerAdapter.class);
 
-    private State state = State.INITIAL;
+    private List<Context> contexts;
+
+    private State state;
 
     // COTP parameters
     private static final int localReference = 42;
@@ -47,6 +53,11 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
     private int amqCallee;
     private static final int maxPduLength = 240;
     private int pduLength;
+
+    public S7Step7ServerAdapter(List<Context> contexts) {
+        this.contexts = contexts;
+        state = State.INITIAL;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

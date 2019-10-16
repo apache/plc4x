@@ -28,8 +28,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.apache.plc4x.java.s7.protocol.S7Step7Protocol;
 import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.server.s7.protocol.S7Step7ServerAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class S7ServerModule implements ServerModule {
 
@@ -37,10 +42,16 @@ public class S7ServerModule implements ServerModule {
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
+    private List<Context> contexts;
 
     @Override
     public String getName() {
         return "S7-STEP7";
+    }
+
+    @Override
+    public void setContexts(Map<String, Context> contexts) {
+        this.contexts = new ArrayList<>(contexts.values());
     }
 
     @Override
@@ -61,7 +72,7 @@ public class S7ServerModule implements ServerModule {
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new S7Step7Protocol());
-                        pipeline.addLast(new S7Step7ServerAdapter());
+                        pipeline.addLast(new S7Step7ServerAdapter(contexts));
                     }
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);

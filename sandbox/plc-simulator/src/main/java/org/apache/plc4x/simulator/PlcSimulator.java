@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.simulator;
 
+import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.simulation.SimulationModule;
 import org.slf4j.Logger;
@@ -41,17 +42,7 @@ public class PlcSimulator {
     }
 
     private PlcSimulator(ClassLoader classLoader) {
-
-        // Initialize all the server modules.
-        LOGGER.info("Initializing Server Modules:");
-        serverModules = new TreeMap<>();
-        ServiceLoader<ServerModule> serverModuleLoader = ServiceLoader.load(ServerModule.class, classLoader);
-        for (ServerModule serverModule : serverModuleLoader) {
-            LOGGER.info(String.format("Initializing server module: %s ...", serverModule.getName()));
-            serverModules.put(serverModule.getName(), serverModule);
-            LOGGER.info("Initialized");
-        }
-        LOGGER.info("Finished Initializing Server Modules\n");
+        Map<String, Context> contexts = new TreeMap<>();
 
         // Initialize all the simulation modules.
         LOGGER.info("Initializing Simulation Modules:");
@@ -60,9 +51,23 @@ public class PlcSimulator {
         for (SimulationModule simulationModule : simulationModuleLoader) {
             LOGGER.info(String.format("Initializing simulation module: %s ...", simulationModule.getName()));
             simulationModules.put(simulationModule.getName(), simulationModule);
+            contexts.put(simulationModule.getName(), simulationModule.getContext());
             LOGGER.info("Initialized");
         }
         LOGGER.info("Finished Initializing Simulation Modules\n");
+
+        // Initialize all the server modules.
+        LOGGER.info("Initializing Server Modules:");
+        serverModules = new TreeMap<>();
+        ServiceLoader<ServerModule> serverModuleLoader = ServiceLoader.load(ServerModule.class, classLoader);
+        for (ServerModule serverModule : serverModuleLoader) {
+            LOGGER.info(String.format("Initializing server module: %s ...", serverModule.getName()));
+            serverModules.put(serverModule.getName(), serverModule);
+            // Inject the contexts.
+            serverModule.setContexts(contexts);
+            LOGGER.info("Initialized");
+        }
+        LOGGER.info("Finished Initializing Server Modules\n");
 
         running = true;
     }

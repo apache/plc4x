@@ -19,6 +19,9 @@ under the License.
 package org.apache.plc4x.simulator.server;
 
 import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import org.apache.plc4x.simulator.model.Context;
+
+import java.util.Map;
 
 public interface ServerModule {
 
@@ -26,6 +29,8 @@ public interface ServerModule {
      * @return the name of the server module
      */
     String getName();
+
+    void setContexts(Map<String, Context> contexts);
 
     void start() throws SimulatorExcepiton;
 
