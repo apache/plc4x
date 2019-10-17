@@ -25,14 +25,15 @@ import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
-import java.util.Map;
 
 public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerAdapter.class);
 
-    private List<Context> contexts;
+    private Context context;
 
     private State state;
 
@@ -54,8 +55,8 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
     private static final int maxPduLength = 240;
     private int pduLength;
 
-    public S7Step7ServerAdapter(List<Context> contexts) {
-        this.contexts = contexts;
+    public S7Step7ServerAdapter(Context context) {
+        this.context = context;
         state = State.INITIAL;
     }
 
@@ -184,6 +185,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                         function.getCpuSubfunction(), (short) 1,
                                                         (short) 0, (short) 0, 0);
 
+                                                // This is the product number of a S7-1200
                                                 SzlDataTreeItem[] items = new SzlDataTreeItem[1];
                                                 items[0] = new SzlDataTreeItem((short) 0x0001,
                                                     "6ES7 212-1BD30-0XB0 ".getBytes(), 0x2020, 0x0001, 0x2020);
@@ -210,7 +212,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                 ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7ResponseMessage, true, cotpTpduRef)));
                                             } else {
                                                 LOGGER.error("Not able to respond to the given request Read SZL with SZL type class " +
-                                                    szlId.getTypeClass().name() + " and SZL sublise " + szlId.getSublistList().name());
+                                                    szlId.getTypeClass().name() + " and SZL sublist " + szlId.getSublistList().name());
                                             }
 
                                         }
@@ -228,17 +230,39 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                 S7ParameterReadVarRequest readVarRequestParameter =
                                     (S7ParameterReadVarRequest) request.getParameter();
                                 final S7VarRequestParameterItem[] items = readVarRequestParameter.getItems();
-                                for (S7VarRequestParameterItem item : items) {
+                                S7VarPayloadDataItem[] payloadItems = new S7VarPayloadDataItem[items.length];
+                                for (int i = 0; i < items.length; i++) {
+                                    S7VarRequestParameterItem item = items[i];
                                     if(item instanceof S7VarRequestParameterItemAddress) {
                                         S7VarRequestParameterItemAddress address =
                                             (S7VarRequestParameterItemAddress) item;
                                         final S7Address address1 = address.getAddress();
                                         if(address1 instanceof S7AddressAny) {
                                             S7AddressAny addressAny = (S7AddressAny) address1;
+                                            switch (addressAny.getArea()) {
+                                                case DATA_BLOCKS: {
 
+                                                    break;
+                                                }
+                                                case INPUTS:
+                                                case OUTPUTS: {
+                                                    int ioNumber = (addressAny.getByteAddress() * 8) + addressAny.getBitAddress();
+                                                    int numElements = (addressAny.getTransportSize() == ParameterSize.BOOL) ?
+                                                        addressAny.getNumberOfElements() : addressAny.getTransportSize().getSizeInBytes() * 8;
+                                                    final BitSet bitSet = toBitSet(context.getDigitalInputs(), ioNumber, numElements);
+                                                    final byte[] data = Arrays.copyOf(bitSet.toByteArray(), (numElements + 7) / 8);
+                                                    payloadItems[i] = new S7VarPayloadDataItem((short) 0xFF, PayloadSize.BYTE_WORD_DWORD, data.length, data);
+                                                    break;
+                                                }
+                                            }
                                         }
                                     }
                                 }
+                                S7ParameterReadVarResponse readVarResponseParameter = new S7ParameterReadVarResponse((short) items.length);
+                                S7PayloadReadVarResponse readVarResponsePayload = new S7PayloadReadVarResponse(payloadItems);
+                                S7MessageResponse response = new S7MessageResponse(request.getTpduReference(),
+                                    readVarResponseParameter, readVarResponsePayload, (short) 0x00, (short) 0x00);
+                                ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, response, true, cotpTpduRef)));
                             }
                             else if(request.getParameter() instanceof S7ParameterWriteVarRequest) {
                                 S7ParameterWriteVarRequest writeVarRequestParameter =
@@ -264,6 +288,14 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
         INITIAL,
         COTP_CONNECTED,
         S7_CONNECTED
+    }
+
+    private BitSet toBitSet(List<Boolean> booleans, int startIndex, int numElements) {
+        BitSet bitSet = new BitSet(booleans.size());
+        for(int i = 0; i < Math.min(booleans.size() - startIndex, numElements); i++) {
+            bitSet.set(i, booleans.get(i + startIndex));
+        }
+        return bitSet;
     }
 
 }

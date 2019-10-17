@@ -35,25 +35,32 @@ public class PlcSimulator {
 
     private boolean running;
     private final Map<String, ServerModule> serverModules;
-    private final Map<String, SimulationModule> simulationModules;
+    private final SimulationModule simulationModule;
 
-    private PlcSimulator() {
-        this(Thread.currentThread().getContextClassLoader());
+    private PlcSimulator(String simulationName) {
+        this(simulationName, Thread.currentThread().getContextClassLoader());
     }
 
-    private PlcSimulator(ClassLoader classLoader) {
-        Map<String, Context> contexts = new TreeMap<>();
-
+    private PlcSimulator(String simulationName, ClassLoader classLoader) {
+        Context context = null;
         // Initialize all the simulation modules.
         LOGGER.info("Initializing Simulation Modules:");
-        simulationModules = new TreeMap<>();
+        SimulationModule foundSimulationModule = null;
         ServiceLoader<SimulationModule> simulationModuleLoader = ServiceLoader.load(SimulationModule.class, classLoader);
-        for (SimulationModule simulationModule : simulationModuleLoader) {
-            LOGGER.info(String.format("Initializing simulation module: %s ...", simulationModule.getName()));
-            simulationModules.put(simulationModule.getName(), simulationModule);
-            contexts.put(simulationModule.getName(), simulationModule.getContext());
-            LOGGER.info("Initialized");
+        for (SimulationModule curSimulationModule : simulationModuleLoader) {
+            if(curSimulationModule.getName().equals(simulationName)) {
+                LOGGER.info(String.format("Initializing simulation module: %s ...", simulationName));
+                foundSimulationModule = curSimulationModule;
+                context = curSimulationModule.getContext();
+                LOGGER.info("Initialized");
+            }
         }
+        // If we couldn't find the simulation module provided, report an error and exit.
+        if(foundSimulationModule == null) {
+            LOGGER.info(String.format("Couldn't find simulation module %s", simulationName));
+            System.exit(1);
+        }
+        simulationModule = foundSimulationModule;
         LOGGER.info("Finished Initializing Simulation Modules\n");
 
         // Initialize all the server modules.
@@ -64,7 +71,7 @@ public class PlcSimulator {
             LOGGER.info(String.format("Initializing server module: %s ...", serverModule.getName()));
             serverModules.put(serverModule.getName(), serverModule);
             // Inject the contexts.
-            serverModule.setContexts(contexts);
+            serverModule.setContext(context);
             LOGGER.info("Initialized");
         }
         LOGGER.info("Finished Initializing Server Modules\n");
@@ -89,14 +96,11 @@ public class PlcSimulator {
         try {
             LOGGER.info("Starting simulations ...");
             while (running) {
-                // Give all the simulation modules the chance to do something.
-                for (SimulationModule simulationModule : simulationModules.values()) {
-                    try {
-                        simulationModule.loop();
-                    } catch(Exception e) {
-                        LOGGER.error("Caught error while executing loop() method of " + simulationModule.getName() +
-                            " simulation.", e);
-                    }
+                try {
+                    simulationModule.loop();
+                } catch(Exception e) {
+                    LOGGER.error("Caught error while executing loop() method of " + simulationModule.getName() +
+                        " simulation.", e);
                 }
                 // Sleep 100 ms to not run the simulation too eagerly.
                 TimeUnit.MILLISECONDS.sleep(100);
@@ -113,7 +117,7 @@ public class PlcSimulator {
     }
 
     public static void main(String[] args) throws Exception {
-        final PlcSimulator simulator = new PlcSimulator();
+        final PlcSimulator simulator = new PlcSimulator("Water Tank");
         // Make sure we stop everything correctly.
         Runtime.getRuntime().addShutdownHook(new Thread(simulator::stop));
         // Start the simulator.

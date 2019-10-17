@@ -32,17 +32,13 @@ import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
 import org.apache.plc4x.simulator.server.s7.protocol.S7Step7ServerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class S7ServerModule implements ServerModule {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
-    private List<Context> contexts;
+    private Context context;
 
     @Override
     public String getName() {
@@ -50,8 +46,8 @@ public class S7ServerModule implements ServerModule {
     }
 
     @Override
-    public void setContexts(Map<String, Context> contexts) {
-        this.contexts = new ArrayList<>(contexts.values());
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class S7ServerModule implements ServerModule {
                     public void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new S7Step7Protocol());
-                        pipeline.addLast(new S7Step7ServerAdapter(contexts));
+                        pipeline.addLast(new S7Step7ServerAdapter(context));
                     }
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);

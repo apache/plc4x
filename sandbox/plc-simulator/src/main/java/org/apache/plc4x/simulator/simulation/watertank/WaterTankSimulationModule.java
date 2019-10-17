@@ -54,7 +54,7 @@ public class WaterTankSimulationModule implements SimulationModule {
             // The input valve
             .addDigitalInput(false)
             // The output valve
-            .addDigitalInput(false)
+            .addDigitalInput(true)
             // The emergency valve
             .addDigitalOutput(false)
             // The water level
