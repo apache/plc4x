@@ -12,55 +12,49 @@
   <artifactId>karaf-itest</artifactId>
 
   <properties>
-    <dependency.karaf.version>4.2.1</dependency.karaf.version>
+    <karaf.version>4.2.1</karaf.version>
     <pax.version>4.13.1</pax.version>
   </properties>
 
   <dependencies>
-<!--    &lt;!&ndash; S7 Driver for Build &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.apache.plc4x</groupId>-->
-<!--      <artifactId>driver-s7-feature</artifactId>-->
-<!--      <version>0.5.0-SNAPSHOT</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-
-    <!-- Pax Exam Test setup -->
+    <!-- Provide the KarafTestSupport -->
     <dependency>
-      <groupId>org.ops4j.pax.exam.samples</groupId>
-      <artifactId>pax-exam-sample8-ds</artifactId>
-      <version>${pax.version}</version>
+      <groupId>org.apache.karaf.itests</groupId>
+      <artifactId>common</artifactId>
+      <version>${karaf.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Define the Apache Karaf version to download and use for the test -->
+    <!-- We use a released version here to avoid SNAPSHOT resolution -->
     <dependency>
-      <groupId>org.apache.karaf.features</groupId>
-      <artifactId>standard</artifactId>
-      <version>${dependency.karaf.version}</version>
-      <classifier>features</classifier>
-      <type>xml</type>
+      <groupId>org.apache.karaf</groupId>
+      <artifactId>apache-karaf</artifactId>
+      <version>${karaf.version}</version>
       <scope>test</scope>
+      <type>tar.gz</type>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.26</version>
       <scope>test</scope>
     </dependency>
-
+    <!-- Required to use shell commands in the tests -->
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>6.0.0</version>
-      <scope>provided</scope>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.core</artifactId>
+      <version>${karaf.version}</version>
+      <scope>test</scope>
     </dependency>
-
-    <!-- Dependencies for pax exam karaf container -->
+    <!-- Provide the PaxExam Karaf support -->
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-container-karaf</artifactId>
       <version>${pax.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- Provide the PaxExam JUnit extension -->
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-junit4</artifactId>
@@ -68,57 +62,29 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.pax.exam</groupId>
-      <artifactId>pax-exam</artifactId>
-      <version>${pax.version}</version>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-atinject_1.0_spec</artifactId>
+      <version>1.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.pax.url</groupId>
-      <artifactId>pax-url-aether</artifactId>
-      <version>2.6.1</version>
-      <scope>test</scope>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>3.1.6</version>
     </dependency>
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <version>1</version>
-      <scope>test</scope>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.hamcrest</artifactId>
+      <version>1.3_1</version>
+      <scope>runtime</scope>
     </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.features</groupId>
-      <artifactId>org.apache.karaf.features.core</artifactId>
-      <version>${dependency.karaf.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.karaf.bundle</groupId>
-      <artifactId>org.apache.karaf.bundle.core</artifactId>
-      <version>${dependency.karaf.version}</version>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Needed if you use versionAsInProject() -->
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>depends-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <execution>
             <id>generate-depends-file</id>
@@ -127,14 +93,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <pax.exam.karaf.version>${dependency.karaf.version}</pax.exam.karaf.version>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
     </plugins>
   </build>
