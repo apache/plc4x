@@ -248,12 +248,6 @@
                 <option>-DBUILD_JAVA=OFF</option>
                 <option>-DBUILD_PYTHON=${thrift.with.python}</option>
                 <option>-DBUILD_HASKELL=OFF</option>
-                <!--
-                  Forcefully disable Boost detection as we don't need it and
-                  having Boost 1.70 available breaks the Thrift build.
-                  Boost would be needed, if we were planning on running tests.
-                -->
-                <option>-DBoost_NO_BOOST_CMAKE=ON</option>
               </options>
             </configuration>
           </execution>
