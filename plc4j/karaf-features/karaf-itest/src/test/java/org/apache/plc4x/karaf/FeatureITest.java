@@ -13,119 +13,137 @@
  */
 package org.apache.plc4x.karaf;
 
-import org.apache.karaf.bundle.core.BundleService;
+import org.apache.karaf.features.Feature;
 import org.apache.karaf.features.FeaturesService;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.karaf.itests.KarafTestSupport;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.ConfigurationManager;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.karaf.container.internal.JavaVersionUtil;
+import org.ops4j.pax.exam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
-import org.ops4j.pax.exam.options.MavenUrlReference;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.ops4j.pax.exam.options.extra.VMOption;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerClass;
 
-import javax.inject.Inject;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureConsole;
-import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.features;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.configureSecurity;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.keepRuntimeFolder;
+import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
 
 @RunWith(PaxExam.class)
-public class FeatureITest {
+@ExamReactorStrategy(PerClass.class)
+public class FeatureITest extends KarafTestSupport {
 
-    private static Logger LOG = LoggerFactory.getLogger(FeatureITest.class);
-
-    @Inject
-    private FeaturesService featuresService;
-
-    @Inject
-    private BundleContext bundleContext;
-
+    @Override
     @Configuration
     public Option[] config() {
-        MavenArtifactUrlReference karafUrl = maven()
-            .groupId("org.apache.karaf")
-            .artifactId("apache-karaf")
-            .version(karafVersion())
-            .type("zip");
+        MavenArtifactUrlReference karafUrl = maven().groupId("org.apache.karaf").artifactId("apache-karaf").versionAsInProject().type("tar.gz");
 
-        MavenUrlReference karafStandardRepo = maven()
-            .groupId("org.apache.karaf.features")
-            .artifactId("standard")
-            .version(karafVersion())
-            .classifier("features")
-            .type("xml");
-
-        final MavenArtifactUrlReference plc4xRepo = maven()
-            .groupId("org.apache.plc4x")
-            .artifactId("driver-s7-feature")
-            .version("0.5.0-SNAPSHOT")
-            .classifier("features")
-            .type("xml");
-        return new Option[] {
-            // KarafDistributionOption.debugConfiguration("5005", true),
-            karafDistributionConfiguration()
-                .frameworkUrl(karafUrl)
-                .unpackDirectory(new File("target", "exam"))
-                .useDeployFolder(false),
-            keepRuntimeFolder(),
-            configureConsole().ignoreLocalConsole(),
-            features(karafStandardRepo , "scr"),
-            features(plc4xRepo, "driver-s7-feature"),
-            mavenBundle()
-                .groupId("org.apache.plc4x")
-                .artifactId("plc4j-driver-s7")
-                .version("0.5.0-SNAPSHOT")
-                .start()
-        };
-    }
-
-    public static String karafVersion() {
-        ConfigurationManager cm = new ConfigurationManager();
-        String karafVersion = cm.getProperty("pax.exam.karaf.version", "3.0.0");
-        return karafVersion;
-    }
-
-
-    @Test
-    public void checkFeatureInstalled() throws Exception {
-        assertTrue(
-            featuresService.isInstalled(featuresService.getFeature("driver-s7-feature"))
-        );
-    }
-
-    @Test
-    public void checkBundleStarted() throws Exception {
-        for (Bundle bundle : bundleContext.getBundles()) {
-            System.out.println(bundle.getSymbolicName());
+        String httpPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_HTTP_PORT), Integer.parseInt(MAX_HTTP_PORT)));
+        String rmiRegistryPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_RMI_REG_PORT), Integer.parseInt(MAX_RMI_REG_PORT)));
+        String rmiServerPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_RMI_SERVER_PORT), Integer.parseInt(MAX_RMI_SERVER_PORT)));
+        String sshPort = Integer.toString(getAvailablePort(Integer.parseInt(MIN_SSH_PORT), Integer.parseInt(MAX_SSH_PORT)));
+        String localRepository = System.getProperty("org.ops4j.pax.url.mvn.localRepository");
+        if (localRepository == null) {
+            localRepository = "";
         }
 
-        // Try to find the bundle
-        final Optional<Bundle> optionalBundle = Arrays.stream(bundleContext.getBundles())
-            .filter(bundle -> "org.apache.plc4x.plc4j-driver-s7".equals(bundle.getSymbolicName()))
-            .findFirst();
+        if (JavaVersionUtil.getMajorVersion() >= 9) {
+            return new Option[]{
+                //KarafDistributionOption.debugConfiguration("8889", true),
+                karafDistributionConfiguration().frameworkUrl(karafUrl).name("Apache Karaf").unpackDirectory(new File("target/exam")),
+                // enable JMX RBAC security, thanks to the KarafMBeanServerBuilder
+                configureSecurity().disableKarafMBeanServerBuilder(),
+                // configureConsole().ignoreLocalConsole(),
+                keepRuntimeFolder(),
+                logLevel(LogLevelOption.LogLevel.INFO),
+                mavenBundle().groupId("org.awaitility").artifactId("awaitility").versionAsInProject(),
+                mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.hamcrest").versionAsInProject(),
+                mavenBundle().groupId("org.apache.karaf.itests").artifactId("common").versionAsInProject(),
+                editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
+                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", rmiRegistryPort),
+                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", rmiServerPort),
+                editConfigurationFilePut("etc/org.apache.karaf.shell.cfg", "sshPort", sshPort),
+                editConfigurationFilePut("etc/org.ops4j.pax.url.mvn.cfg", "org.ops4j.pax.url.mvn.localRepository", localRepository),
+                new VMOption("--add-reads=java.xml=java.logging"),
+                new VMOption("--add-exports=java.base/org.apache.karaf.specs.locator=java.xml,ALL-UNNAMED"),
+                new VMOption("--patch-module"),
+                new VMOption("java.base=lib/endorsed/org.apache.karaf.specs.locator-"
+                    + System.getProperty("karaf.version") + ".jar"),
+                new VMOption("--patch-module"),
+                new VMOption("java.xml=lib/endorsed/org.apache.karaf.specs.java.xml-"
+                    + System.getProperty("karaf.version") + ".jar"),
+                new VMOption("--add-opens"),
+                new VMOption("java.base/java.security=ALL-UNNAMED"),
+                new VMOption("--add-opens"),
+                new VMOption("java.base/java.net=ALL-UNNAMED"),
+                new VMOption("--add-opens"),
+                new VMOption("java.base/java.lang=ALL-UNNAMED"),
+                new VMOption("--add-opens"),
+                new VMOption("java.base/java.util=ALL-UNNAMED"),
+                new VMOption("--add-opens"),
+                new VMOption("java.naming/javax.naming.spi=ALL-UNNAMED"),
+                new VMOption("--add-opens"),
+                new VMOption("java.rmi/sun.rmi.transport.tcp=ALL-UNNAMED"),
+                new VMOption("--add-exports=java.base/sun.net.www.protocol.http=ALL-UNNAMED"),
+                new VMOption("--add-exports=java.base/sun.net.www.protocol.https=ALL-UNNAMED"),
+                new VMOption("--add-exports=java.base/sun.net.www.protocol.jar=ALL-UNNAMED"),
+                new VMOption("--add-exports=jdk.naming.rmi/com.sun.jndi.url.rmi=ALL-UNNAMED"),
+                new VMOption("-classpath"),
+                new VMOption("lib/jdk9plus/*" + File.pathSeparator + "lib/boot/*")
+            };
+        } else {
+            return new Option[]{
+                //KarafDistributionOption.debugConfiguration("8889", true),
+                karafDistributionConfiguration().frameworkUrl(karafUrl).name("Apache Karaf").unpackDirectory(new File("target/exam")),
+                // enable JMX RBAC security, thanks to the KarafMBeanServerBuilder
+                configureSecurity().disableKarafMBeanServerBuilder(),
+                // configureConsole().ignoreLocalConsole(),
+                keepRuntimeFolder(),
+                logLevel(LogLevelOption.LogLevel.INFO),
+                mavenBundle().groupId("org.awaitility").artifactId("awaitility").versionAsInProject(),
+                mavenBundle().groupId("org.apache.servicemix.bundles").artifactId("org.apache.servicemix.bundles.hamcrest").versionAsInProject(),
+                mavenBundle().groupId("org.apache.karaf.itests").artifactId("common").versionAsInProject(),
+                editConfigurationFilePut("etc/org.ops4j.pax.web.cfg", "org.osgi.service.http.port", httpPort),
+                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiRegistryPort", rmiRegistryPort),
+                editConfigurationFilePut("etc/org.apache.karaf.management.cfg", "rmiServerPort", rmiServerPort),
+                editConfigurationFilePut("etc/org.apache.karaf.shell.cfg", "sshPort", sshPort),
+                editConfigurationFilePut("etc/org.ops4j.pax.url.mvn.cfg", "org.ops4j.pax.url.mvn.localRepository", localRepository)
+            };
+        }
+    }
 
-        // Ensure that the bundle is resolved
-        assertTrue(optionalBundle.isPresent());
+    @Test
+    public void installAndAssertFeature() throws Exception {
+        // ...
+        final MavenArtifactUrlReference featureRepo = maven()
+            .groupId("org.apache.plc4x")
+            .artifactId("driver-s7-feature")
+            .versionAsInProject()
+            .classifier("xml")
+            .type("feature");
 
-        // Check if the bundle is active
-        assertEquals(Bundle.ACTIVE, optionalBundle.get().getState());
+        System.out.println(featureRepo.getURL());
+
+        // ...
+        addFeaturesRepository(featureRepo.getURL());
+        // ...
+        installAndAssertFeature("driver-s7-feature");
+        // Print Bundles
+        String bundles = executeCommand("bundle:list -t 0");
+        System.out.println(bundles);
+        // Print features
+        String features = executeCommand("feature:list -i");
+        System.out.print(features);
     }
 
 }
