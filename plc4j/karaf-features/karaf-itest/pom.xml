@@ -35,6 +35,14 @@
   </properties>
 
   <dependencies>
+    <!-- Important, have a dependency on the feature maven module that its built first -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>driver-s7-feature</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+    </dependency>
     <!-- Provide the KarafTestSupport -->
     <dependency>
       <groupId>org.apache.karaf.itests</groupId>
@@ -143,6 +151,33 @@
             <plc4x.version>${project.version}</plc4x.version>
           </systemPropertyVariables>
         </configuration>
+      </plugin>
+      <!-- Run in the verify Phase -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>integration-test</phase>
+            <configuration>
+              <excludes>
+                <exclude>none</exclude>
+              </excludes>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

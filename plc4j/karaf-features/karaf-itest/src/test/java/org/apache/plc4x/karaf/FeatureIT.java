@@ -35,7 +35,7 @@ import static org.ops4j.pax.exam.karaf.options.KarafDistributionOption.logLevel;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
-public class FeatureITest extends KarafTestSupport {
+public class FeatureIT extends KarafTestSupport {
 
     @Configuration
     public Option[] config() {

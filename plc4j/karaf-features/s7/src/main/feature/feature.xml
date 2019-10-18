@@ -22,19 +22,19 @@
     <details>PLC4X is an effort to create a universal library for accessing industrial programmable logic controllers
       using a variety of protocols using a uniform API.
     </details>
-    <feature prerequisite="true" dependency="false">wrap</feature>
+    <feature prerequisite="true">wrap</feature>
     <feature>scr</feature>
-    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/0.5.0-SNAPSHOT</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-api/0.5.0-SNAPSHOT</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-on-tcp/0.5.0-SNAPSHOT</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-tp/0.5.0-SNAPSHOT</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-s7/0.5.0-SNAPSHOT</bundle>
+<!--    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/${project.version}</bundle>-->
+    <bundle>mvn:org.apache.plc4x/plc4j-api/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-on-tcp/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-tp/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-protocol-s7/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-utils-driver-base-java/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base-tcp/${project.version}</bundle>
     <bundle>mvn:io.netty/netty-codec/4.1.39.Final</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base/0.5.0-SNAPSHOT</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-utils-driver-base-java/0.5.0-SNAPSHOT</bundle>
     <bundle>wrap:mvn:com.github.jinahya/bit-io/1.4.2</bundle>
     <bundle>mvn:commons-codec/commons-codec/1.12</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base-tcp/0.5.0-SNAPSHOT</bundle>
     <bundle>mvn:io.netty/netty-common/4.1.39.Final</bundle>
     <bundle>mvn:io.netty/netty-transport/4.1.39.Final</bundle>
     <bundle>mvn:io.netty/netty-resolver/4.1.39.Final</bundle>
