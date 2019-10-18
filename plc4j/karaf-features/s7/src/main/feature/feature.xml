@@ -24,7 +24,7 @@
     </details>
     <feature prerequisite="true">wrap</feature>
     <feature>scr</feature>
-<!--    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/${project.version}</bundle>-->
+    <bundle>mvn:org.apache.plc4x/plc4j-driver-s7/${project.version}</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-api/${project.version}</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-on-tcp/${project.version}</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-iso-tp/${project.version}</bundle>
