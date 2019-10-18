@@ -25,6 +25,7 @@ import org.apache.plc4x.simulator.model.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -241,13 +242,40 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                             S7AddressAny addressAny = (S7AddressAny) address1;
                                             switch (addressAny.getArea()) {
                                                 case DATA_BLOCKS: {
-
+                                                    final int dataBlockNumber = addressAny.getDbNumber();
+                                                    if(dataBlockNumber != 1) {
+                                                        // TODO: Return unknown object.
+                                                    }
+                                                    final int numberOfElements = addressAny.getNumberOfElements();
+                                                    if(numberOfElements != 1) {
+                                                        // TODO: Return invalid address.
+                                                    }
+                                                    final int byteAddress = addressAny.getByteAddress();
+                                                    if(byteAddress != 0) {
+                                                        // TODO: Return invalid address.
+                                                    }
+                                                    final byte bitAddress = addressAny.getBitAddress();
+                                                    switch (addressAny.getTransportSize()) {
+                                                        case INT: {
+                                                            String firstKey = context.getMemory().keySet().iterator().next();
+                                                            Object value = context.getMemory().get(firstKey);
+                                                            short shortValue = ((Number) value).shortValue();
+                                                            byte[] data = new byte[2];
+                                                            data[0] = (byte) (shortValue & 0xff);
+                                                            data[1] = (byte) ((shortValue >> 8) & 0xff);
+                                                            payloadItems[i] = new S7VarPayloadDataItem((short) 0xFF, PayloadSize.BYTE_WORD_DWORD, data.length, data);
+                                                            break;
+                                                        }
+                                                        default: {
+                                                            // TODO: Return invalid address.
+                                                        }
+                                                    }
                                                     break;
                                                 }
                                                 case INPUTS:
                                                 case OUTPUTS: {
-                                                    int ioNumber = (addressAny.getByteAddress() * 8) + addressAny.getBitAddress();
-                                                    int numElements = (addressAny.getTransportSize() == ParameterSize.BOOL) ?
+                                                    final int ioNumber = (addressAny.getByteAddress() * 8) + addressAny.getBitAddress();
+                                                    final int numElements = (addressAny.getTransportSize() == ParameterSize.BOOL) ?
                                                         addressAny.getNumberOfElements() : addressAny.getTransportSize().getSizeInBytes() * 8;
                                                     final BitSet bitSet = toBitSet(context.getDigitalInputs(), ioNumber, numElements);
                                                     final byte[] data = Arrays.copyOf(bitSet.toByteArray(), (numElements + 7) / 8);
