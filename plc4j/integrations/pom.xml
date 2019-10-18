@@ -37,7 +37,6 @@
     <module>apache-edgent</module>
     <module>apache-kafka</module>
     <module>apache-nifi</module>
-    <module>apache-karaf</module>
     <module>apache-calcite</module>
   </modules>
 
