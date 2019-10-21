@@ -230,7 +230,8 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-logstash-core</artifactId>
-      <version>${project.version}-${logstash.version}</version>
+      <version>0.5.0-SNAPSHOT</version>
+      <classifier>${logstash.version}</classifier>
     </dependency>
 
     <!-- Include all drivers -->
