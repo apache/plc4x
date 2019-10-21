@@ -1,5 +1,18 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.5.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.6.0-SNAPSHOT
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+==============================================================
+Apache PLC4X 0.5.0-SNAPSHOT
 ==============================================================
 
 This is the first release containing our new generaed drivers (AB-ETH)
