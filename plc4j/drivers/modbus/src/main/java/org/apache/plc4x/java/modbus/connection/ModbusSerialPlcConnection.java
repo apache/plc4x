@@ -20,7 +20,7 @@ package org.apache.plc4x.java.modbus.connection;
 
 import io.netty.channel.ChannelHandler;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.base.connection.SerialChannelFactory;
+import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

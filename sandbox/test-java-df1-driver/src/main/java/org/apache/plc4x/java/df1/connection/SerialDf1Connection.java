@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.SerialChannelFactory;
+import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.df1.protocol.Df1Protocol;

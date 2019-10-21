@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.ads.protocol.Payload2SerialProtocol;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.ads.protocol.util.SingleMessageRateLimiter;
-import org.apache.plc4x.java.base.connection.SerialChannelFactory;
+import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
 
 import java.util.concurrent.CompletableFuture;

@@ -36,7 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class MockConnection extends org.apache.plc4x.java.base.connection.MockConnection implements PlcReader, PlcWriter {
+public class MockConnection extends org.apache.plc4x.java.mock.connection.MockConnection implements PlcReader, PlcWriter {
 
     private final String url;
     private final PlcAuthentication authentication;

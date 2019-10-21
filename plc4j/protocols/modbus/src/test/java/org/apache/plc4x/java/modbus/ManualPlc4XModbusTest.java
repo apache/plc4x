@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.util.HexUtil;
+import org.apache.plc4x.java.mock.util.HexUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

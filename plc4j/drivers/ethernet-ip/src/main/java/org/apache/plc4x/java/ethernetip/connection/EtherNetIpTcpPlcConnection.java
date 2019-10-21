@@ -20,11 +20,12 @@ package org.apache.plc4x.java.ethernetip.connection;
 
 import io.netty.channel.*;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.ethernetip.netty.EnipCodec;
 import org.apache.plc4x.java.ethernetip.netty.Plc4XEtherNetIpProtocol;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

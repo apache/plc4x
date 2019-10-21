@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
+import static org.apache.plc4x.java.mock.util.Assert.assertByteEquals;
 import static org.junit.Assert.assertEquals;
 
 public class DigestUtilTest {

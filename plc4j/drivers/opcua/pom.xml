@@ -65,6 +65,12 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.cmpn</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 

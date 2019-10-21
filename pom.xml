@@ -614,7 +614,7 @@
       <dependency>
         <groupId>com.github.jinahya</groupId>
         <artifactId>bit-io</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3</version>
       </dependency>
       <dependency>
         <groupId>com.github.snksoft</groupId>
@@ -902,6 +902,19 @@
             <exclude>project_version</exclude>
           </excludes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Generate the legally required text files in the jars -->
