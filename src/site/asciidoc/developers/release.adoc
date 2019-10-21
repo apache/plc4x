@@ -173,24 +173,16 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DautoVersionSubmodules=true
+   mvn release:prepare -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox,with-boost,with-logstash -DautoVersionSubmodules=true
 
-(The `-P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
+(The `-P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox,with-boost,with-logstash` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
 2. The name of the tag the release commit will be tagged with in the SCM (Name it `release/{release-version}` (`release/{current-full-version}` in our case)
-3. The next development version (The version present in the pom after the release) (`{current-next-minor-version}` in our case)
+3. The next development version (The version present in the pom after the release) (`{current-next-bugfix-version}` in our case)
 
 Usually for 1 and 3 the defaults are just fine, make sure the tag name is correct as this usually is different.
-
-We currently have a dependency to a SNAPSHOT dependency in the sandbox module.
-The release plugin will complain about this and we will not be able to release this way.
-As this in the sandbox module, we can force the plugin to continue by appending:
-
-   -DignoreSnapshots=true
-
-However it is important to check that nowhere else SNAPSHOT versions are referenced.
 
 What the plugin now does, is automatically execute the following operations:
 
