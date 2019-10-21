@@ -108,8 +108,8 @@
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
-    <boost.version>1.71.0</boost.version>
-    <boost.version.underline-short>1_71</boost.version.underline-short>
+    <boost.version>1.70.0</boost.version>
+    <boost.version.underline-short>1_70</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
     <cmake-version>3.14.5</cmake-version>
@@ -157,7 +157,7 @@
     <spock-reports.version>1.6.1</spock-reports.version>
     <spock.version>1.2-groovy-2.5</spock.version>
     <t-digest.version>3.2</t-digest.version>
-    <thrift.version>0.13.0</thrift.version>
+    <thrift.version>0.12.0</thrift.version>
     <xmlunit.version>2.6.3</xmlunit.version>
 
     <!-- Site properties -->
