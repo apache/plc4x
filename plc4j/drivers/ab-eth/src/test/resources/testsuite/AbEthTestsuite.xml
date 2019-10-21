@@ -27,7 +27,7 @@
     <raw>01010000000000000000000000040005000000000000000000000000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationConnectionRequest className="org.apache.plc4x.java.abeth.CIPEncapsulationConnectionRequest">
+      <CIPEncapsulationConnectionRequest className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationConnectionRequest">
         <sessionHandle>0</sessionHandle>
         <status>0</status>
         <senderContext>
@@ -50,7 +50,7 @@
     <raw>02010000000003320000000000040005000000000000000000000000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationConnectionResponse className="org.apache.plc4x.java.abeth.CIPEncapsulationConnectionResponse">
+      <CIPEncapsulationConnectionResponse className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationConnectionResponse">
         <sessionHandle>818</sessionHandle>
         <status>0</status>
         <senderContext>
@@ -73,7 +73,7 @@
     <raw>0107000e000003320000000040000000000000000000000000000000080500000f000401a21800640000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationReadRequest className="org.apache.plc4x.java.abeth.CIPEncapsulationReadRequest">
+      <CIPEncapsulationReadRequest className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationReadRequest">
         <sessionHandle>818</sessionHandle>
         <status>0</status>
         <senderContext>
@@ -87,12 +87,12 @@
           <senderContext>0</senderContext>
         </senderContext>
         <options>0</options>
-        <request className="org.apache.plc4x.java.abeth.DF1CommandRequestMessage">
+        <request className="org.apache.plc4x.java.abeth.readwrite.DF1CommandRequestMessage">
           <destinationAddress>8</destinationAddress>
           <sourceAddress>5</sourceAddress>
           <status>0</status>
           <transactionCounter>1025</transactionCounter>
-          <command className="org.apache.plc4x.java.abeth.DF1RequestProtectedTypedLogicalRead">
+          <command className="org.apache.plc4x.java.abeth.readwrite.DF1RequestProtectedTypedLogicalRead">
             <byteSize>24</byteSize>
             <fileNumber>0</fileNumber>
             <fileType>100</fileType>
@@ -109,7 +109,7 @@
     <raw>02070020000003320000000040000000000000000000000000000000000508004f000401910101000900040405001f02010003000404050000024000</raw>
     <root-type>CIPEncapsulationPacket</root-type>
     <xml>
-      <CIPEncapsulationReadResponse className="org.apache.plc4x.java.abeth.CIPEncapsulationReadResponse">
+      <CIPEncapsulationReadResponse className="org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationReadResponse">
         <sessionHandle>818</sessionHandle>
         <status>0</status>
         <senderContext>
@@ -123,7 +123,7 @@
           <senderContext>0</senderContext>
         </senderContext>
         <options>0</options>
-        <response className="org.apache.plc4x.java.abeth.DF1CommandResponseMessageProtectedTypedLogicalRead">
+        <response className="org.apache.plc4x.java.abeth.readwrite.DF1CommandResponseMessageProtectedTypedLogicalRead">
           <destinationAddress>5</destinationAddress>
           <sourceAddress>8</sourceAddress>
           <status>0</status>
@@ -154,7 +154,6 @@
             <data>64</data>
             <data>0</data>
           </data>
-          <extendedStatus/>
         </response>
       </CIPEncapsulationReadResponse>
     </xml>
