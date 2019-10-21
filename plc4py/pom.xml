@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4py</artifactId>
@@ -198,19 +198,19 @@
       <dependency>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4x-protocols-proxy</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4x-tools-thrift</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
         <type>zip</type>
         <classifier>compiler-${os.classifier}</classifier>
       </dependency>
       <dependency>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>interop-server</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
         <classifier>jar-with-dependencies</classifier>
       </dependency>
     </dependencies>

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc-simulator</artifactId>
@@ -80,12 +80,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-driver-base-java</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
+      <version>0.6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
+      <version>0.6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -110,7 +110,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-build-utils-language-java</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
+      <version>0.6.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
+      <version>0.6.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
