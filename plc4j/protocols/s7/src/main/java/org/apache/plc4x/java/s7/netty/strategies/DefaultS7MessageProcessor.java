@@ -396,37 +396,42 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 // Get the pairs of corresponding parameter and payload items.
                 S7AnyVarParameterItem responseParameterItem = (S7AnyVarParameterItem) parameterItems.get(0);
                 VarPayloadItem responsePayloadItem = payloadItems.get(i + responseOffset);
-                int dataOffset = (responsePayloadItem.getData() != null) ? responsePayloadItem.getData().length : 0;
 
-                // The resulting parameter items is identical to the request parameter item.
-                mergedParameterItems.add(requestItem);
+                if(responsePayloadItem.getReturnCode() == DataTransportErrorCode.OK) {
+                    int dataOffset = (responsePayloadItem.getData() != null) ? responsePayloadItem.getData().length : 0;
 
-                // The payload will have to be merged and the return codes will have to be examined.
-                if(requestItem.getNumElements() != responseParameterItem.getNumElements()) {
-                    int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
-                    int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
+                    // The resulting parameter items is identical to the request parameter item.
+                    mergedParameterItems.add(requestItem);
 
-                    if(varParameter.getType() == ParameterType.READ_VAR) {
-                        byte[] data = new byte[totalSizeInBytes];
-                        System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
+                    // The payload will have to be merged and the return codes will have to be examined.
+                    if (requestItem.getNumElements() != responseParameterItem.getNumElements()) {
+                        int itemSizeInBytes = requestItem.getDataType().getSizeInBytes();
+                        int totalSizeInBytes = requestItem.getNumElements() * itemSizeInBytes;
 
-                        // Now iterate over the succeeding pairs of parameters and payloads till we have
-                        // found the original number of elements.
-                        while (dataOffset < totalSizeInBytes) {
-                            responseOffset++;
+                        if (varParameter.getType() == ParameterType.READ_VAR) {
+                            byte[] data = new byte[totalSizeInBytes];
+                            System.arraycopy(responsePayloadItem.getData(), 0, data, 0, responsePayloadItem.getData().length);
 
-                            // Get the next payload item in the list.
-                            responsePayloadItem = payloadItems.get(i + responseOffset);
+                            // Now iterate over the succeeding pairs of parameters and payloads till we have
+                            // found the original number of elements.
+                            while (dataOffset < totalSizeInBytes) {
+                                responseOffset++;
 
-                            // Copy the data of this item behind the previous content.
-                            if (varParameter.getType() == ParameterType.READ_VAR) {
-                                System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
-                                dataOffset += responsePayloadItem.getData().length;
+                                // Get the next payload item in the list.
+                                responsePayloadItem = payloadItems.get(i + responseOffset);
+
+                                // Copy the data of this item behind the previous content.
+                                if (varParameter.getType() == ParameterType.READ_VAR) {
+                                    System.arraycopy(responsePayloadItem.getData(), 0, data, dataOffset, responsePayloadItem.getData().length);
+                                    dataOffset += responsePayloadItem.getData().length;
+                                }
                             }
-                        }
 
-                        mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
-                            responsePayloadItem.getDataTransportSize(), data));
+                            mergedPayloadItems.add(new VarPayloadItem(DataTransportErrorCode.OK,
+                                responsePayloadItem.getDataTransportSize(), data));
+                        }
+                    } else {
+                        mergedPayloadItems.add(responsePayloadItem);
                     }
                 } else {
                     mergedPayloadItems.add(responsePayloadItem);
