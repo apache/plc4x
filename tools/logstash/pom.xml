@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-tools</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-tools-logstash-core</artifactId>
@@ -78,51 +78,28 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
-            <id>install-logstash-core-jar</id>
-            <phase>install</phase>
+            <id>attach-jars</id>
+            <phase>package</phase>
             <goals>
-              <goal>install-file</goal>
+              <goal>attach-artifact</goal>
             </goals>
             <configuration>
-              <groupId>org.apache.plc4x</groupId>
-              <artifactId>plc4x-tools-logstash-core</artifactId>
-              <version>${project.version}-${logstash.version}</version>
-              <packaging>jar</packaging>
-              <file>${project.build.directory}/logstash-${logstash.version}/logstash-core/build/libs/logstash-core-${logstash.version}.jar</file>
-            </configuration>
-          </execution>
-          <execution>
-            <id>install-logstash-core-sources-jar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <groupId>org.apache.plc4x</groupId>
-              <artifactId>plc4x-tools-logstash-core</artifactId>
-              <version>${project.version}-${logstash.version}</version>
-              <packaging>jar</packaging>
-              <classifier>sources</classifier>
-              <file>${project.build.directory}/logstash-${logstash.version}/logstash-core/build/libs/logstash-core-${logstash.version}-sources.jar</file>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/logstash-${logstash.version}/logstash-core/build/libs/logstash-core-${logstash.version}.jar</file>
+                  <type>jar</type>
+                  <classifier>${logstash.version}</classifier>
+                </artifact>
+              </artifacts>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>deploy-logstash-core-jar</id>
-            <phase></phase>
-          </execution>
-        </executions>
-      </plugin-->
     </plugins>
   </build>
 
