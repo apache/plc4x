@@ -50,7 +50,7 @@ The major benefits of PLC4X™ over OPC-UA, from our point of view are:
 - Activating OPC-UA support on existing PLCs greatly increases the load on the PLCs
 - No need to pay for licenses to activate OPC-UA support
 
-At first we will be concentrating on providing adapters for the most widely used protocol such as:
+At first we will be concentrating on providing adapters for the most widely used protocols such as:
 
 - icon:pause-circle[role=light-gray] BACnet
 - icon:check[role=green] link:protocols/ads/index.html[Beckhoff ADS (TCP)]
@@ -81,7 +81,7 @@ a|image::apache_nifi_logo.svg[width=80%,link=https://nifi.apache.org] a|image::a
 |icon:wrench[role=yellow] https://nifi.apache.org[Apache Nifi™] |icon:pause-circle[role=light-gray] https://brooklyn.apache.org[Apache Brooklyn™] |icon:pause-circle[role=light-gray] https://mynewt.apache.org[Apache Mynewt™]
 |===
 
-Hereby greatly reducing the barriers and the learning curve for creating industrial IoT applications.
+This greatly reduces the barriers and the learning curve for creating industrial IoT applications.
 
 === Upcoming Conferences & Meetups
 
