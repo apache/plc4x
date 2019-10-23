@@ -105,7 +105,7 @@ This is the version the `develop` branch will be changed to.
 The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
 Otherwise we would have to define the working copy version for each module.
 
-   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -P with-cpp,with-dotnet,with-java,with-proxies,with-python,with-sandbox,with-boost,with-logstash -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `0.5.0-SNAPSHOT` the command would be the following:
