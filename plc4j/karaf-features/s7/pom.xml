@@ -21,29 +21,82 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>karaf-features</artifactId>
     <groupId>org.apache.plc4x</groupId>
+    <artifactId>karaf-features</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>driver-s7-feature</artifactId>
-  <packaging>feature</packaging>
+  <packaging>pom</packaging>
 
   <name>PLC4J: Karaf-Features: S7</name>
 
   <!-- This would be necessary with the kar goal which works not fine, yet -->
-<!--  <dependencies>-->
-<!--    <dependency>-->
-<!--      <groupId>org.apache.plc4x</groupId>-->
-<!--      <artifactId>plc4j-driver-s7</artifactId>-->
-<!--      <version>${project.version}</version>-->
-<!--      <exclusions>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.slf4j</groupId>-->
-<!--          <artifactId>slf4j-api</artifactId>-->
-<!--        </exclusion>-->
-<!--      </exclusions>-->
-<!--    </dependency>-->
-<!--  </dependencies>-->
+  <!--  <dependencies>-->
+  <!--    <dependency>-->
+  <!--      <groupId>org.apache.plc4x</groupId>-->
+  <!--      <artifactId>plc4j-driver-s7</artifactId>-->
+  <!--      <version>${project.version}</version>-->
+  <!--      <exclusions>-->
+  <!--        <exclusion>-->
+  <!--          <groupId>org.slf4j</groupId>-->
+  <!--          <artifactId>slf4j-api</artifactId>-->
+  <!--        </exclusion>-->
+  <!--      </exclusions>-->
+  <!--    </dependency>-->
+  <!--  </dependencies>-->
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/feature</directory>
+        <filtering>true</filtering>
+        <targetPath>${project.build.directory}/feature</targetPath>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        The feature plugin doesn't correctly attach the generated feature file so it
+        wouldn't be signed and hashed during a release build. By manually-attaching it
+        we make sure it's processed correctly.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>attach-features</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/feature/feature.xml</file>
+                  <classifier>features</classifier>
+                  <type>xml</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
