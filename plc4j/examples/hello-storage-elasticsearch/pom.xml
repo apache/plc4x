@@ -88,6 +88,11 @@
       <groupId>org.elasticsearch.plugin</groupId>
       <artifactId>transport-netty4-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.locationtech.spatial4j</groupId>
+      <artifactId>spatial4j</artifactId>
+      <version>0.7</version>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
