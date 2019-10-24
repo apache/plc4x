@@ -61,14 +61,6 @@
   </dependencyManagement>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/feature</directory>
-        <filtering>true</filtering>
-        <targetPath>${project.build.directory}/feature</targetPath>
-      </resource>
-    </resources>
-
     <pluginManagement>
       <plugins>
         <plugin>
@@ -81,23 +73,6 @@
     </pluginManagement>
 
     <plugins>
-      <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- No checking needed here -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
