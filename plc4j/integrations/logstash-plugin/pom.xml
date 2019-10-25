@@ -40,7 +40,7 @@
   <build>
     <plugins>
       <!--
-        As ruby and gem seem to have problems wirh Maven SNAPSHOT versions,
+        As ruby and gem seem to have problems with Maven SNAPSHOT versions,
         calculate how the version would be without the "SNAPSHOT" prefix and
         make this available in the property "current-full-version".
       -->

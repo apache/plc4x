@@ -288,6 +288,13 @@ The directory structure of this directory is as follows:
    ./{current-full-version}/rc1/apache-plc4x-{current-full-version}-source-release.zip.sha512
 ----
 
+You can generally import the stuff, by preparing a directory structure like above locally and then using `svn import` to do the importing:
+
+----
+cd ./{current-full-version}
+svn import rc1 https://dist.apache.org/repos/dist/dev/plc4x/{current-full-version}/rc1 -m"Staging of rc1 of PLC4X {current-full-version}"
+----
+
 The `KEYS` file contains the PGP public key which belongs to the private key used to sign the release artifacts.
 
 If this is your first release be sure to add your key to this file.

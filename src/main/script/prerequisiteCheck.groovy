@@ -153,8 +153,6 @@ def checkPython() {
     def stdErr = new StringBuilder()
     process.consumeProcessOutput(stdOut, stdErr)
     process.waitForOrKill(500)
-    println "StdOut: " + stdOut
-    println "StrErr: " + stdErr
     Matcher matcher = extractVersion(stdErr)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
