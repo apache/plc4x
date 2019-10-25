@@ -253,7 +253,7 @@
                   having Boost 1.70 available breaks the Thrift build.
                   Boost would be needed, if we were planning on running tests.
                 -->
-                <option>-DBoost_NO_BOOST_CMAKE=ON</option>
+                <!--option>-DBoost_NO_BOOST_CMAKE=ON</option-->
               </options>
             </configuration>
           </execution>
