@@ -210,6 +210,33 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-boost</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-tools-boost</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>lib-${os.classifier}</classifier>
+                  <overWrite>true</overWrite>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/boost</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
         <version>3.7.2-b1</version>
@@ -248,12 +275,9 @@
                 <option>-DBUILD_JAVA=OFF</option>
                 <option>-DBUILD_PYTHON=${thrift.with.python}</option>
                 <option>-DBUILD_HASKELL=OFF</option>
-                <!--
-                  Forcefully disable Boost detection as we don't need it and
-                  having Boost 1.70 available breaks the Thrift build.
-                  Boost would be needed, if we were planning on running tests.
-                -->
-                <!--option>-DBoost_NO_BOOST_CMAKE=ON</option-->
+                <!-- Tell CMake where our boost includes and libs are located -->
+                <option>-DBOOST_INCLUDEDIR=${project.build.directory}/boost/include</option>
+                <option>-DBOOST_LIBRARYDIR=${project.build.directory}/boost/lib</option>
               </options>
             </configuration>
           </execution>

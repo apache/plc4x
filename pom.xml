@@ -112,7 +112,7 @@
     <boost.version.underline-short>1_71</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
-    <cmake-version>3.14.5</cmake-version>
+    <cmake-version>3.15.4</cmake-version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.6</commons-configuration2.version>
