@@ -18,6 +18,7 @@
 package org.apache.plc4x.java.streampipes.bacnetip.config;
 
 public class ConfigKeys {
+
     final static String KAFKA_HOST = "SP_KAFKA_HOST";
     final static String KAFKA_PORT = "SP_KAFKA_PORT";
 
