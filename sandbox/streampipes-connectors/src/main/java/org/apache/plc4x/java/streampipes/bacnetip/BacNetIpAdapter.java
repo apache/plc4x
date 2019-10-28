@@ -326,9 +326,9 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                 .getInstance()
                 .add(new BacNetIpAdapter());
 
-            String workerUrl = ConnectWorkerConfig.INSTANCE.getConnectContainerWorkerUrl();
-            String masterUrl = ConnectWorkerConfig.INSTANCE.getConnectContainerMasterUrl();
-            Integer workerPort = ConnectWorkerConfig.INSTANCE.getConnectContainerWorkerPort();
+            String workerUrl = ConnectWorkerConfig.getInstance().getConnectContainerWorkerUrl();
+            String masterUrl = ConnectWorkerConfig.getInstance().getConnectContainerMasterUrl();
+            Integer workerPort = ConnectWorkerConfig.getInstance().getConnectContainerWorkerPort();
 
             new BacNetIpAdapterInit().init(workerUrl, masterUrl, workerPort);
         }
