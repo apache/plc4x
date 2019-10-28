@@ -43,7 +43,7 @@ function checkFile() {
     echo
     echo "Checking $FILE..."
 
-    HASH=`shasum -p -a 512 "${FILE}" | awk '{print$1}'`
+    HASH=`shasum -a 512 "${FILE}" | awk '{print$1}'`
     CHECK=`cat "${FILE}.sha512"`
 
     if [ "$HASH" != "$CHECK" ]

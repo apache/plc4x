@@ -1,3 +1,3 @@
-src/main/antlr4/org/apache/plc4x/codegenerator/parser/expression/Expression.g4
+src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4
 is licensed under the Category A: "UNLICENSE" which is available here:
-UNLICENSE file paralell to this file.
+UNLICENSE file parallel to this file.

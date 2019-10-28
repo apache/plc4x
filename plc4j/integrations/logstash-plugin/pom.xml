@@ -17,7 +17,9 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -38,7 +40,7 @@
   <build>
     <plugins>
       <!--
-        As ruby and gem seem to have problems wirh Maven SNAPSHOT versions,
+        As ruby and gem seem to have problems with Maven SNAPSHOT versions,
         calculate how the version would be without the "SNAPSHOT" prefix and
         make this available in the property "current-full-version".
       -->
@@ -59,7 +61,7 @@
                 def currentVersion = project.version as String
                 def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
                 print "\nCurrent version:                  " + currentVersion
-                if(match.count &gt;= 1) {
+                if(match.count >= 1) {
                   def majorVersion = match[0][1] as Integer
                   def minorVersion = match[0][2] as Integer
                   def bugfixVersion = match[0][3] as Integer

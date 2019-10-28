@@ -82,7 +82,7 @@ See the PLC4J user guide on the website to start using PLC4X in your Java applic
 
 Currently the project is configured to require the following software:
 
-1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME configured to
+1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
  point to that.
 2. libpcap/WinPcap for raw socket tests in Java
 3. (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
@@ -144,8 +144,8 @@ Not quite sure which elements are really needed, better just install all of them
 
 WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
 impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
-to find some DLL. So if you are having these problems, please try using the installer instead of the manually unpackable
-archive.
+to find some DLL. So if you are having these problems, please try using the installer instead of manually unpacking
+the archive.
 
 For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
@@ -172,8 +172,8 @@ Build PLC4X Java jars and install them in your local maven repository
 ./mvnw install -P with-java  # add -DskipTests to omit running the tests
 ```
 
-You can now construct Java applications that use PLC4X. The PLC4X samples
-are a good place to start and are available inside the `examples`
+You can now construct Java applications that use PLC4X. The PLC4X examples
+are a good place to start and are available inside the `plc4j/examples`
 directory.
 
 If you want to also build the C++ libraries, this has to be enabled by activating
@@ -195,7 +195,7 @@ However both of these are in a pretty experimental state.
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-java,with-cpp,with-dotnet,with-python,with-proxies,with-sandbox install
+./mvnw -P with-boost,with-cpp,with-dotnet,with-java,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ### Installing libpcap/WinPcap

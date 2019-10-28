@@ -88,6 +88,11 @@
       <groupId>org.elasticsearch.plugin</groupId>
       <artifactId>transport-netty4-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.locationtech.spatial4j</groupId>
+      <artifactId>spatial4j</artifactId>
+      <version>0.7</version>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -178,6 +183,7 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
             <usedDependency>org.apache.logging.log4j:log4j-slf4j-impl</usedDependency>
+            <usedDependency>org.locationtech.spatial4j:spatial4j</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
