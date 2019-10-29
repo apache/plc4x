@@ -136,24 +136,28 @@ Some tools need to be installed before being able to build on Windows:
 * Python 2.7 (for `with-python`, `with-proxies` profiles)
 * Dotnet (for `with-dotnet` profiles)
 
-He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+He have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+Run the installer as "Administrator" or you won't be able to install it to "C:\Program Files" or the 32 Bit counterpart.
 When running the installer, make sure to select the options:
 * Native Windows
 * x86_64
 Not quite sure which elements are really needed, better just install all of them.
+If the installer fails to do something complaining about having to use a different mirror, enter "http://win-builds.org/1.5.0" as mirror address.
 
 WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
 impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
 to find some DLL. So if you are having these problems, please try using the installer instead of manually unpacking
 the archive.
 
-For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
+For `Bison`, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
 (More infos on this issue here: https://sourceforge.net/p/gnuwin32/bugs/473/)
 
-Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
+Please download the `Flex` compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
 
-You can get Python from here: https://www.python.org/downloads/release/python-2716/
+You can get `Python` from here: https://www.python.org/downloads/release/python-2716/
+
+For `.Net`, you need the `Developer Pack` in order to build .Net applications. So be sure to get a reasonably fresh installation from https://dotnet.microsoft.com
 
 Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.
 
