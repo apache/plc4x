@@ -8,6 +8,8 @@ New Features
 Incompatible changes
 --------------------
 
+- Moved the C++, C# and Python drivers into the `sandbox`
+
 Bug Fixes
 ---------
 

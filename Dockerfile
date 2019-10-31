@@ -43,7 +43,7 @@ RUN apt install -y apt-transport-https
 RUN apt update -y
 RUN apt install -y dotnet-sdk-2.2
 
-# Required for "with-java" profile
+# Required for the general build
 RUN apt install -y git
 
 # Required for "with-proxies"
@@ -61,11 +61,11 @@ WORKDIR /ws
 # Tell Maven to fetch all needed dependencies first, so they can get cached
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
-RUN ./mvnw -P with-java,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 # Build everything with all tests
-RUN ./mvnw -P with-java,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-sandbox install
+RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
 
-#RUN ./mvnw -P with-java -DskipTests install
+#RUN ./mvnw -DskipTests install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version
