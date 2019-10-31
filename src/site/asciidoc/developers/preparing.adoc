@@ -358,7 +358,11 @@ For Bison, please download the Setup installer version from http://gnuwin32.sour
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip[here]
 (More infos on this issue https://sourceforge.net/p/gnuwin32/bugs/473/[here])
 
-Make sure it's `bin` directory is added to your systems `PATH`.
+It seems there are issues if these tools are installed in paths with spaces.
+So if it is for example installed in the 32 bit `Programs (x86)` directory, the build will probably fail.
+
+Make sure all tools `bin` directories are added to your systems `PATH`.
+For tools like OpenSSL be sure to add the directory containing the `openssl.exe` (Usually the root directory).
 Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
 
 ==== flex
