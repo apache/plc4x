@@ -235,7 +235,7 @@ println "Enabled profiles:"
 def boostEnabled = false
 def cppEnabled = false
 def dotnetEnabled = false
-def javaEnabled = false
+def javaEnabled = true
 def pythonEnabled = false
 def proxiesEnabled = false
 def sandboxEnabled = false
@@ -250,9 +250,6 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
-    } else if(activeProfile == "with-java") {
-        javaEnabled = true
-        println "java"
     } else if(activeProfile == "with-python") {
         pythonEnabled = true
         println "python"

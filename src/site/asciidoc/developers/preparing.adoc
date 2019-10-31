@@ -21,15 +21,15 @@ Building a project like Apache PLC4X on multiple target operating-systems is qui
 
 However when building any of the parts of PLC4X there are some requirements the build is expecting you to have provided.
 
-In order to build at all you are required to have `Java` installed on your machine.
-We have tested the build with Java 8 up to Java 12.
+In order to build at all you are required to have `Java 8` installed on your machine.
+We have tested the build with Java 8 up to Java 13.
 If a new version comes out, please give us a little time to handle any related issues, but we'll probably fix them as soon as possible.
 However in the past with Oracle's new release strategy, there have been a few bumps on the road.
 
 [width=100%]
 |===
 | Profile        | Description                                              | Requirements
-| `with-java`    | Builds Java API, drivers, integrations, examples        a|
+|                | Builds Java API, drivers, integrations, examples        a|
 * Git
 * LibPCAP (Optional)
 | `with-cpp`     | Builds C++ API, drivers, integrations, examples         a|
@@ -43,7 +43,6 @@ However in the past with Oracle's new release strategy, there have been a few bu
 * bison
 * flex
 * python
-| `with-sandbox` | Adds some experimental modules                          a|
 |===
 
 The following chapters will describe how to provide these requirements sorted by operating system.

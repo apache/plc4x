@@ -177,13 +177,12 @@
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
+    <!-- Build the Java part of plc4x -->
+    <module>plc4j</module>
+
     <!-- Tools needed throughout the build -->
     <module>tools</module>
   </modules>
-
-  <prerequisites>
-    <maven>${maven.version}</maven>
-  </prerequisites>
 
   <dependencyManagement>
     <dependencies>
@@ -1358,6 +1357,11 @@
               Set the source level to 8 as otherwise with newer JDKs we're getting trouble.
             -->
             <source>8</source>
+            <!--
+              Disable the detection of links as we have some artifacts without api-docs and
+              the errors were polluting the build output.
+            -->
+            <detectLinks>false</detectLinks>
           </configuration>
         </plugin>
 
@@ -1537,37 +1541,6 @@
         </plugins>
       </build>
     </profile>
-    <!-- Build PLC4X including the CPP modules -->
-    <profile>
-      <id>with-cpp</id>
-      <modules>
-        <module>plc4cpp</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the Java modules -->
-    <profile>
-      <id>with-java</id>
-      <modules>
-        <module>plc4j</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the .Net modules -->
-    <profile>
-      <id>with-dotnet</id>
-      <modules>
-        <module>plc4net</module>
-      </modules>
-    </profile>
-
-    <!-- Build PLC4X including the Python modules -->
-    <profile>
-      <id>with-python</id>
-      <modules>
-        <module>plc4py</module>
-      </modules>
-    </profile>
 
     <!-- Build PLC4X including the Sandbox modules -->
     <profile>
@@ -1575,11 +1548,6 @@
       <modules>
         <module>sandbox</module>
       </modules>
-    </profile>
-
-    <!-- Profile, which is used in sub-modules to enable Thrift related proxy modules -->
-    <profile>
-      <id>with-proxies</id>
     </profile>
 
     <!-- Profile for linux (Self-Enabling) -->
