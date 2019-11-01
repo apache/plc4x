@@ -19,7 +19,8 @@
 
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
-FROM azul/zulu-openjdk:latest as build
+# Fixed version of this in order to have a fixed JDK version
+FROM azul/zulu-openjdk:8.42.0.21 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
@@ -62,10 +63,9 @@ WORKDIR /ws
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
 RUN ./mvnw -P with-java,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-sandbox com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+
 # Build everything with all tests
 RUN ./mvnw -P with-java,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-sandbox install
-
-#RUN ./mvnw -P with-java -DskipTests install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version

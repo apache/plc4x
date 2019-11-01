@@ -86,8 +86,6 @@
 
   <properties>
     <!--
-      3.0.5 would have been enough, but special plugins require newer Maven versions:
-      At least 3.2 required for jqassistant-maven-plugin
       At least 3.3.3 required for camel-package-maven-plugin
     -->
     <maven.version>3.3.3</maven.version>
@@ -96,6 +94,9 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+
+    <!-- Timestamp for the reproducible builds -->
+    <project.build.outputTimestamp>2019-11-01T010:30:00Z</project.build.outputTimestamp>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
@@ -1214,7 +1215,14 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1229,7 +1237,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.2.0</version>
           <configuration>
             <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
@@ -1500,6 +1508,37 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <!-- Added the staging repos for the unreleased maven plugins -->
+    <pluginRepository>
+      <id>maven-reproducible-build-jar-plugin-staging</id>
+      <url>https://repository.apache.org/content/repositories/maven-1533/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>maven-reproducible-build-source-plugin-staging</id>
+      <url>https://repository.apache.org/content/repositories/maven-1532/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>maven-reproducible-build-assembly-plugin-staging</id>
+      <url>https://repository.apache.org/content/repositories/maven-1534/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
