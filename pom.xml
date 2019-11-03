@@ -1510,37 +1510,6 @@
         <enabled>true</enabled>
       </snapshots>
     </pluginRepository>
-    <!-- Added the staging repos for the unreleased maven plugins -->
-    <pluginRepository>
-      <id>maven-reproducible-build-jar-plugin-staging</id>
-      <url>https://repository.apache.org/content/repositories/maven-1533/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven-reproducible-build-source-plugin-staging</id>
-      <url>https://repository.apache.org/content/repositories/maven-1532/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven-reproducible-build-assembly-plugin-staging</id>
-      <url>https://repository.apache.org/content/repositories/maven-1534/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
   </pluginRepositories>
 
   <profiles>

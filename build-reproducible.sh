@@ -59,6 +59,9 @@ function packageDirectory() {
   pwd
 }
 
+# Remove any pre-existing directory
+rm -r local-snapshots-dir
+
 build
 clean
 renameArtifacts
