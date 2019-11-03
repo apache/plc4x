@@ -191,6 +191,7 @@
               <url>${cmake.url}</url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}</outputDirectory>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
           <!-- Download the sources for building the thrift compiler -->
@@ -204,6 +205,7 @@
               <url>http://www.apache.org/dyn/closer.lua?action=download&amp;filename=/thrift/${thrift.version}/thrift-${thrift.version}.tar.gz</url>
               <unpack>true</unpack>
               <outputDirectory>${project.build.directory}</outputDirectory>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
         </executions>
