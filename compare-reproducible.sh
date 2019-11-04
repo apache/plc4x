@@ -35,7 +35,7 @@ function compare() {
   pwd
 }
 
-#unpack $1
-#unpack $2
+unpack $1
+unpack $2
 compare ${1%.*} ${2%.*} > compare.log
 

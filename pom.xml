@@ -96,7 +96,7 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>2019-11-01T010:30:00Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
@@ -137,7 +137,7 @@
     <jackson.version>2.9.9</jackson.version>
     <jmh.version>1.21</jmh.version>
     <jna.version>5.3.1</jna.version>
-    <joda-time.version>2.10</joda-time.version>
+    <joda-time.version>2.10.5</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
     <jserialcom.version>2.5.1</jserialcom.version>
     <junit.jupiter.version>5.5.0</junit.jupiter.version>
@@ -762,7 +762,7 @@
               <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
             </configuration>
           </execution>
-          <!-- Set some dynamic variables which are usefull for the site generation -->
+          <!-- Set some dynamic variables which are useful for the site generation -->
           <execution>
             <id>provide-custom-properties</id>
             <phase>pre-site</phase>
@@ -805,6 +805,13 @@
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.5</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!-- Write all the properties into a file so we can access them from asciidoctor -->
