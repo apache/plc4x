@@ -47,7 +47,6 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
 
     public AbEthPlcConnection(InetAddress address, String params) {
         this(new TcpSocketChannelFactory(address, AB_ETH_PORT), params);
-
         logger.info("Setting up AB-ETH Connection with: host-name {}", address.getHostAddress());
     }
 
@@ -73,6 +72,7 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
 
     @Override
     protected void sendChannelCreatedEvent() {
+        logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
