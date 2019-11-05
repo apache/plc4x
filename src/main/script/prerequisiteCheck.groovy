@@ -51,7 +51,7 @@ def checkVersionAtLeast(String current, String minimum) {
 }
 
 def checkBison() {
-    print "Detecting Bison version:  "
+    print "Detecting Bison version:   "
     def output = "bison --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -67,7 +67,7 @@ def checkBison() {
 }
 
 def checkDotnet() {
-    print "Detecting Dotnet version: "
+    print "Detecting Dotnet version:  "
     def output = "dotnet --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -83,7 +83,7 @@ def checkDotnet() {
 }
 
 def checkFlex() {
-    print "Detecting Flex version:   "
+    print "Detecting Flex version:    "
     def output = "flex --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -99,7 +99,7 @@ def checkFlex() {
 }
 
 def checkGcc() {
-    print "Detecting Gcc version:    "
+    print "Detecting Gcc version:     "
     def output = "gcc --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -115,7 +115,7 @@ def checkGcc() {
 }
 
 def checkGit() {
-    print "Detecting Git version:    "
+    print "Detecting Git version:     "
     def output = "git --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -131,7 +131,7 @@ def checkGit() {
 }
 
 def checkGpp() {
-    print "Detecting G++ version:    "
+    print "Detecting G++ version:     "
     def output = "g++ --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
@@ -147,7 +147,7 @@ def checkGpp() {
 }
 
 def checkPython() {
-    print "Detecting Python version: "
+    print "Detecting Python version:  "
     def process = ("python --version").execute()
     def stdOut = new StringBuilder()
     def stdErr = new StringBuilder()
@@ -186,7 +186,7 @@ def checkPython() {
  * We're not checking if it could be resolved.
  */
 def checkBoost() {
-    print "Detecting Boost library:  "
+    print "Detecting Boost library:   "
     def localRepoBaseDir = session.getLocalRepository().getBasedir()
     def expectedFile = new File(localRepoBaseDir, "org/apache/plc4x/plc4x-tools-boost/" + project.version +
         "/plc4x-tools-boost-" + project.version + "-lib-" + project.properties["os.classifier"] + ".zip")
@@ -198,6 +198,22 @@ def checkBoost() {
         allConditionsMet = false
     } else {
         println "              OK"
+    }
+}
+
+def checkOpenSSL() {
+    print "Detecting OpenSSL version: "
+    def output = "openssl version".execute().text
+    Matcher matcher = extractVersion(output)
+    if(matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
+        if(!result) {
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
     }
 }
 
@@ -295,6 +311,7 @@ if(dotnetEnabled) {
 
 if(proxiesEnabled) {
     checkFlex()
+    checkOpenSSL()
 }
 
 if(proxiesEnabled || cppEnabled) {
