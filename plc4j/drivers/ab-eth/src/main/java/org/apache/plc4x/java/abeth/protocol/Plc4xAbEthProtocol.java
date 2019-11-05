@@ -60,11 +60,13 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     private Map<Integer, PlcRequestContainer> requests;
 
     public Plc4xAbEthProtocol() {
+        logger.trace("Created new instance of PLC4X-AB-ETH Protocol");
         this.requests = new HashMap<>();
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        logger.trace("Registered user event {}", evt);
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
         if (evt instanceof ConnectEvent) {
@@ -80,6 +82,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+        logger.trace("Encoding {}", msg);
         PlcRequest request = msg.getRequest();
 
         // reset counter since two byte values are possible in DF1
@@ -118,6 +121,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     @Override
     protected void decode(ChannelHandlerContext ctx, CIPEncapsulationPacket packet, List<Object> out) throws Exception {
+        logger.trace("Received {}, decoding...", packet);
         if(packet instanceof CIPEncapsulationConnectionResponse) {
             CIPEncapsulationConnectionResponse connectionResponse = (CIPEncapsulationConnectionResponse) packet;
             // Save the session handle

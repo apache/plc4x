@@ -26,8 +26,12 @@ import org.apache.plc4x.java.utils.MessageIO;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbEthProtocol extends GeneratedDriverByteToMessageCodec<CIPEncapsulationPacket> {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbEthProtocol.class);
 
     public AbEthProtocol() {
         super(new MessageIO<CIPEncapsulationPacket, CIPEncapsulationPacket>() {
@@ -41,6 +45,7 @@ public class AbEthProtocol extends GeneratedDriverByteToMessageCodec<CIPEncapsul
                 CIPEncapsulationPacketIO.serialize(io, value);
             }
         });
+        logger.trace("Created new AB-ETH protocol");
     }
 
     @Override
