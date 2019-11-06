@@ -19,6 +19,7 @@
 
 1. Install StreamPipes (Using `./streampipes start` with the installer, choosing a real IP address)
 2. When asked for the IP address, enter: `host.docker.internal`
+3. Edit your `hosts` file (Mac: `/private/ect/hosts`) to direct `host.docker.internal` to `127.0.0.1_`
 
 == Setting up the Worker
 
@@ -28,13 +29,21 @@
 4. Check the `Enable EnvFile`
 5. Add the env file in `env/development`
 
-== Runing the Worker
+== Running the Worker
 
 1. Execute the new run configuration (This will fail with an error: `Web server failed to start. Port 8098 was already in use.`)
 2. Stop the running configuration.
-3. Go to the `Consul` configuration page on `hppt://localhost:9500`
+3. Go to the `Consul` configuration page on `http://localhost:8500`
 4. Select `Key/Value`
 5. Navigate to `sp/v1/{name of your worker}
 6. Change `SP_CONNECT_CONTAINER_WORKER_PORT` to an unused port: `8198`
-7. Change `SP_CONNECT_CONTAINER_MASTER_HOST` and `SP_CONNECT_CONTAINER_WORKER_HOST` from `localhost` to the fixed ip you told the setup to use
+7. Change `SP_CONNECT_CONTAINER_WORKER_HOST` and `SP_KAFKA_HOST` from `localhost` to the fixed ip you told the setup to use
 8. Restart the run configuration
+
+== Using the Worker
+
+1. Go to the StreamPipes UI section `StreamPipes connect`
+2. Search for your Worker
+3. Give it a name
+4. Start it
+5. Now it should appear in the `Data Streams` section of the pipeline editor

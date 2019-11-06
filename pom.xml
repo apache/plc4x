@@ -86,8 +86,6 @@
 
   <properties>
     <!--
-      3.0.5 would have been enough, but special plugins require newer Maven versions:
-      At least 3.2 required for jqassistant-maven-plugin
       At least 3.3.3 required for camel-package-maven-plugin
     -->
     <maven.version>3.3.3</maven.version>
@@ -96,6 +94,9 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
+
+    <!-- Timestamp for the reproducible builds -->
+    <project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp>
 
     <!-- URL of the ASF SonarQube server -->
     <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
@@ -136,7 +137,7 @@
     <jackson.version>2.9.9</jackson.version>
     <jmh.version>1.21</jmh.version>
     <jna.version>5.3.1</jna.version>
-    <joda-time.version>2.10</joda-time.version>
+    <joda-time.version>2.10.5</joda-time.version>
     <jopt-simple.version>5.0.2</jopt-simple.version>
     <jserialcom.version>2.5.1</jserialcom.version>
     <junit.jupiter.version>5.5.0</junit.jupiter.version>
@@ -742,12 +743,10 @@
 
   <build>
     <plugins>
-            
       <!-- Make some additional properties available to simplify keeping some content up to date -->
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1</version>
         <executions>
           <!-- Do some pre-build checks and report any findings to the user -->
           <execution>
@@ -761,7 +760,7 @@
               <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
             </configuration>
           </execution>
-          <!-- Set some dynamic variables which are usefull for the site generation -->
+          <!-- Set some dynamic variables which are useful for the site generation -->
           <execution>
             <id>provide-custom-properties</id>
             <phase>pre-site</phase>
@@ -804,13 +803,19 @@
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.10.5</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!-- Write all the properties into a file so we can access them from asciidoctor -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
-        <version>1.0.0</version>
         <executions>
           <execution>
             <phase>pre-site</phase>
@@ -920,7 +925,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-remote-resources-plugin</artifactId>
-        <version>1.6.0</version>
         <executions>
           <execution>
             <id>process-resource-bundles</id>
@@ -997,7 +1001,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.1</version>
         <executions>
           <execution>
             <id>get-fontawesome</id>
@@ -1063,7 +1066,6 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
         <executions>
           <execution>
             <id>streamline-font-urls</id>
@@ -1140,6 +1142,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>properties-maven-plugin</artifactId>
+          <version>1.0.0</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
           <version>${antlr.version}</version>
@@ -1158,9 +1166,33 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>groovy-maven-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>4.2.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>replacer</artifactId>
+          <version>1.5.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.googlecode.maven-download-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <version>1.4.2</version>
         </plugin>
 
         <plugin>
@@ -1213,7 +1245,14 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
@@ -1228,7 +1267,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.1</version>
+          <version>3.2.0</version>
           <configuration>
             <finalName>apache-plc4x-${project.version}</finalName>
           </configuration>
@@ -1261,16 +1300,11 @@
           </configuration>
         </plugin>
 
-        <plugin>
-          <groupId>org.sonarsource.scanner.maven</groupId>
-          <artifactId>sonar-maven-plugin</artifactId>
-          <version>3.6.0.1398</version>
-        </plugin>
-
         <!-- Configure the Site generation -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
+          <version>3.8.2</version>
           <configuration>
             <!--templateFile>${session.executionRootDirectory}/src/site/template/site.vm</templateFile-->
             <generateReports>true</generateReports>
@@ -1347,6 +1381,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.1.1</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
@@ -1362,6 +1397,7 @@
               the errors were polluting the build output.
             -->
             <detectLinks>false</detectLinks>
+            <validateLinks>false</validateLinks>
           </configuration>
         </plugin>
 

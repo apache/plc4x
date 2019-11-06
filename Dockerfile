@@ -19,7 +19,8 @@
 
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
-FROM azul/zulu-openjdk:latest as build
+# Fixed version of this in order to have a fixed JDK version
+FROM azul/zulu-openjdk:8.42.0.21 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
@@ -64,8 +65,6 @@ WORKDIR /ws
 RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
 # Build everything with all tests
 RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
-
-#RUN ./mvnw -DskipTests install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version

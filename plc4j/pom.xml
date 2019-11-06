@@ -184,6 +184,7 @@
             <exportScr>true</exportScr>
             <instructions>
               <_include>-bnd.bnd</_include>
+              <_removeheaders>Bnd-LastModified,Built-By</_removeheaders>
             </instructions>
         </configuration>
       </plugin>

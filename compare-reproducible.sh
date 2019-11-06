@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,11 +18,24 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-# Redirect some parameters for local development.
-SP_KAFKA_HOST=host.docker.internal
-SP_CONNECT_CONTAINER_HOST=localhost
-SP_CONNECT_CONTAINER_MASTER_HOST=localhost
-SP_CONNECT_CONTAINER_WORKER_HOST=host.docker.internal
-SP_CONNECT_CONTAINER_WORKER_PORT=8198
-SP_DATA_LOCATION=./test_data/
+# Unpack the two archives (into separate directories.
+unpack() {
+  basedir=${1%.*}
+  echo "Unpacking file $1 to $basedir ..."
+  mkdir $basedir
+  tar zxvf $1 --directory $basedir
+  echo "Done"
+}
+
+# Traverse through the direcoties and check them for binary equality
+function compare() {
+  echo "Compariong ..."
+  diff --recursive $1 $2
+  echo "Done"
+  pwd
+}
+
+unpack $1
+unpack $2
+compare ${1%.*} ${2%.*} > compare.log
 
