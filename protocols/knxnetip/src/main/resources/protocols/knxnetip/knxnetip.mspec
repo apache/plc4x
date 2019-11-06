@@ -257,6 +257,7 @@
             [simple uint  8 'propertyId']
             [simple uint  4 'numberOfElements']
             [simple uint 12 'startIndex']
+            [simple uint 16 'unknown']
         ]
     ]
 ]

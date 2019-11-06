@@ -16,13 +16,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.bacnetip;
+package org.apache.plc4x.java.knxnetip;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
+import org.apache.plc4x.java.knxnetip.connection.PassiveKnxNetIpPlcConnection;
+import org.apache.plc4x.java.knxnetip.protocol.HelloWorldProtocol;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 
@@ -31,29 +31,29 @@ import java.util.regex.Pattern;
 
 import static org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress.ALL_PROTOCOLS;
 
-public class PassiveBacNetIpDriver implements PlcDriver {
+public class PassiveKnxNetIpDriver implements PlcDriver {
 
-    public static final int BACNET_IP_PORT = 47808;
+    public static final int KNXNET_IP_PORT = 3671;
 
-    private static final Pattern PASSIVE_BACNET_IP_URI_PATTERN =
-        Pattern.compile("^bachnet-ip-passive://(?<networkDevice>.*)(?<params>\\?.*)?");
+    private static final Pattern PASSIVE_KNXNET_IP_URI_PATTERN =
+        Pattern.compile("^knxnet-ip-passive://(?<networkDevice>.*)(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
-        return "bacnet-ip-passive";
+        return "knxnet-ip-passive";
     }
 
     @Override
     public String getProtocolName() {
-        return "BACnet/IP (Passive)";
+        return "KNXNet/IP (Passive)";
     }
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = PASSIVE_BACNET_IP_URI_PATTERN.matcher(url);
+        Matcher matcher = PASSIVE_KNXNET_IP_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'bacnet-ip-passive://{host|ip}'");
+                "Connection url doesn't match the format 'knxnet-ip-passive://{host|ip}'");
         }
         String networkDevice = matcher.group("networkDevice");
 
@@ -61,8 +61,8 @@ public class PassiveBacNetIpDriver implements PlcDriver {
 
         try {
             RawSocketIpAddress rawSocketAddress = new RawSocketIpAddress(
-                networkDevice, ALL_PROTOCOLS, null, BACNET_IP_PORT);
-            return new PassiveBacNetIpPlcConnection(rawSocketAddress, params, new HelloWorldProtocol());
+                networkDevice, ALL_PROTOCOLS, null, KNXNET_IP_PORT);
+            return new PassiveKnxNetIpPlcConnection(rawSocketAddress, params, new HelloWorldProtocol());
         } catch (Exception e) {
             throw new PlcConnectionException("Error connecting to host", e);
         }
@@ -70,7 +70,7 @@ public class PassiveBacNetIpDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("BACnet/IP connections don't support authentication.");
+        throw new PlcConnectionException("KNXNet/IP connections don't support authentication.");
     }
 
 }
