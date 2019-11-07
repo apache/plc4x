@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.abeth.model.AbEthField;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocol;
 import org.apache.plc4x.java.abeth.protocol.Plc4xAbEthProtocol;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -113,6 +114,29 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         return new DefaultPlcReadRequest.Builder(this, new AbEthFieldHandler());
+    }
+
+    @Override
+    public void close() {
+        logger.debug("Closing PlcConnection...");
+        // Close the channel gracefully
+        if ((channel != null) && channel.isOpen()) {
+            logger.debug("Channel is still connected, Closing channel...");
+            // Close the channel
+            channel.close();
+
+            // Do some additional cleanup operations ...
+            // In normal operation, the channels event loop has a parent, however when running with
+            // the embedded channel for unit tests, parent is null.
+            if (channel.eventLoop().parent() != null) {
+                logger.trace("Shutting down EventLoop gracefully...");
+                channel.eventLoop().parent().shutdownGracefully();
+                logger.trace("Eventloop is shutted down");
+            }
+        }
+        // Dereference
+        channel = null;
+        connected = false;
     }
 
     @Override
