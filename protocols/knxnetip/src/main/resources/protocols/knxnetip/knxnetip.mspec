@@ -247,7 +247,7 @@
         ['0x2B' CEMILBusmonInd
             [simple uint 8                    'additionalInformationLength']
             [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [array  uint 8                    'rawFrame'              count  'size - (additionalInformationLength + 2)']
+            [simple CEMIFrame                 'cemiFrame']
         ]
         ['0x2D' CEMILRawInd
         ]
@@ -293,26 +293,28 @@
     ]
 ]
 
-[type 'CEMIFrame'
-    [simple   EIBControlField 'controlField']
-    [simple   CEMIAddress     'sourceAddress']
-    [simple   CEMIAddress     'destinationAddress']
-    [simple   bit             'groupAddress']
-    [simple   uint 3          'routing']
-    [simple   uint 4          'dataLength']
-    [simple   uint 8          'tpci']
-    [array    int 8           'data' count 'dataLength']
-    [simple   uint 8          'crc']
-]
-
-[type 'EIBControlField'
-    [simple   bit          'standardFrame']
-    [reserved uint 1       '0']
-    [simple   bit          'doNotRepeat']
-    [simple   bit          'broadcast']
-    [enum     CEMIPriority 'priority']
-    [simple   bit          'ackRequested']
-    [simple   bit          'error']
+[discriminatedType 'CEMIFrame'
+    [simple        bit          'standardFrame']
+    [discriminator uint 1       'eot']
+    [simple        bit          'doNotRepeat']
+    [simple        bit          'broadcast']
+    [enum          CEMIPriority 'priority']
+    [simple        bit          'ackRequested']
+    [simple        bit          'error']
+    [typeSwitch 'eot'
+        ['0x0' CEMIFrameData
+            [simple   CEMIAddress     'sourceAddress']
+            [simple   CEMIAddress     'destinationAddress']
+            [simple   bit             'groupAddress']
+            [simple   uint 3          'routing']
+            [simple   uint 4          'dataLength']
+            [simple   uint 8          'tpci']
+            [array    int 8           'data' count 'dataLength']
+            [simple   uint 8          'crc']
+        ]
+        ['0x1' CEMIFrameEot
+        ]
+    ]
 ]
 
 [type 'CEMIAddress'
@@ -325,7 +327,7 @@
     [simple   uint 16 'timestamp']
 ]
 
-[enum int 2 'CEMIPriority'
+[enum uint 2 'CEMIPriority'
     ['0x0' SYSTEM]
     ['0x1' NORMAL]
     ['0x2' URGENT]
