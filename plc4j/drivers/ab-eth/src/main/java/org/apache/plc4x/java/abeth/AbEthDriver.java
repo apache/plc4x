@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class AbEthDriver implements PlcDriver {
 
-    private static final Pattern ABETH_URI_PATTERN = Pattern.compile("^ab-eth://(?<host>.*)(?<params>\\?.*)?");
+    private static final Pattern ABETH_URI_PATTERN = Pattern.compile("^ab-eth://(?<host>.*)/(?<station>\\d{1,2})(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
@@ -48,15 +48,15 @@ public class AbEthDriver implements PlcDriver {
         Matcher matcher = ABETH_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'ab-eth://{host|ip}'");
+                "Connection url doesn't match the format 'ab-eth://{host|ip}/{station}'");
         }
+        int station = Integer.parseInt(matcher.group("station"));
         String host = matcher.group("host");
-
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new AbEthPlcConnection(serverInetAddress, params);
+            return new AbEthPlcConnection(serverInetAddress, station, params);
         } catch (UnknownHostException e) {
             throw new PlcConnectionException("Error parsing address", e);
         } catch (Exception e) {

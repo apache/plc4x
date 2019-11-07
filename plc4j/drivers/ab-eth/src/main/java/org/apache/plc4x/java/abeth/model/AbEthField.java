@@ -84,23 +84,22 @@ public class AbEthField implements PlcField {
             short elementNumber = Short.parseShort(matcher.group(ELEMENT_NUMBER));
             short bitNumber = (matcher.group(BIT_NUMBER) != null) ? Short.parseShort(matcher.group(BIT_NUMBER)) : 0;  //Short.parseShort(matcher.group(BIT_NUMBER));
             FileType fileType = FileType.valueOf(matcher.group(DATA_TYPE).toUpperCase());
+
             short byteSize;
             switch (fileType) {
                 case WORD:
+                case SINGLEBIT:
                     byteSize = 2;
                     break;
                 case DWORD:
                     byteSize = 4;
-                    break;
-                case SINGLEBIT:
-                    byteSize = 2;
                     break;
                 default:
                     byteSize = Short.parseShort(matcher.group(SIZE));
             }
             return new AbEthField(byteSize, fileNumber, fileType, elementNumber, bitNumber);
         }
-        throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+        throw new PlcInvalidFieldException("Unable to parse field address: " + fieldString);
     }
 
 }
