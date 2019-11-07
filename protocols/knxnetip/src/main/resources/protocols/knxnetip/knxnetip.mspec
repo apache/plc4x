@@ -67,6 +67,9 @@
             [simple uint 8 'communicationChannelId']
             [simple uint 8 'status']
         ]
+        ['0x020B' UnknownMessage [uint 16 'totalLength']
+            [array int 8 'unknownData' count 'totalLength - 6']
+        ]
         ['0x0310' DeviceConfigurationRequest [uint 16 'totalLength']
             [simple DeviceConfigurationRequestDataBlock 'deviceConfigurationRequestDataBlock']
             [simple CEMI                                'cemi' ['totalLength - (6 + deviceConfigurationRequestDataBlock.lengthInBytes)']]
@@ -215,6 +218,15 @@
         ['0x04' KnxNetIpTunneling
             [simple uint 8 'version']
         ]
+        ['0x06' KnxNetRemoteLogging
+            [simple uint 8 'version']
+        ]
+        ['0x07' KnxNetRemoteConfigurationAndDiagnosis
+            [simple uint 8 'version']
+        ]
+        ['0x08' KnxNetObjectServer
+            [simple uint 8 'version']
+        ]
     ]
 ]
 
@@ -266,7 +278,7 @@
     [discriminator uint 8 'additionalInformationType']
     [typeSwitch 'additionalInformationType'
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
-            [implicit uint 8 'len' '1']
+            [implicit  uint 8 'len' '1']
             [simple    bit    'frameErrorFlag']
             [simple    bit    'bitErrorFlag']
             [simple    bit    'parityErrorFlag']
@@ -275,28 +287,48 @@
             [simple    uint 3 'sequenceNumber']
         ]
         ['0x04' CEMIAdditionalInformationRelativeTimestamp
-            [implicit uint 8  'len' '2']
+            [implicit uint 8            'len' '2']
             [simple   RelativeTimestamp 'relativeTimestamp']
         ]
     ]
 ]
 
-[type 'CEMIControlField1'
-    [simple   bit    'standardFrame']
-    [reserved uint 1 '0x00']
-    [simple   bit    'doNotRepeat']
-    [simple   bit    'broadcast']
-    [simple   uint 2 'priority']
-    [simple   bit    'ackRequested']
-    [simple   bit    'error']
+[type 'CEMIFrame'
+    [simple   EIBControlField 'controlField']
+    [simple   CEMIAddress     'sourceAddress']
+    [simple   CEMIAddress     'destinationAddress']
+    [simple   bit             'groupAddress']
+    [simple   uint 3          'routing']
+    [simple   uint 4          'dataLength']
+    [simple   uint 8          'tpci']
+    [array    int 8           'data' count 'dataLength']
+    [simple   uint 8          'crc']
 ]
 
-[type 'CEMIControlField2'
-    [simple   bit    'groupAddress']
-    [simple   uint 3 'hopCount']
-    [simple   uint 3 'extendedFrameFormat']
+[type 'EIBControlField'
+    [simple   bit          'standardFrame']
+    [reserved uint 1       '0']
+    [simple   bit          'doNotRepeat']
+    [simple   bit          'broadcast']
+    [enum     CEMIPriority 'priority']
+    [simple   bit          'ackRequested']
+    [simple   bit          'error']
+]
+
+[type 'CEMIAddress'
+    [simple   uint 4 'area']
+    [simple   uint 4 'line']
+    [simple   uint 8 'device']
 ]
 
 [type 'RelativeTimestamp'
     [simple   uint 16 'timestamp']
 ]
+
+[enum int 2 'CEMIPriority'
+    ['0x0' SYSTEM]
+    ['0x1' NORMAL]
+    ['0x2' URGENT]
+    ['0x3' LOW]
+]
+
