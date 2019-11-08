@@ -119,7 +119,7 @@ public class ${typeName}IO {
     <#case "checksum">
 
         // Checksum Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadBufferReadMethodCall(field.type)};
         ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.checksumExpression, type.parserArguments)});
         if(${field.name} != _${field.name}Ref) {
             throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
@@ -128,7 +128,7 @@ public class ${typeName}IO {
     <#case "const">
 
         // Const Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadBufferReadMethodCall(field.type)};
         if(${field.name} != ${typeName}.${field.name?upper_case}) {
             throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
         }
@@ -136,17 +136,17 @@ public class ${typeName}IO {
     <#case "enum">
 
         // Enum field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(io.${helper.getReadMethodName(helper.getEnumBaseType(field.type))}(${helper.getEnumBaseType(field.type).size}));
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(io.${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))});
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (${field.name}) (Used as input to a switch field)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadBufferReadMethodCall(field.type)};
         <#break>
     <#case "implicit">
 
         // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadMethodName(field.type)}(${field.type.size});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = io.${helper.getReadBufferReadMethodCall(field.type)};
         <#break>
     <#case "manualArray">
 

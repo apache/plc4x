@@ -295,24 +295,38 @@
 
 [discriminatedType 'CEMIFrame'
     [simple        bit          'standardFrame']
-    [discriminator uint 1       'eot']
+    [simple        bit          'polling']
     [simple        bit          'doNotRepeat']
-    [simple        bit          'broadcast']
+    [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
-    [simple        bit          'ackRequested']
-    [simple        bit          'error']
-    [typeSwitch 'eot'
-        ['0x0' CEMIFrameData
+    [reserved      uint 2       '0x0']
+    [typeSwitch 'notAckFrame','standardFrame','polling'
+        ['false' CEMIFrameAck
+        ]
+        ['true','true','false' CEMIFrameData
             [simple   CEMIAddress     'sourceAddress']
             [simple   CEMIAddress     'destinationAddress']
             [simple   bit             'groupAddress']
-            [simple   uint 3          'routing']
+            [simple   uint 3          'hopCount']
             [simple   uint 4          'dataLength']
             [simple   uint 8          'tpci']
             [array    int 8           'data' count 'dataLength']
             [simple   uint 8          'crc']
         ]
-        ['0x1' CEMIFrameEot
+        ['true','false','false' CEMIFrameDataExt
+            [simple   bit             'groupAddress']
+            [simple   uint 3          'hopCount']
+            [simple   uint 4          'extendedFrameFormat']
+            [simple   CEMIAddress     'sourceAddress']
+            [simple   CEMIAddress     'destinationAddress']
+            [simple   uint 8          'dataLength']
+            [simple   uint 8          'tpci']
+            [array    int 8           'data' count 'dataLength']
+            [simple   uint 8          'crc']
+        ]
+        ['true','true','true' CEMIFramePollingData
+        ]
+        ['true','false','true' CEMIFramePollingDataExt
         ]
     ]
 ]

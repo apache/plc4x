@@ -27,6 +27,11 @@ public class EvaluationHelper {
             Number number2 = (Number) val2;
             return number1.doubleValue() == number2.doubleValue();
         }
+        if(val1 instanceof Boolean && val2 instanceof Boolean) {
+            Boolean boolean1 = (Boolean) val1;
+            Boolean boolean2 = (Boolean) val2;
+            return boolean1.equals(boolean2);
+        }
         return false;
     }
 

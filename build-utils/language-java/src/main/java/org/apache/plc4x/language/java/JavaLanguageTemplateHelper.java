@@ -36,6 +36,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
     private final Map<String, TypeDefinition> types;
@@ -283,17 +284,6 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
         }
         return "Hurz";
-    }
-
-    public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
-        String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
-        languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
-        if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
-            return "readUnsigned" + languageTypeName;
-        } else {
-            return "read" + languageTypeName;
-
-        }
     }
 
     public Collection<ComplexTypeReference> getComplexTypes(ComplexTypeDefinition complexTypeDefinition) {
