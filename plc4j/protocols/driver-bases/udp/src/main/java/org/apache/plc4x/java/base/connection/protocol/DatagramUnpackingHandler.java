@@ -16,16 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.base.connection.protocol;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.handler.codec.MessageToMessageDecoder;
 
-public class ManualKnxNetIp {
+import java.util.List;
 
-    public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11");
-        System.out.println(connection);
+/**
+ * Handler to unpack and pass along the ByteBuf objects contained in the DatagramPackets.
+ */
+public class DatagramUnpackingHandler extends MessageToMessageDecoder<DatagramPacket> {
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, DatagramPacket msg, List<Object> out) {
+        final ByteBuf content = msg.content();
+        out.add(content.retain());
     }
 
 }

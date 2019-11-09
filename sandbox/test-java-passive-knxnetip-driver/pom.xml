@@ -26,9 +26,9 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-knxnetip-driver</artifactId>
+  <artifactId>test-java-passive-knxnetip-driver</artifactId>
 
-  <name>Sandbox: Test Generated KNXNet/IP Driver</name>
+  <name>Sandbox: Test Generated KNXNet/IP Driver (Passive)</name>
 
   <build>
     <plugins>
@@ -45,7 +45,7 @@
             <configuration>
               <protocolName>knxnetip</protocolName>
               <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
+              <outputFlavor>passive</outputFlavor>
             </configuration>
           </execution>
         </executions>
@@ -71,12 +71,12 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-udp</artifactId>
+      <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
+      <artifactId>plc4j-utils-raw-sockets</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
 
@@ -90,12 +90,6 @@
       <artifactId>plc4j-utils-protocol-test-utils</artifactId>
       <version>0.6.0-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-pcap-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-      <!--scope>test</scope-->
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>

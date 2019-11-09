@@ -16,12 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip.protocol;
+package org.apache.plc4x.java.passive.knxnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.knxnetip.passive.KNXNetIPMessage;
 
 import java.util.List;
 

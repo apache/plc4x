@@ -16,13 +16,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.passive.knxnetip;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.knxnetip.connection.PassiveKnxNetIpPlcConnection;
-import org.apache.plc4x.java.knxnetip.protocol.HelloWorldProtocol;
+import org.apache.plc4x.java.passive.knxnetip.connection.PassiveKnxNetIpPlcConnection;
+import org.apache.plc4x.java.passive.knxnetip.protocol.HelloWorldProtocol;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 

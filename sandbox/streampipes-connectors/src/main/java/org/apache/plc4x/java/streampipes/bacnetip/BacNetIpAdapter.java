@@ -24,13 +24,14 @@ import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
 import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.PcapChannelFactory;
+import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.streampipes.bacnetip.config.ConnectWorkerConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import org.streampipes.connect.adapter.Adapter;
 import org.streampipes.connect.adapter.exception.AdapterException;
 import org.streampipes.connect.adapter.exception.ParseException;
 import org.streampipes.connect.adapter.model.specific.SpecificDataStreamAdapter;
+import org.streampipes.connect.adapter.sdk.ParameterExtractor;
 import org.streampipes.connect.container.worker.init.AdapterWorkerContainer;
 import org.streampipes.connect.init.AdapterDeclarerSingleton;
 import org.streampipes.model.AdapterType;
@@ -45,7 +47,7 @@ import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
 import org.streampipes.model.schema.EventProperty;
 import org.streampipes.model.schema.EventSchema;
-import org.streampipes.model.staticproperty.FileStaticProperty;
+import org.streampipes.model.staticproperty.*;
 import org.streampipes.sdk.StaticProperties;
 import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
@@ -62,14 +64,18 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(BacNetIpAdapter.class);
 
+    private String deviceName;
+    private String pcapFile;
     private NettyPlcConnection connection;
 
     public BacNetIpAdapter() {
         super();
     }
 
-    public BacNetIpAdapter(SpecificAdapterStreamDescription adapterDescription) {
+    public BacNetIpAdapter(SpecificAdapterStreamDescription adapterDescription, String deviceName, String pcapFile) {
         super(adapterDescription);
+        this.deviceName = deviceName;
+        this.pcapFile = pcapFile;
     }
 
     @Override
@@ -102,12 +108,10 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
             .category(AdapterType.Manufacturing)
             .requiredAlternatives(Labels.from("source", "Source", "Select the source, where the data is read from"),
                 Alternatives.from(Labels.from("device", "Network", "Capture data via network device"),
-                    StaticProperties.group(Labels.withId("device-group"),
-                        StaticProperties.singleValueSelection(Labels.from("network-device", "Network Device", "Network device used for capturing"),
-                            Options.from(deviceList)))),
+                    StaticProperties.singleValueSelection(Labels.from("network-device", "Network Device", "Network device used for capturing"),
+                        Options.from(deviceList))),
                 Alternatives.from(Labels.from("file", "File", "Capture data from a PCAP network recording"),
-                    StaticProperties.group(Labels.withId("file-group"),
-                        new FileStaticProperty(fileLabel.getInternalId(), fileLabel.getLabel(), fileLabel.getDescription()))))
+                    new FileStaticProperty(fileLabel.getInternalId(), fileLabel.getLabel(), fileLabel.getDescription())))
             .build();
         description.setAppId(ID);
         return description;
@@ -186,11 +190,21 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
     @Override
     public void startAdapter() throws AdapterException {
         try {
-            connection = new PassiveBacNetIpPlcConnection(new PcapChannelFactory(
-                //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
-                new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnet.pcapng"), null,
-                PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
-                PcapSocketChannelConfig.SPEED_REALTIME, new UdpIpPacketHandler()), "",
+            ChannelFactory channelFactory;
+            if(deviceName != null) {
+                channelFactory = new RawSocketChannelFactory(deviceName, null,
+                    PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
+                    new org.apache.plc4x.java.utils.rawsockets.netty.UdpIpPacketHandler());
+            } else if(pcapFile != null) {
+                channelFactory = new PcapChannelFactory(new File(pcapFile), null,
+                    PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
+                    PcapSocketChannelConfig.SPEED_REALTIME,
+                    new org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler());
+            } else {
+                throw new AdapterException("Configuration Exception. Either device or file have to be selected.");
+            }
+
+            connection = new PassiveBacNetIpPlcConnection(channelFactory, "",
                 new PlcMessageToMessageCodec<BVLC, PlcRequestContainer>() {
 
                 @Override
@@ -346,8 +360,27 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Adapter getInstance(SpecificAdapterStreamDescription specificAdapterStreamDescription) {
-        return new BacNetIpAdapter(specificAdapterStreamDescription);
+        ParameterExtractor extractor = new ParameterExtractor(specificAdapterStreamDescription.getConfig());
+        String deviceName = null;
+        String pcapFile = null;
+
+        StaticPropertyAlternatives sources = (StaticPropertyAlternatives) extractor.getStaticPropertyByName("source");
+        final Optional<StaticPropertyAlternative> selectedAlternative = sources.getAlternatives().stream().filter(
+            staticPropertyAlternative -> staticPropertyAlternative.getSelected()).findFirst();
+        if(selectedAlternative.isPresent()) {
+            final StaticPropertyAlternative staticPropertyAlternative = selectedAlternative.get();
+            if("device".equals(staticPropertyAlternative.getInternalName())) {
+                final Optional<Option> first =
+                    ((OneOfStaticProperty) staticPropertyAlternative.getStaticProperty()).getOptions().stream().filter(
+                        option -> option.isSelected()).findFirst();
+                deviceName = first.get().getName();
+            } else {
+                pcapFile = ((FileStaticProperty) staticPropertyAlternative.getStaticProperty()).getLocationPath();
+            }
+        }
+        return new BacNetIpAdapter(specificAdapterStreamDescription, deviceName, pcapFile);
     }
 
     @Override

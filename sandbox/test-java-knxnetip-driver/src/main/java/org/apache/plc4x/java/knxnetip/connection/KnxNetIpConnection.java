@@ -25,39 +25,40 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
+import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
+import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
+import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocol;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
-import org.apache.plc4x.java.utils.rawsockets.netty.UdpIpPacketHandler;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
 
-public class PassiveKnxNetIpPlcConnection extends NettyPlcConnection implements PlcReader {
+public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader {
 
-    private static final Logger logger = LoggerFactory.getLogger(PassiveKnxNetIpPlcConnection.class);
+    public static final int KNXNET_IP_PORT = 3671;
+
+    private static final Logger logger = LoggerFactory.getLogger(KnxNetIpConnection.class);
 
     private final ChannelHandler handler;
 
-    public PassiveKnxNetIpPlcConnection(RawSocketIpAddress address, String params, ChannelHandler handler) {
-        this(new RawSocketChannelFactory(address.getDeviceName(), null,
-            address.getPort(), RawSocketAddress.ALL_PROTOCOLS, new UdpIpPacketHandler()), params, handler);
+    public KnxNetIpConnection(InetAddress address, String params, ChannelHandler handler) {
+        this(new UdpSocketChannelFactory(address, KNXNET_IP_PORT), params, handler);
     }
 
-    public PassiveKnxNetIpPlcConnection(ChannelFactory channelFactory, String params, ChannelHandler handler) {
+    public KnxNetIpConnection(ChannelFactory channelFactory, String params, ChannelHandler handler) {
         super(channelFactory, true);
         this.handler = handler;
     }
 
     @Override
     protected void sendChannelCreatedEvent() {
-        // As this type of protocol doesn't require any form of connection, we just send the connected event.
-        channel.pipeline().fireUserEventTriggered(new ConnectedEvent());
+        // Send an event to the pipeline telling the Protocol filters what's going on.
+        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
 
     @Override
@@ -82,7 +83,9 @@ public class PassiveKnxNetIpPlcConnection extends NettyPlcConnection implements 
                         }
                     }
                 });
-                pipeline.addLast(new KnxNetIpProtocol());
+                // Unpack the ByteBuf included in the DatagramPackage.
+                pipeline.addLast(new DatagramUnpackingHandler());
+                pipeline.addLast(new KnxNetIpProtocolPackets());
                 pipeline.addLast(handler);
             }
         };

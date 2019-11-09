@@ -18,14 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-
 public class ManualKnxNetIp {
 
-    public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11");
-        System.out.println(connection);
+    public static void main(String[] args) {
+
     }
 
 }

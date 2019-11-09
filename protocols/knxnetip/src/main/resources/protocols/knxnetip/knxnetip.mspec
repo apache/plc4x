@@ -45,7 +45,7 @@
         ]
         ['0x0206' ConnectionResponse
             [simple uint 8 'communicationChannelId']
-            [simple uint 8 'status']
+            [enum   Status 'status']
             [simple HPAIDataEndpoint            'hpaiDataEndpoint']
             [simple ConnectionResponseDataBlock 'connectionResponseDataBlock']
         ]
@@ -56,7 +56,7 @@
         ]
         ['0x0208' ConnectionStateResponse
             [simple uint 8 'communicationChannelId']
-            [simple uint 8 'status']
+            [enum   Status 'status']
         ]
         ['0x0209' DisconnectRequest
             [simple   uint 8 'communicationChannelId']
@@ -65,7 +65,7 @@
         ]
         ['0x020A' DisconnectResponse
             [simple uint 8 'communicationChannelId']
-            [simple uint 8 'status']
+            [enum   Status 'status']
         ]
         ['0x020B' UnknownMessage [uint 16 'totalLength']
             [array int 8 'unknownData' count 'totalLength - 6']
@@ -90,17 +90,17 @@
 ]
 
 [type 'HPAIDiscoveryEndpoint'
-    [implicit uint 8    'structureLength' 'lengthInBytes']
-    [simple   uint 8    'hostProtocolCode']
-    [simple   IPAddress 'ipAddress']
-    [simple   uint 16   'ipPort']
+    [implicit uint 8           'structureLength' 'lengthInBytes']
+    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   IPAddress        'ipAddress']
+    [simple   uint 16          'ipPort']
 ]
 
 [type 'HPAIControlEndpoint'
-    [implicit uint 8    'structureLength' 'lengthInBytes']
-    [simple   uint 8    'hostProtocolCode']
-    [simple   IPAddress 'ipAddress']
-    [simple   uint 16   'ipPort']
+    [implicit uint 8           'structureLength' 'lengthInBytes']
+    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   IPAddress        'ipAddress']
+    [simple   uint 16          'ipPort']
 ]
 
 [type 'DIBDeviceInfo'
@@ -110,10 +110,10 @@
     [simple   DeviceStatus 'deviceStatus']
     [simple   KNXAddress   'knxAddress']
     [simple   ProjectInstallationIdentifier 'projectInstallationIdentifier']
-    [array    uint 8       'knxNetIpDeviceSerialNumber' count '6']
+    [array    int 8        'knxNetIpDeviceSerialNumber' count '6']
     [simple   IPAddress    'knxNetIpDeviceMulticastAddress']
     [simple   MACAddress   'knxNetIpDeviceMacAddress']
-    [array    uint 8       'deviceFriendlyName'         count '30']
+    [array    int 8        'deviceFriendlyName'         count '30']
 ]
 
 [type 'DIBSuppSvcFamilies'
@@ -123,10 +123,10 @@
 ]
 
 [type 'HPAIDataEndpoint'
-    [implicit uint 8    'structureLength' 'lengthInBytes']
-    [simple   uint 8    'hostProtocolCode']
-    [simple   IPAddress 'ipAddress']
-    [simple   uint 16   'ipPort']
+    [implicit uint 8           'structureLength' 'lengthInBytes']
+    [enum     HostProtocolCode 'hostProtocolCode']
+    [simple   IPAddress        'ipAddress']
+    [simple   uint 16          'ipPort']
 ]
 
 [discriminatedType 'ConnectionRequestInformation'
@@ -136,7 +136,7 @@
         ['0x03' ConnectionRequestInformationDeviceManagement
         ]
         ['0x04' ConnectionRequestInformationTunnelConnection
-            [simple   uint 8    'knxLayer']
+            [enum     KnxLayer  'knxLayer']
             [reserved uint 8    '0x00']
         ]
     ]
@@ -165,7 +165,7 @@
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
-    [simple   uint 8 'status']
+    [enum     Status 'status']
 ]
 
 [type 'TunnelingRequestDataBlock'
@@ -179,15 +179,15 @@
     [implicit uint 8 'structureLength' 'lengthInBytes']
     [simple   uint 8 'communicationChannelId']
     [simple   uint 8 'sequenceCounter']
-    [simple   uint 8 'status']
+    [enum     Status 'status']
 ]
 
 [type 'IPAddress'
-    [array uint 8 'addr' count '4']
+    [array int 8 'addr' count '4']
 ]
 
 [type 'MACAddress'
-    [array uint 8 'addr' count '6']
+    [array int 8 'addr' count '6']
 ]
 
 [type 'KNXAddress'
@@ -233,29 +233,28 @@
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
-        ['0x10' CEMILRawReq
+        ['0x10' CEMIRawReq
         ]
-        ['0x11' CEMILDataReq
+        ['0x11' CEMIDataReq
         ]
-        ['0x13' CEMILPollDataReq
+        ['0x13' CEMIPollDataReq
         ]
 
-        ['0x25' CEMILPollDataCon
+        ['0x25' CEMIPollDataCon
         ]
-        ['0x29' CEMILDataInd
+        ['0x29' CEMIDataInd
         ]
-        ['0x2B' CEMILBusmonInd
+        ['0x2B' CEMIBusmonInd
             [simple uint 8                    'additionalInformationLength']
             [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
             [simple CEMIFrame                 'cemiFrame']
         ]
-        ['0x2D' CEMILRawInd
+        ['0x2D' CEMIRawInd
         ]
-        ['0x2E' CEMILDataCon
+        ['0x2E' CEMIDataCon
         ]
-        ['0x2F' CEMILRawCon
+        ['0x2F' CEMIRawCon
         ]
-
         ['0xFC' CEMIMPropReadReq
             [simple uint 16 'interfaceObjectType']
             [simple uint  8 'objectInstance']
@@ -346,5 +345,19 @@
     ['0x1' NORMAL]
     ['0x2' URGENT]
     ['0x3' LOW]
+]
+
+[enum uint 8 'Status'
+    ['0x00' NO_ERROR]
+    ['0x24' NO_MORE_CONNECTIONS]
+]
+
+[enum uint 8 'HostProtocolCode'
+    ['0x01' IPV4_UDP]
+    ['0x02' IPV4_TCP]
+]
+
+[enum uint 8 'KnxLayer'
+   ['0x80' TUNNEL_BUSMONITOR]
 ]
 

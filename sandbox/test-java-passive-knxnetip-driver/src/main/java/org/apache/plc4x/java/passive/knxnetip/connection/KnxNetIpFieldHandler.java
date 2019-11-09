@@ -16,16 +16,21 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.passive.knxnetip.connection;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.passive.knxnetip.model.KnxNetIpField;
 
-public class ManualKnxNetIp {
+public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
 
-    public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11");
-        System.out.println(connection);
+    @Override
+    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+        if (KnxNetIpField.matches(fieldQuery)) {
+            return KnxNetIpField.of(fieldQuery);
+        }
+        throw new PlcInvalidFieldException(fieldQuery);
     }
 
 }

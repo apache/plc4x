@@ -27,9 +27,9 @@ import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 
-public class KnxNetIpProtocol extends GeneratedDriverByteToMessageCodec<KNXNetIPMessage> {
+public class KnxNetIpProtocolPackets extends GeneratedDriverByteToMessageCodec<KNXNetIPMessage> {
 
-    public KnxNetIpProtocol() {
+    public KnxNetIpProtocolPackets() {
         super(new MessageIO<KNXNetIPMessage, KNXNetIPMessage>() {
             @Override
             public KNXNetIPMessage parse(ReadBuffer io) throws ParseException {
