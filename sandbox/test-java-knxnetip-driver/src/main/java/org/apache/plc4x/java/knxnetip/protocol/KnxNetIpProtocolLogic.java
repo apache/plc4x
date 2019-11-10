@@ -53,7 +53,7 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
     private CompletableFuture<Void> disconnectFuture;
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) {
         if (evt instanceof ConnectEvent) {
             DatagramChannel channel = (DatagramChannel) ctx.pipeline().channel();
             final InetSocketAddress localSocketAddress = channel.localAddress();

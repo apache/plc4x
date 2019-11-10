@@ -26,7 +26,7 @@ import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
 public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField createField(String fieldQuery) {
         if (KnxNetIpField.matches(fieldQuery)) {
             return KnxNetIpField.of(fieldQuery);
         }

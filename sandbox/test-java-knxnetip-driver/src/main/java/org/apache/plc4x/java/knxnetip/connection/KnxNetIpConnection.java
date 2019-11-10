@@ -33,8 +33,6 @@ import org.apache.plc4x.java.base.events.DisconnectEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
@@ -44,9 +42,7 @@ import java.util.concurrent.TimeoutException;
 
 public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader {
 
-    public static final int KNXNET_IP_PORT = 3671;
-
-    private static final Logger logger = LoggerFactory.getLogger(KnxNetIpConnection.class);
+    private static final int KNXNET_IP_PORT = 3671;
 
     private final ChannelHandler handler;
 

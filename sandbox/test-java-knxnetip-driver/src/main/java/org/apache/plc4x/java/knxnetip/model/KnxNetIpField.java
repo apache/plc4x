@@ -29,9 +29,6 @@ public class KnxNetIpField implements PlcField {
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})(/(?<bitNumber>\\d{1,7}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
 
-    public KnxNetIpField() {
-    }
-
     public static boolean matches(String fieldString) {
         return ADDRESS_PATTERN.matcher(fieldString).matches();
     }
