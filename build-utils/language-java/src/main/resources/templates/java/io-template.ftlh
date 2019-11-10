@@ -331,7 +331,7 @@ public class ${typeName}IO {
 
         // Manual Field (${field.name})
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
-         io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        io.${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
        <#break>
     <#case "optional">
 

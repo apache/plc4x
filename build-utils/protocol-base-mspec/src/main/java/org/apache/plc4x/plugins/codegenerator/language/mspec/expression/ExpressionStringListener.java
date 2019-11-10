@@ -247,6 +247,39 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     @Override
+    public void enterBitShiftExpression(ExpressionParser.BitShiftExpressionContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitBitShiftExpression(ExpressionParser.BitShiftExpressionContext ctx) {
+        BinaryTerm bt = getBinaryTerm(ctx.op.getText(), parserContexts.pop());
+        parserContexts.peek().add(bt);
+    }
+
+    @Override
+    public void enterBitAndExpression(ExpressionParser.BitAndExpressionContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitBitAndExpression(ExpressionParser.BitAndExpressionContext ctx) {
+        BinaryTerm bt = getBinaryTerm("&", parserContexts.pop());
+        parserContexts.peek().add(bt);
+    }
+
+    @Override
+    public void enterBitOrExpression(ExpressionParser.BitOrExpressionContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitBitOrExpression(ExpressionParser.BitOrExpressionContext ctx) {
+        BinaryTerm bt = getBinaryTerm("|", parserContexts.pop());
+        parserContexts.peek().add(bt);
+    }
+
+    @Override
     public void enterCompExpression(ExpressionParser.CompExpressionContext ctx) {
         parserContexts.push(new LinkedList<>());
     }

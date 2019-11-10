@@ -57,7 +57,15 @@ public class KnxNetIpDriver implements PlcDriver {
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpProtocolLogic());
+            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpProtocolLogic());
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                    // Ignore this ...
+                }
+            }));
+            return connection;
         } catch (Exception e) {
             throw new PlcConnectionException("Error connecting to host", e);
         }

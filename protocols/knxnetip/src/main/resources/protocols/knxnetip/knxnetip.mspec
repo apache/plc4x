@@ -303,8 +303,8 @@
         ['false' CEMIFrameAck
         ]
         ['true','true','false' CEMIFrameData
-            [simple   CEMIAddress     'sourceAddress']
-            [simple   CEMIAddress     'destinationAddress']
+            [simple   KNXAddress      'sourceAddress']
+            [simple   KNXAddress      'destinationAddress']
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'dataLength']
@@ -316,8 +316,8 @@
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'extendedFrameFormat']
-            [simple   CEMIAddress     'sourceAddress']
-            [simple   CEMIAddress     'destinationAddress']
+            [simple   KNXAddress      'sourceAddress']
+            [simple   KNXAddress      'destinationAddress']
             [simple   uint 8          'dataLength']
             [simple   uint 8          'tpci']
             [array    int 8           'data' count 'dataLength']
@@ -328,12 +328,6 @@
         ['true','false','true' CEMIFramePollingDataExt
         ]
     ]
-]
-
-[type 'CEMIAddress'
-    [simple   uint 4 'area']
-    [simple   uint 4 'line']
-    [simple   uint 8 'device']
 ]
 
 [type 'RelativeTimestamp'

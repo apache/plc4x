@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.knxnetip.connection;
 
 import io.netty.channel.*;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -29,6 +29,7 @@ import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
+import org.apache.plc4x.java.base.events.DisconnectEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;
@@ -37,6 +38,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader {
 
@@ -62,7 +66,7 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
     }
 
     @Override
-    public PlcField prepareField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField prepareField(String fieldQuery) {
         return KnxNetIpField.of(fieldQuery);
     }
 
@@ -99,6 +103,22 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         return new DefaultPlcReadRequest.Builder(this, new KnxNetIpFieldHandler());
+    }
+
+    @Override
+    public void close() throws PlcConnectionException {
+        CompletableFuture<Void> disconnectFuture = new CompletableFuture<>();
+        channel.pipeline().fireUserEventTriggered(new DisconnectEvent(disconnectFuture));
+        try {
+            // Wait for the connection to be disconnected.
+            disconnectFuture.get(500, TimeUnit.MILLISECONDS);
+            super.close();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Error closing connection");
+        } catch (ExecutionException | TimeoutException e) {
+            throw new PlcConnectionException("Error closing connection");
+        }
     }
 
     @Override

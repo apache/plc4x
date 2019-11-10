@@ -16,19 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.base.events;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-
-import java.util.concurrent.TimeUnit;
-
-public class ManualKnxNetIp {
-
-    public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11");
-        TimeUnit.SECONDS.sleep(30);
-        connection.close();
-    }
-
+public class DisconnectedEvent {
 }
