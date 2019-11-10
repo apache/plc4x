@@ -308,8 +308,10 @@
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'dataLength']
-            [simple   uint 8          'tpci']
-            [array    int 8           'data' count 'dataLength']
+            [simple   uint 6          'tpci']
+            [enum     APCI            'apci']
+            [simple   int 6           'dataFirstByte']
+            [array    int 8           'data' count 'dataLength - 1']
             [simple   uint 8          'crc']
         ]
         ['true','false','false' CEMIFrameDataExt
@@ -319,8 +321,10 @@
             [simple   KNXAddress      'sourceAddress']
             [simple   KNXAddress      'destinationAddress']
             [simple   uint 8          'dataLength']
-            [simple   uint 8          'tpci']
-            [array    int 8           'data' count 'dataLength']
+            [simple   uint 6          'tpci']
+            [enum     APCI            'apci']
+            [simple   int 6           'dataFirstByte']
+            [array    int 8           'data' count 'dataLength - 1']
             [simple   uint 8          'crc']
         ]
         ['true','true','true' CEMIFramePollingData
@@ -353,5 +357,24 @@
 
 [enum uint 8 'KnxLayer'
    ['0x80' TUNNEL_BUSMONITOR]
+]
+
+[enum uint 4 'APCI'
+    ['0x0' GROUP_VALUE_READ_PDU]
+    ['0x1' GROUP_VALUE_RESPONSE_PDU]
+    ['0x2' GROUP_VALUE_WRITE_PDU]
+    ['0x3' INDIVIDUAL_ADDRESS_WRITE_PDU]
+    ['0x4' INDIVIDUAL_ADDRESS_READ_PDU]
+    ['0x5' INDIVIDUAL_ADDRESS_RESPONSE_PDU]
+    ['0x6' ADC_READ_PDU]
+    ['0x7' ADC_RESPONSE_PDU]
+    ['0x8' MEMORY_READ_PDU]
+    ['0x9' MEMORY_RESPONSE_PDU]
+    ['0xA' MEMORY_WRITE_PDU]
+    ['0xB' USER_MESSAGE_PDU]
+    ['0xC' DEVICE_DESCRIPTOR_READ_PDU]
+    ['0xD' DEVICE_DESCRIPTOR_RESPONSE_PDU]
+    ['0xE' RESTART_PDU]
+    ['0xF' OTHER_PDU]
 ]
 

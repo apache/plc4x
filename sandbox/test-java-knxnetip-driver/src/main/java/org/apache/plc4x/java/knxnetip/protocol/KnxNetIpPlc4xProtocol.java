@@ -52,7 +52,9 @@ public class KnxNetIpPlc4xProtocol extends PlcMessageToMessageCodec<KNXNetIPMess
         final KNXAddress sourceAddress = data.getSourceAddress();
         final KNXAddress destinationAddress = data.getDestinationAddress();
         final boolean groupAddress = data.getGroupAddress();
-        final byte[] payload = data.getData();
+        final byte[] payload = new byte[data.getData().length + 1];
+        payload[0] = data.getDataFirstByte();
+        System.arraycopy(data.getData(), 0, payload, 1, data.getData().length);
         String payloadString = Hex.encodeHexString(payload);
         if(groupAddress) {
             final byte destAddressUpperByte = (byte)
