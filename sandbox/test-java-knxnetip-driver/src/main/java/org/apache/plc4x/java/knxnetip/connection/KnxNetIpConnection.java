@@ -32,6 +32,7 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.events.DisconnectEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;
 
 import java.net.InetAddress;
@@ -86,6 +87,7 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
                 // Unpack the ByteBuf included in the DatagramPackage.
                 pipeline.addLast(new DatagramUnpackingHandler());
                 pipeline.addLast(new KnxNetIpProtocolPackets());
+                pipeline.addLast(new KnxNetIpProtocolLogic());
                 pipeline.addLast(handler);
             }
         };

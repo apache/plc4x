@@ -27,7 +27,7 @@ public class ManualKnxNetIp {
 
     public static void main(String[] args) throws Exception {
         final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11");
-        TimeUnit.SECONDS.sleep(30);
+        TimeUnit.SECONDS.sleep(300);
         connection.close();
     }
 

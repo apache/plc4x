@@ -22,7 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpPlc4xProtocol;
 import org.apache.plc4x.java.spi.PlcDriver;
 
 import java.net.InetAddress;
@@ -57,7 +57,7 @@ public class KnxNetIpDriver implements PlcDriver {
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);
-            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpProtocolLogic());
+            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpPlc4xProtocol());
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     connection.close();

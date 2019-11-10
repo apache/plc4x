@@ -20,13 +20,11 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramChannel;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.events.DisconnectEvent;
 import org.apache.plc4x.java.base.events.DisconnectedEvent;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.knxnetip.events.KnxGatewayFoundEvent;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.readwrite.types.HostProtocolCode;
@@ -36,11 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMessage, PlcRequestContainer> {
+public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMessage, KNXNetIPMessage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocolLogic.class);
 
@@ -50,6 +47,7 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
     private int localPort;
     private short communicationChannelId;
 
+    private Timer connectionStateTimer;
     private CompletableFuture<Void> disconnectFuture;
 
     @Override
@@ -82,16 +80,18 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) {
-        // Ignore ...
+    protected void encode(ChannelHandlerContext ctx, KNXNetIPMessage msg, List<Object> out) {
+        out.add(msg);
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, KNXNetIPMessage msg, List<Object> out) {
+        // Handle search responses to find the device able to provide tunneling services
         if(msg instanceof SearchResponse) {
             SearchResponse searchResponse = (SearchResponse) msg;
+            // Check if this device supports tunneling services.
             final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
-            // If this service has the
+            // If this device supports this type of service, tell the driver, we found a suitable device.
             if(tunnelingService != null) {
                 gatewayAddress = searchResponse.getDibDeviceInfo().getKnxAddress();
                 gatewayName = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
@@ -99,35 +99,61 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
                     gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
                 ctx.channel().pipeline().fireUserEventTriggered(new KnxGatewayFoundEvent());
             }
-        } else if(msg instanceof ConnectionResponse) {
+        }
+
+        // Handle the response to a connection request.
+        else if(msg instanceof ConnectionResponse) {
             ConnectionResponse connectionResponse = (ConnectionResponse) msg;
             Status status = connectionResponse.getStatus();
             // Remember the communication channel id.
             communicationChannelId = connectionResponse.getCommunicationChannelId();
-            if(status == Status.NO_ERROR) {
+            if (status == Status.NO_ERROR) {
                 LOGGER.info(String.format("Connected to KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
                     gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
                 ctx.channel().pipeline().fireUserEventTriggered(new ConnectedEvent());
+                // Start a timer to check the connection state every 60 seconds.
+                connectionStateTimer = new Timer();
+                connectionStateTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        ConnectionStateRequest connectionStateRequest =
+                            new ConnectionStateRequest(communicationChannelId,
+                                new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
+                        ctx.channel().writeAndFlush(connectionStateRequest);
+                    }
+                }, 60000, 60000);
             } else {
                 LOGGER.error(String.format("Error connecting to KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
                     gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
             }
-        } else if(msg instanceof TunnelingRequest) {
+        }
+
+        // Handle the responses to the connection state requests.
+        else if(msg instanceof ConnectionStateResponse) {
+            ConnectionStateResponse connectionStateResponse = (ConnectionStateResponse) msg;
+            if(connectionStateResponse.getStatus() != Status.NO_ERROR) {
+                LOGGER.error(String.format("Connection state problems. Got %s",
+                    connectionStateResponse.getStatus().name()));
+            }
+        }
+
+        // Handle a normal tunneling request, which is delivering KNX data.
+        else if(msg instanceof TunnelingRequest) {
             TunnelingRequest tunnelingRequest = (TunnelingRequest) msg;
             final short curCommunicationChannelId =
                 tunnelingRequest.getTunnelingRequestDataBlock().getCommunicationChannelId();
             // Only if the communication channel id match, do anything with the request.
-            if(curCommunicationChannelId != communicationChannelId) {
+            if(curCommunicationChannelId == communicationChannelId) {
                 final short sequenceCounter = tunnelingRequest.getTunnelingRequestDataBlock().getSequenceCounter();
                 TunnelingResponse tunnelingResponse = new TunnelingResponse(
                     new TunnelingResponseDataBlock(communicationChannelId, sequenceCounter, Status.NO_ERROR));
                 ctx.channel().writeAndFlush(tunnelingResponse);
-                CEMIBusmonInd busmonInd = (CEMIBusmonInd) tunnelingRequest.getCemi();
-                if (busmonInd.getCemiFrame() instanceof CEMIFrameData) {
-                    outputStringRepresentation((CEMIFrameData) busmonInd.getCemiFrame());
-                }
+                out.add(tunnelingRequest);
             }
-        } else if(msg instanceof DisconnectResponse) {
+        }
+
+        // Handle the cleaning up after getting the response to a disconnect request.
+        else if(msg instanceof DisconnectResponse) {
             // In general we should probably check if the disconnect was successful, but in
             // the end we couldn't do much if the disconnect would fail.
             ctx.channel().pipeline().fireUserEventTriggered(new DisconnectedEvent());
@@ -137,29 +163,6 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
             if(disconnectFuture != null) {
                 disconnectFuture.complete(null);
             }
-        }
-    }
-
-    private void outputStringRepresentation(CEMIFrameData data) {
-        final KNXAddress sourceAddress = data.getSourceAddress();
-        final KNXAddress destinationAddress = data.getDestinationAddress();
-        final boolean groupAddress = data.getGroupAddress();
-        final byte[] payload = data.getData();
-        String payloadString = Hex.encodeHexString(payload);
-        if(groupAddress) {
-            final byte destAddressUpperByte = (byte)
-                ((destinationAddress.getMainGroup() << 4) | (destinationAddress.getMiddleGroup() & 0xFF));
-            final byte mainGroup = (byte) (destAddressUpperByte >> 3);
-            final byte middleGroup = (byte) (destAddressUpperByte & 7);
-            LOGGER.info(String.format("Telegram from %d.%d.%d to %d/%d/%d with payload %s",
-                sourceAddress.getMainGroup(), sourceAddress.getMiddleGroup(), sourceAddress.getSubGroup(),
-                mainGroup, middleGroup, destinationAddress.getSubGroup(),
-                payloadString));
-        } else {
-            LOGGER.info(String.format("Telegram from %d.%d.%d to %d.%d.%d with payload %s",
-                sourceAddress.getMainGroup(), sourceAddress.getMiddleGroup(), sourceAddress.getSubGroup(),
-                destinationAddress.getMainGroup(), destinationAddress.getMiddleGroup(), destinationAddress.getSubGroup(),
-                payloadString));
         }
     }
 
