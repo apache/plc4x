@@ -168,3 +168,6 @@ build-iPhoneSimulator/
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
+
+# When running the cpp module in clion, it adds another ".idea" directory.
+/sandbox/plc4cpp/.idea/
