@@ -15,7 +15,7 @@
  *
  */
 
-package org.apache.plc4x.java.streampipes.bacnetip.config;
+package org.apache.plc4x.java.streampipes.bacnetip.source.config;
 
 import org.streampipes.config.SpConfig;
 import org.streampipes.connect.init.Config;

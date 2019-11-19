@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.bacnetip;
+package org.apache.plc4x.java.streampipes.bacnetip.source;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -29,7 +29,7 @@ import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.PcapChannelFactory;
 import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.streampipes.bacnetip.config.ConnectWorkerConfig;
+import org.apache.plc4x.java.streampipes.bacnetip.source.config.ConnectWorkerConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
 import org.pcap4j.core.*;
@@ -61,6 +61,15 @@ import java.util.*;
 public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     public static final String ID = "http://plc4x.apache.org/streampipes/adapter/bacnetip";
+
+    public static final String MAPPING_FIELD_TIME = "time";
+    public static final String MAPPING_FIELD_OBJECT_ID = "objectId";
+    public static final String MAPPING_FIELD_OBJECT_TYPE = "objectType";
+    public static final String MAPPING_FIELD_NOTIFICATION_INSTANCE_NUMBER = "notificationInstanceNumber";
+    public static final String MAPPING_FIELD_NOTIFICATION_TYPE = "notificationType";
+    public static final String MAPPING_FIELD_VALUE_TYPE = "valueType";
+    public static final String MAPPING_FIELD_VALUE = "value";
+    public static final String MAPPING_FIELD_STATUS = "status";
 
     private static final Logger logger = LoggerFactory.getLogger(BacNetIpAdapter.class);
 
@@ -124,56 +133,54 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Long, "time")
+                .create(Datatypes.Long, MAPPING_FIELD_TIME)
                 .label("Time")
                 .description("The time the event was processed in the BACnet adapter")
                 .build());
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Integer, "objectType")
-                .label("Object type")
-                .description("Type of BACnet object emitting the event (usually 'device')")
-                .build());
-
-        allProperties.add(
-            PrimitivePropertyBuilder
-                .create(Datatypes.Integer, "objectId")
+                .create(Datatypes.Integer, MAPPING_FIELD_OBJECT_ID)
                 .label("Object id")
                 .description("Id of the BACnet object emitting the event (usually 'device id')")
                 .build());
-
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Integer, "notificationType")
-                .label("Notification type")
-                .description("The type of notification this event resembles (usually some type of input)")
+                .create(Datatypes.Integer, MAPPING_FIELD_OBJECT_TYPE)
+                .label("Object type")
+                .description("Type of BACnet object emitting the event (usually 'device')")
                 .build());
-
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Integer, "notificationInstanceNumber")
+                .create(Datatypes.Integer, MAPPING_FIELD_NOTIFICATION_INSTANCE_NUMBER)
                 .label("Notification instance number")
                 .description("The instance number of the component emitting the event (usually the id of the property changed on a device)")
                 .build());
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Integer, "valueType")
+                .create(Datatypes.Integer, MAPPING_FIELD_NOTIFICATION_TYPE)
+                .label("Notification type")
+                .description("The type of notification this event resembles (usually some type of input)")
+                .build());
+
+        allProperties.add(
+            PrimitivePropertyBuilder
+                .create(Datatypes.Integer, MAPPING_FIELD_VALUE_TYPE)
                 .label("Value type")
                 .description("The type the value has (real, uint, int, bit-string, ...)")
                 .build());
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.String, "value")
+                .create(Datatypes.String, MAPPING_FIELD_VALUE)
                 .label("Value")
                 .description("This is the actual payload of the event.")
                 .build());
 
         allProperties.add(
             PrimitivePropertyBuilder
-                .create(Datatypes.Sequence, "status")
+                .create(Datatypes.Sequence, MAPPING_FIELD_STATUS)
                 .label("Status")
                 .description("Some times an array of status bits are passed along.")
                 .build());
@@ -296,7 +303,6 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                                     } else if (notification.getVal() instanceof BACnetTagApplicationEnumerated) {
                                         type = "enumeration";
                                         final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getVal();
-
                                     }
                                 }
 
@@ -317,16 +323,16 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                             if(value != null) {
                                 // Create the event object.
                                 Map<String, Object> event = new HashMap<>();
-                                event.put("time", System.currentTimeMillis());
+                                event.put(MAPPING_FIELD_TIME, System.currentTimeMillis());
 
-                                event.put("objectType", objectType);
-                                event.put("objectId", objectId);
-                                event.put("notificationType", notificationType);
-                                event.put("notificationInstanceNumber", notificationInstanceNumber);
+                                event.put(MAPPING_FIELD_OBJECT_ID, objectId);
+                                event.put(MAPPING_FIELD_OBJECT_TYPE, objectType);
+                                event.put(MAPPING_FIELD_NOTIFICATION_INSTANCE_NUMBER, notificationInstanceNumber);
 
-                                event.put("valueType", type);
-                                event.put("value", value);
-                                event.put("status", status);
+                                event.put(MAPPING_FIELD_NOTIFICATION_TYPE, notificationType);
+                                event.put(MAPPING_FIELD_VALUE_TYPE, type);
+                                event.put(MAPPING_FIELD_VALUE, value);
+                                event.put(MAPPING_FIELD_STATUS, status);
 
                                 // Send it to StreamPipes
                                 adapterPipeline.process(event);

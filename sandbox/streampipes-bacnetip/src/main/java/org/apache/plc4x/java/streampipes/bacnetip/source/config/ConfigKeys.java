@@ -15,7 +15,7 @@
  *
  */
 
-package org.apache.plc4x.java.streampipes.bacnetip.config;
+package org.apache.plc4x.java.streampipes.bacnetip.source.config;
 
 public class ConfigKeys {
 
