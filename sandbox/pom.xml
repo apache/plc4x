@@ -37,7 +37,9 @@
   <modules>
     <module>code-gen</module>
     <module>plc-simulator</module>
-    <module>streampipes-connectors</module>
+
+    <module>streampipes-bacnetip</module>
+    <module>streampipes-knxnetip</module>
 
     <module>test-java-bacnetip-driver</module>
     <module>test-java-knxnetip-driver</module>

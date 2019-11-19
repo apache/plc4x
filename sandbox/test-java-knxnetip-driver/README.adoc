@@ -1,0 +1,48 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+= Interpreting the data on the bus
+
+Probably it should be possible to browse the required data from the KNX bus, however in case of KNX the developer also has access to the ETS5 files for his house.
+
+This file contains all the data needed to interpret what's going over the KNX bus.
+
+== KKNPROJ Format
+
+The `knxproj` file exported from `ETS5` is generally a `zip` file containing a number of files:
+
+- knx_master.xml     (XML file containing all sorts of type definitions)
+- P-05CD.certificate (License metadata)
+- P-05CD (directory) (Directory containing the project data)
+- P-05CD.signature   (Signature of the data in the project data directory)
+- M-* (directories)  (Directory containing additional data)
+- M-*.signature      (Signature of the data in the additional data directories)
+
+=== P-05CD Directory
+
+- project.xml (General settings + general setting of which `type of group addresses` are used)
+- 0.xml       (All the data of the project)
+
+==== 0.xml Format
+
+``- //GroupAddress
+``-- @Address (integer representation od the group address (interpreted depending on the `type of group addresses` selected in the `project.xml`))
+-- @Description (Description of the group address)
+-- @DatapointType (Type id of the datatype, lookup in `knx_master.xml`)
+-- @Name (Name of the address itself)
+-- ../@Name (Name of the sub group)
+-- ../../@Name (Name of the main group)

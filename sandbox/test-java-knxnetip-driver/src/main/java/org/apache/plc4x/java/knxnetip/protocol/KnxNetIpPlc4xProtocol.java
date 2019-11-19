@@ -50,27 +50,12 @@ public class KnxNetIpPlc4xProtocol extends PlcMessageToMessageCodec<KNXNetIPMess
 
     private void outputStringRepresentation(CEMIFrameData data) {
         final KNXAddress sourceAddress = data.getSourceAddress();
-        final KNXAddress destinationAddress = data.getDestinationAddress();
+        final byte[] destinationAddress = data.getDestinationAddress();
         final boolean groupAddress = data.getGroupAddress();
         final byte[] payload = new byte[data.getData().length + 1];
         payload[0] = data.getDataFirstByte();
         System.arraycopy(data.getData(), 0, payload, 1, data.getData().length);
         String payloadString = Hex.encodeHexString(payload);
-        if(groupAddress) {
-            final byte destAddressUpperByte = (byte)
-                ((destinationAddress.getMainGroup() << 4) | (destinationAddress.getMiddleGroup() & 0xFF));
-            final byte mainGroup = (byte) (destAddressUpperByte >> 3);
-            final byte middleGroup = (byte) (destAddressUpperByte & 7);
-            LOGGER.info(String.format("Telegram from %d.%d.%d to %d/%d/%d with payload %s",
-                sourceAddress.getMainGroup(), sourceAddress.getMiddleGroup(), sourceAddress.getSubGroup(),
-                mainGroup, middleGroup, destinationAddress.getSubGroup(),
-                payloadString));
-        } else {
-            LOGGER.info(String.format("Telegram from %d.%d.%d to %d.%d.%d with payload %s",
-                sourceAddress.getMainGroup(), sourceAddress.getMiddleGroup(), sourceAddress.getSubGroup(),
-                destinationAddress.getMainGroup(), destinationAddress.getMiddleGroup(), destinationAddress.getSubGroup(),
-                payloadString));
-        }
     }
 
 }

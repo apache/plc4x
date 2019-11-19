@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
 
 public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader {
 
-    private static final int KNXNET_IP_PORT = 3671;
+    public static final int KNXNET_IP_PORT = 3671;
 
     private final ChannelHandler handler;
 

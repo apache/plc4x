@@ -17,7 +17,8 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -26,9 +27,9 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-streampipes-connectors</artifactId>
+  <artifactId>test-streampipes-knxnetip</artifactId>
 
-  <name>Sandbox: StreamPipes Connectors</name>
+  <name>Sandbox: StreamPipes KNXnet/IP</name>
 
   <properties>
     <streampipes.version>0.64.0</streampipes.version>
@@ -42,14 +43,13 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
+      <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-pcap-socket</artifactId>
+      <groupId>org.apache.plc4x.sandbox</groupId>
+      <artifactId>test-java-knxnetip-driver</artifactId>
       <version>0.6.0-SNAPSHOT</version>
-      <!--scope>test</scope-->
     </dependency>
 
     <dependency>
@@ -91,12 +91,29 @@
         </exclusion>
       </exclusions>
     </dependency>
-
     <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-bacnetip-driver</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <groupId>org.streampipes</groupId>
+      <artifactId>streampipes-wrapper</artifactId>
+      <version>${streampipes.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.streampipes</groupId>
+      <artifactId>streampipes-wrapper-standalone</artifactId>
+      <version>${streampipes.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
@@ -110,6 +127,12 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
