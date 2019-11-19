@@ -132,8 +132,12 @@ public class KnxNetIpProtocolLogic extends PlcMessageToMessageCodec<KNXNetIPMess
         else if(msg instanceof ConnectionStateResponse) {
             ConnectionStateResponse connectionStateResponse = (ConnectionStateResponse) msg;
             if(connectionStateResponse.getStatus() != Status.NO_ERROR) {
-                LOGGER.error(String.format("Connection state problems. Got %s",
-                    connectionStateResponse.getStatus().name()));
+                if(connectionStateResponse.getStatus() != null) {
+                    LOGGER.error(String.format("Connection state problems. Got %s",
+                        connectionStateResponse.getStatus().name()));
+                } else {
+                    LOGGER.error("Connection state problems. Got no status information.");
+                }
             }
         }
 
