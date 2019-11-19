@@ -196,6 +196,23 @@
     [simple uint 8 'subGroup']
 ]
 
+[discriminatedType 'KNXGroupAddress' [uint 2 'numLevels']
+    [typeSwitch 'numLevels'
+        ['1' KNXGroupAddressFreeLevel
+            [simple uint 16 'subGroup']
+        ]
+        ['2' KNXGroupAddress2Level
+            [simple uint 5  'mainGroup']
+            [simple uint 11 'subGroup']
+        ]
+        ['3' KNXGroupAddress3Level
+            [simple uint 5 'mainGroup']
+            [simple uint 3 'middleGroup']
+            [simple uint 8 'subGroup']
+        ]
+    ]
+]
+
 [type 'DeviceStatus'
     [reserved uint 7 '0x00']
     [simple   bit    'programMode']
@@ -304,7 +321,7 @@
         ]
         ['true','true','false' CEMIFrameData
             [simple   KNXAddress      'sourceAddress']
-            [simple   KNXAddress      'destinationAddress']
+            [array    int 8           'destinationAddress' count '2']
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'dataLength']
@@ -319,7 +336,7 @@
             [simple   uint 3          'hopCount']
             [simple   uint 4          'extendedFrameFormat']
             [simple   KNXAddress      'sourceAddress']
-            [simple   KNXAddress      'destinationAddress']
+            [array    int 8           'destinationAddress' count '2']
             [simple   uint 8          'dataLength']
             [simple   uint 6          'tpci']
             [enum     APCI            'apci']
