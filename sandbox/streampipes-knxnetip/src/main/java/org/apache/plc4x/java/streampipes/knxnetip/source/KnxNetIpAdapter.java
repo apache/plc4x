@@ -54,7 +54,10 @@ import java.util.*;
 
 public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
-    public static final String ID = "http://plc4x.apache.org/streampipes/adapter/knxnetip";
+    public static final String ID = "http://plc4x.apache.org/streampipes/source/knxnetip";
+    public static final String ID_SOURCE_ADDRESS = ID + "/source-address";
+    public static final String ID_DESTINATION_ADDRESS = ID + "/destination-address";
+    public static final String ID_PAYLOAD = ID + "/payload";
 
     public static final String MAPPING_FIELD_TIME = "time";
     public static final String MAPPING_FIELD_SOURCE_ADDRESS = "sourceAddress";
@@ -98,18 +101,21 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.Integer, MAPPING_FIELD_SOURCE_ADDRESS)
+                .domainProperty(ID_SOURCE_ADDRESS)
                 .label("Source Address")
                 .description("Source address from which the event originated.")
                 .build());
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.Integer, MAPPING_FIELD_DESTINATION_ADDRESS)
+                .domainProperty(ID_DESTINATION_ADDRESS)
                 .label("Destination Address")
                 .description("Destination address to which the event is targeted.")
                 .build());
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.String, MAPPING_FIELD_PAYLOAD)
+                .domainProperty(ID_PAYLOAD)
                 .label("Payload")
                 .description("Raw payload of the event.")
                 .build());
@@ -155,6 +161,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
                                 event.put(MAPPING_FIELD_TIME, System.currentTimeMillis());
                                 event.put(MAPPING_FIELD_SOURCE_ADDRESS, addressToString(cemiDataFrame.getSourceAddress()));
                                 event.put(MAPPING_FIELD_DESTINATION_ADDRESS, addressToString(destinationAddress));
+                                // Encode the payload as Hex String.
                                 event.put(MAPPING_FIELD_PAYLOAD, Hex.encodeHexString(payload));
 
                                 // Send it to StreamPipes

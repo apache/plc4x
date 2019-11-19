@@ -34,9 +34,9 @@ public class KnxNetIpAdapters {
             .add(new KnxNetIpAdapter());
 
         // Declare the processors.
-        /*DeclarersSingleton
+        DeclarersSingleton
             .getInstance()
-            .add(new Ets5DataEnrichmentController());*/
+            .add(new Ets5DataEnrichmentController());
 
         // Initialize the adapter itself.
         String workerUrl = ConnectWorkerConfig.INSTANCE.getConnectContainerWorkerUrl();
