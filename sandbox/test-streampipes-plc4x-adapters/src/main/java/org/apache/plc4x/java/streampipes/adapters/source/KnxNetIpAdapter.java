@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.knxnetip.source;
+package org.apache.plc4x.java.streampipes.adapters.source;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.codec.binary.Hex;
@@ -24,11 +24,9 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
+import org.apache.plc4x.java.streampipes.shared.Constants;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,19 +40,20 @@ import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
 import org.streampipes.model.schema.EventProperty;
 import org.streampipes.model.schema.EventSchema;
-import org.streampipes.model.staticproperty.*;
+import org.streampipes.model.staticproperty.FreeTextStaticProperty;
 import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
-import org.streampipes.sdk.helpers.*;
+import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.utils.Datatypes;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
-
-
 
     public static final String MAPPING_FIELD_TIME = "time";
     public static final String MAPPING_FIELD_SOURCE_ADDRESS = "sourceAddress";
@@ -77,12 +76,12 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public SpecificAdapterStreamDescription declareModel() {
-        SpecificAdapterStreamDescription description = SpecificDataStreamAdapterBuilder.create(ID, "KNCnet/IP", "")
+        SpecificAdapterStreamDescription description = SpecificDataStreamAdapterBuilder.create(Constants.KNXNET_ID, "KNCnet/IP", "")
             .iconUrl("knxnetip.png")
             .category(AdapterType.Manufacturing)
             .requiredTextParameter(Labels.from("gatewayIp", "KNXnet/IP Gateway", "Ip of the KNX gateway."))
             .build();
-        description.setAppId(ID);
+        description.setAppId(Constants.KNXNET_ID);
         return description;
     }
 
@@ -98,21 +97,21 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.Integer, MAPPING_FIELD_SOURCE_ADDRESS)
-                .domainProperty(ID_SOURCE_ADDRESS)
+                .domainProperty(Constants.KNXNET_ID_SOURCE_ADDRESS)
                 .label("Source Address")
                 .description("Source address from which the event originated.")
                 .build());
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.Integer, MAPPING_FIELD_DESTINATION_ADDRESS)
-                .domainProperty(ID_DESTINATION_ADDRESS)
+                .domainProperty(Constants.KNXNET_ID_DESTINATION_ADDRESS)
                 .label("Destination Address")
                 .description("Destination address to which the event is targeted.")
                 .build());
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.String, MAPPING_FIELD_PAYLOAD)
-                .domainProperty(ID_PAYLOAD)
+                .domainProperty(Constants.KNXNET_ID_PAYLOAD)
                 .label("Payload")
                 .description("Raw payload of the event.")
                 .build());
@@ -213,7 +212,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public String getId() {
-        return ID;
+        return Constants.KNXNET_ID;
     }
 
     private String addressToString(KNXAddress knxAddress) {

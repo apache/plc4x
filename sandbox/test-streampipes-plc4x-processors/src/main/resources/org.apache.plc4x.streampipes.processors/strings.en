@@ -1,0 +1,8 @@
+org.apache.plc4x.streampipes.processors.title=ETS5
+org.apache.plc4x.streampipes.processors.description=Processor that interprets a data stream from a KXNnet/IP Datasource according to the settings in the ETS5 'knxproj' file
+
+payload-id-mapping.title=Payload Id Field
+payload-id-mapping.description=
+
+destination-id-mapping.title=Destination Id Field
+destination-id-mapping.description=
