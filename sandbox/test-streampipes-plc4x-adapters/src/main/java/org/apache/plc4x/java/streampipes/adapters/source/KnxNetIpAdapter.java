@@ -24,11 +24,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
 import org.apache.plc4x.java.streampipes.shared.Constants;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.slf4j.Logger;
@@ -43,8 +40,10 @@ import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
 import org.streampipes.model.schema.EventProperty;
 import org.streampipes.model.schema.EventSchema;
+import org.streampipes.model.staticproperty.FreeTextStaticProperty;
 import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
+import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.utils.Datatypes;
 
 import java.net.InetAddress;
@@ -213,7 +212,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public String getId() {
-        return ID;
+        return Constants.KNXNET_ID;
     }
 
     private String addressToString(KNXAddress knxAddress) {

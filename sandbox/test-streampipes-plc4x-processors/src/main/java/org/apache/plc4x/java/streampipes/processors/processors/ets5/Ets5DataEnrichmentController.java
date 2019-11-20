@@ -22,6 +22,7 @@ import org.apache.plc4x.java.streampipes.shared.Constants;
 import org.streampipes.model.DataProcessorType;
 import org.streampipes.model.graph.DataProcessorDescription;
 import org.streampipes.model.graph.DataProcessorInvocation;
+import org.streampipes.model.schema.PropertyScope;
 import org.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.streampipes.sdk.builder.StreamRequirementsBuilder;
 import org.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
@@ -35,7 +36,10 @@ import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDecl
 
 public class Ets5DataEnrichmentController extends StandaloneEventProcessingDeclarer<Ets5DataEnrichmentParameters> {
 
-    public static final String ID = "http://plc4x.apache.org/streampipes/processor/ets5";
+    public static final String ID = "org.apache.plc4x.streampipes.processors";
+
+    private static final String DESTINATION_ID_MAPPING = "destination-id-mapping";
+    private static final String PAYLOAD_ID_MAPPING = "payload-id-mapping";
 
     @Override
     public DataProcessorDescription declareModel() {
@@ -46,17 +50,21 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
             .withLocales(Locales.EN)
             .requiredStream(StreamRequirementsBuilder
                 .create()
-                .requiredProperty(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_DESTINATION_ADDRESS))
-                .requiredProperty(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_PAYLOAD))
+                .requiredPropertyWithUnaryMapping(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_DESTINATION_ADDRESS), Labels.withId(DESTINATION_ID_MAPPING), PropertyScope.NONE)
+                .requiredPropertyWithUnaryMapping(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_PAYLOAD), Labels.withId(PAYLOAD_ID_MAPPING), PropertyScope.NONE)
                 .build())
             .outputStrategy(OutputStrategies.keep())
-            .requiredFile(Labels.from("knxprojFile", "ETS5 Project File", "ETS5 Project File (.knxproj)"))
+            .requiredFile(Labels.from("File", "ETS5 Project File", "ETS5 Project File (.knxproj)"))
             .build();
     }
 
     @Override
     public ConfiguredEventProcessor<Ets5DataEnrichmentParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-        Ets5DataEnrichmentParameters params = new Ets5DataEnrichmentParameters(graph);
+
+        String destinationIdFieldName = extractor.mappingPropertyValue(DESTINATION_ID_MAPPING);
+        String payloadIdFieldName = extractor.mappingPropertyValue(PAYLOAD_ID_MAPPING);
+
+        Ets5DataEnrichmentParameters params = new Ets5DataEnrichmentParameters(graph, destinationIdFieldName, payloadIdFieldName);
         return new ConfiguredEventProcessor<>(params, Ets5DataEnrichment::new);
     }
 

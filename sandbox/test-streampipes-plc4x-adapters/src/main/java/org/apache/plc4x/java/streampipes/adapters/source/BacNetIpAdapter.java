@@ -18,25 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.adapters.source;
 
-import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.streampipes.bacnetip.source.config.ConnectWorkerConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.pcap4j.core.PcapAddress;
-import org.pcap4j.core.PcapIpV4Address;
-import org.pcap4j.core.PcapNativeException;
-import org.pcap4j.core.PcapNetworkInterface;
-import org.pcap4j.core.Pcaps;
+import org.apache.plc4x.java.streampipes.adapters.config.ConnectWorkerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streampipes.connect.adapter.Adapter;

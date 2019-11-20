@@ -23,6 +23,11 @@ import org.apache.plc4x.java.streampipes.processors.config.Config;
 import org.apache.plc4x.java.streampipes.processors.processors.ets5.Ets5DataEnrichmentController;
 import org.streampipes.container.init.DeclarersSingleton;
 import org.streampipes.container.standalone.init.StandaloneModelSubmitter;
+import org.streampipes.dataformat.cbor.CborDataFormatFactory;
+import org.streampipes.dataformat.fst.FstDataFormatFactory;
+import org.streampipes.dataformat.json.JsonDataFormatFactory;
+import org.streampipes.dataformat.smile.SmileDataFormatFactory;
+import org.streampipes.messaging.kafka.SpKafkaProtocolFactory;
 
 public class Plc4xProcessorsInit extends StandaloneModelSubmitter {
 
@@ -33,7 +38,17 @@ public class Plc4xProcessorsInit extends StandaloneModelSubmitter {
             .getInstance()
             .add(new Ets5DataEnrichmentController());
 
+    DeclarersSingleton.getInstance().registerDataFormats(new JsonDataFormatFactory(),
+            new CborDataFormatFactory(),
+            new SmileDataFormatFactory(),
+            new FstDataFormatFactory());
+
+
+    DeclarersSingleton.getInstance().registerProtocol(new SpKafkaProtocolFactory());
+
         new Plc4xProcessorsInit().init(Config.INSTANCE);
+
+
     }
 
 }

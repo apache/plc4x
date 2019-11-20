@@ -23,8 +23,21 @@ import org.streampipes.wrapper.params.binding.EventProcessorBindingParams;
 
 public class Ets5DataEnrichmentParameters extends EventProcessorBindingParams {
 
-    public Ets5DataEnrichmentParameters(DataProcessorInvocation graph) {
+    private String destinationIdFieldName;
+    private String payloadIdFieldName;
+
+    public Ets5DataEnrichmentParameters(DataProcessorInvocation graph, String destinationIdFieldName, String payloadIdFieldName) {
         super(graph);
+        this.destinationIdFieldName = destinationIdFieldName;
+        this.payloadIdFieldName = payloadIdFieldName;
+
     }
 
+    public String getDestinationIdFieldName() {
+        return destinationIdFieldName;
+    }
+
+    public String getPayloadIdFieldName() {
+        return payloadIdFieldName;
+    }
 }

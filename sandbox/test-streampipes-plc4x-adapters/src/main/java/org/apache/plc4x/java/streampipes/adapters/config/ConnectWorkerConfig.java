@@ -33,7 +33,7 @@ public enum ConnectWorkerConfig {
         config.register(ConfigKeys.KAFKA_HOST, "kafka", "Hostname for backend service for kafka");
         config.register(ConfigKeys.KAFKA_PORT, 9092, "Port for backend service for kafka");
 
-        config.register(ConfigKeys.CONNECT_CONTAINER_WORKER_PORT, Config.WORKER_PORT, "The port of the connect container");
+        config.register(ConfigKeys.CONNECT_CONTAINER_WORKER_PORT, 8198, "The port of the connect container");
         config.register(ConfigKeys.CONNECT_CONTAINER_WORKER_HOST, name, "The hostname of the connect container");
 
         config.register(ConfigKeys.CONNECT_CONTAINER_MASTER_PORT, Config.MASTER_PORT, "The port of the connect container");

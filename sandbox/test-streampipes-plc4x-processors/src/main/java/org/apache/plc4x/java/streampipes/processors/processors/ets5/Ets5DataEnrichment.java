@@ -22,13 +22,21 @@ import org.streampipes.wrapper.routing.SpOutputCollector;
 import org.streampipes.wrapper.runtime.EventProcessor;
 
 public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentParameters> {
+    private String destinationIdFieldName;
+    private String payloadIdFieldName;
+
     @Override
-    public void onInvocation(Ets5DataEnrichmentParameters ets5DataEnrichmentParameters, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext eventProcessorRuntimeContext) throws SpRuntimeException {
+    public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext eventProcessorRuntimeContext) throws SpRuntimeException {
+        destinationIdFieldName = params.getDestinationIdFieldName();
+        payloadIdFieldName = params.getPayloadIdFieldName();
+
 
     }
 
     @Override
     public void onEvent(Event event, SpOutputCollector spOutputCollector) throws SpRuntimeException {
+        String destinationFieldValue = event.getFieldBySelector(this.destinationIdFieldName).getAsPrimitive().getAsString();
+
         spOutputCollector.collect(event);
     }
 
