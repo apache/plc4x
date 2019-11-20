@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.processors;
 
-
 import org.apache.plc4x.java.streampipes.processors.config.Config;
 import org.apache.plc4x.java.streampipes.processors.processors.ets5.Ets5DataEnrichmentController;
 import org.streampipes.container.init.DeclarersSingleton;
@@ -32,23 +31,24 @@ import org.streampipes.messaging.kafka.SpKafkaProtocolFactory;
 public class Plc4xProcessorsInit extends StandaloneModelSubmitter {
 
     public static void main(String[] args) {
-
         // Declare the processors.
         DeclarersSingleton
             .getInstance()
             .add(new Ets5DataEnrichmentController());
 
-    DeclarersSingleton.getInstance().registerDataFormats(new JsonDataFormatFactory(),
+        // Declare the data formats the
+        DeclarersSingleton.getInstance().registerDataFormats(
+            new JsonDataFormatFactory(),
             new CborDataFormatFactory(),
             new SmileDataFormatFactory(),
             new FstDataFormatFactory());
 
+        // Declare which methods can be used to actually read the data
+        // as well as how to transport it to the next pipeline-element.
+        DeclarersSingleton.getInstance().registerProtocol(new SpKafkaProtocolFactory());
 
-    DeclarersSingleton.getInstance().registerProtocol(new SpKafkaProtocolFactory());
-
+        // Initialize these modules components.
         new Plc4xProcessorsInit().init(Config.INSTANCE);
-
-
     }
 
 }

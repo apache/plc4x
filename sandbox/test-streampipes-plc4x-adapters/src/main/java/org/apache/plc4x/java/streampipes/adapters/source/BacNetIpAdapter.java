@@ -18,9 +18,21 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.adapters.source;
 
+import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
+import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
+import org.apache.plc4x.java.bacnetip.readwrite.*;
+import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
+import org.apache.plc4x.java.base.connection.PcapChannelFactory;
+import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.streampipes.adapters.config.ConnectWorkerConfig;
+import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
+import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
+import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streampipes.connect.adapter.Adapter;
@@ -35,29 +47,16 @@ import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
 import org.streampipes.model.schema.EventProperty;
 import org.streampipes.model.schema.EventSchema;
-import org.streampipes.model.staticproperty.FileStaticProperty;
-import org.streampipes.model.staticproperty.OneOfStaticProperty;
-import org.streampipes.model.staticproperty.Option;
-import org.streampipes.model.staticproperty.StaticPropertyAlternative;
-import org.streampipes.model.staticproperty.StaticPropertyAlternatives;
+import org.streampipes.model.staticproperty.*;
 import org.streampipes.sdk.StaticProperties;
 import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
-import org.streampipes.sdk.helpers.Alternatives;
-import org.streampipes.sdk.helpers.Label;
-import org.streampipes.sdk.helpers.Labels;
-import org.streampipes.sdk.helpers.Options;
-import org.streampipes.sdk.helpers.Tuple2;
+import org.streampipes.sdk.helpers.*;
 import org.streampipes.sdk.utils.Datatypes;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
@@ -101,12 +100,12 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                 StringBuilder deviceName = new StringBuilder((pcapNetworkInterface.getDescription() != null) ? pcapNetworkInterface.getDescription() : pcapNetworkInterface.getName());
                 deviceName.append(" (");
                 for (PcapAddress address : pcapNetworkInterface.getAddresses()) {
-                    if(address instanceof PcapIpV4Address) {
+                    if (address instanceof PcapIpV4Address) {
                         deviceName.append(address.getAddress().toString()).append("/").append(address.getNetmask().toString()).append(", ");
                     }
                 }
                 String name = deviceName.toString();
-                name = name.substring(0, name.length() - 2) + ((name.endsWith(", ")) ? ")": "");
+                name = name.substring(0, name.length() - 2) + ((name.endsWith(", ")) ? ")" : "");
                 deviceList[i] = new Tuple2<>(pcapNetworkInterface.getName(), name);
             }
         } catch (PcapNativeException e) {
@@ -199,11 +198,11 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
     public void startAdapter() throws AdapterException {
         try {
             ChannelFactory channelFactory;
-            if(deviceName != null) {
+            if (deviceName != null) {
                 channelFactory = new RawSocketChannelFactory(deviceName, null,
                     PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
                     new org.apache.plc4x.java.utils.rawsockets.netty.UdpIpPacketHandler());
-            } else if(pcapFile != null) {
+            } else if (pcapFile != null) {
                 channelFactory = new PcapChannelFactory(new File(pcapFile), null,
                     PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
                     PcapSocketChannelConfig.SPEED_REALTIME,
@@ -215,84 +214,101 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
             connection = new PassiveBacNetIpPlcConnection(channelFactory, "",
                 new PlcMessageToMessageCodec<BVLC, PlcRequestContainer>() {
 
-                @Override
-                protected void decode(ChannelHandlerContext channelHandlerContext, BVLC packet, List<Object> list) throws Exception {
-                    NPDU npdu = null;
-                    if(packet instanceof BVLCOriginalUnicastNPDU) {
-                        npdu = ((BVLCOriginalUnicastNPDU) packet).getNpdu();
-                    } else if(packet instanceof BVLCForwardedNPDU) {
-                        npdu = ((BVLCForwardedNPDU) packet).getNpdu();
-                    } else if(packet instanceof BVLCOriginalBroadcastNPDU) {
-                        npdu = ((BVLCOriginalBroadcastNPDU) packet).getNpdu();
-                    } else {
-                        throw new RuntimeException("Unexpected type of packet");
-                    }
-                    final APDU apdu = npdu.getApdu();
-                    if(apdu instanceof APDUConfirmedRequest) {
-                        APDUConfirmedRequest request = (APDUConfirmedRequest) apdu;
-                        final BACnetConfirmedServiceRequest serviceRequest = request.getServiceRequest();
-                        if(serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) {
-                            BACnetConfirmedServiceRequestConfirmedCOVNotification covNotification = (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
-                            final BACnetTagWithContent[] notifications = covNotification.getNotifications();
+                    @Override
+                    protected void decode(ChannelHandlerContext channelHandlerContext, BVLC packet, List<Object> list) throws Exception {
+                        NPDU npdu = null;
+                        if (packet instanceof BVLCOriginalUnicastNPDU) {
+                            npdu = ((BVLCOriginalUnicastNPDU) packet).getNpdu();
+                        } else if (packet instanceof BVLCForwardedNPDU) {
+                            npdu = ((BVLCForwardedNPDU) packet).getNpdu();
+                        } else if (packet instanceof BVLCOriginalBroadcastNPDU) {
+                            npdu = ((BVLCOriginalBroadcastNPDU) packet).getNpdu();
+                        } else {
+                            throw new RuntimeException("Unexpected type of packet");
+                        }
+                        final APDU apdu = npdu.getApdu();
+                        if (apdu instanceof APDUConfirmedRequest) {
+                            APDUConfirmedRequest request = (APDUConfirmedRequest) apdu;
+                            final BACnetConfirmedServiceRequest serviceRequest = request.getServiceRequest();
+                            if (serviceRequest instanceof BACnetConfirmedServiceRequestConfirmedCOVNotification) {
+                                BACnetConfirmedServiceRequestConfirmedCOVNotification covNotification = (BACnetConfirmedServiceRequestConfirmedCOVNotification) serviceRequest;
+                                final BACnetTagWithContent[] notifications = covNotification.getNotifications();
 
-                            String objectType = Integer.toString(covNotification.getMonitoredObjectType());
-                            String objectId = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
+                                String objectType = Integer.toString(covNotification.getMonitoredObjectType());
+                                String objectId = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
 
-                            String notificationType = Integer.toString(covNotification.getIssueConfirmedNotificationsType());
-                            String notificationInstanceNumber = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
+                                String notificationType = Integer.toString(covNotification.getIssueConfirmedNotificationsType());
+                                String notificationInstanceNumber = Long.toString(covNotification.getMonitoredObjectInstanceNumber());
 
-                            String type = null;
-                            Object value = null;
-                            boolean[] status = null;
-                            for (BACnetTagWithContent notification : notifications) {
-                                // Id of the property that changed
-                                short propertyId = notification.getPropertyIdentifier()[0];
+                                String type = null;
+                                Object value = null;
+                                boolean[] status = null;
+                                for (BACnetTagWithContent notification : notifications) {
+                                    // Id of the property that changed
+                                    short propertyId = notification.getPropertyIdentifier()[0];
 
-                                // Present-Value has the property id 85
-                                // (This is the actual value to which a given property has changed)
-                                if(propertyId == 85) {
-                                    // Depending on the type of object, parse the data accordingly.
-                                    if (notification.getVal() instanceof BACnetTagApplicationBoolean) {
-                                        type = "boolean";
-                                        final BACnetTagApplicationBoolean val = (BACnetTagApplicationBoolean) notification.getVal();
+                                    // Present-Value has the property id 85
+                                    // (This is the actual value to which a given property has changed)
+                                    if (propertyId == 85) {
+                                        // Depending on the type of object, parse the data accordingly.
+                                        if (notification.getVal() instanceof BACnetTagApplicationBoolean) {
+                                            type = "boolean";
+                                            final BACnetTagApplicationBoolean val = (BACnetTagApplicationBoolean) notification.getVal();
 
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationUnsignedInteger) {
-                                        type = "uint";
-                                        final BACnetTagApplicationUnsignedInteger val = (BACnetTagApplicationUnsignedInteger) notification.getVal();
-                                        // Convert any number of bytes into an unsigned integer.
-                                        switch (val.getData().length) {
-                                            case 1:
-                                                value = Byte.toString(val.getData()[0]);
-                                                break;
-                                            case 2:
-                                                value = Short.toString(ByteBuffer.wrap(val.getData()).getShort());
-                                                break;
-                                            case 3:
-                                                byte[] extValues = new byte[4];
-                                                extValues[0] = 0x00;
-                                                for(int i = 0; i < 3; i++) {
-                                                    extValues[i+1] = val.getData()[i];
-                                                }
-                                                value = ByteBuffer.wrap(extValues).getInt();
-                                                break;
-                                            default:
-                                                value = "Hurz";
-                                                break;
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationUnsignedInteger) {
+                                            type = "uint";
+                                            final BACnetTagApplicationUnsignedInteger val = (BACnetTagApplicationUnsignedInteger) notification.getVal();
+                                            // Convert any number of bytes into an unsigned integer.
+                                            switch (val.getData().length) {
+                                                case 1:
+                                                    value = Byte.toString(val.getData()[0]);
+                                                    break;
+                                                case 2:
+                                                    value = Short.toString(ByteBuffer.wrap(val.getData()).getShort());
+                                                    break;
+                                                case 3:
+                                                    byte[] extValues = new byte[4];
+                                                    extValues[0] = 0x00;
+                                                    for (int i = 0; i < 3; i++) {
+                                                        extValues[i + 1] = val.getData()[i];
+                                                    }
+                                                    value = ByteBuffer.wrap(extValues).getInt();
+                                                    break;
+                                                default:
+                                                    value = "Hurz";
+                                                    break;
+                                            }
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationSignedInteger) {
+                                            type = "int";
+                                            final BACnetTagApplicationSignedInteger val = (BACnetTagApplicationSignedInteger) notification.getVal();
+
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationReal) {
+                                            type = "real";
+                                            final BACnetTagApplicationReal val = (BACnetTagApplicationReal) notification.getVal();
+                                            value = Float.intBitsToFloat(ByteBuffer.wrap(val.getData()).getInt());
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationDouble) {
+                                            type = "double";
+                                            final BACnetTagApplicationDouble val = (BACnetTagApplicationDouble) notification.getVal();
+
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationBitString) {
+                                            type = "bit-string";
+                                            final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
+                                            int numBits = (val.getData().length * 8) - val.getUnusedBits();
+                                            BitSet bitSet = BitSet.valueOf(val.getData());
+                                            boolean[] bits = new boolean[numBits];
+                                            for (int i = 0; i < numBits; i++) {
+                                                bits[i] = bitSet.get(i);
+                                            }
+                                            value = bits;
+                                        } else if (notification.getVal() instanceof BACnetTagApplicationEnumerated) {
+                                            type = "enumeration";
+                                            final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getVal();
                                         }
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationSignedInteger) {
-                                        type = "int";
-                                        final BACnetTagApplicationSignedInteger val = (BACnetTagApplicationSignedInteger) notification.getVal();
+                                    }
 
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationReal) {
-                                        type = "real";
-                                        final BACnetTagApplicationReal val = (BACnetTagApplicationReal) notification.getVal();
-                                        value = Float.intBitsToFloat(ByteBuffer.wrap(val.getData()).getInt());
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationDouble) {
-                                        type = "double";
-                                        final BACnetTagApplicationDouble val = (BACnetTagApplicationDouble) notification.getVal();
-
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationBitString) {
-                                        type = "bit-string";
+                                    // Status-Flags have the property id 111
+                                    // (This is some additional information passed along)
+                                    else if (propertyId == 111) {
                                         final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
                                         int numBits = (val.getData().length * 8) - val.getUnusedBits();
                                         BitSet bitSet = BitSet.valueOf(val.getData());
@@ -300,53 +316,36 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                                         for (int i = 0; i < numBits; i++) {
                                             bits[i] = bitSet.get(i);
                                         }
-                                        value = bits;
-                                    } else if (notification.getVal() instanceof BACnetTagApplicationEnumerated) {
-                                        type = "enumeration";
-                                        final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getVal();
+                                        status = bits;
                                     }
                                 }
 
-                                // Status-Flags have the property id 111
-                                // (This is some additional information passed along)
-                                else if(propertyId == 111) {
-                                    final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
-                                    int numBits = (val.getData().length * 8) - val.getUnusedBits();
-                                    BitSet bitSet = BitSet.valueOf(val.getData());
-                                    boolean[] bits = new boolean[numBits];
-                                    for (int i = 0; i < numBits; i++) {
-                                        bits[i] = bitSet.get(i);
-                                    }
-                                    status = bits;
+                                if (value != null) {
+                                    // Create the event object.
+                                    Map<String, Object> event = new HashMap<>();
+                                    event.put(MAPPING_FIELD_TIME, System.currentTimeMillis());
+
+                                    event.put(MAPPING_FIELD_OBJECT_ID, objectId);
+                                    event.put(MAPPING_FIELD_OBJECT_TYPE, objectType);
+                                    event.put(MAPPING_FIELD_NOTIFICATION_INSTANCE_NUMBER, notificationInstanceNumber);
+
+                                    event.put(MAPPING_FIELD_NOTIFICATION_TYPE, notificationType);
+                                    event.put(MAPPING_FIELD_VALUE_TYPE, type);
+                                    event.put(MAPPING_FIELD_VALUE, value);
+                                    event.put(MAPPING_FIELD_STATUS, status);
+
+                                    // Send it to StreamPipes
+                                    adapterPipeline.process(event);
                                 }
-                            }
-
-                            if(value != null) {
-                                // Create the event object.
-                                Map<String, Object> event = new HashMap<>();
-                                event.put(MAPPING_FIELD_TIME, System.currentTimeMillis());
-
-                                event.put(MAPPING_FIELD_OBJECT_ID, objectId);
-                                event.put(MAPPING_FIELD_OBJECT_TYPE, objectType);
-                                event.put(MAPPING_FIELD_NOTIFICATION_INSTANCE_NUMBER, notificationInstanceNumber);
-
-                                event.put(MAPPING_FIELD_NOTIFICATION_TYPE, notificationType);
-                                event.put(MAPPING_FIELD_VALUE_TYPE, type);
-                                event.put(MAPPING_FIELD_VALUE, value);
-                                event.put(MAPPING_FIELD_STATUS, status);
-
-                                // Send it to StreamPipes
-                                adapterPipeline.process(event);
                             }
                         }
                     }
-                }
 
-                @Override
-                protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
-                    // Ignore this as we don't send anything.
-                }
-            });
+                    @Override
+                    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+                        // Ignore this as we don't send anything.
+                    }
+                });
             connection.connect();
         } catch (PlcConnectionException e) {
             logger.error("An error occurred starting the BACnet/IP driver", e);
@@ -356,7 +355,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public void stopAdapter() throws AdapterException {
-        if(connection != null) {
+        if (connection != null) {
             try {
                 connection.close();
             } catch (PlcConnectionException e) {
@@ -376,9 +375,9 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
         StaticPropertyAlternatives sources = (StaticPropertyAlternatives) extractor.getStaticPropertyByName("source");
         final Optional<StaticPropertyAlternative> selectedAlternative = sources.getAlternatives().stream().filter(
             staticPropertyAlternative -> staticPropertyAlternative.getSelected()).findFirst();
-        if(selectedAlternative.isPresent()) {
+        if (selectedAlternative.isPresent()) {
             final StaticPropertyAlternative staticPropertyAlternative = selectedAlternative.get();
-            if("device".equals(staticPropertyAlternative.getInternalName())) {
+            if ("device".equals(staticPropertyAlternative.getInternalName())) {
                 final Optional<Option> first =
                     ((OneOfStaticProperty) staticPropertyAlternative.getStaticProperty()).getOptions().stream().filter(
                         option -> option.isSelected()).findFirst();

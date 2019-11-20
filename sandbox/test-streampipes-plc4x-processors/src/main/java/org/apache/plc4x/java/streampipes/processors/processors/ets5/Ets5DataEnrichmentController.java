@@ -60,7 +60,6 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
 
     @Override
     public ConfiguredEventProcessor<Ets5DataEnrichmentParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
-
         String destinationIdFieldName = extractor.mappingPropertyValue(DESTINATION_ID_MAPPING);
         String payloadIdFieldName = extractor.mappingPropertyValue(PAYLOAD_ID_MAPPING);
 

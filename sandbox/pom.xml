@@ -38,15 +38,13 @@
     <module>code-gen</module>
     <module>plc-simulator</module>
 
-    <module>streampipes-bacnetip</module>
-    <module>streampipes-knxnetip</module>
-
     <module>test-java-bacnetip-driver</module>
     <module>test-java-knxnetip-driver</module>
     <module>test-java-passive-knxnetip-driver</module>
     <module>test-java-s7-driver</module>
     <module>test-java-passive-s7-driver</module>
     <module>test-java-df1-driver</module>
+
     <module>test-streampipes-plc4x-adapters</module>
     <module>test-streampipes-plc4x-processors</module>
     <module>test-streampipes-plc4x-shared</module>

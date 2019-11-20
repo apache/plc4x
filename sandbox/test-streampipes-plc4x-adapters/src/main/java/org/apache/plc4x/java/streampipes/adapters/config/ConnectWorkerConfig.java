@@ -27,15 +27,16 @@ public enum ConnectWorkerConfig {
     private SpConfig config;
 
     ConnectWorkerConfig() {
-        String name = "bacnetip-connect-worker-main";
+        // The name this config will be saved under
+        // Can be found/edited/deleted here: http://localhost:8500/ui/dc1/kv/sp/v1/
+        String name = "plc4x-connect-worker-main";
         config = SpConfig.getSpConfig(name);
 
+        // Only used, if there is no configuration available in consul.
         config.register(ConfigKeys.KAFKA_HOST, "kafka", "Hostname for backend service for kafka");
         config.register(ConfigKeys.KAFKA_PORT, 9092, "Port for backend service for kafka");
-
         config.register(ConfigKeys.CONNECT_CONTAINER_WORKER_PORT, 8198, "The port of the connect container");
         config.register(ConfigKeys.CONNECT_CONTAINER_WORKER_HOST, name, "The hostname of the connect container");
-
         config.register(ConfigKeys.CONNECT_CONTAINER_MASTER_PORT, Config.MASTER_PORT, "The port of the connect container");
         config.register(ConfigKeys.CONNECT_CONTAINER_MASTER_HOST, Config.MASTER_HOST, "The hostname of the connect container");
     }
