@@ -41,7 +41,11 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)};
 <#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
 
 import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.utils.Message;
+
+import java.util.Objects;
 
 <#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
@@ -204,6 +208,59 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 
         return lengthInBits / 8;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ${typeName})) {
+            return false;
+        }
+        ${typeName} that = (${typeName}) o;
+        return
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            (get${field.name?cap_first}() == that.get${field.name?cap_first}()) &&
+            </#list>
+            </#if>
+            <#if type.parentType??>
+            super.equals(that) &&
+            </#if>
+            true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            <#if type.parentType??>
+            super.hashCode()<#if type.propertyFields?has_content>,</#if>
+            </#if>
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            get${field.name?cap_first}()<#sep>,</#sep>
+            </#list>
+            </#if>
+        );
+    }
+
+    @Override
+    public String toString() {
+        return toString(ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String toString(ToStringStyle style) {
+        return new ToStringBuilder(this, style)
+            <#if type.parentType??>
+            .appendSuper(super.toString(style))
+            </#if>
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            .append("${field.name}", get${field.name?cap_first}())
+            </#list>
+            </#if>
+            .toString();
     }
 
 }
