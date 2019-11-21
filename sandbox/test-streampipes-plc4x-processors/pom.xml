@@ -147,7 +147,11 @@
       <artifactId>test-streampipes-plc4x-shared</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.19</version>
+    </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>

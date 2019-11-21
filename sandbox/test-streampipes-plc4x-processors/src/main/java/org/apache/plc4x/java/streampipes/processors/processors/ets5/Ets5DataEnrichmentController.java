@@ -23,6 +23,7 @@ import org.streampipes.model.DataProcessorType;
 import org.streampipes.model.graph.DataProcessorDescription;
 import org.streampipes.model.graph.DataProcessorInvocation;
 import org.streampipes.model.schema.PropertyScope;
+import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.ProcessingElementBuilder;
 import org.streampipes.sdk.builder.StreamRequirementsBuilder;
 import org.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
@@ -31,6 +32,7 @@ import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.helpers.Locales;
 import org.streampipes.sdk.helpers.OutputStrategies;
 import org.streampipes.sdk.utils.Assets;
+import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.standalone.ConfiguredEventProcessor;
 import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
@@ -40,6 +42,12 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
 
     private static final String DESTINATION_ID_MAPPING = "destination-id-mapping";
     private static final String PAYLOAD_ID_MAPPING = "payload-id-mapping";
+
+    public static final String MAPPING_FIELD_DECODED_GROUP_ADDRESS = "decodedGroupAddress";
+    public static final String MAPPING_FIELD_TYPE = "type";
+    public static final String MAPPING_FIELD_LOCATION = "location";
+    public static final String MAPPING_FIELD_FUNCTION = "function";
+    public static final String MAPPING_FIELD_DECODED_PROPERTY_VALUE = "decodedPropertyValue";
 
     @Override
     public DataProcessorDescription declareModel() {
@@ -53,7 +61,13 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
                 .requiredPropertyWithUnaryMapping(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_DESTINATION_ADDRESS), Labels.withId(DESTINATION_ID_MAPPING), PropertyScope.NONE)
                 .requiredPropertyWithUnaryMapping(EpRequirements.domainPropertyReq(Constants.KNXNET_ID_PAYLOAD), Labels.withId(PAYLOAD_ID_MAPPING), PropertyScope.NONE)
                 .build())
-            .outputStrategy(OutputStrategies.keep())
+            .outputStrategy(OutputStrategies.append(
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_DECODED_GROUP_ADDRESS).build(),
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_TYPE).build(),
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_LOCATION).build(),
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_FUNCTION).build(),
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_DECODED_PROPERTY_VALUE).build()
+            ))
             .requiredFile(Labels.from("File", "ETS5 Project File", "ETS5 Project File (.knxproj)"))
             .build();
     }

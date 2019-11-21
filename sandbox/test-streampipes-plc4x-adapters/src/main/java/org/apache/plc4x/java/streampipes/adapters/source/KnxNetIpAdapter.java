@@ -28,9 +28,7 @@ import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
 import org.apache.plc4x.java.streampipes.shared.Constants;
-import org.apache.plc4x.java.utils.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streampipes.connect.adapter.Adapter;
@@ -147,8 +145,6 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
                             CEMIBusmonInd cemiBusmonInd = (CEMIBusmonInd) cemiPayload;
                             if(cemiBusmonInd.getCemiFrame() instanceof CEMIFrameData) {
                                 CEMIFrameData cemiDataFrame = (CEMIFrameData) cemiBusmonInd.getCemiFrame();
-                                ReadBuffer addressReadBuffer = new ReadBuffer(cemiDataFrame.getDestinationAddress());
-                                KNXGroupAddress destinationAddress = KNXGroupAddressIO.parse(addressReadBuffer, (byte) 3);
 
                                 // The first byte is actually just 6 bit long, but we'll treat it as a full one.
                                 // So here we create a byte array containing the first and all the following bytes.
@@ -159,7 +155,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
                                 Map<String, Object> event = new HashMap<>();
                                 event.put(MAPPING_FIELD_TIME, System.currentTimeMillis());
                                 event.put(MAPPING_FIELD_SOURCE_ADDRESS, addressToString(cemiDataFrame.getSourceAddress()));
-                                event.put(MAPPING_FIELD_DESTINATION_ADDRESS, addressToString(destinationAddress));
+                                event.put(MAPPING_FIELD_DESTINATION_ADDRESS, Hex.encodeHex(cemiDataFrame.getDestinationAddress()));
                                 // Encode the payload as Hex String.
                                 event.put(MAPPING_FIELD_PAYLOAD, Hex.encodeHexString(payload));
 
@@ -220,20 +216,6 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     private String addressToString(KNXAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
-    }
-
-    private String addressToString(KNXGroupAddress knxGroupAddress) {
-        if(knxGroupAddress instanceof KNXGroupAddress3Level) {
-            KNXGroupAddress3Level level3 = (KNXGroupAddress3Level) knxGroupAddress;
-            return level3.getMainGroup() + "/" + level3.getMiddleGroup() + "/" + level3.getSubGroup();
-        } else if(knxGroupAddress instanceof KNXGroupAddress2Level) {
-            KNXGroupAddress2Level level2 = (KNXGroupAddress2Level) knxGroupAddress;
-            return level2.getMainGroup() + "/" + level2.getSubGroup();
-        } else if(knxGroupAddress instanceof KNXGroupAddressFreeLevel) {
-            KNXGroupAddressFreeLevel level1 = (KNXGroupAddressFreeLevel) knxGroupAddress;
-            return level1.getSubGroup() + "";
-        }
-        throw new RuntimeException("Unsupported group address type");
     }
 
 }

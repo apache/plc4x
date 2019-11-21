@@ -15,33 +15,106 @@ limitations under the License.
 */
 package org.apache.plc4x.java.streampipes.processors.processors.ets5;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.plc4x.java.knxnetip.readwrite.*;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
+import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.Ets5Model;
+import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.GroupAddress;
+import org.apache.plc4x.java.streampipes.processors.processors.ets5.utils.Ets5Parser;
+import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.ReadBuffer;
 import org.streampipes.commons.exceptions.SpRuntimeException;
 import org.streampipes.model.runtime.Event;
+import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
+import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.context.EventProcessorRuntimeContext;
 import org.streampipes.wrapper.routing.SpOutputCollector;
 import org.streampipes.wrapper.runtime.EventProcessor;
 
+import java.io.File;
+
 public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentParameters> {
+
     private String destinationIdFieldName;
     private String payloadIdFieldName;
+    // TODO: Make this dynamic.
+    private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/Stettiner Str.knxproj"));;
 
     @Override
     public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext eventProcessorRuntimeContext) throws SpRuntimeException {
         destinationIdFieldName = params.getDestinationIdFieldName();
         payloadIdFieldName = params.getPayloadIdFieldName();
-
-
     }
 
     @Override
     public void onEvent(Event event, SpOutputCollector spOutputCollector) throws SpRuntimeException {
-        String destinationFieldValue = event.getFieldBySelector(this.destinationIdFieldName).getAsPrimitive().getAsString();
+        try {
+            // Get the raw group address data.
+            String destinationFieldValue = event.getFieldBySelector(this.destinationIdFieldName).getAsPrimitive().getAsString();
+            byte[] destinationGroupAddress = Hex.decodeHex(destinationFieldValue);
+            ReadBuffer addressReadBuffer = new ReadBuffer(destinationGroupAddress);
+            // Decode the group address depending on the project settings.
+            KNXGroupAddress destinationAddress =
+                KNXGroupAddressIO.parse(addressReadBuffer, ets5Model.getGroupAddressType());
+            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
-        spOutputCollector.collect(event);
+            // Get the raw HEX-encoded data
+            String hexEncodedRawData = event.getFieldBySelector(this.payloadIdFieldName).getAsPrimitive().getAsString();
+            // Convert the HEX-encoded data back to byte[]
+            byte[] rawData = Hex.decodeHex(hexEncodedRawData);
+            ReadBuffer rawDataReader = new ReadBuffer(rawData);
+
+            if (groupAddress != null) {
+                // Decode the raw data.
+                final KnxDatapoint datapoint = KnxDatapointIO.parse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+
+                // Serialize the decoded object to json
+                final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
+
+                // Add the additional properties.
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_GROUP_ADDRESS,
+                    toGroupAddressString(destinationAddress));
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_TYPE,
+                    groupAddress.getType().getName());
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_LOCATION,
+                    groupAddress.getFunction().getSpaceName());
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_FUNCTION,
+                    groupAddress.getFunction().getName());
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_PROPERTY_VALUE,
+                    jsonDatapoint);
+
+                //Event enrichedEvent = new Event()
+                spOutputCollector.collect(event);
+            }
+        } catch (ParseException e) {
+            // Driver Decoding
+            e.printStackTrace();
+        } catch (DecoderException e) {
+            // Hex Decoding
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDetach() throws SpRuntimeException {
 
     }
+
+    private String toGroupAddressString(KNXGroupAddress groupAddress) {
+        if(groupAddress instanceof KNXGroupAddress3Level) {
+            KNXGroupAddress3Level castedAddress = (KNXGroupAddress3Level) groupAddress;
+            return castedAddress.getMainGroup() + "/" + castedAddress.getMiddleGroup() + "/" + castedAddress.getSubGroup();
+        } else if(groupAddress instanceof KNXGroupAddress2Level) {
+            KNXGroupAddress2Level castedAddress = (KNXGroupAddress2Level) groupAddress;
+            return castedAddress.getMainGroup() + "/" + castedAddress.getSubGroup();
+        } else if(groupAddress instanceof KNXGroupAddressFreeLevel) {
+            KNXGroupAddressFreeLevel castedAddress = (KNXGroupAddressFreeLevel) groupAddress;
+            return castedAddress.getSubGroup() + "";
+        }
+        throw new RuntimeException("Unknown group address type");
+    }
+
 }
