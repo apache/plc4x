@@ -26,7 +26,7 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-passive-knxnetip-driver</artifactId>
+  <artifactId>test-java-knxnetip-driver-passive</artifactId>
 
   <name>Sandbox: Test Generated KNXNet/IP Driver (Passive)</name>
 

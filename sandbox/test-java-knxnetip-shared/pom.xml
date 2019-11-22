@@ -26,9 +26,9 @@
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-passive-s7-driver</artifactId>
+  <artifactId>test-java-knxnetip-shared</artifactId>
 
-  <name>Sandbox: Test Generated S7 Driver (Passive)</name>
+  <name>Sandbox: Test Generated KNXNet/IP (Shared)</name>
 
   <build>
     <plugins>
@@ -43,7 +43,7 @@
               <goal>generate-driver</goal>
             </goals>
             <configuration>
-              <protocolName>s7</protocolName>
+              <protocolName>ets5</protocolName>
               <languageName>java</languageName>
               <outputFlavor>passive</outputFlavor>
             </configuration>
@@ -56,28 +56,18 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-driver-base-java</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <scope>test</scope>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.19</version>
     </dependency>
 
     <dependency>
@@ -90,7 +80,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-s7</artifactId>
+      <artifactId>plc4x-protocols-knxnetip</artifactId>
       <version>0.6.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

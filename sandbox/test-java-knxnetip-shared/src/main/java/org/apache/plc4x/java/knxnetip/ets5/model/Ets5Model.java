@@ -16,13 +16,13 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.processors.processors.ets5.model;
+package org.apache.plc4x.java.knxnetip.ets5.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
 
 import java.util.Map;
 

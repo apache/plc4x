@@ -18,18 +18,15 @@ package org.apache.plc4x.java.streampipes.processors.processors.ets5;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.Ets5Model;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.GroupAddress;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.utils.Ets5Parser;
+import org.apache.plc4x.java.ets5.passive.*;
+import org.apache.plc4x.java.ets5.passive.io.KNXGroupAddressIO;
+import org.apache.plc4x.java.ets5.passive.io.KnxDatapointIO;
+import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
+import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
+import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
-import org.streampipes.commons.exceptions.SpRuntimeException;
 import org.streampipes.model.runtime.Event;
-import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
-import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.context.EventProcessorRuntimeContext;
 import org.streampipes.wrapper.routing.SpOutputCollector;
 import org.streampipes.wrapper.runtime.EventProcessor;
@@ -44,13 +41,14 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
     private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/Stettiner Str.knxproj"));;
 
     @Override
-    public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector, EventProcessorRuntimeContext eventProcessorRuntimeContext) throws SpRuntimeException {
+    public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector,
+                             EventProcessorRuntimeContext eventProcessorRuntimeContext) {
         destinationIdFieldName = params.getDestinationIdFieldName();
         payloadIdFieldName = params.getPayloadIdFieldName();
     }
 
     @Override
-    public void onEvent(Event event, SpOutputCollector spOutputCollector) throws SpRuntimeException {
+    public void onEvent(Event event, SpOutputCollector spOutputCollector) {
         try {
             // Get the raw group address data.
             String destinationFieldValue = event.getFieldBySelector(this.destinationIdFieldName).getAsPrimitive().getAsString();
@@ -99,7 +97,7 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
     }
 
     @Override
-    public void onDetach() throws SpRuntimeException {
+    public void onDetach() {
 
     }
 

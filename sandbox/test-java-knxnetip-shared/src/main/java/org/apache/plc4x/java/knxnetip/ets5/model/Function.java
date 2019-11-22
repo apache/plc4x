@@ -16,44 +16,41 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.processors.processors.ets5.model;
+package org.apache.plc4x.java.knxnetip.ets5.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
 
-import java.util.Objects;
+public class Function {
 
-public class GroupAddress {
-
-    private final KNXGroupAddress groupAddress;
+    private final String id;
     private final String name;
-    private final AddressType type;
-    private final Function function;
+    private final String type;
+    private final String spaceName;
 
-    public GroupAddress(KNXGroupAddress groupAddress, String name, AddressType type, Function function) {
-        this.groupAddress = groupAddress;
+    public Function(String id, String name, String type, String spaceName) {
+        this.id = id;
         this.name = name;
         this.type = type;
-        this.function = function;
+        this.spaceName = spaceName;
     }
 
-    public KNXGroupAddress getGroupAddress() {
-        return groupAddress;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public AddressType getType() {
+    public String getType() {
         return type;
     }
 
-    public Function getFunction() {
-        return function;
+    public String getSpaceName() {
+        return spaceName;
     }
 
     @Override
@@ -62,37 +59,37 @@ public class GroupAddress {
             return true;
         }
 
-        if (!(o instanceof GroupAddress)) {
+        if (!(o instanceof Function)) {
             return false;
         }
 
-        GroupAddress that = (GroupAddress) o;
+        Function function = (Function) o;
 
         return new EqualsBuilder()
-            .append(getGroupAddress(), that.getGroupAddress())
-            .append(getName(), that.getName())
-            .append(getType(), that.getType())
-            .append(getFunction(), that.getFunction())
+            .append(getId(), function.getId())
+            .append(getName(), function.getName())
+            .append(getType(), function.getType())
+            .append(getSpaceName(), function.getSpaceName())
             .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-            .append(getGroupAddress())
+            .append(getId())
             .append(getName())
             .append(getType())
-            .append(getFunction())
+            .append(getSpaceName())
             .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("groupAddress", groupAddress.toString(ToStringStyle.SHORT_PREFIX_STYLE))
+            .append("id", id)
             .append("name", name)
             .append("type", type)
-            .append("function", function)
+            .append("spaceName", spaceName)
             .toString();
     }
 

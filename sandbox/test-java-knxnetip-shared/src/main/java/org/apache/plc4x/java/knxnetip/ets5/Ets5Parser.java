@@ -16,20 +16,22 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.processors.processors.ets5.utils;
+package org.apache.plc4x.java.knxnetip.ets5;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.AddressType;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.Ets5Model;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.Function;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.model.GroupAddress;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
+import org.apache.plc4x.java.ets5.passive.io.KNXGroupAddressIO;
+import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
+import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
+import org.apache.plc4x.java.knxnetip.ets5.model.Function;
+import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
-import org.mapdb.Fun;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
