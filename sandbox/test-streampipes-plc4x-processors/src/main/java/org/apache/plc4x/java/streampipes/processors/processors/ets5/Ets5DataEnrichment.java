@@ -81,11 +81,15 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
                     groupAddress.getFunction().getSpaceName());
                 event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_FUNCTION,
                     groupAddress.getFunction().getName());
+                event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_MEANING,
+                    groupAddress.getName());
                 event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_PROPERTY_VALUE,
                     jsonDatapoint);
 
                 //Event enrichedEvent = new Event()
                 spOutputCollector.collect(event);
+            } else {
+                System.out.println("Couldn't decode group address " + toGroupAddressString(destinationAddress));
             }
         } catch (ParseException e) {
             // Driver Decoding

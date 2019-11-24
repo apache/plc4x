@@ -47,6 +47,7 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
     public static final String MAPPING_FIELD_TYPE = "type";
     public static final String MAPPING_FIELD_LOCATION = "location";
     public static final String MAPPING_FIELD_FUNCTION = "function";
+    public static final String MAPPING_FIELD_MEANING = "meaning";
     public static final String MAPPING_FIELD_DECODED_PROPERTY_VALUE = "decodedPropertyValue";
 
     @Override
@@ -66,6 +67,7 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_TYPE).build(),
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_LOCATION).build(),
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_FUNCTION).build(),
+                PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_MEANING).build(),
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_DECODED_PROPERTY_VALUE).build()
             ))
             .requiredFile(Labels.from("File", "ETS5 Project File", "ETS5 Project File (.knxproj)"))
