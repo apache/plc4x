@@ -70,10 +70,10 @@ public class ReadBuffer {
     }
 
     public byte readUnsignedByte(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
-        if(bitLength > 4) {
+        if (bitLength > 4) {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
@@ -84,10 +84,10 @@ public class ReadBuffer {
     }
 
     public short readUnsignedShort(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
-        if(bitLength > 8) {
+        if (bitLength > 8) {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
@@ -98,14 +98,14 @@ public class ReadBuffer {
     }
 
     public int readUnsignedInt(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
-        if(bitLength > 16) {
+        if (bitLength > 16) {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            if(!littleEndian) {
+            if (!littleEndian) {
                 return Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16;
             }
             return bi.readInt(true, bitLength);
@@ -115,14 +115,14 @@ public class ReadBuffer {
     }
 
     public long readUnsignedLong(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
-        if(bitLength > 32) {
+        if (bitLength > 32) {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            if(!littleEndian) {
+            if (!littleEndian) {
                 return Long.reverseBytes(bi.readLong(true, bitLength)) >> 32;
             }
             return bi.readLong(true, bitLength);
@@ -136,10 +136,10 @@ public class ReadBuffer {
     }
 
     public byte readByte(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("byte must contain at least 1 bit");
         }
-        if(bitLength > 8) {
+        if (bitLength > 8) {
             throw new ParseException("byte can only contain max 8 bits");
         }
         try {
@@ -150,14 +150,14 @@ public class ReadBuffer {
     }
 
     public short readShort(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
-        if(bitLength > 16) {
+        if (bitLength > 16) {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            if(!littleEndian) {
+            if (!littleEndian) {
                 return Short.reverseBytes(bi.readShort(false, bitLength));
             }
             return bi.readShort(false, bitLength);
@@ -167,14 +167,14 @@ public class ReadBuffer {
     }
 
     public int readInt(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
-        if(bitLength > 32) {
+        if (bitLength > 32) {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if(!littleEndian) {
+            if (!littleEndian) {
                 return Integer.reverseBytes(bi.readInt(false, bitLength));
             }
             return bi.readInt(false, bitLength);
@@ -184,14 +184,14 @@ public class ReadBuffer {
     }
 
     public long readLong(int bitLength) throws ParseException {
-        if(bitLength <= 0) {
+        if (bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }
-        if(bitLength > 64) {
+        if (bitLength > 64) {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if(!littleEndian) {
+            if (!littleEndian) {
                 return Long.reverseBytes(bi.readLong(false, bitLength));
             }
             return bi.readLong(false, bitLength);
@@ -205,7 +205,42 @@ public class ReadBuffer {
     }
 
     public float readFloat(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        try {
+            if (bitLength == 16) {
+                // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+                final boolean sign = bi.readBoolean();
+                final byte exponent = bi.readByte(true, 5);
+                final short fraction = bi.readShort(true, 10);
+                if ((exponent >= 1) && (exponent <= 30)) {
+                    return (sign ? 1 : -1) * (2 ^ (exponent - 15)) * (1 + (fraction / 10f));
+                } else if (exponent == 0) {
+                    if (fraction == 0) {
+                        return 0.0f;
+                    } else {
+                        return (sign ? 1 : -1) * (2 ^ (-14)) * (fraction / 10f);
+                    }
+                } else if (exponent == 31) {
+                    if (fraction == 0) {
+                        return sign ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
+                    } else {
+                        return Float.NaN;
+                    }
+                } else {
+                    throw new NumberFormatException();
+                }
+            } else if (bitLength == 32) {
+                byte[] buffer = new byte[4];
+                buffer[0] = bi.readByte(true, 8);
+                buffer[1] = bi.readByte(true, 8);
+                buffer[2] = bi.readByte(true, 8);
+                buffer[3] = bi.readByte(true, 8);
+                return Float.intBitsToFloat(buffer[0] ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
+            } else {
+                throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
+            }
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public double readDouble(int bitLength) throws ParseException {

@@ -423,7 +423,12 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             Term a = bt.getA();
             Term b = bt.getB();
             String operation = bt.getOperation();
-            return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
+            switch (operation) {
+                case "^":
+                    return "Math.pow((" + toExpression(a, variableExpressionGenerator) + "), (" + toExpression(b, variableExpressionGenerator) + "))";
+                default:
+                    return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
+            }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
             if("if".equals(tt.getOperation())) {

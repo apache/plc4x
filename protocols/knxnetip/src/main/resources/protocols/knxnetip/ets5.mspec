@@ -96,10 +96,15 @@
             [simple int 32 'val']
         ]
         ['9' KnxDatapointF16
-            [simple float 16 'val']
+            [reserved uint 8   '0x0']
+            [simple   bit      'sign']
+            [simple   int 4    'exponent']
+            [simple   uint 11  'mantissa']
+            [virtual  float 16 'val' '(sign ? -1 : 1) * (0.01 * mantissa) * (2 ^ exponent)']
         ]
         ['14' KnxDatapointF32
-            [simple float 32 'val']
+            [reserved uint 8   '0x0']
+            [simple   float 32 'val']
         ]
         ['4' KnxDatapointA8
             [simple int 8 'val']

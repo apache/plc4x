@@ -260,6 +260,9 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
             .append("${field.name}", get${field.name?cap_first}())
             </#list>
             </#if>
+            <#list type.virtualFields as field>
+            .append("${field.name}", get${field.name?cap_first}())
+            </#list>
             .toString();
     }
 
