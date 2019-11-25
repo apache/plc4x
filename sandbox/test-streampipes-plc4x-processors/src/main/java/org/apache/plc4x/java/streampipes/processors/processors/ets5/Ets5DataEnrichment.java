@@ -38,7 +38,7 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
     private String destinationIdFieldName;
     private String payloadIdFieldName;
     // TODO: Make this dynamic.
-    private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/Stettiner Str.knxproj"));;
+    private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/StettinerStr-Soll-Ist-Temperatur.knxproj"));;
 
     @Override
     public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector,
