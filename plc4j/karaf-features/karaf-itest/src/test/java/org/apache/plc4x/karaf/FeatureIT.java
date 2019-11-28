@@ -74,7 +74,7 @@ public class FeatureIT extends KarafTestSupport {
         String bundles = executeCommand("bundle:list -t 0");
 
         // Find that line
-        // 84 │ Active │  80 │ 0.5.0.SNAPSHOT │ PLC4J: Driver: S7
+        // 84 │ Active │  80 │ 0.6.0.SNAPSHOT │ PLC4J: Driver: S7
         assertContains("PLC4J: Driver: S7", bundles);
         System.out.println(bundles);
 

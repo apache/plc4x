@@ -18,7 +18,7 @@
 
 -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.5.0" name="driver-s7-feature">
-  <feature name="driver-s7-feature" description="driver-s7-feature" version="0.5.0.SNAPSHOT">
+  <feature name="driver-s7-feature" description="driver-s7-feature" version="0.6.0.SNAPSHOT">
     <details>PLC4X is an effort to create a universal library for accessing industrial programmable logic controllers
       using a variety of protocols using a uniform API.
     </details>
