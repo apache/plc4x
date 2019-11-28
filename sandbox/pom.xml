@@ -39,6 +39,7 @@
     <module>plc-simulator</module>
     <module>streampipes-connectors</module>
 
+    <module>test-java-amsads-driver</module>
     <module>test-java-bacnetip-driver</module>
     <module>test-java-knxnetip-driver</module>
     <module>test-java-s7-driver</module>
