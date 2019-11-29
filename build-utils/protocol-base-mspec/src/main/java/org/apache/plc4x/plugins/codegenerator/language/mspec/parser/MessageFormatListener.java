@@ -55,6 +55,14 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private Map<String, TypeDefinition> types;
 
+    public Deque<List<Field>> getParserContexts() {
+        return parserContexts;
+    }
+
+    public Deque<List<EnumValue>> getEnumContexts() {
+        return enumContexts;
+    }
+
     public Map<String, TypeDefinition> getTypes() {
         return types;
     }
@@ -456,14 +464,6 @@ public class MessageFormatListener extends MSpecBaseListener {
             return quotedString.substring(1, quotedString.length() - 1);
         }
         return quotedString;
-    }
-
-    public static void main(String[] args) {
-        //Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("CAST(CAST(parameter,S7ParameterUserData).items(hurz)[0],S7ParameterUserDataItemCPUFunctions).cpuFunctionType", Charset.defaultCharset()));
-        //Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("CAST(parameter,S7ParameterUserData).items(hurz)[0]", Charset.defaultCharset()));
-        Term term = new ExpressionStringParser().parse(IOUtils.toInputStream("payload.lengthInBytes+4", Charset.defaultCharset()));
-
-        System.out.println(term);
     }
 
 }
