@@ -40,7 +40,7 @@ public class DefaultDiscriminatedComplexTypeDefinition extends DefaultComplexTyp
         // which is always a DefaultComplexTypeDefinition instance.
         return ((DefaultComplexTypeDefinition) getParentType()).getFields().stream().filter(
             field -> field instanceof DiscriminatorField).map(
-                field -> (DiscriminatorField) field).findFirst().orElse(null);
+            field -> (DiscriminatorField) field).findFirst().orElse(null);
     }
 
     public String[] getDiscriminatorValues() {

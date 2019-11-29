@@ -45,10 +45,10 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     @Override
     public void exitExpressionString(ExpressionParser.ExpressionStringContext ctx) {
         List<Term> roots = parserContexts.pop();
-        if(roots.isEmpty()) {
+        if (roots.isEmpty()) {
             throw new RuntimeException("Empty Expression not supported.");
         }
-        if(roots.size() != 1) {
+        if (roots.size() != 1) {
             throw new RuntimeException("Expression can only contain one root term.");
         }
         root = roots.get(0);
@@ -65,13 +65,13 @@ public class ExpressionStringListener extends ExpressionBaseListener {
 
     @Override
     public void exitBoolExpression(ExpressionParser.BoolExpressionContext ctx) {
-        parserContexts.peek().add(new BooleanLiteral(Boolean.valueOf(ctx.getText())));
+        parserContexts.peek().add(new BooleanLiteral(Boolean.parseBoolean(ctx.getText())));
     }
 
     @Override
     public void exitNumberExpression(ExpressionParser.NumberExpressionContext ctx) {
         String strValue = ctx.Number().getText();
-        if(strValue.contains(".")) {
+        if (strValue.contains(".")) {
             parserContexts.peek().add(new NumericLiteral(Double.valueOf(strValue)));
         } else {
             parserContexts.peek().add(new NumericLiteral(Long.valueOf(strValue)));
@@ -95,11 +95,11 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         IndexContext indexContext = null;
         RestContext restContext = null;
         for (Term arg : args) {
-            if(arg instanceof ArgsContext) {
+            if (arg instanceof ArgsContext) {
                 argsContext = (ArgsContext) arg;
-            } else if(arg instanceof IndexContext) {
+            } else if (arg instanceof IndexContext) {
                 indexContext = (IndexContext) arg;
-            } else if(arg instanceof RestContext) {
+            } else if (arg instanceof RestContext) {
                 restContext = (RestContext) arg;
             }
         }
@@ -107,11 +107,11 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         String name = ctx.name.getText();
 
         int index = VariableLiteral.NO_INDEX;
-        if(indexContext != null) {
+        if (indexContext != null) {
             index = indexContext.getFirst().getNumber().intValue();
         }
         VariableLiteral rest = null;
-        if(restContext != null) {
+        if (restContext != null) {
             rest = restContext.getFirst();
         }
         parserContexts.peek().add(new VariableLiteral(name, argsContext, index, rest));
@@ -288,7 +288,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     /////////////////////////////////////////////////////////////////////////////////////////
 
     private UnaryTerm getUnaryTerm(String op, List<Term> terms) {
-        if(terms.size() != 1) {
+        if (terms.size() != 1) {
             throw new RuntimeException(op + " should be a unary operation");
         }
         Term a = terms.get(0);
@@ -296,7 +296,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     private BinaryTerm getBinaryTerm(String op, List<Term> terms) {
-        if(terms.size() != 2) {
+        if (terms.size() != 2) {
             throw new RuntimeException(op + " should be a binary operation");
         }
         Term a = terms.get(0);
@@ -305,7 +305,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     private TernaryTerm getTernaryTerm(String op, List<Term> terms) {
-        if(terms.size() != 3) {
+        if (terms.size() != 3) {
             throw new RuntimeException(op + " should be a ternary operation");
         }
         Term a = terms.get(0);
@@ -315,7 +315,7 @@ public class ExpressionStringListener extends ExpressionBaseListener {
     }
 
     static class ArgsContext extends LinkedList<Term> implements Term {
-        public ArgsContext(Collection c) {
+        ArgsContext(Collection c) {
             super(c);
         }
 
@@ -324,8 +324,9 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             return false;
         }
     }
+
     static class IndexContext extends LinkedList<NumericLiteral> implements Term {
-        public IndexContext(Collection c) {
+        IndexContext(Collection c) {
             super(c);
         }
 
@@ -334,8 +335,9 @@ public class ExpressionStringListener extends ExpressionBaseListener {
             return false;
         }
     }
+
     static class RestContext extends LinkedList<VariableLiteral> implements Term {
-        public RestContext(Collection c) {
+        RestContext(Collection c) {
             super(c);
         }
 
