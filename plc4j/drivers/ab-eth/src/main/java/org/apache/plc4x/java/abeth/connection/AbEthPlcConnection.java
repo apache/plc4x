@@ -23,13 +23,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.abeth.model.AbEthField;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocol;
 import org.apache.plc4x.java.abeth.protocol.Plc4xAbEthProtocol;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
@@ -45,14 +45,17 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     private static final int AB_ETH_PORT = 2222;
     private static final Logger logger = LoggerFactory.getLogger(AbEthPlcConnection.class);
 
-    public AbEthPlcConnection(InetAddress address, String params) {
-        this(new TcpSocketChannelFactory(address, AB_ETH_PORT), params);
+    private final int station;
 
+
+    public AbEthPlcConnection(InetAddress address, int station, String params) {
+        this(new TcpSocketChannelFactory(address, AB_ETH_PORT), station, params);
         logger.info("Setting up AB-ETH Connection with: host-name {}", address.getHostAddress());
     }
 
-    public AbEthPlcConnection(ChannelFactory channelFactory, String params) {
+    public AbEthPlcConnection(ChannelFactory channelFactory, int station, String params) {
         super(channelFactory, true);
+        this.station = station;
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -73,6 +76,7 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
 
     @Override
     protected void sendChannelCreatedEvent() {
+        logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
@@ -100,7 +104,7 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
                     }
                 });
                 pipeline.addLast(new AbEthProtocol());
-                pipeline.addLast(new Plc4xAbEthProtocol());
+                pipeline.addLast(new Plc4xAbEthProtocol(station));
             }
         };
     }
@@ -113,6 +117,29 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         return new DefaultPlcReadRequest.Builder(this, new AbEthFieldHandler());
+    }
+
+    @Override
+    public void close() {
+        logger.debug("Closing PlcConnection...");
+        // Close the channel gracefully
+        if ((channel != null) && channel.isOpen()) {
+            logger.debug("Channel is still connected, Closing channel...");
+            // Close the channel
+            channel.close();
+
+            // Do some additional cleanup operations ...
+            // In normal operation, the channels event loop has a parent, however when running with
+            // the embedded channel for unit tests, parent is null.
+            if (channel.eventLoop().parent() != null) {
+                logger.trace("Shutting down EventLoop gracefully...");
+                channel.eventLoop().parent().shutdownGracefully();
+                logger.trace("Eventloop is shutted down");
+            }
+        }
+        // Dereference
+        channel = null;
+        connected = false;
     }
 
     @Override
@@ -129,5 +156,4 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
         return future
             .thenApply(PlcReadResponse.class::cast);
     }
-
 }

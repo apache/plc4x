@@ -38,7 +38,6 @@ public enum ConnectWorkerConfig {
 
         config.register(ConfigKeys.CONNECT_CONTAINER_MASTER_PORT, Config.MASTER_PORT, "The port of the connect container");
         config.register(ConfigKeys.CONNECT_CONTAINER_MASTER_HOST, Config.MASTER_HOST, "The hostname of the connect container");
-
     }
 
     public String getConnectContainerWorkerUrl() {

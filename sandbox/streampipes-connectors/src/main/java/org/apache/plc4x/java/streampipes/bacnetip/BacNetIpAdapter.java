@@ -31,6 +31,7 @@ import org.apache.plc4x.java.streampipes.bacnetip.config.ConnectWorkerConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler;
+import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streampipes.connect.adapter.Adapter;
@@ -44,8 +45,11 @@ import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
 import org.streampipes.model.schema.EventProperty;
 import org.streampipes.model.schema.EventSchema;
+import org.streampipes.model.staticproperty.FileStaticProperty;
+import org.streampipes.sdk.StaticProperties;
 import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
+import org.streampipes.sdk.helpers.*;
 import org.streampipes.sdk.utils.Datatypes;
 
 import java.io.File;
@@ -70,9 +74,40 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public SpecificAdapterStreamDescription declareModel() {
+        Label fileLabel = Labels.from("pcap-file", "PCAP File", "File containing the network traffic recording");
+
+        Tuple2<String, String>[] deviceList = null;
+        try {
+            final List<PcapNetworkInterface> allDevs = Pcaps.findAllDevs();
+            deviceList = new Tuple2[allDevs.size()];
+            for (int i = 0; i < allDevs.size(); i++) {
+                final PcapNetworkInterface pcapNetworkInterface = allDevs.get(i);
+                StringBuilder deviceName = new StringBuilder((pcapNetworkInterface.getDescription() != null) ? pcapNetworkInterface.getDescription() : pcapNetworkInterface.getName());
+                deviceName.append(" (");
+                for (PcapAddress address : pcapNetworkInterface.getAddresses()) {
+                    if(address instanceof PcapIpV4Address) {
+                        deviceName.append(address.getAddress().toString()).append("/").append(address.getNetmask().toString()).append(", ");
+                    }
+                }
+                String name = deviceName.toString();
+                name = name.substring(0, name.length() - 2) + ((name.endsWith(", ")) ? ")": "");
+                deviceList[i] = new Tuple2<>(pcapNetworkInterface.getName(), name);
+            }
+        } catch (PcapNativeException e) {
+            logger.error("Error getting the list of installed network devices");
+        }
+
         SpecificAdapterStreamDescription description = SpecificDataStreamAdapterBuilder.create(ID, "BACnet/IP", "")
             .iconUrl("bacnetip.png")
             .category(AdapterType.Manufacturing)
+            .requiredAlternatives(Labels.from("source", "Source", "Select the source, where the data is read from"),
+                Alternatives.from(Labels.from("device", "Network", "Capture data via network device"),
+                    StaticProperties.group(Labels.withId("device-group"),
+                        StaticProperties.singleValueSelection(Labels.from("network-device", "Network Device", "Network device used for capturing"),
+                            Options.from(deviceList)))),
+                Alternatives.from(Labels.from("file", "File", "Capture data from a PCAP network recording"),
+                    StaticProperties.group(Labels.withId("file-group"),
+                        new FileStaticProperty(fileLabel.getInternalId(), fileLabel.getLabel(), fileLabel.getDescription()))))
             .build();
         description.setAppId(ID);
         return description;
@@ -153,7 +188,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
         try {
             connection = new PassiveBacNetIpPlcConnection(new PcapChannelFactory(
                 //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
-                new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
+                new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnet.pcapng"), null,
                 PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
                 PcapSocketChannelConfig.SPEED_REALTIME, new UdpIpPacketHandler()), "",
                 new PlcMessageToMessageCodec<BVLC, PlcRequestContainer>() {

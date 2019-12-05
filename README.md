@@ -51,10 +51,9 @@ Apache PLC4X is an effort to create a set of libraries for communicating with in
 We are planning on shipping libraries for usage in:
 
 1. Java
-2. Scala
-3. C/C++
-4. C# (.Net)
-5. Python
+2. C/C++ (not ready for usage)
+3. C# (.Net) (not ready for usage)
+4. Python (not ready for usage)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -84,7 +83,7 @@ Currently the project is configured to require the following software:
 
 1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
  point to that.
-2. libpcap/WinPcap for raw socket tests in Java
+2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
 3. (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
 4. Git (even when working on the source distribution)
 
@@ -95,11 +94,15 @@ For a full build of PLC4X with all options the following has to be provided:
 
 On a clean Ubuntu 18.04 the following software needs to be installed:
 
-    sudo apt install python-setuptools
+```
+    sudo apt install python-setuptools gcc g++ make libpcap-dev
+```
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so:
 
+```
     sudo get install git
+```
 
 In order to build the .Net version, please install the .Net package according to this guide:
 
@@ -109,22 +112,34 @@ https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-1804-7lp
 
 Make sure `Homebrew` ist installed in order to update `Bison` to a newer version (the version 2.3 installed per default is too old)
 
+```
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
 
 Then update `Bison`:
 
+```
     brew install bison
     brew link bison --force
     echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> ~/.bash_profile
+```
 
 Install `Python 2.7`:
 
+```
     brew install python@2
+```
 
 Be sure to re-open the command window or the changes will not apply.
 
 If you're going to build the `with-dotnet` profile you also need to install DotNet.
 Please download it from: https://dotnet.microsoft.com/download and run the installer.
+
+LibPCAP is also installed via Homebrew:
+
+```
+    brew install libpcap
+```
 
 #### Windows
 
@@ -135,30 +150,52 @@ Some tools need to be installed before being able to build on Windows:
 * Flex (for `with-cpp` profiles)
 * Python 2.7 (for `with-python`, `with-proxies` profiles)
 * Dotnet (for `with-dotnet` profiles)
+* WinPCAP
+* OpenSSL
 
-He have tested WinBuilds with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+He have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+Run the installer as "Administrator" or you won't be able to install it to "C:\Program Files" or the 32 Bit counterpart.
 When running the installer, make sure to select the options:
 * Native Windows
 * x86_64
 Not quite sure which elements are really needed, better just install all of them.
+If the installer fails to do something complaining about having to use a different mirror, enter "http://win-builds.org/1.5.0" as mirror address.
 
 WARNING: If you don't use the installer version of the distribution. The build will probably fail and it will be pretty
 impossible to see the problem. When manually executing the command, a popup will appear complaining about not being able
 to find some DLL. So if you are having these problems, please try using the installer instead of manually unpacking
 the archive.
 
-For Bison, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
+For `Bison`, please download the Setup installer version from here: http://gnuwin32.sourceforge.net/packages/bison.htm (When using the zip version the bison.exe couldn't find some DLL files)
 It seems the official 2.4.1 version has issues when installed in a directory which's path contains spaces. Please make sure you replace the exe with a patched version form here: http://marin.jb.free.fr/bison/bison-2.4.1-modified.zip
 (More infos on this issue here: https://sourceforge.net/p/gnuwin32/bugs/473/)
 
-Please download the Flex compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
+Please download the `Flex` compiler from here: http://gnuwin32.sourceforge.net/packages/flex.htm (Ideally download the binary zip distribution)
 
-You can get Python from here: https://www.python.org/downloads/release/python-2716/
+You can get `Python` from here: https://www.python.org/downloads/release/python-2716/
 
-Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH`.
+For `.Net`, you need the `Developer Pack` in order to build .Net applications. So be sure to get a reasonably fresh installation from https://dotnet.microsoft.com
 
 If you're building a source-distribution and haven't installed git yet, be sure to do so.
 
+The windows version of the PCAP library can be found here: https://sourceforge.net/projects/winpcap413-176/
+(In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
+Windows version is 1.0. At this location there is a patched version based on libpcap 1.7.4)
+
+Last not least we need to install OpenSSL, which is available from here: https://indy.fulgan.com/SSL/
+The letter at the end of the version is sort of a "sub-minor" version, so I usually just take the version with the highest letter.
+
+Make sure the `bin` directories of containing the executables `mingw32-make.exe`, `bison.exe` and `flex.exe` are all on your systems `PATH` as well as the directory containing the `openssl.exe`.
+
+### Building with Docker
+
+If you don't want to bother setting up the environment on your normal system and you have Docker installed, you can also build everything in a Docker container:
+
+```
+   docker build -t plc4x .
+
+   docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
+```
 
 ### Getting Started
 
@@ -169,72 +206,39 @@ downloaded and installed by the maven wrapper `mvnw`.
 Build PLC4X Java jars and install them in your local maven repository
 
 ```
-./mvnw install -P with-java  # add -DskipTests to omit running the tests
+./mvnw install # add -DskipTests to omit running the tests
 ```
 
 You can now construct Java applications that use PLC4X. The PLC4X examples
 are a good place to start and are available inside the `plc4j/examples`
 directory.
 
-If you want to also build the C++ libraries, this has to be enabled by activating
-
-the `with-cpp` profile
+The `C++` drivers are still under development and still not really usable. 
+Therefore they are located in the so-called `sandbox`. 
+If you want to build them, this has to be enabled by activating the `with-sandbox` and `with-cpp` maven profiles:
 
 ```
-./mvnw -P with-cpp install  # add -DskipTests to omit running the tests
+./mvnw -P with-sandbox,with-cpp install  # add -DskipTests to omit running the tests
 ```
 
-Same applies for the C# .Net implementation with `with-dotnet` profiles.
+Same applies for the `C# / .Net` implementation with `with-dotnet` profiles.
+
+```
+./mvnw -P with-sandbox,with-dotnet install  # add -DskipTests to omit running the tests
+```
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
-In order to be able to build the Python module, you currently need to activate both the:
-`with-python` and `with-proxies` profiles.
+In order to be able to build the Python module, you currently need to activate the:
+`with-sandbox`, `with-python` and `with-proxies` profiles.
 
-However both of these are in a pretty experimental state.
+```
+./mvnw -P with-sandbox,with-python,with-proxies install  # add -DskipTests to omit running the tests
+```
 
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-boost,with-cpp,with-dotnet,with-java,with-logstash,with-proxies,with-python,with-sandbox install
-```
-
-### Installing libpcap/WinPcap
-
-Some parts of PLC4X, especially the raw socket support, require installed versions
-of libpcap/WinPcap.
-
-You can download the Mac/Linux version from: http://www.tcpdump.org/
-The windows version can be found here: https://sourceforge.net/projects/winpcap413-176/
-(In order to read PCAPNG files we require a libpcap version 1.1.0 or greater. The default
-Windows version is 1.0. At this location is a patched version based on libpcap 1.7.4)
-
-Same applies for Python with the `with-python` and the C# .Net imeplemtation with `with-dotnet` profiles.
-However both of these are in a pretty experimental state.
-
-
-### Building the C++ libraries
-
-When building the C++ libraries we require an installed `gcc` compiler.
-On Mac and Linux this is usually the case.
-On a minimal Ubuntu Linux system the following modules needed to be installed
-manually:
-
-* gcc
-* g++
-* make
-
-On Windows the required compiler is generally not available per default.
-The build is optimized for using a gcc-port called MinGW, available from
-http://win-builds.org/doku.php/download_and_installation_from_windows
-Make sure the `bin` directory containing the executable `mingw32-make.exe`
-is on your systems `PATH`.
-
-### Building with Docker
-
-```
-   docker build -t plc4x .
-
-   docker run -p 9200:9200 -p 9300:9300 --name plc4x plc4x
+./mvnw -P with-boost,with-cpp,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox install
 ```
 
 ## Community

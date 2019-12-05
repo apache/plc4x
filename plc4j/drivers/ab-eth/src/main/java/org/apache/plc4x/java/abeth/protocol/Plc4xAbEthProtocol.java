@@ -58,13 +58,17 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     private long sessionHandle;
     private Map<Integer, PlcRequestContainer> requests;
+    private int station;
 
-    public Plc4xAbEthProtocol() {
+    public Plc4xAbEthProtocol(int station) {
+        logger.trace("Created new instance of PLC4X-AB-ETH Protocol");
         this.requests = new HashMap<>();
+        this.station = station;
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        logger.trace("Registered user event {}", evt);
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
         if (evt instanceof ConnectEvent) {
@@ -80,6 +84,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+        logger.trace("Encoding {}", msg);
         PlcRequest request = msg.getRequest();
 
         // reset counter since two byte values are possible in DF1
@@ -100,9 +105,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                 DF1RequestProtectedTypedLogicalRead logicalRead = new DF1RequestProtectedTypedLogicalRead(
                     abEthField.getByteSize(), abEthField.getFileNumber(), abEthField.getFileType().getTypeCode(),
                     abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
-                // TODO: make target and origin address changeable
+                // origin/sender: constant = 5
                 DF1RequestMessage requestMessage = new DF1CommandRequestMessage(
-                    (short) 8, (short) 5, (short) 0, transactionCounterGenerator.incrementAndGet(), logicalRead);
+                    (short) station, (short) 5, (short) 0, transactionCounterGenerator.incrementAndGet(), logicalRead);
                 CIPEncapsulationReadRequest read = new CIPEncapsulationReadRequest(
                     sessionHandle, 0, emptySenderContext, 0, requestMessage);
 
@@ -118,6 +123,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     @Override
     protected void decode(ChannelHandlerContext ctx, CIPEncapsulationPacket packet, List<Object> out) throws Exception {
+        logger.trace("Received {}, decoding...", packet);
         if(packet instanceof CIPEncapsulationConnectionResponse) {
             CIPEncapsulationConnectionResponse connectionResponse = (CIPEncapsulationConnectionResponse) packet;
             // Save the session handle

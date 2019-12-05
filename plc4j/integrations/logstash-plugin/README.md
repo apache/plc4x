@@ -62,9 +62,9 @@ input {
 
 # Build the plugin:
 
-    ./mvnw clean package -P with-java,with-logstash
+    ./mvnw clean package -P with-logstash
 
 # To install the plugin:
-1) Copy the build plugin *logstash-input-plc4x-0.5.0.gem* from your target/gem directory to the Logstash plugin directory *logstash/plugin*
+1) Copy the build plugin *logstash-input-plc4x-0.6.0.gem* from your target/gem directory to the Logstash plugin directory *logstash/plugin*
 2) Follow installation instructions from Logstash documentation: https://www.elastic.co/guide/en/logstash/current/working-with-plugins.html
 3) Create pipeline file (see example pipeline above)

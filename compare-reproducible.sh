@@ -1,3 +1,4 @@
+#!/bin/bash
 # ----------------------------------------------------------------------------
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,6 +18,24 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
-require 'jar_dependencies'
-# TODO replace 0.6.0 with version
-require_jar('${project.groupId}', 'logstash-input-plc4x', '${current-full-version}')
+# Unpack the two archives (into separate directories.
+unpack() {
+  basedir=${1%.*}
+  echo "Unpacking file $1 to $basedir ..."
+  mkdir $basedir
+  tar zxvf $1 --directory $basedir
+  echo "Done"
+}
+
+# Traverse through the direcoties and check them for binary equality
+function compare() {
+  echo "Compariong ..."
+  diff --recursive $1 $2
+  echo "Done"
+  pwd
+}
+
+unpack $1
+unpack $2
+compare ${1%.*} ${2%.*} > compare.log
+
