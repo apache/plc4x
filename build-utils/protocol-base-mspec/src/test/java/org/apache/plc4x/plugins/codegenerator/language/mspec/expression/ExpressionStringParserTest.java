@@ -20,10 +20,7 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.plc4x.plugins.codegenerator.types.terms.BinaryTerm;
-import org.apache.plc4x.plugins.codegenerator.types.terms.NumericLiteral;
-import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
-import org.apache.plc4x.plugins.codegenerator.types.terms.VariableLiteral;
+import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.Charset;
@@ -98,7 +95,8 @@ class ExpressionStringParserTest {
                     outerCast.get(1),
                     "S7ParameterUserDataItemCPUFunctions"
                 );
-            }, variableLiteral -> {
+            },
+            variableLiteral -> {
                 assertVariableLiteral(
                     variableLiteral,
                     "cpuFunctionType"
@@ -123,7 +121,8 @@ class ExpressionStringParserTest {
                     terms.get(1),
                     "S7ParameterUserData"
                 );
-            }, variableLiteral -> {
+            },
+            variableLiteral -> {
                 assertVariableLiteral(
                     variableLiteral,
                     "items",
@@ -145,6 +144,18 @@ class ExpressionStringParserTest {
     void testParentReference() {
         Term term = SUT.parse(IOUtils.toInputStream("../data.lengthInBytes", Charset.defaultCharset()));
         assertThat(term, not(nullValue()));
+        assertThat(term, instanceOf(UnaryTerm.class));
+        UnaryTerm unaryTerm = (UnaryTerm) term;
+        assertThat(unaryTerm.getOperation(), is(".."));
+        assertVariableLiteral(
+            unaryTerm.getA(),
+            "data",
+            null,
+            variableLiteral -> assertVariableLiteral(
+                variableLiteral,
+                "lengthInBytes"
+            )
+        );
     }
 
     void assertNumericLiteral(Term term, Number number) {
