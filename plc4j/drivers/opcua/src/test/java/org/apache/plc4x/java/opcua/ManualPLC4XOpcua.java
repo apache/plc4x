@@ -69,53 +69,7 @@ public class ManualPLC4XOpcua {
     private static final String UINTEGER_IDENTIFIER = "ns=2;i=10870";
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
-
-    public static void ExampleServerTest(String args[]) {
-
-
-    }
-
     public static void main(String args[]) {
-        /*
-        ExampleServer server = null;
-        try {
-            server = new ExampleServer();
-            server.startup().get();
-
-            final CompletableFuture<Void> future = new CompletableFuture<>();
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> future.complete(null)));
-
-            future.get();
-            server.shutdown().get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // 1 Client 1x
-        int errorCount1C = 0;
-        long time1X = -1;
-        try {
-            time1X = GetConnectionTime("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer");
-        } catch (Exception e) {
-            errorCount1C++;
-        }
-        System.out.printf("Die ConnectionsTime beträgt %s und hatte %s Fehler", time1X + "", errorCount1C + "");
-
-        List<Integer> Time1CN =  new LinkedList<>();
-        List<Encapsulater> Connections = new LinkedList<>();
-        int NumberClients = 70;
-        for(int counter = 0; counter < NumberClients; counter++){
-            Encapsulater newElement = new Encapsulater();
-            newElement.connectionString = "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer";
-            Connections.add(newElement);
-        }
-
-        double resultOfN = Connections.parallelStream().mapToLong(Encapsulater::GetConnectionTime).min().getAsLong();
-        System.out.printf("Die ConnectionsTime beträgt %s ", resultOfN + "");
-
-        /*
-         */
         OpcuaTcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField("ns=2;i=10855");
@@ -187,10 +141,6 @@ public class ManualPLC4XOpcua {
             registration.unregister();
             Thread.sleep(20000);
             opcuaConnection.close();
-
-
-            // Test Connection 1 Client 1x
-
 
         } catch (Exception e) {
             e.printStackTrace();
