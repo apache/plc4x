@@ -38,36 +38,40 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * @author Matthias Milan Strljic
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
-    Set< Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
-    String fieldName;
+    private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
+    private String fieldName;
+    private UInteger clientHandle;
+
+    /**
+     * @param fieldName    corresponding map key in the PLC4X request/reply map
+     * @param clientHandle
+     */
+    public OpcuaSubsriptionHandle(String fieldName, UInteger clientHandle) {
+        this.fieldName = fieldName;
+        this.clientHandle = clientHandle;
+    }
+
     public UInteger getClientHandle() {
         return clientHandle;
     }
 
-    UInteger clientHandle;
-
-    public  OpcuaSubsriptionHandle(String fieldName, UInteger clientHandle){
-        this.clientHandle = clientHandle;
-        this.fieldName = fieldName;
-    }
-    @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
-        consumers.add(consumer);
-        return () -> {consumers.remove(consumer);};
-    }
-
+    /**
+     * @param item
+     * @param value
+     */
     public void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         consumers.forEach(plcSubscriptionEventConsumer -> {
             PlcResponseCode resultCode = PlcResponseCode.OK;
             BaseDefaultFieldItem stringItem = null;
-            if(value.getStatusCode() != StatusCode.GOOD){
+            if (value.getStatusCode() != StatusCode.GOOD) {
                 resultCode = PlcResponseCode.NOT_FOUND;
-            }else{
+            } else {
                 stringItem = OpcuaTcpPlcConnection.encodeFieldItem(value);
 
             }
@@ -77,6 +81,12 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
             PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
             plcSubscriptionEventConsumer.accept(event);
         });
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        consumers.add(consumer);
+        return () -> consumers.remove(consumer);
     }
 
 }

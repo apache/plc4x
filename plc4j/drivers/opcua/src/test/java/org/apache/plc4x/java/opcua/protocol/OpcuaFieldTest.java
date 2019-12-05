@@ -24,9 +24,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 import static org.apache.plc4x.java.opcua.protocol.OpcuaField.ADDRESS_PATTERN;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * @author Matthias Milan Strljic
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaFieldTest {
 
