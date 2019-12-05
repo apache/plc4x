@@ -189,7 +189,7 @@ public class Plc4XModbusProtocolTest {
 
     @Before
     public void setUp() {
-        SUT = new Plc4XModbusProtocol();
+        SUT = new Plc4XModbusProtocol((short) 1);
     }
 
     @Test

@@ -68,7 +68,7 @@ public class ModbusTcpPlcConnection extends BaseModbusPlcConnection {
             @Override
             protected void initChannel(Channel channel) {
                 channel.pipeline().addLast(new ModbusTcpCodec(new ModbusRequestEncoder(), new ModbusResponseDecoder()));
-                channel.pipeline().addLast(new Plc4XModbusProtocol());
+                channel.pipeline().addLast(new Plc4XModbusProtocol(getSlaveId()));
                 channel.pipeline().addLast(new SingleItemToSingleRequestProtocol(ModbusTcpPlcConnection.this, ModbusTcpPlcConnection.this, null, timer, null, false));
             }
         };

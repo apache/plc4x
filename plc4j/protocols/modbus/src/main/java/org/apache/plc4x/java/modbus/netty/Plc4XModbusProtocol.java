@@ -90,6 +90,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     private final ConcurrentMap<Short, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requestsMap = new ConcurrentHashMap<>();
 
+    private final short slaveId;
+
+    public Plc4XModbusProtocol(short slaveId) {
+        this.slaveId = slaveId;
+    }
+
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws Exception {
         LOGGER.trace("(<--OUT): {}, {}, {}", ctx, msg, out);
@@ -118,8 +124,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (quantity != field.getQuantity()) {
             LOGGER.warn("Supplied number of values [{}] don't match t the addressed quantity of [{}]", field.getQuantity(), quantity);
         }
-
-        short unitId = 0;
 
         /*
          * It seems that in Modbus, there are only two types of resources, that can be accessed:
@@ -193,7 +197,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
-        out.add(new ModbusTcpPayload(transactionId, unitId, modbusRequest));
+        out.add(new ModbusTcpPayload(transactionId, slaveId, modbusRequest));
     }
 
     private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
@@ -208,8 +212,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
         ModbusField field = (ModbusField) request.getField(fieldName);
         int quantity = field.getQuantity();
-        // TODO: the unit the should be used for multiple Requests
-        short unitId = 0;
 
         ModbusPdu modbusRequest;
         if (field instanceof CoilModbusField) {
@@ -232,7 +234,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
-        out.add(new ModbusTcpPayload(transactionId, unitId, modbusRequest));
+        out.add(new ModbusTcpPayload(transactionId, slaveId, modbusRequest));
     }
 
     @SuppressWarnings("unchecked")
