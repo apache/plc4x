@@ -85,6 +85,15 @@ public class ModbusPlcDriverTest {
     public void getConnection() throws Exception {
         ModbusTcpPlcConnection modbusConnection = (ModbusTcpPlcConnection)
             new PlcDriverManager().getConnection("modbus:tcp://localhost:" + tcpHexDumper.getPort());
+        assertThat(modbusConnection.getSlaveId(), is((short) 0));
+        modbusConnection.close();
+    }
+
+    @Test
+    public void getConnectionWithSlaveId() throws Exception {
+        ModbusTcpPlcConnection modbusConnection = (ModbusTcpPlcConnection)
+            new PlcDriverManager().getConnection("modbus:tcp://localhost:" + tcpHexDumper.getPort() + "?slaveId=42");
+        assertThat(modbusConnection.getSlaveId(), is((short) 42));
         modbusConnection.close();
     }
 

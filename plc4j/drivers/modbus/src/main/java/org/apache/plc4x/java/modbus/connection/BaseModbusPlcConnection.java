@@ -36,6 +36,9 @@ public abstract class BaseModbusPlcConnection extends NettyPlcConnection impleme
 
     private static final Logger logger = LoggerFactory.getLogger(BaseModbusPlcConnection.class);
 
+    // This slaveId defaults to 0 which is a broadcast.
+    private short slaveId = 0;
+
     BaseModbusPlcConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory);
 
@@ -46,6 +49,9 @@ public abstract class BaseModbusPlcConnection extends NettyPlcConnection impleme
                 if (paramElements.length == 2) {
                     String paramValue = paramElements[1];
                     switch (paramName) {
+                        case "slaveId": {
+                            slaveId = Short.parseShort(paramValue);
+                        }
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
@@ -102,6 +108,10 @@ public abstract class BaseModbusPlcConnection extends NettyPlcConnection impleme
         });
         return future
             .thenApply(PlcWriteResponse.class::cast);
+    }
+
+    public short getSlaveId() {
+        return slaveId;
     }
 
 }
