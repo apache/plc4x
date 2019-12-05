@@ -146,6 +146,22 @@ def checkGpp() {
     }
 }
 
+def checkClang() {
+    print "Detecting clang version:     "
+    def output = "clang --version".execute().text
+    Matcher matcher = extractVersion(output)
+    if(matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "1.0.0")
+        if(!result) {
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
 def checkPython() {
     print "Detecting Python version:  "
     def process = ("python --version").execute()
@@ -315,6 +331,7 @@ if(proxiesEnabled) {
 }
 
 if(proxiesEnabled || cppEnabled) {
+    checkClang()
     checkGcc()
 }
 
