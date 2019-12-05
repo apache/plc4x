@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.adapters.source;
+package org.apache.plc4x.java.streampipes.adapters.source.knxnetip;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.codec.binary.Hex;
@@ -28,7 +28,7 @@ import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.streampipes.shared.Constants;
+import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.streampipes.connect.adapter.Adapter;
@@ -77,7 +77,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public SpecificAdapterStreamDescription declareModel() {
-        SpecificAdapterStreamDescription description = SpecificDataStreamAdapterBuilder.create(Constants.KNXNET_ID, "KNCnet/IP", "")
+        SpecificAdapterStreamDescription description = SpecificDataStreamAdapterBuilder.create(Constants.KNXNET_ID, "KNXnet/IP", "")
             .iconUrl("knxnetip.png")
             .category(AdapterType.Manufacturing)
             .requiredTextParameter(Labels.from("gatewayIp", "KNXnet/IP Gateway", "Ip of the KNX gateway."))

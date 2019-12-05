@@ -17,8 +17,8 @@
 # under the License.
 #
 
-org.apache.plc4x.streampipes.processors.title=ETS5
-org.apache.plc4x.streampipes.processors.description=Processor that interprets a data stream from a KXNnet/IP Datasource according to the settings in the ETS5 'knxproj' file
+org.apache.plc4x.streampipes.processors.enrich.bacnetip.ede.title=EDE
+org.apache.plc4x.streampipes.processors.enrich.bacnetip.ede.description=Processor that interprets a data stream from a BACnet/IP Datasource according to the settings in the BACnet 'ede' file
 
 payload-id-mapping.title=Payload Id Field
 payload-id-mapping.description=

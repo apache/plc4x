@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.streampipes.processors;
 
 import org.apache.plc4x.java.streampipes.processors.config.Config;
-import org.apache.plc4x.java.streampipes.processors.processors.ets5.Ets5DataEnrichmentController;
+import org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5.Ets5DataEnrichmentController;
 import org.streampipes.container.init.DeclarersSingleton;
 import org.streampipes.container.standalone.init.StandaloneModelSubmitter;
 import org.streampipes.dataformat.cbor.CborDataFormatFactory;
@@ -34,6 +34,7 @@ public class Plc4xProcessorsInit extends StandaloneModelSubmitter {
         // Declare the processors.
         DeclarersSingleton
             .getInstance()
+//            .add(new BacNetIpEdeDataEnrichmentController())
             .add(new Ets5DataEnrichmentController());
 
         // Declare the data formats the

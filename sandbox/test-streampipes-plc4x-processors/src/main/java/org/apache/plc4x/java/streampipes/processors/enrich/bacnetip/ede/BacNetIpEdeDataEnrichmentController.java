@@ -16,9 +16,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.processors.processors.ets5;
+package org.apache.plc4x.java.streampipes.processors.enrich.bacnetip.ede;
 
-import org.apache.plc4x.java.streampipes.shared.Constants;
+import org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5.Ets5DataEnrichment;
+import org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5.Ets5DataEnrichmentParameters;
+import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.streampipes.model.DataProcessorType;
 import org.streampipes.model.graph.DataProcessorDescription;
 import org.streampipes.model.graph.DataProcessorInvocation;
@@ -36,9 +38,9 @@ import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.standalone.ConfiguredEventProcessor;
 import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
-public class Ets5DataEnrichmentController extends StandaloneEventProcessingDeclarer<Ets5DataEnrichmentParameters> {
+public class BacNetIpEdeDataEnrichmentController extends StandaloneEventProcessingDeclarer<Ets5DataEnrichmentParameters> {
 
-    public static final String ID = "org.apache.plc4x.streampipes.processors";
+    public static final String ID = "org.apache.plc4x.streampipes.processors.enrich.bacnetip.ede";
 
     private static final String DESTINATION_ID_MAPPING = "destination-id-mapping";
     private static final String PAYLOAD_ID_MAPPING = "payload-id-mapping";

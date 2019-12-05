@@ -29,5 +29,6 @@
   </parent>
 
   <artifactId>test-streampipes-plc4x-shared</artifactId>
+  <name>Sandbox: StreamPipes Shared</name>
 
 </project>

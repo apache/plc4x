@@ -13,12 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package org.apache.plc4x.java.streampipes.shared;
+package org.apache.plc4x.java.streampipes.shared.source.bacnetip;
 
 public class Constants {
 
-    public static final String KNXNET_ID = "http://plc4x.apache.org/streampipes/source/knxnetip";
-    public static final String KNXNET_ID_SOURCE_ADDRESS = KNXNET_ID + "/source-address";
-    public static final String KNXNET_ID_DESTINATION_ADDRESS = KNXNET_ID + "/destination-address";
-    public static final String KNXNET_ID_PAYLOAD = KNXNET_ID + "/payload";
+    public static final String KNXNET_ID = "http://plc4x.apache.org/streampipes/source/bacnetup";
+
 }

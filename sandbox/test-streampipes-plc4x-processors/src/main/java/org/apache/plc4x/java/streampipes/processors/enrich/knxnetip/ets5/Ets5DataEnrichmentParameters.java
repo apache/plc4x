@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.streampipes.processors.processors.ets5;
+package org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5;
 
 import org.streampipes.model.graph.DataProcessorInvocation;
 import org.streampipes.wrapper.params.binding.EventProcessorBindingParams;
