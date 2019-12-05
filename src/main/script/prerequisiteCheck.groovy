@@ -147,7 +147,7 @@ def checkGpp() {
 }
 
 def checkClang() {
-    print "Detecting clang version:     "
+    print "Detecting clang version:   "
     def output = "clang --version".execute().text
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
