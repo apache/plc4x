@@ -19,12 +19,10 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Disabled;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -37,10 +35,9 @@ class MessageFormatParserTest {
         assertThrows(NullPointerException.class, () -> SUT.parse(null));
     }
 
-    @Disabled("mockito broken because of NPE in REAL code")
     @Test
     void parseSomething() {
-        InputStream is = IOUtils.toInputStream("test", StandardCharsets.UTF_8);
-        SUT.parse(is);
+        Map<String, TypeDefinition> parse = SUT.parse(getClass().getResourceAsStream("/mspec.example"));
+        System.out.println(parse);
     }
 }

@@ -187,6 +187,17 @@ public class ExpressionStringListener extends ExpressionBaseListener {
         parserContexts.peek().add(ut);
     }
 
+    @Override
+    public void enterParentExpression(ExpressionParser.ParentExpressionContext ctx) {
+        parserContexts.push(new LinkedList<>());
+    }
+
+    @Override
+    public void exitParentExpression(ExpressionParser.ParentExpressionContext ctx) {
+        UnaryTerm ut = getUnaryTerm("..", parserContexts.pop());
+        parserContexts.peek().add(ut);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////
     // Binary Terms
     /////////////////////////////////////////////////////////////////////////////////////////

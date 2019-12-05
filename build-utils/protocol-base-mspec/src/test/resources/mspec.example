@@ -76,5 +76,6 @@
 
 [type 'ADSData'
    // TODO: implement me..... arrrrrrrggggggggggggg
-   ....
+   //....
+   [simple     uint        8   'random'            ]
 ]

@@ -52,6 +52,7 @@ expression
  | identifierSegment                                    #identifierExpression
  | String indexes?                                      #stringExpression
  | '(' expression ')' indexes?                          #expressionExpression
+ | '../' expression                                     #parentExpression
  ;
 
 identifierSegment

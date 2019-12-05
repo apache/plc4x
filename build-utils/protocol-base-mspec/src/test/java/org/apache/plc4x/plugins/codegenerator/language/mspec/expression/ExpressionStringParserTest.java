@@ -141,6 +141,12 @@ class ExpressionStringParserTest {
         );
     }
 
+    @Test
+    void testParentReference() {
+        Term term = SUT.parse(IOUtils.toInputStream("../data.lengthInBytes", Charset.defaultCharset()));
+        assertThat(term, not(nullValue()));
+    }
+
     void assertNumericLiteral(Term term, Number number) {
         assertThat(term, not(nullValue()));
         assertThat(term, instanceOf(NumericLiteral.class));
