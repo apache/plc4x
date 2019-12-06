@@ -31,11 +31,13 @@ complexType
  : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'bitmask' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? bitmaskValues=bitmaskValueDefinition+
  ;
 
 
 fieldDefinition
  : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ | COMMENT
  ;
 
 field
@@ -44,6 +46,7 @@ field
  | constField
  | discriminatorField
  | enumField
+ | bitmaskField
  | implicitField
  | manualArrayField
  | manualField
@@ -73,6 +76,10 @@ discriminatorField
 
 enumField
  : 'enum' type=typeReference name=idExpression
+ ;
+
+bitmaskField
+ : 'bitmask' type=typeReference name=idExpression
  ;
 
 implicitField
@@ -113,8 +120,13 @@ virtualField
 
 enumValueDefinition
  : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ | COMMENT
  ;
 
+bitmaskValueDefinition
+ : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ | COMMENT
+ ;
 
 typeReference
  : complexTypeReference=IDENTIFIER
@@ -127,6 +139,7 @@ caseStatement
 
 dataType
  : base='bit'
+ | base='byte' size=INTEGER_LITERAL
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
  | base='float' size=INTEGER_LITERAL
@@ -161,6 +174,7 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
+ | '../' innerExpression
  ;
 
 COMMENT
