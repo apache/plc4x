@@ -22,22 +22,23 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'AMSPacket'
-    [reserved   uint       16       '0x0000'                                             ]
-    [implicit   uint       32       'length' 'header.lengthInBytes + data.lengthInBytes' ]
-    [simple     AMSHeader  'header'                                                      ]
-    [simple     ADSData    'data'                                                        ]
+    [reserved   uint       16       '0x0000'                                                   ]
+    [implicit   uint       32       'packetLength' 'header.lengthInBytes + data.lengthInBytes' ]
+    [simple     AMSHeader  'header'                                                            ]
+    [simple     ADSData    'data'                                                              ]
 ]
 
 [type 'AMSHeader'
-    [simple     AMSNetId        'targetAmsNetId'        ]
-    [simple     uint        16  'targetAmsPort'         ]
-    [simple     AMSNetId        'sourceAmsNetId'        ]
-    [simple     uint        16  'sourceAmsPort'         ]
-    [enum       CommandId       'commandId'             ]
-    [bitmask    State           'state'                 ]
-    [simple     uint        32  '../data.lengthInBytes' ]
-    [simple     uint        32  'errorCode'             ]
-    [simple     byte        32  'invokeId'              ]
+    [simple     AMSNetId        'targetAmsNetId'                            ]
+    [simple     uint        16  'targetAmsPort'                             ]
+    [simple     AMSNetId        'sourceAmsNetId'                            ]
+    [simple     uint        16  'sourceAmsPort'                             ]
+    [enum       CommandId       'commandId'                                 ]
+    [bitmask    State           'state'                                     ]
+    [implicit   uint        32  'dataLength'        '../data.lengthInBytes' ]
+    [simple     uint        32  'errorCode'                                 ]
+    // free usable field of 4 bytes
+    [array     byte         4  'invokeId'                                  ]
 ]
 
 [enum uint 16 'CommandId'
@@ -76,5 +77,6 @@
 
 [type 'ADSData'
    // TODO: implement me..... arrrrrrrggggggggggggg
-   ....
+   //....
+   [simple     uint        8   'random'            ]
 ]

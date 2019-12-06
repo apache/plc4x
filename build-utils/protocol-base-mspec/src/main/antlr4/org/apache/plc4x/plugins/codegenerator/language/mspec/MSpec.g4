@@ -139,7 +139,6 @@ caseStatement
 
 dataType
  : base='bit'
- | base='byte' size=INTEGER_LITERAL
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
  | base='float' size=INTEGER_LITERAL

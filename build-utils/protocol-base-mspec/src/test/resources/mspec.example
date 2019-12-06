@@ -38,7 +38,7 @@
     [implicit   uint        32  'dataLength'        '../data.lengthInBytes' ]
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
-    [simple     byte        32  'invokeId'                                  ]
+    [array      uint        32  'invokeId'                                  ]
 ]
 
 [enum uint 16 'CommandId'
@@ -54,7 +54,7 @@
     ['0x09' ADS_READ_WRITE]
 ]
 
-[bitmask byte 2 'State'
+[bitmask uint 16 'State'
     ['0b0000_0000_0000_0001' RESPONSE]
     ['0b0000_0000_0000_0010' NO_RETURN]
     ['0b0000_0000_0000_0100' ADS_COMMAND]
