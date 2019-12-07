@@ -43,7 +43,7 @@ public class OpcuaPlcDriver implements PlcDriver {
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
-    public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>/[\\w/=?&]+)?");
+    public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>[\\w/=?&]+)?");
     private static final int requestTimeout = 10000;
     private OpcuaConnectionFactory opcuaConnectionFactory;
 
