@@ -217,7 +217,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 String[] suffixSplit = prefixSplit[1].split(splitterSuffix);
                 //reconstruct the uri
                 newEndpointUrl = "";
-                newEndpointUrl += prefixSplit[0] + splitterPrefix + address;
+                newEndpointUrl += prefixSplit[0] + splitterPrefix + address.getHostAddress();
                 for (int suffixCounter = 1; suffixCounter < suffixSplit.length; suffixCounter++) {
                     newEndpointUrl += splitterSuffix + suffixSplit[suffixCounter];
                 }
@@ -236,6 +236,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 endpoint.getUserIdentityTokens(),
                 endpoint.getTransportProfileUri(),
                 endpoint.getSecurityLevel());
+            endpoint = noDiscoverEndpoint;
         }
 
 
