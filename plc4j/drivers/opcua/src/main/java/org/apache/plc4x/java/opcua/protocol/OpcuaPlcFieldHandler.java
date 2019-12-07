@@ -26,9 +26,10 @@ import org.apache.plc4x.java.base.messages.items.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * @author Matthias Milan Strljic
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
 
@@ -44,7 +45,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<String> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add(item.toString());
         }
         return new DefaultStringFieldItem(resultSet.toArray(new String[0]));
@@ -54,7 +55,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Boolean> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Boolean) item);
         }
         return new DefaultBooleanFieldItem(resultSet.toArray(new Boolean[0]));
@@ -64,7 +65,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Byte> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Byte) item);
         }
         return new DefaultByteFieldItem(resultSet.toArray(new Byte[0]));
@@ -74,7 +75,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Short> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Short) item);
         }
         return new DefaultShortFieldItem(resultSet.toArray(new Short[0]));
@@ -84,7 +85,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Integer> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Integer) item);
         }
         return new DefaultIntegerFieldItem(resultSet.toArray(new Integer[0]));
@@ -94,7 +95,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<BigInteger> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((BigInteger) item);
         }
         return new DefaultBigIntegerFieldItem(resultSet.toArray(new BigInteger[0]));
@@ -104,7 +105,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Long> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Long) item);
         }
         return new DefaultLongFieldItem(resultSet.toArray(new Long[0]));
@@ -114,19 +115,18 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Float> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Float) item);
         }
         return new DefaultFloatFieldItem(resultSet.toArray(new Float[0]));
     }
 
 
-
     @Override
     public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
         OpcuaField adsField = (OpcuaField) field;
         ArrayList<Double> resultSet = new ArrayList<>();
-        for(Object item : values){
+        for (Object item : values) {
             resultSet.add((Double) item);
         }
         return new DefaultDoubleFieldItem(resultSet.toArray(new Double[0]));
@@ -138,10 +138,10 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
         OpcuaField adsField = (OpcuaField) field;
         Byte[][] byteArray = new Byte[values.length][];
         int innerCounter = 0;
-        for(Object item : values){
+        for (Object item : values) {
             byte[] itemArray = (byte[]) item;
             byteArray[innerCounter] = new Byte[((byte[]) item).length];
-            for(int counter = 0; counter < itemArray.length; counter++){
+            for (int counter = 0; counter < itemArray.length; counter++) {
                 byteArray[innerCounter][counter] = itemArray[counter];
             }
             innerCounter++;

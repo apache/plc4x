@@ -17,9 +17,10 @@
  under the License.
 */
 package org.apache.plc4x.java.opcua.protocol.model;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * @author Matthias Milan Strljic
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public enum OpcuaDataTypes {
     BOOL,
