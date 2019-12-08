@@ -75,7 +75,7 @@ public class ManualPLC4XOpcua {
         PlcField field = fieldH.createField("ns=2;i=10855");
         try {
             opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection("opcua:tcp://localhost:4843?nDiscovery=true");
+                new PlcDriverManager().getConnection("opcua:tcp://localhost:4843?discovery=true");
 
         } catch (PlcConnectionException e) {
             e.printStackTrace();
