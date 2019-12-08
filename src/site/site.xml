@@ -76,7 +76,7 @@
     <name>Apache Software Foundation</name>
     <src>https://plc4x.apache.org/images/apache_logo.png</src>
     <!--src>./images/apache_logo.png</src-->
-    <href>http://www.apache.org/</href>
+    <href>https://www.apache.org/</href>
   </bannerRight>
 
   <body>
