@@ -47,7 +47,7 @@ public class OpcuaTcpPlcConnectionTest {
         24152
     };
     private final String[] nDiscoveryParams = {
-        "nDiscovery=true"
+        "discovery=false"
     };
 
     @BeforeEach
@@ -68,9 +68,6 @@ public class OpcuaTcpPlcConnectionTest {
                 for (String discoveryParam :
                     nDiscoveryParams) {
                     String param = "";
-                    if (!param.isEmpty()) {
-                        param += "&";
-                    }
                     param += discoveryParam;
 
                     OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();

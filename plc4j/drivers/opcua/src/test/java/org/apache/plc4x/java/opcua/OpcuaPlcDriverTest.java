@@ -62,8 +62,8 @@ public class OpcuaPlcDriverTest {
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254");
 
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1&nDiscovery=true");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer&nDiscovery=true");
+        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1&discovery=false");
+        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer&discovery=false");
 
     }
 

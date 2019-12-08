@@ -50,8 +50,8 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                 if (paramElements.length == 2) {
                     String paramValue = paramElements[1];
                     switch (paramName) {
-                        case "nDiscovery":
-                            skipDiscovery = Boolean.valueOf(paramValue);
+                        case "discovery":
+                            skipDiscovery = !Boolean.valueOf(paramValue);
                             break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
