@@ -32,7 +32,7 @@
   <name>Sandbox: StreamPipes Processors</name>
 
   <properties>
-    <streampipes.version>0.64.0</streampipes.version>
+    <streampipes.version>0.65.0</streampipes.version>
   </properties>
 
   <dependencies>
@@ -74,6 +74,10 @@
           <artifactId>ow2-jpa-1.0-spec</artifactId>
           <groupId>org.ow2.spec.ee</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>javax.ws.rs-api</artifactId>
+          <groupId>javax.ws.rs</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -91,6 +95,20 @@
       <groupId>org.streampipes</groupId>
       <artifactId>streampipes-sdk</artifactId>
       <version>${streampipes.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>aopalliance</artifactId>
+          <groupId>aopalliance</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ow2-jpa-1.0-spec</artifactId>
+          <groupId>org.ow2.spec.ee</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>javax.inject</artifactId>
+          <groupId>javax.inject</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.streampipes</groupId>
@@ -134,10 +152,6 @@
       <version>${streampipes.version}</version>
       <exclusions>
         <exclusion>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>aopalliance-repackaged</artifactId>
           <groupId>org.glassfish.hk2.external</groupId>
         </exclusion>
@@ -145,16 +159,16 @@
           <artifactId>tomcat-embed-el</artifactId>
           <groupId>org.apache.tomcat.embed</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-streampipes-plc4x-shared</artifactId>
       <version>0.6.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -177,85 +191,51 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.9.4</version>
-      </dependency>
-
-      <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jdk8</artifactId>
-        <version>2.9.9</version>
+        <version>2.10.0</version>
       </dependency>
-
       <dependency>
         <groupId>com.squareup.okhttp3</groupId>
         <artifactId>okhttp</artifactId>
-        <version>3.12.1</version>
+        <version>3.14.3</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>fluent-hc</artifactId>
-        <version>${httpclient.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.25.0-GA</version>
       </dependency>
-
-      <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.3.2.Final</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.objenesis</groupId>
-        <artifactId>objenesis</artifactId>
-        <version>2.5.1</version>
-      </dependency>
-
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
-        <version>5.1.9.RELEASE</version>
+        <version>5.2.1.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>5.1.9.RELEASE</version>
+        <version>5.2.1.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>5.1.9.RELEASE</version>
+        <version>5.2.1.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>5.1.9.RELEASE</version>
+        <version>5.2.1.RELEASE</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>5.1.9.RELEASE</version>
+        <version>5.2.1.RELEASE</version>
       </dependency>
-
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>2.0.1.Final</version>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>3.4.1.Final</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 
 </project>

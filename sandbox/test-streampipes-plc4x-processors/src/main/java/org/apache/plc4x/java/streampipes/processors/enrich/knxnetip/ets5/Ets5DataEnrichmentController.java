@@ -36,10 +36,13 @@ import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.standalone.ConfiguredEventProcessor;
 import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
+import java.io.IOException;
+
 public class Ets5DataEnrichmentController extends StandaloneEventProcessingDeclarer<Ets5DataEnrichmentParameters> {
 
     public static final String ID = "org.apache.plc4x.streampipes.processors.enrich.knxnetip.ets5";
 
+    private static final String PROJECT_FILE_KEY = "project-fIle";
     private static final String DESTINATION_ID_MAPPING = "destination-id-mapping";
     private static final String PAYLOAD_ID_MAPPING = "payload-id-mapping";
 
@@ -55,7 +58,7 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
         return ProcessingElementBuilder
             .create(ID, "ETS5", "Processor that interprets a data stream from a KXNnet/IP Datasource according to the settings in the ETS5 'knxproj' file")
             .category(DataProcessorType.ENRICH)
-            .withAssets(Assets.DOCUMENTATION, Assets.ICON)
+            //.withAssets(Assets.DOCUMENTATION, Assets.ICON)
             .withLocales(Locales.EN)
             .requiredStream(StreamRequirementsBuilder
                 .create()
@@ -70,7 +73,7 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_MEANING).build(),
                 PrimitivePropertyBuilder.create(Datatypes.String, MAPPING_FIELD_DECODED_PROPERTY_VALUE).build()
             ))
-            .requiredFile(Labels.from("File", "ETS5 Project File", "ETS5 Project File (.knxproj)"))
+            .requiredFile(Labels.withId(PROJECT_FILE_KEY))
             .build();
     }
 
@@ -78,7 +81,12 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
     public ConfiguredEventProcessor<Ets5DataEnrichmentParameters> onInvocation(DataProcessorInvocation graph, ProcessingElementParameterExtractor extractor) {
         String destinationIdFieldName = extractor.mappingPropertyValue(DESTINATION_ID_MAPPING);
         String payloadIdFieldName = extractor.mappingPropertyValue(PAYLOAD_ID_MAPPING);
-
+        String fileContents = null;
+        try {
+            fileContents = extractor.fileContentsAsString(PROJECT_FILE_KEY);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Ets5DataEnrichmentParameters params = new Ets5DataEnrichmentParameters(graph, destinationIdFieldName, payloadIdFieldName);
         return new ConfiguredEventProcessor<>(params, Ets5DataEnrichment::new);
     }

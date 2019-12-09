@@ -18,6 +18,7 @@
 # ----------------------------------------------------------------------------
 
 # Redirect some parameters for local development.
-SP_PORT=8005
+SP_PORT=8091
 SP_HOST=host.docker.internal
+SP_DEBUG=true
 

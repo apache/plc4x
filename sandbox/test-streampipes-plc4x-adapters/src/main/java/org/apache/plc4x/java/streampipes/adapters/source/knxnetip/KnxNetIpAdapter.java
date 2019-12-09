@@ -46,6 +46,7 @@ import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
 import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
 import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.utils.Datatypes;
+import org.streampipes.vocabulary.SO;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -92,6 +93,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         allProperties.add(
             PrimitivePropertyBuilder
                 .create(Datatypes.Long, MAPPING_FIELD_TIME)
+                .domainProperty(SO.DateTime)
                 .label("Time")
                 .description("The time the event was processed in the KNXnet/IP driver.")
                 .build());
@@ -129,6 +131,9 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public void startAdapter() throws AdapterException {
+        if((connection != null) && (connection.isConnected())) {
+            return;
+        }
         try {
             InetAddress inetAddress = InetAddress.getByName(gatewayIp);
             ChannelFactory channelFactory = new UdpSocketChannelFactory(inetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
@@ -184,6 +189,8 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         } catch (UnknownHostException e) {
             logger.error("Error connecting to host " + gatewayIp, e);
             throw new AdapterException("Error connecting to host " + gatewayIp);
+        } catch (Exception e) {
+            logger.error("Something strange went wrong.", e);
         }
     }
 

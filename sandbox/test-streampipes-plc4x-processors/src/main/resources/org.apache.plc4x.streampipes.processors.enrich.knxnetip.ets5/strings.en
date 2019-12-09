@@ -25,3 +25,6 @@ payload-id-mapping.description=
 
 destination-id-mapping.title=Destination Id Field
 destination-id-mapping.description=
+
+project-fIle.title=ETS5 Project File
+project-fIle.description=ETS5 Project File (.knxproj)

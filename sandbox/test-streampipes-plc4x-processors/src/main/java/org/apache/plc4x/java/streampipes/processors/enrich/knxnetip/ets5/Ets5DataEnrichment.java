@@ -86,6 +86,8 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
                 event.addField(Ets5DataEnrichmentController.MAPPING_FIELD_DECODED_PROPERTY_VALUE,
                     jsonDatapoint);
 
+                System.out.println(hexEncodedRawData + " decoded to: " + jsonDatapoint + " " + groupAddress.getType().getMainType() + " " + groupAddress.getType().getSubType());
+
                 //Event enrichedEvent = new Event()
                 spOutputCollector.collect(event);
             } else {
