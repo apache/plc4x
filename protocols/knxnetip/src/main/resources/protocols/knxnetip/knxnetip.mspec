@@ -21,7 +21,7 @@
     [implicit      uint 8  'headerLength'    '6']
     [const         uint 8  'protocolVersion' '0x10']
     [discriminator uint 16 'msgType']
-    [implicit      uint 16 'totalLength' 'lengthInBytes']
+    [implicit      uint 16 'totalLength'     'lengthInBytes']
     [typeSwitch 'msgType'
         ['0x0201' SearchRequest
             [simple HPAIDiscoveryEndpoint 'hpaiIDiscoveryEndpoint']
@@ -44,10 +44,10 @@
             [simple ConnectionRequestInformation 'connectionRequestInformation']
         ]
         ['0x0206' ConnectionResponse
-            [simple uint 8 'communicationChannelId']
-            [enum   Status 'status']
-            [simple HPAIDataEndpoint            'hpaiDataEndpoint']
-            [simple ConnectionResponseDataBlock 'connectionResponseDataBlock']
+            [simple   uint 8 'communicationChannelId']
+            [enum     Status 'status']
+            [optional HPAIDataEndpoint            'hpaiDataEndpoint'            'status == Status.NO_ERROR']
+            [optional ConnectionResponseDataBlock 'connectionResponseDataBlock' 'status == Status.NO_ERROR']
         ]
         ['0x0207' ConnectionStateRequest
             [simple   uint 8 'communicationChannelId']
