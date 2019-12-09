@@ -70,12 +70,15 @@
             [simple   uint 6 'val']
         ]
         ['5' KnxDatapointU8
+            [reserved uint 8 '0x0']
             [simple   uint 8 'val']
         ]
         ['7' KnxDatapointU16
+            [reserved uint 8 '0x0']
             [simple uint 16 'val']
         ]
         ['12' KnxDatapointU32
+            [reserved uint 8 '0x0']
             [simple uint 32 'val']
         ]
         ['6','20' KnxDatapointB5I3
@@ -87,12 +90,15 @@
             [simple   int 8  'val']
         ]
         ['6' KnxDatapointI8
+            [reserved uint 8 '0x0']
             [simple int 8  'val']
         ]
         ['8' KnxDatapointI16
+            [reserved uint 8 '0x0']
             [simple int 16 'val']
         ]
         ['13' KnxDatapointI32
+            [reserved uint 8 '0x0']
             [simple int 32 'val']
         ]
         ['9' KnxDatapointF16
@@ -107,9 +113,11 @@
             [simple   float 32 'val']
         ]
         ['4' KnxDatapointA8
+            [reserved uint 8 '0x0']
             [simple int 8 'val']
         ]
         ['16' KnxDatapointA112
+            [reserved uint 8 '0x0']
             [array int 8 'val' count '14']
         ]
         ['10' KnxDatapointTime24
