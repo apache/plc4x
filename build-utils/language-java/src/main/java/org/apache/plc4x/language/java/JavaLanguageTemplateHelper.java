@@ -401,7 +401,13 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             } else if(term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if(term instanceof VariableLiteral) {
-                return variableExpressionGenerator.apply(term);
+                VariableLiteral variableLiteral = (VariableLiteral) term;
+                // If this literal references an Enum type, then we have to output it differently.
+                if(types.get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
+                } else {
+                    return variableExpressionGenerator.apply(term);
+                }
             } else {
                 throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
             }
