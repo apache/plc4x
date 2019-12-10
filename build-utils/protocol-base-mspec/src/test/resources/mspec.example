@@ -29,15 +29,25 @@
 ]
 
 [type 'AMSHeader'
+    // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AMSNetId        'targetAmsNetId'                            ]
+    // This is the AmsPort of the station, for which the packet is intended.
     [simple     uint        16  'targetAmsPort'                             ]
+    // This contains the AmsNetId of the station, from which the packet was sent.
     [simple     AMSNetId        'sourceAmsNetId'                            ]
+    // This contains the AmsPort of the station, from which the packet was sent.
     [simple     uint        16  'sourceAmsPort'                             ]
+    // 2 bytes.
     [enum       CommandId       'commandId'                                 ]
+    // 2 bytes.
     [simple     State           'state'                                     ]
+    // 4 bytes	Size of the data range. The unit is byte.
+    // TODO: rename me to length once this is fixed
     [simple     uint        32  'dataLength'                                ]
+    // 4 bytes	AMS error number. See ADS Return Codes.
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
+    // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple      uint        32  'invokeId'                                 ]
 ]
 
@@ -93,21 +103,143 @@
             [array int 8  'device' count '16']
         ]
         ['0x01', 'false' AdsReadDeviceInfoRequest]
-        ['0x02', 'true' Adstodo4]
-        ['0x02', 'false' Adstodo5]
-        ['0x03', 'true' Adstodo6]
-        ['0x03', 'false' Adstodo7]
-        ['0x04', 'true' Adstodo8]
-        ['0x04', 'false' Adstodo9]
-        ['0x05', 'true' Adstodo06]
-        ['0x05', 'false' Adstodo60]
-        ['0x06', 'true' Adstodo58]
-        ['0x06', 'false' Adstodo45]
-        ['0x07', 'true' Adstodo34]
-        ['0x07', 'false' Adstodo23]
-        ['0x08', 'true' Adstodo12]
-        ['0x08', 'false' Adstodo23]
-        ['0x09', 'true' Adstodo34]
-        ['0x09', 'false' Adstodo45]
+        ['0x02', 'true' AdsReadResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+            // 4 bytes	Length of data which are supplied back.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+            // n bytes	Data which are supplied back.
+            [array int 8 'data' count 'dataLength']
+        ]
+        ['0x02', 'false' AdsReadRequest
+            // 4 bytes	Index Group of the data which should be read.
+            [simple uint 32 'indexGroup']
+            // 4 bytes	Index Offset of the data which should be read.
+            [simple uint 32 'indexOffset']
+            // 4 bytes	Length of the data (in bytes) which should be read.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+        ]
+        ['0x03', 'true' AdsWriteResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+        ]
+        ['0x03', 'false' AdsWriteRequest
+            // 4 bytes	Index Group of the data which should be written.
+            [simple uint 32 'indexGroup']
+            // 4 bytes	Index Offset of the data which should be written.
+            [simple uint 32 'indexOffset']
+            // 4 bytes	Length of the data (in bytes) which should be written.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+            // n bytes	Data which are written in the ADS device.
+            [array int 8 'data' count 'dataLength']
+        ]
+        ['0x04', 'true' AdsReadStateResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+            // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
+            [simple uint 16 'adsState']
+            // 2 bytes	New device status.
+            [simple uint 16 'deviceState']
+        ]
+        ['0x04', 'false' AdsReadStateRequest]
+        ['0x05', 'true' AdsWriteControlResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+        ]
+        ['0x05', 'false' AdsWriteControlRequest
+            // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
+            [simple uint 16 'adsState']
+            // 2 bytes	New device status.
+            [simple uint 16 'deviceState']
+            // 4 bytes	Length of data in byte.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+            // n bytes	Additional data which are sent to the ADS device
+            [array int 8 'data' count 'dataLength']
+        ]
+        ['0x06', 'true' AdsAddDeviceNotificationResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+            // 4 bytes	Handle of notification
+            [simple uint 32 'notificationHandle']
+        ]
+        ['0x06', 'false' AdsAddDeviceNotificationRequest
+            // 4 bytes	Index Group of the data, which should be sent per notification.
+            [simple uint 32 'indexGroup']
+            // 4 bytes	Index Offset of the data, which should be sent per notification.
+            [simple uint 32 'indexOffset']
+            // 4 bytes	Index Offset of the data, which should be sent per notification.
+            // TODO: rename me to length
+            // 4 bytes	Length of data in bytes, which should be sent per notification.
+            [simple uint 32 'notificationLength']
+            // 4 bytes	See description of the structure ADSTRANSMODE at the ADS-DLL.
+            [simple uint 32 'transmissionMode']
+            // 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
+            [simple uint 32 'maxDelay']
+            // 4 bytes	The ADS server checks if the value changes in this time slice. The unit is 1ms
+            [simple uint 32 'cycleTime']
+            // 16bytes	Must be set to 0
+            [reserved   uint       128       '0x0000' ]
+        ]
+        ['0x07', 'true' AdsDeleteDeviceNotificationResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+        ]
+        ['0x07', 'false' AdsDeleteDeviceNotificationRequest
+            // 4 bytes	Handle of notification
+            [simple uint 32 'notificationHandle']
+        ]
+        ['0x08', 'true' AdsDeviceNotificationResponse]
+        ['0x08', 'false' AdsDeviceNotificationRequest
+            // 4 bytes	Size of data in byte.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+            // 4 bytes	Number of elements of type AdsStampHeader.
+            [simple uint 32 'stamps']
+            // n bytes	Array with elements of type AdsStampHeader.
+            [array AdsStampHeader 'adsStampHeaders' count 'stamps']
+        ]
+        ['0x09', 'true' AdsReadWriteResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+            // 4 bytes	Length of data in byte.
+            // TODO: rename me to length
+            [simple uint 32 'dataLength']
+            // n bytes	Additional data which are sent to the ADS device
+            [array int 8 'data' count 'dataLength']
+        ]
+        ['0x09', 'false' AdsReadWriteRequest
+            // 4 bytes	Index Group of the data which should be written.
+            [simple uint 32 'indexGroup']
+            // 4 bytes	Index Offset of the data which should be written.
+            [simple uint 32 'indexOffset']
+            // 4 bytes	Length of data in bytes, which should be read.
+            [simple uint 32 'readLength']
+            // 4 bytes	Length of the data (in bytes) which should be written.
+            [simple uint 32 'writeLength']
+            // n bytes	Data which are written in the ADS device.
+            [array int 8 'data' count 'writeLength']
+        ]
     ]
+]
+
+[type 'AdsStampHeader'
+    // 8 bytes	The timestamp is coded after the Windows FILETIME format. I.e. the value contains the number of the nano seconds, which passed since 1.1.1601. In addition, the local time change is not considered. Thus the time stamp is present as universal Coordinated time (UTC).
+    [simple uint 64 'timestamp']
+    // 4 bytes	Number of elements of type AdsNotificationSample.
+    [simple uint 32 'samples']
+    // n bytes	Array with elements of type AdsNotificationSample.
+    [array AdsNotificationSample 'adsNotificationSamples' count 'samples']
+]
+
+[type 'AdsNotificationSample'
+    // 4 bytes	Handle of notification
+    [simple uint 32 'notificationHandle']
+    // 4 Bytes	Size of data range in bytes.
+    [simple uint 32 'sampleSize']
+    // n Bytes	Data
+    [array int 8 'data' count 'sampleSize']
 ]
