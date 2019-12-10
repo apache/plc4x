@@ -31,7 +31,6 @@ complexType
  : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
- | 'bitmask' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? bitmaskValues=bitmaskValueDefinition+
  ;
 
 
@@ -46,7 +45,6 @@ field
  | constField
  | discriminatorField
  | enumField
- | bitmaskField
  | implicitField
  | manualArrayField
  | manualField
@@ -76,10 +74,6 @@ discriminatorField
 
 enumField
  : 'enum' type=typeReference name=idExpression
- ;
-
-bitmaskField
- : 'bitmask' type=typeReference name=idExpression
  ;
 
 implicitField
@@ -173,7 +167,6 @@ innerExpression
  | '(' innerExpression ')'
  | '"' innerExpression '"'
  | '!' innerExpression
- | '../' innerExpression
  ;
 
 COMMENT

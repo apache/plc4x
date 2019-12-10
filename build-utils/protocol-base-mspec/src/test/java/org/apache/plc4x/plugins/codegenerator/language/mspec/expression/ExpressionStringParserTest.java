@@ -140,24 +140,6 @@ class ExpressionStringParserTest {
         );
     }
 
-    @Test
-    void testParentReference() {
-        Term term = SUT.parse(IOUtils.toInputStream("../data.lengthInBytes", Charset.defaultCharset()));
-        assertThat(term, not(nullValue()));
-        assertThat(term, instanceOf(UnaryTerm.class));
-        UnaryTerm unaryTerm = (UnaryTerm) term;
-        assertThat(unaryTerm.getOperation(), is(".."));
-        assertVariableLiteral(
-            unaryTerm.getA(),
-            "data",
-            null,
-            variableLiteral -> assertVariableLiteral(
-                variableLiteral,
-                "lengthInBytes"
-            )
-        );
-    }
-
     void assertNumericLiteral(Term term, Number number) {
         assertThat(term, not(nullValue()));
         assertThat(term, instanceOf(NumericLiteral.class));

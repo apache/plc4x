@@ -25,7 +25,7 @@
     [reserved   uint       16       '0x0000'                                                   ]
     [implicit   uint       32       'packetLength' 'header.lengthInBytes + data.lengthInBytes' ]
     [simple     AMSHeader  'header'                                                            ]
-    [simple     ADSData    'data'                                                              ]
+    [simple     ADSData    'data'   ['header.commandId', 'header.state.response']              ]
 ]
 
 [type 'AMSHeader'
@@ -34,11 +34,11 @@
     [simple     AMSNetId        'sourceAmsNetId'                            ]
     [simple     uint        16  'sourceAmsPort'                             ]
     [enum       CommandId       'commandId'                                 ]
-    [bitmask    State           'state'                                     ]
-    [implicit   uint        32  'dataLength'        '../data.lengthInBytes' ]
+    [simple     State           'state'                                     ]
+    [simple     uint        32  'dataLength'                                ]
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
-    [array     byte         4  'invokeId'                                  ]
+    [simple      uint        32  'invokeId'                                 ]
 ]
 
 [enum uint 16 'CommandId'
@@ -54,16 +54,17 @@
     ['0x09' ADS_READ_WRITE]
 ]
 
-[bitmask byte 2 'State'
-    ['0b0000_0000_0000_0001' RESPONSE]
-    ['0b0000_0000_0000_0010' NO_RETURN]
-    ['0b0000_0000_0000_0100' ADS_COMMAND]
-    ['0b0000_0000_0000_1000' SYSTEM_COMMAND]
-    ['0b0000_0000_0001_0000' HIGH_PRIORITY_COMMAND]
-    ['0b0000_0000_0010_0000' TIMESTAMP_ADDED]
-    ['0b0000_0000_0100_0000' UDP_COMMAND]
-    ['0b0000_0000_1000_0000' INIT_COMMAND]
-    ['0b1000_0000_0000_0000' BROADCAST]
+[type 'State'
+    [simple     bit 'broadcast'             ]
+    [reserved   int 7 '0x0'                 ]
+    [simple     bit 'initCommand'           ]
+    [simple     bit 'updCommand'            ]
+    [simple     bit 'timestampAdded'        ]
+    [simple     bit 'highPriorityCommand'   ]
+    [simple     bit 'systemCommand'         ]
+    [simple     bit 'adsCommand'            ]
+    [simple     bit 'noReturn'              ]
+    [simple     bit 'response'              ]
 ]
 
 [type 'AMSNetId'
@@ -75,8 +76,38 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[type 'ADSData'
-   // TODO: implement me..... arrrrrrrggggggggggggg
-   //....
-   [simple     uint        8   'random'            ]
+[discriminatedType 'ADSData' [CommandId 'commandId', bit 'response']
+    [typeSwitch 'commandId', 'response'
+        ['0x00', 'true' AdsInvalidResponse]
+        ['0x00', 'false' AdsInvalidRequest]
+        ['0x01', 'true' AdsReadDeviceInfoResponse
+            // 4 bytes	ADS error number.
+            [simple uint 32 'result']
+            // Version	1 byte	Major version number
+            [simple uint 8  'majorVersion']
+            // Version	1 byte	Minor version number
+            [simple uint 8  'minorVersion']
+            // Build	2 bytes	Build number
+            [simple uint 16  'version']
+            // Name	16 bytes	Name of ADS device
+            [array int 8  'device' count '16']
+        ]
+        ['0x01', 'false' AdsReadDeviceInfoRequest]
+        ['0x02', 'true' Adstodo4]
+        ['0x02', 'false' Adstodo5]
+        ['0x03', 'true' Adstodo6]
+        ['0x03', 'false' Adstodo7]
+        ['0x04', 'true' Adstodo8]
+        ['0x04', 'false' Adstodo9]
+        ['0x05', 'true' Adstodo06]
+        ['0x05', 'false' Adstodo60]
+        ['0x06', 'true' Adstodo58]
+        ['0x06', 'false' Adstodo45]
+        ['0x07', 'true' Adstodo34]
+        ['0x07', 'false' Adstodo23]
+        ['0x08', 'true' Adstodo12]
+        ['0x08', 'false' Adstodo23]
+        ['0x09', 'true' Adstodo34]
+        ['0x09', 'false' Adstodo45]
+    ]
 ]
