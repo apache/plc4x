@@ -19,26 +19,27 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
-import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
 
-public abstract class DefaultSimpleTypeReference implements SimpleTypeReference {
+public class DefaultFloatTypeReference extends DefaultSimpleTypeReference implements FloatTypeReference {
 
-    private final SimpleBaseType baseType;
-    private final int sizeInBits;
+    private final int exponent;
+    private final int mantissa;
 
-    public DefaultSimpleTypeReference(SimpleBaseType baseType, int sizeInBits) {
-        this.baseType = baseType;
-        this.sizeInBits = sizeInBits;
+    public DefaultFloatTypeReference(SimpleBaseType baseType, int exponent, int mantissa) {
+        super(baseType, (baseType == SimpleBaseType.FLOAT ? 1 : 0) + exponent + mantissa);
+        this.exponent = exponent;
+        this.mantissa = mantissa;
     }
 
     @Override
-    public SimpleBaseType getBaseType() {
-        return baseType;
+    public int getExponent() {
+        return exponent;
     }
 
     @Override
-    public int getSizeInBits() {
-        return sizeInBits;
+    public int getMantissa() {
+        return mantissa;
     }
 
 }

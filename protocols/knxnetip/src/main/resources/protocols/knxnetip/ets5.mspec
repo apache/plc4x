@@ -38,12 +38,12 @@
     [typeSwitch 'mainNumber','subNumber'
         ['1' KnxDatapointB1
             [reserved uint 7 '0x0']
-            [simple   bit    'val']
+            [simple   bit    'value']
         ]
         ['2' KnxDatapointB2
             [reserved uint 6 '0x0']
             [simple   bit    'control']
-            [simple   bit    'val']
+            [simple   bit    'value']
         ]
         ['21' KnxDatapointB8
             [simple   bit    'b7']
@@ -58,67 +58,64 @@
         ['3' KnxDatapointB1U3
             [reserved uint 4 '0x0']
             [simple   bit    'control']
-            [simple   uint 3 'val']
+            [simple   uint 3 'value']
         ]
         ['18' KnxDatapointB1U6
             [simple   bit    'control']
             [reserved uint 1 '0x0']
-            [simple   uint 6 'val']
+            [simple   uint 6 'value']
         ]
         ['17' KnxDatapointU6
             [reserved uint 2 '0x0']
-            [simple   uint 6 'val']
+            [simple   uint 6 'value']
         ]
         ['5' KnxDatapointU8
             [reserved uint 8 '0x0']
-            [simple   uint 8 'val']
+            [simple   uint 8 'value']
         ]
         ['7' KnxDatapointU16
             [reserved uint 8 '0x0']
-            [simple uint 16 'val']
+            [simple uint 16 'value']
         ]
         ['12' KnxDatapointU32
             [reserved uint 8 '0x0']
-            [simple uint 32 'val']
+            [simple uint 32 'value']
         ]
         ['6','20' KnxDatapointB5I3
-            [simple   bit    'a']
-            [simple   bit    'b']
-            [simple   bit    'c']
-            [simple   bit    'd']
-            [simple   bit    'e']
-            [simple   int 8  'val']
+            [simple   bit   'a']
+            [simple   bit   'b']
+            [simple   bit   'c']
+            [simple   bit   'd']
+            [simple   bit   'e']
+            [simple   int 8 'value']
         ]
         ['6' KnxDatapointI8
             [reserved uint 8 '0x0']
-            [simple int 8  'val']
+            [simple   int  8 'value']
         ]
         ['8' KnxDatapointI16
-            [reserved uint 8 '0x0']
-            [simple int 16 'val']
+            [reserved uint 8  '0x0']
+            [simple   int  16 'value']
         ]
         ['13' KnxDatapointI32
-            [reserved uint 8 '0x0']
-            [simple int 32 'val']
+            [reserved uint 8  '0x0']
+            [simple   int  32 'value']
         ]
         ['9' KnxDatapointF16
-            [reserved uint 8   '0x0']
-            [simple   bit      'sign']
-            [simple   int 4    'exponent']
-            [simple   uint 11  'mantissa']
-            [virtual  float 16 'val' '(sign ? -1 : 1) * (0.01 * mantissa) * (2 ^ exponent)']
+            [reserved uint  8    '0x0']
+            [simple   float 4.11 'value']
         ]
         ['14' KnxDatapointF32
-            [reserved uint 8   '0x0']
-            [simple   float 32 'val']
+            [reserved uint  8    '0x0']
+            [simple   float 8.23 'value']
         ]
         ['4' KnxDatapointA8
             [reserved uint 8 '0x0']
-            [simple int 8 'val']
+            [simple   int  8 'value']
         ]
         ['16' KnxDatapointA112
             [reserved uint 8 '0x0']
-            [array int 8 'val' count '14']
+            [array    int  8 'value' count '14']
         ]
         ['10' KnxDatapointTime24
             [simple   uint 3 'day']

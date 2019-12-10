@@ -120,7 +120,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Array field
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.size} * ${field.name}.length;
+        lengthInBits += ${field.type.sizeInBits} * ${field.name}.length;
         <#else>
         if(${field.name} != null) {
             for(Message element : ${field.name}) {
@@ -132,27 +132,27 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "checksum">
 
         // Checksum Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "const">
 
         // Const Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "enum">
 
         // Enum Field (${field.name})
-        lengthInBits += ${helper.getEnumBaseType(field.type).size};
+        lengthInBits += ${helper.getEnumBaseType(field.type).sizeInBits};
         <#break>
     <#case "implicit">
 
         // Implicit Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "manualArray">
 
@@ -169,7 +169,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         // Optional Field (${field.name})
         if(${field.name} != null) {
         <#if helper.isSimpleType(field.type)>
-            lengthInBits += ${field.type.size};
+            lengthInBits += ${field.type.sizeInBits};
         <#else>
             lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>
@@ -179,19 +179,19 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Padding Field (${field.name})
         if((boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)})) {
-            lengthInBits += ${field.type.size};
+            lengthInBits += ${field.type.sizeInBits};
         }
         <#break>
     <#case "reserved">
 
         // Reserved Field
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "simple">
 
         // Simple field (${field.name})
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#else>
         lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>

@@ -251,13 +251,13 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                                     // (This is the actual value to which a given property has changed)
                                     if (propertyId == 85) {
                                         // Depending on the type of object, parse the data accordingly.
-                                        if (notification.getVal() instanceof BACnetTagApplicationBoolean) {
+                                        if (notification.getValue() instanceof BACnetTagApplicationBoolean) {
                                             type = "boolean";
-                                            final BACnetTagApplicationBoolean val = (BACnetTagApplicationBoolean) notification.getVal();
+                                            final BACnetTagApplicationBoolean val = (BACnetTagApplicationBoolean) notification.getValue();
 
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationUnsignedInteger) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationUnsignedInteger) {
                                             type = "uint";
-                                            final BACnetTagApplicationUnsignedInteger val = (BACnetTagApplicationUnsignedInteger) notification.getVal();
+                                            final BACnetTagApplicationUnsignedInteger val = (BACnetTagApplicationUnsignedInteger) notification.getValue();
                                             // Convert any number of bytes into an unsigned integer.
                                             switch (val.getData().length) {
                                                 case 1:
@@ -278,21 +278,21 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                                                     value = "Hurz";
                                                     break;
                                             }
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationSignedInteger) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationSignedInteger) {
                                             type = "int";
-                                            final BACnetTagApplicationSignedInteger val = (BACnetTagApplicationSignedInteger) notification.getVal();
+                                            final BACnetTagApplicationSignedInteger val = (BACnetTagApplicationSignedInteger) notification.getValue();
 
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationReal) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationReal) {
                                             type = "real";
-                                            final BACnetTagApplicationReal val = (BACnetTagApplicationReal) notification.getVal();
+                                            final BACnetTagApplicationReal val = (BACnetTagApplicationReal) notification.getValue();
                                             value = Float.intBitsToFloat(ByteBuffer.wrap(val.getData()).getInt());
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationDouble) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationDouble) {
                                             type = "double";
-                                            final BACnetTagApplicationDouble val = (BACnetTagApplicationDouble) notification.getVal();
+                                            final BACnetTagApplicationDouble val = (BACnetTagApplicationDouble) notification.getValue();
 
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationBitString) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationBitString) {
                                             type = "bit-string";
-                                            final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
+                                            final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getValue();
                                             int numBits = (val.getData().length * 8) - val.getUnusedBits();
                                             BitSet bitSet = BitSet.valueOf(val.getData());
                                             boolean[] bits = new boolean[numBits];
@@ -300,16 +300,16 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                                                 bits[i] = bitSet.get(i);
                                             }
                                             value = bits;
-                                        } else if (notification.getVal() instanceof BACnetTagApplicationEnumerated) {
+                                        } else if (notification.getValue() instanceof BACnetTagApplicationEnumerated) {
                                             type = "enumeration";
-                                            final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getVal();
+                                            final BACnetTagApplicationEnumerated val = (BACnetTagApplicationEnumerated) notification.getValue();
                                         }
                                     }
 
                                     // Status-Flags have the property id 111
                                     // (This is some additional information passed along)
                                     else if (propertyId == 111) {
-                                        final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getVal();
+                                        final BACnetTagApplicationBitString val = (BACnetTagApplicationBitString) notification.getValue();
                                         int numBits = (val.getData().length * 8) - val.getUnusedBits();
                                         BitSet bitSet = BitSet.valueOf(val.getData());
                                         boolean[] bits = new boolean[numBits];

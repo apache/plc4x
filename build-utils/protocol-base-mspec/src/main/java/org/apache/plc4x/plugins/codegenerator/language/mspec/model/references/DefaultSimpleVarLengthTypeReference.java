@@ -21,7 +21,7 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.references;
 
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleVarLengthTypeReference;
 
-public class DefaultSimpleVarLengthTypeReference extends DefaultSimpleTypeReference implements SimpleVarLengthTypeReference {
+public class DefaultSimpleVarLengthTypeReference extends DefaultIntegerTypeReference implements SimpleVarLengthTypeReference {
 
     public DefaultSimpleVarLengthTypeReference(SimpleBaseType baseType) {
         super(baseType, -1);

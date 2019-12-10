@@ -29,6 +29,8 @@ import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.D
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumValue;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultSimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
@@ -39,6 +41,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
@@ -383,14 +386,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private TypeReference getTypeReference(MSpecParser.TypeReferenceContext ctx) {
         if(ctx.simpleTypeReference != null) {
-            SimpleTypeReference.SimpleBaseType simpleBaseType = SimpleTypeReference.SimpleBaseType.valueOf(
-                ctx.simpleTypeReference.base.getText().toUpperCase());
-            if(ctx.simpleTypeReference.size != null) {
-                int size = Integer.parseInt(ctx.simpleTypeReference.size.getText());
-                return new DefaultSimpleTypeReference(simpleBaseType, size);
-            } else {
-                return new DefaultSimpleTypeReference(simpleBaseType, 1);
-            }
+            return getSimpleTypeReference(ctx.simpleTypeReference);
         } else {
             return new DefaultComplexTypeReference(ctx.complexTypeReference.getText());
         }
@@ -399,11 +395,20 @@ public class MessageFormatListener extends MSpecBaseListener {
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
+        // If a size it specified its a simple integer length based type.
         if(ctx.size != null) {
             int size = Integer.parseInt(ctx.size.getText());
-            return new DefaultSimpleTypeReference(simpleBaseType, size);
-        } else {
-            return new DefaultSimpleTypeReference(simpleBaseType, 1);
+            return new DefaultIntegerTypeReference(simpleBaseType, size);
+        }
+        // If exponent and mantissa are present, it's a floating point representation.
+        else if((ctx.exponent != null) && (ctx.mantissa != null)) {
+            int exponent = Integer.parseInt(ctx.exponent.getText());
+            int mantissa = Integer.parseInt(ctx.mantissa.getText());
+            return new DefaultFloatTypeReference(simpleBaseType, exponent, mantissa);
+        }
+        // In all other cases (bit) it's just assume it's length it 1.
+        else {
+            return new DefaultIntegerTypeReference(simpleBaseType, 1);
         }
     }
 
