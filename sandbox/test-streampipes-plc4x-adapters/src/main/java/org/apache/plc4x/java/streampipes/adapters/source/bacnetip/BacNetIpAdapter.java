@@ -29,7 +29,6 @@ import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.PcapChannelFactory;
 import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
 import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.streampipes.adapters.config.ConnectWorkerConfig;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
 import org.pcap4j.core.*;
@@ -40,8 +39,6 @@ import org.streampipes.connect.adapter.exception.AdapterException;
 import org.streampipes.connect.adapter.exception.ParseException;
 import org.streampipes.connect.adapter.model.specific.SpecificDataStreamAdapter;
 import org.streampipes.connect.adapter.sdk.ParameterExtractor;
-import org.streampipes.connect.container.worker.init.AdapterWorkerContainer;
-import org.streampipes.connect.init.AdapterDeclarerSingleton;
 import org.streampipes.model.AdapterType;
 import org.streampipes.model.connect.adapter.SpecificAdapterStreamDescription;
 import org.streampipes.model.connect.guess.GuessSchema;
@@ -392,20 +389,6 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
     @Override
     public String getId() {
         return ID;
-    }
-
-    public static class BacNetIpAdapterInit extends AdapterWorkerContainer {
-        public static void main(String[] args) {
-            AdapterDeclarerSingleton
-                .getInstance()
-                .add(new BacNetIpAdapter());
-
-            String workerUrl = ConnectWorkerConfig.INSTANCE.getConnectContainerWorkerUrl();
-            String masterUrl = ConnectWorkerConfig.INSTANCE.getConnectContainerMasterUrl();
-            Integer workerPort = ConnectWorkerConfig.INSTANCE.getConnectContainerWorkerPort();
-
-            new BacNetIpAdapterInit().init(workerUrl, masterUrl, workerPort);
-        }
     }
 
 }
