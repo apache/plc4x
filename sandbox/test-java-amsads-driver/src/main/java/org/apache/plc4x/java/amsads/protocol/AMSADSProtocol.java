@@ -42,7 +42,7 @@ public class AMSADSProtocol extends PlcByteToMessageCodec<AMSADSCommand> {
     private final short remoteAddr;
     private final DF1SymbolIO df1SymbolIO;
 
-    public Df1Protocol(short localAddr, short remoteAddr) {
+    public AMSADSProtocol(short localAddr, short remoteAddr) {
         this.localAddr = localAddr;
         this.remoteAddr = remoteAddr;
         df1SymbolIO = new DF1SymbolIO();

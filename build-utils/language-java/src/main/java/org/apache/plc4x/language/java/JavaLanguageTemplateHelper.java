@@ -201,7 +201,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (simpleTypeReference.getSize() <= 32) {
                     return "readUnsignedLong(" + simpleTypeReference.getSize() + ")";
                 }
-                return "readUnsignedBigInteger" + simpleTypeReference.getSize() + ")";
+                return "readUnsignedBigInteger(" + simpleTypeReference.getSize() + ")";
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
@@ -252,7 +252,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (simpleTypeReference.getSize() <= 32) {
                     return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "writeUnsignedBigInteger" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
+                return "writeUnsignedBigInteger(" + simpleTypeReference.getSize() + ", BigInteger.valueOf(" + fieldName + "))";
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
@@ -267,7 +267,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (simpleTypeReference.getSize() <= 64) {
                     return "writeLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "writeBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
+                return "writeBigInteger(" + simpleTypeReference.getSize() + ", BigInteger.valueOf( " + fieldName + "))";
             }
             case FLOAT: {
                 if (simpleTypeReference.getSize() <= 32) {
