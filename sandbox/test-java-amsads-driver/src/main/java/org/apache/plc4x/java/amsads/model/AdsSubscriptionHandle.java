@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.amsads.model;
 
-import org.apache.plc4x.java.ads.api.commands.types.NotificationHandle;
 import org.apache.plc4x.java.base.messages.PlcSubscriber;
 import org.apache.plc4x.java.base.model.DefaultPlcSubscriptionHandle;
 
@@ -30,9 +29,9 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final AdsDataType adsDataType;
 
-    private final NotificationHandle notificationHandle;
+    private final Long notificationHandle;
 
-    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataType adsDataType, NotificationHandle notificationHandle) {
+    public AdsSubscriptionHandle(PlcSubscriber plcSubscriber, String plcFieldName, AdsDataType adsDataType, Long notificationHandle) {
         super(plcSubscriber);
         this.plcFieldName = plcFieldName;
         this.adsDataType = adsDataType;
@@ -47,7 +46,7 @@ public class AdsSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         return adsDataType;
     }
 
-    public NotificationHandle getNotificationHandle() {
+    public Long getNotificationHandle() {
         return notificationHandle;
     }
 

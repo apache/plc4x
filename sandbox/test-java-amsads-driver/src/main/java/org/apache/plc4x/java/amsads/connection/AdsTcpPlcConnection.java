@@ -23,11 +23,12 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.amsads.model.*;
 import org.apache.plc4x.java.amsads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.amsads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
-import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
-import org.apache.plc4x.java.amsads.readwrite.AdsDeviceNotificationRequest;
+import org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder;
+import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -46,6 +47,7 @@ import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -75,11 +77,11 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     private Map<InternalPlcConsumerRegistration, Consumer<AdsDeviceNotificationRequest>> consumerRegistrations = new HashMap<>();
 
     private AdsTcpPlcConnection(InetAddress address, AmsNetId targetAmsNetId, int targetint) {
-        this(address, targetAmsNetId, targetint, generateAmsNetId(), generateint());
+        this(address, targetAmsNetId, targetint, generateAmsNetId(), generateAmsPort());
     }
 
     private AdsTcpPlcConnection(InetAddress address, Integer port, AmsNetId targetAmsNetId, int targetint) {
-        this(address, port, targetAmsNetId, targetint, generateAmsNetId(), generateint());
+        this(address, port, targetAmsNetId, targetint, generateAmsNetId(), generateAmsPort());
     }
 
     private AdsTcpPlcConnection(InetAddress address, AmsNetId targetAmsNetId, int targetint, AmsNetId sourceAmsNetId, int sourceint) {
@@ -127,14 +129,23 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     protected static AmsNetId generateAmsNetId() {
         try {
-            return AmsNetId.of(Inet4Address.getLocalHost().getHostAddress() + ".1.1");
+            String hostAddress = Inet4Address.getLocalHost().getHostAddress();
+            String[] octets = hostAddress.split("\\.");
+            return new AmsNetId(
+                Short.parseShort(octets[3]),
+                Short.parseShort(octets[2]),
+                Short.parseShort(octets[1]),
+                Short.parseShort(octets[0]),
+                (short) 1,
+                (short) 2
+            );
         } catch (UnknownHostException e) {
             throw new PlcRuntimeException(e);
         }
     }
 
-    protected static int generateint() {
-        return int.of(localPorts.getAndIncrement());
+    protected static int generateAmsPort() {
+        return localPorts.getAndIncrement();
     }
 
     @Override
@@ -148,8 +159,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
                 final PlcField field = Objects.requireNonNull(subscriptionPlcField.getPlcField());
 
-                final IndexGroup indexGroup;
-                final IndexOffset indexOffset;
+                final long indexGroup;
+                final long indexOffset;
                 final AdsDataType adsDataType;
                 final int numberOfElements;
                 // If this is a symbolic field, it has to be resolved first.
@@ -160,8 +171,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                     if (directAdsField == null) {
                         throw new PlcRuntimeException("Unresolvable field " + field);
                     }
-                    indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-                    indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+                    indexGroup = directAdsField.getIndexGroup();
+                    indexOffset = directAdsField.getIndexOffset();
                     adsDataType = directAdsField.getAdsDataType();
                     numberOfElements = directAdsField.getNumberOfElements();
                 }
@@ -169,42 +180,36 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 // without having to do any resolving.
                 else if (field instanceof DirectAdsField) {
                     DirectAdsField directAdsField = (DirectAdsField) field;
-                    indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-                    indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+                    indexGroup = directAdsField.getIndexGroup();
+                    indexOffset = directAdsField.getIndexOffset();
                     adsDataType = directAdsField.getAdsDataType();
                     numberOfElements = directAdsField.getNumberOfElements();
                 } else {
                     throw new IllegalArgumentException("Unsupported field type " + field.getClass());
                 }
 
-                final TransmissionMode transmissionMode;
+                final long transmissionMode;
                 long cycleTime = 4000000;
                 switch (subscriptionPlcField.getPlcSubscriptionType()) {
                     case CYCLIC:
-                        transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERCYCLE;
+                        transmissionMode = 3L;
                         cycleTime = subscriptionPlcField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
                         break;
                     case CHANGE_OF_STATE:
-                        transmissionMode = TransmissionMode.DefinedValues.ADSTRANS_SERVERONCHA;
+                        transmissionMode = 4L;
                         break;
                     default:
                         throw new PlcRuntimeException("Unmapped type " + subscriptionPlcField.getPlcSubscriptionType());
                 }
 
                 // Prepare the subscription request itself.
-                AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = AdsAddDeviceNotificationRequest.of(
-                    targetAmsNetId,
-                    targetint,
-                    sourceAmsNetId,
-                    sourceint,
-                    Invoke.NONE,
+                AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = new AdsAddDeviceNotificationRequest(
                     indexGroup,
                     indexOffset,
-                    Length.of(adsDataType.getTargetByteSize() * (long) numberOfElements),
+                    adsDataType.getTargetByteSize() * (long) numberOfElements,
                     transmissionMode,
-                    // We set max delay to cycle time as we don't have a second parameter for this in the plc4j-api
-                    MaxDelay.of(cycleTime + 1),
-                    CycleTime.of(cycleTime)
+                    cycleTime + 1,
+                    cycleTime
                 );
 
                 // Send the request to the plc and wait for a response
@@ -215,7 +220,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 AdsAddDeviceNotificationResponse response = addDeviceResponse.getResponse();
 
                 // Abort if we got anything but a successful response.
-                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                if (response.getResult() != 0L) {
                     throw new PlcRuntimeException("Error code received " + response.getResult());
                 }
                 PlcSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, plcFieldName, adsDataType, response.getNotificationHandle());
@@ -233,15 +238,9 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         for (InternalPlcSubscriptionHandle internalPlcSubscriptionHandle : internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles()) {
             if (internalPlcSubscriptionHandle instanceof AdsSubscriptionHandle) {
                 AdsSubscriptionHandle adsSubscriptionHandle = (AdsSubscriptionHandle) internalPlcSubscriptionHandle;
-                AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest =
-                    AdsDeleteDeviceNotificationRequest.of(
-                        targetAmsNetId,
-                        targetint,
-                        sourceAmsNetId,
-                        sourceint,
-                        Invoke.NONE,
-                        adsSubscriptionHandle.getNotificationHandle()
-                    );
+                AdsDeleteDeviceNotificationRequest adsDeleteDeviceNotificationRequest = new AdsDeleteDeviceNotificationRequest(
+                    adsSubscriptionHandle.getNotificationHandle()
+                );
                 CompletableFuture<InternalPlcProprietaryResponse<AdsDeleteDeviceNotificationResponse>> deleteDeviceFuture =
                     new CompletableFuture<>();
                 channel.writeAndFlush(new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsDeleteDeviceNotificationRequest), deleteDeviceFuture));
@@ -249,7 +248,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 InternalPlcProprietaryResponse<AdsDeleteDeviceNotificationResponse> deleteDeviceResponse =
                     getFromFuture(deleteDeviceFuture, DEL_DEVICE_TIMEOUT);
                 AdsDeleteDeviceNotificationResponse response = deleteDeviceResponse.getResponse();
-                if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+                if (response.getResult() != 0L) {
                     throw new PlcRuntimeException("Non error code received " + response.getResult());
                 }
             }
@@ -273,19 +272,23 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         }
 
         InternalPlcConsumerRegistration internalPlcConsumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, internalPlcSubscriptionHandles);
-        Map<NotificationHandle, AdsSubscriptionHandle> notificationHandleAdsSubscriptionHandleMap = Arrays.stream(internalPlcSubscriptionHandles)
+        Map<Long, AdsSubscriptionHandle> notificationHandleAdsSubscriptionHandleMap = Arrays.stream(internalPlcSubscriptionHandles)
             .map(subscriptionHandle -> checkInternal(subscriptionHandle, AdsSubscriptionHandle.class))
             .collect(Collectors.toConcurrentMap(AdsSubscriptionHandle::getNotificationHandle, Function.identity()));
 
         Consumer<AdsDeviceNotificationRequest> adsDeviceNotificationRequestConsumer =
-            adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
-                Instant timeStamp = adsStampHeader.getTimeStamp().getAsDate().toInstant();
+            adsDeviceNotificationRequest -> Arrays.asList(adsDeviceNotificationRequest.getAdsStampHeaders()).forEach(adsStampHeader -> {
+                BigInteger winTime = adsStampHeader.getTimestamp();
+                BigInteger timeMillisSince16010101 = winTime.divide(BigInteger.valueOf(10_000));
+                BigInteger EPOCH_DIFF_IN_MILLIS = BigInteger.valueOf((369L * 365L + 89L) * 86400L * 1000L);
+                BigInteger subtract = timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
+                Instant timeStamp = new Date(subtract.longValue()).toInstant();
 
                 Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
-                adsStampHeader.getAdsNotificationSamples()
+                Arrays.asList(adsStampHeader.getAdsNotificationSamples())
                     .forEach(adsNotificationSample -> {
-                        NotificationHandle notificationHandle = adsNotificationSample.getNotificationHandle();
-                        Data data = adsNotificationSample.getData();
+                        Long notificationHandle = adsNotificationSample.getNotificationHandle();
+                        byte[] data = adsNotificationSample.getData();
                         AdsSubscriptionHandle adsSubscriptionHandle = notificationHandleAdsSubscriptionHandleMap.get(notificationHandle);
                         if (adsSubscriptionHandle == null) {
                             // TODO: we might want to refactor this so that we don't subscribe to everything in the first place.
@@ -296,7 +299,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            BaseDefaultFieldItem baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
+                            BaseDefaultFieldItem baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data);
                             fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);

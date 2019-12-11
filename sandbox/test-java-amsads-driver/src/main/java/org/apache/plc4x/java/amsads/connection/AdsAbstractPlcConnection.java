@@ -21,6 +21,9 @@ package org.apache.plc4x.java.amsads.connection;
 import io.netty.channel.ChannelFuture;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
+import org.apache.plc4x.java.amsads.model.AdsPlcFieldHandler;
+import org.apache.plc4x.java.amsads.model.DirectAdsField;
+import org.apache.plc4x.java.amsads.model.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -31,6 +34,8 @@ import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.*;
 
 public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
@@ -61,22 +66,6 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
         this.sourceAmsNetId = sourceAmsNetId;
         this.sourceAmsPort = sourceAmsPort;
         this.fieldMapping = new ConcurrentHashMap<>();
-    }
-
-    public AmsNetId getTargetAmsNetId() {
-        return targetAmsNetId;
-    }
-
-    public int getTargetAmsPort() {
-        return targetAmsPort;
-    }
-
-    public AmsNetId getSourceAmsNetId() {
-        return sourceAmsNetId;
-    }
-
-    public int getSourceAmsPort() {
-        return sourceAmsPort;
     }
 
     @Override
@@ -153,16 +142,12 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
         // resolve it and add it to the map.
         fieldMapping.computeIfAbsent(symbolicAdsField, symbolicAdsFieldInternal -> {
             LOGGER.debug("Resolving {}", symbolicAdsFieldInternal);
-            AdsReadWriteRequest adsReadWriteRequest = AdsReadWriteRequest.of(
-                targetAmsNetId,
-                targetAmsPort,
-                sourceAmsNetId,
-                sourceAmsPort,
-                Invoke.NONE,
-                IndexGroup.ReservedGroups.ADSIGRP_SYM_HNDBYNAME,
-                IndexOffset.NONE,
-                ReadLength.of(IndexOffset.NUM_BYTES),
-                Data.of(symbolicAdsFieldInternal.getSymbolicField())
+            AdsReadWriteRequest adsReadWriteRequest = new AdsReadWriteRequest(
+                0xF003L,
+                0L,
+                4L,
+                symbolicAdsFieldInternal.getSymbolicField().getBytes().length,
+                symbolicAdsFieldInternal.getSymbolicField().getBytes()
             );
 
             // TODO: This is blocking, should be changed to be async.
@@ -171,12 +156,15 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
             InternalPlcProprietaryResponse<AdsReadWriteResponse> getHandleResponse = getFromFuture(getHandelFuture, SYMBOL_RESOLVE_TIMEOUT);
             AdsReadWriteResponse response = getHandleResponse.getResponse();
 
-            if (response.getResult().toAdsReturnCode() != AdsReturnCode.ADS_CODE_0) {
+            if (response.getResult() != 0L) {
                 throw new PlcRuntimeException("Non error code received " + response.getResult());
             }
 
-            IndexOffset symbolHandle = IndexOffset.of(response.getData().getBytes());
-            return DirectAdsField.of(IndexGroup.ReservedGroups.ADSIGRP_SYM_VALBYHND.getAsLong(), symbolHandle.getAsLong(), symbolicAdsFieldInternal.getAdsDataType(), symbolicAdsFieldInternal.getNumberOfElements());
+            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            buffer.put(response.getData());
+            Long symbolHandle = buffer.getLong();
+            return DirectAdsField.of(0xF005, symbolHandle, symbolicAdsFieldInternal.getAdsDataType(), symbolicAdsFieldInternal.getNumberOfElements());
         });
     }
 
@@ -192,16 +180,18 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
     public void close() throws PlcConnectionException {
         fieldMapping.values().stream()
             .parallel()
-            .map(adsField -> AdsWriteRequest.of(
-                targetAmsNetId,
-                targetAmsPort,
-                sourceAmsNetId,
-                sourceAmsPort,
-                Invoke.NONE,
-                IndexGroup.ReservedGroups.ADSIGRP_SYM_RELEASEHND,
-                IndexOffset.NONE,
-                Data.of(IndexGroup.of(adsField.getIndexGroup()).getBytes())
-            ))
+            .map(adsField -> {
+                ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+                buffer.order(ByteOrder.LITTLE_ENDIAN);
+                buffer.putLong(adsField.getIndexGroup());
+                byte[] bytes = buffer.array();
+                return new AdsWriteRequest(
+                    0xF006L,
+                    0L,
+                    bytes.length,
+                    bytes
+                );
+            })
             .map(adsWriteRequest -> new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
             .forEach(channel::write);

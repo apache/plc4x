@@ -57,7 +57,6 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
                 // Build the protocol stack for communicating with the ads protocol.
                 ChannelPipeline pipeline = channel.pipeline();
                 pipeline.addLast(new Payload2SerialProtocol());
-                pipeline.addLast(new SingleMessageRateLimiter());
                 pipeline.addLast(new Ads2PayloadProtocol());
                 pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
                 pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsSerialPlcConnection.this, AdsSerialPlcConnection.this, null, timer));
