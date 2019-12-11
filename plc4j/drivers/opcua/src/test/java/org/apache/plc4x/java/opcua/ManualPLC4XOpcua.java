@@ -33,7 +33,6 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -48,7 +47,6 @@ import java.util.function.Consumer;
  * <p>
  * TODO: replace current public server with local Milo instance
  *
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class ManualPLC4XOpcua {
@@ -154,10 +152,10 @@ public class ManualPLC4XOpcua {
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField("ns=2;i=10855");
 
-        long milisStart = Calendar.getInstance().getTimeInMillis();
+        long milisStart = System.currentTimeMillis();
         opcuaConnection = (OpcuaTcpPlcConnection)
             new PlcDriverManager().getConnection(ConnectionString);
-        long result = Calendar.getInstance().getTimeInMillis() - milisStart;
+        long result = System.currentTimeMillis() - milisStart;
         opcuaConnection.close();
         return result;
     }
@@ -172,22 +170,23 @@ public class ManualPLC4XOpcua {
                 OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
                 PlcField field = fieldH.createField("ns=2;i=10855");
 
-                long milisStart = Calendar.getInstance().getTimeInMillis();
+                long milisStart = System.currentTimeMillis();
                 try {
                     opcuaConnection = (OpcuaTcpPlcConnection)
                         new PlcDriverManager().getConnection(connectionString);
                 } catch (PlcConnectionException e) {
                     e.printStackTrace();
                 }
-                result += Calendar.getInstance().getTimeInMillis() - milisStart;
+                result += System.currentTimeMillis() - milisStart;
                 try {
+                    assert opcuaConnection != null;
                     opcuaConnection.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
-            return result / 1;
+            return result;
 
         }
     }

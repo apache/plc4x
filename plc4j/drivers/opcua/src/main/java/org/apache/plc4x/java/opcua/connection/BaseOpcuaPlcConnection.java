@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {

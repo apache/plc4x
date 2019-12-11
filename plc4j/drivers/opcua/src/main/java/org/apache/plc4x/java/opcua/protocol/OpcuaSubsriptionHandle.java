@@ -40,7 +40,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {

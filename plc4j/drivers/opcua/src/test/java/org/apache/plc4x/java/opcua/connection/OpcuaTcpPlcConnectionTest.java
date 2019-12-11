@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnectionTest {
