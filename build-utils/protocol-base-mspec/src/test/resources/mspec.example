@@ -21,13 +21,107 @@
 // AMS/TCP Paket
 ////////////////////////////////////////////////////////////////
 
+[type 'AmsTCPPacket'
+    // The ams - tcp to be sent.
+    [simple AmsTcpHeader 'amsTcpHeader']
+    // The AMS packet to be sent.
+    [simple AMSPacket    'userdata'    ]
+]
+
+// AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
+[type 'AmsTcpHeader'
+    // These bytes must be set to 0.
+    [reserved   uint       16       '0x0000' ]
+    // This array contains the length of the data packet.
+    // It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
+    [simple     uint       32       '0x0000' ]
+]
+
+////////////////////////////////////////////////////////////////
+// AMS/Serial Paket
+////////////////////////////////////////////////////////////////
+
+// If an AMS serial frame has been received and the frame is OK (magic cookie OK, CRC OK, correct fragment number etc.),
+// then the receiver has to send an acknowledge frame, to inform the transmitter that the frame has arrived.
+//
+// @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+[type 'AmsSerialAcknowledgeFrame'
+    // Id for detecting an AMS serial frame.
+    [simple     uint        16  'magicCookie'        ]
+    // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
+    // since it is a 1 to 1 connection and hence the participants are unique.
+    [simple     int          8  'transmitterAddress' ]
+    // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
+    // connection and hence the participants are unique.
+    [simple     int          8  'receiverAddress'    ]
+    // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
+    // number with an internal counter.
+    [simple     int          8  'fragmentNumber'     ]
+    // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
+    // fragmented (not published at the moment).
+    [simple     int          8  'userDataLength'     ]
+    [simple     uint        16  'crc'                ]
+]
+
+// An AMS packet can be transferred via RS232 with the help of an AMS serial frame.
+// The actual AMS packet is in the user data field of the frame.
+// The max. length of the AMS packet is limited to 255 bytes.
+// Therefore the max. size of an AMS serial frame is 263 bytes.
+// The fragment number is compared with an internal counter by the receiver.
+// The frame number is simply accepted and not checked when receiving the first AMS frame or in case a timeout is
+// exceeded. The CRC16 algorithm is used for calculating the checksum.
+// @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+[type 'AmsSerialFrame'
+    // Id for detecting an AMS serial frame.
+    [simple     uint        16  'magicCookie'        ]
+    // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
+    // since it is a 1 to 1 connection and hence the participants are unique.
+    [simple     int          8  'transmitterAddress' ]
+    // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
+    // connection and hence the participants are unique.
+    [simple     int          8  'receiverAddress'    ]
+    // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
+    // number with an internal counter.
+    [simple     int          8  'fragmentNumber'     ]
+    // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
+    // fragmented (not published at the moment).
+    [simple     int          8  'userDataLength'     ]
+    // The AMS packet to be sent.
+    [simple AMSPacket           'userdata'           ]
+    [simple     uint        16  'crc'                ]
+]
+
+// In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
+// sent. In this way the receiver is informed that a new communication is running and the receiver then accepts the
+// fragment number during the next AMS-Frame, without carrying out a check.
+[type 'AmsSerialResetFrame'
+    // Id for detecting an AMS serial frame.
+    [simple     uint        16  'magicCookie'        ]
+    // Address of the sending participant. This value can always be set to 0 for an RS232 communication,
+    // since it is a 1 to 1 connection and hence the participants are unique.
+    [simple     int          8  'transmitterAddress' ]
+    // Receiver’s address. This value can always be set to 0 for an RS232 communication, since it is a 1 to 1
+    // connection and hence the participants are unique.
+    [simple     int          8  'receiverAddress'    ]
+    // Number of the frame sent. Once the number 255 has been sent, it starts again from 0. The receiver checks this
+    // number with an internal counter.
+    [simple     int          8  'fragmentNumber'     ]
+    // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
+    // fragmented (not published at the moment).
+    [simple     int          8  'userDataLength'     ]
+    [simple     uint        16  'crc'                ]
+]
+
+////////////////////////////////////////////////////////////////
+// AMS Common
+////////////////////////////////////////////////////////////////
+
 [type 'AMSPacket'
-    [reserved   uint       16       '0x0000'                                                   ]
-    [implicit   uint       32       'packetLength' 'header.lengthInBytes + data.lengthInBytes' ]
     [simple     AMSHeader  'header'                                                            ]
     [simple     ADSData    'data'   ['header.commandId', 'header.state.response']              ]
 ]
 
+// AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
 [type 'AMSHeader'
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AMSNetId        'targetAmsNetId'                            ]

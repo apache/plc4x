@@ -170,8 +170,8 @@ innerExpression
  ;
 
 COMMENT
- : K_COMMENT [a-zA-Z0-9,.'":;()/ \t\r\n\u000C-]*
- | '//' [a-zA-Z0-9,.'":;()/ \t-]*
+ : K_COMMENT [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t\r\n\u000C-]*
+ | '//' [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t-]*
  ;
 
 INTEGER_LITERAL
