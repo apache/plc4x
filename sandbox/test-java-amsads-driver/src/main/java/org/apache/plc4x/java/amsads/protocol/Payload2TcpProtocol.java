@@ -22,8 +22,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
+import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.amsads.readwrite.AmsTcpHeader;
+import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
+import org.apache.plc4x.java.amsads.readwrite.io.AmsTCPPacketIO;
+import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.utils.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +41,24 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) {
+    protected void encode(ChannelHandlerContext channelHandlerContext, ByteBuf amsPacket, List<Object> out) throws AdsException {
         LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
-        out.add(AmsTCPPacket.of(UserData.of(amsPacket)).getByteBuf());
+
+        byte[] bytes = amsPacket.array();
+        AmsPacket amsPacketSer;
+        try {
+            amsPacketSer = AmsPacketIO.parse(new ReadBuffer(bytes, true));
+        } catch (ParseException e) {
+            throw new AdsException(-1L, e);
+        }
+
+        WriteBuffer writeBuffer = new WriteBuffer(amsPacketSer.getLengthInBytes(), true);
+        try {
+            AmsTCPPacketIO.serialize(writeBuffer, new AmsTCPPacket(new AmsTcpHeader(amsPacketSer.getLengthInBytes()), amsPacketSer));
+        } catch (ParseException e) {
+            throw new AdsException(amsPacketSer.getAmsHeader().getInvokeId(), e);
+        }
+        out.add(writeBuffer.getData());
     }
 
     @SuppressWarnings("unchecked")
@@ -47,21 +69,25 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
             return;
         }
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
-        if (byteBuf.readableBytes() < AmsTcpHeader.Reserved.NUM_BYTES + TcpLength.NUM_BYTES) {
-            // wait till we can read the length header
-            return;
-        }
-        if (byteBuf.readableBytes() < byteBuf.getUnsignedIntLE(AmsTcpHeader.Reserved.NUM_BYTES)) {
-            // wait till we have a complete ADS packet
-            return;
-        }
-        // Reserved
-        byteBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
-        TcpLength packetLength = TcpLength.of(byteBuf);
-        AmsTcpHeader amsTcpHeader = AmsTcpHeader.of(packetLength);
-        LOGGER.debug("AMS TCP Header {}", amsTcpHeader);
+        byte[] bytes = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(bytes);
+        ReadBuffer readBuffer = new ReadBuffer(bytes);
+        while (readBuffer.getPos() < bytes.length) {
+            try {
+                AmsTCPPacket amsTCPPacket = AmsTCPPacketIO.parse(readBuffer);
+                AmsPacket amsPacket = amsTCPPacket.getUserdata();
 
-        out.add(byteBuf.readBytes((int) packetLength.getAsLong()));
+                WriteBuffer writeBuffer = new WriteBuffer(amsPacket.getLengthInBytes(), true);
+                try {
+                    AmsPacketIO.serialize(writeBuffer, amsPacket);
+                } catch (ParseException e) {
+                    throw new AdsException(amsPacket.getAmsHeader().getInvokeId(), e);
+                }
+                out.add(writeBuffer.getData());
+            } catch (Exception e) {
+                LOGGER.warn("Error decoding package: " + e.getMessage());
+            }
+        }
     }
 
 }

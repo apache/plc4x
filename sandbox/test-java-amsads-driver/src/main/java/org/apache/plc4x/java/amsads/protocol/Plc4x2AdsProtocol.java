@@ -21,11 +21,13 @@ package org.apache.plc4x.java.amsads.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.amsads.model.AdsDataType;
 import org.apache.plc4x.java.amsads.model.AdsField;
 import org.apache.plc4x.java.amsads.model.DirectAdsField;
 import org.apache.plc4x.java.amsads.model.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.*;
+import org.apache.plc4x.java.amsads.readwrite.types.CommandId;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -142,9 +144,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             throw new PlcProtocolException("PlcField not of type DirectAdsField: " + field.getClass());
         }
         DirectAdsField directAdsField = (DirectAdsField) field;
-        Long invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+        long invokeId = correlationBuilder.incrementAndGet();
+        long indexGroup = directAdsField.getIndexGroup();
+        long indexOffset = directAdsField.getIndexOffset();
 
         BaseDefaultFieldItem fieldItem = writeRequest.getFieldItems().get(0);
         Object[] values = fieldItem.getValues();
@@ -156,8 +158,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
             throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, values);
         }
-        Data data = Data.of(bytes);
-        AmsPacket amsPacket = AdsWriteRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, data);
+        AdsWriteRequest data = new AdsWriteRequest(indexGroup, indexOffset, bytes.length, bytes);
+        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), data.getDataLength(), 0, invokeId), data);
         LOGGER.debug("encoded write request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);
@@ -182,14 +184,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             throw new PlcProtocolException("PlcField not of type DirectAdsField: " + field.getClass());
         }
         DirectAdsField directAdsField = (DirectAdsField) field;
-        Long invokeId = Invoke.of(correlationBuilder.incrementAndGet());
-        IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
-        IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
+        long invokeId = correlationBuilder.incrementAndGet();
+        long indexGroup = directAdsField.getIndexGroup();
+        long indexOffset = directAdsField.getIndexOffset();
         AdsDataType adsDataType = directAdsField.getAdsDataType();
         int numberOfElements = directAdsField.getNumberOfElements();
         int readLength = adsDataType.getTargetByteSize() * numberOfElements;
-        Length length = Length.of(readLength);
-        AmsPacket amsPacket = AdsReadRequest.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, invokeId, indexGroup, indexOffset, length);
+        AdsReadRequest data = new AdsReadRequest(indexGroup, indexOffset, readLength);
+        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), data.getDataLength(), 0, invokeId), data);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);
@@ -203,18 +205,19 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getProprietaryRequest();
         LOGGER.debug("encoded proprietary request {}", amsPacket);
         out.add(amsPacket);
-        requests.put(amsPacket.getAmsHeader().getInvokeId().getAsLong(), msg);
+        requests.put(amsPacket.getAmsHeader().getInvokeId(), msg);
     }
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, amsPacket, out);
-        if (amsPacket instanceof AdsDeviceNotificationRequest) {
+        ADSData data = amsPacket.getData();
+        if (data instanceof AdsDeviceNotificationRequest) {
             LOGGER.debug("Received notification {}", amsPacket);
-            handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) amsPacket);
+            handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) data);
             return;
         }
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId().getAsLong());
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId());
         if (plcRequestContainer == null) {
             LOGGER.info("Unmapped packet received {}", amsPacket);
             return;
@@ -224,14 +227,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
         // Handle the response to a read request.
         if (request instanceof PlcReadRequest) {
-            if (amsPacket instanceof AdsReadResponse) {
-                response = decodeReadResponse((AdsReadResponse) amsPacket, plcRequestContainer);
+            if (data instanceof AdsReadResponse) {
+                response = decodeReadResponse((AdsReadResponse) data, plcRequestContainer);
             } else {
                 throw new PlcProtocolException("Wrong type correlated " + amsPacket);
             }
         } else if (request instanceof PlcWriteRequest) {
-            if (amsPacket instanceof AdsWriteResponse) {
-                response = decodeWriteResponse((AdsWriteResponse) amsPacket, plcRequestContainer);
+            if (data instanceof AdsWriteResponse) {
+                response = decodeWriteResponse((AdsWriteResponse) data, plcRequestContainer);
             } else {
                 throw new PlcProtocolException("Wrong type correlated " + amsPacket);
             }
@@ -283,14 +286,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
     }
 
     @SuppressWarnings("unchecked")
-    private InternalPlcResponse decodeReadResponse(AdsReadeResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) {
+    private InternalPlcResponse decodeReadResponse(AdsReadResponse responseMessage, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> requestContainer) {
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
         // TODO: only single requests supported for now
         AdsField field = (AdsField) plcReadRequest.getFields().get(0);
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
-        byte[] bytes = responseMessage.getData().getBytes();
+        byte[] bytes = responseMessage.getData();
         BaseDefaultFieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
@@ -309,137 +312,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         return new DefaultPlcProprietaryResponse<>((InternalPlcProprietaryRequest) plcRequestContainer.getRequest(), amsPacket);
     }
 
-    private PlcResponseCode decodeResponseCode(Result result) {
-        switch (result.toAdsReturnCode()) {
-            case ADS_CODE_0:
-                return PlcResponseCode.OK;
-            case ADS_CODE_1:
-                return PlcResponseCode.INTERNAL_ERROR;
-            case ADS_CODE_2:
-            case ADS_CODE_3:
-            case ADS_CODE_4:
-            case ADS_CODE_5:
-                return PlcResponseCode.INTERNAL_ERROR;
-            case ADS_CODE_6:
-            case ADS_CODE_7:
-                return PlcResponseCode.INVALID_ADDRESS;
-            case ADS_CODE_8:
-            case ADS_CODE_9:
-            case ADS_CODE_10:
-            case ADS_CODE_11:
-            case ADS_CODE_12:
-            case ADS_CODE_13:
-            case ADS_CODE_14:
-            case ADS_CODE_15:
-            case ADS_CODE_16:
-            case ADS_CODE_17:
-            case ADS_CODE_18:
-            case ADS_CODE_19:
-            case ADS_CODE_20:
-            case ADS_CODE_21:
-            case ADS_CODE_22:
-            case ADS_CODE_23:
-            case ADS_CODE_24:
-            case ADS_CODE_25:
-            case ADS_CODE_26:
-            case ADS_CODE_27:
-            case ADS_CODE_28:
-            case ADS_CODE_1280:
-            case ADS_CODE_1281:
-            case ADS_CODE_1282:
-            case ADS_CODE_1283:
-            case ADS_CODE_1284:
-            case ADS_CODE_1285:
-            case ADS_CODE_1286:
-            case ADS_CODE_1287:
-            case ADS_CODE_1288:
-            case ADS_CODE_1289:
-            case ADS_CODE_1290:
-            case ADS_CODE_1291:
-            case ADS_CODE_1292:
-            case ADS_CODE_1293:
-            case ADS_CODE_1792:
-            case ADS_CODE_1793:
-            case ADS_CODE_1794:
-            case ADS_CODE_1795:
-            case ADS_CODE_1796:
-            case ADS_CODE_1797:
-            case ADS_CODE_1798:
-            case ADS_CODE_1799:
-            case ADS_CODE_1800:
-            case ADS_CODE_1801:
-            case ADS_CODE_1802:
-            case ADS_CODE_1803:
-            case ADS_CODE_1804:
-            case ADS_CODE_1805:
-            case ADS_CODE_1806:
-            case ADS_CODE_1807:
-            case ADS_CODE_1808:
-            case ADS_CODE_1809:
-            case ADS_CODE_1810:
-            case ADS_CODE_1811:
-            case ADS_CODE_1812:
-            case ADS_CODE_1813:
-            case ADS_CODE_1814:
-            case ADS_CODE_1815:
-            case ADS_CODE_1816:
-            case ADS_CODE_1817:
-            case ADS_CODE_1818:
-            case ADS_CODE_1819:
-            case ADS_CODE_1820:
-            case ADS_CODE_1821:
-            case ADS_CODE_1822:
-            case ADS_CODE_1823:
-            case ADS_CODE_1824:
-            case ADS_CODE_1825:
-            case ADS_CODE_1826:
-            case ADS_CODE_1827:
-            case ADS_CODE_1828:
-            case ADS_CODE_1836:
-            case ADS_CODE_1856:
-            case ADS_CODE_1857:
-            case ADS_CODE_1858:
-            case ADS_CODE_1859:
-            case ADS_CODE_1860:
-            case ADS_CODE_1861:
-            case ADS_CODE_1862:
-            case ADS_CODE_1863:
-            case ADS_CODE_1864:
-            case ADS_CODE_1872:
-            case ADS_CODE_1873:
-            case ADS_CODE_1874:
-            case ADS_CODE_1875:
-            case ADS_CODE_1876:
-            case ADS_CODE_1877:
-            case ADS_CODE_4096:
-            case ADS_CODE_4097:
-            case ADS_CODE_4098:
-            case ADS_CODE_4099:
-            case ADS_CODE_4100:
-            case ADS_CODE_4101:
-            case ADS_CODE_4102:
-            case ADS_CODE_4103:
-            case ADS_CODE_4104:
-            case ADS_CODE_4105:
-            case ADS_CODE_4106:
-            case ADS_CODE_4107:
-            case ADS_CODE_4108:
-            case ADS_CODE_4109:
-            case ADS_CODE_4110:
-            case ADS_CODE_4111:
-            case ADS_CODE_4112:
-            case ADS_CODE_4119:
-            case ADS_CODE_4120:
-            case ADS_CODE_4121:
-            case ADS_CODE_4122:
-            case ADS_CODE_10060:
-            case ADS_CODE_10061:
-            case ADS_CODE_10065:
-                return PlcResponseCode.INTERNAL_ERROR;
-            case UNKNOWN:
-                return PlcResponseCode.INTERNAL_ERROR;
+    private PlcResponseCode decodeResponseCode(long result) {
+        if (result == 0L) {
+            return PlcResponseCode.OK;
+        } else if (result == 0x7L) {
+            return PlcResponseCode.INVALID_ADDRESS;
+        } else {
+            return PlcResponseCode.INTERNAL_ERROR;
         }
-        throw new IllegalStateException(result.toAdsReturnCode() + " not mapped");
     }
 
 }

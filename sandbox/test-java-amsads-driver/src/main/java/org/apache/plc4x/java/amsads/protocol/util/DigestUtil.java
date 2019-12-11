@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.amsads.protocol.util;
 
 import com.github.snksoft.crc.CRC;
-import org.apache.plc4x.java.ads.api.util.ByteReadable;
 
 public class DigestUtil {
 
@@ -37,18 +36,6 @@ public class DigestUtil {
 
     private DigestUtil() {
         // Utility class
-    }
-
-    public static int calculateCrc16(ByteReadable... byteReadables) {
-        if (byteReadables.length == 1) {
-            return calculateCrc16(byteReadables[0].getBytes());
-        }
-        long currentCrcValue = crc.init();
-        for (ByteReadable byteReadable : byteReadables) {
-            currentCrcValue = crc.update(currentCrcValue, byteReadable.getBytes());
-        }
-        short finalCrc = crc.finalCRC16(currentCrcValue);
-        return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
 
     public static int calculateCrc16(byte[] bytes) {
