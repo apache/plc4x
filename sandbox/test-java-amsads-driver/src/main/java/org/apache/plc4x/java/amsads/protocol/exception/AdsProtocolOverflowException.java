@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -16,24 +16,17 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.df1.util;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.df1.Df1Field;
+package org.apache.plc4x.java.amsads.protocol.exception;
 
-public class Df1FieldHandler extends DefaultPlcFieldHandler {
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
-    @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        return Df1Field.of(fieldQuery);
+public class AdsProtocolOverflowException extends PlcRuntimeException {
+    public AdsProtocolOverflowException(Class<?> clazz, long length) {
+        super("Overflow in datatype " + clazz + " length: " + length);
     }
 
-    @Override
-    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
-        return super.encodeByte(field, values);
+    public AdsProtocolOverflowException(String constantName, long expectedLength, long actualLength) {
+        super("Overflow of " + constantName + ": " + expectedLength + ". Actual " + actualLength + "bytes.");
     }
-
 }

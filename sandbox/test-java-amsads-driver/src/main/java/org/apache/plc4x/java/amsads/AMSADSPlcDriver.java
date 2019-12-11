@@ -18,57 +18,104 @@
  */
 package org.apache.plc4x.java.amsads;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.plc4x.java.amsads.connection.AdsConnectionFactory;
+import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.df1.connection.SerialDf1Connection;
 import org.apache.plc4x.java.spi.PlcDriver;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
+/**
+ * Implementation of the ADS protocol, based on:
+ * - ADS Protocol
+ * - TCP
+ * - Serial
+ */
 public class AMSADSPlcDriver implements PlcDriver {
 
-    // TODO there is only serial, I guess?
+    public static final Pattern AMS_NET_ID_PATTERN =
+        Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+
+    public static final Pattern AMS_PORT_PATTERN = Pattern.compile("\\d+");
+
+    public static final Pattern ADS_ADDRESS_PATTERN =
+        Pattern.compile("(?<targetAmsNetId>" + AMS_NET_ID_PATTERN + "):(?<targetAmsPort>" + AMS_PORT_PATTERN + ")"
+            + "(/"
+            + "(?<sourceAmsNetId>" + AMS_NET_ID_PATTERN + "):(?<sourceAmsPort>" + AMS_PORT_PATTERN + ")"
+            + ")?");
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
-    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>/?[a-zA-Z0-9/]*)");
-    public static final Pattern DF1_URI_PATTERN = Pattern.compile("^df1:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/?" + "(?<params>\\?.*)?");
+    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>((?!/\\d).)*)");
+    public static final Pattern ADS_URI_PATTERN = Pattern.compile("^ads:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/" + ADS_ADDRESS_PATTERN + "(\\?.*)?");
+
+    private AdsConnectionFactory adsConnectionFactory;
+
+    public AMSADSPlcDriver() {
+        this.adsConnectionFactory = new AdsConnectionFactory();
+    }
+
+    public AMSADSPlcDriver(AdsConnectionFactory adsConnectionFactory) {
+        this.adsConnectionFactory = adsConnectionFactory;
+    }
 
     @Override
     public String getProtocolCode() {
-        return "df1";
+        return "ads";
     }
 
     @Override
     public String getProtocolName() {
-        return "Allen-Bradley DF1";
+        return "Beckhoff Twincat ADS";
     }
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = DF1_URI_PATTERN.matcher(url);
+        Matcher matcher = ADS_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection url doesn't match the format 'df1:{type}//{port|host}'");
+                "Connection url " + url + " doesn't match 'ads://{{host|ip}|serial:definition}/{targetAmsNetId}:{targetAmsPort}/{sourceAmsNetId}:{sourceAmsPort}' RAW:" + ADS_URI_PATTERN);
         }
-
         String host = matcher.group("host");
         String serialDefinition = matcher.group("serialDefinition");
         String portString = matcher.group("port");
         Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+        AmsNetId targetAmsNetId = AmsNetIdOf(matcher.group("targetAmsNetId"));
+        int targetAmsPort = Integer.parseInt(matcher.group("targetAmsPort"));
+        String sourceAmsNetIdString = matcher.group("sourceAmsNetId");
+        AmsNetId sourceAmsNetId = StringUtils.isNotBlank(sourceAmsNetIdString) ? AmsNetIdOf(sourceAmsNetIdString) : null;
+        String sourceAmsPortString = matcher.group("sourceAmsPort");
+        int sourceAmsPort = StringUtils.isNotBlank(sourceAmsPortString) ? Integer.parseInt(sourceAmsPortString) : null;
 
         if (serialDefinition != null) {
-            return new SerialDf1Connection(serialDefinition, params);
+            return adsConnectionFactory.adsSerialPlcConnectionOf(serialDefinition, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
         } else {
-            throw new PlcConnectionException("TCP DF1 connections not implemented yet.");
+            try {
+                return adsConnectionFactory.adsTcpPlcConnectionOf(InetAddress.getByName(host), port, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+            } catch (UnknownHostException e) {
+                throw new PlcConnectionException(e);
+            }
         }
     }
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("DF1 connections doesn't support authentication.");
+        throw new PlcConnectionException("Basic ADS connections don't support authentication.");
+    }
+
+    public static AmsNetId AmsNetIdOf(String address) {
+        if (!AMS_NET_ID_PATTERN.matcher(address).matches()) {
+            throw new IllegalArgumentException(address + " must match " + AMS_NET_ID_PATTERN);
+        }
+        String[] split = address.split("\\.");
+        short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
+        return new AmsNetId(shorts[5], shorts[4], shorts[3], shorts[2], shorts[1], shorts[0]);
     }
 
 }
