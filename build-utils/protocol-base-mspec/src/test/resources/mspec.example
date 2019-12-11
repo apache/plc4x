@@ -25,7 +25,7 @@
     // The ams - tcp to be sent.
     [simple AmsTcpHeader 'amsTcpHeader']
     // The AMS packet to be sent.
-    [simple AMSPacket    'userdata'    ]
+    [simple AmsPacket    'userdata'    ]
 ]
 
 // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
@@ -34,7 +34,8 @@
     [reserved   uint       16       '0x0000' ]
     // This array contains the length of the data packet.
     // It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
-    [simple     uint       32       '0x0000' ]
+    // TODO: rename me to length
+    [simple     uint       32       'tcpLength' '0x0000' ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -87,7 +88,7 @@
     // fragmented (not published at the moment).
     [simple     int          8  'userDataLength'     ]
     // The AMS packet to be sent.
-    [simple AMSPacket           'userdata'           ]
+    [simple AmsPacket           'userdata'           ]
     [simple     uint        16  'crc'                ]
 ]
 
@@ -116,19 +117,19 @@
 // AMS Common
 ////////////////////////////////////////////////////////////////
 
-[type 'AMSPacket'
-    [simple     AMSHeader  'header'                                                            ]
+[type 'AmsPacket'
+    [simple     AmsHeader  'amsHeader'                                                            ]
     [simple     ADSData    'data'   ['header.commandId', 'header.state.response']              ]
 ]
 
 // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
-[type 'AMSHeader'
+[type 'AmsHeader'
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
-    [simple     AMSNetId        'targetAmsNetId'                            ]
+    [simple     AmsNetId        'targetAmsNetId'                            ]
     // This is the AmsPort of the station, for which the packet is intended.
     [simple     uint        16  'targetAmsPort'                             ]
     // This contains the AmsNetId of the station, from which the packet was sent.
-    [simple     AMSNetId        'sourceAmsNetId'                            ]
+    [simple     AmsNetId        'sourceAmsNetId'                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
     [simple     uint        16  'sourceAmsPort'                             ]
     // 2 bytes.
@@ -171,7 +172,26 @@
     [simple     bit 'response'              ]
 ]
 
-[type 'AMSNetId'
+// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
+// methods between multiple TwinCAT PC's on the network.
+// <p>
+// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
+// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
+// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
+// <p>
+// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
+// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
+// <p>
+// _____0     1     2     3     4     5
+// __+-----------------------------------+
+// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
+// __+-----------------------------------+
+// <p>
+// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
+// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
+// documentation for notes about settings of the AMS NetId.
+// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
+[type 'AmsNetId'
     [simple     uint        8   'octet1'            ]
     [simple     uint        8   'octet2'            ]
     [simple     uint        8   'octet3'            ]
