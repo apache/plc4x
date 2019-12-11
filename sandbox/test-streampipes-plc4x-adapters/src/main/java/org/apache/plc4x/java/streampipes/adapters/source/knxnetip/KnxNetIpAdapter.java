@@ -166,6 +166,8 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
                                 // Send it to StreamPipes
                                 adapterPipeline.process(event);
+                            } else if (cemiBusmonInd.getCemiFrame() instanceof CEMIFrameAck){
+                                // Just ignore this ...
                             } else {
                                 System.out.println(packet);
                             }
