@@ -58,10 +58,12 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     private long sessionHandle;
     private Map<Integer, PlcRequestContainer> requests;
+    private int station;
 
-    public Plc4xAbEthProtocol() {
+    public Plc4xAbEthProtocol(int station) {
         logger.trace("Created new instance of PLC4X-AB-ETH Protocol");
         this.requests = new HashMap<>();
+        this.station = station;
     }
 
     @Override
@@ -103,9 +105,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                 DF1RequestProtectedTypedLogicalRead logicalRead = new DF1RequestProtectedTypedLogicalRead(
                     abEthField.getByteSize(), abEthField.getFileNumber(), abEthField.getFileType().getTypeCode(),
                     abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
-                // TODO: make target and origin address changeable
+                // origin/sender: constant = 5
                 DF1RequestMessage requestMessage = new DF1CommandRequestMessage(
-                    (short) 8, (short) 5, (short) 0, transactionCounterGenerator.incrementAndGet(), logicalRead);
+                    (short) station, (short) 5, (short) 0, transactionCounterGenerator.incrementAndGet(), logicalRead);
                 CIPEncapsulationReadRequest read = new CIPEncapsulationReadRequest(
                     sessionHandle, 0, emptySenderContext, 0, requestMessage);
 

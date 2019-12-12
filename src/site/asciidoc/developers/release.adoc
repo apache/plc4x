@@ -108,7 +108,7 @@ Otherwise we would have to define the working copy version for each module.
    mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `0.5.0-SNAPSHOT` the command would be the following:
+So in case of preparing the release branch for `0.6.0-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----

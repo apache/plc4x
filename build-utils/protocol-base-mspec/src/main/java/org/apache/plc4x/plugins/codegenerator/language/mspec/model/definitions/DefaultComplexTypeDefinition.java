@@ -74,8 +74,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     @Override
     public List<PropertyField> getAllPropertyFields() {
         List<PropertyField> fields = new LinkedList<>();
-        if(getParentType() != null) {
-            fields.addAll(((ComplexTypeDefinition)getParentType()).getAllPropertyFields());
+        if (getParentType() != null) {
+            fields.addAll(((ComplexTypeDefinition) getParentType()).getAllPropertyFields());
         }
         fields.addAll(getPropertyFields());
         return fields;
@@ -83,8 +83,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
 
     @Override
     public List<PropertyField> getParentPropertyFields() {
-        if(getParentType() != null) {
-            return ((ComplexTypeDefinition)getParentType()).getAllPropertyFields();
+        if (getParentType() != null) {
+            return ((ComplexTypeDefinition) getParentType()).getAllPropertyFields();
         }
         return Collections.emptyList();
     }

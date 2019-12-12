@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
@@ -46,13 +45,17 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     private static final int AB_ETH_PORT = 2222;
     private static final Logger logger = LoggerFactory.getLogger(AbEthPlcConnection.class);
 
-    public AbEthPlcConnection(InetAddress address, String params) {
-        this(new TcpSocketChannelFactory(address, AB_ETH_PORT), params);
+    private final int station;
+
+
+    public AbEthPlcConnection(InetAddress address, int station, String params) {
+        this(new TcpSocketChannelFactory(address, AB_ETH_PORT), station, params);
         logger.info("Setting up AB-ETH Connection with: host-name {}", address.getHostAddress());
     }
 
-    public AbEthPlcConnection(ChannelFactory channelFactory, String params) {
+    public AbEthPlcConnection(ChannelFactory channelFactory, int station, String params) {
         super(channelFactory, true);
+        this.station = station;
 
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
@@ -101,7 +104,7 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
                     }
                 });
                 pipeline.addLast(new AbEthProtocol());
-                pipeline.addLast(new Plc4xAbEthProtocol());
+                pipeline.addLast(new Plc4xAbEthProtocol(station));
             }
         };
     }
@@ -153,5 +156,4 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
         return future
             .thenApply(PlcReadResponse.class::cast);
     }
-
 }

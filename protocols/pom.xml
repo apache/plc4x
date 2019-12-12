@@ -190,6 +190,7 @@
   </build>
 
   <modules>
+    <module>amsads</module>
     <module>ab-eth</module>
     <module>bacnetip</module>
     <module>df1</module>

@@ -24,7 +24,9 @@ import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
-import org.apache.plc4x.plugins.codegenerator.types.references.*;
+import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
 import java.util.Collection;
@@ -34,7 +36,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
     private final Map<String, TypeDefinition> types;
@@ -75,46 +76,40 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     return allowPrimitive ? "boolean" : "Boolean";
                 }
                 case UINT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 4) {
+                    if (simpleTypeReference.getSize() <= 4) {
                         return allowPrimitive ? "byte" : "Byte";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 8) {
+                    if (simpleTypeReference.getSize() <= 8) {
                         return allowPrimitive ? "short" : "Short";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
+                    if (simpleTypeReference.getSize() <= 16) {
                         return allowPrimitive ? "int" : "Integer";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return allowPrimitive ? "long" : "Long";
                     }
                     return "BigInteger";
                 }
                 case INT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 8) {
+                    if (simpleTypeReference.getSize() <= 8) {
                         return allowPrimitive ? "byte" : "Byte";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 16) {
+                    if (simpleTypeReference.getSize() <= 16) {
                         return allowPrimitive ? "short" : "Short";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return allowPrimitive ? "int" : "Integer";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
+                    if (simpleTypeReference.getSize() <= 64) {
                         return allowPrimitive ? "long" : "Long";
                     }
                     return "BigInteger";
                 }
-                case FLOAT:
-                case UFLOAT: {
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
-                    if (sizeInBits <= 32) {
+                case FLOAT: {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return allowPrimitive ? "float" : "Float";
                     }
-                    if (sizeInBits <= 64) {
+                    if (simpleTypeReference.getSize() <= 64) {
                         return allowPrimitive ? "double" : "Double";
                     }
                     return "BigDecimal";
@@ -137,33 +132,28 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     return "false";
                 }
                 case UINT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 16) {
+                    if (simpleTypeReference.getSize() <= 16) {
                         return "0";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return "0l";
                     }
                     return "null";
                 }
                 case INT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 32) {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return "0";
                     }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
+                    if (simpleTypeReference.getSize() <= 64) {
                         return "0l";
                     }
                     return "null";
                 }
                 case FLOAT: {
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
-                    if (sizeInBits <= 32) {
+                    if (simpleTypeReference.getSize() <= 32) {
                         return "0.0f";
                     }
-                    if (sizeInBits <= 64) {
+                    if (simpleTypeReference.getSize() <= 64) {
                         return "0.0";
                     }
                     return "null";
@@ -196,61 +186,49 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.readBit()";
+                return "readBit()";
             }
             case UINT: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 4) {
-                    return "io.readUnsignedByte(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 4) {
+                    return "readUnsignedByte(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readUnsignedShort(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "readUnsignedShort(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readUnsignedInt(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "readUnsignedInt(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readUnsignedLong(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readUnsignedLong(" + simpleTypeReference.getSize() + ")";
                 }
-                return "io.readUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ")";
+                return "readUnsignedBigInteger(" + simpleTypeReference.getSize() + ")";
             }
             case INT: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readByte(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "readByte(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readShort(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "readShort(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readInt(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readInt(" + simpleTypeReference.getSize() + ")";
                 }
-                if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.readLong(" + integerTypeReference.getSizeInBits() + ")";
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "readLong(" + simpleTypeReference.getSize() + ")";
                 }
-                return "io.readBigInteger(" + integerTypeReference.getSizeInBits() + ")";
+                return "readBigInteger(" + simpleTypeReference.getSize() + ")";
             }
             case FLOAT: {
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                StringBuilder sb = new StringBuilder("((Supplier<Float>) (() -> {");
-                sb.append("\n            try {");
-                if (floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
-                    sb.append("\n               boolean negative = io.readBit();");
-                } else {
-                    sb.append("\n               boolean negative = false;");
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "readFloat(" + simpleTypeReference.getSize() + ")";
                 }
-                sb.append("\n               long exponent = io.readUnsignedLong(").append(floatTypeReference.getExponent()).append(");");
-                sb.append("\n               long mantissa = io.readUnsignedLong(").append(floatTypeReference.getMantissa()).append(");");
-                sb.append("\n               return (float) ((negative ? -1 : 1) * (0.01 * mantissa) * (2 ^ exponent));");
-                sb.append("\n            } catch(ParseException e) {");
-                sb.append("\n               return 0.0f;");
-                sb.append("\n            }");
-                sb.append("\n        })).get()");
-                return sb.toString();
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "readDouble(" + simpleTypeReference.getSize() + ")";
+                }
+                return "readBigDecimal(" + simpleTypeReference.getSize() + ")";
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return "io.readString(" + integerTypeReference.getSizeInBits() + ")";
+                return "readString(" + simpleTypeReference.getSize() + ")";
             }
         }
         return "Hurz";
@@ -259,60 +237,72 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.writeBit((boolean) " + fieldName + ")";
+                return "writeBit((boolean) " + fieldName + ")";
             }
             case UINT: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 4) {
-                    return "io.writeUnsignedByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
+                if (simpleTypeReference.getSize() <= 4) {
+                    return "writeUnsignedByte(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeUnsignedShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "writeUnsignedShort(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeUnsignedInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "writeUnsignedInt(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeUnsignedLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "io.writeUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
+                return "writeUnsignedBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
             case INT: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
+                if (simpleTypeReference.getSize() <= 8) {
+                    return "writeByte(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").byteValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                if (simpleTypeReference.getSize() <= 16) {
+                    return "writeShort(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").shortValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeInt(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").intValue())";
                 }
-                if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.writeLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "writeLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "io.writeBigInteger(" + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
+                return "writeBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
-            case FLOAT:
-            case UFLOAT: {
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                StringBuilder sb = new StringBuilder();
-                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
-                    sb.append("\n        boolean negative = value < 0;");
-                    sb.append("\n        io.writeBit(negative);");
+            case FLOAT: {
+                if (simpleTypeReference.getSize() <= 32) {
+                    return "writeFloat(" + simpleTypeReference.getSize() + ", (float) " + fieldName + ")";
                 }
-                sb.append("\n        final int exponent = Math.getExponent(value);");
-                sb.append("\n        final double mantissa = value / Math.pow(2, exponent);");
-                sb.append("\n        io.writeInt(").append(floatTypeReference.getExponent()).append(", exponent);");
-                sb.append("\n        io.writeDouble(").append(floatTypeReference.getMantissa()).append(", mantissa)");
-                return sb.toString().substring(9);
+                if (simpleTypeReference.getSize() <= 64) {
+                    return "writeDouble(" + simpleTypeReference.getSize() + ", (double) " + fieldName + ")";
+                }
+                return "writeBigDecimal(" + simpleTypeReference.getSize() + ", (BigDecimal) " + fieldName + ")";
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return "io.writeString(" + integerTypeReference.getSizeInBits() + ", (String) " + fieldName + ")";
+                return "writeString(" + simpleTypeReference.getSize() + ", (String) " + fieldName + ")";
             }
         }
         return "Hurz";
+    }
+
+    public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
+        String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
+        languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
+        if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
+            return "readUnsigned" + languageTypeName;
+        } else {
+            return "read" + languageTypeName;
+
+        }
+    }
+
+    public String getReservedValue(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeName(reservedField.getType(), true);
+        if("BigInteger".equals(languageTypeName)) {
+            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
+        } else {
+            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
+        }
     }
 
     public Collection<ComplexTypeReference> getComplexTypes(ComplexTypeDefinition complexTypeDefinition) {
@@ -430,13 +420,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             } else if(term instanceof StringLiteral) {
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if(term instanceof VariableLiteral) {
-                VariableLiteral variableLiteral = (VariableLiteral) term;
-                // If this literal references an Enum type, then we have to output it differently.
-                if(types.get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
-                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
-                } else {
-                    return variableExpressionGenerator.apply(term);
-                }
+                return variableExpressionGenerator.apply(term);
             } else {
                 throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
             }
@@ -458,12 +442,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             Term a = bt.getA();
             Term b = bt.getB();
             String operation = bt.getOperation();
-            switch (operation) {
-                case "^":
-                    return "Math.pow((" + toExpression(a, variableExpressionGenerator) + "), (" + toExpression(b, variableExpressionGenerator) + "))";
-                default:
-                    return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
-            }
+            return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
             if("if".equals(tt.getOperation())) {
@@ -568,8 +547,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
                 if(arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
-                    // "io" and "_value" are always available in every parser.
-                    boolean isSerializerArg = "io".equals(va.getName()) || "_value".equals(va.getName()) || "element".equals(va.getName());
+                    // "io" and "value" are always available in every parser.
+                    boolean isSerializerArg = "io".equals(va.getName()) || "value".equals(va.getName()) || "element".equals(va.getName());
                     if(parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
                             if (parserArgument.getName().equals(va.getName())) {
@@ -638,7 +617,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         if(isSerializerArg) {
             return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         } else {
-            return "_value." + toVariableExpressionRest(vl);
+            return "value." + toVariableExpressionRest(vl);
         }
     }
 

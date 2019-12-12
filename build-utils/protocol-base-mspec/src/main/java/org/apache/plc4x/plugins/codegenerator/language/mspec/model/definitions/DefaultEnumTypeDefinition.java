@@ -39,7 +39,7 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
         this.type = type;
         this.enumValues = enumValues;
         this.constants = new HashMap<>();
-        if(constants != null) {
+        if (constants != null) {
             for (Argument constant : constants) {
                 this.constants.put(constant.getName(), constant.getType());
             }

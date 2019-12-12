@@ -38,14 +38,12 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
-<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.utils.Message;
 
-import java.util.Objects;
+import java.math.BigInteger;
 
 <#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
@@ -120,7 +118,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Array field
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.sizeInBits} * ${field.name}.length;
+        lengthInBits += ${field.type.size} * ${field.name}.length;
         <#else>
         if(${field.name} != null) {
             for(Message element : ${field.name}) {
@@ -132,27 +130,27 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "checksum">
 
         // Checksum Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#break>
     <#case "const">
 
         // Const Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#break>
     <#case "enum">
 
         // Enum Field (${field.name})
-        lengthInBits += ${helper.getEnumBaseType(field.type).sizeInBits};
+        lengthInBits += ${helper.getEnumBaseType(field.type).size};
         <#break>
     <#case "implicit">
 
         // Implicit Field (${field.name})
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#break>
     <#case "manualArray">
 
@@ -169,7 +167,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         // Optional Field (${field.name})
         if(${field.name} != null) {
         <#if helper.isSimpleType(field.type)>
-            lengthInBits += ${field.type.sizeInBits};
+            lengthInBits += ${field.type.size};
         <#else>
             lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>
@@ -179,19 +177,19 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Padding Field (${field.name})
         if((boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)})) {
-            lengthInBits += ${field.type.sizeInBits};
+            lengthInBits += ${field.type.size};
         }
         <#break>
     <#case "reserved">
 
         // Reserved Field
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#break>
     <#case "simple">
 
         // Simple field (${field.name})
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.sizeInBits};
+        lengthInBits += ${field.type.size};
         <#else>
         lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>
@@ -208,62 +206,6 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 
         return lengthInBits / 8;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ${typeName})) {
-            return false;
-        }
-        ${typeName} that = (${typeName}) o;
-        return
-            <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-            (get${field.name?cap_first}() == that.get${field.name?cap_first}()) &&
-            </#list>
-            </#if>
-            <#if type.parentType??>
-            super.equals(that) &&
-            </#if>
-            true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-            <#if type.parentType??>
-            super.hashCode()<#if type.propertyFields?has_content>,</#if>
-            </#if>
-            <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-            get${field.name?cap_first}()<#sep>,</#sep>
-            </#list>
-            </#if>
-        );
-    }
-
-    @Override
-    public String toString() {
-        return toString(ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public String toString(ToStringStyle style) {
-        return new ToStringBuilder(this, style)
-            <#if type.parentType??>
-            .appendSuper(super.toString(style))
-            </#if>
-            <#if type.propertyFields?has_content>
-            <#list type.propertyFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            </#if>
-            <#list type.virtualFields as field>
-            .append("${field.name}", get${field.name?cap_first}())
-            </#list>
-            .toString();
     }
 
 }
