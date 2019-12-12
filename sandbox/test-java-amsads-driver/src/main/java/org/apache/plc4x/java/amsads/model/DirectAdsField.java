@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.amsads.model;
 
-import org.apache.plc4x.java.ads.api.util.ByteValue;
+//import org.apache.plc4x.java.ads.api.util.ByteValue;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.util.Objects;
@@ -42,9 +42,9 @@ public class DirectAdsField implements AdsField {
     private final int numberOfElements;
 
     private DirectAdsField(long indexGroup, long indexOffset, AdsDataType adsDataType, Integer numberOfElements) {
-        ByteValue.checkUnsignedBounds(indexGroup, 4);
+        //ByteValue.checkUnsignedBounds(indexGroup, 4);
         this.indexGroup = indexGroup;
-        ByteValue.checkUnsignedBounds(indexOffset, 4);
+        //ByteValue.checkUnsignedBounds(indexOffset, 4);
         this.indexOffset = indexOffset;
         this.adsDataType = Objects.requireNonNull(adsDataType);
         this.numberOfElements = numberOfElements != null ? numberOfElements : 1;

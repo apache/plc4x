@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.df1;
+package org.apache.plc4x.java.amsads;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.regex.Matcher;
 
-import static org.apache.plc4x.java.df1.DF1PlcDriver.DF1_URI_PATTERN;
-import static org.apache.plc4x.java.df1.DF1PlcDriver.SERIAL_PATTERN;
 
 public class AMSADSPlcDriverTest {
 
-    @Test
+/*    @Test
     public void matchExpression() {
         Matcher matcher = SERIAL_PATTERN.matcher("serial:///COM4");
 
@@ -40,5 +38,5 @@ public class AMSADSPlcDriverTest {
         Matcher matcher = DF1_URI_PATTERN.matcher("df1:serial:///COM4");
 
         Assertions.assertTrue(matcher.matches());
-    }
+    }*/
 }

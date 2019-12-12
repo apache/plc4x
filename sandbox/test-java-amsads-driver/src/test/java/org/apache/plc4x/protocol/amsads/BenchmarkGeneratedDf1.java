@@ -17,10 +17,9 @@
  * under the License.
  */
 
-package org.apache.plc4x.protocol.df1;
+package org.apache.plc4x.protocol.amsads;
 
 import com.fazecast.jSerialComm.SerialPort;
-import org.apache.plc4x.java.df1.*;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 

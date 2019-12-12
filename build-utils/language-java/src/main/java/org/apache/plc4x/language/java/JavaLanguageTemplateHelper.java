@@ -252,7 +252,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (simpleTypeReference.getSize() <= 32) {
                     return "writeUnsignedLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "writeUnsignedBigInteger(" + simpleTypeReference.getSize() + ", BigInteger.valueOf(" + fieldName + "))";
+                return "writeUnsignedBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
             case INT: {
                 if (simpleTypeReference.getSize() <= 8) {
@@ -267,7 +267,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (simpleTypeReference.getSize() <= 64) {
                     return "writeLong(" + simpleTypeReference.getSize() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "writeBigInteger(" + simpleTypeReference.getSize() + ", BigInteger.valueOf( " + fieldName + "))";
+                return "writeBigInteger(" + simpleTypeReference.getSize() + ", (BigInteger) " + fieldName + ")";
             }
             case FLOAT: {
                 if (simpleTypeReference.getSize() <= 32) {
@@ -293,6 +293,15 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         } else {
             return "read" + languageTypeName;
 
+        }
+    }
+
+    public String getReservedValue(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeName(reservedField.getType(), true);
+        if("BigInteger".equals(languageTypeName)) {
+            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
+        } else {
+            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
         }
     }
 

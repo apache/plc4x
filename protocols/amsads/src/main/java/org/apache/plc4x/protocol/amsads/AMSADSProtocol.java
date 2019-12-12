@@ -21,7 +21,6 @@ package org.apache.plc4x.protocol.amsads;
 
 import org.apache.plc4x.plugins.codegenerator.language.mspec.parser.MessageFormatParser;
 import org.apache.plc4x.plugins.codegenerator.protocol.Protocol;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 

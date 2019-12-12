@@ -38,10 +38,12 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
-<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.utils.Message;
+
+import java.math.BigInteger;
 
 <#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {

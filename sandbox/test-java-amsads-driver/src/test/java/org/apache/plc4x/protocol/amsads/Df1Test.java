@@ -17,14 +17,14 @@
   under the License.
 */
 
-package org.apache.plc4x.protocol.df1;
+package org.apache.plc4x.protocol.amsads;
 
 import org.apache.plc4x.protocol.test.ProtocolTestsuiteRunner;
 
-public class Df1Test extends ProtocolTestsuiteRunner {
+public class Df1Test /*extends ProtocolTestsuiteRunner*/ {
 
     public Df1Test() {
-        super("/testsuite/Df1Testsuite.xml");
+        //super("/testsuite/Df1Testsuite.xml");
     }
 
 }

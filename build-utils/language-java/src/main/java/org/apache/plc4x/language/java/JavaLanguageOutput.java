@@ -39,6 +39,11 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
         return Arrays.asList("read-write", "read-only", "passive");
     }
 
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.ftlh"));
+    }
+
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
             freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
