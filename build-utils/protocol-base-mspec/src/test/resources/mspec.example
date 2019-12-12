@@ -202,9 +202,9 @@
 
 [discriminatedType 'ADSData' [CommandId 'commandId', bit 'response']
     [typeSwitch 'commandId', 'response'
-        ['0x00', 'true' AdsInvalidResponse]
-        ['0x00', 'false' AdsInvalidRequest]
-        ['0x01', 'true' AdsReadDeviceInfoResponse
+        ['CommandId.INVALID', 'true' AdsInvalidResponse]
+        ['CommandId.INVALID', 'false' AdsInvalidRequest]
+        ['CommandId.ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
             // 4 bytes	ADS error number.
             [simple uint 32 'result']
             // Version	1 byte	Major version number
@@ -216,8 +216,8 @@
             // Name	16 bytes	Name of ADS device
             [array int 8  'device' count '16']
         ]
-        ['0x01', 'false' AdsReadDeviceInfoRequest]
-        ['0x02', 'true' AdsReadResponse
+        ['CommandId.ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
+        ['CommandId.ADS_READ', 'true' AdsReadResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 4 bytes	Length of data which are supplied back.
@@ -226,7 +226,7 @@
             // n bytes	Data which are supplied back.
             [array int 8 'data' count 'dataLength']
         ]
-        ['0x02', 'false' AdsReadRequest
+        ['CommandId.ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be read.
@@ -235,11 +235,11 @@
             // TODO: rename me to length
             [simple uint 32 'dataLength']
         ]
-        ['0x03', 'true' AdsWriteResponse
+        ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
         ]
-        ['0x03', 'false' AdsWriteRequest
+        ['CommandId.ADS_WRITE', 'false' AdsWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be written.
@@ -250,7 +250,7 @@
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'dataLength']
         ]
-        ['0x04', 'true' AdsReadStateResponse
+        ['CommandId.ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
@@ -258,12 +258,12 @@
             // 2 bytes	New device status.
             [simple uint 16 'deviceState']
         ]
-        ['0x04', 'false' AdsReadStateRequest]
-        ['0x05', 'true' AdsWriteControlResponse
+        ['CommandId.ADS_READ_STATE', 'false' AdsReadStateRequest]
+        ['CommandId.ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
         ]
-        ['0x05', 'false' AdsWriteControlRequest
+        ['CommandId.ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
             [simple uint 16 'adsState']
             // 2 bytes	New device status.
@@ -274,13 +274,13 @@
             // n bytes	Additional data which are sent to the ADS device
             [array int 8 'data' count 'dataLength']
         ]
-        ['0x06', 'true' AdsAddDeviceNotificationResponse
+        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 4 bytes	Handle of notification
             [simple uint 32 'notificationHandle']
         ]
-        ['0x06', 'false' AdsAddDeviceNotificationRequest
+        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data, which should be sent per notification.
@@ -298,16 +298,16 @@
             // 16bytes	Must be set to 0
             [reserved   uint       128       '0x0000' ]
         ]
-        ['0x07', 'true' AdsDeleteDeviceNotificationResponse
+        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
         ]
-        ['0x07', 'false' AdsDeleteDeviceNotificationRequest
+        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
             // 4 bytes	Handle of notification
             [simple uint 32 'notificationHandle']
         ]
-        ['0x08', 'true' AdsDeviceNotificationResponse]
-        ['0x08', 'false' AdsDeviceNotificationRequest
+        ['CommandId.ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
+        ['CommandId.ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
             // TODO: rename me to length
             [simple uint 32 'dataLength']
@@ -316,7 +316,7 @@
             // n bytes	Array with elements of type AdsStampHeader.
             [array AdsStampHeader 'adsStampHeaders' count 'stamps']
         ]
-        ['0x09', 'true' AdsReadWriteResponse
+        ['CommandId.ADS_READ_WRITE', 'true' AdsReadWriteResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 4 bytes	Length of data in byte.
@@ -325,7 +325,7 @@
             // n bytes	Additional data which are sent to the ADS device
             [array int 8 'data' count 'dataLength']
         ]
-        ['0x09', 'false' AdsReadWriteRequest
+        ['CommandId.ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be written.
