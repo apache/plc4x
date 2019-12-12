@@ -100,7 +100,7 @@ public class ManualKnxNetIpWithEts5 {
                                 final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
 
                                 if("Isttemperatur".equals(groupAddress.getName())) {
-                                    LOGGER.info("Message from: " + ManualKnxNetIpWithEts5.toString(sourceAddress) +
+                                    LOGGER.info("Message from: '" + ManualKnxNetIpWithEts5.toString(sourceAddress) + "'" +
                                         " to: '" + ManualKnxNetIpWithEts5.toString(destinationAddress) + "'" +
                                         "\n location: '" + groupAddress.getFunction().getSpaceName() + "'" +
                                         " function: '" + groupAddress.getFunction().getName() + "'" +

@@ -18,8 +18,8 @@
 //
 
 [discriminatedType 'BVLC'
-    [const         uint 8 'bacnetType'   '0x81'        ]
-    [discriminator uint 8 'bvlcFunction'               ]
+    [const         uint 8  'bacnetType'   '0x81'       ]
+    [discriminator uint 8  'bvlcFunction'              ]
     [implicit      uint 16 'bvlcLength' 'lengthInBytes']
     [typeSwitch 'bvlcFunction'
         ['0x00' BVLCResult
