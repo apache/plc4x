@@ -23,8 +23,7 @@ file
  ;
 
 complexTypeDefinition
- : COMMENT
- | LBRACKET complexType RBRACKET
+ : (COMMENT.*?)? LBRACKET complexType RBRACKET
  ;
 
 complexType
@@ -35,8 +34,7 @@ complexType
 
 
 fieldDefinition
- : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
- | COMMENT
+ : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 field
@@ -113,13 +111,11 @@ virtualField
  ;
 
 enumValueDefinition
- : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
- | COMMENT
+ : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 bitmaskValueDefinition
- : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
- | COMMENT
+ : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 typeReference
@@ -173,6 +169,7 @@ innerExpression
 COMMENT
  : K_COMMENT [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t\r\n\u000C-]*
  | '//' [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t-]*
+ | '/*' .*? '*/'
  ;
 
 INTEGER_LITERAL
