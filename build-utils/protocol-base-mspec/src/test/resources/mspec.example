@@ -1,21 +1,21 @@
-//
-// Licensed to the Apache Software Foundation (ASF) under one
-// or more contributor license agreements.  See the NOTICE file
-// distributed with this work for additional information
-// regarding copyright ownership.  The ASF licenses this file
-// to you under the Apache License, Version 2.0 (the
-// "License"); you may not use this file except in compliance
-// with the License.  You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-//
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 ////////////////////////////////////////////////////////////////
 // AMS/TCP Paket
@@ -42,10 +42,12 @@
 // AMS/Serial Paket
 ////////////////////////////////////////////////////////////////
 
-// If an AMS serial frame has been received and the frame is OK (magic cookie OK, CRC OK, correct fragment number etc.),
-// then the receiver has to send an acknowledge frame, to inform the transmitter that the frame has arrived.
-//
-// @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+/*
+ * If an AMS serial frame has been received and the frame is OK (magic cookie OK, CRC OK, correct fragment number etc.),
+ * then the receiver has to send an acknowledge frame, to inform the transmitter that the frame has arrived.
+ *
+ * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+ */
 [type 'AmsSerialAcknowledgeFrame'
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
@@ -64,14 +66,16 @@
     [simple     uint        16  'crc'                ]
 ]
 
-// An AMS packet can be transferred via RS232 with the help of an AMS serial frame.
-// The actual AMS packet is in the user data field of the frame.
-// The max. length of the AMS packet is limited to 255 bytes.
-// Therefore the max. size of an AMS serial frame is 263 bytes.
-// The fragment number is compared with an internal counter by the receiver.
-// The frame number is simply accepted and not checked when receiving the first AMS frame or in case a timeout is
-// exceeded. The CRC16 algorithm is used for calculating the checksum.
-// @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+/*
+ * An AMS packet can be transferred via RS232 with the help of an AMS serial frame.
+ * The actual AMS packet is in the user data field of the frame.
+ * The max. length of the AMS packet is limited to 255 bytes.
+ * Therefore the max. size of an AMS serial frame is 263 bytes.
+ * The fragment number is compared with an internal counter by the receiver.
+ * The frame number is simply accepted and not checked when receiving the first AMS frame or in case a timeout is
+ * exceeded. The CRC16 algorithm is used for calculating the checksum.
+ * @see <a href="https://infosys.beckhoff.com/content/1033/tcadsamsserialspec/html/tcamssericalspec_amsframe.htm?id=8115637053270715044">TwinCAT AMS via RS232 Specification</a>
+ */
 [type 'AmsSerialFrame'
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
@@ -92,9 +96,11 @@
     [simple     uint        16  'crc'                ]
 ]
 
-// In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
-// sent. In this way the receiver is informed that a new communication is running and the receiver then accepts the
-// fragment number during the next AMS-Frame, without carrying out a check.
+/*
+ * In case the transmitter does not receive a valid acknowledgement after multiple transmission, then a reset frame is
+ * sent. In this way the receiver is informed that a new communication is running and the receiver then accepts the
+ * fragment number during the next AMS-Frame, without carrying out a check.
+ */
 [type 'AmsSerialResetFrame'
     // Id for detecting an AMS serial frame.
     [simple     uint        16  'magicCookie'        ]
@@ -172,25 +178,27 @@
     [simple     bit 'response'              ]
 ]
 
-// It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
-// methods between multiple TwinCAT PC's on the network.
-// <p>
-// Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
-// extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
-// routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
-// <p>
-// The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
-// "172.16.17.10.1.1". The storage arrangement in this example is as follows:
-// <p>
-// _____0     1     2     3     4     5
-// __+-----------------------------------+
-// 0 | 127 |  16 |  17 |  10 |   1 |   1 |
-// __+-----------------------------------+
-// <p>
-// The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
-// target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
-// documentation for notes about settings of the AMS NetId.
-// @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
+/*
+ * It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
+ * methods between multiple TwinCAT PC's on the network.
+ * <p>
+ * Every PC on the network can be uniquely identified by a TCP/IP address, such as "172.1.2.16". The AdsAmsNetId is an
+ * extension of the TCP/IP address and identifies a TwinCAT message router, e.g. "172.1.2.16.1.1". TwinCAT message
+ * routers exist on every TwinCAT PC, and on every Beckhoff BCxxxx bus controller (e.g. BC3100, BC8100, BC9000, ...).
+ * <p>
+ * The AmsNetId consists of 6 bytes and addresses the transmitter or receiver. One possible AmsNetId would be e.g.
+ * "172.16.17.10.1.1". The storage arrangement in this example is as follows:
+ * <p>
+ * _____0     1     2     3     4     5
+ * __+-----------------------------------+
+ * 0 | 127 |  16 |  17 |  10 |   1 |   1 |
+ * __+-----------------------------------+
+ * <p>
+ * The AmsNetId is purely logical and has usually no relation to the IP address. The AmsNetId is configured at the
+ * target system. At the PC for this the TwinCAT System Control is used. If you use other hardware, see the considering
+ * documentation for notes about settings of the AMS NetId.
+ * @see <a href="https://infosys.beckhoff.com/content/1033/tcadscommon/html/tcadscommon_identadsdevice.htm?id=3991659524769593444">ADS device identification</a>
+ */
 [type 'AmsNetId'
     [simple     uint        8   'octet1'            ]
     [simple     uint        8   'octet2'            ]
