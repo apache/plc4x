@@ -76,7 +76,7 @@
     <name>Apache Software Foundation</name>
     <src>https://plc4x.apache.org/images/apache_logo.png</src>
     <!--src>./images/apache_logo.png</src-->
-    <href>http://www.apache.org/</href>
+    <href>https://www.apache.org/</href>
   </bannerRight>
 
   <body>
@@ -126,6 +126,7 @@
     </menu>
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
+      <item name="AB-Ethernet" href="protocols/ab-eth/index.html"/>
       <item name="ADS" href="protocols/ads/index.html"/>
       <item name="DeltaV" href="protocols/delta-v/index.html"/>
       <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>

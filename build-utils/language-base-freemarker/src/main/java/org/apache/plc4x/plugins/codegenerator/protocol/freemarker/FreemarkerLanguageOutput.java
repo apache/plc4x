@@ -52,12 +52,26 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             freemarkerConfiguration.setTemplateLoader(classTemplateLoader);
 
             // Initialize all templates
+            List<Template> specTemplates = getSpecTemplates(freemarkerConfiguration);
             List<Template> complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
             List<Template> enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
 
+            // Generate output that's global for the entire mspec
+            if(!specTemplates.isEmpty()) {
+                Map<String, Object> typeContext = new HashMap<>();
+                typeContext.put("languageName", languageName);
+                typeContext.put("protocolName", protocolName);
+                typeContext.put("outputFlavor", outputFlavor);
+                typeContext.put("helper", getHelper(types));
+
+                for(Template template : specTemplates) {
+                    renderTemplate(outputDir, template, typeContext);
+                }
+            }
+
             // Iterate over the types and have content generated for each one
             for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
-                LOGGER.info("Generating type " + typeEntry.getKey());
+                LOGGER.info(String.format("Generating type %s", typeEntry.getKey()));
 
                 // Prepare a new generation context
                 Map<String, Object> typeContext = new HashMap<>();
@@ -71,42 +85,47 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 List<Template> templateList = (typeEntry.getValue() instanceof EnumTypeDefinition) ?
                     enumTypesTemplateList : complexTypesTemplateList;
                 for(Template template : templateList) {
-                    // Create a variable size output location where the template can generate it's content to
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-                    // Have Freemarker generate the output
-                    template.process(typeContext, new OutputStreamWriter(output));
-
-                    // Create the means to read in the generated output back in again
-                    try(BufferedReader input = new BufferedReader(new InputStreamReader(
-                            new ByteArrayInputStream(output.toByteArray())))) {
-
-                        // Extract the output path from the first line of the generated content
-                        String outputFileName = input.readLine();
-                        File outputFile = new File(outputDir, outputFileName);
-
-                        // Create any missing directories
-                        if (!outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
-                            throw new GenerationException(
-                                "Unable to create output directory " + outputFile.getParent());
-                        }
-
-                        // Output the rest to that file
-                        BufferedWriter outputFileWriter = Files.newBufferedWriter(
-                            outputFile.toPath(), StandardCharsets.UTF_8);
-                        String line;
-                        while ((line = input.readLine()) != null) {
-                            outputFileWriter.write(line);
-                            outputFileWriter.newLine();
-                        }
-                        outputFileWriter.flush();
-                    }
+                    renderTemplate(outputDir, template, typeContext);
                 }
             }
         } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException | ParseException e) {
             throw new GenerationException("Error resolving template", e);
         } catch (IOException e) {
             throw new GenerationException("Error generating sources", e);
+        }
+    }
+
+    protected void renderTemplate(File outputDir, Template template, Map<String, Object> context)
+        throws TemplateException, IOException, GenerationException {
+        // Create a variable size output location where the template can generate it's content to
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        // Have Freemarker generate the output
+        template.process(context, new OutputStreamWriter(output));
+
+        // Create the means to read in the generated output back in again
+        try(BufferedReader input = new BufferedReader(new InputStreamReader(
+            new ByteArrayInputStream(output.toByteArray())))) {
+
+            // Extract the output path from the first line of the generated content
+            String outputFileName = input.readLine();
+            File outputFile = new File(outputDir, outputFileName);
+
+            // Create any missing directories
+            if (!outputFile.getParentFile().exists() && !outputFile.getParentFile().mkdirs()) {
+                throw new GenerationException(
+                    "Unable to create output directory " + outputFile.getParent());
+            }
+
+            // Output the rest to that file
+            BufferedWriter outputFileWriter = Files.newBufferedWriter(
+                outputFile.toPath(), StandardCharsets.UTF_8);
+            String line;
+            while ((line = input.readLine()) != null) {
+                outputFileWriter.write(line);
+                outputFileWriter.newLine();
+            }
+            outputFileWriter.flush();
         }
     }
 
@@ -119,6 +138,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
         configuration.setDirectoryForTemplateLoading(new File("/"));
         return configuration;
     }
+
+    protected abstract List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException;
 
     protected abstract List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
 

@@ -40,7 +40,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
-<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 import org.apache.plc4x.java.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +70,10 @@ public class ${typeName}IO {
         <#-- If this is a count array, we can directly initialize an array with the given size -->
         <#if helper.isCountArray(field)>
         // Count array
-        int _${field.name}Count = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
+        if(${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc} > Integer.MAX_VALUE) {
+            throw new ParseException("Array count of " + (${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+        }
+        int _${field.name}Count = (int) ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}Count];
         for(int i = 0; i < _${field.name}Count; i++) {
             ${field.name}[i] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
@@ -238,7 +241,7 @@ public class ${typeName}IO {
         // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
         {
             ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-            if(reserved != ${field.referenceValue}) {
+            if(reserved != ${helper.getReservedValue(field)}) {
                 LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
             }
         }
@@ -360,7 +363,7 @@ public class ${typeName}IO {
     <#case "reserved">
 
         // Reserved Field
-        ${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)?no_esc};
+        ${helper.getWriteBufferReadMethodCall(field.type, helper.getReservedValue(field))?no_esc};
         <#break>
     <#case "simple">
 

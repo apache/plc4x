@@ -275,7 +275,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 if (integerTypeReference.getSizeInBits() <= 32) {
                     return "io.writeUnsignedLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
                 }
-                return "io.writeUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
+                return "io.writeUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -313,6 +313,25 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
         }
         return "Hurz";
+    }
+
+    public String getReadMethodName(SimpleTypeReference simpleTypeReference) {
+        String languageTypeName = getLanguageTypeNameForSpecType(simpleTypeReference);
+        languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
+        if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
+            return "readUnsigned" + languageTypeName;
+        } else {
+            return "read" + languageTypeName;
+        }
+    }
+
+    public String getReservedValue(ReservedField reservedField) {
+        final String languageTypeName = getLanguageTypeName(reservedField.getType(), true);
+        if("BigInteger".equals(languageTypeName)) {
+            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
+        } else {
+            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
+        }
     }
 
     public Collection<ComplexTypeReference> getComplexTypes(ComplexTypeDefinition complexTypeDefinition) {

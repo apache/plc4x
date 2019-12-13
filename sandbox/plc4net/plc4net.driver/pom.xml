@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x</groupId>
+    <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4net</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>

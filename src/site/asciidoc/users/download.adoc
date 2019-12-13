@@ -21,8 +21,8 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
-[#release-0.5.0]
-==== 0.5.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip[source release] [ https://www.apache.org/dist/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip.asc[ASC] ]
+[#release-0.6.0]
+==== 0.6.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip[source release] [ https://www.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.asc[ASC] ]
 
 This is the first release containing our new generaed drivers (AB-ETH)
 

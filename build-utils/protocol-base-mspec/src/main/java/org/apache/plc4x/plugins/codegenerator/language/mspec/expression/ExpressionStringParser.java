@@ -21,7 +21,6 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
@@ -31,18 +30,15 @@ import java.io.InputStream;
 public class ExpressionStringParser {
 
     public Term parse(InputStream source) {
+        ExpressionLexer lexer;
         try {
-            ExpressionLexer lexer = new ExpressionLexer(CharStreams.fromStream(source));
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-            ExpressionParser parser = new ExpressionParser(tokens);
-            ParseTree tree = parser.expressionString();
-            ParseTreeWalker walker = new ParseTreeWalker();
-            ExpressionStringListener listener = new ExpressionStringListener();
-            walker.walk(listener, tree);
-            return listener.getRoot();
+            lexer = new ExpressionLexer(CharStreams.fromStream(source));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        ExpressionStringListener listener = new ExpressionStringListener();
+        new ParseTreeWalker().walk(listener, new ExpressionParser(new CommonTokenStream(lexer)).expressionString());
+        return listener.getRoot();
     }
 
 }
