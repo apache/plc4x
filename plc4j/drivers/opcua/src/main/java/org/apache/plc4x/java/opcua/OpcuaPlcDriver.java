@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.spi.PlcDriver;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
  *
  * Created by Matthias Milan Strljic on 10.05.2019
  */
+@Component(service = PlcDriver.class, immediate = true)
 public class OpcuaPlcDriver implements PlcDriver {
 
 

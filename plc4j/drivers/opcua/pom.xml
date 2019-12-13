@@ -48,17 +48,17 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
-      <version>0.3.2</version>
+      <version>0.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
-      <version>0.3.2</version>
+      <version>0.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
-      <version>0.3.2</version>
+      <version>0.3.6</version>
     </dependency>
 
     <dependency>
@@ -66,28 +66,30 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.cmpn</artifactId>
-      <version>6.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+
+  <dependency>
+    <groupId>org.osgi</groupId>
+    <artifactId>osgi.cmpn</artifactId>
+    <version>6.0.0</version>
+    <scope>provided</scope>
+  </dependency>
+
+</dependencies>
 
 
-  <!--
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.eclipse.milo:sdk-client</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  -->
+<!--
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-dependency-plugin</artifactId>
+      <configuration>
+        <usedDependencies combine.children="append">
+          <usedDependency>org.eclipse.milo:sdk-client</usedDependency>
+        </usedDependencies>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+-->
 </project>
