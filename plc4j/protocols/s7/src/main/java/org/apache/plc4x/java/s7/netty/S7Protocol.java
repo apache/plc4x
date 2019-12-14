@@ -25,6 +25,9 @@ import io.netty.channel.*;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
+import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
@@ -41,6 +44,7 @@ import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMe
 import org.apache.plc4x.java.s7.netty.model.params.*;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
@@ -53,10 +57,6 @@ import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 /**
  * Communication Layer between the Application level ({@link Plc4XS7Protocol}) and the lower level (tcp) that sends and receives {@link S7Message}s.
@@ -230,7 +230,11 @@ public class S7Protocol extends ChannelDuplexHandler {
                         encodeWriteVarPayload((VarPayload) payload, buf, !payloadIterator.hasNext());
                         break;
                     case CPU_SERVICES:
-                        encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
+                        if (payload instanceof CpuServicesPayload) {
+                            encodeCpuServicesPayload((CpuServicesPayload) payload, buf);
+                        } else if (payload instanceof CpuMessageSubscriptionServicePayload) {
+                            encodeCpuMessageSubcriptionPayload((CpuMessageSubscriptionServicePayload) payload, buf);
+                        }
                         break;
                     default:
                         throw new PlcProtocolException("Writing payloads of type " +
@@ -254,8 +258,28 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
+    private void encodeCpuMessageSubcriptionPayload(CpuMessageSubscriptionServicePayload cpuServicesPayload, ByteBuf buf)
+        throws PlcProtocolException {
+        buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
+        buf.writeByte(cpuServicesPayload.getDataTransportSize().getCode());
+        if ((cpuServicesPayload.getSubscribedEvents() & 0x80) == 0){
+            buf.writeShort(0x000A);
+        } else {
+            buf.writeShort(0x000C);  
+        };
+        buf.writeByte(cpuServicesPayload.getSubscribedEvents());
+        buf.writeByte(0x00);
+        buf.writeBytes(cpuServicesPayload.getId().getBytes());
+        if ((cpuServicesPayload.getSubscribedEvents() & 0x80) == 0x80){
+            buf.writeByte(cpuServicesPayload.getAlarm().getCode());
+            buf.writeByte(0x00);
+        }
+        System.out.println("Paso por aqui....");
+    }    
+    
     private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf)
             throws PlcProtocolException {
+
         buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
         // This seems to be constantly set to this.
         buf.writeByte(DataTransportSize.OCTET_STRING.getCode());

@@ -18,11 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.util;
 
+import java.util.List;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
@@ -31,8 +33,6 @@ import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
 import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class S7SizeHelper {
 
@@ -75,6 +75,14 @@ public class S7SizeHelper {
                     }
                     return length;
                 }
+            } else if(payload instanceof CpuMessageSubscriptionServicePayload) {
+                CpuMessageSubscriptionServicePayload submsg = (CpuMessageSubscriptionServicePayload) payload;
+                if ((submsg.getSubscribedEvents() & 0x80) == 0x00){
+                    return 14;
+                } else {
+                    return 16;                    
+                }
+  
             }
         }
         return l;

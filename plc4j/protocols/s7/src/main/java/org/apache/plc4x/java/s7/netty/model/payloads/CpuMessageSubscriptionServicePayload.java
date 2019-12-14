@@ -18,34 +18,32 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import java.util.Collections;
-import java.util.List;
-import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
+import org.apache.plc4x.java.s7.netty.model.types.AlarmType;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-import org.apache.plc4x.java.s7.netty.model.types.SslId;
 
-public class CpuServicesPayload implements S7Payload {
+/**
+ *
+ * @author cgarcia
+ */
+public class CpuMessageSubscriptionServicePayload implements S7Payload {
 
-    private DataTransportErrorCode returnCode;
-    private SslId sslId;
-    private short sslIndex;
-    private List<SslDataRecord> sslDataRecords;
+    private final DataTransportErrorCode returnCode;
+    private final DataTransportSize dataTransportSize;
+    private final byte SubscribedEvents;
+    private final String Id; //8 bytes string
+    private final AlarmType alarm;
 
-    public CpuServicesPayload(DataTransportErrorCode returnCode, SslId sslId, short sslIndex) {
+
+    public CpuMessageSubscriptionServicePayload (DataTransportErrorCode returnCode, DataTransportSize dataTransportSize, byte SubscribedEvents, String Id, AlarmType alarm) {
         this.returnCode = returnCode;
-        this.sslId = sslId;
-        this.sslIndex = sslIndex;
-        this.sslDataRecords = Collections.emptyList();
+        this.dataTransportSize = dataTransportSize;
+        this.SubscribedEvents = SubscribedEvents;
+        this.Id = Id;
+        this.alarm = alarm;
     }
-
-    public CpuServicesPayload(DataTransportErrorCode returnCode, SslId sslId, short sslIndex, List<SslDataRecord> sslDataRecords) {
-        this.returnCode = returnCode;
-        this.sslId = sslId;
-        this.sslIndex = sslIndex;
-        this.sslDataRecords = sslDataRecords;
-    }
-
+    
     @Override
     public ParameterType getType() {
         return ParameterType.CPU_SERVICES;
@@ -55,16 +53,20 @@ public class CpuServicesPayload implements S7Payload {
         return returnCode;
     }
 
-    public SslId getSslId() {
-        return sslId;
+    public DataTransportSize getDataTransportSize() {
+        return dataTransportSize;
     }
 
-    public short getSslIndex() {
-        return sslIndex;
+    public byte getSubscribedEvents() {
+        return SubscribedEvents;
     }
 
-    public List<SslDataRecord> getSslDataRecords() {
-        return sslDataRecords;
+    public String getId() {
+        return Id;
     }
-
+  
+    public AlarmType getAlarm() {
+        return alarm;
+    }    
+    
 }

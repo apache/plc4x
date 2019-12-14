@@ -18,15 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum CpuServicesParameterSubFunctionGroup {
 
-    READ_SSL((byte) 0x01);
+    READ_SSL((byte) 0x01),
+    MESSAGE_SERVICE((byte) 0x02);
 
     private static final Logger logger = LoggerFactory.getLogger(CpuServicesParameterSubFunctionGroup.class);
 

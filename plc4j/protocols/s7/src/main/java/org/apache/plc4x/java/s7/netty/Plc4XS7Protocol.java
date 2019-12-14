@@ -21,12 +21,28 @@ package org.apache.plc4x.java.s7.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -39,30 +55,19 @@ import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
+import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * This layer transforms between {@link PlcRequestContainer}s {@link S7Message}s.
@@ -153,9 +158,57 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
             encodeWriteRequest(msg, out);
+        } else if (request instanceof PlcSubscriptionRequest) {
+            encodeSubcriptionRequest(msg, out);
+        } else if (request instanceof PlcUnsubscriptionRequest) {
+            encodeUnsubcriptionRequest(msg, out);
         }
     }
 
+    private void encodeSubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        byte subsevent = 0;
+        List<S7Parameter> parameterItems = new LinkedList<>();
+        List<S7Payload> payloadItems = new LinkedList<>();
+         
+        PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
+        
+        for (String fieldName : subsRequest.getFieldNames()) {                        
+            if ( subsRequest.getField(fieldName) instanceof SubscribedEventType){
+                 SubscribedEventType event = (SubscribedEventType) subsRequest.getField(fieldName);
+                 subsevent = (byte) (subsevent | event.getCode());
+            }
+        }
+        
+        CpuServicesParameter cpuservice = new CpuServicesRequestParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+            CpuServicesParameterSubFunctionGroup.MESSAGE_SERVICE, (byte) 0x00);
+        
+        parameterItems.add(cpuservice);
+        
+       
+        S7Payload Data = new CpuMessageSubscriptionServicePayload(DataTransportErrorCode.OK,
+                                DataTransportSize.OCTET_STRING,
+                                subsevent,
+                                new String("HmiRtm  "),
+                                AlarmType.ALARM_S_INITIATE);
+        payloadItems.add(Data);
+
+        
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+            (short) tpduGenerator.getAndIncrement(), 
+            parameterItems,
+            payloadItems, 
+            msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);            
+  
+    }
+    
+    private void encodeUnsubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        
+    }    
+    
     private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         List<VarParameterItem> parameterItems = new LinkedList<>();
 

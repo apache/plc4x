@@ -21,11 +21,13 @@ package org.apache.plc4x.java.s7.connection;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import java.net.InetAddress;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -33,9 +35,16 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -52,6 +61,7 @@ import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.util.S7PlcEventHandler;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
@@ -77,7 +87,7 @@ import org.slf4j.LoggerFactory;
  * where the {bit-offset} is optional.
  * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
  */
-public class S7PlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
+public class S7PlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
@@ -285,6 +295,16 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     }
 
     @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        return new DefaultPlcSubscriptionRequest.Builder(this, new S7PlcEventHandler());
+    }    
+    
+    @Override
+    public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
+        return new DefaultPlcUnsubscriptionRequest.Builder(this);
+    }
+
+    @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
         CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
@@ -312,6 +332,44 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         });
         return future
             .thenApply(PlcWriteResponse.class::cast);
+    }
+
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        InternalPlcSubscriptionRequest internalSubsRequest = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
+        CompletableFuture<InternalPlcSubscriptionResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcSubscriptionRequest, InternalPlcSubscriptionResponse> container =
+            new PlcRequestContainer<>(internalSubsRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
+        });        
+        return future.thenApply(PlcSubscriptionResponse.class::cast);       
+    }
+
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        InternalPlcUnsubscriptionRequest internalUnsubsRequest = checkInternal(unsubscriptionRequest, InternalPlcUnsubscriptionRequest.class);
+        CompletableFuture<InternalPlcUnsubscriptionResponse> future = new CompletableFuture<>();
+        PlcRequestContainer<InternalPlcUnsubscriptionRequest, InternalPlcUnsubscriptionResponse> container =
+            new PlcRequestContainer<>(internalUnsubsRequest, future);
+        channel.writeAndFlush(container).addListener(f -> {
+            if (!f.isSuccess()) {
+                future.completeExceptionally(f.cause());
+            }
+        });        
+        return future.thenApply(PlcUnsubscriptionResponse.class::cast);        
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void unregister(PlcConsumerRegistration registration) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
