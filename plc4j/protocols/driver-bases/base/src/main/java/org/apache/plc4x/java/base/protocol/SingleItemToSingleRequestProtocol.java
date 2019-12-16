@@ -325,7 +325,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
                         Integer tdpu = correlationIdGenerator.getAndIncrement();
-                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>()
+                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                        // Important: don't chain to above as we want the above to be completed not the result of when complete
+                        correlatedCompletableFuture
                             .thenApply(InternalPlcResponse.class::cast)
                             .whenComplete((internalPlcResponse, throwable) -> {
                                 if (throwable != null) {
