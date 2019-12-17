@@ -159,7 +159,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, values);
         }
         AdsWriteRequest data = new AdsWriteRequest(indexGroup, indexOffset, bytes.length, bytes);
-        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), data.getDataLength(), 0, invokeId), data);
+        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), data.getLength(), 0, invokeId), data);
         LOGGER.debug("encoded write request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);
@@ -191,7 +191,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         int numberOfElements = directAdsField.getNumberOfElements();
         int readLength = adsDataType.getTargetByteSize() * numberOfElements;
         AdsReadRequest data = new AdsReadRequest(indexGroup, indexOffset, readLength);
-        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), data.getDataLength(), 0, invokeId), data);
+        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), data.getLength(), 0, invokeId), data);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);

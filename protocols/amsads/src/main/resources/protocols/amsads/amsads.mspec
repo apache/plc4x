@@ -34,8 +34,7 @@
     [reserved   uint       16       '0x0000' ]
     // This array contains the length of the data packet.
     // It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
-    // TODO: rename me to length
-    [simple     uint       32       'tcpLength']
+    [simple     uint       32       'length']
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -60,7 +59,7 @@
     [simple     int          8  'fragmentNumber'     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'userDataLength'     ]
+    [simple     int          8  'length'     ]
     [simple     uint        16  'crc'                ]
 ]
 
@@ -86,7 +85,7 @@
     [simple     int          8  'fragmentNumber'     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'userDataLength'     ]
+    [simple     int          8  'length'     ]
     // The AMS packet to be sent.
     [simple AmsPacket           'userdata'           ]
     [simple     uint        16  'crc'                ]
@@ -109,7 +108,7 @@
     [simple     int          8  'fragmentNumber'     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'userDataLength'     ]
+    [simple     int          8  'length'     ]
     [simple     uint        16  'crc'                ]
 ]
 
@@ -137,8 +136,7 @@
     // 2 bytes.
     [simple     State           'state'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    // TODO: rename me to length once this is fixed
-    [simple     uint        32  'dataLength'                                ]
+    [simple     uint        32  'length'                                ]
     // 4 bytes	AMS error number. See ADS Return Codes.
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
@@ -221,10 +219,9 @@
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 4 bytes	Length of data which are supplied back.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
             // n bytes	Data which are supplied back.
-            [array int 8 'data' count 'dataLength']
+            [array int 8 'data' count 'length']
         ]
         ['CommandId.ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
@@ -232,8 +229,7 @@
             // 4 bytes	Index Offset of the data which should be read.
             [simple uint 32 'indexOffset']
             // 4 bytes	Length of the data (in bytes) which should be read.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
         ]
         ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number
@@ -245,10 +241,9 @@
             // 4 bytes	Index Offset of the data which should be written.
             [simple uint 32 'indexOffset']
             // 4 bytes	Length of the data (in bytes) which should be written.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
             // n bytes	Data which are written in the ADS device.
-            [array int 8 'data' count 'dataLength']
+            [array int 8 'data' count 'length']
         ]
         ['CommandId.ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
@@ -269,10 +264,9 @@
             // 2 bytes	New device status.
             [simple uint 16 'deviceState']
             // 4 bytes	Length of data in byte.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
             // n bytes	Additional data which are sent to the ADS device
-            [array int 8 'data' count 'dataLength']
+            [array int 8 'data' count 'length']
         ]
         ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
@@ -286,9 +280,8 @@
             // 4 bytes	Index Offset of the data, which should be sent per notification.
             [simple uint 32 'indexOffset']
             // 4 bytes	Index Offset of the data, which should be sent per notification.
-            // TODO: rename me to length
             // 4 bytes	Length of data in bytes, which should be sent per notification.
-            [simple uint 32 'notificationLength']
+            [simple uint 32 'length']
             // 4 bytes	See description of the structure ADSTRANSMODE at the ADS-DLL.
             [simple uint 32 'transmissionMode']
             // 4 bytes	At the latest after this time, the ADS Device Notification is called. The unit is 1ms.
@@ -309,8 +302,7 @@
         ['CommandId.ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
         ['CommandId.ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
             // 4 bytes	Number of elements of type AdsStampHeader.
             [simple uint 32 'stamps']
             // n bytes	Array with elements of type AdsStampHeader.
@@ -320,10 +312,9 @@
             // 4 bytes	ADS error number
             [simple uint 32 'result']
             // 4 bytes	Length of data in byte.
-            // TODO: rename me to length
-            [simple uint 32 'dataLength']
+            [simple uint 32 'length']
             // n bytes	Additional data which are sent to the ADS device
-            [array int 8 'data' count 'dataLength']
+            [array int 8 'data' count 'length']
         ]
         ['CommandId.ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
