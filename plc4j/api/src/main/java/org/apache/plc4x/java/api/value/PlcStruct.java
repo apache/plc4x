@@ -12,7 +12,7 @@ public class PlcStruct extends PlcValueAdapter {
 
     private final Map<String, PlcValue> map;
 
-    public PlcStruct(Map<String, PlcValue> map) {
+    PlcStruct(Map<String, PlcValue> map) {
         this.map = Collections.unmodifiableMap(map);
     }
 

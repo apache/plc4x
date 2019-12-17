@@ -4,11 +4,11 @@ import org.apache.plc4x.java.api.value.PlcSimpleValue;
 
 public class PlcInteger extends PlcSimpleValue<Integer> {
 
-    public PlcInteger(Integer value) {
+    PlcInteger(Integer value) {
         super(value, true);
     }
 
-    public PlcInteger(int value) {
+    PlcInteger(int value) {
         super(value, false);
     }
 

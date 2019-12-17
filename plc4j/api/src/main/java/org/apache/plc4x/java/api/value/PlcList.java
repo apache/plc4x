@@ -11,7 +11,7 @@ public class PlcList extends PlcValueAdapter {
 
     private final List<PlcValue> listItems;
 
-    public PlcList(List<PlcValue> listItems) {
+    PlcList(List<PlcValue> listItems) {
         this.listItems = Collections.unmodifiableList(listItems);
     }
 

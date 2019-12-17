@@ -2,7 +2,7 @@ package org.apache.plc4x.java.api.value;
 
 public class PlcString extends PlcSimpleValue<String> {
 
-    public PlcString(String value) {
+    PlcString(String value) {
         super(value, true);
     }
 

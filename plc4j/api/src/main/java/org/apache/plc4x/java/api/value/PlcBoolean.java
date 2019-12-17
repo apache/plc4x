@@ -2,11 +2,11 @@ package org.apache.plc4x.java.api.value;
 
 public class PlcBoolean extends PlcSimpleValue<Boolean> {
 
-    public PlcBoolean(Boolean value) {
+    PlcBoolean(Boolean value) {
         super(value, true);
     }
 
-    public PlcBoolean(boolean bool) {
+    PlcBoolean(boolean bool) {
         super(bool, false);
     }
 
