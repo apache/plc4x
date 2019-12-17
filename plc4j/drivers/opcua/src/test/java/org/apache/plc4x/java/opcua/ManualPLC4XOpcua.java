@@ -37,17 +37,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
+
 /**
  * This class serves only as a manual entry point for ad-hoc tests of the OPC UA PLC4J driver.
- *
- *
+ * <p>
+ * <p>
  * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
  * Afterwards the code represented here will be used as an example for the introduction page.
- *
+ * <p>
  * TODO: replace current public server with local Milo instance
  *
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class ManualPLC4XOpcua {
     private static final String BOOL_IDENTIFIER = "ns=2;i=10844";
@@ -67,21 +67,22 @@ public class ManualPLC4XOpcua {
     private static final String UINTEGER_IDENTIFIER = "ns=2;i=10870";
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
-
-    public static void main(String args[]){
-
-
+    public static void main(String args[]) {
         OpcuaTcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
         PlcField field = fieldH.createField("ns=2;i=10855");
         try {
             opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer");
+                new PlcDriverManager().getConnection("opcua:tcp://localhost:4843?discovery=true");
 
         } catch (PlcConnectionException e) {
             e.printStackTrace();
         }
         try {
+            String[] array = new String[2];
+            System.out.printf("%s:%s", array);
+
+
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
             builder.addItem("Bool", BOOL_IDENTIFIER);
             builder.addItem("ByteString", BYTE_STRING_IDENTIFIER);
@@ -108,17 +109,17 @@ public class ManualPLC4XOpcua {
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             wBuilder.addItem("w-Bool", BOOL_IDENTIFIER, true);
             wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
-            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte)1);
-            wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double)0.25);
-            wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float)0.25);
-            wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short)12);
-            wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int)314);
-            wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long)123125);
-            wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int)314);
-            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (short)23);
+            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 1);
+            wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double) 0.25);
+            wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float) 0.25);
+            wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short) 12);
+            wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int) 314);
+            wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long) 123125);
+            wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int) 314);
+            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (short) 23);
             wBuilder.addItem("w-String", STRING_IDENTIFIER, "TEST");
-            wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int)222);
-            wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long)21412);
+            wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int) 222);
+            wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long) 21412);
             wBuilder.addItem("w-UInt64", UINT64_IDENTIFIER, new BigInteger("1245152"));
             wBuilder.addItem("w-UInteger", UINTEGER_IDENTIFIER, new BigInteger("1245152"));
             PlcWriteRequest writeRequest = wBuilder.build();
@@ -132,14 +133,63 @@ public class ManualPLC4XOpcua {
                 )
             )).get();
 
-            Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent.toString());
+            Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println(plcSubscriptionEvent.toString() + "########################################################################################################################################################################");
             PlcConsumerRegistration registration = opcuaConnection.register(consumer, subResp.getSubscriptionHandles());
             Thread.sleep(7000);
             registration.unregister();
             Thread.sleep(20000);
             opcuaConnection.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    private static long GetConnectionTime(String ConnectionString) throws Exception {
+
+        OpcuaTcpPlcConnection opcuaConnection = null;
+        OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
+        PlcField field = fieldH.createField("ns=2;i=10855");
+
+        long milisStart = System.currentTimeMillis();
+        opcuaConnection = (OpcuaTcpPlcConnection)
+            new PlcDriverManager().getConnection(ConnectionString);
+        long result = System.currentTimeMillis() - milisStart;
+        opcuaConnection.close();
+        return result;
+    }
+
+    static class Encapsulater {
+        public String connectionString = "";
+
+        private long GetConnectionTime() {
+            long result = 0;
+            for (int counter = 0; counter < 1; counter++) {
+                OpcuaTcpPlcConnection opcuaConnection = null;
+                OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
+                PlcField field = fieldH.createField("ns=2;i=10855");
+
+                long milisStart = System.currentTimeMillis();
+                try {
+                    opcuaConnection = (OpcuaTcpPlcConnection)
+                        new PlcDriverManager().getConnection(connectionString);
+                } catch (PlcConnectionException e) {
+                    e.printStackTrace();
+                }
+                result += System.currentTimeMillis() - milisStart;
+                try {
+                    assert opcuaConnection != null;
+                    opcuaConnection.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return result;
+
+        }
     }
 }
+
+
