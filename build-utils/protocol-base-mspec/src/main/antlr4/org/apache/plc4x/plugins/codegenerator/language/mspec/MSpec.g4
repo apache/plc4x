@@ -188,13 +188,23 @@ fragment HexDigit
 ;
 
 arrayType
- : 'count'
- | 'length'
- | 'terminated'
+ : K_COUNT
+ | K_LENGTH
+ | K_TERMINATE
  ;
 
 idExpression
- : TICK id=IDENTIFIER TICK
+ : TICK id=idString TICK
+ ;
+
+idString
+ : IDENTIFIER
+ | keywords
+ ;
+
+keywords
+ : K_TERMINATE
+ | K_LENGTH
  ;
 
 fragment K_COMMENT : '<--';
@@ -205,6 +215,10 @@ LBRACKET : '[';
 RBRACKET : ']';
 LCBRACKET : '{';
 RCBRACKET : '}';
+
+K_COUNT : C O U N T;
+K_LENGTH : L E N G T H;
+K_TERMINATE : T E R M I N A T E D;
 
 BinaryOperator
  : '+'
@@ -233,6 +247,33 @@ HEX_VALUE : [0-9A-F];
 IDENTIFIER
  : [A-Za-z0-9_-]+
  ;
+
+fragment A : [aA];
+fragment B : [bB];
+fragment C : [cC];
+fragment D : [dD];
+fragment E : [eE];
+fragment F : [fF];
+fragment G : [gG];
+fragment H : [hH];
+fragment I : [iI];
+fragment J : [jJ];
+fragment K : [kK];
+fragment L : [lL];
+fragment M : [mM];
+fragment N : [nN];
+fragment O : [oO];
+fragment P : [pP];
+fragment Q : [qQ];
+fragment R : [rR];
+fragment S : [sS];
+fragment T : [tT];
+fragment U : [uU];
+fragment V : [vV];
+fragment W : [wW];
+fragment X : [xX];
+fragment Y : [yY];
+fragment Z : [zZ];
 
 WS  :  [ \t\r\n\u000C]+ -> skip
 ;
