@@ -19,15 +19,34 @@
 
 package org.apache.plc4x.java.api.value;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 class PlcValuesTest {
 
-    @Test
-    void testInstance() {
-        Object o = "Hallo";
-        PlcValues.of(o);
+    @ParameterizedTest
+    @MethodSource("values")
+    void builders(Class<?> clazz, List<Object> values) throws Exception {
+        Method declaredMethod = PlcValues.class.getDeclaredMethod("of", clazz);
+        for (Object value : values) {
+            Object invoke = declaredMethod.invoke(null, value);
+            assertNotNull(invoke);
+        }
+    }
+
+    private static Object[][] values() {
+        return new Object[][]{
+            {String.class, Arrays.asList("test", "test2")},
+            {Integer.class, Arrays.asList(1, 2, 3, 4)},
+            {int.class, Arrays.asList(1, 1)},
+            {Boolean.class, Arrays.asList(true, false)},
+            {boolean.class, Arrays.asList(true, false)},
+        };
     }
 }
