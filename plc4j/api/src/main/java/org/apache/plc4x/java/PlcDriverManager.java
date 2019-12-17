@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java;
 
+import org.apache.plc4x.java.api.Changed;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -89,7 +90,14 @@ public class PlcDriverManager {
         return connection;
     }
 
-    private PlcDriver getDriver(String url) throws PlcConnectionException {
+    /**
+     * Returns suitble driver for protocol or throws an Exception.
+     * @param url Uri to use
+     * @return Driver instance for the given protocol
+     * @throws PlcConnectionException If no Suitable Driver can be found
+     */
+    @Changed
+    public PlcDriver getDriver(String url) throws PlcConnectionException {
         try {
             URI connectionUri = new URI(url);
             String protocol = connectionUri.getScheme();

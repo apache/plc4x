@@ -25,4 +25,7 @@ public class PlcIncompatibleDatatypeException extends PlcRuntimeException {
         super("Incompatible Datatype " + datatype.getName() + " at index " + index);
     }
 
+    public PlcIncompatibleDatatypeException(String message) {
+        super(message);
+    }
 }
