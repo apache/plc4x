@@ -4,6 +4,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class PlcValueAdapter implements PlcValue {
 
@@ -101,6 +102,10 @@ public class PlcValueAdapter implements PlcValue {
 
     @Override public boolean isStruct() {
         return false;
+    }
+
+    @Override public Set<String> getKeys() {
+        throw new PlcIncompatibleDatatypeException("");
     }
 
     @Override public boolean hasKey(String key) {

@@ -5,6 +5,7 @@ import org.apache.plc4x.java.api.value.PlcValueAdapter;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PlcStruct extends PlcValueAdapter {
@@ -17,6 +18,10 @@ public class PlcStruct extends PlcValueAdapter {
 
     @Override public boolean isStruct() {
         return true;
+    }
+
+    @Override public Set<String> getKeys() {
+        return map.keySet();
     }
 
     @Override public boolean hasKey(String key) {

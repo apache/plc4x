@@ -2,6 +2,7 @@ package org.apache.plc4x.java.api.value;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base Type of all Types.
@@ -73,6 +74,8 @@ public interface PlcValue {
     // Struct Methods
 
     boolean isStruct();
+
+    Set<String> getKeys();
 
     boolean hasKey(String key);
 
