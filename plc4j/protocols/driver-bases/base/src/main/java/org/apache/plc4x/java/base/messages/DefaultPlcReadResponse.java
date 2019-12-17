@@ -21,8 +21,11 @@ package org.apache.plc4x.java.base.messages;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
 import java.math.BigDecimal;
@@ -30,9 +33,15 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class DefaultPlcReadResponse implements InternalPlcReadResponse {
+public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadResponse {
 
     private final InternalPlcReadRequest request;
     private final Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values;
@@ -45,6 +54,11 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
     @Override
     public InternalPlcReadRequest getRequest() {
         return request;
+    }
+
+    @Override public PlcValue getAsPlcValue() {
+        return PlcValues.of(request.getFieldNames().stream()
+            .collect(Collectors.toMap(Function.identity(), name -> PlcValues.of(getObject(name)))));
     }
 
     @Override

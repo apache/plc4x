@@ -17,26 +17,17 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.api.exceptions;
+package org.apache.plc4x.java.api.value;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-class PlcProtocolPayloadTooBigExceptionTest {
+class PlcValuesTest {
 
     @Test
-    public void simpleStringConstructor() {
-        PlcProtocolPayloadTooBigException exception = assertThrows(PlcProtocolPayloadTooBigException. class,() -> {
-            throw new PlcProtocolPayloadTooBigException("protocolName", 1024, 1040, "payload");
-        });
-
-        assertThat(exception.getProtocolName(), equalTo("protocolName"));
-        assertThat(exception.getMaxSize(), equalTo(1024));
-        assertThat(exception.getActualSize(), equalTo(1040));
-        assertThat(exception.getPayload(), equalTo("payload"));
+    void testInstance() {
+        Object o = "Hallo";
+        PlcValues.of(o);
     }
-
 }
