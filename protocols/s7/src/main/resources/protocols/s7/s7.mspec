@@ -228,23 +228,23 @@
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 [type 'S7VarPayloadDataItem'
-    [simple  uint 8             'returnCode']
-    [enum    DataTransportSize  'transportSize']
-    [simple  uint 16            'dataLength']
-    [array   uint 8             'data' count 'dataLength / 8']
-    [padding uint 8             'pad' '0x00' '(dataLength / 8) % 2 == 1']
+    [enum    DataTransportErrorCode 'returnCode']
+    [enum    DataTransportSize      'transportSize']
+    [simple  uint 16                'dataLength']
+    [array   int  8                 'data' count 'dataLength / 8']
+    [padding uint 8                 'pad' '0x00' '(dataLength / 8) % 2 == 1']
 ]
 
 [type 'S7VarPayloadStatusItem'
-    [simple uint 8 'returnCode']
+    [enum DataTransportErrorCode 'returnCode']
 ]
 
 [discriminatedType 'S7PayloadUserDataItem' [uint 4 'cpuFunctionType']
-    [simple   uint 8            'returnCode']
-    [enum     DataTransportSize 'transportSize']
-    [implicit uint 16           'dataLength' 'lengthInBytes - 4']
-    [simple   SzlId             'szlId']
-    [simple   uint 16           'szlIndex']
+    [enum     DataTransportErrorCode 'returnCode']
+    [enum     DataTransportSize      'transportSize']
+    [implicit uint 16                'dataLength' 'lengthInBytes - 4']
+    [simple   SzlId                  'szlId']
+    [simple   uint 16                'szlIndex']
     [typeSwitch 'cpuFunctionType'
         ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
         ]
@@ -255,7 +255,6 @@
         ]
     ]
 ]
-
 
 [enum int 8 'COTPTpduSize' [uint 8 'sizeInBytes']
     ['0x07' SIZE_128 ['128']]
@@ -283,6 +282,12 @@
     ['0x06' DINTEGER        ['false']]
     ['0x07' REAL            ['false']]
     ['0x09' OCTET_STRING    ['false']]
+]
+
+[enum int 8 'DeviceGroup'
+    ['0x01' PG_OR_PC]
+    ['0x02' OS      ]
+    ['0x03' OTHERS  ]
 ]
 
 [enum int 8 'TransportSize'  [uint 8 'sizeCode', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize']
@@ -332,6 +337,15 @@
     ['0x06' DINTEGER            ['false']]
     ['0x07' REAL                ['false']]
     ['0x09' OCTET_STRING        ['false']]
+]
+
+[enum int 8 'DataTransportErrorCode'
+    ['0x00' RESERVED               ]
+    ['0xFF' OK                     ]
+    ['0x03' ACCESS_DENIED          ]
+    ['0x05' INVALID_ADDRESS        ]
+    ['0x06' DATA_TYPE_NOT_SUPPORTED]
+    ['0x0A' NOT_FOUND              ]
 ]
 
 [enum int 4 'SzlModuleTypeClass'

@@ -193,6 +193,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return "Hurz";
     }
 
+    public int getNumBits(SimpleTypeReference simpleTypeReference) {
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT: {
+                return 1;
+            }
+            case UINT:
+            case INT: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                return integerTypeReference.getSizeInBits();
+            }
+            case FLOAT: {
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                return floatTypeReference.getSizeInBits();
+            }
+            case STRING: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                return integerTypeReference.getSizeInBits();
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
+
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {

@@ -73,10 +73,13 @@ public class ${typeName}IO {
         if(${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc} > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + (${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
-        int _${field.name}Count = (int) ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}Count];
-        for(int i = 0; i < _${field.name}Count; i++) {
-            ${field.name}[i] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField( field)}[] ${field.name};
+        {
+            int itemCount = (int) ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)?no_esc};
+            ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
+            for(int curItem = 0; curItem < itemCount; curItem++) {
+                ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toDeserializationExpression(parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+            }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
@@ -230,7 +233,7 @@ public class ${typeName}IO {
     <#case "padding">
 
         // Padding Field (${field.name})
-        boolean _${field.name}NeedsPadding = (boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)});
+        boolean _${field.name}NeedsPadding = (boolean) ((io.hasMore(${helper.getNumBits(field.type)})) && (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)}));
         if(_${field.name}NeedsPadding) {
             // Just read the padding data and ignore it
             ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
