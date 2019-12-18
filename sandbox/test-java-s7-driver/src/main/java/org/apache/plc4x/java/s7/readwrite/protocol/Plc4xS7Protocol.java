@@ -27,8 +27,48 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.types.*;
+import org.apache.plc4x.java.s7.readwrite.COTPPacket;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketData;
+import org.apache.plc4x.java.s7.readwrite.COTPParameter;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize;
+import org.apache.plc4x.java.s7.readwrite.S7Address;
+import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
+import org.apache.plc4x.java.s7.readwrite.S7Message;
+import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
+import org.apache.plc4x.java.s7.readwrite.S7MessageResponse;
+import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
+import org.apache.plc4x.java.s7.readwrite.S7Parameter;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
+import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
+import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
+import org.apache.plc4x.java.s7.readwrite.SzlId;
+import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
+import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
+import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
+import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
+import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
+import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.utils.S7Field;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -56,12 +96,15 @@ import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -101,55 +144,122 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
     public void onConnect(ConversationContext<TPKTPacket> context) {
         logger.debug("ISO Transport Protocol Sending Connection Request");
         // Open the session on ISO Transport Protocol first.
-        COTPPacketConnectionRequest connectionRequest = new COTPPacketConnectionRequest(
-            new COTPParameter[] {
-                new COTPParameterCalledTsap(calledTsapId),
-                new COTPParameterCallingTsap(callingTsapId),
-                new COTPParameterTpduSize(cotpTpduSize)
-            }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
-        TPKTPacket packet = new TPKTPacket(connectionRequest);
+        TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(calledTsapId, callingTsapId, cotpTpduSize));
 
         context.sendRequest(packet)
             .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
-            .onTimeout(e -> {})
-            .check(p -> {
-                return p.getPayload() instanceof COTPPacketConnectionResponse;
+            .onTimeout(e -> {
             })
-            .unwrap(p -> {
-                return (COTPPacketConnectionResponse)p.getPayload();
-            })
+            .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
+            .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
-                // COTPPacketConnectionResponse cotpPacketConnectionResponse = (COTPPacketConnectionResponse) msg.getPayload();
-                for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
-                    if(parameter instanceof COTPParameterCalledTsap) {
-                        COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
-                        calledTsapId = cotpParameterCalledTsap.getTsapId();
-                    } else if(parameter instanceof COTPParameterTpduSize) {
-                        COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
-                        cotpTpduSize = cotpParameterTpduSize.getTpduSize();
-                    } else if(parameter instanceof COTPParameterCallingTsap) {
-                        // Ignore this ...
-                    } else {
-                        logger.warn("Got unknown parameter type '" + parameter.getClass().getName() + "'");
-                    }
-                }
+                context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+                    .onTimeout(e -> {
+                    })
+                    .check(p -> p.getPayload() instanceof COTPPacketData)
+                    .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                    .check(p -> p.getPayload() instanceof S7MessageResponse)
+                    .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+                    .check(p -> p.getParameter() instanceof S7ParameterSetupCommunication)
+                    .unwrap(p -> ((S7ParameterSetupCommunication) p.getParameter()))
+                    .handle(setupCommunication -> {
+                        // Save some data from the response.
+                        maxAmqCaller = setupCommunication.getMaxAmqCaller();
+                        maxAmqCallee = setupCommunication.getMaxAmqCallee();
+                        pduSize = setupCommunication.getPduLength();
 
-                // Send an S7 login message.
-                S7ParameterSetupCommunication s7ParameterSetupCommunication =
-                    new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduSize);
-                S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
-                    new S7PayloadSetupCommunication());
-                COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
-                TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-                context.sendToWire(tpktPacket);
+                        // Only if the controller type is set to "ANY", then try to identify the PLC type.
+                        if (controllerType != S7ControllerType.ANY) {
+                            // Send an event that connection setup is complete.
+                            context.fireConnected();
+                            return;
+                        }
+                        // Prepare a message to request the remote to identify itself.
+                        TPKTPacket tpktPacket = createIdentifyRemoteMessage();
+                        context.sendRequest(tpktPacket)
+                            .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+                            .onTimeout(e -> {
+                            })
+                            .check(p -> p.getPayload() instanceof COTPPacketData)
+                            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                            .check(p -> p.getPayload() instanceof S7MessageUserData)
+                            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+                            .check(p -> p.getPayload() instanceof S7PayloadUserData)
+                            .handle(messageUserData -> {
+                                S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
+                                extractControllerTypeAndFireConnected(context, payloadUserData);
+                            });
+                    });
             });
 
         // context.sendToWire(packet);
     }
 
+    private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
+        for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
+            if (item instanceof S7PayloadUserDataItemCpuFunctionReadSzlResponse) {
+                S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponseItem =
+                    (S7PayloadUserDataItemCpuFunctionReadSzlResponse) item;
+                for (SzlDataTreeItem readSzlResponseItemItem : readSzlResponseItem.getItems()) {
+                    if (readSzlResponseItemItem.getItemIndex() == 0x0001) {
+                        final String articleNumber = new String(readSzlResponseItemItem.getMlfb());
+                        controllerType = lookupControllerType(articleNumber);
+
+                        // Send an event that connection setup is complete.
+                        context.fireConnected();
+                    }
+                }
+            }
+        }
+    }
+
+    private static TPKTPacket createIdentifyRemoteMessage() {
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
+            new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
+        }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
+            new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
+        }));
+        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
+        return new TPKTPacket(cotpPacketData);
+    }
+
+    private TPKTPacket createS7ConnectionRequest(COTPPacketConnectionResponse cotpPacketConnectionResponse) {
+        for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
+            if (parameter instanceof COTPParameterCalledTsap) {
+                COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
+                calledTsapId = cotpParameterCalledTsap.getTsapId();
+            } else if (parameter instanceof COTPParameterTpduSize) {
+                COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
+                cotpTpduSize = cotpParameterTpduSize.getTpduSize();
+            } else if (parameter instanceof COTPParameterCallingTsap) {
+                // Ignore this ...
+            } else {
+                logger.warn("Got unknown parameter type '" + parameter.getClass().getName() + "'");
+            }
+        }
+
+        // Send an S7 login message.
+        S7ParameterSetupCommunication s7ParameterSetupCommunication =
+            new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduSize);
+        S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
+            new S7PayloadSetupCommunication());
+        COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+        return new TPKTPacket(cotpPacketData);
+    }
+
+    private static COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
+        return new COTPPacketConnectionRequest(
+            new COTPParameter[]{
+                new COTPParameterCalledTsap(calledTsapId),
+                new COTPParameterCallingTsap(callingTsapId),
+                new COTPParameterTpduSize(cotpTpduSize)
+            }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
+    }
+
     @Override
     protected void encode(ConversationContext<TPKTPacket> context, PlcRequestContainer msg) throws Exception {
-        if(msg.getRequest() instanceof DefaultPlcReadRequest) {
+        if (msg.getRequest() instanceof DefaultPlcReadRequest) {
             DefaultPlcReadRequest request = (DefaultPlcReadRequest) msg.getRequest();
             List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
             for (PlcField field : request.getFields()) {
@@ -173,74 +283,31 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
         // When getting a response to the connection request on COTP layer, extract some
         // data and continue logging in on the S7 protocol.
-        if(msg.getPayload() instanceof COTPPacketConnectionResponse) {
+        if (msg.getPayload() instanceof COTPPacketConnectionResponse) {
             throw new IllegalStateException("You should not be here, fucker");
-        }
-
-        else if(msg.getPayload() instanceof COTPPacketData) {
-            COTPPacketData packetData = (COTPPacketData) msg.getPayload();
-            if(packetData.getPayload() instanceof S7MessageResponse) {
-                S7MessageResponse s7MessageResponse = (S7MessageResponse) packetData.getPayload();
-                final S7Parameter parameter = s7MessageResponse.getParameter();
-                if(parameter instanceof S7ParameterSetupCommunication) {
-                    S7ParameterSetupCommunication setupCommunication = (S7ParameterSetupCommunication) parameter;
-
-                    // Save some data from the response.
-                    maxAmqCaller = setupCommunication.getMaxAmqCaller();
-                    maxAmqCallee = setupCommunication.getMaxAmqCallee();
-                    pduSize = setupCommunication.getPduLength();
-
-                    // Only if the controller type is set to "ANY", then try to identify the PLC type.
-                    if(controllerType == S7ControllerType.ANY) {
-                        // Prepare a message to request the remote to identify itself.
-                        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[] {
-                            new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-                        }), new S7PayloadUserData( new S7PayloadUserDataItem[] {
-                            new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-                        }));
-                        COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
-                        TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-                        context.sendToWire(tpktPacket);
-                    } else {
-                        // Send an event that connection setup is complete.
-                        context.fireConnected();
-
-                    }
-                } else if (parameter instanceof S7ParameterReadVarResponse) {
-                    final PlcRequestContainer requestContainer = requests.remove(s7MessageResponse.getTpduReference());
-                    final PlcResponse response = decodeReadResponse(s7MessageResponse, requestContainer);
-                    requestContainer.getResponseFuture().complete(response);
-                } else if (parameter instanceof S7ParameterWriteVarResponse) {
-                    S7ParameterWriteVarResponse writeResponseParameter = (S7ParameterWriteVarResponse) parameter;
-
-                    System.out.println(writeResponseParameter);
-                }
-            } else if(packetData.getPayload() instanceof S7MessageUserData) {
-                S7MessageUserData messageUserData = (S7MessageUserData) packetData.getPayload();
-                if(messageUserData.getPayload() instanceof S7PayloadUserData) {
-                    S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
-                    for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
-                        if(item instanceof S7PayloadUserDataItemCpuFunctionReadSzlResponse) {
-                            S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponseItem =
-                                (S7PayloadUserDataItemCpuFunctionReadSzlResponse) item;
-                            for (SzlDataTreeItem readSzlResponseItemItem : readSzlResponseItem.getItems()) {
-                                if(readSzlResponseItemItem.getItemIndex() == 0x0001) {
-                                    final String articleNumber = new String(readSzlResponseItemItem.getMlfb());
-                                    controllerType = lookupControllerType(articleNumber);
-
-                                    // Send an event that connection setup is complete.
-                                    context.fireConnected();
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                System.out.println(packetData);
+        } else if (msg.getPayload() instanceof COTPPacketData) {
+            COTPPacket packageData = msg.getPayload();
+            if (!(packageData.getPayload() instanceof S7MessageResponse)) {
+                throw new IllegalStateException("You should not be here, fucker");
             }
-        }
+            S7MessageResponse s7MessageResponse = (S7MessageResponse) packageData.getPayload();
+            final S7Parameter parameter = s7MessageResponse.getParameter();
+            if (parameter instanceof S7ParameterReadVarResponse) {
+                final PlcRequestContainer requestContainer = requests.remove(s7MessageResponse.getTpduReference());
+                final PlcResponse response;
+                try {
+                    response = decodeReadResponse(s7MessageResponse, requestContainer);
+                    requestContainer.getResponseFuture().complete(response);
+                } catch (PlcProtocolException e) {
+                    e.printStackTrace();
+                }
+            } else if (parameter instanceof S7ParameterWriteVarResponse) {
+                S7ParameterWriteVarResponse writeResponseParameter = (S7ParameterWriteVarResponse) parameter;
 
-        else {
+                System.out.println(writeResponseParameter);
+            }
+
+        } else {
             System.out.println(msg);
         }
     }
@@ -362,9 +429,8 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         default:
                             throw new PlcProtocolException("Unsupported type " + field.getDataType());
                     }
-                }
-                catch (Exception e){
-                    logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
+                } catch (Exception e) {
+                    logger.warn("Some other error occurred casting field {}, FieldInformation: {}", fieldName, field, e);
                 }
             }
             Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
@@ -539,24 +605,23 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         //per definition for Date_And_Time only the first 6 bytes are used
 
         int year=convertByteToBcd(data.readByte());
-        int month=convertByteToBcd(data.readByte());
-        int day=convertByteToBcd(data.readByte());
-        int hour=convertByteToBcd(data.readByte());
-        int minute=convertByteToBcd(data.readByte());
-        int second=convertByteToBcd(data.readByte());
+        int month = convertByteToBcd(data.readByte());
+        int day = convertByteToBcd(data.readByte());
+        int hour = convertByteToBcd(data.readByte());
+        int minute = convertByteToBcd(data.readByte());
+        int second = convertByteToBcd(data.readByte());
         //skip the last 2 bytes no information present
         data.readByte();
         data.readByte();
 
         //data-type ranges from 1990 up to 2089
-        if(year>=90){
-            year+=1900;
-        }
-        else{
-            year+=2000;
+        if (year >= 90) {
+            year += 1900;
+        } else {
+            year += 2000;
         }
 
-        return LocalDateTime.of(year,month,day,hour,minute,second);
+        return LocalDateTime.of(year, month, day, hour, minute, second);
     }
 
     LocalTime readTimeOfDay(ByteBuf data) {
