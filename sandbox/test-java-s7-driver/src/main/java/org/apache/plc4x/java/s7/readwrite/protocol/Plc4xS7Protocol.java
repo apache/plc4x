@@ -90,15 +90,11 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
         context.sendRequest(packet)
             .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
-            .onTimeout(e -> {
-            })
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
                 context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
                     .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
-                    .onTimeout(e -> {
-                    })
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -121,8 +117,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         TPKTPacket tpktPacket = createIdentifyRemoteMessage();
                         context.sendRequest(tpktPacket)
                             .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
-                            .onTimeout(e -> {
-                            })
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -219,8 +213,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             context.sendRequest(tpktPacket)
                 .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
                 // TODO: make it really optional
-                .onTimeout(e -> {
-                })
                 .check(p -> p.getPayload() instanceof COTPPacketData)
                 .unwrap(p -> ((COTPPacketData) p.getPayload()))
                 .check(p -> p.getPayload() instanceof S7MessageResponse)

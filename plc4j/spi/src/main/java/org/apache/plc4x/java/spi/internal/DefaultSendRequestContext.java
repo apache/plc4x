@@ -118,13 +118,16 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("expectResponse must be called before first unwrap");
         }
         if (onTimeoutConsumer == null) {
-            throw new ConversationContext.PlcWiringException("onTimeout must be called before first unwrap");
+            onTimeoutConsumer = e -> {
+                // NOOP
+            };
         }
         commands.addLast(Either.left(unwrapper));
         return new DefaultSendRequestContext<R>(commands, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
-    @Override public <R> ConversationContext.SendRequestContext<R> only(Class<R> clazz) {
+    @Override
+    public <R> ConversationContext.SendRequestContext<R> only(Class<R> clazz) {
         this.check(clazz::isInstance);
         return this.unwrap(clazz::cast);
     }
