@@ -23,6 +23,17 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultBigDecimalFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultByteArrayFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultDoubleFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultFloatFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLocalDateFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLocalDateTimeFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLocalTimeFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultStringFieldItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

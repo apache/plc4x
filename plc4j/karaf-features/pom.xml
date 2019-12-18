@@ -32,8 +32,8 @@
   <name>PLC4J: Karaf-Features</name>
 
   <modules>
-    <module>s7</module>
-    <module>karaf-itest</module>
+<!--    <module>s7</module>-->
+<!--    <module>karaf-itest</module>-->
   </modules>
 
   <dependencies>
