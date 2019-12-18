@@ -27,11 +27,11 @@ public class PlcList extends PlcValueAdapter {
 
     private final List<PlcValue> listItems;
 
-    PlcList(List<PlcValue> listItems) {
-        List<PlcValue> safelist = listItems.stream().map(plcValue -> {
+    PlcList(List<?> listItems) {
+        List<PlcValue> safelist = listItems.stream().<PlcValue>map(plcValue -> {
             // to avoid unwrapped list cause of type erasure
             if (plcValue instanceof PlcValue) {
-                return plcValue;
+                return (PlcValue)plcValue;
             } else {
                 return PlcValues.of(plcValue);
             }
