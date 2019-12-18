@@ -22,9 +22,11 @@ package org.apache.plc4x.java.spi;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface ConversationContext<T> {
 
@@ -38,21 +40,15 @@ public interface ConversationContext<T> {
 
         SendRequestContext<T> expectResponse(Class<T> clazz, Duration timeout);
 
-        SendRequestContext<T> check(Function<T, Boolean> checker);
+        SendRequestContext<T> check(Predicate<T> checker);
 
-        SendRequestContext<T> handle(Consumer<T> packetConsumer);
+        void handle(Consumer<T> packetConsumer);
 
-        <E extends Throwable> SendRequestContext<T> onTimeout(BiConsumer<T, E> packetConsumer);
+        <E extends Throwable> SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
         <E extends Throwable> SendRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
 
-        SendRequestContext<T> onSuccess(Consumer<T> packetConsumer);
-
         <R> SendRequestContext<R> unwrap(Function<T, R> unwrapper);
-
-        <R> SendRequestContext<R> unwrap(Class<R> clazz, Function<T, R> unwrapper);
-
-        void finish();
     }
 
     class PlcCompletionException extends PlcRuntimeException {
@@ -71,6 +67,13 @@ public interface ConversationContext<T> {
 
         public PlcCompletionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
             super(message, cause, enableSuppression, writableStackTrace);
+        }
+    }
+
+    class PlcWiringException extends PlcRuntimeException {
+
+        public PlcWiringException(String message) {
+            super(message);
         }
     }
 }
