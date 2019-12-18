@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.spi.internal;
 
 import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,11 +42,14 @@ class DefaultSendRequestContextTest {
     @Mock
     Consumer<HandlerRegistration> finisher;
 
+    @Mock
+    Plc4xNettyWrapper.DefaultConversationContext context;
+
     DefaultSendRequestContext<Object> SUT;
 
     @BeforeEach
     void setUp() {
-        // SUT = new DefaultSendRequestContext<>(finisher);
+        SUT = new DefaultSendRequestContext<>(finisher, null, context);
     }
 
     @Test
