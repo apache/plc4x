@@ -28,7 +28,15 @@ public class PlcList extends PlcValueAdapter {
     private final List<PlcValue> listItems;
 
     PlcList(List<PlcValue> listItems) {
-        this.listItems = Collections.unmodifiableList(listItems);
+        List<PlcValue> safelist = listItems.stream().map(plcValue -> {
+            // to avoid unwrapped list cause of type erasure
+            if (plcValue instanceof PlcValue) {
+                return plcValue;
+            } else {
+                return PlcValues.of(plcValue);
+            }
+        }).collect(Collectors.toList());
+        this.listItems = Collections.unmodifiableList(safelist);
     }
 
     @Override
