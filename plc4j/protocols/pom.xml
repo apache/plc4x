@@ -35,7 +35,7 @@
 
   <modules>
     <module>ads</module>
-<!--    <module>delta-v</module>-->
+    <module>delta-v</module>
     <module>ethernet-ip</module>
     <module>iso-on-tcp</module>
     <module>iso-tp</module>
