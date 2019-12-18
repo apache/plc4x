@@ -1,21 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
@@ -28,7 +28,6 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
@@ -49,13 +48,14 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcRequestContainer> {
+public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Plc4xProtocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(Plc4xS7Protocol.class);
 
     private final int callingTsapId;
     private int calledTsapId;
@@ -68,8 +68,10 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private final Map<Integer, PlcRequestContainer> requests;
 
-    public Plc4xProtocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
-                         int maxAmqCaller, int maxAmqCallee, S7ControllerType controllerType) {
+    public Plc4xS7Protocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
+                           int maxAmqCaller, int maxAmqCallee, S7ControllerType controllerType) {
+        // FIXME REMOVE
+        super(TPKTPacket.class);
         this.callingTsapId = callingTsapId;
         this.calledTsapId = calledTsapId;
         this.cotpTpduSize = tpduSize;
@@ -81,37 +83,22 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
         requests = new HashMap<>();
     }
 
-    /**
-     * If the S7 protocol layer is used over Iso TP, then after receiving a {@link IsoTPConnectedEvent} the
-     * corresponding S7 setup communication message has to be sent in order to negotiate the S7 protocol layer.
-     *
-     * @param ctx the current protocol layers context
-     * @param evt the event
-     * @throws Exception throws an exception if something goes wrong internally
-     */
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        // If the connection has just been established, start setting up the connection
-        // by sending a connection request to the plc.
-        if (evt instanceof ConnectEvent) {
-            logger.debug("ISO Transport Protocol Sending Connection Request");
-            // Open the session on ISO Transport Protocol first.
-            COTPPacketConnectionRequest connectionRequest = new COTPPacketConnectionRequest(
-                new COTPParameter[] {
-                    new COTPParameterCalledTsap(calledTsapId),
-                    new COTPParameterCallingTsap(callingTsapId),
-                    new COTPParameterTpduSize(cotpTpduSize)
-                }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
-            TPKTPacket packet = new TPKTPacket(connectionRequest);
-            ctx.channel().writeAndFlush(packet);
-        }
-        else {
-            super.userEventTriggered(ctx, evt);
-        }
+    public void onConnect() {
+        logger.debug("ISO Transport Protocol Sending Connection Request");
+        // Open the session on ISO Transport Protocol first.
+        COTPPacketConnectionRequest connectionRequest = new COTPPacketConnectionRequest(
+            new COTPParameter[] {
+                new COTPParameterCalledTsap(calledTsapId),
+                new COTPParameterCallingTsap(callingTsapId),
+                new COTPParameterTpduSize(cotpTpduSize)
+            }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
+        TPKTPacket packet = new TPKTPacket(connectionRequest);
+        context.send(packet);
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
+    protected void encode(PlcRequestContainer msg, Consumer<TPKTPacket> sendHandler) throws Exception {
         if(msg.getRequest() instanceof DefaultPlcReadRequest) {
             DefaultPlcReadRequest request = (DefaultPlcReadRequest) msg.getRequest();
             List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
@@ -119,32 +106,17 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
                 requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
             }
             final int tpduId = tpduGenerator.getAndIncrement();
-            out.add(new TPKTPacket(new COTPPacketData(null,
+            sendHandler.accept(new TPKTPacket(new COTPPacketData(null,
                 new S7MessageRequest(tpduId,
                     new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
                     new S7PayloadReadVarRequest()),
                 true, (short) tpduId)));
             requests.put(tpduId, msg);
-/*        } else if(msg.getRequest() instanceof DefaultPlcWriteRequest) {
-            DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) msg.getRequest();
-            List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
-            List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
-            for (PlcField field : request.getFields()) {
-                requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
-                payloadItems.add((new S7VarPayloadDataItem(0xff, DataTransportSize.BYTE_WORD_DWORD, 1, field)));
-            }
-            final int tpduId = tpduGenerator.getAndIncrement();
-            out.add(new TPKTPacket(new COTPPacketData(null,
-                new S7MessageRequest(3,
-                    new S7ParameterWriteVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
-                    new S7PayloadWriteVarRequest(payloadItems.toArray(new S7VarPayloadDataItem[0]))),
-                true, (short) 0)));
-            requests.put((short) tpduId, msg);*/
         }
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, TPKTPacket msg, List<Object> out) throws Exception {
+    protected void decode(TPKTPacket msg) throws Exception {
         if((msg == null) || (msg.getPayload() == null)) {
             return;
         }
@@ -174,7 +146,7 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
                 new S7PayloadSetupCommunication());
             COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
             TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-            ctx.channel().writeAndFlush(tpktPacket);
+            context.send(tpktPacket);
         }
 
         else if(msg.getPayload() instanceof COTPPacketData) {
@@ -200,10 +172,11 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
                         }));
                         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
                         TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-                        ctx.channel().writeAndFlush(tpktPacket);
+                        context.send(tpktPacket);
                     } else {
                         // Send an event that connection setup is complete.
-                        ctx.channel().pipeline().fireUserEventTriggered(new ConnectedEvent());
+                        context.fireConnected();
+
                     }
                 } else if (parameter instanceof S7ParameterReadVarResponse) {
                     final PlcRequestContainer requestContainer = requests.remove(s7MessageResponse.getTpduReference());
@@ -228,7 +201,7 @@ public class Plc4xProtocol extends PlcMessageToMessageCodec<TPKTPacket, PlcReque
                                     controllerType = lookupControllerType(articleNumber);
 
                                     // Send an event that connection setup is complete.
-                                    ctx.channel().pipeline().fireUserEventTriggered(new ConnectedEvent());
+                                    context.fireConnected();
                                 }
                             }
                         }

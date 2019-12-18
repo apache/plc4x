@@ -20,7 +20,9 @@ package org.apache.plc4x.java.s7.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.*;
@@ -30,7 +32,6 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.*;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +60,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -73,12 +74,13 @@ import java.util.stream.IntStream;
  * When a {@link S7ResponseMessage} is received it takes the existing request container from its Map and finishes
  * the {@link PlcRequestContainer}s future with the {@link PlcResponse}.
  */
-public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequestContainer> {
+public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCodec<S7Message, PlcRequestContainer> {
     private static final Logger logger = LoggerFactory.getLogger( Plc4XS7Protocol.class );
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
     private Map<Short, PlcRequestContainer> requests;
+    private volatile ChannelHandler prevChannelHandler = null;
 
     public Plc4XS7Protocol() {
         this.requests = new HashMap<>();
@@ -841,4 +843,18 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         return dec + (incomingByte & 0x0f);
     }
 
+    protected ChannelHandler getPrevChannelHandler(ChannelHandlerContext ctx) {
+        if(prevChannelHandler == null) {
+            try {
+                Field prevField = FieldUtils.getField(ctx.getClass(), "prev", true);
+                if(prevField != null) {
+                    ChannelHandlerContext prevContext = (ChannelHandlerContext) prevField.get(ctx);
+                    prevChannelHandler = prevContext.handler();
+                }
+            } catch(Exception e) {
+                logger.error("Error accessing field 'prev'", e);
+            }
+        }
+        return prevChannelHandler;
+    }
 }
