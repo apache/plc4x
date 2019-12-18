@@ -43,6 +43,7 @@ import org.apache.plc4x.java.ads.model.DirectAdsField;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.assertj.core.api.WithAssertions;

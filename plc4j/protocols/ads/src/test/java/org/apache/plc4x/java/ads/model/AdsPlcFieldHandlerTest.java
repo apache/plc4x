@@ -21,6 +21,7 @@ package org.apache.plc4x.java.ads.model;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.spi.messages.items.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.TestInfo;
