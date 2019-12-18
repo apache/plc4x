@@ -149,7 +149,7 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
         short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
         short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, rack, slot);
 
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

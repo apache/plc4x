@@ -86,7 +86,7 @@ public class SerialDf1Connection extends BaseDf1Connection implements PlcReader,
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

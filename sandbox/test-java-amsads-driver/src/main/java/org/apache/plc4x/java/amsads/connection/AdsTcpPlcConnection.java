@@ -110,7 +110,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the ads protocol.

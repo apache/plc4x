@@ -50,7 +50,7 @@ public class PassiveS7PlcConnection extends NettyPlcConnection implements PlcRea
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

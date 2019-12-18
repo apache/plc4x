@@ -54,7 +54,7 @@ public class DummyConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
             }
