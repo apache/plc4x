@@ -89,12 +89,12 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(calledTsapId, callingTsapId, cotpTpduSize));
 
         context.sendRequest(packet)
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
                 context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
-                    .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+                    .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -116,7 +116,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         // Prepare a message to request the remote to identify itself.
                         TPKTPacket tpktPacket = createIdentifyRemoteMessage();
                         context.sendRequest(tpktPacket)
-                            .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+                            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)

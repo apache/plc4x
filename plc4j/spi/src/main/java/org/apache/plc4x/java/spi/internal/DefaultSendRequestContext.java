@@ -24,6 +24,7 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.TimeoutException;
@@ -51,14 +52,17 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
+    protected Duration timeout;
+
     public DefaultSendRequestContext(Consumer<HandlerRegistration> finisher, T request, Plc4xNettyWrapper<T>.DefaultConversationContext<T> context) {
         this.finisher = finisher;
         this.request = request;
         this.context = context;
     }
 
-    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Consumer<HandlerRegistration> finisher, Object request, Plc4xNettyWrapper<?>.DefaultConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, Object request, Plc4xNettyWrapper<?>.DefaultConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
+        this.timeout = timeout;
         this.finisher = finisher;
         this.request = request;
         this.context = context;
@@ -70,6 +74,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     @Override
     public ConversationContext.SendRequestContext<T> expectResponse(Class<T> clazz, Duration timeout) {
+        this.timeout = timeout;
         if (expectClazz != null) {
             throw new ConversationContext.PlcWiringException("can't expect class of type " + clazz + " as we already expecting clazz of type " + expectClazz);
         }
@@ -90,7 +95,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        finisher.accept(new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer));
+        finisher.accept(new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout)));
         context.sendToWire(request);
     }
 
@@ -123,7 +128,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultSendRequestContext<R>(commands, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultSendRequestContext<R>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
     @Override

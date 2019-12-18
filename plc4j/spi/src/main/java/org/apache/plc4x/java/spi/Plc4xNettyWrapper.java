@@ -30,7 +30,7 @@ import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -69,15 +69,23 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
     protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
         logger.info("Decoding {}", t);
         // Just iterate the list to find a suitable  Handler
+
         registrations:
-        for (HandlerRegistration registration : this.registeredHandlers) {
+        for (Iterator<HandlerRegistration> iter = this.registeredHandlers.iterator(); iter.hasNext(); ) {
+            HandlerRegistration registration = iter.next();
+            // Check if the handler can still be used or should be removed
+            if (registration.getTimeout().isBefore(Instant.now())) {
+                logger.info("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
+                iter.remove();
+                continue;
+            }
             logger.info("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
                 logger.info("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
                 // Check all Commands / Functions
                 Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
                 Object instance = t;
-                for (Iterator<Either<Function<?, ?>, Predicate<?>>> iterator = commands.iterator(); iterator.hasNext();) {
+                for (Iterator<Either<Function<?, ?>, Predicate<?>>> iterator = commands.iterator(); iterator.hasNext(); ) {
                     Either<Function<?, ?>, Predicate<?>> either = iterator.next();
                     if (either.isLeft()) {
                         Function unwrap = either.getLeft();

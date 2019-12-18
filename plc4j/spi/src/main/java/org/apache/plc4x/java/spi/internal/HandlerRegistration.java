@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.internal;
 
 import io.vavr.control.Either;
 
+import java.time.Instant;
 import java.util.Deque;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
@@ -43,13 +44,15 @@ public class HandlerRegistration {
     private final Consumer<TimeoutException> onTimeoutConsumer;
 
     private final BiConsumer<?, ? extends Throwable> errorConsumer;
+    private final Instant timeout;
 
-    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Instant timeout) {
         this.commands = commands;
         this.expectClazz = expectClazz;
         this.packetConsumer = packetConsumer;
         this.onTimeoutConsumer = onTimeoutConsumer;
         this.errorConsumer = errorConsumer;
+        this.timeout = timeout;
     }
 
     public Deque<Either<Function<?, ?>, Predicate<?>>> getCommands() {
@@ -70,6 +73,10 @@ public class HandlerRegistration {
 
     public BiConsumer<?, ? extends Throwable> getErrorConsumer() {
         return errorConsumer;
+    }
+
+    public Instant getTimeout() {
+        return timeout;
     }
 
     @Override public String toString() {
