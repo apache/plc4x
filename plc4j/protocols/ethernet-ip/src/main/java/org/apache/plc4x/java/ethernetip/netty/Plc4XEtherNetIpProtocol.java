@@ -37,11 +37,12 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.ethernetip.netty.util.EnipPlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
