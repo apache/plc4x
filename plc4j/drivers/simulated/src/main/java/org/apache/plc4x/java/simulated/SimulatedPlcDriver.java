@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.simulated.connection.SimulatedPlcConnection;
 import org.apache.plc4x.java.simulated.connection.TestDevice;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.osgi.service.component.annotations.Component;
 
 /**

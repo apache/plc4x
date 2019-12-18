@@ -33,7 +33,6 @@ import org.apache.plc4x.java.s7.types.S7ControllerType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class BenchmarkS7 {
 

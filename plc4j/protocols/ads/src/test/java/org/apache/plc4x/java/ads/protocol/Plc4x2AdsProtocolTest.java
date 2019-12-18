@@ -33,7 +33,6 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.model.AdsDataType;
 import org.apache.plc4x.java.ads.model.AdsPlcFieldHandler;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.mock.protocol.Plc4XSupportedDataTypes;
 import org.junit.Before;
 import org.junit.Ignore;

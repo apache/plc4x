@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;
 import org.apache.plc4x.java.base.messages.PlcSubscriber;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -34,7 +34,6 @@
   <description>Collection of base-types for implementing different types of drivers.</description>
 
   <modules>
-    <module>base</module>
     <module>pcap-socket</module>
     <module>raw-socket</module>
     <module>serial</module>

@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.mock;
 
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;

@@ -25,7 +25,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.modbus.util.ModbusPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

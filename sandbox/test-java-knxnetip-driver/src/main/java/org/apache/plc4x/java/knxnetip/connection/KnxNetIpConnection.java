@@ -30,7 +30,6 @@ import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.events.DisconnectEvent;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;

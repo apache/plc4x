@@ -21,7 +21,7 @@ package org.apache.plc4x.edgent.mock;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 
 public class MockDriver implements PlcDriver {
 

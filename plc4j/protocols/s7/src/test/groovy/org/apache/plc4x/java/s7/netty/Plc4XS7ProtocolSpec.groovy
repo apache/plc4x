@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse
 import org.apache.plc4x.java.api.messages.PlcResponse
 import org.apache.plc4x.java.api.messages.PlcWriteRequest
 import org.apache.plc4x.java.api.types.PlcResponseCode
-import org.apache.plc4x.java.base.messages.*
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage

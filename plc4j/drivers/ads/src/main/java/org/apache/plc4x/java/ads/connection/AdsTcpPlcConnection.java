@@ -41,14 +41,12 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

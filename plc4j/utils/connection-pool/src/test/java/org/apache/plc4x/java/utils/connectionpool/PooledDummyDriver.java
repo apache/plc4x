@@ -20,7 +20,7 @@ package org.apache.plc4x.java.utils.connectionpool;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;

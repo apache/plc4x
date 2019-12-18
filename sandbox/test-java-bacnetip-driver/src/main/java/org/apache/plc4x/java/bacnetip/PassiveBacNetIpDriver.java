@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
 import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 
 import java.util.regex.Matcher;

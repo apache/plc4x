@@ -26,8 +26,14 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcReadResponse;
+import org.apache.plc4x.java.base.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcWriteResponse;
+import org.apache.plc4x.java.base.messages.PlcReader;
+import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.base.messages.PlcWriter;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

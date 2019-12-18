@@ -28,8 +28,6 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.*;
 import org.assertj.core.api.WithAssertions;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;

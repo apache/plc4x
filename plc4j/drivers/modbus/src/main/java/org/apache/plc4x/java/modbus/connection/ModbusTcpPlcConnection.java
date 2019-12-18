@@ -28,7 +28,6 @@ import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
 import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

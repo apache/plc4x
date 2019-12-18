@@ -42,6 +42,7 @@
     <module>examples</module>
     <module>integrations</module>
     <module>karaf-features</module>
+    <module>spi</module>
   </modules>
 
   <build>

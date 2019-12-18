@@ -27,7 +27,6 @@ import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.passive.knxnetip.model.KnxNetIpField;
 import org.apache.plc4x.java.passive.knxnetip.protocol.KnxNetIpProtocol;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;

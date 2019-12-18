@@ -27,7 +27,6 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.mock.protocol.Plc4XSupportedDataTypes;
 import org.apache.plc4x.java.modbus.util.ModbusPlcFieldHandler;
 import org.junit.Before;

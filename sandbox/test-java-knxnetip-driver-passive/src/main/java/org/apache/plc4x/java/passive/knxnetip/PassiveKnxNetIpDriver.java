@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.passive.knxnetip.connection.PassiveKnxNetIpPlcConnection;
 import org.apache.plc4x.java.passive.knxnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 
 import java.util.regex.Matcher;
