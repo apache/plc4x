@@ -19,14 +19,19 @@
 
 package org.apache.plc4x.java.spi.internal;
 
+import org.apache.plc4x.java.spi.ConversationContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -45,35 +50,57 @@ class DefaultSendRequestContextTest {
 
     @Test
     void expectResponse() {
-
+        SUT.expectResponse(Object.class, Duration.ZERO);
+        assertThat(SUT.expectClazz, is(Object.class));
+        assertThat(SUT.commands, hasSize(1));
+        assertThat(SUT.commands.getLast().get(), notNullValue());
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.expectResponse(Object.class, Duration.ZERO));
     }
 
     @Test
     void check() {
+        SUT.check(o -> true);
+        assertThat(SUT.commands, hasSize(1));
+        assertThat(SUT.commands.getLast().get(), notNullValue());
     }
 
     @Test
     void handle() {
+        assertThat(SUT.packetConsumer, nullValue());
+        SUT.handle(o -> o.notify());
+        assertThat(SUT.commands, hasSize(0));
+        assertThat(SUT.packetConsumer, notNullValue());
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.handle(o -> o.notify()));
     }
 
     @Test
     void onTimeout() {
+        SUT.onTimeout(e -> e.printStackTrace());
+        assertThat(SUT.commands, hasSize(0));
+        assertThat(SUT.onTimeoutConsumer, notNullValue());
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.onTimeout(e -> e.printStackTrace()));
     }
 
     @Test
     void onError() {
-    }
-
-    @Test
-    void onSuccess() {
+        SUT.onError((p, e) -> e.printStackTrace());
+        assertThat(SUT.commands, hasSize(0));
+        assertThat(SUT.errorConsumer, notNullValue());
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.onError((p, e) -> e.printStackTrace()));
     }
 
     @Test
     void unwrap() {
-    }
-
-    @Test
-    void testUnwrap() {
+        assertThat(SUT.expectClazz, nullValue());
+        assertThat(SUT.onTimeoutConsumer, nullValue());
+        assertThrows(ConversationContext.PlcWiringException.class, () -> SUT.unwrap(o -> o.toString()));
+        SUT.expectResponse(Object.class, null);
+        SUT.onTimeout(e -> e.printStackTrace());
+        ConversationContext.SendRequestContext<String> unwrap = SUT.unwrap(o -> o.toString());
+        assertThat(unwrap, notNullValue());
+        assertThat(SUT.commands, hasSize(2));
+        assertThat(SUT.expectClazz, notNullValue());
+        assertThat(SUT.onTimeoutConsumer, notNullValue());
     }
 
     @Test

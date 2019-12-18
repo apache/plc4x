@@ -33,23 +33,23 @@ import java.util.function.Predicate;
 
 public class DefaultSendRequestContext<T> implements ConversationContext.SendRequestContext<T> {
 
-    private Deque<Either<Function<?, ?>, Predicate<?>>> commands = new LinkedList<>();
+    protected Deque<Either<Function<?, ?>, Predicate<?>>> commands = new LinkedList<>();
 
-    private final Consumer<FinalContext> finisher;
+    protected final Consumer<FinalContext> finisher;
 
-    private Class<?> expectClazz;
+    protected Class<?> expectClazz;
 
-    private Consumer<?> packetConsumer;
+    protected Consumer<?> packetConsumer;
 
-    private Consumer<TimeoutException> onTimeoutConsumer;
+    protected Consumer<TimeoutException> onTimeoutConsumer;
 
-    private BiConsumer<?, ? extends Throwable> errorConsumer;
+    protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
     public DefaultSendRequestContext(Consumer<FinalContext> finisher) {
         this.finisher = finisher;
     }
 
-    private DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Consumer<FinalContext> finisher, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Consumer<FinalContext> finisher, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
         this.finisher = finisher;
         this.expectClazz = expectClazz;
