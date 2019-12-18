@@ -20,7 +20,10 @@
 package org.apache.plc4x.java.api.value;
 
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PlcValues {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcValues.class);
 
     public static PlcValue of(String s) {
         return new PlcString(s);
@@ -67,8 +72,18 @@ public class PlcValues {
 
     public static PlcValue of(Object o) {
         try {
-            return ((PlcValue) Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + o.getClass().getSimpleName()).getConstructor(o.getClass()).newInstance(o));
+            String simpleName = o.getClass().getSimpleName();
+            Class<?> clazz = o.getClass();
+            switch (simpleName) {
+                case "ArrayList":
+                    simpleName = "List";
+                    clazz = List.class;
+            }
+            Constructor<?> constructor = Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + simpleName).getDeclaredConstructor(clazz);
+            constructor.setAccessible(true);
+            return ((PlcValue) constructor.newInstance(o));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+            LOGGER.warn("Cannot wrap", e);
             throw new PlcIncompatibleDatatypeException(o.getClass());
         }
     }
