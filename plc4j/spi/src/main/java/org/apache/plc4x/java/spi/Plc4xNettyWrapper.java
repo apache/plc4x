@@ -71,9 +71,9 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
         // Just iterate the list to find a suitable  Handler
         registrations:
         for (HandlerRegistration registration : this.registeredHandlers) {
-            logger.info("Checking handler {} for Object {}", registration, t);
+            logger.info("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
-                logger.info("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz());
+                logger.info("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
                 // Check all Commands / Functions
                 Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
                 Object instance = t;
@@ -86,7 +86,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
                         Predicate predicate = either.get();
                         if (predicate.test(instance) == false) {
                             // We do not match -> cannot handle
-                            logger.info("Registration {} does not match object {} (currently wrapped to {})", registration, t, instance);
+                            logger.info("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
                             continue registrations;
                         }
                     }

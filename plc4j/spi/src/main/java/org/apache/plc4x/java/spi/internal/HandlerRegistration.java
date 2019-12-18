@@ -29,6 +29,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class HandlerRegistration {
+
+    private static int counter = 0;
+
+    private final int id = counter++;
+
     private final Deque<Either<Function<?, ?>, Predicate<?>>> commands;
 
     private final Class<?> expectClazz;
@@ -68,12 +73,6 @@ public class HandlerRegistration {
     }
 
     @Override public String toString() {
-        return "HandlerRegistration{" +
-            "commands=" + commands +
-            ", expectClazz=" + expectClazz +
-            ", packetConsumer=" + packetConsumer +
-            ", onTimeoutConsumer=" + onTimeoutConsumer +
-            ", errorConsumer=" + errorConsumer +
-            '}';
+        return "HandlerRegistration#" + id;
     }
 }
