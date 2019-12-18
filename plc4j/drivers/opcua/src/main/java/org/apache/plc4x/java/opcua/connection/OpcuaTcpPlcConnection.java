@@ -27,9 +27,11 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.items.*;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
@@ -67,7 +69,7 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 /**
  * Corresponding implementaion for a TCP-based connection for an OPC UA server.
  * TODO: At the moment are just connections without any security mechanism possible
- *
+ * <p>
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
