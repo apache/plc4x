@@ -40,17 +40,20 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
         this.protocolBase = parent;
     }
 
-    @Override protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
+    @Override
+    protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
         logger.info("Encoding {}", plcRequestContainer);
         protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
-            @Override public void sendToWire(T msg) {
+            @Override
+            public void sendToWire(T msg) {
                 logger.info("Sending to wire {}", msg);
                 list.add(msg);
             }
         }, plcRequestContainer);
     }
 
-    @Override protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
+    @Override
+    protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
         logger.info("Decoding {}", t);
         protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext), t);
     }
@@ -73,14 +76,22 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
             this.channelHandlerContext = channelHandlerContext;
         }
 
-        @Override public void sendToWire(T msg) {
+        @Override
+        public void sendToWire(T msg) {
             logger.info("Sending to wire {}", msg);
             channelHandlerContext.channel().writeAndFlush(msg);
         }
 
-        @Override public void fireConnected() {
+        @Override
+        public void fireConnected() {
             logger.info("Firing Connected!");
             channelHandlerContext.pipeline().fireUserEventTriggered(new ConnectedEvent());
+        }
+
+        @Override
+        public SendRequestContext<T> sendRequest(T packet) {
+            // TODO: implement me
+            return null;
         }
     }
 }
