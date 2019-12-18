@@ -30,8 +30,16 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
+import org.apache.plc4x.java.s7.netty.S7Protocol;
+import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
+import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -41,14 +49,6 @@ import org.apache.plc4x.java.isotp.protocol.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.protocol.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.protocol.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
-import org.apache.plc4x.java.s7.netty.S7Protocol;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
-import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
-import org.apache.plc4x.java.s7.types.S7ControllerType;
-import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +75,7 @@ import java.util.concurrent.TimeoutException;
  *     {memory area}/{byte offset}/{bit offset}
  * </pre>
  * where the {bit-offset} is optional.
- * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
+ * All Available Memory Areas for this mode are defined in the MemoryArea enum.
  */
 public class S7PlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
 

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.netty.util;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
+import org.apache.plc4x.java.spi.messages.items.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

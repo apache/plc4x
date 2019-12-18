@@ -30,6 +30,7 @@ import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.df1.protocol.Df1Protocol;
 import org.apache.plc4x.java.df1.protocol.Plc4XDf1Protocol;
 import org.apache.plc4x.java.df1.util.Df1FieldHandler;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

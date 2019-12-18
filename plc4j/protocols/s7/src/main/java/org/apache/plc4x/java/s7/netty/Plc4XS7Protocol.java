@@ -44,6 +44,8 @@ import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.items.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

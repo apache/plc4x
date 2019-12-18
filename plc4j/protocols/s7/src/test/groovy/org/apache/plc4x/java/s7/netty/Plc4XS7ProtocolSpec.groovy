@@ -41,6 +41,13 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem
 import org.apache.plc4x.java.s7.netty.model.types.*
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest
+import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest
+import org.apache.plc4x.java.spi.messages.PlcReader
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer
+import org.apache.plc4x.java.spi.messages.PlcWriter
 import spock.lang.Specification
 import spock.lang.Unroll
 
