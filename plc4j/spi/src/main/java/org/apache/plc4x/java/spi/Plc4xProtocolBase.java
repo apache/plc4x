@@ -19,19 +19,16 @@
 
 package org.apache.plc4x.java.spi;
 
+import org.apache.plc4x.java.spi.internal.HandlerRegistration;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
+
+import java.util.function.Consumer;
 
 public abstract class Plc4xProtocolBase<T> {
 
-    protected final Plc4xNettyWrapper<T> context;
+    private Consumer<HandlerRegistration> acceptHandler;
 
     public Plc4xProtocolBase(Class<T> clazz) {
-        // TODO create here?
-        this.context = new Plc4xNettyWrapper<T>(this, clazz);
-    }
-
-    public Plc4xNettyWrapper<T> getContext() {
-        return context;
     }
 
     public void onConnect(ConversationContext<T> context) {
@@ -41,4 +38,5 @@ public abstract class Plc4xProtocolBase<T> {
     protected abstract void encode(ConversationContext<T> context, PlcRequestContainer msg) throws Exception;
 
     protected abstract void decode(ConversationContext<T> context, T msg) throws Exception;
+
 }

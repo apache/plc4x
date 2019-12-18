@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.internal;
 
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 
 import java.time.Duration;
 import java.util.Deque;
@@ -35,7 +36,12 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected Deque<Either<Function<?, ?>, Predicate<?>>> commands = new LinkedList<>();
 
-    protected final Consumer<FinalContext> finisher;
+    protected final Consumer<HandlerRegistration> finisher;
+
+    private final Object request;
+
+    @SuppressWarnings("unchecked")
+    private final Plc4xNettyWrapper.DefaultConversationContext context;
 
     protected Class<?> expectClazz;
 
@@ -45,13 +51,17 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
-    public DefaultSendRequestContext(Consumer<FinalContext> finisher) {
+    public DefaultSendRequestContext(Consumer<HandlerRegistration> finisher, T request, Plc4xNettyWrapper<T>.DefaultConversationContext<T> context) {
         this.finisher = finisher;
+        this.request = request;
+        this.context = context;
     }
 
-    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Consumer<FinalContext> finisher, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Consumer<HandlerRegistration> finisher, Object request, Plc4xNettyWrapper<?>.DefaultConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
         this.finisher = finisher;
+        this.request = request;
+        this.context = context;
         this.expectClazz = expectClazz;
         this.packetConsumer = packetConsumer;
         this.onTimeoutConsumer = onTimeoutConsumer;
@@ -80,7 +90,8 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        finisher.accept(new FinalContext(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer));
+        finisher.accept(new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer));
+        context.sendToWire(request);
     }
 
     @Override
@@ -109,47 +120,8 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
         if (onTimeoutConsumer == null) {
             throw new ConversationContext.PlcWiringException("onTimeout must be called before first unwrap");
         }
-        return new DefaultSendRequestContext<>(commands, finisher, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
-    }
-
-    public static class FinalContext {
-        private final Deque<Either<Function<?, ?>, Predicate<?>>> commands;
-
-        private final Class<?> expectClazz;
-
-        private final Consumer<?> packetConsumer;
-
-        private final Consumer<TimeoutException> onTimeoutConsumer;
-
-        private final BiConsumer<?, ? extends Throwable> errorConsumer;
-
-        public FinalContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
-            this.commands = commands;
-            this.expectClazz = expectClazz;
-            this.packetConsumer = packetConsumer;
-            this.onTimeoutConsumer = onTimeoutConsumer;
-            this.errorConsumer = errorConsumer;
-        }
-
-        public Deque<Either<Function<?, ?>, Predicate<?>>> getCommands() {
-            return commands;
-        }
-
-        public Class<?> getExpectClazz() {
-            return expectClazz;
-        }
-
-        public Consumer<?> getPacketConsumer() {
-            return packetConsumer;
-        }
-
-        public Consumer<TimeoutException> getOnTimeoutConsumer() {
-            return onTimeoutConsumer;
-        }
-
-        public BiConsumer<?, ? extends Throwable> getErrorConsumer() {
-            return errorConsumer;
-        }
+        commands.addLast(Either.left(unwrapper));
+        return new DefaultSendRequestContext<R>(commands, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
 }

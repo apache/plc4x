@@ -39,13 +39,13 @@ import static org.mockito.Mockito.verify;
 class DefaultSendRequestContextTest {
 
     @Mock
-    Consumer<DefaultSendRequestContext.FinalContext> finisher;
+    Consumer<HandlerRegistration> finisher;
 
     DefaultSendRequestContext<Object> SUT;
 
     @BeforeEach
     void setUp() {
-        SUT = new DefaultSendRequestContext<>(finisher);
+        // SUT = new DefaultSendRequestContext<>(finisher);
     }
 
     @Test

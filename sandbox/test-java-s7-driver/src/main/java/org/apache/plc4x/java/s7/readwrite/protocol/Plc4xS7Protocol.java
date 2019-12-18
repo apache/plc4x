@@ -55,6 +55,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -106,7 +108,43 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 new COTPParameterTpduSize(cotpTpduSize)
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
         TPKTPacket packet = new TPKTPacket(connectionRequest);
-        context.sendToWire(packet);
+
+        context.sendRequest(packet)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(100))
+            .onTimeout(e -> {})
+            .check(p -> {
+                return p.getPayload() instanceof COTPPacketConnectionResponse;
+            })
+            .unwrap(p -> {
+                return (COTPPacketConnectionResponse)p.getPayload();
+            })
+            .handle(cotpPacketConnectionResponse -> {
+                // COTPPacketConnectionResponse cotpPacketConnectionResponse = (COTPPacketConnectionResponse) msg.getPayload();
+                for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
+                    if(parameter instanceof COTPParameterCalledTsap) {
+                        COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
+                        calledTsapId = cotpParameterCalledTsap.getTsapId();
+                    } else if(parameter instanceof COTPParameterTpduSize) {
+                        COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
+                        cotpTpduSize = cotpParameterTpduSize.getTpduSize();
+                    } else if(parameter instanceof COTPParameterCallingTsap) {
+                        // Ignore this ...
+                    } else {
+                        logger.warn("Got unknown parameter type '" + parameter.getClass().getName() + "'");
+                    }
+                }
+
+                // Send an S7 login message.
+                S7ParameterSetupCommunication s7ParameterSetupCommunication =
+                    new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduSize);
+                S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
+                    new S7PayloadSetupCommunication());
+                COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
+                TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
+                context.sendToWire(tpktPacket);
+            });
+
+        // context.sendToWire(packet);
     }
 
     @Override
@@ -136,29 +174,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         // When getting a response to the connection request on COTP layer, extract some
         // data and continue logging in on the S7 protocol.
         if(msg.getPayload() instanceof COTPPacketConnectionResponse) {
-            COTPPacketConnectionResponse cotpPacketConnectionResponse = (COTPPacketConnectionResponse) msg.getPayload();
-            for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
-                if(parameter instanceof COTPParameterCalledTsap) {
-                    COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
-                    calledTsapId = cotpParameterCalledTsap.getTsapId();
-                } else if(parameter instanceof COTPParameterTpduSize) {
-                    COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
-                    cotpTpduSize = cotpParameterTpduSize.getTpduSize();
-                } else if(parameter instanceof COTPParameterCallingTsap) {
-                    // Ignore this ...
-                } else {
-                    logger.warn("Got unknown parameter type '" + parameter.getClass().getName() + "'");
-                }
-            }
-
-            // Send an S7 login message.
-            S7ParameterSetupCommunication s7ParameterSetupCommunication =
-                new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduSize);
-            S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
-                new S7PayloadSetupCommunication());
-            COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
-            TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-            context.sendToWire(tpktPacket);
+            throw new IllegalStateException("You should not be here, fucker");
         }
 
         else if(msg.getPayload() instanceof COTPPacketData) {

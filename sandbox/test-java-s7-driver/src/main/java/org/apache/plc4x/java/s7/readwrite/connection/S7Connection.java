@@ -167,7 +167,7 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
                 pipeline.addLast(new S7Protocol());
                 Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new Plc4xS7Protocol(callingTsapId, calledTsapId, tpduSize,
                     maxAmqCaller, maxAmqCallee, controllerType);
-                Plc4xNettyWrapper<TPKTPacket> context = plc4xS7Protocol.getContext();
+                Plc4xNettyWrapper<TPKTPacket> context = new Plc4xNettyWrapper<>(plc4xS7Protocol, TPKTPacket.class);
                 pipeline.addLast(context);
             }
         };
