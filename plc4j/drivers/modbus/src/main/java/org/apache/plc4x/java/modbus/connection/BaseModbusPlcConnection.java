@@ -26,6 +26,15 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.modbus.util.ModbusPlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.InternalPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.InternalPlcWriteResponse;
+import org.apache.plc4x.java.spi.messages.PlcReader;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
+import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
