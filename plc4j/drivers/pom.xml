@@ -34,7 +34,7 @@
   <description>Wrapper project for all PLC4J driver implementations.</description>
 
   <modules>
-<!--    <module>ab-eth</module>-->
+    <module>ab-eth</module>
 <!--    <module>ads</module>-->
 <!--    <module>ethernet-ip</module>-->
 <!--    <module>modbus</module>-->

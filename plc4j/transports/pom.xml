@@ -23,36 +23,23 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-protocols-driver-bases</artifactId>
+    <artifactId>plc4j-protocols</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
-  <name>PLC4J: Protocol: Driver-Base: TCP</name>
-  <description>Base classes needed to implement plc4x drivers based on TCP connections.</description>
+  <artifactId>plc4j-protocols-driver-bases</artifactId>
+  <packaging>pom</packaging>
 
-  <dependencies>
+  <name>PLC4J: Protocols: Driver-Bases</name>
+  <description>Collection of base-types for implementing different types of drivers.</description>
 
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+<!--    <module>pcap-socket</module>-->
+<!--    <module>raw-socket</module>-->
+<!--    <module>serial</module>-->
+    <module>tcp</module>
+<!--    <module>udp</module>-->
+<!--    <module>test</module>-->
+  </modules>
 
 </project>

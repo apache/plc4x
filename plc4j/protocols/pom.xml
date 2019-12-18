@@ -34,8 +34,6 @@
   <description>Wrapper project for all PLC4J protocol implementations.</description>
 
   <modules>
-<!--    <module>driver-bases</module>-->
-
 <!--    <module>ads</module>-->
 <!--    <module>delta-v</module>-->
 <!--    <module>ethernet-ip</module>-->

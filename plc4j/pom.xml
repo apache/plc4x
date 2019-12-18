@@ -38,7 +38,7 @@
     <module>drivers</module>
     <module>utils</module>
     <module>protocols</module>
-
+    <module>transports</module>
     <module>examples</module>
     <module>integrations</module>
     <module>karaf-features</module>
