@@ -124,4 +124,9 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
         return new DefaultSendRequestContext<R>(commands, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
+    @Override public <R> ConversationContext.SendRequestContext<R> only(Class<R> clazz) {
+        this.check(clazz::isInstance);
+        return this.unwrap(clazz::cast);
+    }
+
 }

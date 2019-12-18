@@ -49,6 +49,8 @@ public interface ConversationContext<T> {
         <E extends Throwable> SendRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
 
         <R> SendRequestContext<R> unwrap(Function<T, R> unwrapper);
+
+        <R> SendRequestContext<R> only(Class<R> clazz);
     }
 
     class PlcCompletionException extends PlcRuntimeException {
