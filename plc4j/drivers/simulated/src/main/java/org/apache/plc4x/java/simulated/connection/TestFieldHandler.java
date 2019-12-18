@@ -22,7 +22,7 @@ package org.apache.plc4x.java.simulated.connection;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -21,7 +21,7 @@ package org.apache.plc4x.java.amsads.model;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

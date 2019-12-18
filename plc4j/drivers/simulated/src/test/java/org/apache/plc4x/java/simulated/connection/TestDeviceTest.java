@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;

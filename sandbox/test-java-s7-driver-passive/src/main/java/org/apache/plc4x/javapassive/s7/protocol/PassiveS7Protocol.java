@@ -20,7 +20,7 @@ package org.apache.plc4x.javapassive.s7.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.plc4x.java.base.PlcByteToMessageCodec;
+import org.apache.plc4x.java.spi.PlcByteToMessageCodec;
 import org.apache.plc4x.java.s7.passive.TPKTPacket;
 import org.apache.plc4x.java.s7.passive.io.TPKTPacketIO;
 import org.apache.plc4x.java.utils.ReadBuffer;

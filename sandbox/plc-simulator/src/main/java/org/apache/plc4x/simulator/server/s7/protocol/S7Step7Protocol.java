@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.simulator.server.s7.protocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.utils.MessageIO;

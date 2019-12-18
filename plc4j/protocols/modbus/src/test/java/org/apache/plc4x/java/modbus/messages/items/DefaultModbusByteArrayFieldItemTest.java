@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.modbus.messages.items;
 
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;

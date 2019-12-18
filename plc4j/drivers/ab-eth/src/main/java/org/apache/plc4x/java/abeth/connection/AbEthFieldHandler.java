@@ -21,7 +21,7 @@ package org.apache.plc4x.java.abeth.connection;
 import org.apache.plc4x.java.abeth.model.AbEthField;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
 public class AbEthFieldHandler extends DefaultPlcFieldHandler {
 

@@ -20,8 +20,8 @@ package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
 import java.time.Duration;
 import java.util.*;

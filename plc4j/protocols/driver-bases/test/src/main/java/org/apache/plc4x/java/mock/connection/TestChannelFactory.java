@@ -21,7 +21,7 @@ package org.apache.plc4x.java.mock.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
 
 public class TestChannelFactory implements ChannelFactory {
 

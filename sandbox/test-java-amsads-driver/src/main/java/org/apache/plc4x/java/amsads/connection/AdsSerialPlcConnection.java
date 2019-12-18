@@ -26,7 +26,7 @@ import org.apache.plc4x.java.amsads.protocol.Ads2PayloadProtocol;
 import org.apache.plc4x.java.amsads.protocol.Payload2SerialProtocol;
 import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
-import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
+import org.apache.plc4x.java.spi.protocol.SingleItemToSingleRequestProtocol;
 import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 
 import java.util.concurrent.CompletableFuture;

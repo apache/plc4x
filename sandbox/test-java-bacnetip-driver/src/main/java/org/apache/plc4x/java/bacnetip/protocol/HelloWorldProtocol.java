@@ -20,8 +20,8 @@ package org.apache.plc4x.java.bacnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 
 import java.util.List;
 

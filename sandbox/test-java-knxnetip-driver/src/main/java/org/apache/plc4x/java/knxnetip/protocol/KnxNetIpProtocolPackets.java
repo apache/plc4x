@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.utils.MessageIO;

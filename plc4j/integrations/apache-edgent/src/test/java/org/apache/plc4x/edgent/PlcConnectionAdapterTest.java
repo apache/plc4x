@@ -31,7 +31,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
 import org.apache.plc4x.test.FastTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;

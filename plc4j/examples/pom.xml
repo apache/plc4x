@@ -39,17 +39,17 @@
   </properties>
 
   <modules>
-    <module>dummy-driver</module>
-    <module>hello-cloud-azure</module>
-    <module>hello-cloud-google</module>
-    <module>hello-connectivity-kafka</module>
-    <module>hello-connectivity-mqtt</module>
-    <module>hello-integration-edgent</module>
-    <module>hello-opm</module>
-    <module>hello-storage-elasticsearch</module>
-    <module>hello-webapp</module>
-    <module>hello-world-plc4x</module>
-    <module>hello-integration-iotdb</module>
+<!--    <module>dummy-driver</module>-->
+<!--    <module>hello-cloud-azure</module>-->
+<!--    <module>hello-cloud-google</module>-->
+<!--    <module>hello-connectivity-kafka</module>-->
+<!--    <module>hello-connectivity-mqtt</module>-->
+<!--    <module>hello-integration-edgent</module>-->
+<!--    <module>hello-opm</module>-->
+<!--    <module>hello-storage-elasticsearch</module>-->
+<!--    <module>hello-webapp</module>-->
+<!--    <module>hello-world-plc4x</module>-->
+<!--    <module>hello-integration-iotdb</module>-->
   </modules>
 
   <build>

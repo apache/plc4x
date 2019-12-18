@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.edgent.mock;
 
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 public class MockFieldItem extends BaseDefaultFieldItem<Object> {
 

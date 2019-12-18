@@ -24,7 +24,7 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.df1.connection;
 
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 
 public abstract class BaseDf1Connection extends NettyPlcConnection {
 

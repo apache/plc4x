@@ -22,7 +22,7 @@ package org.apache.plc4x.java.simulated.connection;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

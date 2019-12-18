@@ -25,7 +25,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 import org.apache.plc4x.java.serial.connection.connection.SerialSocketAddress;
 import org.junit.After;

@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.base.PlcByteToMessageCodec;
+import org.apache.plc4x.java.spi.PlcByteToMessageCodec;
 import org.apache.plc4x.java.isoontcp.protocol.model.IsoOnTcpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

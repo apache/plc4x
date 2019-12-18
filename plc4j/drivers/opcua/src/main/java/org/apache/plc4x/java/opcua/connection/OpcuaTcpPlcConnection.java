@@ -27,7 +27,7 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;

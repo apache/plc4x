@@ -24,8 +24,8 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 import java.time.Instant;
 import java.util.*;

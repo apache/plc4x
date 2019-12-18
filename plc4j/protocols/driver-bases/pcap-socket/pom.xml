@@ -32,11 +32,7 @@
   <description>Base classes needed to implement plc4x drivers based on an simulated network device using a PCAP capture file to simulate network trafic.</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>

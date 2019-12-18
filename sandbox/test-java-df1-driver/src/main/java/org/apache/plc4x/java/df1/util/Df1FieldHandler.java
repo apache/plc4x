@@ -20,8 +20,8 @@ package org.apache.plc4x.java.df1.util;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.df1.Df1Field;
 
 public class Df1FieldHandler extends DefaultPlcFieldHandler {

@@ -29,8 +29,8 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.connection.AdsTcpPlcConnection;
 import org.apache.plc4x.java.ads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.base.messages.PlcProprietaryRequest;
-import org.apache.plc4x.java.base.messages.PlcProprietaryResponse;
+import org.apache.plc4x.java.spi.messages.PlcProprietaryRequest;
+import org.apache.plc4x.java.spi.messages.PlcProprietaryResponse;
 
 import java.io.IOException;
 import java.net.*;

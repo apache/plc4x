@@ -29,7 +29,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

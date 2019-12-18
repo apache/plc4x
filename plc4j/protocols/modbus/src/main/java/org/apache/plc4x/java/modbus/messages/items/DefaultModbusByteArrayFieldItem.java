@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.modbus.messages.items;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultByteArrayFieldItem;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

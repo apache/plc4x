@@ -20,8 +20,8 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

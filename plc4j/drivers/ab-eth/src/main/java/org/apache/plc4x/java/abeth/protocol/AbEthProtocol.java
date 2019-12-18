@@ -21,7 +21,7 @@ package org.apache.plc4x.java.abeth.protocol;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
-import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.utils.MessageIO;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;

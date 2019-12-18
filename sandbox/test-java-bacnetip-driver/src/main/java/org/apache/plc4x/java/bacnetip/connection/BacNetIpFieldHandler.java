@@ -21,7 +21,7 @@ package org.apache.plc4x.java.bacnetip.connection;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.bacnetip.model.BacNetIpField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
 public class BacNetIpFieldHandler extends DefaultPlcFieldHandler {
 

@@ -23,7 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.assertj.core.api.WithAssertions;

@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.spi.messages.items.DefaultIntegerFieldItem;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

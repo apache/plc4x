@@ -21,7 +21,7 @@ package org.apache.plc4x.java.s7.netty.util;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.s7.model.S7Field;
 
 import java.lang.reflect.InvocationTargetException;

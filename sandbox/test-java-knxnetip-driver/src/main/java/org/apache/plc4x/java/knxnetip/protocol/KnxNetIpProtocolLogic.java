@@ -20,11 +20,11 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramChannel;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.events.ConnectEvent;
-import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.events.DisconnectEvent;
-import org.apache.plc4x.java.base.events.DisconnectedEvent;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.events.ConnectEvent;
+import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.events.DisconnectEvent;
+import org.apache.plc4x.java.spi.events.DisconnectedEvent;
 import org.apache.plc4x.java.knxnetip.events.KnxGatewayFoundEvent;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.readwrite.types.HostProtocolCode;

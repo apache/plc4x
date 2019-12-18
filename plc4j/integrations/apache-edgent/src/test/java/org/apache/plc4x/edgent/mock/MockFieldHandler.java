@@ -21,8 +21,8 @@ package org.apache.plc4x.edgent.mock;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.PlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 public class MockFieldHandler implements PlcFieldHandler {
 

@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.mock.connection;
 
 import io.netty.channel.ChannelHandler;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 
 import java.util.concurrent.CompletableFuture;
 
