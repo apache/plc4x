@@ -72,9 +72,8 @@ public class HelloPlc4x {
             // Simply iterating over the field names returned in the response.
             printResponse(syncResponse);
 
-            PlcValue asPlcValue = syncResponse.getAsPlcValue();
-            System.out.println(asPlcValue);
-
+            //PlcValue asPlcValue = syncResponse.getAsPlcValue();
+            //System.out.println(asPlcValue);
 
             //////////////////////////////////////////////////////////
             // Read asynchronously ...

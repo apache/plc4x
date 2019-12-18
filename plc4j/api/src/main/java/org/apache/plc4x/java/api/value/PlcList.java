@@ -55,4 +55,5 @@ public class PlcList extends PlcValueAdapter {
     public String toString() {
         return "[" + listItems.stream().map(PlcValue::toString).collect(Collectors.joining(",")) + "]";
     }
+
 }

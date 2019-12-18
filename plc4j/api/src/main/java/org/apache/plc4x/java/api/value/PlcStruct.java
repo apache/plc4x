@@ -19,9 +19,6 @@
 
 package org.apache.plc4x.java.api.value;
 
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValueAdapter;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -35,27 +32,34 @@ public class PlcStruct extends PlcValueAdapter {
         this.map = Collections.unmodifiableMap(map);
     }
 
-    @Override public boolean isStruct() {
+    @Override
+    public boolean isStruct() {
         return true;
     }
 
-    @Override public Set<String> getKeys() {
+    @Override
+    public Set<String> getKeys() {
         return map.keySet();
     }
 
-    @Override public boolean hasKey(String key) {
+    @Override
+    public boolean hasKey(String key) {
         return map.containsKey(key);
     }
 
-    @Override public PlcValue getValue(String key) {
+    @Override
+    public PlcValue getValue(String key) {
         return map.get(key);
     }
 
-    @Override public Map<String, ? extends PlcValue> getStruct() {
+    @Override
+    public Map<String, ? extends PlcValue> getStruct() {
         return map;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "{" + map.entrySet().stream().map(entry -> String.format("\"%s\": %s", entry.getKey(), entry.getValue())).collect(Collectors.joining(",")) + "}";
     }
+
 }
