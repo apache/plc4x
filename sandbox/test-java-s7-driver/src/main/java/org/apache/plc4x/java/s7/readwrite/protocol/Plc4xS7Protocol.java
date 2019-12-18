@@ -284,7 +284,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             BaseDefaultFieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                fieldItem = mapFieldItem(fieldName, field, fieldItem, data);
+                fieldItem = mapFieldItem(fieldName, field, data);
             }
             Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
@@ -294,104 +294,82 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
-    private BaseDefaultFieldItem mapFieldItem(String fieldName, S7Field field, BaseDefaultFieldItem fieldItem, ByteBuf data) {
+    private BaseDefaultFieldItem mapFieldItem(String fieldName, S7Field field, ByteBuf data) {
         try {
             switch (field.getDataType()) {
                 // -----------------------------------------
                 // Bit
                 // -----------------------------------------
                 case BOOL:
-                    fieldItem = decodeReadResponseBitField(field, data);
-                    break;
+                    return decodeReadResponseBitField(field, data);
                 // -----------------------------------------
                 // Bit-strings
                 // -----------------------------------------
                 case BYTE:  // 1 byte
-                    fieldItem = decodeReadResponseByteBitStringField(field, data);
-                    break;
+                    return decodeReadResponseByteBitStringField(field, data);
                 case WORD:  // 2 byte (16 bit)
-                    fieldItem = decodeReadResponseShortBitStringField(field, data);
-                    break;
+                    return decodeReadResponseShortBitStringField(field, data);
                 case DWORD:  // 4 byte (32 bit)
-                    fieldItem = decodeReadResponseIntegerBitStringField(field, data);
-                    break;
+                    return decodeReadResponseIntegerBitStringField(field, data);
                 case LWORD:  // 8 byte (64 bit)
-                    fieldItem = decodeReadResponseLongBitStringField(field, data);
-                    break;
+                    return decodeReadResponseLongBitStringField(field, data);
                 // -----------------------------------------
                 // Integers
                 // -----------------------------------------
                 // 8 bit:
                 case SINT:
-                    fieldItem = decodeReadResponseSignedByteField(field, data);
-                    break;
+                    return decodeReadResponseSignedByteField(field, data);
                 case USINT:
-                    fieldItem = decodeReadResponseUnsignedByteField(field, data);
-                    break;
+                    return decodeReadResponseUnsignedByteField(field, data);
                 // 16 bit:
                 case INT:
-                    fieldItem = decodeReadResponseSignedShortField(field, data);
-                    break;
+                    return decodeReadResponseSignedShortField(field, data);
                 case UINT:
-                    fieldItem = decodeReadResponseUnsignedShortField(field, data);
-                    break;
+                    return decodeReadResponseUnsignedShortField(field, data);
                 // 32 bit:
                 case DINT:
-                    fieldItem = decodeReadResponseSignedIntegerField(field, data);
-                    break;
+                    return decodeReadResponseSignedIntegerField(field, data);
                 case UDINT:
-                    fieldItem = decodeReadResponseUnsignedIntegerField(field, data);
-                    break;
+                    return decodeReadResponseUnsignedIntegerField(field, data);
                 // 64 bit:
                 case LINT:
-                    fieldItem = decodeReadResponseSignedLongField(field, data);
-                    break;
+                    return decodeReadResponseSignedLongField(field, data);
                 case ULINT:
-                    fieldItem = decodeReadResponseUnsignedLongField(field, data);
-                    break;
+                    return decodeReadResponseUnsignedLongField(field, data);
                 // -----------------------------------------
                 // Floating point values
                 // -----------------------------------------
                 case REAL:
-                    fieldItem = decodeReadResponseFloatField(field, data);
-                    break;
+                    return decodeReadResponseFloatField(field, data);
                 case LREAL:
-                    fieldItem = decodeReadResponseDoubleField(field, data);
-                    break;
+                    return decodeReadResponseDoubleField(field, data);
                 // -----------------------------------------
                 // Characters & Strings
                 // -----------------------------------------
                 case CHAR: // 1 byte (8 bit)
-                    fieldItem = decodeReadResponseFixedLengthStringField(1, false, data);
-                    break;
+                    return decodeReadResponseFixedLengthStringField(1, false, data);
                 case WCHAR: // 2 byte
-                    fieldItem = decodeReadResponseFixedLengthStringField(1, true, data);
-                    break;
+                    return decodeReadResponseFixedLengthStringField(1, true, data);
                 case STRING:
-                    fieldItem = decodeReadResponseVarLengthStringField(false, data);
-                    break;
+                    return decodeReadResponseVarLengthStringField(false, data);
                 case WSTRING:
-                    fieldItem = decodeReadResponseVarLengthStringField(true, data);
-                    break;
+                    return decodeReadResponseVarLengthStringField(true, data);
                 // -----------------------------------------
                 // TIA Date-Formats
                 // -----------------------------------------
                 case DATE_AND_TIME:
-                    fieldItem = decodeReadResponseDateAndTime(field, data);
-                    break;
+                    return decodeReadResponseDateAndTime(field, data);
                 case TIME_OF_DAY:
-                    fieldItem = decodeReadResponseTimeOfDay(field, data);
-                    break;
+                    return decodeReadResponseTimeOfDay(field, data);
                 case DATE:
-                    fieldItem = decodeReadResponseDate(field, data);
-                    break;
+                    return decodeReadResponseDate(field, data);
                 default:
                     throw new PlcProtocolException("Unsupported type " + field.getDataType());
             }
         } catch (Exception e) {
             logger.warn("Some other error occurred casting field {}, FieldInformation: {}", fieldName, field, e);
+            return null;
         }
-        return fieldItem;
     }
 
     private PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
