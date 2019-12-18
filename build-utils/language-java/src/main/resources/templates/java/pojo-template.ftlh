@@ -38,6 +38,8 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
+import static org.apache.plc4x.java.utils.StaticHelper.*;
+
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;

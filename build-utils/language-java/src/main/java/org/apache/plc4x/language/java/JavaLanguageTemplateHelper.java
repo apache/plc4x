@@ -581,7 +581,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toVariableDeserializationExpression(arg, parserArguments));
+                    sb.append(toDeserializationExpression(arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");

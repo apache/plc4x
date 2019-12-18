@@ -38,6 +38,8 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 
+import static org.apache.plc4x.java.utils.StaticHelper.*;
+
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
@@ -267,6 +269,12 @@ public class ${typeName}IO {
             throw new ParseException("Unsupported case for discriminated type");
         }
         <#break>
+
+    <#case "virtual">
+
+        // Virtual field (Just declare a local variable so we can access it in the parser)
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression, type.parserArguments)});
+        <#break>
 </#switch>
 </#list>
 
@@ -391,25 +399,6 @@ public class ${typeName}IO {
 </#list>
     }
 </#if>
-
-    private static int COUNT(Object obj) {
-        if(obj.getClass().isArray()) {
-            Object[] arr = (Object[]) obj;
-            return arr.length;
-        } else if(obj instanceof Collection) {
-            Collection col = (Collection) obj;
-            return col.size();
-        }
-        throw new RuntimeException("Unable to count object of type " + obj.getClass().getName());
-    }
-
-    private static <T> T CAST(Object obj, Class<T> clazz) {
-        try {
-            return clazz.cast(obj);
-        } catch(ClassCastException e) {
-            throw new RuntimeException("Unable to cast object of type " + obj.getClass().getName() + " to " + clazz.getName());
-        }
-    }
 
 <#if type.abstract>
     public static interface ${typeName}Builder {

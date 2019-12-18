@@ -49,19 +49,24 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
-        // Check if enough data is present to process the entire package.
-        int packetSize = getPacketSize(byteBuf);
-        if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
-            return;
-        }
+        // As long as there is data available, continue checking the content.
+        while(byteBuf.readableBytes() > 0) {
+            // Check if enough data is present to process the entire package.
+            int packetSize = getPacketSize(byteBuf);
+            if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
+                return;
+            }
 
-        byte[] bytes = new byte[packetSize];
-        byteBuf.readBytes(bytes);
+            // Read the packet data into a new ReadBuffer
+            byte[] bytes = new byte[packetSize];
+            byteBuf.readBytes(bytes);
+            ReadBuffer readBuffer = new ReadBuffer(bytes);
 
-        ReadBuffer readBuffer = new ReadBuffer(bytes);
-        while (readBuffer.getPos() < bytes.length) {
             try {
+                // Parse the packet.
                 T packet = io.parse(readBuffer);
+
+                // Pass the packet to the pipeline.
                 out.add(packet);
             } catch (Exception e) {
                 logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "

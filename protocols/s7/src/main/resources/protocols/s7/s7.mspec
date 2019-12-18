@@ -231,8 +231,8 @@
     [enum    DataTransportErrorCode 'returnCode']
     [enum    DataTransportSize      'transportSize']
     [simple  uint 16                'dataLength']
-    [array   int  8                 'data' count 'dataLength / 8']
-    [padding uint 8                 'pad' '0x00' '(dataLength / 8) % 2 == 1']
+    [array   int  8                 'data' count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
+    [padding uint 8                 'pad' '0x00' '(COUNT(data) % 2) == 1']
 ]
 
 [type 'S7VarPayloadStatusItem'
