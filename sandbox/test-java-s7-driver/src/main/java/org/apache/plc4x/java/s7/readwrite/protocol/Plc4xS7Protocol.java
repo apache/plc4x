@@ -128,8 +128,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                             });
                     });
             });
-
-        // context.sendToWire(packet);
     }
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {

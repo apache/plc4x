@@ -55,11 +55,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
 
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
-        logger.info("Encoding {}", plcRequestContainer);
+        logger.trace("Encoding {}", plcRequestContainer);
         protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
             @Override
             public void sendToWire(T msg) {
-                logger.info("Sending to wire {}", msg);
+                logger.trace("Sending to wire {}", msg);
                 list.add(msg);
             }
         }, plcRequestContainer);
@@ -67,7 +67,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
-        logger.info("Decoding {}", t);
+        logger.trace("Decoding {}", t);
         // Just iterate the list to find a suitable  Handler
 
         registrations:
@@ -75,13 +75,13 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
             HandlerRegistration registration = iter.next();
             // Check if the handler can still be used or should be removed
             if (registration.getTimeout().isBefore(Instant.now())) {
-                logger.info("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
+                logger.debug("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
                 iter.remove();
                 continue;
             }
-            logger.info("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
+            logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
-                logger.info("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
+                logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
                 // Check all Commands / Functions
                 Deque<Either<Function<?, ?>, Predicate<?>>> commands = registration.getCommands();
                 Object instance = t;
@@ -94,19 +94,19 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
                         Predicate predicate = either.get();
                         if (predicate.test(instance) == false) {
                             // We do not match -> cannot handle
-                            logger.info("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
+                            logger.trace("Registration {} does not match object {} (currently wrapped to {})", registration, t.getClass().getSimpleName(), instance.getClass().getSimpleName());
                             continue registrations;
                         }
                     }
                 }
-                logger.info("Handler {} accepts element {}, calling handle method", registration, t);
+                logger.trace("Handler {} accepts element {}, calling handle method", registration, t);
                 this.registeredHandlers.remove(registration);
                 Consumer handler = registration.getPacketConsumer();
                 handler.accept(instance);
                 return;
             }
         }
-        logger.info("No registered handler found for message {}, using default decode method", t);
+        logger.trace("No registered handler found for message {}, using default decode method", t);
         protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext), t);
     }
 
@@ -130,20 +130,20 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
 
         @Override
         public void sendToWire(T1 msg) {
-            logger.info("Sending to wire {}", msg);
+            logger.trace("Sending to wire {}", msg);
             channelHandlerContext.channel().writeAndFlush(msg);
         }
 
         @Override
         public void fireConnected() {
-            logger.info("Firing Connected!");
+            logger.trace("Firing Connected!");
             channelHandlerContext.pipeline().fireUserEventTriggered(new ConnectedEvent());
         }
 
         @Override
         public SendRequestContext<T1> sendRequest(T1 packet) {
             return new DefaultSendRequestContext<T1>(handler -> {
-                logger.info("Adding Response Handler...");
+                logger.trace("Adding Response Handler...");
                 registeredHandlers.add(handler);
             }, packet, (DefaultConversationContext)this);
         }
