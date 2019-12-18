@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -67,6 +68,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
     private S7ControllerType controllerType;
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    @Deprecated
     private final Map<Integer, PlcRequestContainer> requests;
 
     public Plc4xS7Protocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
@@ -205,59 +207,44 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     protected void encode(ConversationContext<TPKTPacket> context, PlcRequestContainer msg) throws Exception {
-        if (!(msg.getRequest() instanceof DefaultPlcReadRequest)) {
-            return;
+        if (msg.getRequest() instanceof DefaultPlcReadRequest) {
+            DefaultPlcReadRequest request = (DefaultPlcReadRequest) msg.getRequest();
+            List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
+            for (PlcField field : request.getFields()) {
+                requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
+            }
+            final int tpduId = tpduGenerator.getAndIncrement();
+            TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
+                new S7MessageRequest(tpduId,
+                    new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
+                    new S7PayloadReadVarRequest()),
+                true, (short) tpduId));
+
+            context.sendRequest(tpktPacket)
+                .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+                // TODO: make it really optional
+                .onTimeout(e -> {
+                })
+                .check(p -> p.getPayload() instanceof COTPPacketData)
+                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                .check(p -> p.getPayload() instanceof S7MessageResponse)
+                .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+                .check(p -> p.getTpduReference() == tpduId)
+                .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
+                .handle(p -> {
+                    try {
+                        msg.getResponseFuture().complete(decodeReadResponse(p, msg));
+                    } catch (PlcProtocolException e) {
+                        e.printStackTrace();
+                    }
+                });
         }
-        DefaultPlcReadRequest request = (DefaultPlcReadRequest) msg.getRequest();
-        List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
-        for (PlcField field : request.getFields()) {
-            requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
-        }
-        final int tpduId = tpduGenerator.getAndIncrement();
-        context.sendToWire(new TPKTPacket(new COTPPacketData(null,
-            new S7MessageRequest(tpduId,
-                new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
-                new S7PayloadReadVarRequest()),
-            true, (short) tpduId)));
-        requests.put(tpduId, msg);
+        throw new NotImplementedException("Implement me");
     }
 
 
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-        if ((msg == null) || (msg.getPayload() == null)) {
-            return;
-        }
-
-        // When getting a response to the connection request on COTP layer, extract some
-        // data and continue logging in on the S7 protocol.
-        if (msg.getPayload() instanceof COTPPacketConnectionResponse) {
-            throw new IllegalStateException("You should not be here, fucker");
-        }
-        if (!(msg.getPayload() instanceof COTPPacketData)) {
-            System.out.println(msg);
-            return;
-        }
-        COTPPacket packageData = msg.getPayload();
-        if (!(packageData.getPayload() instanceof S7MessageResponse)) {
-            throw new IllegalStateException("You should not be here, fucker");
-        }
-        S7MessageResponse s7MessageResponse = (S7MessageResponse) packageData.getPayload();
-        final S7Parameter parameter = s7MessageResponse.getParameter();
-        if (parameter instanceof S7ParameterReadVarResponse) {
-            final PlcRequestContainer requestContainer = requests.remove(s7MessageResponse.getTpduReference());
-            final PlcResponse response;
-            try {
-                response = decodeReadResponse(s7MessageResponse, requestContainer);
-                requestContainer.getResponseFuture().complete(response);
-            } catch (PlcProtocolException e) {
-                e.printStackTrace();
-            }
-        } else if (parameter instanceof S7ParameterWriteVarResponse) {
-            S7ParameterWriteVarResponse writeResponseParameter = (S7ParameterWriteVarResponse) parameter;
-
-            System.out.println(writeResponseParameter);
-        }
     }
 
     private PlcResponse decodeReadResponse(S7MessageResponse responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
