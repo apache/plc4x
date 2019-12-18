@@ -68,8 +68,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
     private S7ControllerType controllerType;
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
-    @Deprecated
-    private final Map<Integer, PlcRequestContainer> requests;
 
     public Plc4xS7Protocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
                            int maxAmqCaller, int maxAmqCallee, S7ControllerType controllerType) {
@@ -82,8 +80,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         this.maxAmqCaller = maxAmqCaller;
         this.maxAmqCallee = maxAmqCallee;
         this.controllerType = controllerType;
-
-        requests = new HashMap<>();
     }
 
     @Override
@@ -238,13 +234,9 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         e.printStackTrace();
                     }
                 });
+        } else {
+            throw new NotImplementedException("Implement me");
         }
-        throw new NotImplementedException("Implement me");
-    }
-
-
-    @Override
-    protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
     }
 
     private PlcResponse decodeReadResponse(S7MessageResponse responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {

@@ -37,6 +37,16 @@ public abstract class Plc4xProtocolBase<T> {
 
     protected abstract void encode(ConversationContext<T> context, PlcRequestContainer msg) throws Exception;
 
-    protected abstract void decode(ConversationContext<T> context, T msg) throws Exception;
+    /**
+     * TODO document me
+     * <p>
+     * Can be used for non request incoming messages
+     *
+     * @param context
+     * @param msg
+     * @throws Exception
+     */
+    protected void decode(ConversationContext<T> context, T msg) throws Exception {
+    }
 
 }
