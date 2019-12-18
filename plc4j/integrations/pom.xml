@@ -33,11 +33,11 @@
   <description>Parent of all product specific integration modules.</description>
 
   <modules>
-<!--    <module>apache-camel</module>-->
-<!--    <module>apache-edgent</module>-->
-<!--    <module>apache-kafka</module>-->
-<!--    <module>apache-nifi</module>-->
-<!--    <module>apache-calcite</module>-->
+    <module>apache-camel</module>
+    <module>apache-edgent</module>
+    <module>apache-kafka</module>
+    <module>apache-nifi</module>
+    <module>apache-calcite</module>
   </modules>
 
   <profiles>

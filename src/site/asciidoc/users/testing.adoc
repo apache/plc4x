@@ -26,7 +26,7 @@ The driver can be found in the Maven module
 ```
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-protocol-driver-base-test</artifactId>
+  <artifactId>plc4j-transport-test</artifactId>
   <version>${current.version}</version>
   <scope>test</scope>
 </dependency>
