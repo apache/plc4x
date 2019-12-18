@@ -31,7 +31,7 @@
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-s7/${project.version}</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base/${project.version}</bundle>
     <bundle>mvn:org.apache.plc4x/plc4j-utils-driver-base-java/${project.version}</bundle>
-    <bundle>mvn:org.apache.plc4x/plc4j-protocol-driver-base-tcp/${project.version}</bundle>
+    <bundle>mvn:org.apache.plc4x/plc4j-transport-tcp/${project.version}</bundle>
     <bundle>mvn:io.netty/netty-codec/4.1.39.Final</bundle>
     <bundle>mvn:com.github.jinahya/bit-io/1.4.3</bundle>
     <bundle>mvn:commons-codec/commons-codec/1.12</bundle>
