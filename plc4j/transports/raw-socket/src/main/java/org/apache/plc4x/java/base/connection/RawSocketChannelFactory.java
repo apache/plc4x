@@ -19,13 +19,20 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.utils.rawsockets.netty.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.utils.rawsockets.netty.PacketHandler;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannelOption;
+import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
