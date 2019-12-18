@@ -91,6 +91,7 @@ public class HelloPlc4x {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 
     private static void printResponse(PlcReadResponse response) {
