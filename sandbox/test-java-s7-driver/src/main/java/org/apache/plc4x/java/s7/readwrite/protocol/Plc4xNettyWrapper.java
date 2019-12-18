@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -33,20 +32,16 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class Plc4xProtocolContext<T> extends MessageToMessageCodec<T, PlcRequestContainer> {
+public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestContainer> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Plc4xProtocolContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
 
     private final Plc4xProtocolBase<T> parent;
+
     private volatile ChannelHandler prevChannelHandler = null;
-    private ChannelPipeline pipeline;
 
-    // VERY DIRTY
-    private Consumer<Object> handler;
-
-    public Plc4xProtocolContext(Plc4xProtocolBase<T> parent, Class<T> clazz) {
+    public Plc4xNettyWrapper(Plc4xProtocolBase<T> parent, Class<T> clazz) {
         super(clazz, PlcRequestContainer.class);
         this.parent = parent;
     }
@@ -54,22 +49,17 @@ public class Plc4xProtocolContext<T> extends MessageToMessageCodec<T, PlcRequest
 
     @Override protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
         logger.info("Encoding {}", plcRequestContainer);
-        parent.encode(plcRequestContainer, o -> list.add(o));
+        parent.encode(new DefaultConversationContext<T>(channelHandlerContext) {
+            @Override public void sendToWire(T msg) {
+                logger.info("Sending to wire {}", msg);
+                list.add(msg);
+            }
+        }, plcRequestContainer);
     }
 
     @Override protected void decode(ChannelHandlerContext channelHandlerContext, T t, List<Object> list) throws Exception {
         logger.info("Decoding {}", t);
-        parent.decode(t);
-    }
-
-    public void send(T packet) {
-        logger.info("Sending {}", packet);
-        pipeline.writeAndFlush(packet);
-    }
-
-    public void fireConnected() {
-        logger.info("Firing Connected!");
-        pipeline.fireUserEventTriggered(new ConnectedEvent());
+        parent.decode(new DefaultConversationContext<>(channelHandlerContext), t);
     }
 
     /**
@@ -85,7 +75,7 @@ public class Plc4xProtocolContext<T> extends MessageToMessageCodec<T, PlcRequest
         // If the connection has just been established, start setting up the connection
         // by sending a connection request to the plc.
         if (evt instanceof ConnectEvent) {
-            this.parent.onConnect();
+            this.parent.onConnect(new DefaultConversationContext<>(ctx));
         } else {
             super.userEventTriggered(ctx, evt);
         }
@@ -106,11 +96,21 @@ public class Plc4xProtocolContext<T> extends MessageToMessageCodec<T, PlcRequest
         return prevChannelHandler;
     }
 
-    public void setPipeline(ChannelPipeline pipeline) {
-        this.pipeline = pipeline;
-    }
+    private class DefaultConversationContext<T> implements ConversationContext<T> {
+        private final ChannelHandlerContext channelHandlerContext;
 
-    public ChannelPipeline getPipeline() {
-        return pipeline;
+        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext) {
+            this.channelHandlerContext = channelHandlerContext;
+        }
+
+        @Override public void sendToWire(T msg) {
+            logger.info("Sending to wire {}", msg);
+            channelHandlerContext.channel().writeAndFlush(msg);
+        }
+
+        @Override public void fireConnected() {
+            logger.info("Firing Connected!");
+            channelHandlerContext.pipeline().fireUserEventTriggered(new ConnectedEvent());
+        }
     }
 }

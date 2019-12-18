@@ -84,7 +84,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     @Override
-    public void onConnect() {
+    public void onConnect(ConversationContext<TPKTPacket> context) {
         logger.debug("ISO Transport Protocol Sending Connection Request");
         // Open the session on ISO Transport Protocol first.
         COTPPacketConnectionRequest connectionRequest = new COTPPacketConnectionRequest(
@@ -94,11 +94,11 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 new COTPParameterTpduSize(cotpTpduSize)
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
         TPKTPacket packet = new TPKTPacket(connectionRequest);
-        context.send(packet);
+        context.sendToWire(packet);
     }
 
     @Override
-    protected void encode(PlcRequestContainer msg, Consumer<TPKTPacket> sendHandler) throws Exception {
+    protected void encode(ConversationContext<TPKTPacket> context, PlcRequestContainer msg) throws Exception {
         if(msg.getRequest() instanceof DefaultPlcReadRequest) {
             DefaultPlcReadRequest request = (DefaultPlcReadRequest) msg.getRequest();
             List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
@@ -106,7 +106,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
             }
             final int tpduId = tpduGenerator.getAndIncrement();
-            sendHandler.accept(new TPKTPacket(new COTPPacketData(null,
+            context.sendToWire(new TPKTPacket(new COTPPacketData(null,
                 new S7MessageRequest(tpduId,
                     new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
                     new S7PayloadReadVarRequest()),
@@ -115,8 +115,8 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         }
     }
 
-    @Override
-    protected void decode(TPKTPacket msg) throws Exception {
+
+    @Override protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
         if((msg == null) || (msg.getPayload() == null)) {
             return;
         }
@@ -146,7 +146,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 new S7PayloadSetupCommunication());
             COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
             TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-            context.send(tpktPacket);
+            context.sendToWire(tpktPacket);
         }
 
         else if(msg.getPayload() instanceof COTPPacketData) {
@@ -172,7 +172,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         }));
                         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
                         TPKTPacket tpktPacket = new TPKTPacket(cotpPacketData);
-                        context.send(tpktPacket);
+                        context.sendToWire(tpktPacket);
                     } else {
                         // Send an event that connection setup is complete.
                         context.fireConnected();

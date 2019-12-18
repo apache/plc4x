@@ -31,7 +31,7 @@ import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.protocol.Plc4xProtocolBase;
-import org.apache.plc4x.java.s7.readwrite.protocol.Plc4xProtocolContext;
+import org.apache.plc4x.java.s7.readwrite.protocol.Plc4xNettyWrapper;
 import org.apache.plc4x.java.s7.readwrite.protocol.Plc4xS7Protocol;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7Protocol;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
@@ -159,9 +159,8 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
                 pipeline.addLast(new S7Protocol());
                 Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new Plc4xS7Protocol(callingTsapId, calledTsapId, tpduSize,
                     maxAmqCaller, maxAmqCallee, controllerType);
-                Plc4xProtocolContext<TPKTPacket> context = plc4xS7Protocol.getContext();
+                Plc4xNettyWrapper<TPKTPacket> context = plc4xS7Protocol.getContext();
                 pipeline.addLast(context);
-                context.setPipeline(pipeline);
             }
         };
     }

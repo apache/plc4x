@@ -19,26 +19,10 @@
 
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+public interface ConversationContext<T> {
 
-public abstract class Plc4xProtocolBase<T> {
+    void sendToWire(T msg);
 
-    protected final Plc4xNettyWrapper<T> context;
+    void fireConnected();
 
-    public Plc4xProtocolBase(Class<T> clazz) {
-        // TODO create here?
-        this.context = new Plc4xNettyWrapper<T>(this, clazz);
-    }
-
-    public Plc4xNettyWrapper<T> getContext() {
-        return context;
-    }
-
-    public void onConnect(ConversationContext<T> context) {
-        // Intentionally do nothing here
-    }
-
-    protected abstract void encode(ConversationContext<T> context, PlcRequestContainer msg) throws Exception;
-
-    protected abstract void decode(ConversationContext<T> context, T msg) throws Exception;
 }
