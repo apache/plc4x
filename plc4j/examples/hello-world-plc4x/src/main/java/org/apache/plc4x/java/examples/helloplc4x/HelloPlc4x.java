@@ -27,9 +27,11 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class HelloPlc4x {
 
@@ -92,6 +94,8 @@ public class HelloPlc4x {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // Give the async request a little time...
+        TimeUnit.MILLISECONDS.sleep(1000);
         System.exit(0);
     }
 

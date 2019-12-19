@@ -47,6 +47,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.utils.Message;
 
+import java.time.*;
 import java.util.Objects;
 import java.math.BigInteger;
 
@@ -109,7 +110,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 <#list type.virtualFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression, type.parserArguments)});
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.valueExpression, type.parserArguments)});
     }
 
 </#list>
@@ -160,12 +161,12 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "manualArray">
 
         // Manual Array Field (${field.name})
-        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field.lengthExpression, null)} * 8;
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field.lengthExpression, null)} * 8;
         <#break>
     <#case "optional">
 
@@ -181,7 +182,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "padding">
 
         // Padding Field (${field.name})
-        if((boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)})) {
+        if((boolean) (${helper.toParseExpression(field.paddingCondition, type.parserArguments)})) {
             lengthInBits += ${field.type.sizeInBits};
         }
         <#break>

@@ -52,7 +52,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
-    protected Duration timeout;
+    protected Duration timeout = Duration.ofMillis(1000);
 
     public DefaultSendRequestContext(Consumer<HandlerRegistration> finisher, T request, ConversationContext<T> context) {
         this.finisher = finisher;

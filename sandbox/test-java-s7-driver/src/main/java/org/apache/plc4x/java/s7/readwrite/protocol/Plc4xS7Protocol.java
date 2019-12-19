@@ -20,48 +20,14 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.s7.readwrite.COTPPacket;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketData;
-import org.apache.plc4x.java.s7.readwrite.COTPParameter;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize;
-import org.apache.plc4x.java.s7.readwrite.S7Address;
-import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
-import org.apache.plc4x.java.s7.readwrite.S7Message;
-import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
-import org.apache.plc4x.java.s7.readwrite.S7MessageResponse;
-import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadSetupCommunication;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
-import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItem;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
-import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
-import org.apache.plc4x.java.s7.readwrite.SzlId;
-import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
@@ -73,45 +39,25 @@ import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
 import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.utils.S7Field;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
+import org.apache.plc4x.java.s7data.readwrite.DataItem;
+import org.apache.plc4x.java.s7data.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultBigIntegerFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultByteFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultDoubleFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultFloatFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLocalDateFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLocalDateTimeFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLocalTimeFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultShortFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.items.*;
+import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
@@ -130,12 +76,10 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
     public Plc4xS7Protocol(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
-
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
-        if (controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
+        if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
         }
-
         this.cotpTpduSize = getNearestMatchingTpduSize(configuration.pduSize);
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
@@ -205,12 +149,13 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             });
     }
 
-    @Override public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+    @Override
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
         for (PlcField field : request.getFields()) {
-            requestItems.add(new S7VarRequestParameterItemAddress(toS7Address(field)));
+            requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
@@ -239,6 +184,45 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         return future;
     }
 
+    @Override
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfFields());
+        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
+        for (String fieldName : request.getFieldNames()) {
+            final S7Field field = (S7Field) request.getField(fieldName);
+            final BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
+            parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
+            payloadItems.add(encodeFieldItem(fieldName, field, fieldItem));
+        }
+        final int tpduId = tpduGenerator.getAndIncrement();
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
+            new S7MessageRequest(tpduId,
+                new S7ParameterWriteVarRequest(parameterItems.toArray(new S7VarRequestParameterItem[0])),
+                new S7PayloadWriteVarRequest(payloadItems.toArray(new S7VarPayloadDataItem[0]))),
+            true, (short) tpduId));
+
+        context.sendRequest(tpktPacket)
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(p -> p.getPayload() instanceof COTPPacketData)
+            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+            .check(p -> p.getPayload() instanceof S7MessageResponse)
+            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+            .check(p -> p.getTpduReference() == tpduId)
+            .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
+            .handle(p -> {
+                try {
+                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
+                } catch (PlcProtocolException e) {
+                    e.printStackTrace();
+                }
+            });
+        return future;
+    }
+
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
         for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
             if (!(item instanceof S7PayloadUserDataItemCpuFunctionReadSzlResponse)) {
@@ -251,7 +235,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                     continue;
                 }
                 final String articleNumber = new String(readSzlResponseItemItem.getMlfb());
-                controllerType = lookupControllerType(articleNumber);
+                controllerType = decodeControllerType(articleNumber);
 
                 // Send an event that connection setup is complete.
                 context.fireConnected();
@@ -259,7 +243,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         }
     }
 
-    private static TPKTPacket createIdentifyRemoteMessage() {
+    private TPKTPacket createIdentifyRemoteMessage() {
         S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
             new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
         }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
@@ -293,7 +277,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         return new TPKTPacket(cotpPacketData);
     }
 
-    private static COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
+    private COTPPacketConnectionRequest createCOTPConnectionRequest(int calledTsapId, int callingTsapId, COTPTpduSize cotpTpduSize) {
         return new COTPPacketConnectionRequest(
             new COTPParameter[]{
                 new COTPParameterCalledTsap(calledTsapId),
@@ -324,7 +308,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             BaseDefaultFieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                fieldItem = mapFieldItem(fieldName, field, data);
+                fieldItem = decodeFieldItem(fieldName, field, data);
             }
             Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
@@ -334,84 +318,71 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
-    private BaseDefaultFieldItem mapFieldItem(String fieldName, S7Field field, ByteBuf data) {
-        try {
-            switch (field.getDataType()) {
-                // -----------------------------------------
-                // Bit
-                // -----------------------------------------
-                case BOOL:
-                    return decodeReadResponseBitField(field, data);
-                // -----------------------------------------
-                // Bit-strings
-                // -----------------------------------------
-                case BYTE:  // 1 byte
-                    return decodeReadResponseByteBitStringField(field, data);
-                case WORD:  // 2 byte (16 bit)
-                    return decodeReadResponseShortBitStringField(field, data);
-                case DWORD:  // 4 byte (32 bit)
-                    return decodeReadResponseIntegerBitStringField(field, data);
-                case LWORD:  // 8 byte (64 bit)
-                    return decodeReadResponseLongBitStringField(field, data);
-                // -----------------------------------------
-                // Integers
-                // -----------------------------------------
-                // 8 bit:
-                case SINT:
-                    return decodeReadResponseSignedByteField(field, data);
-                case USINT:
-                    return decodeReadResponseUnsignedByteField(field, data);
-                // 16 bit:
-                case INT:
-                    return decodeReadResponseSignedShortField(field, data);
-                case UINT:
-                    return decodeReadResponseUnsignedShortField(field, data);
-                // 32 bit:
-                case DINT:
-                    return decodeReadResponseSignedIntegerField(field, data);
-                case UDINT:
-                    return decodeReadResponseUnsignedIntegerField(field, data);
-                // 64 bit:
-                case LINT:
-                    return decodeReadResponseSignedLongField(field, data);
-                case ULINT:
-                    return decodeReadResponseUnsignedLongField(field, data);
-                // -----------------------------------------
-                // Floating point values
-                // -----------------------------------------
-                case REAL:
-                    return decodeReadResponseFloatField(field, data);
-                case LREAL:
-                    return decodeReadResponseDoubleField(field, data);
-                // -----------------------------------------
-                // Characters & Strings
-                // -----------------------------------------
-                case CHAR: // 1 byte (8 bit)
-                    return decodeReadResponseFixedLengthStringField(1, false, data);
-                case WCHAR: // 2 byte
-                    return decodeReadResponseFixedLengthStringField(1, true, data);
-                case STRING:
-                    return decodeReadResponseVarLengthStringField(false, data);
-                case WSTRING:
-                    return decodeReadResponseVarLengthStringField(true, data);
-                // -----------------------------------------
-                // TIA Date-Formats
-                // -----------------------------------------
-                case DATE_AND_TIME:
-                    return decodeReadResponseDateAndTime(field, data);
-                case TIME_OF_DAY:
-                    return decodeReadResponseTimeOfDay(field, data);
-                case DATE:
-                    return decodeReadResponseDate(field, data);
-                default:
-                    throw new PlcProtocolException("Unsupported type " + field.getDataType());
-            }
-        } catch (Exception e) {
-            logger.warn("Some other error occurred casting field {}, FieldInformation: {}", fieldName, field, e);
-            return null;
+    private PlcResponse decodeWriteResponse(S7MessageResponse responseMessage, InternalPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
+        S7PayloadWriteVarResponse payload = (S7PayloadWriteVarResponse) responseMessage.getPayload();
+
+        // If the numbers of items don't match, we're in big trouble as the only
+        // way to know how to interpret the responses is by aligning them with the
+        // items from the request as this information is not returned by the PLC.
+        if (plcWriteRequest.getNumberOfFields() != payload.getItems().length) {
+            throw new PlcProtocolException(
+                "The number of requested items doesn't match the number of returned items");
         }
+
+        Map<String, PlcResponseCode> responses = new HashMap<>();
+        S7VarPayloadStatusItem[] payloadItems = payload.getItems();
+        int index = 0;
+        for (String fieldName : plcWriteRequest.getFieldNames()) {
+            S7VarPayloadStatusItem payloadItem = payloadItems[index];
+
+            PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
+            responses.put(fieldName, responseCode);
+            index++;
+        }
+
+        return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
+    private S7VarPayloadDataItem encodeFieldItem(String fieldName, S7Field field, BaseDefaultFieldItem fieldItem) {
+        return null;
+    }
+
+    private BaseDefaultFieldItem decodeFieldItem(String fieldName, S7Field field, ByteBuf data) {
+        ReadBuffer readBuffer = new ReadBuffer(data.array());
+        try {
+            DataItem item = DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());
+            Object value = PropertyUtils.getProperty(item, "value");
+            return BaseDefaultFieldItem.of(value);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*BaseDefaultFieldItem decodeReadResponseFixedLengthStringField(int numChars, boolean isUtf16, ByteBuf data) {
+        int numBytes = isUtf16 ? numChars * 2 : numChars;
+        String stringValue = data.readCharSequence(numBytes, StandardCharsets.UTF_8).toString();
+        return new DefaultStringFieldItem(stringValue);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseVarLengthStringField(boolean isUtf16, ByteBuf data) {
+        // Max length ... ignored.
+        data.skipBytes(1);
+
+        //reading out byte and transforming that to an unsigned byte within an integer, otherwise longer strings are failing
+        byte currentLengthByte = data.readByte();
+        int currentLength = currentLengthByte & 0xFF;
+        return decodeReadResponseFixedLengthStringField(currentLength, isUtf16, data);
+    }*/
+
+    /**
+     * Helper to convert the return codes returned from the S7 into one of our standard
+     * PLC4X return codes
+     * @param dataTransportErrorCode S7 return code
+     * @return PLC4X return code.
+     */
     private PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
         if (dataTransportErrorCode == null) {
             return PlcResponseCode.INTERNAL_ERROR;
@@ -430,201 +401,13 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         }
     }
 
-    BaseDefaultFieldItem decodeReadResponseBitField(S7Field field, ByteBuf data) {
-        Boolean[] booleans = readAllValues(Boolean.class, field, i -> data.readByte() != 0x00);
-        return new DefaultBooleanFieldItem(booleans);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseByteBitStringField(S7Field field, ByteBuf data) {
-        byte[] bytes = new byte[field.getNumElements()];
-        data.readBytes(bytes);
-        return decodeBitStringField(bytes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseShortBitStringField(S7Field field, ByteBuf data) {
-        byte[] bytes = new byte[field.getNumElements() * 2];
-        data.readBytes(bytes);
-        return decodeBitStringField(bytes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseIntegerBitStringField(S7Field field, ByteBuf data) {
-        byte[] bytes = new byte[field.getNumElements() * 4];
-        data.readBytes(bytes);
-        return decodeBitStringField(bytes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseLongBitStringField(S7Field field, ByteBuf data) {
-        byte[] bytes = new byte[field.getNumElements() * 8];
-        data.readBytes(bytes);
-        return decodeBitStringField(bytes);
-    }
-
-    BaseDefaultFieldItem decodeBitStringField(byte[] bytes) {
-        BitSet bitSet = BitSet.valueOf(bytes);
-        Boolean[] booleanValues = new Boolean[8 * bytes.length];
-        int k = 0;
-        for (int i = bytes.length - 1; i >= 0; i--) {
-            for (int j = 0; j < 8; j++) {
-                booleanValues[k++] = bitSet.get(8 * i + j);
-            }
-        }
-        return new DefaultBooleanFieldItem(booleanValues);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseSignedByteField(S7Field field, ByteBuf data) {
-        Byte[] bytes = readAllValues(Byte.class, field, i -> data.readByte());
-        return new DefaultByteFieldItem(bytes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseUnsignedByteField(S7Field field, ByteBuf data) {
-        Short[] shorts = readAllValues(Short.class, field, i -> data.readUnsignedByte());
-        return new DefaultShortFieldItem(shorts);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseSignedShortField(S7Field field, ByteBuf data) {
-        Short[] shorts = readAllValues(Short.class, field, i -> data.readShort());
-        return new DefaultShortFieldItem(shorts);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseUnsignedShortField(S7Field field, ByteBuf data) {
-        Integer[] ints = readAllValues(Integer.class, field, i -> data.readUnsignedShort());
-        return new DefaultIntegerFieldItem(ints);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseSignedIntegerField(S7Field field, ByteBuf data) {
-        Integer[] ints = readAllValues(Integer.class, field, i -> data.readInt());
-        return new DefaultIntegerFieldItem(ints);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseUnsignedIntegerField(S7Field field, ByteBuf data) {
-        Long[] longs = readAllValues(Long.class, field, i -> data.readUnsignedInt());
-        return new DefaultLongFieldItem(longs);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseSignedLongField(S7Field field, ByteBuf data) {
-        Long[] longs = readAllValues(Long.class, field, i -> data.readLong());
-        return new DefaultLongFieldItem(longs);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseUnsignedLongField(S7Field field, ByteBuf data) {
-        BigInteger[] bigIntegers = readAllValues(BigInteger.class, field, i -> readUnsigned64BitInteger(data));
-        return new DefaultBigIntegerFieldItem(bigIntegers);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseFloatField(S7Field field, ByteBuf data) {
-        Float[] floats = readAllValues(Float.class, field, i -> data.readFloat());
-        return new DefaultFloatFieldItem(floats);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseDoubleField(S7Field field, ByteBuf data) {
-        Double[] doubles = readAllValues(Double.class, field, i -> data.readDouble());
-        return new DefaultDoubleFieldItem(doubles);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseFixedLengthStringField(int numChars, boolean isUtf16, ByteBuf data) {
-        int numBytes = isUtf16 ? numChars * 2 : numChars;
-        String stringValue = data.readCharSequence(numBytes, StandardCharsets.UTF_8).toString();
-        return new DefaultStringFieldItem(stringValue);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseVarLengthStringField(boolean isUtf16, ByteBuf data) {
-        // Max length ... ignored.
-        data.skipBytes(1);
-
-        //reading out byte and transforming that to an unsigned byte within an integer, otherwise longer strings are failing
-        byte currentLengthByte = data.readByte();
-        int currentLength = currentLengthByte & 0xFF;
-        return decodeReadResponseFixedLengthStringField(currentLength, isUtf16, data);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseDateAndTime(S7Field field, ByteBuf data) {
-        LocalDateTime[] localDateTimes = readAllValues(LocalDateTime.class, field, i -> readDateAndTime(data));
-        return new DefaultLocalDateTimeFieldItem(localDateTimes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseTimeOfDay(S7Field field, ByteBuf data) {
-        LocalTime[] localTimes = readAllValues(LocalTime.class, field, i -> readTimeOfDay(data));
-        return new DefaultLocalTimeFieldItem(localTimes);
-    }
-
-    BaseDefaultFieldItem decodeReadResponseDate(S7Field field, ByteBuf data) {
-        LocalDate[] localTimes = readAllValues(LocalDate.class, field, i -> readDate(data));
-        return new DefaultLocalDateFieldItem(localTimes);
-    }
-
-    private static <T> T[] readAllValues(Class<T> clazz, S7Field field, Function<Integer, T> extract) {
-        try {
-            return IntStream.rangeClosed(1, field.getNumElements())
-                .mapToObj(extract::apply)
-                .collect(Collectors.toList())
-                .toArray((T[]) Array.newInstance(clazz, 0));
-        } catch (IndexOutOfBoundsException e) {
-            throw new PlcRuntimeException("To few bytes in the buffer to read requested type", e);
-        }
-    }
-
-    private static BigInteger readUnsigned64BitInteger(ByteBuf data) {
-        byte[] bytes = new byte[9];
-        // Set the first byte to 0
-        bytes[0] = 0;
-        // Read the next 8 bytes into the rest.
-        data.readBytes(bytes, 1, 8);
-        return new BigInteger(bytes);
-    }
-
-    LocalDateTime readDateAndTime(ByteBuf data) {
-        //per definition for Date_And_Time only the first 6 bytes are used
-
-        int year = convertByteToBcd(data.readByte());
-        int month = convertByteToBcd(data.readByte());
-        int day = convertByteToBcd(data.readByte());
-        int hour = convertByteToBcd(data.readByte());
-        int minute = convertByteToBcd(data.readByte());
-        int second = convertByteToBcd(data.readByte());
-        //skip the last 2 bytes no information present
-        data.readByte();
-        data.readByte();
-
-        //data-type ranges from 1990 up to 2089
-        if (year >= 90) {
-            year += 1900;
-        } else {
-            year += 2000;
-        }
-
-        return LocalDateTime.of(year, month, day, hour, minute, second);
-    }
-
-    LocalTime readTimeOfDay(ByteBuf data) {
-        //per definition for Date_And_Time only the first 6 bytes are used
-        int millisSinsMidnight = data.readInt();
-        return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(millisSinsMidnight, ChronoUnit.MILLIS);
-    }
-
-    LocalDate readDate(ByteBuf data) {
-        //per definition for Date_And_Time only the first 6 bytes are used
-        int daysSince1990 = data.readUnsignedShort();
-        return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
-    }
-
-    /**
-     * converts incoming byte to an integer regarding used BCD format
-     *
-     * @param incomingByte
-     * @return converted BCD number
-     */
-    private static int convertByteToBcd(byte incomingByte) {
-        int dec = (incomingByte >> 4) * 10;
-        return dec + (incomingByte & 0x0f);
-    }
-
     /**
      * Little helper method to parse Siemens article numbers and extract the type of controller.
      *
      * @param articleNumber article number string.
      * @return type of controller.
      */
-    private S7ControllerType lookupControllerType(String articleNumber) {
+    private S7ControllerType decodeControllerType(String articleNumber) {
         if (!articleNumber.startsWith("6ES7 ")) {
             return S7ControllerType.ANY;
         }
@@ -646,7 +429,13 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         }
     }
 
-    protected S7Address toS7Address(PlcField field) {
+    /**
+     * Currently we only support the S7 Any type of addresses. This helper simply converts the S7Field
+     * from PLC4X into S7Address objects.
+     * @param field S7Field instance we need to convert into an S7Address
+     * @return the S7Address
+     */
+    protected S7Address encodeS7Address(PlcField field) {
         if (!(field instanceof S7Field)) {
             throw new RuntimeException("Unsupported address type " + field.getClass().getName());
         }

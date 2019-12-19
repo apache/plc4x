@@ -122,6 +122,15 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 case STRING: {
                     return "String";
                 }
+                case TIME: {
+                    return "LocalTime";
+                }
+                case DATE: {
+                    return "LocalDate";
+                }
+                case DATETIME: {
+                    return "LocalDateTime";
+                }
             }
             return "Hurz";
         } else {
@@ -451,8 +460,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return sb.toString();
     }
 
-    public String toDeserializationExpression(Term term, Argument[] parserArguments) {
-        return toExpression(term, term1 -> toVariableDeserializationExpression(term1, parserArguments));
+    public String toParseExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableParseExpression(term1, parserArguments));
     }
 
     public String toSerializationExpression(Term term, Argument[] parserArguments) {
@@ -522,7 +531,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         }
     }
 
-    private String toVariableDeserializationExpression(Term term, Argument[] parserArguments) {
+    private String toVariableParseExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         if("CAST".equals(vl.getName())) {
@@ -530,7 +539,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
-            sb.append("(").append(toVariableDeserializationExpression(vl.getArgs().get(0), parserArguments))
+            sb.append("(").append(toVariableParseExpression(vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         }
@@ -562,7 +571,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(isDeserializerArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
                     } else {
-                        sb.append(toVariableDeserializationExpression(va, null));
+                        sb.append(toVariableParseExpression(va, null));
                     }
                 } else if(arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -581,7 +590,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toDeserializationExpression(arg, parserArguments));
+                    sb.append(toParseExpression(arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");

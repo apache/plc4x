@@ -185,9 +185,9 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterImplicitField(MSpecParser.ImplicitFieldContext ctx) {
         SimpleTypeReference type = getSimpleTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String serializationExpressionString = ctx.serializationExpression.expr.getText();
-        Term serializationExpression = getExpressionTerm(serializationExpressionString);
-        Field field = new DefaultImplicitField(null, type, name, serializationExpression);
+        String serializeExpressionString = ctx.serializeExpression.expr.getText();
+        Term serializeExpression = getExpressionTerm(serializeExpressionString);
+        Field field = new DefaultImplicitField(null, type, name, serializeExpression);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -201,15 +201,15 @@ public class MessageFormatListener extends MSpecBaseListener {
             ctx.loopType.getText().toUpperCase());
         String loopExpressionString = ctx.loopExpression.expr.getText();
         Term loopExpression = getExpressionTerm(loopExpressionString);
-        String serializationExpressionString = ctx.serializationExpression.expr.getText();
-        Term serializationExpression = getExpressionTerm(serializationExpressionString);
-        String deserializationExpressionString = ctx.deserializationExpression.expr.getText();
-        Term deserializationExpression = getExpressionTerm(deserializationExpressionString);
+        String parseExpressionString = ctx.parseExpression.expr.getText();
+        Term parseExpression = getExpressionTerm(parseExpressionString);
+        String serializeExpressionString = ctx.serializeExpression.expr.getText();
+        Term serializeExpression = getExpressionTerm(serializeExpressionString);
         String lengthExpressionString = ctx.lengthExpression.expr.getText();
         Term lengthExpression = getExpressionTerm(lengthExpressionString);
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultManualArrayField(null, type, name, loopType, loopExpression, serializationExpression,
-            deserializationExpression, lengthExpression, params);
+        Field field = new DefaultManualArrayField(null, type, name, loopType, loopExpression,
+            parseExpression, serializeExpression, lengthExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -219,14 +219,14 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void enterManualField(MSpecParser.ManualFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
-        String serializationExpressionString = ctx.serializationExpression.expr.getText();
-        Term serializationExpression = getExpressionTerm(serializationExpressionString);
-        String deserializationExpressionString = ctx.deserializationExpression.expr.getText();
-        Term deserializationExpression = getExpressionTerm(deserializationExpressionString);
+        String parseExpressionString = ctx.parseExpression.expr.getText();
+        Term parseExpression = getExpressionTerm(parseExpressionString);
+        String serializeExpressionString = ctx.serializeExpression.expr.getText();
+        Term serializeExpression = getExpressionTerm(serializeExpressionString);
         String lengthExpressionString = ctx.lengthExpression.expr.getText();
         Term lengthExpression = getExpressionTerm(lengthExpressionString);
         Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
-        Field field = new DefaultManualField(null, type, name, serializationExpression, deserializationExpression,
+        Field field = new DefaultManualField(null, type, name, parseExpression, serializeExpression,
             lengthExpression, params);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);

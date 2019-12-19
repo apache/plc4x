@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.messages.items;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcFieldRangeException;
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
@@ -26,12 +27,19 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class BaseDefaultFieldItem<T> {
 
     private final T[] values;
+
+    public static BaseDefaultFieldItem of(Object values) {
+        final Boolean[] booleans = ArrayUtils.toObject((boolean[]) values);
+        return new DefaultBooleanFieldItem(booleans);
+    }
 
     protected BaseDefaultFieldItem(T[] values) {
         this.values = Objects.requireNonNull(values);

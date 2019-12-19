@@ -19,8 +19,7 @@
 
 package org.apache.plc4x.java.api;
 
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.concurrent.Future;
 
@@ -50,7 +49,7 @@ public interface PlcConnectionExtension {
      */
     @Experimental
     default Future<NewPlcResponse> query(String s, Object... args) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Not implemented");
     }
 
     /**
@@ -65,7 +64,7 @@ public interface PlcConnectionExtension {
      */
     @Experimental
     default Future<Boolean> execute(String pql) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Not implemented");
     }
 
     /**

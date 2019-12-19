@@ -75,15 +75,15 @@ enumField
  ;
 
 implicitField
- : 'implicit' type=dataType name=idExpression serializationExpression=expression
+ : 'implicit' type=dataType name=idExpression serializeExpression=expression
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 manualField
- : 'manual' type=typeReference name=idExpression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manual' type=typeReference name=idExpression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 optionalField
@@ -124,7 +124,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : (COMMENT.*?)? LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType
@@ -133,7 +133,11 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
+/* For the following types the parsing/serialization has to be handled manually */
  | base='string'
+ | base='time'
+ | base='date'
+ | base='dateTime'
  ;
 
 argument
