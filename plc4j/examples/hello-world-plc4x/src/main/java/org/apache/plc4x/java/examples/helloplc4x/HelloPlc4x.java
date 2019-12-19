@@ -28,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
 
 public class HelloPlc4x {
 
@@ -79,7 +81,7 @@ public class HelloPlc4x {
             // Read asynchronously ...
             // Register a callback executed as soon as a response arrives.
             logger.info("Asynchronous request ...");
-            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+            CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
             asyncResponse.whenComplete((readResponse, throwable) -> {
                 if (readResponse != null) {
                     printResponse(readResponse);

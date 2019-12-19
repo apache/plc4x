@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.Changed;
+import org.apache.plc4x.java.api.Experimental;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.math.BigDecimal;
@@ -36,7 +36,7 @@ public interface PlcReadResponse extends PlcFieldResponse {
     @Override
     PlcReadRequest getRequest();
 
-    @Changed
+    @Experimental
     PlcValue getAsPlcValue();
 
     int getNumberOfValues(String name);

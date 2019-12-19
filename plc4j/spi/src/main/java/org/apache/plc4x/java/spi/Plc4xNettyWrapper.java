@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.spi;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
@@ -40,29 +41,50 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestContainer> {
+public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xNettyWrapper.class);
 
     private final Plc4xProtocolBase<T> protocolBase;
     private final Queue<HandlerRegistration> registeredHandlers;
+    private final ChannelPipeline pipeline;
 
-    public Plc4xNettyWrapper(Plc4xProtocolBase<T> parent, Class<T> clazz) {
-        super(clazz, PlcRequestContainer.class);
+    public Plc4xNettyWrapper(ChannelPipeline pipeline, Plc4xProtocolBase<T> protocol, Class<T> clazz) {
+        super(clazz, Object.class);
+        this.pipeline = pipeline;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
-        this.protocolBase = parent;
+        this.protocolBase = protocol;
+        this.protocolBase.setContext(new ConversationContext<T>() {
+            @Override public void sendToWire(T msg) {
+                pipeline.writeAndFlush(msg);
+            }
+
+            @Override public void fireConnected() {
+                pipeline.fireUserEventTriggered(ConnectedEvent.class);
+            }
+
+            @Override public SendRequestContext<T> sendRequest(T packet) {
+                return new DefaultSendRequestContext<T>(handler -> {
+                    logger.trace("Adding Response Handler...");
+                    registeredHandlers.add(handler);
+                }, packet, this);
+            }
+        });
     }
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, PlcRequestContainer plcRequestContainer, List<Object> list) throws Exception {
-        logger.trace("Encoding {}", plcRequestContainer);
-        protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
-            @Override
-            public void sendToWire(T msg) {
-                logger.trace("Sending to wire {}", msg);
-                list.add(msg);
-            }
-        }, plcRequestContainer);
+    protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, List<Object> list) throws Exception {
+//        logger.trace("Encoding {}", plcRequestContainer);
+//        protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
+//            @Override
+//            public void sendToWire(T msg) {
+//                logger.trace("Sending to wire {}", msg);
+//                list.add(msg);
+//            }
+//        }, plcRequestContainer);
+        // NOOP
+        logger.info("Forwarding request to plc {}", msg);
+        list.add(msg);
     }
 
     @Override
@@ -145,7 +167,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, PlcRequestCon
             return new DefaultSendRequestContext<T1>(handler -> {
                 logger.trace("Adding Response Handler...");
                 registeredHandlers.add(handler);
-            }, packet, (DefaultConversationContext)this);
+            }, packet, this);
         }
     }
 }

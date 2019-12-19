@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java;
 
-import org.apache.plc4x.java.api.Changed;
+import org.apache.plc4x.java.api.Experimental;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -96,7 +96,7 @@ public class PlcDriverManager {
      * @return Driver instance for the given protocol
      * @throws PlcConnectionException If no Suitable Driver can be found
      */
-    @Changed
+    @Experimental
     public PlcDriver getDriver(String url) throws PlcConnectionException {
         try {
             URI connectionUri = new URI(url);

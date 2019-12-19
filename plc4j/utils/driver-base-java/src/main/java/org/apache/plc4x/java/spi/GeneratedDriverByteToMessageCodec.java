@@ -45,10 +45,12 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
         WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes());
         io.serialize(buffer, packet);
         byteBuf.writeBytes(buffer.getData());
+        logger.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
     }
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
+        logger.trace("Receiving bytes, trying to decode Message...");
         // As long as there is data available, continue checking the content.
         while(byteBuf.readableBytes() > 0) {
             // Check if enough data is present to process the entire package.

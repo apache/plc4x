@@ -72,7 +72,7 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
     }
 
     public S7Connection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, true);
+        super(channelFactory, true, new S7PlcFieldHandler());
 
         short curRack = 1;
         short curSlot = 1;
@@ -167,7 +167,8 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
                 pipeline.addLast(new S7Protocol());
                 Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new Plc4xS7Protocol(callingTsapId, calledTsapId, tpduSize,
                     maxAmqCaller, maxAmqCallee, controllerType);
-                Plc4xNettyWrapper<TPKTPacket> context = new Plc4xNettyWrapper<>(plc4xS7Protocol, TPKTPacket.class);
+                setProtocol(plc4xS7Protocol);
+                Plc4xNettyWrapper<TPKTPacket> context = new Plc4xNettyWrapper<>(pipeline, plc4xS7Protocol, TPKTPacket.class);
                 pipeline.addLast(context);
             }
         };
@@ -181,21 +182,6 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
         return new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler());
-    }
-
-    @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>(internalReadRequest, future);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-        });
-        return future
-            .thenApply(PlcReadResponse.class::cast);
     }
 
     @Override

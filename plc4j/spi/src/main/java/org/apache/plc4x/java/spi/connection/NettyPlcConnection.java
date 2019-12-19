@@ -25,6 +25,7 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -50,6 +51,13 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
     }
 
     protected NettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
+        this.channelFactory = channelFactory;
+        this.awaitSessionSetupComplete = awaitSessionSetupComplete;
+        this.connected = false;
+    }
+
+    protected NettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
+        super(true, true, false, handler);
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;

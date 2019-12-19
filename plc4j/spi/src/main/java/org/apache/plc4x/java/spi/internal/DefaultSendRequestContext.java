@@ -42,7 +42,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
     private final Object request;
 
     @SuppressWarnings("unchecked")
-    private final Plc4xNettyWrapper.DefaultConversationContext context;
+    private final ConversationContext context;
 
     protected Class<?> expectClazz;
 
@@ -54,13 +54,13 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected Duration timeout;
 
-    public DefaultSendRequestContext(Consumer<HandlerRegistration> finisher, T request, Plc4xNettyWrapper<T>.DefaultConversationContext<T> context) {
+    public DefaultSendRequestContext(Consumer<HandlerRegistration> finisher, T request, ConversationContext<T> context) {
         this.finisher = finisher;
         this.request = request;
         this.context = context;
     }
 
-    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, Object request, Plc4xNettyWrapper<?>.DefaultConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, Object request, ConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
         this.timeout = timeout;
         this.finisher = finisher;

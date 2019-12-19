@@ -19,27 +19,35 @@
 
 package org.apache.plc4x.java.spi;
 
-import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public abstract class Plc4xProtocolBase<T> {
+
+    protected ConversationContext<T> context;
+
+    public void setContext(ConversationContext<T> context) {
+        this.context = context;
+    }
 
     public void onConnect(ConversationContext<T> context) {
         // Intentionally do nothing here
     }
 
     /**
-     * @param context
-     * @param msg
-     * @throws Exception
-     * @deprecated will be replaced by direct calls
-     */
-    @Deprecated
-    protected abstract void encode(ConversationContext<T> context, PlcRequestContainer msg) throws Exception;
-
-    /**
      * TODO document me
      * <p>
-     * Can be used for non request incoming messages
+     * Can be used for non requested incoming messages
      *
      * @param context
      * @param msg
@@ -48,4 +56,19 @@ public abstract class Plc4xProtocolBase<T> {
     protected void decode(ConversationContext<T> context, T msg) throws Exception {
     }
 
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        throw new NotImplementedException("");
+    }
+
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        throw new NotImplementedException("");
+    }
+
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        throw new NotImplementedException("");
+    }
+
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        throw new NotImplementedException("");
+    }
 }
