@@ -19,22 +19,21 @@
 
 package org.apache.plc4x.java.spi;
 
-import org.apache.plc4x.java.spi.internal.HandlerRegistration;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 
-import java.util.function.Consumer;
-
 public abstract class Plc4xProtocolBase<T> {
-
-    private Consumer<HandlerRegistration> acceptHandler;
-
-    public Plc4xProtocolBase(Class<T> clazz) {
-    }
 
     public void onConnect(ConversationContext<T> context) {
         // Intentionally do nothing here
     }
 
+    /**
+     * @param context
+     * @param msg
+     * @throws Exception
+     * @deprecated will be replaced by direct calls
+     */
+    @Deprecated
     protected abstract void encode(ConversationContext<T> context, PlcRequestContainer msg) throws Exception;
 
     /**

@@ -71,8 +71,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
     public Plc4xS7Protocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
                            int maxAmqCaller, int maxAmqCallee, S7ControllerType controllerType) {
-        // FIXME REMOVE
-        super(TPKTPacket.class);
         this.callingTsapId = callingTsapId;
         this.calledTsapId = calledTsapId;
         this.cotpTpduSize = tpduSize;
