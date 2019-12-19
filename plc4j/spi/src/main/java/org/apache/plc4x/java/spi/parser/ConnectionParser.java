@@ -77,9 +77,11 @@ public class ConnectionParser {
                 }
             }
 
+            // TODO refactor
             List<String> missingFields = fieldMap.entrySet().stream()
                 .filter(entry -> entry.getValue().getAnnotation(Required.class) != null)
                 .map(entry -> entry.getValue().getAnnotation(ConfigurationParameter.class) != null ?
+                    // In Memory of S. Ruehl
                     (StringUtils.isBlank(entry.getValue().getAnnotation(ConfigurationParameter.class).value()) ? entry.getKey() : entry.getValue().getAnnotation(ConfigurationParameter.class).value()) : entry.getKey())
                 .collect(toList());
 

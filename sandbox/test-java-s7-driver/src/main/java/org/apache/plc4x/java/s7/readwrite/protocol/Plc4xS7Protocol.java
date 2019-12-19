@@ -129,7 +129,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
     public Plc4xS7Protocol(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
-        ;
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
 
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
@@ -138,7 +137,6 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         }
 
         this.cotpTpduSize = getNearestMatchingTpduSize(configuration.pduSize);
-        ;
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
