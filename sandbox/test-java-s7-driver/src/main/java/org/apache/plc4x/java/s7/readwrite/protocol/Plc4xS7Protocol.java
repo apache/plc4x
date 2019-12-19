@@ -62,14 +62,17 @@ import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
 import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
+import org.apache.plc4x.java.s7.readwrite.types.DeviceGroup;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
 import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.utils.S7Field;
+import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
@@ -124,15 +127,36 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
-    public Plc4xS7Protocol(int callingTsapId, int calledTsapId, COTPTpduSize tpduSize,
-                           int maxAmqCaller, int maxAmqCallee, S7ControllerType controllerType) {
-        this.callingTsapId = callingTsapId;
-        this.calledTsapId = calledTsapId;
-        this.cotpTpduSize = tpduSize;
-        this.pduSize = tpduSize.getSizeInBytes() - 16;
-        this.maxAmqCaller = maxAmqCaller;
-        this.maxAmqCallee = maxAmqCallee;
-        this.controllerType = controllerType;
+    public Plc4xS7Protocol(S7Configuration configuration) {
+        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
+        ;
+        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
+
+        this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
+        if (controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
+            configuration.pduSize = 480;
+        }
+
+        this.cotpTpduSize = getNearestMatchingTpduSize(configuration.pduSize);
+        ;
+        this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
+        this.maxAmqCaller = configuration.maxAmqCaller;
+        this.maxAmqCallee = configuration.maxAmqCallee;
+    }
+
+    /**
+     * Iterate over all values until one is found that the given tpdu size will fit.
+     *
+     * @param tpduSizeParameter requested tpdu size.
+     * @return smallest {@link COTPTpduSize} which will fit a given size of tpdu.
+     */
+    protected COTPTpduSize getNearestMatchingTpduSize(short tpduSizeParameter) {
+        for (COTPTpduSize value : COTPTpduSize.values()) {
+            if (value.getSizeInBytes() >= tpduSizeParameter) {
+                return value;
+            }
+        }
+        return null;
     }
 
     @Override

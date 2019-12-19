@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -160,11 +161,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     @Override public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        return null;
+        throw new NotImplementedException("");
     }
 
     @Override public void unregister(PlcConsumerRegistration registration) {
-
+        throw new NotImplementedException("");
     }
 
     /**
