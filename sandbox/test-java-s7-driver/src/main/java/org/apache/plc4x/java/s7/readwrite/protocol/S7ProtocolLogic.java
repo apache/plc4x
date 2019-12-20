@@ -87,21 +87,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         this.maxAmqCallee = configuration.maxAmqCallee;
     }
 
-    /**
-     * Iterate over all values until one is found that the given tpdu size will fit.
-     *
-     * @param tpduSizeParameter requested tpdu size.
-     * @return smallest {@link COTPTpduSize} which will fit a given size of tpdu.
-     */
-    protected COTPTpduSize getNearestMatchingTpduSize(short tpduSizeParameter) {
-        for (COTPTpduSize value : COTPTpduSize.values()) {
-            if (value.getSizeInBytes() >= tpduSizeParameter) {
-                return value;
-            }
-        }
-        return null;
-    }
-
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         logger.debug("ISO Transport Protocol Sending Connection Request");
@@ -617,6 +602,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         S7Field s7Field = (S7Field) field;
         return new S7AddressAny(s7Field.getDataType(), s7Field.getNumElements(), s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
+    }
+
+    /**
+     * Iterate over all values until one is found that the given tpdu size will fit.
+     *
+     * @param tpduSizeParameter requested tpdu size.
+     * @return smallest {@link COTPTpduSize} which will fit a given size of tpdu.
+     */
+    protected COTPTpduSize getNearestMatchingTpduSize(short tpduSizeParameter) {
+        for (COTPTpduSize value : COTPTpduSize.values()) {
+            if (value.getSizeInBytes() >= tpduSizeParameter) {
+                return value;
+            }
+        }
+        return null;
     }
 
 }

@@ -138,7 +138,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
             InetAddress inetAddress = InetAddress.getByName(gatewayIp);
             ChannelFactory channelFactory = new UdpSocketChannelFactory(inetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
 
-            connection = new KnxNetIpConnection(channelFactory, "",
+            connection = new KnxNetIpConnection(channelFactory, ""/*,
                 new PlcMessageToMessageCodec<KNXNetIPMessage, PlcRequestContainer>() {
 
                 @Override
@@ -183,7 +183,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
                 protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) {
                     // Ignore this as we don't send anything.
                 }
-            });
+            }*/);
             connection.connect();
         } catch (PlcConnectionException e) {
             logger.error("An error occurred starting the BACnet/IP driver", e);

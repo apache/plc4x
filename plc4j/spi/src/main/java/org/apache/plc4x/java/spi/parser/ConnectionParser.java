@@ -56,22 +56,32 @@ public class ConnectionParser {
             URI url = new URI(string);
             Map<String, List<String>> stringListMap = splitQuery(url);
 
-            // TODO notify on umatched parameters
+            // TODO notify on unmatched parameters
 
             Iterator<Map.Entry<String, Field>> iterator = fieldMap.entrySet().iterator();
             for (Iterator<Map.Entry<String, Field>> iter = iterator; iter.hasNext(); ) {
                 Map.Entry<String, Field> entry = iter.next();
                 // TODO field name also from annotation
                 if (stringListMap.containsKey(entry.getKey())) {
-                    fieldMap.get(entry.getKey()).setAccessible(true);
-                    fieldMap.get(entry.getKey()).setInt(instance, Integer.parseInt(stringListMap.get(entry.getKey()).get(0)));
+                    final Field field = fieldMap.get(entry.getKey());
+                    field.setAccessible(true);
+                    if (field.getType().isAssignableFrom(String.class)) {
+                        field.set(instance, stringListMap.get(entry.getKey()).get(0));
+                    } else if (field.getType().isAssignableFrom(int.class)) {
+                        field.setInt(instance, Integer.parseInt(stringListMap.get(entry.getKey()).get(0)));
+                    }
                     iter.remove();
                 } else {
                     // TODO Implement other types
                     IntDefaultValue intDefaultValue = fieldMap.get(entry.getKey()).getAnnotation(IntDefaultValue.class);
                     if (intDefaultValue != null) {
-                        fieldMap.get(entry.getKey()).setAccessible(true);
-                        fieldMap.get(entry.getKey()).setInt(instance, intDefaultValue.value());
+                        final Field field = fieldMap.get(entry.getKey());
+                        field.setAccessible(true);
+                        if (field.getType().isAssignableFrom(String.class)) {
+                            //field.set(instance, stringListMap.get(entry.getKey()).get(0));
+                        } else if (field.getType().isAssignableFrom(int.class)) {
+                            field.setInt(instance, intDefaultValue.value());
+                        }
                         iter.remove();
                     }
                 }

@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @Component(service = PlcDriver.class, immediate = true)
 public class S7Driver implements PlcDriver {
 
-    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7ng://(?<host>.*)(?<params>\\?.*)?");
+    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7ng://(?<host>.*)(\\??<params>.*)?");
 
     @Override
     public String getProtocolCode() {

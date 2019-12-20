@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.readwrite.connection;
 import io.netty.channel.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
@@ -34,10 +33,7 @@ import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
-import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.parser.ConnectionParser;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
@@ -64,8 +60,6 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
 
         configuration = ConnectionParser.parse("a://1.1.1.1/" + params, S7Configuration.class);
 
-
-
         logger.info("Setting up S7 Connection with Configuration: {}", configuration);
     }
 
@@ -81,8 +75,6 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-
-
         return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
@@ -118,27 +110,10 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
     }
 
     @Override
-    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        InternalPlcWriteRequest internalWriteRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
-        CompletableFuture<InternalPlcWriteResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcWriteRequest, InternalPlcWriteResponse> container =
-            new PlcRequestContainer<>(internalWriteRequest, future);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-        });
-        return future
-            .thenApply(PlcWriteResponse.class::cast);
-    }
-
-    @Override
     protected void sendChannelCreatedEvent() {
         logger.trace("Channel was created, firing ChannelCreated Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
-
-
 
 }

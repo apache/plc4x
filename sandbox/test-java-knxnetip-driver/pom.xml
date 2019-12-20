@@ -66,6 +66,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.plc4x.sandbox</groupId>
+      <artifactId>test-java-knxnetip-shared</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-udp</artifactId>
       <version>0.6.0-SNAPSHOT</version>
@@ -79,6 +85,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
     </dependency>
 
     <dependency>
@@ -94,12 +104,6 @@
       <!--scope>test</scope-->
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-knxnetip-shared</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>

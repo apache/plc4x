@@ -28,7 +28,7 @@ import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.passive.knxnetip.model.KnxNetIpField;
-import org.apache.plc4x.java.passive.knxnetip.protocol.KnxNetIpProtocol;
+import org.apache.plc4x.java.passive.knxnetip.protocol.KnxNetIpProtocolMessage;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
@@ -82,7 +82,7 @@ public class PassiveKnxNetIpPlcConnection extends NettyPlcConnection implements 
                         }
                     }
                 });
-                pipeline.addLast(new KnxNetIpProtocol());
+                pipeline.addLast(new KnxNetIpProtocolMessage());
                 pipeline.addLast(handler);
             }
         };

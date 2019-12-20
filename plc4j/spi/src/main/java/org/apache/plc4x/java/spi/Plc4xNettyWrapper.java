@@ -19,15 +19,17 @@
 
 package org.apache.plc4x.java.spi;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.events.DisconnectEvent;
+import org.apache.plc4x.java.spi.events.DisconnectedEvent;
 import org.apache.plc4x.java.spi.internal.DefaultSendRequestContext;
 import org.apache.plc4x.java.spi.internal.HandlerRegistration;
-import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,15 +57,28 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.protocolBase.setContext(new ConversationContext<T>() {
-            @Override public void sendToWire(T msg) {
+            @Override
+            public Channel getChannel() {
+                return pipeline.channel();
+            }
+
+            @Override
+            public void sendToWire(T msg) {
                 pipeline.writeAndFlush(msg);
             }
 
-            @Override public void fireConnected() {
+            @Override
+            public void fireConnected() {
                 pipeline.fireUserEventTriggered(ConnectedEvent.class);
             }
 
-            @Override public SendRequestContext<T> sendRequest(T packet) {
+            @Override
+            public void fireDisconnected() {
+                pipeline.fireUserEventTriggered(DisconnectedEvent.class);
+            }
+
+            @Override
+            public SendRequestContext<T> sendRequest(T packet) {
                 return new DefaultSendRequestContext<T>(handler -> {
                     logger.trace("Adding Response Handler...");
                     registeredHandlers.add(handler);
@@ -83,7 +98,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 //            }
 //        }, plcRequestContainer);
         // NOOP
-        logger.info("Forwarding request to plc {}", msg);
+        logger.debug("Forwarding request to plc {}", msg);
         list.add(msg);
     }
 
@@ -138,6 +153,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         // by sending a connection request to the plc.
         if (evt instanceof ConnectEvent) {
             this.protocolBase.onConnect(new DefaultConversationContext<>(ctx));
+        } else if (evt instanceof DisconnectEvent) {
+            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx));
         } else {
             super.userEventTriggered(ctx, evt);
         }
@@ -151,6 +168,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         }
 
         @Override
+        public Channel getChannel() {
+            return channelHandlerContext.channel();
+        }
+
+        @Override
         public void sendToWire(T1 msg) {
             logger.trace("Sending to wire {}", msg);
             channelHandlerContext.channel().writeAndFlush(msg);
@@ -160,6 +182,12 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         public void fireConnected() {
             logger.trace("Firing Connected!");
             channelHandlerContext.pipeline().fireUserEventTriggered(new ConnectedEvent());
+        }
+
+        @Override
+        public void fireDisconnected() {
+            logger.trace("Firing Disconnected!");
+            channelHandlerContext.pipeline().fireUserEventTriggered(new DisconnectedEvent());
         }
 
         @Override

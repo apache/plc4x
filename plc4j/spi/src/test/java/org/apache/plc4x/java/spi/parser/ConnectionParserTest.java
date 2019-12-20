@@ -27,8 +27,8 @@ class ConnectionParserTest {
 
     @Test
     void parse() {
-        ConnectionParser parster = new ConnectionParser();
-        PropertiesDescriptor properties = parster.parse("s7://192.168.167.1?rackId=1", PropertiesDescriptor.class);
+        ConnectionParser parser = new ConnectionParser();
+        PropertiesDescriptor properties = parser.parse("s7://192.168.167.1?rackId=1", PropertiesDescriptor.class);
 
         assertEquals(1, properties.rackId);
         assertEquals(1, properties.slotId);

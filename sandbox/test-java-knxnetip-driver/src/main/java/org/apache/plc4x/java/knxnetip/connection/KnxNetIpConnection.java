@@ -21,10 +21,12 @@ package org.apache.plc4x.java.knxnetip.connection;
 import io.netty.channel.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
@@ -32,8 +34,9 @@ import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolPackets;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolMessage;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.parser.ConnectionParser;
 
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
@@ -45,21 +48,15 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
 
     public static final int KNXNET_IP_PORT = 3671;
 
-    private final ChannelHandler handler;
+    private final KnxNetIpConfiguration configuration;
 
-    public KnxNetIpConnection(InetAddress address, String params, ChannelHandler handler) {
-        this(new UdpSocketChannelFactory(address, KNXNET_IP_PORT), params, handler);
+    public KnxNetIpConnection(InetAddress address, String params) {
+        this(new UdpSocketChannelFactory(address, KNXNET_IP_PORT), params);
     }
 
-    public KnxNetIpConnection(ChannelFactory channelFactory, String params, ChannelHandler handler) {
+    public KnxNetIpConnection(ChannelFactory channelFactory, String params) {
         super(channelFactory, true);
-        this.handler = handler;
-    }
-
-    @Override
-    protected void sendChannelCreatedEvent() {
-        // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+        configuration = ConnectionParser.parse("a://1.1.1.1?" + params, KnxNetIpConfiguration.class);
     }
 
     @Override
@@ -86,9 +83,13 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
                 });
                 // Unpack the ByteBuf included in the DatagramPackage.
                 pipeline.addLast(new DatagramUnpackingHandler());
-                pipeline.addLast(new KnxNetIpProtocolPackets());
-                pipeline.addLast(new KnxNetIpProtocolLogic());
-                pipeline.addLast(handler);
+                pipeline.addLast(new KnxNetIpProtocolMessage());
+
+                Plc4xProtocolBase<KNXNetIPMessage> knxNetIpProtocolLogic = new KnxNetIpProtocolLogic(configuration);
+                setProtocol(knxNetIpProtocolLogic);
+                Plc4xNettyWrapper<KNXNetIPMessage> context =
+                    new Plc4xNettyWrapper<>(pipeline, knxNetIpProtocolLogic, KNXNetIPMessage.class);
+                pipeline.addLast(context);
             }
         };
     }
@@ -105,6 +106,11 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
 
     @Override
     public void close() throws PlcConnectionException {
+        if(channel == null) {
+            super.close();
+            return;
+        }
+
         CompletableFuture<Void> disconnectFuture = new CompletableFuture<>();
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent(disconnectFuture));
         try {
@@ -120,18 +126,9 @@ public class KnxNetIpConnection extends NettyPlcConnection implements PlcReader 
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>(internalReadRequest, future);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-        });
-        return future
-            .thenApply(PlcReadResponse.class::cast);
+    protected void sendChannelCreatedEvent() {
+        // Send an event to the pipeline telling the Protocol filters what's going on.
+        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
 
 }

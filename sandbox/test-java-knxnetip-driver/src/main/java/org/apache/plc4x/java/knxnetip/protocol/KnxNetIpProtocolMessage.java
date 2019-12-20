@@ -16,20 +16,20 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.passive.knxnetip.protocol;
+package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
-import org.apache.plc4x.java.knxnetip.passive.KNXNetIPMessage;
-import org.apache.plc4x.java.knxnetip.passive.io.KNXNetIPMessageIO;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.utils.MessageIO;
 import org.apache.plc4x.java.utils.ParseException;
 import org.apache.plc4x.java.utils.ReadBuffer;
 import org.apache.plc4x.java.utils.WriteBuffer;
 
-public class KnxNetIpProtocol extends GeneratedDriverByteToMessageCodec<KNXNetIPMessage> {
+public class KnxNetIpProtocolMessage extends GeneratedDriverByteToMessageCodec<KNXNetIPMessage> {
 
-    public KnxNetIpProtocol() {
+    public KnxNetIpProtocolMessage() {
         super(new MessageIO<KNXNetIPMessage, KNXNetIPMessage>() {
             @Override
             public KNXNetIPMessage parse(ReadBuffer io) throws ParseException {
@@ -38,7 +38,7 @@ public class KnxNetIpProtocol extends GeneratedDriverByteToMessageCodec<KNXNetIP
 
             @Override
             public void serialize(WriteBuffer io, KNXNetIPMessage value) throws ParseException {
-                // Ignore.
+                KNXNetIPMessageIO.serialize(io, value);
             }
         });
     }

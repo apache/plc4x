@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.spi;
 
+import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.time.Duration;
@@ -30,9 +31,13 @@ import java.util.function.Predicate;
 
 public interface ConversationContext<T> {
 
+    Channel getChannel();
+
     void sendToWire(T msg);
 
     void fireConnected();
+
+    void fireDisconnected();
 
     SendRequestContext<T> sendRequest(T packet);
 

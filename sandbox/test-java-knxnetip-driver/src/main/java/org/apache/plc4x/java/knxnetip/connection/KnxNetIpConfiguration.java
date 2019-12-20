@@ -16,19 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip;
+package org.apache.plc4x.java.knxnetip.connection;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.parser.ConfigurationParameter;
 
-import java.util.concurrent.TimeUnit;
+public class KnxNetIpConfiguration {
 
-public class ManualKnxNetIp {
+    @ConfigurationParameter("knxproj-file-path")
+    public String knxprojFilePath;
 
-    public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxprojFilePath=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
-        TimeUnit.SECONDS.sleep(300);
-        connection.close();
+    @ConfigurationParameter
+    public int groupAddressType = 3;
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+            "knxprojFilePath=" + knxprojFilePath + ", " +
+            "groupAddressType=" + groupAddressType +
+            '}';
     }
 
 }

@@ -37,7 +37,8 @@ public class S7Configuration {
     @ConfigurationParameter
     public String controllerType;
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "Configuration{" +
             "rack=" + rack +
             ", slot=" + slot +
@@ -47,4 +48,5 @@ public class S7Configuration {
             ", controllerType='" + controllerType + '\'' +
             '}';
     }
+
 }

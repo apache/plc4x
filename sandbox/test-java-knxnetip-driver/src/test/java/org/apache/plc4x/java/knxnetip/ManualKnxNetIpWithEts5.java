@@ -62,7 +62,7 @@ public class ManualKnxNetIpWithEts5 {
         ChannelFactory channelFactory = new UdpSocketChannelFactory(
             gatewayInetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
 
-        NettyPlcConnection connection = new KnxNetIpConnection(channelFactory, "",
+        NettyPlcConnection connection = new KnxNetIpConnection(channelFactory, ""/*,
             new PlcMessageToMessageCodec<KNXNetIPMessage, PlcRequestContainer>() {
                 @Override
                 protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
@@ -130,7 +130,7 @@ public class ManualKnxNetIpWithEts5 {
             } catch (PlcConnectionException e) {
                 // Just ignore this.
             }
-        }));
+        })*/);
     }
 
     protected static String toString(KNXAddress knxAddress) {

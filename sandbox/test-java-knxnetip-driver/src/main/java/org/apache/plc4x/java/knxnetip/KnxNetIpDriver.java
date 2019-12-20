@@ -22,17 +22,11 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpPlc4xProtocol;
 import org.apache.plc4x.java.api.PlcDriver;
 
-import java.net.InetAddress;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.net.*;
 
 public class KnxNetIpDriver implements PlcDriver {
-
-    private static final Pattern PASSIVE_KNXNET_IP_URI_PATTERN =
-        Pattern.compile("^knxnet-ip://(?<host>.*)(?<params>\\?.*)?");
 
     @Override
     public String getProtocolCode() {
@@ -45,19 +39,22 @@ public class KnxNetIpDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = PASSIVE_KNXNET_IP_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'knxnet-ip://{host|ip}'");
+    public PlcConnection connect(String connectionString) throws PlcConnectionException {
+        URL url;
+        try {
+            url = new URL(null, connectionString, new URLStreamHandler() {
+                @Override
+                protected URLConnection openConnection(URL u) {
+                    return null;
+                }
+            });
+        } catch (MalformedURLException e) {
+            throw new PlcConnectionException("Error parsing connection string " + connectionString, e);
         }
-        String host = matcher.group("host");
-
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
 
         try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpPlc4xProtocol());
+            InetAddress serverInetAddress = InetAddress.getByName(url.getHost());
+            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, url.getQuery());
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
                     connection.close();
