@@ -27,8 +27,8 @@ import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.protocol.Plc4xS7Protocol;
-import org.apache.plc4x.java.s7.readwrite.protocol.S7Protocol;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolMessage;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcFieldHandler;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -98,8 +98,8 @@ public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWr
                         }
                     }
                 });
-                pipeline.addLast(new S7Protocol());
-                Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new Plc4xS7Protocol(configuration);
+                pipeline.addLast(new S7ProtocolMessage());
+                Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new S7ProtocolLogic(configuration);
                 setProtocol(plc4xS7Protocol);
                 Plc4xNettyWrapper<TPKTPacket> context = new Plc4xNettyWrapper<>(pipeline, plc4xS7Protocol, TPKTPacket.class);
                 pipeline.addLast(context);

@@ -60,11 +60,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Plc4xS7Protocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
 
-    private final int callingTsapId;
+    private int callingTsapId;
     private int calledTsapId;
     private COTPTpduSize cotpTpduSize;
     private int pduSize;
@@ -74,7 +74,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
-    public Plc4xS7Protocol(S7Configuration configuration) {
+    public S7ProtocolLogic(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
@@ -179,7 +179,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 try {
                     future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
                 } catch (PlcProtocolException e) {
-                    e.printStackTrace();
+                    logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
                 }
             });
         return future;
@@ -195,7 +195,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             final S7Field field = (S7Field) request.getField(fieldName);
             final BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
-            payloadItems.add(encodeFieldItem(field, fieldItem));
+            payloadItems.add(serializeFieldItem(field, fieldItem));
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
@@ -218,7 +218,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                 try {
                     future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
                 } catch (PlcProtocolException e) {
-                    e.printStackTrace();
+                    logger.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
                 }
             });
         return future;
@@ -259,13 +259,17 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             if (parameter instanceof COTPParameterCalledTsap) {
                 COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
                 calledTsapId = cotpParameterCalledTsap.getTsapId();
+            } else if (parameter instanceof COTPParameterCallingTsap) {
+                COTPParameterCallingTsap cotpParameterCallingTsap = (COTPParameterCallingTsap) parameter;
+                if(cotpParameterCallingTsap.getTsapId() != callingTsapId) {
+                    callingTsapId = cotpParameterCallingTsap.getTsapId();
+                    logger.warn(String.format("Switching calling TSAP id to '%s'", callingTsapId));
+                }
             } else if (parameter instanceof COTPParameterTpduSize) {
                 COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
                 cotpTpduSize = cotpParameterTpduSize.getTpduSize();
-            } else if (parameter instanceof COTPParameterCallingTsap) {
-                // Ignore this ...
             } else {
-                logger.warn("Got unknown parameter type '" + parameter.getClass().getName() + "'");
+                logger.warn(String.format("Got unknown parameter type '%s'", parameter.getClass().getName()));
             }
         }
 
@@ -309,7 +313,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             BaseDefaultFieldItem fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                fieldItem = decodeFieldItem(fieldName, field, data);
+                fieldItem = parseFieldItem(field, data);
             }
             Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
@@ -344,7 +348,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
-    private S7VarPayloadDataItem encodeFieldItem(S7Field field, BaseDefaultFieldItem fieldItem) {
+    private S7VarPayloadDataItem serializeFieldItem(S7Field field, BaseDefaultFieldItem fieldItem) {
         if(fieldItem.getNumberOfValues() > 0) {
             throw new NotImplementedException("Writing more than one element currently not supported");
         }
@@ -475,12 +479,12 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
             byte[] data = writeBuffer.getData();
             return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warn(String.format("Error serializing field item of type: '%s'", field.getDataType().name()), e);
         }
         return null;
     }
 
-    private BaseDefaultFieldItem decodeFieldItem(String fieldName, S7Field field, ByteBuf data) {
+    private BaseDefaultFieldItem parseFieldItem(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
             DataItem item = DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());
@@ -543,7 +547,7 @@ public class Plc4xS7Protocol extends Plc4xProtocolBase<TPKTPacket> {
                         "Processing of datatype " + field.getDataType() + " currently not supported");
             }
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
         }
         return null;
     }

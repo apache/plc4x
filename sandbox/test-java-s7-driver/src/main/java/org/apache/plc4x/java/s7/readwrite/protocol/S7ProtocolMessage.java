@@ -30,11 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class S7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacket> {
+public class S7ProtocolMessage extends GeneratedDriverByteToMessageCodec<TPKTPacket> {
 
-    private static final Logger logger = LoggerFactory.getLogger(S7Protocol.class);
+    private static final Logger logger = LoggerFactory.getLogger(S7ProtocolMessage.class);
 
-    public S7Protocol() {
+    public S7ProtocolMessage() {
         super(new MessageIO<TPKTPacket, TPKTPacket>() {
             @Override
             public TPKTPacket parse(ReadBuffer io) throws ParseException {
