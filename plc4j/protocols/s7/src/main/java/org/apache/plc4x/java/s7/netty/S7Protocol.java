@@ -44,10 +44,14 @@ import org.apache.plc4x.java.s7.netty.model.messages.SetupCommunicationRequestMe
 import org.apache.plc4x.java.s7.netty.model.params.*;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AlarmMessageItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.MessageObjectItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslModuleIdentificationDataRecord;
@@ -274,7 +278,6 @@ public class S7Protocol extends ChannelDuplexHandler {
             buf.writeByte(cpuServicesPayload.getAlarm().getCode());
             buf.writeByte(0x00);
         }
-        System.out.println("Paso por aqui....");
     }    
     
     private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf)
@@ -483,7 +486,9 @@ public class S7Protocol extends ChannelDuplexHandler {
         short userDataLength = userData.readShort();
         byte errorClass = 0;
         byte errorCode = 0;
+        
         if (isResponse) {
+            logger.info("Mensaje de respuesta");
             errorClass = userData.readByte();
             errorCode = userData.readByte();
         }
@@ -499,6 +504,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             i += S7SizeHelper.getParameterLength(parameter);
         }
+        //TODO: Se pierden dos bytes de la Data
 
         List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, s7Parameters);
 
@@ -549,21 +555,28 @@ public class S7Protocol extends ChannelDuplexHandler {
 
         } else {
             // CpuService responses are encoded as requests.
+            // 
             for (S7Parameter s7Parameter : s7Parameters) {
                 // Only if we have a response parameter, the payload is a response payload.
                 if(s7Parameter instanceof CpuServicesResponseParameter) {
+                   logger.info("*** Aqui verifica el tipo del s7Parameter...");
                     for (S7Payload s7Payload : s7Payloads) {
                         if(s7Payload instanceof CpuServicesPayload) {
                             CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) s7Payload;
-
                             // Remove the current response from the list of unconfirmed messages.
+                            logger.info("*** Aqui verifica el tipo del Payload...");
                             sentButUnacknowledgedTpdus.remove(tpduReference);
 
                             handleIdentifyRemote(ctx, cpuServicesPayload);
                         }
                     }
+                } else if (s7Parameter instanceof CpuServicesPushParameter){
+                    logger.info("*** MENSAGE PUSH ***");
+                    out.add(new S7ResponseMessage(messageType, tpduReference, s7Parameters, s7Payloads, errorClass, errorCode)); 
+                    return;
                 }
             }
+            logger.info("Envia el mensaje a la proxima capa como S7RequestMessage");
             out.add(new S7RequestMessage(messageType, tpduReference, s7Parameters, s7Payloads, null));
         }
     }
@@ -639,7 +652,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 VarPayload varPayload = decodeVarPayload(userData, isResponse, userDataLength, readWriteVarParameter);
                 s7Payloads.add(varPayload);
             } else if(s7Parameter instanceof CpuServicesParameter) {
-                CpuServicesPayload cpuServicesPayload = decodeCpuServicesPayload(userData);
+                S7Payload cpuServicesPayload = decodeCpuServicesPayload((CpuServicesParameter)s7Parameter, userData);
                 s7Payloads.add(cpuServicesPayload);
             }
         }
@@ -684,43 +697,92 @@ public class S7Protocol extends ChannelDuplexHandler {
         return new VarPayload(readWriteVarParameter.getType(), payloadItems);
     }
 
-    private CpuServicesPayload decodeCpuServicesPayload(ByteBuf userData) {
-        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
-        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-        if(dataTransportSize != DataTransportSize.OCTET_STRING) {
-            // TODO: Output an error.
-        }
-        short length = userData.readShort();
-        SslId sslId = SslId.valueOf(userData.readShort());
-        short sslIndex = userData.readShort();
-        // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
-        if(length == 4) {
-            return new CpuServicesPayload(returnCode, sslId, sslIndex);
-        }
-        // If the length is not 4, then it has to be at least 8.
-        else if(length >= 8) {
-            // TODO: We should probably ensure we don't read more than this.
-            // Skip the partial list length in words.
-            userData.skipBytes(2);
-            short partialListCount = userData.readShort();
-            List<SslDataRecord> sslDataRecords = new LinkedList<>();
-            for(int i = 0; i < partialListCount; i++) {
-                short index = userData.readShort();
-                byte[] articleNumberBytes = new byte[20];
-                userData.readBytes(articleNumberBytes);
-                String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
-                short bgType = userData.readShort();
-                short moduleOrOsVersion = userData.readShort();
-                short pgDescriptionFileVersion = userData.readShort();
-                sslDataRecords.add(new SslModuleIdentificationDataRecord(
-                    index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
+    private S7Payload decodeCpuServicesPayload(CpuServicesParameter parameter, ByteBuf userData) {
+        
+        switch(parameter.getSubFunctionGroup()){
+            case READ_SSL: {
+                DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+                DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                if(dataTransportSize != DataTransportSize.OCTET_STRING) {
+                        // TODO: Output an error.
+                }
+                short length = userData.readShort();                
+                SslId sslId = SslId.valueOf(userData.readShort());
+                short sslIndex = userData.readShort();
+                // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
+                if(length == 4) {
+                    return new CpuServicesPayload(returnCode, sslId, sslIndex);
+                }
+                // If the length is not 4, then it has to be at least 8.
+                else if(length >= 8) {
+                    // TODO: We should probably ensure we don't read more than this.
+                    // Skip the partial list length in words.
+                    userData.skipBytes(2);
+                    short partialListCount = userData.readShort();
+                    List<SslDataRecord> sslDataRecords = new LinkedList<>();
+                    for(int i = 0; i < partialListCount; i++) {
+                        short index = userData.readShort();
+                        byte[] articleNumberBytes = new byte[20];
+                        userData.readBytes(articleNumberBytes);
+                        String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
+                        short bgType = userData.readShort();
+                        short moduleOrOsVersion = userData.readShort();
+                        short pgDescriptionFileVersion = userData.readShort();
+                        sslDataRecords.add(new SslModuleIdentificationDataRecord(
+                            index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
+                    }
+                    return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
+                }
+                // In all other cases, it's probably an error.
+                else {
+                    // TODO: Output an error.
+                }                
             }
-            return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
+                break;
+            case MESSAGE_SERVICE:{  
+                AlarmMessagePayload msg = decodeMessageServicePayload(parameter, userData); 
+                return msg;            
+            }
+            case DIAG_MESSAGE:;
+                break;
+            case ALARM8:;
+                break;
+            case NOTIFY:;
+                break;
+            case ALARM8_LOCK:;
+                break;
+            case ALARM8_UNLOCK:;
+                break;
+            case SCAN:;
+                break;
+            case ALARM_ACK:{  
+                AlarmMessagePayload msg = decodeMessageServiceAckPayload(parameter, userData);                
+                return msg;            
+            }
+            case ALARM_ACK_IND:;
+                break;
+            case ALARM8_LOCK_IND:;
+                break;
+            case ALARM8_UNLOCK_IND:;
+                break;
+            case ALARM_SQ_IND:{  
+                AlarmMessagePayload msg = decodeMessageServicePushPayload(parameter, userData);                
+                return msg;            
+            }
+            case ALARM_S_IND: {
+                AlarmMessagePayload msg = decodeMessageServicePushPayload(parameter, userData);
+                return msg;
+            }
+            case ALARM_QUERY:{
+                AlarmMessagePayload msg = decodeMessageServiceQueryPayload(parameter, userData);
+                return msg;
+            }
+            case NOTIFY8:;
+                break;
+            default:;
+                break;
         }
-        // In all other cases, it's probably an error.
-        else {
-            // TODO: Output an error.
-        }
+        
         return null;
     }
 
@@ -760,6 +822,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     private CpuServicesParameter decodeCpuServicesParameter(ByteBuf in) {
+        logger.info("decodeCpuServicesParameter: \r\n " + ByteBufUtil.prettyHexDump(in) );
         if(in.readShort() != 0x0112) {
             if (logger.isErrorEnabled()) {
                 logger.error("Expecting 0x0112 for CPU_SERVICES parameter");
@@ -777,17 +840,26 @@ public class S7Protocol extends ChannelDuplexHandler {
         in.readByte();
         byte typeAndFunctionGroup = in.readByte();
         // If bit 7 is set, it's a request (if bit 8 is set it's a response).
-        boolean requestParameter = (typeAndFunctionGroup & 0x64) != 0;
+        //Must be for request: 0x40 for check X100 0X00
+        //For Push message is 0000 XXXX, Request is 0100 XXXX, Response 1000 XXXX       
+        boolean pushParameter = (typeAndFunctionGroup & 0xF0) == 0;
+        boolean requestParameter = (typeAndFunctionGroup & 0x40) != 0;
+        boolean responseParameter = (typeAndFunctionGroup & 0x80) != 0;
         // The last 4 bits contain the function group value.
-        typeAndFunctionGroup = (byte) (typeAndFunctionGroup & 0xF);
+        typeAndFunctionGroup = (byte) (typeAndFunctionGroup & 0x0F);
         CpuServicesParameterFunctionGroup functionGroup =
             CpuServicesParameterFunctionGroup.valueOf(typeAndFunctionGroup);
         CpuServicesParameterSubFunctionGroup subFunctionGroup =
             CpuServicesParameterSubFunctionGroup.valueOf(in.readByte());
         byte sequenceNumber = in.readByte();
-        if(!requestParameter) {
+        if(pushParameter) {
+            logger.info("Es un parametro push...");
+            return new CpuServicesPushParameter(functionGroup, subFunctionGroup, sequenceNumber);            
+        } else if (requestParameter) {
+            logger.info("Es un parametro de petición...");
             return new CpuServicesRequestParameter(functionGroup, subFunctionGroup, sequenceNumber);
         } else {
+            logger.info("Es un parametro de respuesta...");
             byte dataUnitReferenceNumber = in.readByte();
             boolean lastDataUnit = in.readByte() == 0x00;
             ParameterError error = ParameterError.valueOf(in.readShort());
@@ -834,7 +906,247 @@ public class S7Protocol extends ChannelDuplexHandler {
 
         return items;
     }
+    
+    private AlarmMessagePayload decodeMessageServicePayload(CpuServicesParameter parameter, ByteBuf userData){
+        logger.info("userData: \r\n" + ByteBufUtil.prettyHexDump(userData) );
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        int length = userData.readShort();
+        byte result = userData.readByte();
+        byte unknown = userData.readByte();
+        AlarmType alarmtype = null;
+        
+        if (length>2) {
+            alarmtype = AlarmType.valueOf(userData.readByte());
+            unknown = userData.readByte();
+            unknown = userData.readByte();                        
+        } else {
+            //Free dummy byte
 
+        }
+        
+       return new AlarmMessagePayload(returnCode,
+                        dataTransportSize,
+                        alarmtype,
+                        length,
+                        null);
+    }
+    
+    private AlarmMessagePayload decodeMessageServicePushPayload(CpuServicesParameter parameter, ByteBuf userData){
+        logger.info("Push userData: \r\n " + ByteBufUtil.prettyHexDump(userData) );
+        List<MessageObjectItem> MessageObjects = new LinkedList<>();
+        List<ByteBuf> values = new LinkedList<>();
+        int length;
+        //Alarm message
+        Calendar timestamp;
+        Byte FunctionID;
+        byte NumberOfMessgaeObjects;
+        //
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        length = userData.readShort();
+        
+        //It is assumed that you have synchronized the time of your PLC with PC.
+        //
+        timestamp = Calendar.getInstance();
+        timestamp.set(2000 + userData.readByte(), 
+                userData.readByte()-1, 
+                userData.readByte(), 
+                userData.readByte(), 
+                userData.readByte(), 
+                userData.readByte());
+        int milliseconds = (userData.readShort() & 0xfff8) >> 3;
+        timestamp.setTimeInMillis(timestamp.getTimeInMillis() + milliseconds);
+        
+        FunctionID = userData.readByte();
+        NumberOfMessgaeObjects = userData.readByte();
+        logger.info("NumberOfMessgaeObjects = " + NumberOfMessgaeObjects);
+        for (int i = 0; i < NumberOfMessgaeObjects; i++){
+            {
+                byte VariableSpecification = userData.readByte();
+                byte Length = userData.readByte();
+                VariableAddressingMode SyntaxID = VariableAddressingMode.valueOf(userData.readByte());
+                byte NumberOfValues = userData.readByte();
+                int EventID = userData.readInt();
+                byte EventState = userData.readByte();
+                byte State = userData.readByte();
+                byte AckStateGoing = userData.readByte();
+                byte AckStateComming = userData.readByte();
+                
+                List<AssociatedValueItem> AssociatedValues = new LinkedList<>();
+                
+                logger.info("NumberOfValues = " + NumberOfValues);
+                        
+                for (int j = 0; j < NumberOfValues; j++){
+                    {
+                        DataTransportErrorCode valueCode = DataTransportErrorCode.valueOf(userData.readByte());
+                        DataTransportSize valueTransportSize = DataTransportSize.valueOf(userData.readByte());
+                        int valueLength = userData.readShort();
+                        //Max length of value is 12 bytes
+                        valueLength = (valueLength >> 4)*2;
+                        logger.info("Numero de valores transferidos = " + valueLength + " Valores disponibles: " + userData.readableBytes());
+                        ByteBuf Data = userData.readBytes(valueLength);
+                        AssociatedValues.add(new AssociatedValueItem(valueCode,
+                                                valueTransportSize,
+                                                valueLength,
+                                                Data));
+                    }
+                }
+                
+                MessageObjects.add( new MessageObjectItem(VariableSpecification,
+                                            Length,
+                                            SyntaxID,
+                                            NumberOfValues,
+                                            EventID,
+                                            EventState,
+                                            State,
+                                            AckStateGoing,
+                                            AckStateComming,
+                                            AssociatedValues));
+                
+            }
+
+           return new AlarmMessagePayload(returnCode,
+                            dataTransportSize,
+                            parameter.getSubFunctionGroup(),
+                            length,
+                            new AlarmMessageItem(timestamp,
+                                    FunctionID,
+                                    NumberOfMessgaeObjects,
+                                    MessageObjects));
+            
+        }
+        
+        
+      return null;  
+    };
+
+    private AlarmMessagePayload decodeMessageServiceQueryPayload(CpuServicesParameter parameter, ByteBuf userData){
+        List<MessageObjectItem> MessageObjects = new LinkedList<>();
+        int length;
+        byte FunctionID;
+        byte NumberOfMessageObjects; //Say 1, but I have 2 messages? Why?
+        DataTransportErrorCode AlarmReturnCode;
+        DataTransportSize AlarmTransportSize;
+        int CompleteDataLength;
+        
+        //Data section
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        length = userData.readShort(); //Number of message objects?
+        
+        //Alarm message information
+        FunctionID = userData.readByte();
+        NumberOfMessageObjects = userData.readByte();
+        AlarmReturnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        AlarmTransportSize = DataTransportSize.valueOf(userData.readByte());
+        CompleteDataLength = userData.readShort();
+        
+        //Message Object
+        for (int i = 0; i < NumberOfMessageObjects; i++){
+            byte LengthOfDataSet = userData.readByte();
+            int Unknown_1 = userData.readShort();
+            Object AlarmType = CpuServicesParameterSubFunctionGroup.valueOf(userData.readByte());
+            int EnentID = userData.readShort();
+            int Unknown_2 = userData.readShort();
+            byte EventState =  userData.readByte();
+            byte AckStateGoing = userData.readByte();
+            byte AckStateComing = userData.readByte();  
+            Calendar timestampComing;
+            
+            timestampComing = Calendar.getInstance();
+            timestampComing.set(2000 + userData.readByte(), 
+                    userData.readByte()-1, 
+                    userData.readByte(), 
+                    userData.readByte(), 
+                    userData.readByte(), 
+                    userData.readByte());
+            int milliseconds = (userData.readInt() & 0xfff8) >> 3;
+            timestampComing.setTimeInMillis(timestampComing.getTimeInMillis() + milliseconds);            
+            
+            List<AssociatedValueItem> ComingValues = new LinkedList<>();
+            
+            int NumberOfValues = 1;
+            
+            for (int j = 0; j < NumberOfValues; j++){
+                DataTransportErrorCode valueCode = DataTransportErrorCode.valueOf(userData.readByte());
+                DataTransportSize valueTransportSize = DataTransportSize.valueOf(userData.readByte());
+                int valueLength = userData.readInt();
+                ByteBuf Data = userData.readBytes(valueLength);
+                ComingValues.add(new AssociatedValueItem(valueCode,
+                                        valueTransportSize,
+                                        valueLength,
+                                        Data));                
+            }
+                                   
+            Calendar timestampGoing;
+            
+            timestampGoing = Calendar.getInstance();
+            timestampGoing.set(2000 + userData.readByte(), 
+                    userData.readByte()-1, 
+                    userData.readByte(), 
+                    userData.readByte(), 
+                    userData.readByte(), 
+                    userData.readByte());
+            milliseconds = (userData.readInt() & 0xfff8) >> 3;
+            timestampGoing.setTimeInMillis(timestampGoing.getTimeInMillis() + milliseconds); 
+            
+            List<AssociatedValueItem> GoingValues = new LinkedList<>();
+            
+            for (int j = 0; j < NumberOfValues; j++){
+                DataTransportErrorCode valueCode = DataTransportErrorCode.valueOf(userData.readByte());
+                DataTransportSize valueTransportSize = DataTransportSize.valueOf(userData.readByte());
+                int valueLength = userData.readInt();
+                ByteBuf Data = userData.readBytes(valueLength);
+                GoingValues.add(new AssociatedValueItem(valueCode,
+                                        valueTransportSize,
+                                        valueLength,
+                                        Data));                
+            }            
+                    
+            return new AlarmMessagePayload(returnCode,
+                        dataTransportSize,
+                        CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
+                        length,
+                        new AlarmMessageItem(FunctionID,
+                                NumberOfMessageObjects,
+                                AlarmReturnCode,
+                                AlarmTransportSize,
+                                CompleteDataLength,
+                                MessageObjects));                 
+        }        
+        return null;
+    }    
+    
+    private AlarmMessagePayload decodeMessageServiceAckPayload(CpuServicesParameter parameter, ByteBuf userData){
+        List<MessageObjectItem> MessageObjects = new LinkedList<>();
+        //Data section
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        int length = userData.readShort(); //Number of message objects?
+        
+        //Alarm message section
+        byte FunctionID = userData.readByte();
+        byte NumberOfMessageObjects = userData.readByte();
+        
+        //In the next leve if is != null -> Success
+        if (userData.readByte() != 0xff) {
+            MessageObjects = null;
+        }
+        
+        return new AlarmMessagePayload(returnCode,
+                    dataTransportSize,
+                    CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
+                    length,
+                    new AlarmMessageItem(FunctionID,
+                            NumberOfMessageObjects,
+                            null,
+                            null,
+                            0,
+                            MessageObjects));        
+        
+    }    
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Helpers
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

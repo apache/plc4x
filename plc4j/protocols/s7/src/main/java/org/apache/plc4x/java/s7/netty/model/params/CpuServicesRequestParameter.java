@@ -18,12 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.params;
 
-import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterFunctionGroup;
+import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 
 public class CpuServicesRequestParameter extends CpuServicesParameter {
 
-    public CpuServicesRequestParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
+    public CpuServicesRequestParameter(CpuServicesParameterFunctionGroup functionGroup, 
+            CpuServicesParameterSubFunctionGroup subFunctionGroup, 
+            byte sequenceNumber) {
+        
         super(functionGroup, subFunctionGroup, sequenceNumber);
     }
 

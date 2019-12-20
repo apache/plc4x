@@ -26,7 +26,22 @@ import org.slf4j.LoggerFactory;
 public enum CpuServicesParameterSubFunctionGroup {
 
     READ_SSL((byte) 0x01),
-    MESSAGE_SERVICE((byte) 0x02);
+    MESSAGE_SERVICE((byte) 0x02),
+    DIAG_MESSAGE((byte) 0x03),
+    ALARM_S((byte) 0x04),
+    ALARM8((byte) 0x05),
+    NOTIFY((byte) 0x06),
+    ALARM8_LOCK((byte) 0x07),
+    ALARM8_UNLOCK((byte) 0x08),
+    SCAN((byte) 0x04),
+    ALARM_ACK((byte) 0x0b),
+    ALARM_ACK_IND((byte) 0x0c),    
+    ALARM8_LOCK_IND((byte) 0x0d),
+    ALARM8_UNLOCK_IND((byte) 0x0e),
+    ALARM_SQ_IND((byte) 0x11),  
+    ALARM_S_IND((byte) 0x12),    
+    ALARM_QUERY((byte) 0x13),    
+    NOTIFY8((byte) 0x16); //TODO
 
     private static final Logger logger = LoggerFactory.getLogger(CpuServicesParameterSubFunctionGroup.class);
 

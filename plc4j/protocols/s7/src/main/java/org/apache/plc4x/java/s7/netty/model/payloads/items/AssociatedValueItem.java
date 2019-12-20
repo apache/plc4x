@@ -16,42 +16,28 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.types.AlarmType;
+package org.apache.plc4x.java.s7.netty.model.payloads.items;
+
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 /**
  *
  * @author cgarcia
  */
-public class CpuMessageSubscriptionServicePayload implements S7Payload {
-
+public class AssociatedValueItem {
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
-    private final byte SubscribedEvents;
-    private final String Id; //8 bytes string
-    private final AlarmType alarm;
+    private final int Length;
+    private final ByteBuf Data;   
 
-
-    public CpuMessageSubscriptionServicePayload (DataTransportErrorCode returnCode,
-            DataTransportSize dataTransportSize, 
-            byte SubscribedEvents, 
-            String Id, 
-            AlarmType alarm) {
-        
+    public AssociatedValueItem(DataTransportErrorCode returnCode, DataTransportSize dataTransportSize, int Length, ByteBuf Data) {
         this.returnCode = returnCode;
         this.dataTransportSize = dataTransportSize;
-        this.SubscribedEvents = SubscribedEvents;
-        this.Id = Id;
-        this.alarm = alarm;
-    }
-    
-    @Override
-    public ParameterType getType() {
-        return ParameterType.CPU_SERVICES;
+        this.Length = Length;
+        this.Data = Data;
     }
 
     public DataTransportErrorCode getReturnCode() {
@@ -62,16 +48,17 @@ public class CpuMessageSubscriptionServicePayload implements S7Payload {
         return dataTransportSize;
     }
 
-    public byte getSubscribedEvents() {
-        return SubscribedEvents;
+    public int getLength() {
+        return Length;
     }
 
-    public String getId() {
-        return Id;
+    public ByteBuf getData() {
+        return Data;
     }
-  
-    public AlarmType getAlarm() {
-        return alarm;
-    }    
-    
+
+
+
+
+
+
 }

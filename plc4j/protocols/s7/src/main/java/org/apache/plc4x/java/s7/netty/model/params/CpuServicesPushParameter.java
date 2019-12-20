@@ -22,22 +22,18 @@ import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterFunctionGr
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterError;
 
-public class CpuServicesResponseParameter extends CpuServicesParameter {
-
+/**
+ *
+ * @author cgarcia
+ */
+public class CpuServicesPushParameter extends CpuServicesParameter {
+    
     private byte dataUnitReferenceNumber;
     private boolean lastDataUnit;
     private ParameterError error;
-
-    public CpuServicesResponseParameter(CpuServicesParameterFunctionGroup functionGroup, 
-            CpuServicesParameterSubFunctionGroup subFunctionGroup,
-            byte sequenceNumber, 
-            byte dataUnitReferenceNumber, 
-            boolean lastDataUnit, ParameterError error) {
-        
+    
+    public CpuServicesPushParameter(CpuServicesParameterFunctionGroup functionGroup, CpuServicesParameterSubFunctionGroup subFunctionGroup, byte sequenceNumber) {
         super(functionGroup, subFunctionGroup, sequenceNumber);
-        this.dataUnitReferenceNumber = dataUnitReferenceNumber;
-        this.lastDataUnit = lastDataUnit;
-        this.error = error;
     }
 
     public byte getDataUnitReferenceNumber() {
@@ -51,5 +47,5 @@ public class CpuServicesResponseParameter extends CpuServicesParameter {
     public ParameterError getError() {
         return error;
     }
-
+    
 }

@@ -16,9 +16,10 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
+
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.types.AlarmType;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AlarmMessageItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
@@ -27,28 +28,27 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
  *
  * @author cgarcia
  */
-public class CpuMessageSubscriptionServicePayload implements S7Payload {
-
+public class AlarmMessagePayload implements S7Payload {
+    
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
-    private final byte SubscribedEvents;
-    private final String Id; //8 bytes string
-    private final AlarmType alarm;
+    private final Object msgtype; 
+    private final Integer length;
+    private final AlarmMessageItem msg;    
 
-
-    public CpuMessageSubscriptionServicePayload (DataTransportErrorCode returnCode,
+    public AlarmMessagePayload(DataTransportErrorCode returnCode, 
             DataTransportSize dataTransportSize, 
-            byte SubscribedEvents, 
-            String Id, 
-            AlarmType alarm) {
-        
+            Object msgtype, 
+            Integer length,
+            AlarmMessageItem msg) {
         this.returnCode = returnCode;
         this.dataTransportSize = dataTransportSize;
-        this.SubscribedEvents = SubscribedEvents;
-        this.Id = Id;
-        this.alarm = alarm;
+        this.msgtype = msgtype;
+        this.length = length;
+        this.msg = msg;
     }
-    
+
+
     @Override
     public ParameterType getType() {
         return ParameterType.CPU_SERVICES;
@@ -62,16 +62,18 @@ public class CpuMessageSubscriptionServicePayload implements S7Payload {
         return dataTransportSize;
     }
 
-    public byte getSubscribedEvents() {
-        return SubscribedEvents;
+    public Object getMsgtype() {
+        return msgtype;
     }
 
-    public String getId() {
-        return Id;
+    public Integer getLength() {
+        return length;
     }
-  
-    public AlarmType getAlarm() {
-        return alarm;
-    }    
+
+    public AlarmMessageItem getMsg() {
+        return msg;
+    }
+    
+    
     
 }

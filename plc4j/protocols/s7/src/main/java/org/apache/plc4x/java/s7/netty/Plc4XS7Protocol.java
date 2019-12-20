@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
@@ -61,9 +62,12 @@ import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.MessageObjectItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.slf4j.Logger;
@@ -453,13 +457,16 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     @Override
     protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws PlcException {
         // We're currently just expecting responses.
+        logger.info("Message Type: " + msg.getMessageType());
         if (!(msg instanceof S7ResponseMessage)) {
+            logger.info("Aborta decode: " + msg.getMessageType());
             return;
         }
         S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
         short tpduReference = responseMessage.getTpduReference();
         if (requests.containsKey(tpduReference)) {
             // As every response has a matching request, get this request based on the tpdu.
+            logger.info("tpduReference: " + tpduReference);
             PlcRequestContainer requestContainer = requests.remove(tpduReference);
             PlcRequest request = requestContainer.getRequest();
 
@@ -469,12 +476,35 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 response = decodeReadResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteResponse(responseMessage, requestContainer);
+            } else if (request instanceof PlcSubscriptionRequest) {
+                logger.info("Debo verificar si la suscripción fu exitosa...");  
+            } else {
+                logger.info("Existe la solicitud del cliente, pero no es una respuesta valida...");
             }
 
             // Confirm the response being handled.
             if (response != null) {
                 requestContainer.getResponseFuture().complete(response);
+            } else {
+                logger.info("No se pudo procesar el mensaje...");
             }
+        } else {
+            logger.info("Posible mensaje PUSH...");
+            List<S7Payload> payloads = msg.getPayloads();
+            for (S7Payload payload:payloads){
+                if (payload instanceof AlarmMessagePayload){
+                    logger.info("S7PayLoad tipo AlarmMessagePayload: " + payload.toString());
+                    AlarmMessagePayload alarm = (AlarmMessagePayload) payload;
+                    List<MessageObjectItem> msgobjects = alarm.getMsg().getMsgItems();
+                    for (MessageObjectItem msgobject:msgobjects){
+                        logger.info("Item tipo MessageObjectItem: " + msgobject.toString() + " Size: " + msgobject.getComingValues().size());
+                        List<AssociatedValueItem> items = msgobject.getComingValues();
+                        for (AssociatedValueItem item:items){
+                            logger.info("ReturnCode :" + item.getReturnCode() + " Length: " + item.getLength() + " Data: " + ByteBufUtil.hexDump(item.getData()));
+                        }
+                    }
+                }
+            }            
         }
     }
 
