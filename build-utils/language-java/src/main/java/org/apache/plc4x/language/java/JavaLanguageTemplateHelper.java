@@ -274,7 +274,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
                 sb.append("\n               long exponent = io.readUnsignedLong(").append(floatTypeReference.getExponent()).append(");");
                 sb.append("\n               long mantissa = io.readUnsignedLong(").append(floatTypeReference.getMantissa()).append(");");
-                sb.append("\n               return (float) ((negative ? -1 : 1) * (0.01 * mantissa) * (2 ^ exponent));");
+                sb.append("\n               return (float) ((negative ? -1 : 1) * (0.01 * mantissa) * Math.pow(2, exponent));");
                 sb.append("\n            } catch(ParseException e) {");
                 sb.append("\n               return 0.0f;");
                 sb.append("\n            }");
