@@ -20,7 +20,7 @@
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.s7.passive.TPKTPacket;
 import org.apache.plc4x.java.s7.passive.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 public class BenchmarkGeneratedPassiveS7 {
 
@@ -34,7 +34,7 @@ public class BenchmarkGeneratedPassiveS7 {
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = tpktPacketIO.parse(rBuf);
+            packet = TPKTPacketIO.parse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 

@@ -38,14 +38,14 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
-import static org.apache.plc4x.java.utils.StaticHelper.*;
+import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.utils.Message;
+import org.apache.plc4x.java.spi.generation.Message;
 
 import java.time.*;
 import java.util.Objects;

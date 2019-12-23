@@ -21,7 +21,7 @@ package org.apache.plc4x.java.bacnetip;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 public class ManualBacNetDecoder {
 

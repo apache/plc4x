@@ -54,7 +54,8 @@ public class S7Driver implements PlcDriver {
         }
         String host = matcher.group("host");
 
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+        // String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+        String params = "";
 
         try {
             InetAddress serverInetAddress = InetAddress.getByName(host);

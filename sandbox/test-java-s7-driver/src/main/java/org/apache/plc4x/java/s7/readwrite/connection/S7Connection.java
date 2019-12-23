@@ -22,6 +22,7 @@ import io.netty.channel.*;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.GenericNettyPlcConnection;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -43,77 +44,24 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
 
-public class S7Connection extends NettyPlcConnection implements PlcReader, PlcWriter {
+public class S7Connection extends GenericNettyPlcConnection<TPKTPacket> implements PlcReader, PlcWriter {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
     private static final Logger logger = LoggerFactory.getLogger(S7Connection.class);
-
-    private final S7Configuration configuration;
 
     public S7Connection(InetAddress address, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), params);
     }
 
     public S7Connection(ChannelFactory channelFactory, String params) {
-        super(channelFactory, true, new S7PlcFieldHandler());
-
-        configuration = ConnectionParser.parse("a://1.1.1.1/" + params, S7Configuration.class);
-
-        logger.info("Setting up S7 Connection with Configuration: {}", configuration);
-    }
-
-    @Override
-    public boolean canRead() {
-        return true;
-    }
-
-    @Override
-    public boolean canWrite() {
-        return true;
-    }
-
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer<Channel>() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the s7 protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new ChannelInboundHandlerAdapter() {
-                    @Override
-                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-                        if (evt instanceof ConnectedEvent) {
-                            sessionSetupCompleteFuture.complete(null);
-                        } else {
-                            super.userEventTriggered(ctx, evt);
-                        }
-                    }
-                });
-                pipeline.addLast(new S7ProtocolMessage());
-                Plc4xProtocolBase<TPKTPacket> plc4xS7Protocol = new S7ProtocolLogic(configuration);
-                setProtocol(plc4xS7Protocol);
-                Plc4xNettyWrapper<TPKTPacket> context = new Plc4xNettyWrapper<>(pipeline, plc4xS7Protocol, TPKTPacket.class);
-                pipeline.addLast(context);
-            }
-        };
-    }
-
-    @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new S7PlcFieldHandler());
-    }
-
-    @Override
-    public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new S7PlcFieldHandler());
-    }
-
-    @Override
-    protected void sendChannelCreatedEvent() {
-        logger.trace("Channel was created, firing ChannelCreated Event");
-        // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
+        super(channelFactory, true, new S7PlcFieldHandler(),
+            TPKTPacket.class,
+            new S7ProtocolMessage(),
+            new S7ProtocolLogic(
+                ConnectionParser.parse("a://1.1.1.1/" + params, S7Configuration.class)
+            )
+        );
     }
 
 }

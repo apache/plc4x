@@ -19,9 +19,9 @@ under the License.
 package org.apache.plc4x.java.s7.readwrite.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

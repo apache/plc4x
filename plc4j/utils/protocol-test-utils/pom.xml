@@ -35,10 +35,9 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-driver-base-java</artifactId>
+      <artifactId>plc4j-spi</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>

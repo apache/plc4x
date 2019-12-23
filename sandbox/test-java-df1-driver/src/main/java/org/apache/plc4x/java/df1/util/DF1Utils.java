@@ -21,9 +21,9 @@ package org.apache.plc4x.java.df1.util;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class DF1Utils {
 

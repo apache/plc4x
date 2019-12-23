@@ -24,8 +24,8 @@ import org.apache.plc4x.java.ets5.passive.io.KnxDatapointIO;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.streampipes.model.runtime.Event;
 import org.streampipes.wrapper.context.EventProcessorRuntimeContext;
 import org.streampipes.wrapper.routing.SpOutputCollector;
@@ -38,7 +38,7 @@ public class Ets5DataEnrichment implements EventProcessor<Ets5DataEnrichmentPara
     private String destinationIdFieldName;
     private String payloadIdFieldName;
     // TODO: Make this dynamic.
-    private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/StettinerStr-Soll-Ist-Temperatur.knxproj"));;
+    private static final Ets5Model ets5Model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/StettinerStr-Soll-Ist-Temperatur.knxproj"));
 
     @Override
     public void onInvocation(Ets5DataEnrichmentParameters params, SpOutputCollector spOutputCollector,

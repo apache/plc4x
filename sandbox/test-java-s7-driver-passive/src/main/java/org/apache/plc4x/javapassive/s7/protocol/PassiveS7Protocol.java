@@ -23,7 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.spi.PlcByteToMessageCodec;
 import org.apache.plc4x.java.s7.passive.TPKTPacket;
 import org.apache.plc4x.java.s7.passive.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class PassiveS7Protocol extends PlcByteToMessageCodec<TPKTPacket> {
         ReadBuffer readBuffer = new ReadBuffer(bytes);
         while(readBuffer.getPos() < bytes.length) {
             try {
-                TPKTPacket packet = io.parse(readBuffer);
+                TPKTPacket packet = TPKTPacketIO.parse(readBuffer);
                 out.add(packet);
             } catch(Exception e) {
                 logger.warn("Error decoding package: " + e.getMessage());

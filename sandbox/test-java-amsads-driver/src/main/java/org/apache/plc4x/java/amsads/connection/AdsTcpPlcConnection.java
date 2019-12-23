@@ -108,20 +108,21 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         return new AdsTcpPlcConnection(address, port, targetAmsNetId, targetint, sourceAmsNetId, sourceint);
     }
 
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer<Channel>() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the ads protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new Payload2TcpProtocol());
-                pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer, SingleItemToSingleRequestProtocol.SplitConfig.builder().dontSplitSubscribe().dontSplitUnsubscribe().build(), false));
-            }
-        };
-    }
+    // TODO fix that
+//    @Override
+//    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+//        return new ChannelInitializer<Channel>() {
+//            @Override
+//            protected void initChannel(Channel channel) {
+//                // Build the protocol stack for communicating with the ads protocol.
+//                ChannelPipeline pipeline = channel.pipeline();
+//                pipeline.addLast(new Payload2TcpProtocol());
+//                pipeline.addLast(new Ads2PayloadProtocol());
+//                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
+//                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer, SingleItemToSingleRequestProtocol.SplitConfig.builder().dontSplitSubscribe().dontSplitUnsubscribe().build(), false));
+//            }
+//        };
+//    }
 
     public InetAddress getRemoteAddress() {
         return ((TcpSocketChannelFactory) channelFactory).getAddress();

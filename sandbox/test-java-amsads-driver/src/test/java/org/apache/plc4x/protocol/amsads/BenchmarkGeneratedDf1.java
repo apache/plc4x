@@ -19,10 +19,6 @@
 
 package org.apache.plc4x.protocol.amsads;
 
-import com.fazecast.jSerialComm.SerialPort;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
-
 public class BenchmarkGeneratedDf1 {
 
     public static void main(String[] args) throws Exception {

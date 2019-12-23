@@ -34,8 +34,6 @@
   <description>A collection of utilities used in multiple modules.</description>
 
   <modules>
-    <!-- Base module for all types of PLC4X drivers -->
-    <module>driver-base-java</module>
     <!-- Non-default input options -->
     <module>raw-sockets</module>
     <module>pcap-sockets</module>

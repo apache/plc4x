@@ -49,19 +49,20 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
         return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer<Channel>() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the ads protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new Payload2SerialProtocol());
-                pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsSerialPlcConnection.this, AdsSerialPlcConnection.this, null, timer));
-            }
-        };
-    }
+    // TODO fix this
+//    @Override
+//    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+//        return new ChannelInitializer<Channel>() {
+//            @Override
+//            protected void initChannel(Channel channel) {
+//                // Build the protocol stack for communicating with the ads protocol.
+//                ChannelPipeline pipeline = channel.pipeline();
+//                pipeline.addLast(new Payload2SerialProtocol());
+//                pipeline.addLast(new Ads2PayloadProtocol());
+//                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
+//                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsSerialPlcConnection.this, AdsSerialPlcConnection.this, null, timer));
+//            }
+//        };
+//    }
 
 }

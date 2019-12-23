@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.GenericNettyPlcConnection;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.*;
 
-public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
+public abstract class AdsAbstractPlcConnection extends GenericNettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnection.class);
 

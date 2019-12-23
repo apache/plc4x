@@ -78,13 +78,6 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     }
 
     @Override
-    protected void sendChannelCreatedEvent() {
-        logger.trace("Channel was created, firing ChannelCreated Event");
-        // Send an event to the pipeline telling the Protocol filters what's going on.
-        channel.pipeline().fireUserEventTriggered(new ConnectEvent());
-    }
-
-    @Override
     public PlcField prepareField(String fieldQuery) throws PlcInvalidFieldException {
         return AbEthField.of(fieldQuery);
     }
@@ -113,16 +106,6 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
     }
 
     @Override
-    public boolean canRead() {
-        return true;
-    }
-
-    @Override
-    public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new AbEthFieldHandler());
-    }
-
-    @Override
     public void close() {
         logger.debug("Closing PlcConnection...");
         // Close the channel gracefully
@@ -145,18 +128,4 @@ public class AbEthPlcConnection extends NettyPlcConnection implements PlcReader 
         connected = false;
     }
 
-    @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        InternalPlcReadRequest internalReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-        CompletableFuture<InternalPlcReadResponse> future = new CompletableFuture<>();
-        PlcRequestContainer<InternalPlcReadRequest, InternalPlcReadResponse> container =
-            new PlcRequestContainer<>(internalReadRequest, future);
-        channel.writeAndFlush(container).addListener(f -> {
-            if (!f.isSuccess()) {
-                future.completeExceptionally(f.cause());
-            }
-        });
-        return future
-            .thenApply(PlcReadResponse.class::cast);
-    }
 }

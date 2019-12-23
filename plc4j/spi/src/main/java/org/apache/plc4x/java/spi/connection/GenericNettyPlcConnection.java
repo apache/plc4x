@@ -38,44 +38,53 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public abstract class NettyPlcConnection extends AbstractPlcConnection {
-
-    private static final Logger logger = LoggerFactory.getLogger(NettyPlcConnection.class);
+public abstract class GenericNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> extends AbstractPlcConnection {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
      */
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
-
+    private static final Logger logger = LoggerFactory.getLogger(GenericNettyPlcConnection.class);
     protected final ChannelFactory channelFactory;
 
     protected final boolean awaitSessionSetupComplete;
-
     protected Channel channel;
-
     protected boolean connected;
+    private Class<BASE_PROTOCOL_CLASS> baseProtocolClass;
+    private GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec;
+    private Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic;
 
-    protected NettyPlcConnection(ChannelFactory channelFactory) {
+    protected GenericNettyPlcConnection(ChannelFactory channelFactory) {
         this(channelFactory, false);
     }
 
-    protected NettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
+    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;
     }
 
-    protected NettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
+    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
         super(true, true, false, handler);
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;
     }
+
+    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
+                                        Class<BASE_PROTOCOL_CLASS> baseProtocolClass,
+                                        GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec,
+                                        Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic) {
+        this(channelFactory, awaitSessionSetupComplete, handler);
+        this.baseProtocolClass = baseProtocolClass;
+        this.messageCodec = messageCodec;
+        this.protocolLogic = protocolLogic;
+    }
+
 
     @Override
     public void connect() throws PlcConnectionException {
@@ -119,7 +128,7 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
             channelFactory.ping();
             // If we got here, the ping was successful.
             future.complete(null);
-        } catch(PlcException e) {
+        } catch (PlcException e) {
             // If we got here, something went wrong.
             future.completeExceptionally(e);
         }
@@ -145,7 +154,33 @@ public abstract class NettyPlcConnection extends AbstractPlcConnection {
         return channel;
     }
 
-    protected abstract ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture);
+    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+        if (messageCodec == null || protocolLogic == null || baseProtocolClass == null) {
+            throw new IllegalStateException("Codec Classes have to be set!");
+        }
+        return new ChannelInitializer<Channel>() {
+            @Override
+            protected void initChannel(Channel channel) {
+                // Build the protocol stack for communicating with the s7 protocol.
+                ChannelPipeline pipeline = channel.pipeline();
+                pipeline.addLast(new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                        if (evt instanceof ConnectedEvent) {
+                            sessionSetupCompleteFuture.complete(null);
+                        } else {
+                            super.userEventTriggered(ctx, evt);
+                        }
+                    }
+                });
+                pipeline.addLast(messageCodec);
+                Plc4xProtocolBase<BASE_PROTOCOL_CLASS> plc4xS7Protocol = protocolLogic;
+                setProtocol(plc4xS7Protocol);
+                Plc4xNettyWrapper<BASE_PROTOCOL_CLASS> context = new Plc4xNettyWrapper<>(pipeline, plc4xS7Protocol, baseProtocolClass);
+                pipeline.addLast(context);
+            }
+        };
+    }
 
     protected void sendChannelCreatedEvent() {
         logger.trace("Channel was created, firing ChannelCreated Event");

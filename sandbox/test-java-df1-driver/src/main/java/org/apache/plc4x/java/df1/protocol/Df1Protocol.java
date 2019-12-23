@@ -27,8 +27,8 @@ import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
 import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
 
         // Serialize the message
         WriteBuffer writeBuffer = new WriteBuffer(frame.getLengthInBytes(), false);
-        df1SymbolIO.serialize(writeBuffer, frame);
+        DF1SymbolIO.serialize(writeBuffer, frame);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
@@ -138,7 +138,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
             in.readBytes(data);
             ReadBuffer readBuffer = new ReadBuffer(data, false);
 
-            resp = df1SymbolIO.parse(readBuffer);
+        resp = DF1SymbolIO.parse(readBuffer);
 
 //        } while (readWasSucessfull);
 //        // TODO if unableto read

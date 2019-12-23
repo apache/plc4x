@@ -34,7 +34,7 @@ import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.readwrite.types.HostProtocolCode;
 import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
 import org.apache.plc4x.java.knxnetip.readwrite.types.Status;
-import org.apache.plc4x.java.utils.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
