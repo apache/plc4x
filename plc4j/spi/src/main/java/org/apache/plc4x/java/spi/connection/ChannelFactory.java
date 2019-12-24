@@ -20,13 +20,26 @@ package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 
+import java.net.SocketAddress;
+
 public interface ChannelFactory {
 
-    Channel createChannel(ChannelHandler channelHandler)
-        throws PlcConnectionException;
+    /**
+     * Will likely be removed soon?
+     */
+    @Deprecated
+    Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException;
+
+    /**
+     * Will be the future interface to Crate Channels.
+     */
+    default Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
+        throw new NotImplementedException("");
+    }
 
     void ping() throws PlcException;
 

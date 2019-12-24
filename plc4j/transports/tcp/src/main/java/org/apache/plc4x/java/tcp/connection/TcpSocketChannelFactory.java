@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class TcpSocketChannelFactory implements ChannelFactory {
 
@@ -46,9 +47,20 @@ public class TcpSocketChannelFactory implements ChannelFactory {
     private final InetAddress address;
     private final int port;
 
+    /**
+     * @deprecated the next-gen drivers should use the {@link #TcpSocketChannelFactory(SocketAddress)}
+     * constructor.
+     */
+    @Deprecated
     public TcpSocketChannelFactory(InetAddress address, int port) {
         this.address = address;
         this.port = port;
+    }
+
+    public TcpSocketChannelFactory(SocketAddress address) {
+        assert address instanceof InetSocketAddress;
+        this.address = ((InetSocketAddress) address).getAddress();
+        this.port = ((InetSocketAddress) address).getPort();
     }
 
     @Override

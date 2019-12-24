@@ -19,19 +19,31 @@
 
 package org.apache.plc4x.java.spi.parser;
 
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.junit.jupiter.api.Test;
+
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConnectionParserTest {
 
     @Test
-    void parse() {
-        ConnectionParser parser = new ConnectionParser();
-        PropertiesDescriptor properties = parser.parse("s7://192.168.167.1?rackId=1", PropertiesDescriptor.class);
+    void parse() throws PlcConnectionException {
+        ConnectionParser parser = new ConnectionParser("s7", "s7://192.168.167.1?rackId=1");
+        PropertiesDescriptor properties = parser.createConfiguration(PropertiesDescriptor.class);
 
         assertEquals(1, properties.rackId);
         assertEquals(1, properties.slotId);
+    }
+
+    @Test
+    void parseHost() throws PlcConnectionException {
+        ConnectionParser parser = new ConnectionParser("s7", "s7://192.168.167.1?rackId=1");
+        SocketAddress inetSocketAddress = parser.getSocketAddress(102);
+
+        assertEquals(new InetSocketAddress("192.168.167.1", 102), inetSocketAddress);
     }
 
     static class PropertiesDescriptor {

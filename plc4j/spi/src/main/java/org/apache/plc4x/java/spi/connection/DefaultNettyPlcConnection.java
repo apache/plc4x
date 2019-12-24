@@ -41,14 +41,14 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public abstract class GenericNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> extends AbstractPlcConnection {
+public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> extends AbstractPlcConnection {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
      */
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
-    private static final Logger logger = LoggerFactory.getLogger(GenericNettyPlcConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
     protected final ChannelFactory channelFactory;
 
     protected final boolean awaitSessionSetupComplete;
@@ -58,27 +58,27 @@ public abstract class GenericNettyPlcConnection<BASE_PROTOCOL_CLASS extends Mess
     private GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec;
     private Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic;
 
-    protected GenericNettyPlcConnection(ChannelFactory channelFactory) {
+    protected DefaultNettyPlcConnection(ChannelFactory channelFactory) {
         this(channelFactory, false);
     }
 
-    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
+    protected DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;
     }
 
-    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
+    protected DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
         super(true, true, false, handler);
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
         this.connected = false;
     }
 
-    protected GenericNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
-                                        Class<BASE_PROTOCOL_CLASS> baseProtocolClass,
-                                        GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec,
-                                        Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic) {
+    public DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
+                                     Class<BASE_PROTOCOL_CLASS> baseProtocolClass,
+                                     GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec,
+                                     Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic) {
         this(channelFactory, awaitSessionSetupComplete, handler);
         this.baseProtocolClass = baseProtocolClass;
         this.messageCodec = messageCodec;

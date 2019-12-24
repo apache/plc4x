@@ -18,16 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.adapters.source.knxnetip;
 
-import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
-import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
-import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
-import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +41,8 @@ import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.vocabulary.SO;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
 
@@ -134,11 +123,12 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         if((connection != null) && (connection.isConnected())) {
             return;
         }
+        /*
         try {
             InetAddress inetAddress = InetAddress.getByName(gatewayIp);
             ChannelFactory channelFactory = new UdpSocketChannelFactory(inetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
 
-            connection = new KnxNetIpConnection(channelFactory, ""/*,
+            connection = new KnxNetIpConnection(channelFactory, "",
                 new PlcMessageToMessageCodec<KNXNetIPMessage, PlcRequestContainer>() {
 
                 @Override
@@ -183,8 +173,9 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
                 protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) {
                     // Ignore this as we don't send anything.
                 }
-            }*/);
+            });
             connection.connect();
+
         } catch (PlcConnectionException e) {
             logger.error("An error occurred starting the BACnet/IP driver", e);
             throw new AdapterException("An error occurred starting the BACnet/IP driver");
@@ -194,6 +185,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
         } catch (Exception e) {
             logger.error("Something strange went wrong.", e);
         }
+        */
     }
 
     @Override

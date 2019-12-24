@@ -21,12 +21,21 @@ package org.apache.plc4x.java.knxnetip;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
+import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
+import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConfiguration;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.knxnetip.connection.KnxNetIpFieldHandler;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolMessage;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
+import org.apache.plc4x.java.spi.parser.ConnectionParser;
 
 import java.net.*;
 
 public class KnxNetIpDriver implements PlcDriver {
+
+    public static final int KNXNET_IP_PORT = 3671;
 
     @Override
     public String getProtocolCode() {
@@ -40,32 +49,16 @@ public class KnxNetIpDriver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String connectionString) throws PlcConnectionException {
-        URL url;
-        try {
-            url = new URL(null, connectionString, new URLStreamHandler() {
-                @Override
-                protected URLConnection openConnection(URL u) {
-                    return null;
-                }
-            });
-        } catch (MalformedURLException e) {
-            throw new PlcConnectionException("Error parsing connection string " + connectionString, e);
-        }
-
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(url.getHost());
-            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, url.getQuery());
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    // Ignore this ...
-                }
-            }));
-            return connection;
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error connecting to host", e);
-        }
+        ConnectionParser parser = new ConnectionParser(getProtocolCode(), connectionString);
+        KnxNetIpConfiguration configuration = parser.createConfiguration(KnxNetIpConfiguration.class);
+        SocketAddress address = parser.getSocketAddress(KNXNET_IP_PORT);
+        return new DefaultNettyPlcConnection<>(new UdpSocketChannelFactory(address), true, new KnxNetIpFieldHandler(),
+            KNXNetIPMessage.class,
+            new KnxNetIpProtocolMessage(),
+            new KnxNetIpProtocolLogic(
+                configuration
+            )
+        );
     }
 
     @Override

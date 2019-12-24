@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class UdpSocketChannelFactory implements ChannelFactory {
 
@@ -45,9 +46,20 @@ public class UdpSocketChannelFactory implements ChannelFactory {
     private final InetAddress address;
     private final int port;
 
+    /**
+     * @deprecated the next-gen drivers should use the {@link #UdpSocketChannelFactory(SocketAddress)}
+     * constructor.
+     */
+    @Deprecated
     public UdpSocketChannelFactory(InetAddress address, int port) {
         this.address = address;
         this.port = port;
+    }
+
+    public UdpSocketChannelFactory(SocketAddress address) {
+        assert address instanceof InetSocketAddress;
+        this.address = ((InetSocketAddress) address).getAddress();
+        this.port = ((InetSocketAddress) address).getPort();
     }
 
     @Override

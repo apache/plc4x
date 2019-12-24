@@ -19,21 +19,25 @@ under the License.
 package org.apache.plc4x.java.s7.readwrite;
 
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.s7.readwrite.connection.S7Connection;
-import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolMessage;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
+import org.apache.plc4x.java.spi.parser.ConnectionParser;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.osgi.service.component.annotations.Component;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 @Component(service = PlcDriver.class, immediate = true)
 public class S7Driver implements PlcDriver {
 
-    private static final Pattern S7_URI_PATTERN = Pattern.compile("^s7ng://(?<host>.*)(\\??<params>.*)?");
+    private static final int ISO_ON_TCP_PORT = 102;
 
     @Override
     public String getProtocolCode() {
@@ -47,24 +51,16 @@ public class S7Driver implements PlcDriver {
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = S7_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 's7ng://{host|ip}'");
-        }
-        String host = matcher.group("host");
-
-        // String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-        String params = "";
-
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new S7Connection(serverInetAddress, params);
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException("Error parsing address", e);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error connecting to host", e);
-        }
+        ConnectionParser parser = new ConnectionParser(getProtocolCode(), url);
+        S7Configuration configuration = parser.createConfiguration(S7Configuration.class);
+        SocketAddress address = parser.getSocketAddress(ISO_ON_TCP_PORT);
+        return new DefaultNettyPlcConnection<>(new TcpSocketChannelFactory(address), true, new S7PlcFieldHandler(),
+            TPKTPacket.class,
+            new S7ProtocolMessage(),
+            new S7ProtocolLogic(
+                configuration
+            )
+        );
     }
 
     @Override

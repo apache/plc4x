@@ -21,10 +21,16 @@ package org.apache.plc4x.java.spi.parser;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,10 +44,60 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * A query contains for our cases mostly of three parts
+ * - protocol identifier
+ * - connection address (ip/port), serial port, ...
+ * - path parameters
+ */
 public class ConnectionParser {
 
+    private final String connectionString;
+    private URI uri;
+
+    public ConnectionParser(String protocolCode, String connectionString) throws PlcConnectionException {
+        this.connectionString = connectionString;
+        try {
+            this.uri = new URI(connectionString);
+        } catch (URISyntaxException e) {
+            throw new PlcConnectionException("Unable to parse connection string '" + connectionString + "'", e);
+        }
+        if (!protocolCode.equals(uri.getScheme())) {
+            throw new PlcConnectionException("The given Connection String does not match the expected Protocol '" + protocolCode + "'");
+        }
+    }
+
+    public SocketAddress getSocketAddress() {
+        return this.getSocketAddress(-1);
+    }
+
+    /**
+     * Convenvience Method, as its sometimes allowed to omit port in the URI String, as its
+     * default for some protocols.
+     * Of course only makes sense for TCP based Protocols
+     *
+     * @param defaultPort Default Port
+     * @return Valid InetSocketAddress
+     */
+    public SocketAddress getSocketAddress(int defaultPort) {
+        try {
+            String hostString = uri.getHost();
+            int port = uri.getPort();
+            if (port == -1) {
+                if (defaultPort == -1) {
+                    throw new PlcRuntimeException("No port given in URI String and no default Port given!");
+                } else {
+                    port = defaultPort;
+                }
+            }
+            return new InetSocketAddress(InetAddress.getByName(hostString), port);
+        } catch (UnknownHostException e) {
+            throw new PlcRuntimeException("Unable to resolve Host in connection  string '" + connectionString + "'", e);
+        }
+    }
+
     // TODO Respect Path Params
-    public static <T> T parse(String string, Class<T> pClazz) {
+    public <T> T createConfiguration(Class<T> pClazz) {
         Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(pClazz))
             .filter(field -> field.getAnnotation(ConfigurationParameter.class) != null)
             .collect(Collectors.toMap(Field::getName, Function.identity()));
@@ -50,11 +106,10 @@ public class ConnectionParser {
         try {
             instance = pClazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException();
+            throw new IllegalArgumentException("Unable to Instantiate Configuration Class", e);
         }
         try {
-            URI url = new URI(string);
-            Map<String, List<String>> stringListMap = splitQuery(url);
+            Map<String, List<String>> stringListMap = splitQuery(uri);
 
             // TODO notify on unmatched parameters
 
@@ -98,8 +153,8 @@ public class ConnectionParser {
             if (missingFields.size() > 0) {
                 throw new IllegalArgumentException("Missing required fields: " + missingFields);
             }
-        } catch (URISyntaxException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("Unable to access all fields from Configuration Class '" + pClazz.getSimpleName() + "'", e);
         }
         return instance;
     }

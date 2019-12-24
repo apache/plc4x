@@ -19,14 +19,13 @@ under the License.
 package org.apache.plc4x.java.knxnetip;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
-import org.apache.plc4x.java.ets5.passive.*;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddress2Level;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddress3Level;
+import org.apache.plc4x.java.ets5.passive.KNXGroupAddressFreeLevel;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.readwrite.*;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +49,11 @@ public class ManualKnxNetIpWithEts5 {
     }
 
     private void start() throws PlcConnectionException {
+        /*
         ChannelFactory channelFactory = new UdpSocketChannelFactory(
             gatewayInetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
 
-        NettyPlcConnection connection = new KnxNetIpConnection(channelFactory, ""/*,
+        NettyPlcConnection connection = new KnxNetIpConnection(channelFactory, "",
             new PlcMessageToMessageCodec<KNXNetIPMessage, PlcRequestContainer>() {
                 @Override
                 protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws Exception {
@@ -121,7 +121,8 @@ public class ManualKnxNetIpWithEts5 {
             } catch (PlcConnectionException e) {
                 // Just ignore this.
             }
-        })*/);
+        }));
+        */
     }
 
     protected static String toString(KNXAddress knxAddress) {
