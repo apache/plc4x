@@ -23,6 +23,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
@@ -30,95 +31,47 @@ import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-public class TcpSocketChannelFactory implements ChannelFactory {
+public class TcpSocketChannelFactory extends NettyChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpSocketChannelFactory.class);
 
-    private static final int PING_TIMEOUT_MS = 1_000;
-
-    private final InetAddress address;
-    private final int port;
+    /**
+     * Only there for retrofit
+     */
+    @Deprecated
+    public TcpSocketChannelFactory(SocketAddress address) {
+        super(address);
+    }
 
     /**
-     * @deprecated the next-gen drivers should use the {@link #TcpSocketChannelFactory(SocketAddress)}
-     * constructor.
+     * Only there for retrofit
      */
     @Deprecated
     public TcpSocketChannelFactory(InetAddress address, int port) {
-        this.address = address;
-        this.port = port;
+        this(new InetSocketAddress(address, port));
     }
 
-    public TcpSocketChannelFactory(SocketAddress address) {
-        assert address instanceof InetSocketAddress;
-        this.address = ((InetSocketAddress) address).getAddress();
-        this.port = ((InetSocketAddress) address).getPort();
+
+    @Override public Class<? extends Channel> getChannel() {
+        return NioSocketChannel.class;
     }
 
-    @Override
-    public Channel createChannel(ChannelHandler channelHandler)
-        throws PlcConnectionException {
-        try {
-            final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
-
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            // TODO we should use an explicit (configurable?) timeout here
-            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
-            bootstrap.handler(channelHandler);
-            // Start the client.
-            final ChannelFuture f = bootstrap.connect(address, port);
-            f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (!future.isSuccess()) {
-                        logger.info("Unable to connect, shutting down worker thread.");
-                        workerGroup.shutdownGracefully();
-                    }
-                }
-            });
-            // Wait for sync
-            f.sync();
-            f.awaitUninterruptibly(); // jf: unsure if we need that
-            // Wait till the session is finished initializing.
-            return f.channel();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException("Error creating channel.", e);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error creating channel.", e);
-        }
-    }
-
-    @Override
-    public void ping() throws PlcException {
-        // TODO: Replace this check with a more accurate one ...
-        InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
-        try (Socket s = new Socket()) {
-            s.connect(address, PING_TIMEOUT_MS);
-            // TODO keep the address for a (timely) next request???
-            s.setReuseAddress(true);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Unable to ping remote host");
-        }
-    }
-
-    public InetAddress getAddress() {
-        return address;
-    }
-
-    public int getPort() {
-        return port;
+    @Override public void configureBootstrap(Bootstrap bootstrap) {
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.option(ChannelOption.TCP_NODELAY, true);
+        // TODO we should use an explicit (configurable?) timeout here
+        // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
     }
 
 }

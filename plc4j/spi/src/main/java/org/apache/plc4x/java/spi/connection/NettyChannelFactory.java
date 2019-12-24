@@ -36,14 +36,38 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketAddress;
 
 /**
  * Adapter with sensible defaults for a Netty Based Channel Factory.
+ * <p>
+ * By Default Nettys {@link NioEventLoopGroup} is used.
+ * Transports which have to use a different EventLoopGroup have to override {@link #getEventLoopGroup()}.
  */
 public abstract class NettyChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
+    private static final int PING_TIMEOUT_MS = 1_000;
+
+    /**
+     * TODO should be removed together with the Construcotr.
+     */
+    private SocketAddress address;
+
+    /**
+     * @Deprecated Only there for Retrofit
+     */
+    @Deprecated
+    public NettyChannelFactory(SocketAddress address) {
+        this.address = address;
+    }
+
+    public NettyChannelFactory() {
+        // Default Constructor to Use
+    }
 
     /**
      * Channel to Use, e.g. NiO, EiO
@@ -51,23 +75,51 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     public abstract Class<? extends Channel> getChannel();
 
     /**
+     * This Method is used to modify the Bootstrap Element of Netty, if one wishes to do so.
+     * E.g. for Protocol Specific extension.
+     * For TCP e.g.
+     * <code>
+     * bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+     * bootstrap.option(ChannelOption.TCP_NODELAY, true);
+     * </code>
+     */
+    public abstract void configureBootstrap(Bootstrap bootstrap);
+
+    /**
      * Event Loop Group to use.
      * Has to be in accordance with {@link #getChannel()}
      * otherwise a Runtime Exception will be produced by Netty
+     * <p>
+     * By Default Nettys {@link NioEventLoopGroup} is used.
+     * Transports which have to use a different EventLoopGroup have to override {@link #getEventLoopGroup()}.
      */
-    public abstract EventLoopGroup getEventLoopGroup();
+    public EventLoopGroup getEventLoopGroup() {
+        return new NioEventLoopGroup();
+    }
+
+    /**
+     * @Deprecated use {@link #createChannel(SocketAddress, ChannelHandler)} instead.
+     */
+    @Deprecated
+    @Override public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
+        if (this.address == null) {
+            throw new IllegalStateException("This Method should only be used with the constructor which takes an Address");
+        }
+        return this.createChannel(address, channelHandler);
+    }
 
     @Override public Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
+        if (this.address == null) {
+            this.address = socketAddress;
+        }
         try {
             final EventLoopGroup workerGroup = getEventLoopGroup();
 
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
             bootstrap.channel(getChannel());
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            // TODO we should use an explicit (configurable?) timeout here
-            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
+            // Callback to allow subclasses to modify the Bootstrap
+            configureBootstrap(bootstrap);
             bootstrap.handler(channelHandler);
             // Start the client.
             final ChannelFuture f = bootstrap.connect(socketAddress);
@@ -92,7 +144,27 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         }
     }
 
-    @Override public void ping() throws PlcException {
+    @Deprecated
+    public InetAddress getAddress() {
+        return ((InetSocketAddress) this.address).getAddress();
+    }
 
+    @Deprecated
+    public int getPort() {
+        return ((InetSocketAddress) this.address).getPort();
+    }
+
+    // TODO do we want to keep this like that?
+    @Override
+    public void ping() throws PlcException {
+        // TODO: Replace this check with a more accurate one ...
+        InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
+        try (Socket s = new Socket()) {
+            s.connect(address, PING_TIMEOUT_MS);
+            // TODO keep the address for a (timely) next request???
+            s.setReuseAddress(true);
+        } catch (Exception e) {
+            throw new PlcConnectionException("Unable to ping remote host");
+        }
     }
 }
