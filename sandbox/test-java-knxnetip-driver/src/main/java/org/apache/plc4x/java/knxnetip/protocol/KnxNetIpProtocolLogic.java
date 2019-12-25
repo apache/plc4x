@@ -29,6 +29,7 @@ import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.readwrite.types.HostProtocolCode;
@@ -43,7 +44,7 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.*;
 
-public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> {
+public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements HasConfiguration<KnxNetIpConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocolLogic.class);
 
@@ -58,10 +59,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> {
     private byte groupAddressType;
     private Ets5Model ets5Model;
 
-    public KnxNetIpProtocolLogic(KnxNetIpConfiguration configuration) {
-        if(configuration.knxprojFilePath != null) {
+    @Override public void setConfiguration(KnxNetIpConfiguration configuration) {
+        if (configuration.knxprojFilePath != null) {
             File knxprojFile = new File(configuration.knxprojFilePath);
-            if(knxprojFile.exists() && knxprojFile.isFile()) {
+            if (knxprojFile.exists() && knxprojFile.isFile()) {
                 ets5Model = new Ets5Parser().parse(knxprojFile);
                 groupAddressType = ets5Model.getGroupAddressType();
             } else {
@@ -263,5 +264,4 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> {
         }
         throw new RuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
     }
-
 }
