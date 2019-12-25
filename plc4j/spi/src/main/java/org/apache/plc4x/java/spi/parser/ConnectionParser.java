@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,18 @@ public class ConnectionParser {
         } catch (UnknownHostException e) {
             throw new PlcRuntimeException("Unable to resolve Host in connection  string '" + connectionString + "'", e);
         }
+    }
+
+    /**
+     * Returns all Properties as Properties Object
+     * All Keys are translated to Upper Case
+     */
+    public Properties getProperties() {
+        Properties properties = new Properties();
+        splitQuery(uri).entrySet()
+            .forEach(entry -> properties.setProperty(entry.getKey().toUpperCase(), entry.getValue().get(0)));
+
+        return properties;
     }
 
     // TODO Respect Path Params

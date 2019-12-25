@@ -40,7 +40,7 @@ public class BacNetIpProtocol extends GeneratedDriverByteToMessageCodec<BVLC> {
             public void serialize(WriteBuffer io, BVLC value) throws ParseException {
                 BVLCIO.serialize(io, value);
             }
-        });
+        }, BVLC.class);
     }
 
     @Override

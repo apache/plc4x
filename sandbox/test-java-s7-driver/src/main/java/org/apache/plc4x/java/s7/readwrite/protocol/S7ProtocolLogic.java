@@ -63,6 +63,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
+    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
     private int callingTsapId;
     private int calledTsapId;
@@ -94,12 +95,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(calledTsapId, callingTsapId, cotpTpduSize));
 
         context.sendRequest(packet)
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
                 context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
-                    .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
@@ -121,7 +122,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         // Prepare a message to request the remote to identify itself.
                         TPKTPacket tpktPacket = createIdentifyRemoteMessage();
                         context.sendRequest(tpktPacket)
-                            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
                             .check(p -> p.getPayload() instanceof COTPPacketData)
                             .unwrap(p -> ((COTPPacketData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7MessageUserData)
@@ -151,7 +152,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             true, (short) tpduId));
 
         context.sendRequest(tpktPacket)
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
@@ -190,7 +191,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             true, (short) tpduId));
 
         context.sendRequest(tpktPacket)
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)

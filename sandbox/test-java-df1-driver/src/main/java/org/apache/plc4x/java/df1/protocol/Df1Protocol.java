@@ -21,8 +21,8 @@ package org.apache.plc4x.java.df1.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.spi.PlcByteToMessageCodec;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
+public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     private static final Logger logger = LoggerFactory.getLogger(Df1Protocol.class);
 

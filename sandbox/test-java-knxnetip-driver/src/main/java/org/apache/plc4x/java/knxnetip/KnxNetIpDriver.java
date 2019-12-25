@@ -18,22 +18,21 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConfiguration;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.knxnetip.connection.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolMessage;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
-import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
-import org.apache.plc4x.java.spi.parser.ConnectionParser;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
-import java.net.*;
+import java.util.function.Function;
 
-public class KnxNetIpDriver implements PlcDriver {
+public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpConfiguration, KNXNetIPMessage> {
 
     public static final int KNXNET_IP_PORT = 3671;
 
@@ -47,23 +46,37 @@ public class KnxNetIpDriver implements PlcDriver {
         return "KNXNet/IP";
     }
 
-    @Override
-    public PlcConnection connect(String connectionString) throws PlcConnectionException {
-        ConnectionParser parser = new ConnectionParser(getProtocolCode(), connectionString);
-        KnxNetIpConfiguration configuration = parser.createConfiguration(KnxNetIpConfiguration.class);
-        SocketAddress address = parser.getSocketAddress(KNXNET_IP_PORT);
-        return new DefaultNettyPlcConnection<>(new UdpSocketChannelFactory(address), true, new KnxNetIpFieldHandler(),
-            KNXNetIPMessage.class,
-            new KnxNetIpProtocolMessage(),
-            new KnxNetIpProtocolLogic(
-                configuration
-            )
-        );
+    @Override protected int getDefaultPortIPv4() {
+        return KNXNET_IP_PORT;
     }
 
-    @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("KNXNet/IP connections don't support authentication.");
+    @Override protected Class<KnxNetIpConfiguration> getConfigurationClass() {
+        return KnxNetIpConfiguration.class;
     }
 
+    @Override protected PlcFieldHandler getFieldHandler() {
+        return new KnxNetIpFieldHandler();
+    }
+
+    @Override protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
+        return UdpSocketChannelFactory.class;
+    }
+
+    @Override protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer(KnxNetIpConfiguration knxNetIpConfiguration) {
+        return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class)
+            .withProtocol(new KnxNetIpProtocolLogic(knxNetIpConfiguration))
+            .withPacketSizeEstimator((new PacketSizeEstimator()))
+            .build();
+    }
+
+    private static class PacketSizeEstimator implements Function<ByteBuf, Integer> {
+
+        @Override public Integer apply(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 6) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
+            }
+            return -1;
+        }
+
+    }
 }

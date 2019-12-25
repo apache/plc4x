@@ -18,24 +18,23 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite;
 
-import org.apache.plc4x.java.api.PlcConnection;
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
-import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolMessage;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcFieldHandler;
-import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
-import org.apache.plc4x.java.spi.parser.ConnectionParser;
+import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.osgi.service.component.annotations.Component;
 
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Component(service = PlcDriver.class, immediate = true)
-public class S7Driver implements PlcDriver {
+public class S7Driver extends GeneratedDriverBase<S7Configuration, TPKTPacket> {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
@@ -49,23 +48,49 @@ public class S7Driver implements PlcDriver {
         return "Siemens S7 (Basic)";
     }
 
-    @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        ConnectionParser parser = new ConnectionParser(getProtocolCode(), url);
-        S7Configuration configuration = parser.createConfiguration(S7Configuration.class);
-        SocketAddress address = parser.getSocketAddress(ISO_ON_TCP_PORT);
-        return new DefaultNettyPlcConnection<>(new TcpSocketChannelFactory(address), true, new S7PlcFieldHandler(),
-            TPKTPacket.class,
-            new S7ProtocolMessage(),
-            new S7ProtocolLogic(
-                configuration
-            )
-        );
+    @Override protected int getDefaultPortIPv4() {
+        return ISO_ON_TCP_PORT;
     }
 
-    @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Basic S7 connections don't support authentication (NG).");
+    @Override protected Class<S7Configuration> getConfigurationClass() {
+        return S7Configuration.class;
     }
 
+    @Override protected S7PlcFieldHandler getFieldHandler() {
+        return new S7PlcFieldHandler();
+    }
+
+    @Override protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
+        return TcpSocketChannelFactory.class;
+    }
+
+    @Override protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer(S7Configuration configuration) {
+        return SingleProtocolStackConfigurer.builder(TPKTPacket.class)
+            .withProtocol(new S7ProtocolLogic(configuration))
+            .withPacketSizeEstimator(new ByteLengthEstimator())
+            .withCorruptPacketRemover(new CorruptPackageCleaner())
+            .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements Function<ByteBuf, Integer> {
+
+        @Override public Integer apply(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 4) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
+            }
+            return -1;
+        }
+    }
+
+    /** Consumes all Bytes till another Magic Byte is found */
+    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
+
+        @Override public void accept(ByteBuf byteBuf) {
+            while (byteBuf.getUnsignedByte(0) != TPKTPacket.PROTOCOLID) {
+                // Just consume the bytes till the next possible start position.
+                byteBuf.readByte();
+            }
+        }
+    }
 }

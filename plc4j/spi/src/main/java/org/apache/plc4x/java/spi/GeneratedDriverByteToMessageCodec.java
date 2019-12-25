@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
@@ -30,13 +31,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public abstract class GeneratedDriverByteToMessageCodec<T extends Message> extends PlcByteToMessageCodec<T> {
+public abstract class GeneratedDriverByteToMessageCodec<T extends Message> extends ByteToMessageCodec<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
     private MessageIO<T, T> io;
 
-    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io) {
+    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz) {
+        super(clazz);
         this.io = io;
     }
 

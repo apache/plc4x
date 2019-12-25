@@ -40,6 +40,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Properties;
 
 /**
  * Adapter with sensible defaults for a Netty Based Channel Factory.
@@ -56,6 +57,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * TODO should be removed together with the Construcotr.
      */
     private SocketAddress address;
+    private Properties properties;
 
     /**
      * @Deprecated Only there for Retrofit
@@ -166,5 +168,29 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         } catch (Exception e) {
             throw new PlcConnectionException("Unable to ping remote host");
         }
+    }
+
+    public Properties getProperties() {
+        // Null Safety for older implementations
+        if (properties == null) {
+            return new Properties();
+        }
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+
+    protected String getProperty(String key) {
+        return ((String) getProperties().get(key));
+    }
+
+    protected boolean hasProperty(String key) {
+        return getProperties().contains(key);
+    }
+
+    protected String getPropertyOrDefault(String key, String defaultValue) {
+        return getProperties().getProperty(key, defaultValue);
     }
 }

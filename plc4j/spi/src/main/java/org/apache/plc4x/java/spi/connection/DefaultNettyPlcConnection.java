@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -54,9 +55,8 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
     protected final boolean awaitSessionSetupComplete;
     protected Channel channel;
     protected boolean connected;
-    private Class<BASE_PROTOCOL_CLASS> baseProtocolClass;
-    private GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec;
-    private Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic;
+    private SocketAddress address;
+    private ProtocolStackConfigurer stackConfigurer;
 
     protected DefaultNettyPlcConnection(ChannelFactory channelFactory) {
         this(channelFactory, false);
@@ -75,14 +75,11 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         this.connected = false;
     }
 
-    public DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
-                                     Class<BASE_PROTOCOL_CLASS> baseProtocolClass,
-                                     GeneratedDriverByteToMessageCodec<BASE_PROTOCOL_CLASS> messageCodec,
-                                     Plc4xProtocolBase<BASE_PROTOCOL_CLASS> protocolLogic) {
+    public DefaultNettyPlcConnection(SocketAddress address, ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
+                                     ProtocolStackConfigurer stackConfigurer) {
         this(channelFactory, awaitSessionSetupComplete, handler);
-        this.baseProtocolClass = baseProtocolClass;
-        this.messageCodec = messageCodec;
-        this.protocolLogic = protocolLogic;
+        this.address = address;
+        this.stackConfigurer = stackConfigurer;
     }
 
 
@@ -95,7 +92,10 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
 
             // Have the channel factory create a new channel instance.
-            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
+            if (address == null) {
+                throw new IllegalStateException("No Address is known, please check driver implementation!");
+            }
+            channel = channelFactory.createChannel(address, getChannelHandler(sessionSetupCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
@@ -155,8 +155,8 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
     }
 
     public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        if (messageCodec == null || protocolLogic == null || baseProtocolClass == null) {
-            throw new IllegalStateException("Codec Classes have to be set!");
+        if (stackConfigurer == null) {
+            throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
         return new ChannelInitializer<Channel>() {
             @Override
@@ -173,11 +173,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
                         }
                     }
                 });
-                pipeline.addLast(messageCodec);
-                Plc4xProtocolBase<BASE_PROTOCOL_CLASS> plc4xS7Protocol = protocolLogic;
-                setProtocol(plc4xS7Protocol);
-                Plc4xNettyWrapper<BASE_PROTOCOL_CLASS> context = new Plc4xNettyWrapper<>(pipeline, plc4xS7Protocol, baseProtocolClass);
-                pipeline.addLast(context);
+                setProtocol(stackConfigurer.apply(pipeline));
             }
         };
     }

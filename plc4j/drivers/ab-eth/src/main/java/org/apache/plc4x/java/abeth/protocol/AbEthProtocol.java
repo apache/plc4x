@@ -44,7 +44,7 @@ public class AbEthProtocol extends GeneratedDriverByteToMessageCodec<CIPEncapsul
             public void serialize(WriteBuffer io, CIPEncapsulationPacket value) throws ParseException {
                 CIPEncapsulationPacketIO.serialize(io, value);
             }
-        });
+        }, CIPEncapsulationPacket.class);
         logger.trace("Created new AB-ETH protocol");
     }
 

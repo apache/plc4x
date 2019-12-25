@@ -19,9 +19,9 @@ under the License.
 package org.apache.plc4x.java.passive.knxnetip.protocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.knxnetip.passive.KNXNetIPMessage;
 import org.apache.plc4x.java.knxnetip.passive.io.KNXNetIPMessageIO;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -40,7 +40,7 @@ public class KnxNetIpProtocolMessage extends GeneratedDriverByteToMessageCodec<K
             public void serialize(WriteBuffer io, KNXNetIPMessage value) throws ParseException {
                 // Ignore.
             }
-        });
+        }, KNXNetIPMessage.class);
     }
 
     @Override
