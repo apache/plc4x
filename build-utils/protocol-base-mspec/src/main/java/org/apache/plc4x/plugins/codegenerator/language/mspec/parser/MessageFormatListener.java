@@ -23,15 +23,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultDiscriminatedComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultEnumValue;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultSimpleTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
@@ -41,7 +35,6 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.Field;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
-import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
@@ -96,6 +89,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             parserArguments = getParserArguments(ctx.params.argument());
         }
 
+        // Handle enum types.
         if (ctx.enumValues != null) {
             TypeReference type = getTypeReference(ctx.type);
             EnumValue[] enumValues = getEnumValues();
@@ -103,7 +97,28 @@ public class MessageFormatListener extends MSpecBaseListener {
                 parserArguments, null);
             types.put(typeName, enumType);
             enumContexts.pop();
-        } else {
+        }
+
+        // Handle data-io types.
+        else if (ctx.dataIoTypeSwitch != null) {
+            SwitchField switchField = getSwitchField();
+            DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(
+                typeName, parserArguments, null, switchField);
+            types.put(typeName, type);
+
+            // Set the parent type for all sub-types.
+            if (switchField != null) {
+                for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
+                    if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                        ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+                    }
+                }
+            }
+            parserContexts.pop();
+        }
+
+        // Handle all other types.
+        else {
             // If the type has sub-types it's an abstract type.
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
@@ -318,9 +333,18 @@ public class MessageFormatListener extends MSpecBaseListener {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
         // Add all the arguments from the parent type.
-        if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
-            parserArguments.addAll(Arrays.asList(getParserArguments(
-                ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
+        if(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext) {
+            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
+                parserArguments.addAll(Arrays.asList(getParserArguments(
+                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
+            }
+        }
+        // For dataIo there is one level less to navigate.
+        else {
+            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
+                parserArguments.addAll(Arrays.asList(getParserArguments(
+                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
+            }
         }
         // Add all eventually existing local arguments.
         if (ctx.argumentList() != null) {
@@ -403,6 +427,12 @@ public class MessageFormatListener extends MSpecBaseListener {
     private SimpleTypeReference getSimpleTypeReference(MSpecParser.DataTypeContext ctx) {
         SimpleTypeReference.SimpleBaseType simpleBaseType =
             SimpleTypeReference.SimpleBaseType.valueOf(ctx.base.getText().toUpperCase());
+        // String types need an additional "encoding" field.
+        if ((ctx.size != null) && (ctx.encoding != null)) {
+            int size = Integer.parseInt(ctx.size.getText());
+            String encoding = ctx.encoding.getText();
+            return new DefaultStringTypeReference(simpleBaseType, size, encoding);
+        }
         // If a size it specified its a simple integer length based type.
         if (ctx.size != null) {
             int size = Integer.parseInt(ctx.size.getText());
@@ -413,6 +443,11 @@ public class MessageFormatListener extends MSpecBaseListener {
             int exponent = Integer.parseInt(ctx.exponent.getText());
             int mantissa = Integer.parseInt(ctx.mantissa.getText());
             return new DefaultFloatTypeReference(simpleBaseType, exponent, mantissa);
+        }
+        else if((simpleBaseType == SimpleTypeReference.SimpleBaseType.TIME) ||
+            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATE) ||
+            (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
+            return new DefaultTemporalTypeReference(simpleBaseType);
         }
         // In all other cases (bit) it's just assume it's length it 1.
         else {

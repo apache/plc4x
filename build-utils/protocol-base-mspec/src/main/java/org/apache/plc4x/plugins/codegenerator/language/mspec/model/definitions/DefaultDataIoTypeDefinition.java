@@ -16,7 +16,23 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.knxnetip.events;
+package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
-public class KnxGatewayFoundEvent {
+import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+
+public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
+
+    private final SwitchField switchField;
+
+    public DefaultDataIoTypeDefinition(String name, Argument[] parserArguments, String[] tags, SwitchField switchField) {
+        super(name, parserArguments, tags);
+        this.switchField = switchField;
+    }
+
+    public SwitchField getSwitchField() {
+        return switchField;
+    }
+
 }

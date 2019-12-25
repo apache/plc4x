@@ -30,11 +30,15 @@ complexType
  : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
-
 
 fieldDefinition
  : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ ;
+
+dataIoDefinition
+ : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 field
@@ -134,7 +138,7 @@ dataType
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
 /* For the following types the parsing/serialization has to be handled manually */
- | base='string'
+ | base='string' size=INTEGER_LITERAL encoding=idExpression
  | base='time'
  | base='date'
  | base='dateTime'

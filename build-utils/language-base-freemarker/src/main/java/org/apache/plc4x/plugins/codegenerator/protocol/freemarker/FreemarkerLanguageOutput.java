@@ -24,6 +24,7 @@ import freemarker.core.ParseException;
 import freemarker.template.*;
 import org.apache.plc4x.plugins.codegenerator.language.LanguageOutput;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.exceptions.GenerationException;
 import org.slf4j.Logger;
@@ -55,6 +56,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             List<Template> specTemplates = getSpecTemplates(freemarkerConfiguration);
             List<Template> complexTypesTemplateList = getComplexTypeTemplates(freemarkerConfiguration);
             List<Template> enumTypesTemplateList = getEnumTypeTemplates(freemarkerConfiguration);
+            List<Template> dataIoTemplateList = getDataIoTemplates(freemarkerConfiguration);
 
             // Generate output that's global for the entire mspec
             if(!specTemplates.isEmpty()) {
@@ -65,14 +67,17 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 typeContext.put("helper", getHelper(types));
 
                 for(Template template : specTemplates) {
-                    renderTemplate(outputDir, template, typeContext);
+                    try {
+                        renderTemplate(outputDir, template, typeContext);
+                    } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException |
+                            ParseException e) {
+                        throw new GenerationException("Error generating global protocol output.", e);
+                    }
                 }
             }
 
             // Iterate over the types and have content generated for each one
             for (Map.Entry<String, TypeDefinition> typeEntry : types.entrySet()) {
-                LOGGER.info(String.format("Generating type %s", typeEntry.getKey()));
-
                 // Prepare a new generation context
                 Map<String, Object> typeContext = new HashMap<>();
                 typeContext.put("languageName", languageName);
@@ -82,14 +87,32 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 typeContext.put("type", typeEntry.getValue());
                 typeContext.put("helper", getHelper(types));
 
-                List<Template> templateList = (typeEntry.getValue() instanceof EnumTypeDefinition) ?
-                    enumTypesTemplateList : complexTypesTemplateList;
+                // Depending on the type, get the corresponding list of templates.
+                List<Template> templateList;
+                if (typeEntry.getValue() instanceof EnumTypeDefinition) {
+                    templateList = enumTypesTemplateList;
+                } else if (typeEntry.getValue() instanceof DataIoTypeDefinition) {
+                    templateList = dataIoTemplateList;
+                } else {
+                    // Skip outputting the sub-types of io-types.
+                    if(typeEntry.getValue().getParentType() instanceof DataIoTypeDefinition) {
+                        continue;
+                    }
+                    templateList = complexTypesTemplateList;
+                }
+
+                // Generate the output for the given type.
+                LOGGER.info(String.format("Generating type %s", typeEntry.getKey()));
                 for(Template template : templateList) {
-                    renderTemplate(outputDir, template, typeContext);
+                    try {
+                        renderTemplate(outputDir, template, typeContext);
+                    } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException |
+                            ParseException e) {
+                        throw new GenerationException(
+                            "Error generating output for type '" + typeEntry.getKey() + "'", e);
+                    }
                 }
             }
-        } catch (TemplateNotFoundException | TemplateException | MalformedTemplateNameException | ParseException e) {
-            throw new GenerationException("Error resolving template", e);
         } catch (IOException e) {
             throw new GenerationException("Error generating sources", e);
         }
@@ -144,6 +167,8 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
     protected abstract List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
 
     protected abstract List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException;
+
+    protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
     protected abstract FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types);
 
