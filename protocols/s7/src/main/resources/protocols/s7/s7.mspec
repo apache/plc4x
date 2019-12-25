@@ -209,8 +209,10 @@
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
     [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
-        ['0xF0' S7PayloadSetupCommunication]
-        ['0x04','0x01' S7PayloadReadVarRequest]
+        ['0xF0' S7PayloadSetupCommunication
+        ]
+        ['0x04','0x01' S7PayloadReadVarRequest
+        ]
         ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
         ]
@@ -252,6 +254,112 @@
             [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
+        ]
+    ]
+]
+
+[dataIo 'DataItem' [uint 8 'dataProtocolId']
+    [typeSwitch 'dataProtocolId'
+        // -----------------------------------------
+        // Bit
+        // -----------------------------------------
+        ['01' Boolean
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+        ]
+
+        // -----------------------------------------
+        // Bit-strings
+        // -----------------------------------------
+        // 1 byte
+        ['11' List
+            [array bit 'value' count '8']
+        ]
+        // 2 byte (16 bit)
+        ['12' List
+            [array bit 'value' count '16']
+        ]
+        // 4 byte (32 bit)
+        ['13' List
+            [array bit 'value' count '32']
+        ]
+        // 8 byte (64 bit)
+        ['14' List
+            [array bit 'value' count '64']
+        ]
+
+        // -----------------------------------------
+        // Integers
+        // -----------------------------------------
+        // 8 bit:
+        ['21' Integer
+            [simple int 8 'value']
+        ]
+        ['22' Integer
+            [simple uint 8 'value']
+        ]
+        // 16 bit:
+        ['23' Integer
+            [simple int 16 'value']
+        ]
+        ['24' Integer
+            [simple uint 16 'value']
+        ]
+        // 32 bit:
+        ['25' Integer
+            [simple int 32 'value']
+        ]
+        ['26' Long
+            [simple uint 32 'value']
+        ]
+        // 64 bit:
+        ['27' Long
+            [simple int 64 'value']
+        ]
+        ['28' BigInteger
+            [simple uint 64 'value']
+        ]
+
+        // -----------------------------------------
+        // Floating point values
+        // -----------------------------------------
+        ['31' Float
+            [simple float 8.23  'value']
+        ]
+        ['32' Double
+            [simple float 11.52 'value']
+        ]
+
+        // -----------------------------------------
+        // Characters & Strings
+        // -----------------------------------------
+        ['41' String
+        ]
+        ['42' String
+        ]
+        ['43' String
+        ]
+        ['44' String
+        ]
+
+        // -----------------------------------------
+        // TIA Date-Formats
+        // -----------------------------------------
+        ['51' Time
+            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTime", io, _value)' '4']
+        ]
+        // TODO: Check if this is really 8 bytes
+        ['52' Time
+            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaLTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaLTime", io, _value)' '8']
+        ]
+        ['53' Date
+            [manual date 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDate", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDate", io, _value)' '2']
+        ]
+        ['54' Time
+            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTimeOfDay", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTimeOfDay", io, _value)' '4']
+        ]
+        ['55' DateTime
+            [manual dateTime 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDateTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDateTime", io, _value)' '8']
         ]
     ]
 ]
@@ -319,7 +427,7 @@
     ['0x02' DATE_AND_TIME    ['X'              , '8'                 , 'null'                  , 'null'                               , '55']]
 ]
 
-[enum int 8 'MemoryArea'             [string 'shortName']
+[enum int 8 'MemoryArea'             [string 24 'utf8' 'shortName']
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
