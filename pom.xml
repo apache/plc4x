@@ -114,15 +114,16 @@
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
     <cmake-version>3.16.0</cmake-version>
+    <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
     <commons-configuration2.version>2.6</commons-configuration2.version>
     <commons-io.version>2.6</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <commons-lang3.version>3.7</commons-lang3.version>
+    <commons-lang3.version>3.9</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
-    <commons-math3.version>3.5</commons-math3.version>
-    <commons-pool2.version>2.6.0</commons-pool2.version>
+    <commons-math3.version>3.6.1</commons-math3.version>
+    <commons-pool2.version>2.8.0</commons-pool2.version>
     <commons-text.version>1.8</commons-text.version>
     <crc.version>1.0.1</crc.version>
     <elasticsearch.version>7.4.0</elasticsearch.version>
@@ -276,6 +277,11 @@
         <groupId>com.tdunning</groupId>
         <artifactId>t-digest</artifactId>
         <version>${t-digest.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>${commons-beanutils.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
