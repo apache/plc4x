@@ -257,4 +257,8 @@ public class ReadBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    public String readString(int bitLength, String encoding) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
 }

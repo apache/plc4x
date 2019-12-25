@@ -19,45 +19,112 @@
 
 package org.apache.plc4x.java.api.value;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public class PlcBoolean extends PlcSimpleValue<Boolean> {
 
-    PlcBoolean(Boolean value) {
+    public PlcBoolean(Boolean value) {
         super(value, true);
     }
 
-    PlcBoolean(boolean bool) {
+    public PlcBoolean(boolean bool) {
         super(bool, false);
     }
 
-    @Override public boolean isBoolean() {
+    @Override
+    public boolean isBoolean() {
         return true;
     }
 
-    @Override public boolean getBoolean() {
-        return value;
+    @Override
+    public boolean getBoolean() {
+        return (value != null) && value;
     }
 
-    @Override public double getDouble() {
-        return value ? 1.0 : 0.0;
+    @Override
+    public boolean isByte() {
+        return true;
     }
 
-    @Override public float getFloat() {
-        return value ? 1.0f : 0.0f;
+    @Override
+    public byte getByte() {
+        return (byte) (((value != null) && value) ? 1 : 0);
     }
 
-    @Override public long getLong() {
-        return value ? 1 : 0;
+    @Override
+    public boolean isShort() {
+        return true;
     }
 
-    @Override public int getInteger() {
-        return value ? 1 : 0;
+    @Override
+    public short getShort() {
+        return (short) (((value != null) && value) ? 1 : 0);
     }
 
-    @Override public String getString() {
-        return value ? "true" : "false";
+    @Override
+    public boolean isLong() {
+        return true;
     }
 
-    @Override public String toString() {
+    @Override
+    public long getLong() {
+        return ((value != null) && value) ? 1 : 0;
+    }
+
+    @Override
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        return value ? BigInteger.ONE : BigInteger.ZERO;
+    }
+
+    @Override
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    public float getFloat() {
+        return ((value != null) && value) ? 1.0f : 0.0f;
+    }
+
+    @Override
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    public double getDouble() {
+        return ((value != null) && value) ? 1.0 : 0.0;
+    }
+
+    @Override
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal() {
+        return value ? BigDecimal.ONE : BigDecimal.ZERO;
+    }
+
+    @Override
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    public String getString() {
+        return toString();
+    }
+
+    @Override
+    public String toString() {
         return Boolean.toString(value);
     }
+
 }

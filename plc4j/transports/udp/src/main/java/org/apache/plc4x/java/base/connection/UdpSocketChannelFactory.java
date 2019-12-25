@@ -26,16 +26,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 public class UdpSocketChannelFactory extends NettyChannelFactory {
-
-    private static final Logger logger = LoggerFactory.getLogger(UdpSocketChannelFactory.class);
 
     /**
      * @deprecated the next-gen drivers should use the {@link #UdpSocketChannelFactory(SocketAddress)}

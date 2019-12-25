@@ -23,15 +23,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.slf4j.Logger;
@@ -104,14 +97,16 @@ public abstract class NettyChannelFactory implements ChannelFactory {
      * @Deprecated use {@link #createChannel(SocketAddress, ChannelHandler)} instead.
      */
     @Deprecated
-    @Override public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
+    @Override
+    public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
         if (this.address == null) {
             throw new IllegalStateException("This Method should only be used with the constructor which takes an Address");
         }
         return this.createChannel(address, channelHandler);
     }
 
-    @Override public Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
+    @Override
+    public Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
         if (this.address == null) {
             this.address = socketAddress;
         }
@@ -126,12 +121,10 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             bootstrap.handler(channelHandler);
             // Start the client.
             final ChannelFuture f = bootstrap.connect(socketAddress);
-            f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (!future.isSuccess()) {
-                        logger.info("Unable to connect, shutting down worker thread.");
-                        workerGroup.shutdownGracefully();
-                    }
+            f.addListener(future -> {
+                if (!future.isSuccess()) {
+                    logger.info("Unable to connect, shutting down worker thread.");
+                    workerGroup.shutdownGracefully();
                 }
             });
             // Wait for sync
@@ -194,4 +187,5 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     protected String getPropertyOrDefault(String key, String defaultValue) {
         return getProperties().getProperty(key, defaultValue);
     }
+
 }

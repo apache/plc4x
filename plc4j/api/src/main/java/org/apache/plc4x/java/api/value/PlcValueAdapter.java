@@ -20,121 +20,223 @@ package org.apache.plc4x.java.api.value;
 
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class PlcValueAdapter implements PlcValue {
 
-    @Override public boolean isSimple() {
+    @Override
+    public boolean isSimple() {
         return false;
     }
 
-    @Override public boolean isNullable() {
+    @Override
+    public boolean isNullable() {
         return false;
     }
 
-    @Override public boolean isNull() {
+    @Override
+    public boolean isNull() {
         return false;
     }
 
-    @Override public boolean is(Class<?> clazz) {
+    @Override
+    public boolean is(Class<?> clazz) {
         return false;
     }
 
-    @Override public boolean isConvertibleTo(Class<?> clazz) {
+    @Override
+    public boolean isConvertibleTo(Class<?> clazz) {
         return false;
     }
 
-    @Override public <T> T get(Class<T> clazz) {
+    @Override
+    public <T> T get(Class<T> clazz) {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isBoolean() {
+    @Override
+    public boolean isBoolean() {
         return false;
     }
 
-    @Override public boolean getBoolean() {
+    @Override
+    public boolean getBoolean() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isDouble() {
+    public boolean isByte() {
         return false;
     }
 
-    @Override public double getDouble() {
+    @Override
+    public byte getByte() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isFloat() {
+    @Override
+    public boolean isShort() {
         return false;
     }
 
-    @Override public float getFloat() {
+    @Override
+    public short getShort() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isLong() {
+    @Override
+    public boolean isInteger() {
         return false;
     }
 
-    @Override public long getLong() {
+    @Override
+    public int getInteger() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isInteger() {
+    @Override
+    public boolean isLong() {
         return false;
     }
 
-    @Override public int getInteger() {
+    @Override
+    public long getLong() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean isString() {
+    @Override
+    public boolean isBigInteger() {
         return false;
     }
 
-    @Override public String getString() {
+    @Override
+    public BigInteger getBigInteger() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public byte[] getRaw() {
-        throw new PlcIncompatibleDatatypeException("");
-    }
-
-    @Override public boolean isList() {
+    @Override
+    public boolean isFloat() {
         return false;
     }
 
-    @Override public int length() {
+    @Override
+    public float getFloat() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public PlcValue getIndex(int i) {
-        throw new PlcIncompatibleDatatypeException("");
-    }
-
-    @Override public List<? extends PlcValue> getList() {
-        throw new PlcIncompatibleDatatypeException("");
-    }
-
-    @Override public boolean isStruct() {
+    @Override
+    public boolean isDouble() {
         return false;
     }
 
-    @Override public Set<String> getKeys() {
+    @Override
+    public double getDouble() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public boolean hasKey(String key) {
+    @Override
+    public boolean isBigDecimal() {
         return false;
     }
 
-    @Override public PlcValue getValue(String key) {
+    @Override
+    public BigDecimal getBigDecimal() {
         throw new PlcIncompatibleDatatypeException("");
     }
 
-    @Override public Map<String, ? extends PlcValue> getStruct() {
+    @Override
+    public boolean isString() {
+        return false;
+    }
+
+    @Override
+    public String getString() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean isTime() {
+        return false;
+    }
+
+    @Override
+    public LocalTime getTime() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean isDate() {
+        return false;
+    }
+
+    @Override
+    public LocalDate getDate() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean isDateTime() {
+        return false;
+    }
+
+    @Override
+    public LocalDateTime getDateTime() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public byte[] getRaw() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean isList() {
+        return false;
+    }
+
+    @Override
+    public int length() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public PlcValue getIndex(int i) {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public List<? extends PlcValue> getList() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean isStruct() {
+        return false;
+    }
+
+    @Override
+    public Set<String> getKeys() {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public boolean hasKey(String key) {
+        return false;
+    }
+
+    @Override
+    public PlcValue getValue(String key) {
+        throw new PlcIncompatibleDatatypeException("");
+    }
+
+    @Override
+    public Map<String, ? extends PlcValue> getStruct() {
         throw new PlcIncompatibleDatatypeException("");
     }
 

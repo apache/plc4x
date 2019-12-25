@@ -19,49 +19,59 @@
 
 package org.apache.plc4x.java.api.value;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class PlcList extends PlcValueAdapter {
+public class PlcDateTime extends PlcSimpleValue<LocalDateTime> {
 
-    private final List<PlcValue> listItems;
-
-    public PlcList(List<?> listItems) {
-        List<PlcValue> safelist = listItems.stream().<PlcValue>map(plcValue -> {
-            // to avoid unwrapped list cause of type erasure
-            if (plcValue instanceof PlcValue) {
-                return (PlcValue)plcValue;
-            } else {
-                return PlcValues.of(plcValue);
-            }
-        }).collect(Collectors.toList());
-        this.listItems = Collections.unmodifiableList(safelist);
+    public PlcDateTime(LocalDateTime value) {
+        super(value, true);
     }
 
     @Override
-    public boolean isList() {
+    public boolean isString() {
         return true;
     }
 
     @Override
-    public int length() {
-        return listItems.size();
+    public String getString() {
+        return value.toString();
     }
 
     @Override
-    public PlcValue getIndex(int i) {
-        return listItems.get(i);
+    public boolean isTime() {
+        return true;
     }
 
     @Override
-    public List<? extends PlcValue> getList() {
-        return listItems;
+    public LocalTime getTime() {
+        return value.toLocalTime();
+    }
+
+    @Override
+    public boolean isDate() {
+        return true;
+    }
+
+    @Override
+    public LocalDate getDate() {
+        return value.toLocalDate();
+    }
+
+    @Override
+    public boolean isDateTime() {
+        return true;
+    }
+
+    @Override
+    public LocalDateTime getDateTime() {
+        return value;
     }
 
     @Override
     public String toString() {
-        return "[" + listItems.stream().map(PlcValue::toString).collect(Collectors.joining(",")) + "]";
+        return String.valueOf(value);
     }
 
 }

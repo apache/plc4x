@@ -19,6 +19,13 @@
 
 package org.apache.plc4x.java.api.value;
 
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +34,43 @@ import java.util.Set;
  * Base Type of all Types.
  */
 public interface PlcValue {
+
+    static PlcValue of(Object value) {
+        if(value instanceof Boolean) {
+            return new PlcBoolean((Boolean) value);
+        }
+        if(value instanceof Integer) {
+            return new PlcInteger((Integer) value);
+        }
+        if(value instanceof Long) {
+            return new PlcLong((Long) value);
+        }
+        if(value instanceof BigInteger) {
+            return new PlcBigInteger((BigInteger) value);
+        }
+        if(value instanceof Float) {
+            return new PlcFloat((Float) value);
+        }
+        if(value instanceof Double) {
+            return new PlcDouble((Double) value);
+        }
+        if(value instanceof BigDecimal) {
+            return new PlcBigDecimal((BigDecimal) value);
+        }
+        if(value instanceof String) {
+            return new PlcString((String) value);
+        }
+        if(value instanceof LocalTime) {
+            return new PlcTime((LocalTime) value);
+        }
+        if(value instanceof LocalDate) {
+            return new PlcDate((LocalDate) value);
+        }
+        if(value instanceof LocalDateTime) {
+            return new PlcDateTime((LocalDateTime) value);
+        }
+        return null;
+    }
 
     // Simple Types
 
@@ -52,29 +96,59 @@ public interface PlcValue {
 
     // Integer
 
-    boolean isLong();
+    boolean isByte();
 
-    long getLong();
+    byte getByte();
+
+    boolean isShort();
+
+    short getShort();
 
     boolean isInteger();
 
     int getInteger();
 
+    boolean isLong();
+
+    long getLong();
+
+    boolean isBigInteger();
+
+    BigInteger getBigInteger();
+
     // Floating Point
+
+    boolean isFloat();
+
+    float getFloat();
 
     boolean isDouble();
 
     double getDouble();
 
-    boolean isFloat();
+    boolean isBigDecimal();
 
-    float getFloat();
+    BigDecimal getBigDecimal();
 
     // String
 
     boolean isString();
 
     String getString();
+
+    // Time
+
+    boolean isTime();
+
+    LocalTime getTime();
+
+    boolean isDate();
+
+    LocalDate getDate();
+
+    boolean isDateTime();
+
+    LocalDateTime getDateTime();
 
     // Raw Access
 

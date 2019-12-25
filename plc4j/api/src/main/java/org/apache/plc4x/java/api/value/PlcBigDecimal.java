@@ -22,14 +22,10 @@ package org.apache.plc4x.java.api.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class PlcInteger extends PlcSimpleValue<Integer> {
+public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
 
-    public PlcInteger(Integer value) {
+    public PlcBigDecimal(BigDecimal value) {
         super(value, true);
-    }
-
-    public PlcInteger(int value) {
-        super(value, false);
     }
 
     @Override
@@ -39,7 +35,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
 
     @Override
     public boolean getBoolean() {
-        return (value != null) && !value.equals(0);
+        return (value != null) && !value.equals(BigDecimal.ZERO);
     }
 
     @Override
@@ -69,7 +65,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
 
     @Override
     public int getInteger() {
-        return value;
+        return value.intValue();
     }
 
     @Override
@@ -89,7 +85,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
 
     @Override
     public BigInteger getBigInteger() {
-        return BigInteger.valueOf((long) value);
+        return BigInteger.valueOf(value.longValue());
     }
 
     @Override
@@ -119,7 +115,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
 
     @Override
     public BigDecimal getBigDecimal() {
-        return new BigDecimal(value);
+        return value;
     }
 
     @Override
@@ -134,7 +130,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
 
     @Override
     public String toString() {
-        return Integer.toString(value);
+        return value.toString();
     }
 
 }

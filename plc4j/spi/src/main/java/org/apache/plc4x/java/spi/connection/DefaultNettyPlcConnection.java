@@ -29,10 +29,7 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.spi.InstanceFactory;
-import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -197,4 +194,5 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new ConnectEvent());
     }
+
 }

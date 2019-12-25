@@ -205,4 +205,8 @@ public class WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    public void writeString(int bitLength, String encoding, String value) {
+        throw new UnsupportedOperationException("not implemented yet");
+    }
+
 }
