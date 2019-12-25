@@ -179,6 +179,9 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
                         }
                     }
                 });
+                // Initialize via Transport Layer
+                channelFactory.initializePipeline(pipeline);
+                // Initialize Protocol Layer
                 setProtocol(stackConfigurer.apply(factory, pipeline));
             }
         };

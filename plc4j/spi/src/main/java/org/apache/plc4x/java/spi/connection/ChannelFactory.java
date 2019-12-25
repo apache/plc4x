@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelPipeline;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -39,6 +40,11 @@ public interface ChannelFactory {
      */
     default Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
         throw new NotImplementedException("");
+    }
+
+    /** Possibility to add an initial Layer to the Pipeline */
+    default void initializePipeline(ChannelPipeline pipeline) {
+        // Intentionally do Nothing
     }
 
     void ping() throws PlcException;

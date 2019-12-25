@@ -20,9 +20,11 @@ package org.apache.plc4x.java.base.connection;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import org.apache.plc4x.java.base.connection.protocol.DatagramUnpackingHandler;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +55,18 @@ public class UdpSocketChannelFactory extends NettyChannelFactory {
         // Default to use
     }
 
-    @Override public Class<? extends Channel> getChannel() {
+    @Override
+    public Class<? extends Channel> getChannel() {
         return NioDatagramChannel.class;
     }
 
-    @Override public void configureBootstrap(Bootstrap bootstrap) {
+    @Override
+    public void configureBootstrap(Bootstrap bootstrap) {
         // Do Nothing here
     }
 
+    @Override
+    public void initializePipeline(ChannelPipeline pipeline) {
+        pipeline.addLast(new DatagramUnpackingHandler());
+    }
 }

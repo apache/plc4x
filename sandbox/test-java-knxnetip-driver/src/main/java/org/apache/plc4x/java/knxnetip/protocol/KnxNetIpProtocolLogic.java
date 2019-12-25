@@ -59,7 +59,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     private byte groupAddressType;
     private Ets5Model ets5Model;
 
-    @Override public void setConfiguration(KnxNetIpConfiguration configuration) {
+    @Override
+    public void setConfiguration(KnxNetIpConfiguration configuration) {
         if (configuration.knxprojFilePath != null) {
             File knxprojFile = new File(configuration.knxprojFilePath);
             if (knxprojFile.exists() && knxprojFile.isFile()) {
