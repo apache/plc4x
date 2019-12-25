@@ -65,7 +65,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
             .build();
     }
 
-    private static class PacketSizeEstimator implements Function<ByteBuf, Integer> {
+    public static class PacketSizeEstimator implements Function<ByteBuf, Integer> {
 
         @Override public Integer apply(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 6) {

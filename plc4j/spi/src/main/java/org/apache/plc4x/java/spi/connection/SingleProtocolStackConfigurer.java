@@ -57,8 +57,8 @@ public class SingleProtocolStackConfigurer<BASE_PAKET_CLASS extends Message> imp
     private ChannelHandler getMessageCodec(InstanceFactory instanceFactory) {
         ReflectionBasedIo<BASE_PAKET_CLASS> io = new ReflectionBasedIo<>(basePaketClass);
         return new GeneratedProtocolMessageCodec<>(basePaketClass, io, io,
-            instanceFactory.createInstance(packetSizeEstimator),
-            instanceFactory.createInstance(corruptPacketRemover));
+            packetSizeEstimator != null ? instanceFactory.createInstance(packetSizeEstimator) : null,
+            corruptPacketRemover != null ? instanceFactory.createInstance(corruptPacketRemover) : null);
     }
 
     /** Applies the given Stack to the Pipeline */
