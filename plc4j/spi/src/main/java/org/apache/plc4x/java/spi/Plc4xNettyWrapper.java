@@ -24,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
+import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
@@ -155,6 +156,9 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onConnect(new DefaultConversationContext<>(ctx));
         } else if (evt instanceof DisconnectEvent) {
             this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx));
+        }
+        if (evt instanceof CloseConnectionEvent) {
+            this.protocolBase.close(new DefaultConversationContext<>(ctx));
         } else {
             super.userEventTriggered(ctx, evt);
         }

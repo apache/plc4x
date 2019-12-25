@@ -33,6 +33,7 @@ import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.generation.Message;
@@ -140,6 +141,10 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
 
     @Override
     public void close() throws PlcConnectionException {
+        // TODO call protocols close method
+        channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
+        // Close channel
+        channel.close().awaitUninterruptibly();
         channel = null;
         connected = false;
     }

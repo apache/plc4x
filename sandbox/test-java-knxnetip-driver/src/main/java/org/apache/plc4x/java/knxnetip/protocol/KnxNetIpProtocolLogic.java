@@ -43,6 +43,7 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements HasConfiguration<KnxNetIpConfiguration> {
 
@@ -248,15 +249,20 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         }
     }
 
+    @Override
+    public void close(ConversationContext<KNXNetIPMessage> context) {
+        // TODO Implement Closing on Protocol Level
+    }
+
     protected static String toString(KNXAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
     }
 
     protected static String toString(KNXGroupAddress groupAddress) {
-        if(groupAddress instanceof KNXGroupAddress3Level) {
+        if (groupAddress instanceof KNXGroupAddress3Level) {
             KNXGroupAddress3Level level3 = (KNXGroupAddress3Level) groupAddress;
             return level3.getMainGroup() + "/" + level3.getMiddleGroup() + "/" + level3.getSubGroup();
-        } else if(groupAddress instanceof KNXGroupAddress2Level) {
+        } else if (groupAddress instanceof KNXGroupAddress2Level) {
             KNXGroupAddress2Level level2 = (KNXGroupAddress2Level) groupAddress;
             return level2.getMainGroup() + "/" + level2.getSubGroup();
         } else if(groupAddress instanceof KNXGroupAddressFreeLevel) {

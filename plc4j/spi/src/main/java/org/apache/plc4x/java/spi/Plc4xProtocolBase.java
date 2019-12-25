@@ -75,4 +75,6 @@ public abstract class Plc4xProtocolBase<T> {
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         throw new NotImplementedException("");
     }
+
+    public abstract void close(ConversationContext<T> context);
 }

@@ -211,6 +211,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return future;
     }
 
+    @Override
+    public void close(ConversationContext<TPKTPacket> context) {
+        // TODO Implement Closing on Protocl Level
+    }
+
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
         for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
             if (!(item instanceof S7PayloadUserDataItemCpuFunctionReadSzlResponse)) {
