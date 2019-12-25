@@ -19,12 +19,14 @@
 
 package org.apache.plc4x.java.spi.parser;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -109,11 +111,34 @@ public class ConnectionParser {
         return properties;
     }
 
+    private static Object getDefaultValueFromAnnotation(Field field) {
+        IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
+        if (intDefaultValue != null) {
+            return intDefaultValue.value();
+        }
+        BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
+        if (booleanDefaultValue != null) {
+            return booleanDefaultValue.value();
+        }
+        DoubleDefaultValue doubleDefaultValue = field.getAnnotation(DoubleDefaultValue.class);
+        if (doubleDefaultValue != null) {
+            return doubleDefaultValue.value();
+        }
+        StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
+        if (stringDefaultValue != null) {
+            return stringDefaultValue.value();
+        }
+        return null;
+    }
+
     // TODO Respect Path Params
     public <T> T createConfiguration(Class<T> pClazz) {
         Map<String, Field> fieldMap = Arrays.stream(FieldUtils.getAllFields(pClazz))
             .filter(field -> field.getAnnotation(ConfigurationParameter.class) != null)
-            .collect(Collectors.toMap(Field::getName, Function.identity()));
+            .collect(Collectors.toMap(
+                field -> getConfigurationName(field, field.getName()),
+                Function.identity()
+            ));
 
         T instance;
         try {
@@ -141,17 +166,18 @@ public class ConnectionParser {
                     iter.remove();
                 } else {
                     // TODO Implement other types
-                    IntDefaultValue intDefaultValue = fieldMap.get(entry.getKey()).getAnnotation(IntDefaultValue.class);
-                    if (intDefaultValue != null) {
-                        final Field field = fieldMap.get(entry.getKey());
-                        field.setAccessible(true);
-                        if (field.getType().isAssignableFrom(String.class)) {
-                            //field.set(instance, stringListMap.get(entry.getKey()).get(0));
-                        } else if (field.getType().isAssignableFrom(int.class)) {
-                            field.setInt(instance, intDefaultValue.value());
+                    // Check IntDefaultValue
+                    Object defaultValue = getDefaultValueFromAnnotation(fieldMap.get(entry.getKey()));
+                    if (defaultValue != null) {
+                        try {
+                            PropertyUtils.setSimpleProperty(instance, fieldMap.get(entry.getKey()).getName(), defaultValue);
+                        } catch (InvocationTargetException | NoSuchMethodException e) {
+                            throw new IllegalStateException(String.format("Unable to inject Configuration into field '%s' on Configuration %s", entry.getKey(), pClazz.getSimpleName()), e);
                         }
-                        iter.remove();
                     }
+                    iter.remove();
+                    continue;
+
                 }
             }
 
@@ -159,8 +185,7 @@ public class ConnectionParser {
             List<String> missingFields = fieldMap.entrySet().stream()
                 .filter(entry -> entry.getValue().getAnnotation(Required.class) != null)
                 .map(entry -> entry.getValue().getAnnotation(ConfigurationParameter.class) != null ?
-                    // In Memory of S. Ruehl
-                    (StringUtils.isBlank(entry.getValue().getAnnotation(ConfigurationParameter.class).value()) ? entry.getKey() : entry.getValue().getAnnotation(ConfigurationParameter.class).value()) : entry.getKey())
+                    (getConfigurationName(entry.getValue(), entry.getKey())) : entry.getKey())
                 .collect(toList());
 
             if (missingFields.size() > 0) {
@@ -170,6 +195,15 @@ public class ConnectionParser {
             throw new IllegalArgumentException("Unable to access all fields from Configuration Class '" + pClazz.getSimpleName() + "'", e);
         }
         return instance;
+    }
+
+    /** Extracts the Name from the configuration if given, uses given "name" otherwise */
+    private String getConfigurationName(Field field, String name) {
+        if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
+            return name;
+        } else {
+            return field.getAnnotation(ConfigurationParameter.class).value();
+        }
     }
 
     /**

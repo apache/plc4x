@@ -43,6 +43,7 @@ import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.s7data.readwrite.*;
 import org.apache.plc4x.java.s7data.readwrite.io.*;
 import org.apache.plc4x.java.spi.ConversationContext;
+import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.items.*;
@@ -60,7 +61,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
@@ -75,14 +76,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
-    public S7ProtocolLogic(S7Configuration configuration) {
+    @Override public void setConfiguration(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
         if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
         }
-        this.cotpTpduSize = getNearestMatchingTpduSize(configuration.pduSize);
+        this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
@@ -619,5 +620,4 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         return null;
     }
-
 }

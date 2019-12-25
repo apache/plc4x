@@ -34,8 +34,8 @@ class ConnectionParserTest {
         ConnectionParser parser = new ConnectionParser("s7", "s7://192.168.167.1?rackId=1");
         PropertiesDescriptor properties = parser.createConfiguration(PropertiesDescriptor.class);
 
-        assertEquals(1, properties.rackId);
-        assertEquals(1, properties.slotId);
+        assertEquals(1, properties.getRackId());
+        assertEquals(1, properties.getSlotId());
     }
 
     @Test
@@ -46,7 +46,7 @@ class ConnectionParserTest {
         assertEquals(new InetSocketAddress("192.168.167.1", 102), inetSocketAddress);
     }
 
-    static class PropertiesDescriptor {
+    public static class PropertiesDescriptor {
 
         @ConfigurationParameter("rackId")
         @IntDefaultValue(1)
@@ -57,5 +57,20 @@ class ConnectionParserTest {
         @Required
         private int slotId;
 
+        public int getRackId() {
+            return rackId;
+        }
+
+        public void setRackId(int rackId) {
+            this.rackId = rackId;
+        }
+
+        public int getSlotId() {
+            return slotId;
+        }
+
+        public void setSlotId(int slotId) {
+            this.slotId = slotId;
+        }
     }
 }

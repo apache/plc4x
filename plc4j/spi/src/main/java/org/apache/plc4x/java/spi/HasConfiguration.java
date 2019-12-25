@@ -17,24 +17,20 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.spi.connection;
+package org.apache.plc4x.java.spi;
 
-import io.netty.channel.ChannelPipeline;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.spi.InstanceFactory;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.generation.Message;
-
-public interface ProtocolStackConfigurer<T extends Message> {
-
-    /** Applies the given Stack to the Pipeline and returns the wired instance */
-    Plc4xProtocolBase<T> apply(InstanceFactory factory, ChannelPipeline pipeline);
+/**
+ * (Marker) Interface which can be used to tell PLC4X that a class (that is instantiated by PLC4X)
+ * has a Configuration.
+ * PLC4X will then try to Instantiate the Class and populate it based on Connection Parameters.
+ *
+ * @param <CONFIGURATION> Class of the Configuration
+ */
+public interface HasConfiguration<CONFIGURATION> {
 
     /**
-     * @deprecated New Drivers should use the {@link #apply(InstanceFactory, ChannelPipeline)} method.
+     * Is called directly after instantiation before the class is used somewhere.
      */
-    @Deprecated
-    default Plc4xProtocolBase<T> apply(ChannelPipeline pipeline) {
-        throw new NotImplementedException("");
-    }
+    void setConfiguration(CONFIGURATION configuration);
+
 }

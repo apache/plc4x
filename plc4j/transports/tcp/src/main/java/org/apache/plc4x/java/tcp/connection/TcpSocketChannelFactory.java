@@ -30,6 +30,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
@@ -42,13 +43,11 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-public class TcpSocketChannelFactory extends NettyChannelFactory {
+public class TcpSocketChannelFactory extends NettyChannelFactory implements HasConfiguration<TcpConfiguration> {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpSocketChannelFactory.class);
 
-    public static final String SO_KEEPALIVE = "SO_KEEPALIVE";
-    public static final String CONNECT_TIMEOUT_MILLIS = "CONNECT_TIMEOUT_MILLIS";
-    private static final String TCP_NODELAY = "TCP_NODELAY";
+    private TcpConfiguration configuration;
 
     public TcpSocketChannelFactory() {
         // Default Constructor
@@ -71,18 +70,22 @@ public class TcpSocketChannelFactory extends NettyChannelFactory {
     }
 
 
+    @Override public void setConfiguration(TcpConfiguration tcpConfiguration) {
+        configuration = tcpConfiguration;
+    }
+
     @Override public Class<? extends Channel> getChannel() {
         return NioSocketChannel.class;
     }
 
     @Override public void configureBootstrap(Bootstrap bootstrap) {
-        boolean keepalive = Boolean.parseBoolean(getPropertyOrDefault(SO_KEEPALIVE, "true"));
-        boolean nodelay = Boolean.parseBoolean(getPropertyOrDefault(TCP_NODELAY, "true"));
-        int connectTimeout = Integer.parseInt(getPropertyOrDefault(CONNECT_TIMEOUT_MILLIS, "1000"));
-        logger.info("Configuring Bootstrap with properties\n\t{} {}\n\t{} {}\n\t{} {}", SO_KEEPALIVE, keepalive, TCP_NODELAY, nodelay, CONNECT_TIMEOUT_MILLIS, connectTimeout);
-        bootstrap.option(ChannelOption.SO_KEEPALIVE, keepalive);
-        bootstrap.option(ChannelOption.TCP_NODELAY, nodelay);
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout);
+        if (configuration == null) {
+            this.configuration = new TcpConfiguration();
+        }
+        logger.info("Configuring Bootstrap with {}", configuration);
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, configuration.isKeepAlive());
+        bootstrap.option(ChannelOption.TCP_NODELAY, configuration.isNoDelay());
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, configuration.getConnectTimeout());
     }
 
 }

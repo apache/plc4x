@@ -22,6 +22,7 @@ package org.apache.plc4x.java.spi.connection;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.Message;
@@ -35,16 +36,16 @@ import java.util.function.Function;
 public class SingleProtocolStackConfigurer<BASE_PAKET_CLASS extends Message> implements ProtocolStackConfigurer<BASE_PAKET_CLASS> {
 
     private final Class<BASE_PAKET_CLASS> basePaketClass;
-    private final Plc4xProtocolBase<BASE_PAKET_CLASS> protocol;
-    private final Function<ByteBuf, Integer> packetSizeEstimator;
-    private final Consumer<ByteBuf> corruptPacketRemover;
+    private final Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocolClass;
+    private final Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
+    private final Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
     /** Only accessible via Builder */
-    SingleProtocolStackConfigurer(Class<BASE_PAKET_CLASS> basePaketClass, Plc4xProtocolBase<BASE_PAKET_CLASS> protocol,
-                                  Function<ByteBuf, Integer> packetSizeEstimator,
-                                  Consumer<ByteBuf> corruptPacketRemover) {
+    SingleProtocolStackConfigurer(Class<BASE_PAKET_CLASS> basePaketClass, Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol,
+                                  Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator,
+                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
         this.basePaketClass = basePaketClass;
-        this.protocol = protocol;
+        this.protocolClass = protocol;
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPacketRemover = corruptPacketRemover;
     }
@@ -53,14 +54,17 @@ public class SingleProtocolStackConfigurer<BASE_PAKET_CLASS extends Message> imp
         return new SingleProtocolStackBuilder<>(basePaketClass);
     }
 
-    private ChannelHandler getMessageCodec() {
+    private ChannelHandler getMessageCodec(InstanceFactory instanceFactory) {
         ReflectionBasedIo<BASE_PAKET_CLASS> io = new ReflectionBasedIo<>(basePaketClass);
-        return new GeneratedProtocolMessageCodec<>(basePaketClass, io, io, packetSizeEstimator, corruptPacketRemover);
+        return new GeneratedProtocolMessageCodec<>(basePaketClass, io, io,
+            instanceFactory.createInstance(packetSizeEstimator),
+            instanceFactory.createInstance(corruptPacketRemover));
     }
 
     /** Applies the given Stack to the Pipeline */
-    @Override public Plc4xProtocolBase<BASE_PAKET_CLASS> apply(ChannelPipeline pipeline) {
-        pipeline.addLast(getMessageCodec());
+    @Override public Plc4xProtocolBase<BASE_PAKET_CLASS> apply(InstanceFactory factory, ChannelPipeline pipeline) {
+        pipeline.addLast(getMessageCodec(factory));
+        Plc4xProtocolBase<BASE_PAKET_CLASS> protocol = factory.createInstance(protocolClass);
         Plc4xNettyWrapper<BASE_PAKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePaketClass);
         pipeline.addLast(context);
         return protocol;

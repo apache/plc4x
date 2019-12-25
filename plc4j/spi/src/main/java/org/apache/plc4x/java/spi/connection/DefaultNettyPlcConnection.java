@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
@@ -55,6 +56,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
     protected final boolean awaitSessionSetupComplete;
     protected Channel channel;
     protected boolean connected;
+    private InstanceFactory factory;
     private SocketAddress address;
     private ProtocolStackConfigurer stackConfigurer;
 
@@ -75,9 +77,10 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         this.connected = false;
     }
 
-    public DefaultNettyPlcConnection(SocketAddress address, ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
+    public DefaultNettyPlcConnection(InstanceFactory factory, SocketAddress address, ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
                                      ProtocolStackConfigurer stackConfigurer) {
         this(channelFactory, awaitSessionSetupComplete, handler);
+        this.factory = factory;
         this.address = address;
         this.stackConfigurer = stackConfigurer;
     }
@@ -158,6 +161,9 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
+        if (factory == null) {
+            throw new IllegalStateException("No Instance Factory is Present!");
+        }
         return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
@@ -173,7 +179,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
                         }
                     }
                 });
-                setProtocol(stackConfigurer.apply(pipeline));
+                setProtocol(stackConfigurer.apply(factory, pipeline));
             }
         };
     }

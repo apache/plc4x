@@ -17,24 +17,17 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.spi.connection;
+package org.apache.plc4x.java.spi.parser;
 
-import io.netty.channel.ChannelPipeline;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.spi.InstanceFactory;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.generation.Message;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface ProtocolStackConfigurer<T extends Message> {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DoubleDefaultValue {
 
-    /** Applies the given Stack to the Pipeline and returns the wired instance */
-    Plc4xProtocolBase<T> apply(InstanceFactory factory, ChannelPipeline pipeline);
+    double value();
 
-    /**
-     * @deprecated New Drivers should use the {@link #apply(InstanceFactory, ChannelPipeline)} method.
-     */
-    @Deprecated
-    default Plc4xProtocolBase<T> apply(ChannelPipeline pipeline) {
-        throw new NotImplementedException("");
-    }
 }

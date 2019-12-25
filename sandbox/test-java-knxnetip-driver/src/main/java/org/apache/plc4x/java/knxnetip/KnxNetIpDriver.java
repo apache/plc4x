@@ -32,7 +32,7 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
 import java.util.function.Function;
 
-public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpConfiguration, KNXNetIPMessage> {
+public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
 
     public static final int KNXNET_IP_PORT = 3671;
 
@@ -50,10 +50,6 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpConfiguration, K
         return KNXNET_IP_PORT;
     }
 
-    @Override protected Class<KnxNetIpConfiguration> getConfigurationClass() {
-        return KnxNetIpConfiguration.class;
-    }
-
     @Override protected PlcFieldHandler getFieldHandler() {
         return new KnxNetIpFieldHandler();
     }
@@ -62,10 +58,10 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpConfiguration, K
         return UdpSocketChannelFactory.class;
     }
 
-    @Override protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer(KnxNetIpConfiguration knxNetIpConfiguration) {
+    @Override protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class)
-            .withProtocol(new KnxNetIpProtocolLogic(knxNetIpConfiguration))
-            .withPacketSizeEstimator((new PacketSizeEstimator()))
+            .withProtocol(KnxNetIpProtocolLogic.class)
+            .withPacketSizeEstimator(PacketSizeEstimator.class)
             .build();
     }
 

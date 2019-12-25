@@ -23,44 +23,36 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.parser.ConnectionParser;
 
-public abstract class GeneratedDriverBase<CONFIGURATION, BASE_PACKET extends Message> implements PlcDriver {
+public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
     protected abstract int getDefaultPortIPv4();
-
-    protected abstract Class<CONFIGURATION> getConfigurationClass();
 
     protected abstract PlcFieldHandler getFieldHandler();
 
     protected abstract Class<? extends NettyChannelFactory> getTransportChannelFactory();
 
-    protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer(CONFIGURATION configuration);
+    protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer();
 
     @Override
     public PlcConnection connect(String url) throws PlcConnectionException {
         ConnectionParser parser = new ConnectionParser(getProtocolCode(), url);
-        CONFIGURATION configuration = parser.createConfiguration(getConfigurationClass());
+        InstanceFactory instanceFactory = new InstanceFactory(parser);
+        // CONFIGURATION configuration = parser.createConfiguration(getConfigurationClass());
 
         // Create Instance of Transport
-        NettyChannelFactory transport;
-        try {
-            transport = getTransportChannelFactory().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException("Cannot Instantiate Transport '"
-                + getTransportChannelFactory().getSimpleName()
-                + "'. Cannot access Default no Args Constructor.", e);
-        }
-        // Set all Properties
-        transport.setProperties(parser.getProperties());
+        NettyChannelFactory transport = instanceFactory.createInstance(getTransportChannelFactory());
 
         return new DefaultNettyPlcConnection<>(
+            instanceFactory,
             parser.getSocketAddress(getDefaultPortIPv4()),
             transport,
             true,
             getFieldHandler(),
-            getStackConfigurer(configuration));
+            getStackConfigurer());
     }
 
     @Override

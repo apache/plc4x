@@ -34,31 +34,31 @@ import java.util.function.Function;
 public final class SingleProtocolStackBuilder<BASE_PAKET_CLASS extends Message> {
 
     private Class<BASE_PAKET_CLASS> basePaketClass;
-    private Plc4xProtocolBase<BASE_PAKET_CLASS> protocol;
-    private Function<ByteBuf, Integer> packetSizeEstimator;
-    private Consumer<ByteBuf> corruptPacketRemover;
+    private Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol;
+    private Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
+    private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
     SingleProtocolStackBuilder(Class<BASE_PAKET_CLASS> basePaketClass) {
         this.basePaketClass = basePaketClass;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withProtocol(Plc4xProtocolBase<BASE_PAKET_CLASS> protocol) {
+    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withProtocol(Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol) {
         this.protocol = protocol;
         return this;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withPacketSizeEstimator(Function<ByteBuf, Integer> packetSizeEstimator) {
+    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withPacketSizeEstimator(Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator) {
         this.packetSizeEstimator = packetSizeEstimator;
         return this;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withCorruptPacketRemover(Consumer<ByteBuf> corruptPacketRemover) {
+    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withCorruptPacketRemover(Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
         this.corruptPacketRemover = corruptPacketRemover;
         return this;
     }
 
     public SingleProtocolStackConfigurer<BASE_PAKET_CLASS> build() {
         assert this.protocol != null;
-        return new SingleProtocolStackConfigurer<>(basePaketClass, protocol, packetSizeEstimator, corruptPacketRemover);
+        return new SingleProtocolStackConfigurer<BASE_PAKET_CLASS>(basePaketClass, protocol, packetSizeEstimator, corruptPacketRemover);
     }
 }

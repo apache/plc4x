@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcFieldHandler;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -34,7 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Component(service = PlcDriver.class, immediate = true)
-public class S7Driver extends GeneratedDriverBase<S7Configuration, TPKTPacket> {
+public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     private static final int ISO_ON_TCP_PORT = 102;
 
@@ -52,10 +53,6 @@ public class S7Driver extends GeneratedDriverBase<S7Configuration, TPKTPacket> {
         return ISO_ON_TCP_PORT;
     }
 
-    @Override protected Class<S7Configuration> getConfigurationClass() {
-        return S7Configuration.class;
-    }
-
     @Override protected S7PlcFieldHandler getFieldHandler() {
         return new S7PlcFieldHandler();
     }
@@ -64,11 +61,11 @@ public class S7Driver extends GeneratedDriverBase<S7Configuration, TPKTPacket> {
         return TcpSocketChannelFactory.class;
     }
 
-    @Override protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer(S7Configuration configuration) {
+    @Override protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(TPKTPacket.class)
-            .withProtocol(new S7ProtocolLogic(configuration))
-            .withPacketSizeEstimator(new ByteLengthEstimator())
-            .withCorruptPacketRemover(new CorruptPackageCleaner())
+            .withProtocol(S7ProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .build();
     }
 
