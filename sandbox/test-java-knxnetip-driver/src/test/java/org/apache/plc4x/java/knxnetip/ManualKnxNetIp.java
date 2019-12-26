@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class ManualKnxNetIp {
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxprojFilePath=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
+        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
         TimeUnit.SECONDS.sleep(300);
         connection.close();
     }

@@ -19,13 +19,9 @@ under the License.
 package org.apache.plc4x.java.knxnetip;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress2Level;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress3Level;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddressFreeLevel;
+import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

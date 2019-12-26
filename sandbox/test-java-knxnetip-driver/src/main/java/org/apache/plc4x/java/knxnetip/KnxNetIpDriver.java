@@ -20,8 +20,7 @@ package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConfiguration;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpFieldHandler;
+import org.apache.plc4x.java.knxnetip.model.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -46,19 +45,23 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
         return "KNXNet/IP";
     }
 
-    @Override protected int getDefaultPortIPv4() {
+    @Override
+    protected int getDefaultPortIPv4() {
         return KNXNET_IP_PORT;
     }
 
-    @Override protected PlcFieldHandler getFieldHandler() {
+    @Override
+    protected PlcFieldHandler getFieldHandler() {
         return new KnxNetIpFieldHandler();
     }
 
-    @Override protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
+    @Override
+    protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
         return UdpSocketChannelFactory.class;
     }
 
-    @Override protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
+    @Override
+    protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class)
             .withProtocol(KnxNetIpProtocolLogic.class)
             .withPacketSizeEstimator(PacketSizeEstimator.class)
@@ -66,13 +69,13 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     }
 
     public static class PacketSizeEstimator implements Function<ByteBuf, Integer> {
-
-        @Override public Integer apply(ByteBuf byteBuf) {
+        @Override
+        public Integer apply(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 6) {
                 return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
             }
             return -1;
         }
-
     }
+
 }

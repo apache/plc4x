@@ -20,14 +20,16 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.socket.DatagramChannel;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.ets5.passive.*;
-import org.apache.plc4x.java.ets5.passive.io.KNXGroupAddressIO;
-import org.apache.plc4x.java.ets5.passive.io.KnxDatapointIO;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConfiguration;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddressFreeLevel;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -43,7 +45,6 @@ import java.io.File;
 import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements HasConfiguration<KnxNetIpConfiguration> {
 
@@ -72,6 +73,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     "File specified with 'knxproj-file-path' does not exist or is not a file: '%s'",
                     configuration.knxprojFilePath));
             }
+        } else {
+            groupAddressType = (byte) configuration.groupAddressType;
         }
     }
 
@@ -86,6 +89,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         // REMARK: This might be optional ... usually we would send a search request to ip 224.0.23.12
         // Any KNX Gateway will respond with a search response. We're currently directly sending to the
         // known gateway address, so it's sort of pointless, but at least only one device will respond.
+        LOGGER.info("Sending KNXnet/IP Search Request.");
         SearchRequest searchRequest = new SearchRequest(
             new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
         context.sendRequest(searchRequest)
@@ -93,6 +97,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             .check(p -> p instanceof SearchResponse)
             .unwrap(p -> (SearchResponse) p)
             .handle(searchResponse -> {
+                LOGGER.info("Got KNXnet/IP Search Response.");
                 // Check if this device supports tunneling services.
                 final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
 
@@ -102,7 +107,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     gatewayAddress = searchResponse.getDibDeviceInfo().getKnxAddress();
                     gatewayName = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
 
-                    LOGGER.info(String.format("Found KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
+                    LOGGER.info(String.format("Found KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
                         gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
 
                     // Next send a connection request to the gateway.
@@ -110,6 +115,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                         new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
                         new HPAIDataEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
                         new ConnectionRequestInformationTunnelConnection(KnxLayer.TUNNEL_BUSMONITOR));
+                    LOGGER.info("Sending KNXnet/IP Connection Request.");
                     context.sendRequest(connectionRequest)
                         .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
                         .check(p -> p instanceof ConnectionResponse)
@@ -118,10 +124,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                             // Remember the communication channel id.
                             communicationChannelId = connectionResponse.getCommunicationChannelId();
 
+                            LOGGER.info(String.format("Received KNXnet/IP Connection Response (Connection Id %s)",
+                                communicationChannelId));
+
                             // Check if everything went well.
                             Status status = connectionResponse.getStatus();
                             if (status == Status.NO_ERROR) {
-                                LOGGER.info(String.format("Connected to KNX Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
+                                LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
                                     gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
 
                                 // Send an event that connection setup is complete.
@@ -155,10 +164,17 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                 }, 60000, 60000);
                             } else {
                                 // The connection request wasn't successful.
+                                LOGGER.error(String.format(
+                                    "Not connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got status: '%s'",
+                                    gatewayName, gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(),
+                                    gatewayAddress.getSubGroup(), status.toString()));
+                                // TODO: Actively disconnect
                             }
                         });
                 } else {
                     // This device doesn't support tunneling ... do some error handling.
+                    LOGGER.error("Not connected to KNCnet/IP Gateway. The device doesn't support Tunneling.");
+                    // TODO: Actively disconnect
                 }
             });
     }
@@ -209,32 +225,35 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     final byte[] destinationGroupAddress = cemiDataFrame.getDestinationAddress();
 
                     // Decode the group address depending on the project settings.
-                    ReadBuffer addressReadBuffer = new ReadBuffer(destinationGroupAddress);
-                    KNXGroupAddress destinationAddress =
-                        KNXGroupAddressIO.parse(addressReadBuffer, groupAddressType);
+                    final String destinationAddress =
+                        Ets5Model.parseGroupAddress(groupAddressType, destinationGroupAddress);
 
                     // If there is an ETS5 model provided, continue decoding the payload.
                     if(ets5Model != null) {
                         final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
-                        ReadBuffer rawDataReader = new ReadBuffer(payload);
+                        if(groupAddress != null) {
+                            ReadBuffer rawDataReader = new ReadBuffer(payload);
+                            final PlcValue datapoint = KnxDatapointIO.parse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
 
-                        final KnxDatapoint datapoint = KnxDatapointIO.parse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
-                        final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
-
-                        LOGGER.info("Message from: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
-                            " to: '" + KnxNetIpProtocolLogic.toString(destinationAddress) + "'" +
-                            "\n location: '" + groupAddress.getFunction().getSpaceName() + "'" +
-                            " function: '" + groupAddress.getFunction().getName() + "'" +
-                            " meaning: '" + groupAddress.getName() + "'" +
-                            " type: '" + groupAddress.getType().getName() + "'" +
-                            "\n value: '" + jsonDatapoint + "'"
-                        );
+                            LOGGER.info("Message from: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
+                                " to: '" + destinationAddress + "'" +
+                                "\n location: '" + groupAddress.getFunction().getSpaceName() + "'" +
+                                " function: '" + groupAddress.getFunction().getName() + "'" +
+                                " meaning: '" + groupAddress.getName() + "'" +
+                                " type: '" + groupAddress.getType().getName() + "'" +
+                                "\n value: '" + datapoint + "'"
+                            );
+                        } else {
+                            LOGGER.warn("Message from: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
+                                " to unknown group address: '" + destinationAddress + "'" +
+                                "\n payload: '" + Hex.encodeHexString(payload) + "'");
+                        }
                     }
                     // Else just output the raw payload.
                     else {
                         LOGGER.info("Raw Message: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
-                            " to: '" + KnxNetIpProtocolLogic.toString(destinationAddress) + "'" +
+                            " to: '" + destinationAddress + "'" +
                             "\n payload: '" + Hex.encodeHexString(payload) + "'"
                         );
                     }
