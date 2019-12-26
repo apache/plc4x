@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.s7.readwrite.utils;
+package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.spi.generation.ParseException;

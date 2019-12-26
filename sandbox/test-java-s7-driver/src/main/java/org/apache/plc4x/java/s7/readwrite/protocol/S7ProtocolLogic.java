@@ -20,16 +20,16 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
+import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
@@ -40,13 +40,10 @@ import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
 import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.utils.S7Field;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
-import org.apache.plc4x.java.s7data.readwrite.*;
-import org.apache.plc4x.java.s7data.readwrite.io.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -91,7 +88,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
-        logger.debug("ISO Transport Protocol Sending Connection Request");
+        logger.debug("Sending COTP Connection Request");
         // Open the session on ISO Transport Protocol first.
         TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(calledTsapId, callingTsapId, cotpTpduSize));
 
@@ -100,6 +97,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
             .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
             .handle(cotpPacketConnectionResponse -> {
+                logger.debug("Got COTP Connection Response");
+                logger.debug("Sending S7 Connection Request");
                 context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
                     .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
                     .unwrap(TPKTPacket::getPayload)
@@ -109,6 +108,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     .unwrap(S7Message::getParameter)
                     .only(S7ParameterSetupCommunication.class)
                     .handle(setupCommunication -> {
+                        logger.debug("Got S7 Connection Response");
                         // Save some data from the response.
                         maxAmqCaller = setupCommunication.getMaxAmqCaller();
                         maxAmqCallee = setupCommunication.getMaxAmqCallee();
@@ -180,9 +180,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
         for (String fieldName : request.getFieldNames()) {
             final S7Field field = (S7Field) request.getField(fieldName);
-            final BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
+/*            final BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
-            payloadItems.add(serializeFieldItem(field, fieldItem));
+            payloadItems.add(serializeFieldItem(field, fieldItem));*/
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
@@ -294,7 +294,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
         S7VarPayloadDataItem[] payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -302,12 +302,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             S7VarPayloadDataItem payloadItem = payloadItems[index];
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            BaseDefaultFieldItem fieldItem = null;
+            PlcValue fieldItem = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
                 fieldItem = parseFieldItem(field, data);
             }
-            Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair(responseCode, fieldItem);
             values.put(fieldName, result);
             index++;
         }
@@ -340,134 +340,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
-    private S7VarPayloadDataItem serializeFieldItem(S7Field field, BaseDefaultFieldItem fieldItem) {
-        if(fieldItem.getNumberOfValues() > 0) {
-            throw new NotImplementedException("Writing more than one element currently not supported");
-        }
-
+    private S7VarPayloadDataItem serializeFieldItem(S7Field field, PlcValue plcValue) {
         try {
-            WriteBuffer writeBuffer;
-            DataTransportSize transportSize;
-            switch (field.getDataType().getDataProtocolId()) {
-                case 1: // 1 Bit
-                    writeBuffer = new WriteBuffer(1);
-                    DataItemBOOLIO.serialize(writeBuffer, new DataItemBOOL(fieldItem.getBoolean(0)));
-                    transportSize = DataTransportSize.BIT;
-                    break;
-
-                case 11: // BYTE
-                    writeBuffer = new WriteBuffer(1);
-                    DataItemBYTEIO.serialize(writeBuffer, new DataItemBYTE(ArrayUtils.toPrimitive((Boolean[]) fieldItem.getValues())));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 12: // WORD
-                    writeBuffer = new WriteBuffer(2);
-                    DataItemWORDIO.serialize(writeBuffer, new DataItemWORD(ArrayUtils.toPrimitive((Boolean[]) fieldItem.getValues())));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 13: // DWORD
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemDWORDIO.serialize(writeBuffer, new DataItemDWORD(ArrayUtils.toPrimitive((Boolean[]) fieldItem.getValues())));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 14: // LWORD
-                    writeBuffer = new WriteBuffer(8);
-                    DataItemLWORDIO.serialize(writeBuffer, new DataItemLWORD(ArrayUtils.toPrimitive((Boolean[]) fieldItem.getValues())));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-
-                case 21: // SINT
-                    writeBuffer = new WriteBuffer(1);
-                    DataItemSINTIO.serialize(writeBuffer, new DataItemSINT(fieldItem.getByte(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 22: // USINT
-                    writeBuffer = new WriteBuffer(1);
-                    DataItemUSINTIO.serialize(writeBuffer, new DataItemUSINT(fieldItem.getShort(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 23: // INT
-                    writeBuffer = new WriteBuffer(2);
-                    DataItemINTIO.serialize(writeBuffer, new DataItemINT(fieldItem.getShort(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 24: // UINT
-                    writeBuffer = new WriteBuffer(2);
-                    DataItemUINTIO.serialize(writeBuffer, new DataItemUINT(fieldItem.getInteger(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 25: // DINT
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemDINTIO.serialize(writeBuffer, new DataItemDINT(fieldItem.getInteger(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 26: // UDINT
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemUDINTIO.serialize(writeBuffer, new DataItemUDINT(fieldItem.getLong(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 27: // LINT
-                    writeBuffer = new WriteBuffer(8);
-                    DataItemLINTIO.serialize(writeBuffer, new DataItemLINT(fieldItem.getLong(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 28: // ULINT
-                    writeBuffer = new WriteBuffer(8);
-                    DataItemULINTIO.serialize(writeBuffer, new DataItemULINT(fieldItem.getBigInteger(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-
-                case 31: // REAL
-                    writeBuffer = new WriteBuffer(2);
-                    DataItemREALIO.serialize(writeBuffer, new DataItemREAL(fieldItem.getFloat(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 32: // LREAL
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemLREALIO.serialize(writeBuffer, new DataItemLREAL(fieldItem.getDouble(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-
-/*                case 41: // CHAR
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 42: // WCHAR
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 43: // STRING
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 44: // WSTRING
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());*/
-
-                case 51: // Time
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemTimeIO.serialize(writeBuffer, new DataItemTime(fieldItem.getTime(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 52: // LTime
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemLTimeIO.serialize(writeBuffer, new DataItemLTime(fieldItem.getTime(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 53: // Date
-                    writeBuffer = new WriteBuffer(2);
-                    DataItemDateIO.serialize(writeBuffer, new DataItemDate(fieldItem.getDate(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 54: // TimeOfDay
-                    writeBuffer = new WriteBuffer(4);
-                    DataItemTimeOfDayIO.serialize(writeBuffer, new DataItemTimeOfDay(fieldItem.getTime(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-                case 55: // DateAndTime
-                    writeBuffer = new WriteBuffer(8);
-                    DataItemDateAndTimeIO.serialize(writeBuffer, new DataItemDateAndTime(fieldItem.getDateTime(0)));
-                    transportSize = DataTransportSize.BYTE_WORD_DWORD;
-                    break;
-
-                default:
-                    throw new NotImplementedException(
-                        "Processing of datatype " + field.getDataType() + " currently not supported");
-            }
-
+            DataTransportSize transportSize = (field.getDataType().getDataProtocolId() == 1) ?
+                DataTransportSize.BIT : DataTransportSize.BYTE_WORD_DWORD;
+            WriteBuffer writeBuffer = DataItemIO.serialize(plcValue, field.getDataType().getDataProtocolId());
             byte[] data = writeBuffer.getData();
             return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
         } catch (ParseException e) {
@@ -476,68 +353,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return null;
     }
 
-    private BaseDefaultFieldItem parseFieldItem(S7Field field, ByteBuf data) {
+    private PlcValue parseFieldItem(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
-            DataItem item = DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());
-            switch (field.getDataType().getDataProtocolId()) {
-                case 1: // 1 Bit
-                    return new DefaultBooleanFieldItem(((DataItemBOOL) item).getValue());
-                case 11: // BYTE
-                    return new DefaultBooleanFieldItem(ArrayUtils.toObject(((DataItemBYTE) item).getValue()));
-                case 12: // WORD
-                    return new DefaultBooleanFieldItem(ArrayUtils.toObject(((DataItemWORD) item).getValue()));
-                case 13: // DWORD
-                    return new DefaultBooleanFieldItem(ArrayUtils.toObject(((DataItemDWORD) item).getValue()));
-                case 14: // LWORD
-                    return new DefaultBooleanFieldItem(ArrayUtils.toObject(((DataItemLWORD) item).getValue()));
-
-                case 21: // SINT
-                    return new DefaultByteFieldItem(((DataItemSINT) item).getValue());
-                case 22: // USINT
-                    return new DefaultShortFieldItem(((DataItemUSINT) item).getValue());
-                case 23: // INT
-                    return new DefaultShortFieldItem(((DataItemINT) item).getValue());
-                case 24: // UINT
-                    return new DefaultIntegerFieldItem(((DataItemUINT) item).getValue());
-                case 25: // DINT
-                    return new DefaultIntegerFieldItem(((DataItemDINT) item).getValue());
-                case 26: // UDINT
-                    return new DefaultLongFieldItem(((DataItemUDINT) item).getValue());
-                case 27: // LINT
-                    return new DefaultLongFieldItem(((DataItemLINT) item).getValue());
-                case 28: // ULINT
-                    return new DefaultBigIntegerFieldItem(((DataItemULINT) item).getValue());
-
-                case 31: // REAL
-                    return new DefaultFloatFieldItem(((DataItemREAL) item).getValue());
-                case 32: // LREAL
-                    return new DefaultDoubleFieldItem(((DataItemLREAL) item).getValue());
-
-/*                case 41: // CHAR
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 42: // WCHAR
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 43: // STRING
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());
-                case 44: // WSTRING
-                    return new DefaultStringFieldItem(((DataItemCHAR) item).getValue());*/
-
-                case 51: // Time
-                    return new DefaultLocalTimeFieldItem(((DataItemTime) item).getValue());
-                case 52: // LTime
-                    return new DefaultLocalTimeFieldItem(((DataItemLTime) item).getValue());
-                case 53: // Date
-                    return new DefaultLocalDateFieldItem(((DataItemDate) item).getValue());
-                case 54: // TimeOfDay
-                    return new DefaultLocalTimeFieldItem(((DataItemTimeOfDay) item).getValue());
-                case 55: // DateAndTime
-                    return new DefaultLocalDateTimeFieldItem(((DataItemDateAndTime) item).getValue());
-
-                default:
-                    throw new NotImplementedException(
-                        "Processing of datatype " + field.getDataType() + " currently not supported");
-            }
+            return DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());
         } catch (ParseException e) {
             logger.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
         }
