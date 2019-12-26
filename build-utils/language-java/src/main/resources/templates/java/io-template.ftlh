@@ -81,6 +81,7 @@ public class ${typeName}IO {
             int itemCount = (int) ${helper.toParseExpression(field.loopExpression, type.parserArguments)?no_esc};
             ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
             for(int curItem = 0; curItem < itemCount; curItem++) {
+                <#if !helper.isSimpleType(field.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
                 ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
             }
         }
@@ -236,7 +237,7 @@ public class ${typeName}IO {
     <#case "padding">
 
         // Padding Field (${field.name})
-        boolean _${field.name}NeedsPadding = (boolean) ((io.hasMore(${helper.getNumBits(field.type)})) && (${helper.toParseExpression(field.paddingCondition, type.parserArguments)}));
+        boolean _${field.name}NeedsPadding = (boolean) ((io.hasMore(${helper.getNumBits(field.type)})) && (${helper.toParseExpression(field.paddingCondition, type.parserArguments)?no_esc}));
         if(_${field.name}NeedsPadding) {
             // Just read the padding data and ignore it
             ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
@@ -290,19 +291,23 @@ public class ${typeName}IO {
     }
 
 <#if outputFlavor != "passive">
-    public static void serialize(WriteBuffer io, ${typeName} _value) throws ParseException {
+    public static void serialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
 
         // Array Field (${field.name})
         if(_value.get${field.name?cap_first}() != null) {
+            int itemCount = (int) _value.get${field.name?cap_first}().length;
+            int curItem = 0;
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${field.name?cap_first}()) {
                 <#if helper.isSimpleType(field.type)>
                 ${helper.getWriteBufferReadMethodCall(field.type, "element")?no_esc};
                 <#else>
-                ${field.type.name}IO.serialize(io, element);
+                boolean lastItem = curItem == (itemCount - 1);
+                ${field.type.name}IO.serialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
                 </#if>
+                curItem++;
             }
         }
         <#break>
@@ -365,7 +370,7 @@ public class ${typeName}IO {
     <#case "padding">
 
         // Padding Field (${field.name})
-        boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field.paddingCondition, type.parserArguments)});
+        boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field.paddingCondition, type.parserArguments)?no_esc});
         if(_${field.name}NeedsPadding) {
             ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.paddingValue, type.parserArguments)});
             ${helper.getWriteBufferReadMethodCall(field.type, "(_" + field.name + "PaddingValue)")?no_esc};

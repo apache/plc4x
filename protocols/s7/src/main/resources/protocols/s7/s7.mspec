@@ -214,10 +214,10 @@
         ['0x04','0x01' S7PayloadReadVarRequest
         ]
         ['0x04','0x03' S7PayloadReadVarResponse
-            [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems']
+            [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems' ['lastItem']]
         ]
         ['0x05','0x01' S7PayloadWriteVarRequest
-            [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)']
+            [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)' ['lastItem']]
         ]
         ['0x05','0x03' S7PayloadWriteVarResponse
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
@@ -229,12 +229,12 @@
 ]
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
-[type 'S7VarPayloadDataItem'
+[type 'S7VarPayloadDataItem' [bit 'lastItem']
     [enum    DataTransportErrorCode 'returnCode']
     [enum    DataTransportSize      'transportSize']
     [simple  uint 16                'dataLength']
     [array   int  8                 'data' count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
-    [padding uint 8                 'pad' '0x00' '(COUNT(data) % 2) == 1']
+    [padding uint 8                 'pad' '0x00' '!lastItem && ((COUNT(data) % 2) == 1)']
 ]
 
 [type 'S7VarPayloadStatusItem'

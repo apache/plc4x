@@ -182,7 +182,8 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "padding">
 
         // Padding Field (${field.name})
-        if((boolean) (${helper.toParseExpression(field.paddingCondition, type.parserArguments)})) {
+        <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
+        if((boolean) (${helper.toParseExpression(field.paddingCondition, type.parserArguments)?replace("lastItem", "false")?no_esc})) {
             lengthInBits += ${field.type.sizeInBits};
         }
         <#break>
