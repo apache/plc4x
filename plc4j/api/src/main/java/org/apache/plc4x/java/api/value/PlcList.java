@@ -28,7 +28,7 @@ public class PlcList extends PlcValueAdapter {
     private final List<PlcValue> listItems;
 
     public PlcList(List<?> listItems) {
-        List<PlcValue> safelist = listItems.stream().<PlcValue>map(plcValue -> {
+        List<PlcValue> safelist = listItems.stream().map(plcValue -> {
             // to avoid unwrapped list cause of type erasure
             if (plcValue instanceof PlcValue) {
                 return (PlcValue)plcValue;
@@ -40,12 +40,17 @@ public class PlcList extends PlcValueAdapter {
     }
 
     @Override
+    public Object getObject() {
+        return listItems;
+    }
+
+    @Override
     public boolean isList() {
         return true;
     }
 
     @Override
-    public int length() {
+    public int getNumberOfValues() {
         return listItems.size();
     }
 

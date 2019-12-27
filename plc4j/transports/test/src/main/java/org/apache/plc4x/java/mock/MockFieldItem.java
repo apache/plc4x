@@ -19,16 +19,18 @@
 
 package org.apache.plc4x.java.mock;
 
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValueAdapter;
 
-public class MockFieldItem extends BaseDefaultFieldItem<Object> {
+public class MockFieldItem extends PlcValueAdapter {
+
+    final Object[] values;
 
     public MockFieldItem(Object... values) {
-        super(values);
+        this.values = values;
     }
 
     public Object getObject(int index) {
-        return getValue(index);
+        return values[index];
     }
 
 }

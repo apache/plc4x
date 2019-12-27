@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.api.value.PlcValues;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,7 +62,7 @@ public class PlcMockDriverTest implements WithAssertions {
     public void testScenarioExample() throws PlcConnectionException, ExecutionException, InterruptedException {
         PlcMockConnection preparingConnection = ((PlcMockConnection) driver.connect("test:123"));
         MockDevice mock = Mockito.mock(MockDevice.class);
-        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultIntegerFieldItem(1)));
+        when(mock.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, PlcValues.of(1)));
         preparingConnection.setDevice(mock);
 
         // Now we can simply inject this URL into our code and automatically have our mock

@@ -18,10 +18,11 @@
  */
 package org.apache.plc4x.java.modbus.util;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.modbus.messages.items.DefaultModbusByteArrayFieldItem;
+import org.apache.plc4x.java.api.value.PlcBoolean;
+import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.model.CoilModbusField;
 import org.apache.plc4x.java.modbus.model.MaskWriteRegisterModbusField;
 import org.apache.plc4x.java.modbus.model.ModbusField;
@@ -30,8 +31,6 @@ import org.apache.plc4x.java.modbus.model.ReadHoldingRegistersModbusField;
 import org.apache.plc4x.java.modbus.model.ReadInputRegistersModbusField;
 import org.apache.plc4x.java.modbus.model.RegisterModbusField;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
 
 import java.util.BitSet;
 import java.util.LinkedList;
@@ -58,7 +57,7 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
+    public PlcValue encodeBoolean(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
         List<Boolean> booleanValues = new LinkedList<>();
         for (Object value : values) {
@@ -95,11 +94,15 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
                         " is not assignable to " + modbusField + " fields.");
             }
         }
-        return new DefaultBooleanFieldItem(booleanValues.toArray(new Boolean[0]));
+        if(booleanValues.size() == 1) {
+            return new PlcBoolean(booleanValues.get(0));
+        } else {
+            return new PlcList(booleanValues);
+        }
     }
 
-    @Override
-    public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {
+    /*@Override
+    public PlcValue encodeByteArray(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
         List<Byte[]> byteArrays = new LinkedList<>();
         for (Object value : values) {
@@ -116,5 +119,5 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         return new DefaultModbusByteArrayFieldItem(byteArrays.toArray(new Byte[0][0]));
-    }
+    }*/
 }

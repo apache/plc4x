@@ -21,11 +21,12 @@ package org.apache.plc4x.java.spi.messages;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Map;
 
 public interface InternalPlcReadResponse extends PlcReadResponse, InternalPlcResponse {
 
-    Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> getValues();
+    Map<String, Pair<PlcResponseCode, PlcValue>> getValues();
+
 }

@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.modbus.messages.items;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.spi.messages.items.DefaultByteArrayFieldItem;
+import org.apache.plc4x.java.api.value.PlcList;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * default implementation for DefaultByteArrayFieldItem for Usage within Modbus module
  * default ByteOrder is set to BIG_ENDIAN, can be selected on regarding get-method explicitly from user if needed
  */
-public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
+public class DefaultModbusByteArrayFieldItem extends PlcList {
 
     private static final int SHORT_BYTES = 2;
     private static final int INTEGER_BYTES = 4;
@@ -43,35 +43,13 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
     private Byte[] completeByteArray;
 
     public DefaultModbusByteArrayFieldItem(Byte[]... values) {
-        super(values);
+        super(Arrays.asList(values));
         this.byteOrder = DEFAULT_ENDIANNESS;
-        this.completeByteArray = Arrays.stream(getValues()).flatMap(Stream::of).toArray(Byte[]::new);
+        this.completeByteArray = Arrays.stream(values).flatMap(Stream::of).toArray(Byte[]::new);
     }
 
-    @Override
-    public Object getObject(int index) {
-        return getValue(index);
-    }
-
-    @Override
-    public boolean isValidByteArray(int index) {
-        Byte[] value = getValue(index);
-        return value != null;
-    }
-
-    @Override
-    public Byte[] getByteArray(int index) {
-        return getValue(index);
-    }
-
-    @Override
     public boolean isValidShort(int index) {
         return this.completeByteArray.length >= shortIndexToByteIndex(index) + SHORT_BYTES;
-    }
-
-    @Override
-    public Short getShort(int index) {
-        return getShort(index, this.byteOrder);
     }
 
     /**
@@ -102,14 +80,8 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         return shortIndex * SHORT_BYTES;
     }
 
-    @Override
     public boolean isValidInteger(int index) {
         return this.completeByteArray.length >= intIndexToByteIndex(index) + INTEGER_BYTES;
-    }
-
-    @Override
-    public Integer getInteger(int index) {
-        return getInteger(index, this.byteOrder);
     }
 
     /**
@@ -140,14 +112,8 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         return intIndex * INTEGER_BYTES;
     }
 
-    @Override
     public boolean isValidLong(int index) {
         return this.completeByteArray.length >= longIndexToByteIndex(index) + LONG_BYTES;
-    }
-
-    @Override
-    public Long getLong(int index) {
-        return getLong(index, this.byteOrder);
     }
 
     /**
@@ -178,14 +144,8 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         return longIndex * LONG_BYTES;
     }
 
-    @Override
     public boolean isValidFloat(int index) {
         return this.completeByteArray.length >= floatIndexToByteIndex(index) + FLOAT_BYTES;
-    }
-
-    @Override
-    public Float getFloat(int index) {
-        return getFloat(index, this.byteOrder);
     }
 
     /**

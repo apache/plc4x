@@ -40,8 +40,8 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
@@ -286,7 +286,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
                 Instant timeStamp = adsStampHeader.getTimeStamp().getAsDate().toInstant();
 
-                Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+                Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
                 adsStampHeader.getAdsNotificationSamples()
                     .forEach(adsNotificationSample -> {
                         NotificationHandle notificationHandle = adsNotificationSample.getNotificationHandle();
@@ -301,7 +301,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            BaseDefaultFieldItem baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
+                            PlcValue baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
                             fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);

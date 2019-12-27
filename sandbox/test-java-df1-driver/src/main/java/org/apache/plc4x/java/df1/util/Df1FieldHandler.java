@@ -20,8 +20,8 @@ package org.apache.plc4x.java.df1.util;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.df1.Df1Field;
 
 public class Df1FieldHandler extends DefaultPlcFieldHandler {
@@ -32,7 +32,7 @@ public class Df1FieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
+    public PlcValue encodeByte(PlcField field, Object[] values) {
         return super.encodeByte(field, values);
     }
 

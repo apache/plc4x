@@ -25,7 +25,7 @@ import spock.lang.Unroll
 
 import static org.apache.plc4x.java.ads.model.AdsDataType.*
 
-class LittleEndianEncoderSpec extends Specification {
+class LittleEndianEncoderSpecHurz extends Specification {
     @Unroll
     def "encode of #adsdt.name() using #values"(AdsDataType adsdt, def expectedBytes, def values) {
         when:

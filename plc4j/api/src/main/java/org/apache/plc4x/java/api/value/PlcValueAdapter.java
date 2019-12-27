@@ -32,6 +32,11 @@ import java.util.Set;
 public class PlcValueAdapter implements PlcValue {
 
     @Override
+    public Object getObject() {
+        return null;
+    }
+
+    @Override
     public boolean isSimple() {
         return false;
     }
@@ -201,7 +206,7 @@ public class PlcValueAdapter implements PlcValue {
     }
 
     @Override
-    public int length() {
+    public int getNumberOfValues() {
         throw new PlcIncompatibleDatatypeException("");
     }
 

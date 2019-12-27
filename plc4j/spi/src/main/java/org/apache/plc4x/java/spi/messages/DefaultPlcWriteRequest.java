@@ -25,8 +25,9 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -48,9 +49,9 @@ import java.util.stream.Collectors;
 public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
 
     private final PlcWriter writer;
-    private final LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields;
+    private final LinkedHashMap<String, Pair<PlcField, PlcValue>> fields;
 
-    protected DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields) {
+    protected DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields) {
         this.writer = writer;
         this.fields = fields;
     }
@@ -81,12 +82,12 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         return fields.values().stream().map(Pair::getKey).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public BaseDefaultFieldItem getFieldItem(String name) {
+    public PlcValue getFieldItem(String name) {
         return fields.get(name).getValue();
     }
 
     @Override
-    public List<BaseDefaultFieldItem> getFieldItems() {
+    public List<PlcValue> getFieldItems() {
         return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -103,7 +104,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     }
 
     @Override
-    public List<Triple<String, PlcField, BaseDefaultFieldItem>> getNamedFieldTriples() {
+    public List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples() {
         return fields.entrySet()
             .stream()
             .map(stringPairEntry ->
@@ -117,7 +118,12 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
     @Override
     public int getNumberOfValues(String name) {
-        return fields.get(name).getValue().getNumberOfValues();
+        final PlcValue value = fields.get(name).getValue();
+        if(value instanceof PlcList) {
+            PlcList list = (PlcList) value;
+            return list.getNumberOfValues();
+        }
+        return 1;
     }
 
     public static class Builder implements PlcWriteRequest.Builder {
@@ -125,7 +131,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         private final PlcWriter writer;
         private final PlcFieldHandler fieldHandler;
         private final Map<String, BuilderItem<Object>> fields;
-        private final Map<Class<?>, BiFunction<PlcField, Object[], BaseDefaultFieldItem>> handlerMap;
+        private final Map<Class<?>, BiFunction<PlcField, Object[], PlcValue>> handlerMap;
 
         public Builder(PlcWriter writer, PlcFieldHandler fieldHandler) {
             this.writer = writer;
@@ -145,8 +151,6 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
             handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
             handlerMap.put(LocalDate.class, fieldHandler::encodeDate);
             handlerMap.put(LocalDateTime.class, fieldHandler::encodeDateTime);
-            handlerMap.put(byte[].class, fieldHandler::encodeByteArray);
-            handlerMap.put(Byte[].class, fieldHandler::encodeByteArray);
         }
 
         @Override
@@ -215,16 +219,6 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         }
 
         @Override
-        public Builder addItem(String name, String fieldQuery, byte[]... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeByteArray);
-        }
-
-        @Override
-        public Builder addItem(String name, String fieldQuery, Byte[]... values) {
-            return addItem(name, fieldQuery, values, fieldHandler::encodeByteArray);
-        }
-
-        @Override
         public <T> Builder addItem(String name, String fieldQuery, T... values) {
             Objects.requireNonNull(values);
             Class<?> checkedClazz = null;
@@ -236,7 +230,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
                     throw new IllegalArgumentException("Invalid class found " + value.getClass() + ". should all be " + checkedClazz);
                 }
             }
-            BiFunction<PlcField, Object[], BaseDefaultFieldItem> plcFieldFieldItemBiFunction = handlerMap.get(checkedClazz);
+            BiFunction<PlcField, Object[], PlcValue> plcFieldFieldItemBiFunction = handlerMap.get(checkedClazz);
             if (plcFieldFieldItemBiFunction == null) {
                 throw new IllegalArgumentException("no field handler for " + checkedClazz + " found");
             }
@@ -245,19 +239,19 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
         @Override
         public PlcWriteRequest build() {
-            LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> parsedFields = new LinkedHashMap<>();
+            LinkedHashMap<String, Pair<PlcField, PlcValue>> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, builderItem) -> {
                 // Compile the query string.
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
                 // Encode the payload.
                 // TODO: Depending on the field type, handle the FieldItem creation differently.
-                BaseDefaultFieldItem fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
+                PlcValue fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
                 parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
             });
             return new DefaultPlcWriteRequest(writer, parsedFields);
         }
 
-        private Builder addItem(String name, String fieldQuery, Object[] values, BiFunction<PlcField, Object[], BaseDefaultFieldItem> encoder) {
+        private Builder addItem(String name, String fieldQuery, Object[] values, BiFunction<PlcField, Object[], PlcValue> encoder) {
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
@@ -268,9 +262,9 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         private static class BuilderItem<T> {
             private final String fieldQuery;
             private final T[] values;
-            private final BiFunction<PlcField, T[], BaseDefaultFieldItem> encoder;
+            private final BiFunction<PlcField, T[], PlcValue> encoder;
 
-            private BuilderItem(String fieldQuery, T[] values, BiFunction<PlcField, T[], BaseDefaultFieldItem> encoder) {
+            private BuilderItem(String fieldQuery, T[] values, BiFunction<PlcField, T[], PlcValue> encoder) {
                 this.fieldQuery = fieldQuery;
                 this.values = values;
                 this.encoder = encoder;

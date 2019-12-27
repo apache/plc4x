@@ -30,6 +30,16 @@ public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
     }
 
     @Override
+    public Object getObject() {
+        return value;
+    }
+
+    @Override
+    public int getNumberOfValues() {
+        return 1;
+    }
+
+    @Override
     public boolean isSimple() {
         return true;
     }

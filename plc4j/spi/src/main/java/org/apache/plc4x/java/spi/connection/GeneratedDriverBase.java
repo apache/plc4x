@@ -57,6 +57,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("Basic S7 connections don't support authentication (NG).");
+        throw new PlcConnectionException("Authentication not supported.");
     }
+
 }

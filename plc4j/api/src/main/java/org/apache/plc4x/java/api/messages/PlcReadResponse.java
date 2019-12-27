@@ -177,14 +177,4 @@ public interface PlcReadResponse extends PlcFieldResponse {
 
     Collection<LocalDateTime> getAllDateTimes(String name);
 
-    boolean isValidByteArray(String name);
-
-    boolean isValidByteArray(String name, int index);
-
-    Byte[] getByteArray(String name);
-
-    Byte[] getByteArray(String name, int index);
-
-    Collection<Byte[]> getAllByteArrays(String name);
-
 }

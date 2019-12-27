@@ -27,10 +27,10 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.*;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
@@ -111,13 +111,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         return new OpcuaTcpPlcConnection(address, port, params, requestTimeout);
     }
 
-    public static BaseDefaultFieldItem encodeFieldItem(DataValue value) {
+    public static PlcValue encodeFieldItem(DataValue value) {
         NodeId typeNode = value.getValue().getDataType().get();
         Object objValue = value.getValue().getValue();
 
         if (typeNode.equals(Identifiers.Boolean)) {
-            return new DefaultBooleanFieldItem((Boolean) objValue);
-        } else if (typeNode.equals(Identifiers.ByteString)) {
+            return new PlcBoolean((Boolean) objValue);
+        /*} else if (typeNode.equals(Identifiers.ByteString)) {
             byte[] array = ((ByteString) objValue).bytes();
             Byte[] byteArry = new Byte[array.length];
             int counter = 0;
@@ -126,33 +126,33 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 byteArry[counter] = bytie;
                 counter++;
             }
-            return new DefaultByteArrayFieldItem(byteArry);
+            return new DefaultByteArrayFieldItem(byteArry);*/
         } else if (typeNode.equals(Identifiers.Integer)) {
-            return new DefaultIntegerFieldItem((Integer) objValue);
+            return new PlcInteger((Integer) objValue);
         } else if (typeNode.equals(Identifiers.Int16)) {
-            return new DefaultShortFieldItem((Short) objValue);
+            return new PlcInteger((Short) objValue);
         } else if (typeNode.equals(Identifiers.Int32)) {
-            return new DefaultIntegerFieldItem((Integer) objValue);
+            return new PlcInteger((Integer) objValue);
         } else if (typeNode.equals(Identifiers.Int64)) {
-            return new DefaultLongFieldItem((Long) objValue);
+            return new PlcLong((Long) objValue);
         } else if (typeNode.equals(Identifiers.UInteger)) {
-            return new DefaultLongFieldItem((Long) objValue);
+            return new PlcLong((Long) objValue);
         } else if (typeNode.equals(Identifiers.UInt16)) {
-            return new DefaultIntegerFieldItem(((UShort) objValue).intValue());
+            return new PlcInteger(((UShort) objValue).intValue());
         } else if (typeNode.equals(Identifiers.UInt32)) {
-            return new DefaultLongFieldItem(((UInteger) objValue).longValue());
+            return new PlcLong(((UInteger) objValue).longValue());
         } else if (typeNode.equals(Identifiers.UInt64)) {
-            return new DefaultBigIntegerFieldItem(new BigInteger(objValue.toString()));
+            return new PlcBigInteger(new BigInteger(objValue.toString()));
         } else if (typeNode.equals(Identifiers.Byte)) {
-            return new DefaultShortFieldItem(Short.valueOf(objValue.toString()));
+            return new PlcInteger(Short.valueOf(objValue.toString()));
         } else if (typeNode.equals(Identifiers.Float)) {
-            return new DefaultFloatFieldItem((Float) objValue);
+            return new PlcFloat((Float) objValue);
         } else if (typeNode.equals(Identifiers.Double)) {
-            return new DefaultDoubleFieldItem((Double) objValue);
+            return new PlcDouble((Double) objValue);
         } else if (typeNode.equals(Identifiers.SByte)) {
-            return new DefaultByteFieldItem((Byte) objValue);
+            return new PlcInteger((Byte) objValue);
         } else {
-            return new DefaultStringFieldItem(objValue.toString());
+            return new PlcString(objValue.toString());
         }
 
     }
@@ -379,7 +379,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = CompletableFuture.supplyAsync(() -> {
             readRequest.getFields();
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
             List<NodeId> readValueIds = new LinkedList<>();
             List<PlcField> readPLCValues = readRequest.getFields();
             for (PlcField field : readPLCValues) {
@@ -396,7 +396,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             }
             for (int counter = 0; counter < readValueIds.size(); counter++) {
                 PlcResponseCode resultCode = PlcResponseCode.OK;
-                BaseDefaultFieldItem stringItem = null;
+                PlcValue stringItem = null;
                 if (readValues == null || readValues.size() <= counter || readValues.get(counter).getStatusCode()
                     != StatusCode.GOOD) {
                     resultCode = PlcResponseCode.NOT_FOUND;
@@ -404,7 +404,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     stringItem = encodeFieldItem(readValues.get(counter));
 
                 }
-                Pair<PlcResponseCode, BaseDefaultFieldItem> newPair = new ImmutablePair<>(resultCode, stringItem);
+                Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
                 fields.put((String) readRequest.getFieldNames().toArray()[counter], newPair);
 
 
@@ -433,7 +433,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for (String fieldName : writeRequest.getFieldNames()) {
                 OpcuaField uaField = (OpcuaField) writeRequest.getField(fieldName);
                 NodeId idNode = generateNodeId(uaField);
-                Variant var = new Variant(internalPlcWriteRequest.getFieldItem(fieldName).getObject(0));
+                Variant var = new Variant(internalPlcWriteRequest.getFieldItem(fieldName).getObject());
                 DataValue value = new DataValue(var, null, null);
                 ids.add(idNode);
                 names.add(fieldName);

@@ -28,7 +28,7 @@ import spock.lang.Unroll
 
 import static org.apache.plc4x.java.ads.model.AdsDataType.*
 
-class LittleEndianDecoderSpec extends Specification {
+class LittleEndianDecoderSpecHurz extends Specification {
     @Unroll
     def "decode of #adsdt.name() using get#retrievalType.simpleName [#expectedValues]"(AdsDataType adsdt, def retrievalType, def expectedValues, def rawData) {
         when:

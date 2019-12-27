@@ -30,19 +30,17 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultShortFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,12 +165,12 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
 
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
         for (String fieldName : plcReadRequest.getFieldNames()) {
             AbEthField field = (AbEthField) plcReadRequest.getField(fieldName);
             PlcResponseCode responseCode = decodeResponseCode(plcReadResponse.getResponse().getStatus());
 
-            BaseDefaultFieldItem fieldItem = null;
+            PlcValue fieldItem = null;
             if (responseCode == PlcResponseCode.OK) {
                 try {
                     switch (field.getFileType()) {
@@ -180,11 +178,11 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                             if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
-                                Short[] convData = new Short[data.length];
-                                for(int i = 0; i < data.length; i++) {
-                                    convData[i] = data[i];
+                                if(data.length == 1) {
+                                    fieldItem = new PlcInteger(data[0]);
+                                } else {
+                                    fieldItem = new PlcList(Arrays.asList(data));
                                 }
-                                fieldItem = new DefaultShortFieldItem(convData);
                             }
                             break;
                         case WORD:
@@ -192,9 +190,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[1]>> 7) & 1) == 0)  {
-                                    fieldItem = new DefaultIntegerFieldItem((data[1] << 8) + data[0]);  // positive number
+                                    fieldItem = PlcValues.of((data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    fieldItem = new DefaultIntegerFieldItem((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    fieldItem = PlcValues.of((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -203,9 +201,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[3]>> 7) & 1) == 0)  {
-                                    fieldItem = new DefaultIntegerFieldItem((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
+                                    fieldItem = PlcValues.of((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    fieldItem = new DefaultIntegerFieldItem((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    fieldItem = PlcValues.of((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -214,9 +212,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (field.getBitNumber() < 8) {
-                                    fieldItem = new DefaultBooleanFieldItem((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
+                                    fieldItem = PlcValues.of((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    fieldItem = new DefaultBooleanFieldItem((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    fieldItem = PlcValues.of((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;
@@ -229,7 +227,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                     logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
                 }
             }
-            Pair<PlcResponseCode, BaseDefaultFieldItem> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
         }
 
@@ -243,9 +241,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
         return PlcResponseCode.NOT_FOUND;
     }
 
-    private BaseDefaultFieldItem decodeReadResponseUnsignedByteField(AbEthField field, ByteBuf data) {
+    private PlcValue decodeReadResponseUnsignedByteField(AbEthField field, ByteBuf data) {
         Short[] shorts = null;//readAllValues(Short.class, field, i -> data.readUnsignedByte());
-        return new DefaultShortFieldItem(shorts);
+        return new PlcInteger(1/*shorts*/);
     }
 
 }

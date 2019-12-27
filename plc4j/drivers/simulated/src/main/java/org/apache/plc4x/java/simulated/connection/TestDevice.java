@@ -20,7 +20,8 @@ package org.apache.plc4x.java.simulated.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
 import java.time.Duration;
@@ -38,13 +39,13 @@ public class TestDevice {
 
     private final String name;
 
-    private final Map<TestField, BaseDefaultFieldItem> state = new HashMap<>();
+    private final Map<TestField, PlcValue> state = new HashMap<>();
 
     private final Map<PlcSubscriptionHandle, ScheduledFuture<?>> cyclicSubscriptions = new HashMap<>();
 
     private final Map<PlcSubscriptionHandle, Future<?>> eventSubscriptions = new HashMap<>();
 
-    private final IdentityHashMap<PlcSubscriptionHandle, Pair<TestField, Consumer<BaseDefaultFieldItem>>> changeOfStateSubscriptions = new IdentityHashMap<>();
+    private final IdentityHashMap<PlcSubscriptionHandle, Pair<TestField, Consumer<PlcValue>>> changeOfStateSubscriptions = new IdentityHashMap<>();
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -54,7 +55,7 @@ public class TestDevice {
         this.name = name;
     }
 
-    public Optional<BaseDefaultFieldItem> get(TestField field) {
+    public Optional<PlcValue> get(TestField field) {
         Objects.requireNonNull(field);
         switch (field.getType()) {
             case STATE:
@@ -67,7 +68,7 @@ public class TestDevice {
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
-    public void set(TestField field, BaseDefaultFieldItem value) {
+    public void set(TestField field, PlcValue value) {
         Objects.requireNonNull(field);
         switch (field.getType()) {
             case STATE:
@@ -78,45 +79,45 @@ public class TestDevice {
                 state.put(field, value);
                 return;
             case STDOUT:
-                System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), Objects.toString(value.getValues()[0]));
+                System.out.printf("TEST PLC STDOUT [%s]: %s%n", field.getName(), value.getString());
                 return;
             case RANDOM:
-                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), Objects.toString(value.getValues()[0]));
+                System.out.printf("TEST PLC RANDOM [%s]: %s%n", field.getName(), value.getString());
                 return;
         }
         throw new IllegalArgumentException("Unsupported field type: " + field.getType().name());
     }
 
     @SuppressWarnings("unchecked")
-    private BaseDefaultFieldItem randomValue(Class<?> type) {
+    private PlcValue randomValue(Class<?> type) {
         Object result = null;
 
         if (type.equals(Byte.class)) {
-            result = (byte) random.nextInt(1 << 8);
+            return PlcValues.of((byte) random.nextInt(1 << 8));
         }
 
         if (type.equals(Short.class)) {
-            result = (short) random.nextInt(1 << 16);
+            return PlcValues.of((short) random.nextInt(1 << 16));
         }
 
         if (type.equals(Integer.class)) {
-            result = random.nextInt();
+            return PlcValues.of(random.nextInt());
         }
 
         if (type.equals(Long.class)) {
-            result = random.nextLong();
+            return PlcValues.of(random.nextLong());
         }
 
         if (type.equals(Float.class)) {
-            result = random.nextFloat();
+            return PlcValues.of(random.nextFloat());
         }
 
         if (type.equals(Double.class)) {
-            result = random.nextDouble();
+            return PlcValues.of(random.nextDouble());
         }
 
         if (type.equals(Boolean.class)) {
-            result = random.nextBoolean();
+            return PlcValues.of(random.nextBoolean());
         }
 
         if (type.equals(String.class)) {
@@ -126,17 +127,10 @@ public class TestDevice {
                 char c = (char) ('a' + random.nextInt(26));
                 sb.append(c);
             }
-            result = sb.toString();
+            return PlcValues.of(sb.toString());
         }
 
-        if (type.equals(byte[].class)) {
-            int length = random.nextInt(100);
-            byte[] bytes = new byte[length];
-            random.nextBytes(bytes);
-            result = bytes;
-        }
-
-        return new TestFieldItem(new Object[]{result});
+        return null;
     }
 
     @Override
@@ -144,9 +138,9 @@ public class TestDevice {
         return name;
     }
 
-    public void addCyclicSubscription(Consumer<BaseDefaultFieldItem> consumer, PlcSubscriptionHandle handle, TestField plcField, Duration duration) {
+    public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, TestField plcField, Duration duration) {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            BaseDefaultFieldItem baseDefaultFieldItem = state.get(plcField);
+            PlcValue baseDefaultFieldItem = state.get(plcField);
             if (baseDefaultFieldItem == null) {
                 return;
             }
@@ -155,14 +149,14 @@ public class TestDevice {
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
 
-    public void addChangeOfStateSubscription(Consumer<BaseDefaultFieldItem> consumer, PlcSubscriptionHandle handle, TestField plcField) {
+    public void addChangeOfStateSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, TestField plcField) {
         changeOfStateSubscriptions.put(handle, Pair.of(plcField, consumer));
     }
 
-    public void addEventSubscription(Consumer<BaseDefaultFieldItem> consumer, PlcSubscriptionHandle handle, TestField plcField) {
+    public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, TestField plcField) {
         Future<?> submit = pool.submit(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                BaseDefaultFieldItem baseDefaultFieldItem = state.get(plcField);
+                PlcValue baseDefaultFieldItem = state.get(plcField);
                 if (baseDefaultFieldItem == null) {
                     continue;
                 }

@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.exceptions.PlcTimeoutException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
@@ -52,7 +53,6 @@ import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.slf4j.Logger;
@@ -222,7 +222,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             InternalPlcResponse plcResponse;
             if (originalPlcRequestContainer.getRequest() instanceof InternalPlcReadRequest) {
                 InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) originalPlcRequestContainer.getRequest();
-                HashMap<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+                HashMap<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
 
                 correlatedResponseItems.stream()
                     .map(InternalPlcReadResponse.class::cast)
@@ -515,13 +515,13 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
         private final int tdpu;
 
-        public CorrelatedPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields, int tdpu) {
+        public CorrelatedPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields, int tdpu) {
             super(writer, fields);
             this.tdpu = tdpu;
         }
 
-        public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, BaseDefaultFieldItem> fieldItemTriple, int tdpu) {
-            LinkedHashMap<String, Pair<PlcField, BaseDefaultFieldItem>> fields = new LinkedHashMap<>();
+        public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, PlcValue> fieldItemTriple, int tdpu) {
+            LinkedHashMap<String, Pair<PlcField, PlcValue>> fields = new LinkedHashMap<>();
             fields.put(fieldItemTriple.getLeft(), Pair.of(fieldItemTriple.getMiddle(), fieldItemTriple.getRight()));
             return new CorrelatedPlcWriteRequest(writer, fields, tdpu);
         }

@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  */
 public interface MockDevice {
 
-    Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery);
+    Pair<PlcResponseCode, PlcValue> read(String fieldQuery);
 
     PlcResponseCode write(String fieldQuery, Object value);
 
@@ -47,4 +47,5 @@ public interface MockDevice {
 
     // TODO: this might not be right here as you are not really register at the device, rather on the connection
     void unregister(PlcConsumerRegistration registration);
+
 }

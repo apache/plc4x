@@ -37,8 +37,9 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,8 +149,15 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         long indexGroup = directAdsField.getIndexGroup();
         long indexOffset = directAdsField.getIndexOffset();
 
-        BaseDefaultFieldItem fieldItem = writeRequest.getFieldItems().get(0);
-        Object[] values = fieldItem.getValues();
+        PlcValue fieldItem = writeRequest.getFieldItems().get(0);
+        Object[] values;
+        if(fieldItem instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldItem;
+            values = plcList.getList().toArray(new Object[0]);
+        } else {
+            values = new Object[1];
+            values[0] = fieldItem.getObject();
+        }
 
         byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
         int bytesToBeWritten = bytes.length;
@@ -294,10 +302,10 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData();
-        BaseDefaultFieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
+        PlcValue fieldItem = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseItems = plcReadRequest.getFieldNames()
+        Map<String, Pair<PlcResponseCode, PlcValue>> responseItems = plcReadRequest.getFieldNames()
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,

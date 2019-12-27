@@ -32,6 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
@@ -49,7 +50,6 @@ import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
@@ -139,11 +139,11 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         InternalPlcReadRequest request = checkInternal(readRequest, InternalPlcReadRequest.class);
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+        Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            Optional<BaseDefaultFieldItem> fieldItemOptional = device.get(field);
-            ImmutablePair<PlcResponseCode, BaseDefaultFieldItem> fieldPair;
+            Optional<PlcValue> fieldItemOptional = device.get(field);
+            ImmutablePair<PlcResponseCode, PlcValue> fieldPair;
             boolean present = fieldItemOptional.isPresent();
             fieldPair = present
                 ? new ImmutablePair<>(PlcResponseCode.OK, fieldItemOptional.get())
@@ -160,7 +160,7 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
         Map<String, PlcResponseCode> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
+            PlcValue fieldItem = request.getFieldItem(fieldName);
             device.set(field, fieldItem);
             fields.put(fieldName, PlcResponseCode.OK);
         }
@@ -199,7 +199,7 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
         return CompletableFuture.completedFuture(response);
     }
 
-    private Consumer<BaseDefaultFieldItem> dispatchSubscriptionEvent(String name, InternalPlcSubscriptionHandle handle) {
+    private Consumer<PlcValue> dispatchSubscriptionEvent(String name, InternalPlcSubscriptionHandle handle) {
         return fieldItem -> {
             InternalPlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
             if (plcConsumerRegistration == null) {

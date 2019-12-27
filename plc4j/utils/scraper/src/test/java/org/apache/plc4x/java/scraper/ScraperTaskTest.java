@@ -23,7 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.api.value.PlcString;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.assertj.core.api.WithAssertions;
@@ -54,7 +54,7 @@ public class ScraperTaskTest implements WithAssertions {
         PlcDriverManager driverManager = new PlcDriverManager();
         PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
         connection.setDevice(mockDevice);
-        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hallo")));
+        when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hallo")));
 
         ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
             1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
@@ -71,7 +71,7 @@ public class ScraperTaskTest implements WithAssertions {
             PlcDriverManager driverManager = new PlcDriverManager();
             PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
             connection.setDevice(mockDevice);
-            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new DefaultStringFieldItem("hallo")));
+            when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new PlcString("hallo")));
 
             ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1",
                 "mock:scraper", Collections.singletonMap("a", "b"), 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});

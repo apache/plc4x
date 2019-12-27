@@ -54,6 +54,10 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcBoolean;
+import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcSimpleValue;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.messages.items.DefaultModbusByteArrayFieldItem;
 import org.apache.plc4x.java.modbus.model.CoilModbusField;
 import org.apache.plc4x.java.modbus.model.MaskWriteRegisterModbusField;
@@ -70,17 +74,11 @@ import org.apache.plc4x.java.spi.messages.InternalPlcRequest;
 import org.apache.plc4x.java.spi.messages.InternalPlcResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -148,7 +146,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (field instanceof RegisterModbusField) {
             RegisterModbusField registerModbusField = (RegisterModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = produceRegisterValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
+                byte[] bytesToWrite = produceRegisterValue(((PlcList) request.getFieldItem(fieldName)).getList());
                 // A register is a 16 bit (2 byte) value ... so every value needs 2 byte.
                 int requiredLength = 2 * quantity;
                 if (bytesToWrite.length != requiredLength) {
@@ -156,7 +154,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 modbusRequest = new WriteMultipleRegistersRequest(registerModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                byte[] register = produceRegisterValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
+                byte[] register = produceRegisterValue(Collections.singletonList(request.getFieldItem(fieldName).getObject()));
                 if ((register == null) || (register.length != 2)) {
                     throw new PlcProtocolException("Invalid register values created. Should be 2 bytes. Was " +
                         ((register != null) ? register.length : 0));
@@ -168,7 +166,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         } else if (field instanceof CoilModbusField) {
             CoilModbusField coilModbusField = (CoilModbusField) field;
             if (quantity > 1) {
-                byte[] bytesToWrite = produceCoilValues(Arrays.asList(request.getFieldItem(fieldName).getValues()));
+                byte[] bytesToWrite = produceCoilValues(((PlcList) request.getFieldItem(fieldName)).getList());
                 // As each coil value represents a bit, the number of bytes needed
                 // equals "ceil(quantity/8)" (a 3 bit shift is a division by 8 ... the +1 is the "ceil")
                 int requiredLength = (quantity >> 3) + 1;
@@ -179,7 +177,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 }
                 modbusRequest = new WriteMultipleCoilsRequest(coilModbusField.getAddress(), quantity, bytesToWrite);
             } else {
-                boolean booleanToWrite = produceCoilValue(Arrays.asList(request.getFieldItem(fieldName).getValues()));
+                boolean booleanToWrite = produceCoilValue(Collections.singletonList(request.getFieldItem(fieldName).getObject()));
                 modbusRequest = new WriteSingleCoilRequest(coilModbusField.getAddress(), booleanToWrite);
             }
         } else if (field instanceof MaskWriteRegisterModbusField) {
@@ -296,8 +294,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ReadCoilsResponse readCoilsResponse = (ReadCoilsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readCoilsResponse);
             ByteBuf byteBuf = readCoilsResponse.getCoilStatus();
-            DefaultBooleanFieldItem data = produceCoilValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
+            PlcValue data = produceCoilValueList(byteBuf, field.getQuantity());
+            Map<String, Pair<PlcResponseCode, PlcValue>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadDiscreteInputsResponse) {
@@ -305,8 +303,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             ReadDiscreteInputsResponse readDiscreteInputsResponse = (ReadDiscreteInputsResponse) modbusPdu;
             LOGGER.debug("{}: Nothing", readDiscreteInputsResponse);
             ByteBuf byteBuf = readDiscreteInputsResponse.getInputStatus();
-            DefaultBooleanFieldItem data = produceCoilValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
+            PlcValue data = produceCoilValueList(byteBuf, field.getQuantity());
+            Map<String, Pair<PlcResponseCode, PlcValue>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadHoldingRegistersResponse) {
@@ -315,8 +313,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readHoldingRegistersResponse);
             ByteBuf byteBuf = readHoldingRegistersResponse.getRegisters();
             // TODO: use register method
-            DefaultModbusByteArrayFieldItem data = produceRegisterValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
+            PlcValue data = produceRegisterValueList(byteBuf, field.getQuantity());
+            Map<String, Pair<PlcResponseCode, PlcValue>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof ReadInputRegistersResponse) {
@@ -325,8 +323,8 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             LOGGER.debug("{}: Nothing", readInputRegistersResponse);
             ByteBuf byteBuf = readInputRegistersResponse.getRegisters();
             // TODO: use register method
-            DefaultModbusByteArrayFieldItem data = produceRegisterValueList(byteBuf, field.getQuantity());
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseValues = new HashMap<>();
+            PlcValue data = produceRegisterValueList(byteBuf, field.getQuantity());
+            Map<String, Pair<PlcResponseCode, PlcValue>> responseValues = new HashMap<>();
             responseValues.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, data));
             plcRequestContainer.getResponseFuture().complete(new DefaultPlcReadResponse((InternalPlcReadRequest) request, responseValues));
         } else if (modbusPdu instanceof MaskWriteRegisterResponse) {
@@ -516,13 +514,13 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     ////////////////////////////////////////////////////////////////////////////////
     // Decoding helpers.
     ////////////////////////////////////////////////////////////////////////////////
-    private DefaultBooleanFieldItem produceCoilValueList(ByteBuf byteBuf, int expectedQuantity) {
+    private PlcValue produceCoilValueList(ByteBuf byteBuf, int expectedQuantity) {
         if (byteBuf.readableBytes() < expectedQuantity / 8) {
             LOGGER.warn("Expected to read {} coils but only max of {} can be supplied", expectedQuantity, byteBuf.readableBytes() * 8);
         }
         byte[] bytes = new byte[byteBuf.readableBytes()];
         if (bytes.length < 1) {
-            return new DefaultBooleanFieldItem();
+            return null;
         }
         byteBuf.readBytes(bytes);
         List<Boolean> data = new LinkedList<>();
@@ -541,10 +539,14 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             data.add(coilSet);
             bitIndex++;
         }
-        return new DefaultBooleanFieldItem(data.toArray(new Boolean[0]));
+        if(data.size() == 1) {
+            return new PlcBoolean(data.get(0));
+        } else {
+            return new PlcList(data);
+        }
     }
 
-    private DefaultModbusByteArrayFieldItem produceRegisterValueList(ByteBuf byteBuf, int expectedQuantity) throws PlcProtocolException {
+    private PlcValue produceRegisterValueList(ByteBuf byteBuf, int expectedQuantity) throws PlcProtocolException {
         int readableBytes = byteBuf.readableBytes();
         if (readableBytes % 2 != 0) {
             throw new PlcProtocolException("Readables bytes should even: " + readableBytes);
@@ -555,6 +557,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
             byteBuf.readBytes(register);
             data.add(ArrayUtils.toObject(register));
         }
-        return new DefaultModbusByteArrayFieldItem(data.toArray(new Byte[0][0]));
+        return null;//new DefaultModbusByteArrayFieldItem(data.toArray(new Byte[0][0]));
     }
 }

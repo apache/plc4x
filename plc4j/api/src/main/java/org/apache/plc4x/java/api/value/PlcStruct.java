@@ -33,6 +33,11 @@ public class PlcStruct extends PlcValueAdapter {
     }
 
     @Override
+    public int getNumberOfValues() {
+        return 1;
+    }
+
+    @Override
     public boolean isStruct() {
         return true;
     }

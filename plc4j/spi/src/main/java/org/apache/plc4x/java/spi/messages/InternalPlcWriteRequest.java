@@ -21,16 +21,16 @@ package org.apache.plc4x.java.spi.messages;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.List;
 
 public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcRequest {
 
-    BaseDefaultFieldItem getFieldItem(String name);
+    PlcValue getFieldItem(String name);
 
-    List<BaseDefaultFieldItem> getFieldItems();
+    List<PlcValue> getFieldItems();
 
-    List<Triple<String, PlcField, BaseDefaultFieldItem>> getNamedFieldTriples();
+    List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples();
 
 }

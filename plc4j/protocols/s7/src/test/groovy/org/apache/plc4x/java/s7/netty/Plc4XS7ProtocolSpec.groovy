@@ -238,7 +238,11 @@ class Plc4XS7ProtocolSpec extends Specification {
         } else {
             assert actualValues.length == expectedValues.length
             for (int i = 0; i < actualValues.length; i++) {
-                assert actualValues[i].class == expectedValues[i].class
+                Class expectedType = expectedValues[i].class
+                if((expectedValues[i].class == Byte.class) || (expectedValues[i].class == Short.class)) {
+                    expectedType = Integer.class
+                }
+                assert actualValues[i].class == expectedType
                 assert actualValues[i] == expectedValues[i]
             }
         }

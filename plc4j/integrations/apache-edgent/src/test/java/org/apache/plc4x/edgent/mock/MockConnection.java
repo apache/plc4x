@@ -28,8 +28,8 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -40,7 +40,7 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
 
     private final String url;
     private final PlcAuthentication authentication;
-    private final Map<PlcField, BaseDefaultFieldItem<?>> dataValueMap = new HashMap<>();
+    private final Map<PlcField, PlcValue> dataValueMap = new HashMap<>();
     private long curReadCnt;
     private int readExceptionTriggerCount;
     private String readExceptionMsg;
@@ -88,7 +88,7 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
             cf.completeExceptionally(new PlcIoException(readExceptionMsg));
             return cf;
         }
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new LinkedHashMap<>();
+        Map<String, Pair<PlcResponseCode, PlcValue>> fields = new LinkedHashMap<>();
         for (String fieldName : readRequest.getFieldNames()) {
             PlcField field = readRequest.getField(fieldName);
             fields.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, getFieldItem(field)));
@@ -124,15 +124,15 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
         return CompletableFuture.completedFuture(response);
     }
 
-    public void setFieldItem(PlcField field, BaseDefaultFieldItem<?> fieldItem) {
+    public void setFieldItem(PlcField field, PlcValue fieldItem) {
         dataValueMap.put(field, fieldItem);
     }
 
-    public BaseDefaultFieldItem<?> getFieldItem(PlcField field) {
+    public PlcValue getFieldItem(PlcField field) {
         return dataValueMap.get(field);
     }
 
-    public Map<PlcField, BaseDefaultFieldItem<?>> getAllFieldItems() {
+    public Map<PlcField, PlcValue> getAllFieldItems() {
         return dataValueMap;
     }
 

@@ -23,7 +23,6 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.plc4x.java.spi.parser.ConnectionParser;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Optional;
 

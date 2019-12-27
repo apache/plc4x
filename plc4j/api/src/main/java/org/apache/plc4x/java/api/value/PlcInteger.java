@@ -24,6 +24,22 @@ import java.math.BigInteger;
 
 public class PlcInteger extends PlcSimpleValue<Integer> {
 
+    public PlcInteger(Byte value) {
+        super(value.intValue(), true);
+    }
+
+    public PlcInteger(byte value) {
+        super(((Byte) value).intValue(), false);
+    }
+
+    public PlcInteger(Short value) {
+        super(value.intValue(), true);
+    }
+
+    public PlcInteger(short value) {
+        super(((Short) value).intValue(), false);
+    }
+
     public PlcInteger(Integer value) {
         super(value, true);
     }

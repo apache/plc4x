@@ -515,10 +515,6 @@ public class PlcEntityInterceptor {
             return response.getDate(sourceFieldName);
         } else if (clazz == LocalDateTime.class) {
             return response.getDateTime(sourceFieldName);
-        } else if (clazz == byte[].class) {
-            return ArrayUtils.toPrimitive(response.getByteArray(sourceFieldName));
-        } else if (clazz == Byte[].class) {
-            return response.getByteArray(sourceFieldName);
         }
 
         // Fallback

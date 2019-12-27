@@ -24,29 +24,25 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadResponse {
 
     private final InternalPlcReadRequest request;
-    private final Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values;
+    private final Map<String, Pair<PlcResponseCode, PlcValue>> values;
 
-    public DefaultPlcReadResponse(InternalPlcReadRequest request, Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields) {
+    public DefaultPlcReadResponse(InternalPlcReadRequest request, Map<String, Pair<PlcResponseCode, PlcValue>> fields) {
         this.request = request;
         this.values = fields;
     }
@@ -63,8 +59,13 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public int getNumberOfValues(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getNumberOfValues();
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            return plcList.getNumberOfValues();
+        } else {
+            return 1;
+        }
     }
 
     @Override
@@ -86,35 +87,33 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
-    public Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> getValues() {
+    public Map<String, Pair<PlcResponseCode, PlcValue>> getValues() {
         return values;
     }
 
     @Override
     public Object getObject(String name) {
-        if(getFieldInternal(name).getNumberOfValues()>1) {
-            return getAllObjects(name);
-        }
-        else{
-            return getObject(name, 0);
-        }
+        return getFieldInternal(name).getObject();
     }
 
     @Override
     public Object getObject(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getObject(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getObject();
     }
 
     @Override
     public Collection<Object> getAllObjects(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Object> objectList = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            objectList.add(fieldInternal.getObject(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Object> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getObject());
+            }
+            return items;
         }
-        return objectList;
+        return Collections.singletonList(fieldInternal.getObject());
     }
 
     @Override
@@ -124,8 +123,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidBoolean(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidBoolean(index);
+        PlcValue fieldInternal = getFieldInternal(name);
+        return fieldInternal.isBoolean();
     }
 
     @Override
@@ -135,19 +134,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Boolean getBoolean(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getBoolean(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getBoolean();
     }
 
     @Override
     public Collection<Boolean> getAllBooleans(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Boolean> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getBoolean(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Boolean> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getBoolean());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getBoolean());
     }
 
     @Override
@@ -157,8 +159,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidByte(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidByte(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isByte();
     }
 
     @Override
@@ -168,19 +170,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Byte getByte(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getByte(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getByte();
     }
 
     @Override
     public Collection<Byte> getAllBytes(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Byte> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getByte(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Byte> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getByte());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getByte());
     }
 
     @Override
@@ -190,8 +195,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidShort(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidShort(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isShort();
     }
 
     @Override
@@ -201,19 +206,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Short getShort(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getShort(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getShort();
     }
 
     @Override
     public Collection<Short> getAllShorts(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Short> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getShort(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Short> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getShort());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getShort());
     }
 
     @Override
@@ -223,8 +231,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidInteger(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidInteger(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isInteger();
     }
 
     @Override
@@ -234,19 +242,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Integer getInteger(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getInteger(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getInteger();
     }
 
     @Override
     public Collection<Integer> getAllIntegers(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Integer> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getInteger(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Integer> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getInteger());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getInteger());
     }
 
     @Override
@@ -256,8 +267,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidBigInteger(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidInteger(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isBigInteger();
     }
 
     @Override
@@ -267,19 +278,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public BigInteger getBigInteger(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getBigInteger(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getBigInteger();
     }
 
     @Override
     public Collection<BigInteger> getAllBigIntegers(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<BigInteger> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getBigInteger(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<BigInteger> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getBigInteger());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getBigInteger());
     }
 
     @Override
@@ -289,8 +303,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidLong(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidLong(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isLong();
     }
 
     @Override
@@ -300,19 +314,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Long getLong(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getLong(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getLong();
     }
 
     @Override
     public Collection<Long> getAllLongs(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Long> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getLong(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Long> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getLong());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getLong());
     }
 
     @Override
@@ -322,8 +339,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidFloat(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidFloat(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isFloat();
     }
 
     @Override
@@ -333,19 +350,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Float getFloat(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getFloat(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getFloat();
     }
 
     @Override
     public Collection<Float> getAllFloats(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Float> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getFloat(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Float> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getFloat());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getFloat());
     }
 
     @Override
@@ -355,8 +375,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidDouble(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidDouble(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isDouble();
     }
 
     @Override
@@ -366,19 +386,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public Double getDouble(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getDouble(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getDouble();
     }
 
     @Override
     public Collection<Double> getAllDoubles(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Double> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getDouble(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<Double> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getDouble());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getDouble());
     }
 
     @Override
@@ -388,8 +411,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidBigDecimal(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidBigDecimal(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isBigDecimal();
     }
 
     @Override
@@ -399,19 +422,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public BigDecimal getBigDecimal(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getBigDecimal(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getBigDecimal();
     }
 
     @Override
     public Collection<BigDecimal> getAllBigDecimals(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<BigDecimal> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getBigDecimal(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<BigDecimal> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getBigDecimal());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getBigDecimal());
     }
 
     @Override
@@ -421,8 +447,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidString(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidString(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isString();
     }
 
     @Override
@@ -432,19 +458,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public String getString(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getString(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getString();
     }
 
     @Override
     public Collection<String> getAllStrings(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<String> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getString(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<String> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getString());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getString());
     }
 
     @Override
@@ -454,8 +483,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidTime(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidTime(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isTime();
     }
 
     @Override
@@ -465,19 +494,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public LocalTime getTime(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getTime(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getTime();
     }
 
     @Override
     public Collection<LocalTime> getAllTimes(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<LocalTime> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getTime(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<LocalTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getTime());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getTime());
     }
 
     @Override
@@ -487,8 +519,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidDate(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidDate(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isDate();
     }
 
     @Override
@@ -498,19 +530,22 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public LocalDate getDate(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getDate(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getDate();
     }
 
     @Override
     public Collection<LocalDate> getAllDates(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<LocalDate> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getDate(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<LocalDate> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getDate());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getDate());
     }
 
     @Override
@@ -520,8 +555,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public boolean isValidDateTime(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidDateTime(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.isDateTime();
     }
 
     @Override
@@ -531,57 +566,25 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
 
     @Override
     public LocalDateTime getDateTime(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getDateTime(index);
+        PlcValue fieldInternal = getFieldIndexInternal(name, index);
+        return fieldInternal.getDateTime();
     }
 
     @Override
     public Collection<LocalDateTime> getAllDateTimes(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<LocalDateTime> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getDateTime(i));
+        PlcValue fieldInternal = getFieldInternal(name);
+        if(fieldInternal instanceof PlcList) {
+            PlcList plcList = (PlcList) fieldInternal;
+            List<LocalDateTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            for (PlcValue plcValue : plcList.getList()) {
+                items.add(plcValue.getDateTime());
+            }
+            return items;
         }
-        return values;
+        return Collections.singletonList(fieldInternal.getDateTime());
     }
 
-    @Override
-    public boolean isValidByteArray(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidByteArray(0);
-    }
-
-    @Override
-    public boolean isValidByteArray(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.isValidByteArray(index);
-    }
-
-    @Override
-    public Byte[] getByteArray(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getByteArray(0);
-    }
-
-    @Override
-    public Byte[] getByteArray(String name, int index) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        return fieldInternal.getByteArray(index);
-    }
-
-    @Override
-    public Collection<Byte[]> getAllByteArrays(String name) {
-        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
-        int num = fieldInternal.getNumberOfValues();
-        List<Byte[]> values = new ArrayList<>(num);
-        for (int i = 0; i < num; i++) {
-            values.add(fieldInternal.getByteArray(i));
-        }
-        return values;
-    }
-
-    protected BaseDefaultFieldItem getFieldInternal(String name) {
+    protected PlcValue getFieldInternal(String name) {
         Objects.requireNonNull(name, "Name argument required");
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {
@@ -592,6 +595,21 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         }
         // No need to check for "null" as this is already captured by the constructors.
         return values.get(name).getValue();
+    }
+
+    protected PlcValue getFieldIndexInternal(String name, int index) {
+        final PlcValue field = getFieldInternal(name);
+        if(field instanceof PlcList) {
+            PlcList plcList = (PlcList) field;
+            if(index > (plcList.getNumberOfValues() - 1)) {
+                return null;
+            }
+            return plcList.getIndex(index);
+        }
+        if(index != 0) {
+            return null;
+        }
+        return field;
     }
 
 }

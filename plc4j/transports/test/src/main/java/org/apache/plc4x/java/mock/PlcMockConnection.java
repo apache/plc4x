@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
@@ -38,7 +39,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +122,7 @@ public class PlcMockConnection implements PlcConnection, PlcReader, PlcWriter, P
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending read request to MockDevice");
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> response = readRequest.getFieldNames().stream()
+            Map<String, Pair<PlcResponseCode, PlcValue>> response = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     name -> device.read(((MockField) readRequest.getField(name)).getFieldQuery())

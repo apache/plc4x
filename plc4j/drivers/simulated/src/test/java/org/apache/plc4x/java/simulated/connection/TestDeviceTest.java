@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.api.value.PlcLong;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class TestDeviceTest {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("RANDOM/foo:INTEGER");
 
-        Optional<BaseDefaultFieldItem> value = device.get(field);
+        Optional<PlcValue> value = device.get(field);
 
         assertTrue(value.isPresent());
     }
@@ -43,14 +43,14 @@ public class TestDeviceTest {
         TestDevice device = new TestDevice("foobar");
         TestField field = TestField.of("STATE/bar:INTEGER");
 
-        Optional<BaseDefaultFieldItem> value = device.get(field);
+        Optional<PlcValue> value = device.get(field);
         assertFalse(value.isPresent());
 
-        device.set(field, new DefaultLongFieldItem((long) 42));
+        device.set(field, new PlcLong(42));
         value = device.get(field);
         assertTrue(value.isPresent());
-        BaseDefaultFieldItem fieldItem = value.get();
-        assertEquals(42L, (long) fieldItem.getLong(0));
+        PlcValue fieldItem = value.get();
+        assertEquals(42L, fieldItem.getLong());
     }
 
 }

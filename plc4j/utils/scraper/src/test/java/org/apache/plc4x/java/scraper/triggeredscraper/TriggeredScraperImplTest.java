@@ -22,8 +22,8 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.api.value.PlcBoolean;
+import org.apache.plc4x.java.api.value.PlcLong;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
@@ -80,8 +80,8 @@ public class TriggeredScraperImplTest {
     public void scrapeMultipleTargets() throws ScraperException, IOException, InterruptedException {
         // Prepare the Mocking
         // Scrate Jobs 1 and 2
-        when(mockDevice1.read(eq("%DB810:DBB0:USINT"))).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(1L)));
-        when(mockDevice2.read(eq("%DB810:DBB0:USINT"))).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(2L)));
+        when(mockDevice1.read(eq("%DB810:DBB0:USINT"))).thenReturn(Pair.of(PlcResponseCode.OK, new PlcLong(1L)));
+        when(mockDevice2.read(eq("%DB810:DBB0:USINT"))).thenReturn(Pair.of(PlcResponseCode.OK, new PlcLong(2L)));
         // Trigger Jobs
         // Trigger var
         Random rand = new Random();
@@ -90,7 +90,7 @@ public class TriggeredScraperImplTest {
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 boolean trigger = rand.nextBoolean();
                 System.out.println(trigger);
-                return Pair.of(PlcResponseCode.OK, new DefaultBooleanFieldItem(trigger));
+                return Pair.of(PlcResponseCode.OK, new PlcBoolean(trigger));
             }
         });
         when(mockDevice2.read(eq("%M0.3:BOOL"))).thenAnswer(new Answer<Object>() {
@@ -98,12 +98,12 @@ public class TriggeredScraperImplTest {
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 boolean trigger = rand.nextBoolean();
                 System.out.println("\t\t" + trigger);
-                return Pair.of(PlcResponseCode.OK, new DefaultBooleanFieldItem(trigger));
+                return Pair.of(PlcResponseCode.OK, new PlcBoolean(trigger));
             }
         });
         // Read var
-        when(mockDevice1.read(eq("%DB810:DBW0:INT"))).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(3L)));
-        when(mockDevice2.read(eq("%DB810:DBW0:INT"))).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(4L)));
+        when(mockDevice1.read(eq("%DB810:DBW0:INT"))).thenReturn(Pair.of(PlcResponseCode.OK, new PlcLong(3L)));
+        when(mockDevice2.read(eq("%DB810:DBW0:INT"))).thenReturn(Pair.of(PlcResponseCode.OK, new PlcLong(4L)));
 
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("src/test/resources/mock-scraper-config.yml", ScraperConfigurationClassicImpl.class);
         TriggerCollector triggerCollector = new TriggerCollectorImpl(driverManager);

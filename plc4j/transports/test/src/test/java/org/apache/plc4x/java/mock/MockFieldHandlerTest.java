@@ -104,8 +104,4 @@ class MockFieldHandlerTest implements WithAssertions {
         assertThat(SUT.encodeDateTime(plcField, new Object[0])).isNotNull();
     }
 
-    @Test
-    void encodeByteArray() {
-        assertThat(SUT.encodeByteArray(plcField, new Object[0])).isNotNull();
-    }
 }

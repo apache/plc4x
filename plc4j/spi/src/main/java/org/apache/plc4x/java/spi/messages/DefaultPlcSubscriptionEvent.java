@@ -22,7 +22,7 @@ package org.apache.plc4x.java.spi.messages;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -32,7 +32,7 @@ public class DefaultPlcSubscriptionEvent extends DefaultPlcReadResponse implemen
 
     public final Instant timestamp;
 
-    public DefaultPlcSubscriptionEvent(Instant timestamp, Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields) {
+    public DefaultPlcSubscriptionEvent(Instant timestamp, Map<String, Pair<PlcResponseCode, PlcValue>> fields) {
         super(null, fields);
         this.timestamp = timestamp;
     }

@@ -21,13 +21,17 @@ package org.apache.plc4x.java.s7.netty.util;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.spi.messages.items.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +47,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeBoolean(PlcField field, Object[] values) {
+    public PlcValue encodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         // All of these types are declared as Bit or Bit-String types.
         switch (s7Field.getDataType()) {
@@ -59,7 +63,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeByte(PlcField field, Object[] values) {
+    public PlcValue encodeByte(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         // All of these types are declared as Bit or Bit-String types.
         switch (s7Field.getDataType()) {
@@ -74,7 +78,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeShort(PlcField field, Object[] values) {
+    public PlcValue encodeShort(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case WORD:
@@ -87,7 +91,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeInteger(PlcField field, Object[] values) {
+    public PlcValue encodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case DWORD:
@@ -100,7 +104,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeBigInteger(PlcField field, Object[] values) {
+    public PlcValue encodeBigInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case DWORD:
@@ -113,7 +117,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeLong(PlcField field, Object[] values) {
+    public PlcValue encodeLong(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case LWORD:
@@ -126,7 +130,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeFloat(PlcField field, Object[] values) {
+    public PlcValue encodeFloat(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case REAL:
@@ -137,7 +141,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeDouble(PlcField field, Object[] values) {
+    public PlcValue encodeDouble(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case LREAL:
@@ -148,7 +152,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeString(PlcField field, Object[] values) {
+    public PlcValue encodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case CHAR:
@@ -162,7 +166,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeTime(PlcField field, Object[] values) {
+    public PlcValue encodeTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case TIME:
@@ -173,7 +177,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeDate(PlcField field, Object[] values) {
+    public PlcValue encodeDate(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case DATE:
@@ -184,7 +188,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     }
 
     @Override
-    public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
+    public PlcValue encodeDateTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case DATE_AND_TIME:
@@ -194,7 +198,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    private BaseDefaultFieldItem internalEncodeBoolean(PlcField field, Object[] values) {
+    private PlcValue internalEncodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case BOOL:
@@ -242,101 +246,105 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                         " is not assignable to " + s7Field.getDataType().name() + " fields.");
             }
         }
-        return new DefaultBooleanFieldItem(booleanValues.toArray(new Boolean[0]));
+        if(booleanValues.size() == 1) {
+            return new PlcBoolean(booleanValues.get(0));
+        } else {
+            return new PlcList(booleanValues);
+        }
     }
 
-    private BaseDefaultFieldItem internalEncodeInteger(PlcField field, Object[] values) {
+    private PlcValue internalEncodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
 
         // Initialize the constraints.
         BigInteger minValue;
         BigInteger maxValue;
-        Class<? extends BaseDefaultFieldItem> fieldType;
+        Class<? extends PlcValue> fieldType;
         Class<?> valueType;
         Object[] castedValues;
         switch (s7Field.getDataType()) {
             case BYTE:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = DefaultByteFieldItem.class;
-                valueType = Byte[].class;
+                fieldType = PlcInteger.class;
+                valueType = Byte.class;
                 castedValues = new Byte[values.length];
                 break;
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = DefaultShortFieldItem.class;
-                valueType = Short[].class;
+                fieldType = PlcInteger.class;
+                valueType = Short.class;
                 castedValues = new Short[values.length];
                 break;
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = DefaultIntegerFieldItem.class;
-                valueType = Integer[].class;
+                fieldType = PlcInteger.class;
+                valueType = Integer.class;
                 castedValues = new Integer[values.length];
                 break;
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = DefaultLongFieldItem.class;
-                valueType = Long[].class;
+                fieldType = PlcLong.class;
+                valueType = Long.class;
                 castedValues = new Long[values.length];
                 break;
             case SINT:
                 minValue = BigInteger.valueOf((long) Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE);
-                fieldType = DefaultByteFieldItem.class;
-                valueType = Byte[].class;
+                fieldType = PlcInteger.class;
+                valueType = Byte.class;
                 castedValues = new Byte[values.length];
                 break;
             case USINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf((long) Byte.MAX_VALUE * 2);
-                fieldType = DefaultShortFieldItem.class;
-                valueType = Short[].class;
+                fieldType = PlcInteger.class;
+                valueType = Short.class;
                 castedValues = new Short[values.length];
                 break;
             case INT:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
-                fieldType = DefaultShortFieldItem.class;
-                valueType = Short[].class;
+                fieldType = PlcInteger.class;
+                valueType = Short.class;
                 castedValues = new Short[values.length];
                 break;
             case UINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
-                fieldType = DefaultIntegerFieldItem.class;
-                valueType = Integer[].class;
+                fieldType = PlcInteger.class;
+                valueType = Integer.class;
                 castedValues = new Integer[values.length];
                 break;
             case DINT:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
-                fieldType = DefaultIntegerFieldItem.class;
-                valueType = Integer[].class;
+                fieldType = PlcInteger.class;
+                valueType = Integer.class;
                 castedValues = new Integer[values.length];
                 break;
             case UDINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(((long) Integer.MAX_VALUE) * 2);
-                fieldType = DefaultLongFieldItem.class;
-                valueType = Long[].class;
+                fieldType = PlcLong.class;
+                valueType = Long.class;
                 castedValues = new Long[values.length];
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = DefaultLongFieldItem.class;
-                valueType = Long[].class;
+                fieldType = PlcLong.class;
+                valueType = Long.class;
                 castedValues = new Long[values.length];
                 break;
             case ULINT:
                 minValue = BigInteger.valueOf((long) 0);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf((long) 2));
-                fieldType = DefaultBigIntegerFieldItem.class;
-                valueType = BigInteger[].class;
+                fieldType = PlcBigInteger.class;
+                valueType = BigInteger.class;
                 castedValues = new BigInteger[values.length];
                 break;
             default:
@@ -367,13 +375,13 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value.toString() + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
-            if (valueType == Byte[].class) {
+            if (valueType == Byte.class) {
                 castedValues[i] = value.byteValue();
-            } else if (valueType == Short[].class) {
+            } else if (valueType == Short.class) {
                 castedValues[i] = value.shortValue();
-            } else if (valueType == Integer[].class) {
+            } else if (valueType == Integer.class) {
                 castedValues[i] = value.intValue();
-            } else if (valueType == Long[].class) {
+            } else if (valueType == Long.class) {
                 castedValues[i] = value.longValue();
             } else {
                 castedValues[i] = value;
@@ -382,34 +390,38 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
+            if(castedValues.length == 1) {
+                return fieldType.getDeclaredConstructor(valueType).newInstance(castedValues[0]);
+            } else {
+                return new PlcList(Arrays.asList(castedValues));
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }
     }
 
-    private BaseDefaultFieldItem internalEncodeFloatingPoint(PlcField field, Object[] values) {
+    private PlcValue internalEncodeFloatingPoint(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
 
         // Initialize the constraints.
         Double minValue;
         Double maxValue;
-        Class<? extends BaseDefaultFieldItem> fieldType;
+        Class<? extends PlcValue> fieldType;
         Class<?> valueType;
         Object[] castedValues;
         switch (s7Field.getDataType()) {
             case REAL:
                 minValue = (double) -Float.MAX_VALUE;
                 maxValue = (double) Float.MAX_VALUE;
-                fieldType = DefaultFloatFieldItem.class;
-                valueType = Float[].class;
+                fieldType = PlcFloat.class;
+                valueType = Float.class;
                 castedValues = new Float[values.length];
                 break;
             case LREAL:
                 minValue = -Double.MAX_VALUE;
                 maxValue = Double.MAX_VALUE;
-                fieldType = DefaultDoubleFieldItem.class;
-                valueType = Double[].class;
+                fieldType = PlcDouble.class;
+                valueType = Double.class;
                 castedValues = new Double[values.length];
                 break;
             default:
@@ -439,7 +451,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
-            if (valueType == Float[].class) {
+            if (valueType == Float.class) {
                 castedValues[i] = value.floatValue();
             } else {
                 castedValues[i] = value;
@@ -448,13 +460,17 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
         // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
+            if(castedValues.length == 1) {
+                return fieldType.getDeclaredConstructor(valueType).newInstance(castedValues[0]);
+            } else {
+                return new PlcList(Arrays.asList(castedValues));
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
         }
     }
 
-    private BaseDefaultFieldItem internalEncodeString(PlcField field, Object[] values) {
+    private PlcValue internalEncodeString(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
 
         // Initialize the constraints.
@@ -549,18 +565,22 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
 
         // Create the field item.
-        return new DefaultStringFieldItem(stringValues.toArray(new String[0]));
+        if(stringValues.size() == 1) {
+            return new PlcString(stringValues.get(0));
+        } else {
+            return new PlcList(stringValues);
+        }
     }
 
-    private BaseDefaultFieldItem internalEncodeTemporal(PlcField field, Object[] values) {
+    private PlcValue internalEncodeTemporal(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case TIME:
-                // TODO: I think I should implement this some time ...
+                return new PlcTime((LocalTime) values[0]);
             case DATE:
-                // TODO: I think I should implement this some time ...
+                return new PlcDate((LocalDate) values[0]);
             case DATE_AND_TIME:
-                return new DefaultLocalDateTimeFieldItem();
+                return new PlcDateTime((LocalDateTime) values[0]);
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + s7Field.getDataType().name() + " fields.");

@@ -41,8 +41,9 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.apache.plc4x.java.ads.protocol.util.LittleEndianDecoder.decodeData;
 import static org.apache.plc4x.java.ads.protocol.util.LittleEndianEncoder.encodeData;
 
 public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
@@ -152,8 +152,13 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         IndexGroup indexGroup = IndexGroup.of(directAdsField.getIndexGroup());
         IndexOffset indexOffset = IndexOffset.of(directAdsField.getIndexOffset());
 
-        BaseDefaultFieldItem fieldItem = writeRequest.getFieldItems().get(0);
-        Object[] values = fieldItem.getValues();
+        Object[] values;
+        PlcValue fieldItem = writeRequest.getFieldItems().get(0);
+        if(fieldItem instanceof PlcList) {
+            values = ((PlcList) fieldItem).getList().toArray(new Object[0]);
+        } else {
+            values = new Object[] {fieldItem.getObject()};
+        }
 
         byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
         int bytesToBeWritten = bytes.length;
@@ -297,10 +302,10 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData().getBytes();
-        BaseDefaultFieldItem<?> fieldItem = decodeData(field.getAdsDataType(), bytes);
+        PlcValue fieldItem = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
-        Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> responseItems = plcReadRequest.getFieldNames()
+        Map<String, Pair<PlcResponseCode, PlcValue>> responseItems = plcReadRequest.getFieldNames()
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
@@ -308,6 +313,10 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             ));
 
         return new DefaultPlcReadResponse(plcReadRequest, responseItems);
+    }
+
+    private PlcValue decodeData(AdsDataType dataType, byte[] bytes) {
+        return null;
     }
 
     @SuppressWarnings("unchecked")

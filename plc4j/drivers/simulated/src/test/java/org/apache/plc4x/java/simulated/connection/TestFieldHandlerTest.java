@@ -125,9 +125,4 @@ class TestFieldHandlerTest implements WithAssertions {
         assertThat(SUT.encodeDateTime(plcField, new LocalDateTime[0])).isNotNull();
     }
 
-    @Test
-    void encodeByteArray() {
-        when(plcField.getDataType()).thenReturn((Class) Byte[].class);
-        assertThat(SUT.encodeByteArray(plcField, new Byte[0])).isNotNull();
-    }
 }
