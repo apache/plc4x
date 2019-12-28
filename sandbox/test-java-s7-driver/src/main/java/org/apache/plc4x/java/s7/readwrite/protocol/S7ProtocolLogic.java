@@ -47,6 +47,7 @@ import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.optimizer.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +59,11 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
+ * So we need to limit those.
+ * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
+ */
 public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
@@ -72,6 +78,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     private S7ControllerType controllerType;
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    private RequestTransactionManager tm;
 
     @Override public void setConfiguration(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
@@ -84,6 +91,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
+
+        // Initialize Transaction Manager
+        this.tm = new RequestTransactionManager(Math.min(this.maxAmqCallee, this.maxAmqCaller));
     }
 
     @Override
@@ -152,23 +162,27 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 new S7PayloadReadVarRequest()),
             true, (short) tpduId));
 
-        context.sendRequest(tpktPacket)
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageResponse)
-            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
-            .check(p -> p.getTpduReference() == tpduId)
-            .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
-            .handle(p -> {
-                try {
-                    future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
-                } catch (PlcProtocolException e) {
-                    logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
-                }
-            });
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            context.sendRequest(tpktPacket)
+                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p.getPayload() instanceof COTPPacketData)
+                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                .check(p -> p.getPayload() instanceof S7MessageResponse)
+                .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+                .check(p -> p.getTpduReference() == tpduId)
+                .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
+                .handle(p -> {
+                    try {
+                        future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
+                    } catch (PlcProtocolException e) {
+                        logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
+                    }
+                    transaction.endRequest();
+                });
+        });
         return future;
     }
 
@@ -191,23 +205,27 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 new S7PayloadWriteVarRequest(payloadItems.toArray(new S7VarPayloadDataItem[0]))),
             true, (short) tpduId));
 
-        context.sendRequest(tpktPacket)
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageResponse)
-            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
-            .check(p -> p.getTpduReference() == tpduId)
-            .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
-            .handle(p -> {
-                try {
-                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
-                } catch (PlcProtocolException e) {
-                    logger.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
-                }
-            });
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> {
+            context.sendRequest(tpktPacket)
+                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p.getPayload() instanceof COTPPacketData)
+                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                .check(p -> p.getPayload() instanceof S7MessageResponse)
+                .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+                .check(p -> p.getTpduReference() == tpduId)
+                .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
+                .handle(p -> {
+                    try {
+                        future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
+                    } catch (PlcProtocolException e) {
+                        logger.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
+                    }
+                    transaction.endRequest();
+                });
+        });
         return future;
     }
 
