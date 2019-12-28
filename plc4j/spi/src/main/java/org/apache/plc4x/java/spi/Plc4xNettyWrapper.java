@@ -156,8 +156,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.onConnect(new DefaultConversationContext<>(ctx));
         } else if (evt instanceof DisconnectEvent) {
             this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx));
-        }
-        if (evt instanceof CloseConnectionEvent) {
+        } else if (evt instanceof CloseConnectionEvent) {
             this.protocolBase.close(new DefaultConversationContext<>(ctx));
         } else {
             super.userEventTriggered(ctx, evt);
