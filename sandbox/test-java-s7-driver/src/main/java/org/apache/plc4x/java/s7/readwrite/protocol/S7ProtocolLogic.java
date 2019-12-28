@@ -180,9 +180,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
         for (String fieldName : request.getFieldNames()) {
             final S7Field field = (S7Field) request.getField(fieldName);
-/*            final BaseDefaultFieldItem fieldItem = request.getFieldItem(fieldName);
+            final PlcValue fieldItem = request.getFieldItem(fieldName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
-            payloadItems.add(serializeFieldItem(field, fieldItem));*/
+            payloadItems.add(serializeFieldItem(field, fieldItem));
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
@@ -213,7 +213,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
-        // TODO Implement Closing on Protocl Level
+        // TODO Implement Closing on Protocol Level
     }
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
@@ -307,7 +307,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             if (responseCode == PlcResponseCode.OK) {
                 fieldItem = parseFieldItem(field, data);
             }
-            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair(responseCode, fieldItem);
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, fieldItem);
             values.put(fieldName, result);
             index++;
         }
@@ -345,8 +345,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             DataTransportSize transportSize = (field.getDataType().getDataProtocolId() == 1) ?
                 DataTransportSize.BIT : DataTransportSize.BYTE_WORD_DWORD;
             WriteBuffer writeBuffer = DataItemIO.serialize(plcValue, field.getDataType().getDataProtocolId());
-            byte[] data = writeBuffer.getData();
-            return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
+            if(writeBuffer != null) {
+                byte[] data = writeBuffer.getData();
+                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
+            }
         } catch (ParseException e) {
             logger.warn(String.format("Error serializing field item of type: '%s'", field.getDataType().name()), e);
         }
