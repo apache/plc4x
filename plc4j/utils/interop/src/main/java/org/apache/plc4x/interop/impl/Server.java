@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.spi.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.spi.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.api.value.PlcLong;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.MockDevice;
 import org.apache.plc4x.java.mock.PlcMockConnection;
 import org.apache.thrift.server.TServer;
@@ -64,28 +64,35 @@ public class Server {
     }
 
     private static class MyMockDevice implements MockDevice {
-        @Override public Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery) {
-            return Pair.of(PlcResponseCode.OK, new DefaultLongFieldItem(100L));
+        @Override
+        public Pair<PlcResponseCode, PlcValue> read(String fieldQuery) {
+            return Pair.of(PlcResponseCode.OK, new PlcLong(100L));
         }
 
-        @Override public PlcResponseCode write(String fieldQuery, Object value) {
+        @Override
+        public PlcResponseCode write(String fieldQuery, Object value) {
             return null;
         }
 
-        @Override public Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery) {
+        @Override
+        public Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery) {
             return null;
         }
 
-        @Override public void unsubscribe() {
+        @Override
+        public void unsubscribe() {
 
         }
 
-        @Override public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        @Override
+        public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
             return null;
         }
 
-        @Override public void unregister(PlcConsumerRegistration registration) {
+        @Override
+        public void unregister(PlcConsumerRegistration registration) {
 
         }
     }
+
 }

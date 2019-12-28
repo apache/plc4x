@@ -342,7 +342,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                     });
                 } else if (internalPlcFieldRequest instanceof InternalPlcWriteRequest && splitConfig.splitWrite) {
                     InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) internalPlcFieldRequest;
-                    internalPlcWriteRequest.getNamedFieldTriples().forEach(fieldItemTriple -> {
+                    internalPlcWriteRequest.getNamedFieldTriples().forEach(valueTriple -> {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
                         Integer tdpu = correlationIdGenerator.getAndIncrement();
@@ -357,7 +357,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                                     tryFinish(tdpu, internalPlcResponse, in.getResponseFuture());
                                 }
                             });
-                        PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(writer, fieldItemTriple, tdpu), correlatedCompletableFuture);
+                        PlcRequestContainer<CorrelatedPlcWriteRequest, InternalPlcResponse> correlatedPlcRequestContainer = new PlcRequestContainer<>(CorrelatedPlcWriteRequest.of(writer, valueTriple, tdpu), correlatedCompletableFuture);
                         correlationToParentContainer.put(tdpu, in);
                         queue.add(correlatedPlcRequestContainer, subPromise);
                         if (!tdpus.add(tdpu)) {
@@ -520,9 +520,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             this.tdpu = tdpu;
         }
 
-        public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, PlcValue> fieldItemTriple, int tdpu) {
+        public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, PlcValue> plcValueTriple, int tdpu) {
             LinkedHashMap<String, Pair<PlcField, PlcValue>> fields = new LinkedHashMap<>();
-            fields.put(fieldItemTriple.getLeft(), Pair.of(fieldItemTriple.getMiddle(), fieldItemTriple.getRight()));
+            fields.put(plcValueTriple.getLeft(), Pair.of(plcValueTriple.getMiddle(), plcValueTriple.getRight()));
             return new CorrelatedPlcWriteRequest(writer, fields, tdpu);
         }
 

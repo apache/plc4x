@@ -478,8 +478,8 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
                 } else {
                     value = -1;
                 }
-                PlcValue fieldItem = new PlcLong(value);
-                values.put(fieldName, new ImmutablePair<>(responseCode, fieldItem));
+                PlcValue plcValue = new PlcLong(value);
+                values.put(fieldName, new ImmutablePair<>(responseCode, plcValue));
             }
             InternalPlcReadResponse response = new DefaultPlcReadResponse(request, values);
             plcRequestContainer.getResponseFuture().complete(response);

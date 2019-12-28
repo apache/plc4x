@@ -32,67 +32,67 @@ public class MockFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeByte(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeLong(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeDouble(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeString(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeTime(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeDate(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
     @Override
     public PlcValue encodeDateTime(PlcField field, Object[] values) {
-        return new MockFieldItem(values);
+        return new MockPlcValue(values);
     }
 
 }

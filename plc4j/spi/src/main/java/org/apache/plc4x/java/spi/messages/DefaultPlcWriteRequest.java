@@ -82,12 +82,12 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         return fields.values().stream().map(Pair::getKey).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    public PlcValue getFieldItem(String name) {
+    public PlcValue getPlcValue(String name) {
         return fields.get(name).getValue();
     }
 
     @Override
-    public List<PlcValue> getFieldItems() {
+    public List<PlcValue> getPlcValues() {
         return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -230,11 +230,11 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
                     throw new IllegalArgumentException("Invalid class found " + value.getClass() + ". should all be " + checkedClazz);
                 }
             }
-            BiFunction<PlcField, Object[], PlcValue> plcFieldFieldItemBiFunction = handlerMap.get(checkedClazz);
-            if (plcFieldFieldItemBiFunction == null) {
+            BiFunction<PlcField, Object[], PlcValue> plcFieldPlcValueBiFunction = handlerMap.get(checkedClazz);
+            if (plcFieldPlcValueBiFunction == null) {
                 throw new IllegalArgumentException("no field handler for " + checkedClazz + " found");
             }
-            return addItem(name, fieldQuery, values, plcFieldFieldItemBiFunction);
+            return addItem(name, fieldQuery, values, plcFieldPlcValueBiFunction);
         }
 
         @Override
@@ -244,9 +244,9 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
                 // Compile the query string.
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
                 // Encode the payload.
-                // TODO: Depending on the field type, handle the FieldItem creation differently.
-                PlcValue fieldItem = builderItem.encoder.apply(parsedField, builderItem.values);
-                parsedFields.put(name, new ImmutablePair<>(parsedField, fieldItem));
+                // TODO: Depending on the field type, handle the PlcValue creation differently.
+                PlcValue value = builderItem.encoder.apply(parsedField, builderItem.values);
+                parsedFields.put(name, new ImmutablePair<>(parsedField, value));
             });
             return new DefaultPlcWriteRequest(writer, parsedFields);
         }

@@ -21,11 +21,11 @@ package org.apache.plc4x.edgent.mock;
 
 import org.apache.plc4x.java.api.value.PlcValueAdapter;
 
-public class MockFieldItem extends PlcValueAdapter {
+public class MockPlcValue extends PlcValueAdapter {
 
     private Object[] values;
 
-    public MockFieldItem(Object... values) {
+    public MockPlcValue(Object... values) {
         this.values = values;
     }
 

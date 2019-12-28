@@ -176,7 +176,6 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-
     <!-- Make sure this is built before this module -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>

@@ -75,7 +75,7 @@ public class TestDevice {
                 changeOfStateSubscriptions.values().stream()
                     .filter(pair -> pair.getKey().equals(field))
                     .map(Pair::getValue)
-                    .forEach(baseDefaultFieldItemConsumer -> baseDefaultFieldItemConsumer.accept(value));
+                    .forEach(baseDefaultPlcValueConsumer -> baseDefaultPlcValueConsumer.accept(value));
                 state.put(field, value);
                 return;
             case STDOUT:
@@ -140,11 +140,11 @@ public class TestDevice {
 
     public void addCyclicSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, TestField plcField, Duration duration) {
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            PlcValue baseDefaultFieldItem = state.get(plcField);
-            if (baseDefaultFieldItem == null) {
+            PlcValue baseDefaultPlcValue = state.get(plcField);
+            if (baseDefaultPlcValue == null) {
                 return;
             }
-            consumer.accept(baseDefaultFieldItem);
+            consumer.accept(baseDefaultPlcValue);
         }, duration.toMillis(), duration.toMillis(), TimeUnit.MILLISECONDS);
         cyclicSubscriptions.put(handle, scheduledFuture);
     }
@@ -156,11 +156,11 @@ public class TestDevice {
     public void addEventSubscription(Consumer<PlcValue> consumer, PlcSubscriptionHandle handle, TestField plcField) {
         Future<?> submit = pool.submit(() -> {
             while (!Thread.currentThread().isInterrupted()) {
-                PlcValue baseDefaultFieldItem = state.get(plcField);
-                if (baseDefaultFieldItem == null) {
+                PlcValue baseDefaultPlcValue = state.get(plcField);
+                if (baseDefaultPlcValue == null) {
                     continue;
                 }
-                consumer.accept(baseDefaultFieldItem);
+                consumer.accept(baseDefaultPlcValue);
                 try {
                     TimeUnit.SECONDS.sleep((long) (Math.random() * 10));
                 } catch (InterruptedException ignore) {

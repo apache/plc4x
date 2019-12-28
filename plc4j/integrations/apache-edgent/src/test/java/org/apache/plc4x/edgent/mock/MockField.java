@@ -23,24 +23,24 @@ import org.apache.plc4x.java.api.model.PlcField;
 public class MockField implements PlcField {
 
     private final String address;
-    private final MockFieldItem fieldItem;
+    private final MockPlcValue plcValue;
 
     public MockField(String address) {
         this.address = address;
-        this.fieldItem = null;
+        this.plcValue = null;
     }
 
-    public MockField(String address, MockFieldItem fieldItem) {
+    public MockField(String address, MockPlcValue plcValue) {
         this.address = address;
-        this.fieldItem = fieldItem;
+        this.plcValue = plcValue;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public MockFieldItem getFieldItem() {
-        return fieldItem;
+    public MockPlcValue getPlcValue() {
+        return plcValue;
     }
 
     @Override

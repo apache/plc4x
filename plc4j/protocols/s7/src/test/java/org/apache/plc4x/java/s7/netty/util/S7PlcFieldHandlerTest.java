@@ -277,11 +277,11 @@ class S7PlcFieldHandlerTest {
             for (InputTypes javaType : InputTypes.values()) {
                 Object[] testValues = javaType.values;
 
-                PlcValue fieldItem;
+                PlcValue value;
                 try {
-                    fieldItem = javaType.fieldItemType.getDeclaredConstructor(testValues[0].getClass()).newInstance(testValues[0]);
+                    value = javaType.valueType.getDeclaredConstructor(testValues[0].getClass()).newInstance(testValues[0]);
                 } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
-                    throw new PlcRuntimeException("Error initializing field class " + javaType.fieldItemType.getSimpleName(), e);
+                    throw new PlcRuntimeException("Error initializing field class " + javaType.valueType.getSimpleName(), e);
                 }
 
                 Stream<Arguments> curValues;
@@ -339,11 +339,11 @@ class S7PlcFieldHandlerTest {
         DATE(PlcDate.class, new LocalDate[]{LocalDate.now(), LocalDate.MIN, LocalDate.MAX}),
         DATETIME(PlcDateTime.class, new LocalDateTime[]{LocalDateTime.now(), LocalDateTime.MIN, LocalDateTime.MAX});
 
-        private final Class<? extends PlcValue> fieldItemType;
+        private final Class<? extends PlcValue> valueType;
         private final Object[] values;
 
-        InputTypes(Class<? extends PlcValue> fieldItemType, Object[] values) {
-            this.fieldItemType = fieldItemType;
+        InputTypes(Class<? extends PlcValue> valueType, Object[] values) {
+            this.valueType = valueType;
             this.values = values;
         }
     }
@@ -352,8 +352,8 @@ class S7PlcFieldHandlerTest {
                         BiFunction<PlcField, Object[], PlcValue> encoder) {
         boolean success = expectedSuccess.contains(name);
         try {
-            PlcValue fieldItem = encoder.apply(field, values);
-            assertNotNull(fieldItem, "A FieldItem instance should have been returned for testcase " + name);
+            PlcValue plcValue = encoder.apply(field, values);
+            assertNotNull(plcValue, "A PlcValue instance should have been returned for testcase " + name);
             if(!success) {
                 fail("Expected to fail for testcase " + name);
             }

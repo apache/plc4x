@@ -91,7 +91,7 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
         Map<String, Pair<PlcResponseCode, PlcValue>> fields = new LinkedHashMap<>();
         for (String fieldName : readRequest.getFieldNames()) {
             PlcField field = readRequest.getField(fieldName);
-            fields.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, getFieldItem(field)));
+            fields.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, getPlcValue(field)));
         }
         PlcReadResponse response = new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, fields);
         return CompletableFuture.completedFuture(response);
@@ -116,7 +116,7 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
         Map<String, PlcResponseCode> fields = new LinkedHashMap<>();
         for (String fieldName : defaultPlcWriteRequest.getFieldNames()) {
             PlcField field = defaultPlcWriteRequest.getField(fieldName);
-            setFieldItem(field, defaultPlcWriteRequest.getFieldItem(fieldName));
+            setPlcValue(field, defaultPlcWriteRequest.getPlcValue(fieldName));
             fields.put(fieldName, PlcResponseCode.OK);
         }
         PlcWriteResponse response = new DefaultPlcWriteResponse(defaultPlcWriteRequest, fields);
@@ -124,19 +124,19 @@ public class MockConnection extends org.apache.plc4x.java.mock.connection.MockCo
         return CompletableFuture.completedFuture(response);
     }
 
-    public void setFieldItem(PlcField field, PlcValue fieldItem) {
-        dataValueMap.put(field, fieldItem);
+    public void setPlcValue(PlcField plcField, PlcValue plcValue) {
+        dataValueMap.put(plcField, plcValue);
     }
 
-    public PlcValue getFieldItem(PlcField field) {
-        return dataValueMap.get(field);
+    public PlcValue getPlcValue(PlcField plcField) {
+        return dataValueMap.get(plcField);
     }
 
-    public Map<PlcField, PlcValue> getAllFieldItems() {
+    public Map<PlcField, PlcValue> getAllPlcValues() {
         return dataValueMap;
     }
 
-    public void clearAllFieldItems() {
+    public void clearAllPlcValues() {
         dataValueMap.clear();
     }
 

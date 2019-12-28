@@ -142,11 +142,11 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
         Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            Optional<PlcValue> fieldItemOptional = device.get(field);
+            Optional<PlcValue> valueOptional = device.get(field);
             ImmutablePair<PlcResponseCode, PlcValue> fieldPair;
-            boolean present = fieldItemOptional.isPresent();
+            boolean present = valueOptional.isPresent();
             fieldPair = present
-                ? new ImmutablePair<>(PlcResponseCode.OK, fieldItemOptional.get())
+                ? new ImmutablePair<>(PlcResponseCode.OK, valueOptional.get())
                 : new ImmutablePair<>(PlcResponseCode.NOT_FOUND, null);
             fields.put(fieldName, fieldPair);
         }
@@ -160,8 +160,8 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
         Map<String, PlcResponseCode> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             TestField field = (TestField) request.getField(fieldName);
-            PlcValue fieldItem = request.getFieldItem(fieldName);
-            device.set(field, fieldItem);
+            PlcValue value = request.getPlcValue(fieldName);
+            device.set(field, value);
             fields.put(fieldName, PlcResponseCode.OK);
         }
         PlcWriteResponse response = new DefaultPlcWriteResponse(request, fields);
@@ -200,7 +200,7 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
     }
 
     private Consumer<PlcValue> dispatchSubscriptionEvent(String name, InternalPlcSubscriptionHandle handle) {
-        return fieldItem -> {
+        return plcValue -> {
             InternalPlcConsumerRegistration plcConsumerRegistration = registrations.get(handle);
             if (plcConsumerRegistration == null) {
                 return;
@@ -210,7 +210,7 @@ public class SimulatedPlcConnection extends AbstractPlcConnection implements Plc
             if (consumer == null) {
                 return;
             }
-            consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, fieldItem))));
+            consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, plcValue))));
         };
     }
 

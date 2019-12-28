@@ -180,9 +180,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfFields());
         for (String fieldName : request.getFieldNames()) {
             final S7Field field = (S7Field) request.getField(fieldName);
-            final PlcValue fieldItem = request.getFieldItem(fieldName);
+            final PlcValue plcValue = request.getPlcValue(fieldName);
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
-            payloadItems.add(serializeFieldItem(field, fieldItem));
+            payloadItems.add(serializePlcValue(field, plcValue));
         }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
@@ -302,12 +302,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             S7VarPayloadDataItem payloadItem = payloadItems[index];
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            PlcValue fieldItem = null;
+            PlcValue plcValue = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                fieldItem = parseFieldItem(field, data);
+                plcValue = parsePlcValue(field, data);
             }
-            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, plcValue);
             values.put(fieldName, result);
             index++;
         }
@@ -340,7 +340,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return new DefaultPlcWriteResponse(plcWriteRequest, responses);
     }
 
-    private S7VarPayloadDataItem serializeFieldItem(S7Field field, PlcValue plcValue) {
+    private S7VarPayloadDataItem serializePlcValue(S7Field field, PlcValue plcValue) {
         try {
             DataTransportSize transportSize = (field.getDataType().getDataProtocolId() == 1) ?
                 DataTransportSize.BIT : DataTransportSize.BYTE_WORD_DWORD;
@@ -355,7 +355,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return null;
     }
 
-    private PlcValue parseFieldItem(S7Field field, ByteBuf data) {
+    private PlcValue parsePlcValue(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
             return DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());

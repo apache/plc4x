@@ -49,8 +49,8 @@ public class TestDeviceTest {
         device.set(field, new PlcLong(42));
         value = device.get(field);
         assertTrue(value.isPresent());
-        PlcValue fieldItem = value.get();
-        assertEquals(42L, fieldItem.getLong());
+        PlcValue plcValue = value.get();
+        assertEquals(42L, plcValue.getLong());
     }
 
 }

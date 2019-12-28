@@ -27,9 +27,9 @@ import java.util.List;
 
 public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcRequest {
 
-    PlcValue getFieldItem(String name);
+    PlcValue getPlcValue(String name);
 
-    List<PlcValue> getFieldItems();
+    List<PlcValue> getPlcValues();
 
     List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples();
 

@@ -88,7 +88,7 @@ public class PlcConnectionAdapterTest {
         // will help identify problems in the adapter/supplier/consumer
         PlcField plcField = request.getFields().get(0);
         // TODO: smart value conversion
-        connection.setFieldItem(plcField, new PlcLong(0L));
+        connection.setPlcValue(plcField, new PlcLong(0L));
 
         CompletableFuture<PlcReadResponse> cf = connection.read(request);
 
@@ -103,7 +103,7 @@ public class PlcConnectionAdapterTest {
         // this is really a tests of our mock tooling but knowing it's behaving as expected
         // will help identify problems in the adapter/supplier/consumer
         PlcField plcField = request.getFields().get(0);
-        connection.setFieldItem(plcField, new PlcLong(0L));
+        connection.setPlcValue(plcField, new PlcLong(0L));
 
         CompletableFuture<PlcWriteResponse> cf = connection.write(request);
 

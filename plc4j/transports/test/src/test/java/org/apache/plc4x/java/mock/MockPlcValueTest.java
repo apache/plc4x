@@ -22,10 +22,10 @@ package org.apache.plc4x.java.mock;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
-class MockFieldItemTest implements WithAssertions {
+class MockPlcValueTest implements WithAssertions {
 
     @Test
     void getObject() {
-        assertThat(new MockFieldItem("").getObject(0)).isNotNull();
+        assertThat(new MockPlcValue("").getObject(0)).isNotNull();
     }
 }

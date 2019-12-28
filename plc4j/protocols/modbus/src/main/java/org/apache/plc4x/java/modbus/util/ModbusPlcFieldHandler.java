@@ -118,6 +118,6 @@ public class ModbusPlcFieldHandler extends DefaultPlcFieldHandler {
                         " is not assignable to " + modbusField + " fields.");
             }
         }
-        return new DefaultModbusByteArrayFieldItem(byteArrays.toArray(new Byte[0][0]));
+        return new DefaultModbusByteArrayPlcValue(byteArrays.toArray(new Byte[0][0]));
     }*/
 }

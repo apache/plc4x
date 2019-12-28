@@ -32,12 +32,12 @@ class LittleEndianDecoderSpecHurz extends Specification {
     @Unroll
     def "decode of #adsdt.name() using get#retrievalType.simpleName [#expectedValues]"(AdsDataType adsdt, def retrievalType, def expectedValues, def rawData) {
         when:
-        def fieldItem = LittleEndianDecoder.decodeData(adsdt, rawData)
+        def plcValue = LittleEndianDecoder.decodeData(adsdt, rawData)
 
         and:
         def data = []
-        (0..fieldItem.numberOfValues - 1).forEach({ index ->
-            data << fieldItem."get${retrievalType.simpleName}"(index)
+        (0..plcValue.numberOfValues - 1).forEach({ index ->
+            data << plcValue."get${retrievalType.simpleName}"(index)
         })
 
         then:

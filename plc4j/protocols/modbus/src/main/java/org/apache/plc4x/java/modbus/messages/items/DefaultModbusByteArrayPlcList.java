@@ -27,10 +27,10 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * default implementation for DefaultByteArrayFieldItem for Usage within Modbus module
+ * default implementation for PlcValue for Usage within Modbus module
  * default ByteOrder is set to BIG_ENDIAN, can be selected on regarding get-method explicitly from user if needed
  */
-public class DefaultModbusByteArrayFieldItem extends PlcList {
+public class DefaultModbusByteArrayPlcList extends PlcList {
 
     private static final int SHORT_BYTES = 2;
     private static final int INTEGER_BYTES = 4;
@@ -42,7 +42,7 @@ public class DefaultModbusByteArrayFieldItem extends PlcList {
 
     private Byte[] completeByteArray;
 
-    public DefaultModbusByteArrayFieldItem(Byte[]... values) {
+    public DefaultModbusByteArrayPlcList(Byte[]... values) {
         super(Arrays.asList(values));
         this.byteOrder = DEFAULT_ENDIANNESS;
         this.completeByteArray = Arrays.stream(values).flatMap(Stream::of).toArray(Byte[]::new);
@@ -200,7 +200,7 @@ public class DefaultModbusByteArrayFieldItem extends PlcList {
         if (!super.equals(o)) {
             return false;
         }
-        DefaultModbusByteArrayFieldItem that = (DefaultModbusByteArrayFieldItem) o;
+        DefaultModbusByteArrayPlcList that = (DefaultModbusByteArrayPlcList) o;
         return Arrays.equals(completeByteArray, that.completeByteArray);
     }
 

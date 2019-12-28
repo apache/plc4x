@@ -111,7 +111,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         return new OpcuaTcpPlcConnection(address, port, params, requestTimeout);
     }
 
-    public static PlcValue encodeFieldItem(DataValue value) {
+    public static PlcValue encodePlcValue(DataValue value) {
         NodeId typeNode = value.getValue().getDataType().get();
         Object objValue = value.getValue().getValue();
 
@@ -126,7 +126,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 byteArry[counter] = bytie;
                 counter++;
             }
-            return new DefaultByteArrayFieldItem(byteArry);*/
+            return new DefaultByteArrayPlcValue(byteArry);*/
         } else if (typeNode.equals(Identifiers.Integer)) {
             return new PlcInteger((Integer) objValue);
         } else if (typeNode.equals(Identifiers.Int16)) {
@@ -401,7 +401,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     != StatusCode.GOOD) {
                     resultCode = PlcResponseCode.NOT_FOUND;
                 } else {
-                    stringItem = encodeFieldItem(readValues.get(counter));
+                    stringItem = encodePlcValue(readValues.get(counter));
 
                 }
                 Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
@@ -433,7 +433,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for (String fieldName : writeRequest.getFieldNames()) {
                 OpcuaField uaField = (OpcuaField) writeRequest.getField(fieldName);
                 NodeId idNode = generateNodeId(uaField);
-                Variant var = new Variant(internalPlcWriteRequest.getFieldItem(fieldName).getObject());
+                Variant var = new Variant(internalPlcWriteRequest.getPlcValue(fieldName).getObject());
                 DataValue value = new DataValue(var, null, null);
                 ids.add(idNode);
                 names.add(fieldName);

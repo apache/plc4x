@@ -319,6 +319,7 @@ if(pythonEnabled && !proxiesEnabled) {
 
 if(proxiesEnabled) {
     checkBison()
+    checkBoost()
 }
 
 if(dotnetEnabled) {

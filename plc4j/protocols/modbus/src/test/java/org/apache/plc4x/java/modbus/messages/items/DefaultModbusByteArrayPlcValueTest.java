@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @SuppressWarnings("unchecked")
-public class DefaultModbusByteArrayFieldItemTest {
+public class DefaultModbusByteArrayPlcValueTest {
     /*@Test
     public void convertByteArrayToIntegerTest() {
         PlcValue fieldItem = getFieldItemForIntegerArray();

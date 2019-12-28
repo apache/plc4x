@@ -71,7 +71,7 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
             if (value.getStatusCode() != StatusCode.GOOD) {
                 resultCode = PlcResponseCode.NOT_FOUND;
             } else {
-                stringItem = OpcuaTcpPlcConnection.encodeFieldItem(value);
+                stringItem = OpcuaTcpPlcConnection.encodePlcValue(value);
 
             }
             Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();

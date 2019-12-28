@@ -201,7 +201,7 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
             if(!(writeRequest instanceof DefaultPlcWriteRequest)) {
                 throw new PlcException("The writeRequest should have been of type DefaultPlcWriteRequest");
             }
-            PlcValue fieldItem = ((DefaultPlcWriteRequest) writeRequest).getFieldItem(fieldName);
+            PlcValue value = ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName);
 
             // The number of elements provided in the request must match the number defined in the field, or
             // bad things are going to happen.
@@ -225,7 +225,7 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
                 // Bit
                 // -----------------------------------------
                 case BOOL:
-                    byteData = encodeWriteRequestBitField(fieldItem);
+                    byteData = encodeWriteRequestBitField(value);
                     break;
                 // -----------------------------------------
                 // Signed integer values
@@ -233,57 +233,57 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
                 case BYTE:
                 case SINT:
                 case CHAR:  // 1 byte
-                    byteData = encodeWriteRequestByteField(fieldItem, true);
+                    byteData = encodeWriteRequestByteField(value, true);
                     break;
                 case WORD:
                 case INT:
                 case WCHAR:  // 2 byte (16 bit)
-                    byteData = encodeWriteRequestShortField(fieldItem, true);
+                    byteData = encodeWriteRequestShortField(value, true);
                     break;
                 case DWORD:
                 case DINT:  // 4 byte (32 bit)
-                    byteData = encodeWriteRequestIntegerField(fieldItem, true);
+                    byteData = encodeWriteRequestIntegerField(value, true);
                     break;
                 case LWORD:
                 case LINT:  // 8 byte (64 bit)
-                    byteData = encodeWriteRequestLongField(fieldItem, true);
+                    byteData = encodeWriteRequestLongField(value, true);
                     break;
                 // -----------------------------------------
                 // Unsigned integer values
                 // -----------------------------------------
                 // 8 bit:
                 case USINT:
-                    byteData = encodeWriteRequestByteField(fieldItem, false);
+                    byteData = encodeWriteRequestByteField(value, false);
                     break;
                 // 16 bit:
                 case UINT:
-                    byteData = encodeWriteRequestShortField(fieldItem, false);
+                    byteData = encodeWriteRequestShortField(value, false);
                     break;
                 // 32 bit:
                 case UDINT:
-                    byteData = encodeWriteRequestIntegerField(fieldItem, false);
+                    byteData = encodeWriteRequestIntegerField(value, false);
                     break;
                 // 64 bit:
                 case ULINT:
-                    byteData = encodeWriteRequestLongField(fieldItem, false);
+                    byteData = encodeWriteRequestLongField(value, false);
                     break;
                 // -----------------------------------------
                 // Floating point values
                 // -----------------------------------------
                 case REAL:
-                    byteData = encodeWriteRequestFloatField(fieldItem);
+                    byteData = encodeWriteRequestFloatField(value);
                     break;
                 case LREAL:
-                    byteData = encodeWriteRequestDoubleField(fieldItem);
+                    byteData = encodeWriteRequestDoubleField(value);
                     break;
                 // -----------------------------------------
                 // Characters & Strings
                 // -----------------------------------------
                 case STRING:
-                    byteData = encodeWriteRequestStringField(fieldItem, false);
+                    byteData = encodeWriteRequestStringField(value, false);
                     break;
                 case WSTRING:
-                    byteData = encodeWriteRequestStringField(fieldItem, true);
+                    byteData = encodeWriteRequestStringField(value, true);
                     break;
                 default:
                     throw new PlcProtocolException("Unsupported type " + s7Field.getDataType());
@@ -307,108 +307,108 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
         out.add(s7WriteRequest);
     }
 
-    byte[] encodeWriteRequestBitField(PlcValue fieldItem) {
-        int numBytes = fieldItem.getNumberOfValues() >> 3 / 8;
+    byte[] encodeWriteRequestBitField(PlcValue value) {
+        int numBytes = value.getNumberOfValues() >> 3 / 8;
         byte[] byteData = new byte[numBytes];
         BitSet bitSet = new BitSet();
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
-            for (int i = 0; i < fieldItem.getNumberOfValues(); i++) {
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
+            for (int i = 0; i < value.getNumberOfValues(); i++) {
                 bitSet.set(i, plcList.getIndex(i).getBoolean());
             }
         } else {
-            bitSet.set(0, fieldItem.getBoolean());
+            bitSet.set(0, value.getBoolean());
         }
         byte[] src = bitSet.toByteArray();
         System.arraycopy(src, 0, byteData, 0, Math.min(src.length, numBytes));
         return byteData;
     }
 
-    byte[] encodeWriteRequestByteField(PlcValue fieldItem, boolean signed) {
-        int numBytes = fieldItem.getNumberOfValues();
+    byte[] encodeWriteRequestByteField(PlcValue value, boolean signed) {
+        int numBytes = value.getNumberOfValues();
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.put(plcValue.getByte());
             }
         } else {
-            buffer.put(fieldItem.getByte());
+            buffer.put(value.getByte());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestShortField(PlcValue fieldItem, boolean signed) {
-        int numBytes = fieldItem.getNumberOfValues() * 2;
+    byte[] encodeWriteRequestShortField(PlcValue value, boolean signed) {
+        int numBytes = value.getNumberOfValues() * 2;
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.putShort(plcValue.getShort());
             }
         } else {
-            buffer.putShort(fieldItem.getShort());
+            buffer.putShort(value.getShort());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestIntegerField(PlcValue fieldItem, boolean signed) {
-        int numBytes = fieldItem.getNumberOfValues() * 4;
+    byte[] encodeWriteRequestIntegerField(PlcValue value, boolean signed) {
+        int numBytes = value.getNumberOfValues() * 4;
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.putInt(plcValue.getInteger());
             }
         } else {
-            buffer.putInt(fieldItem.getInteger());
+            buffer.putInt(value.getInteger());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestLongField(PlcValue fieldItem, boolean signed) {
-        int numBytes = fieldItem.getNumberOfValues() * 8;
+    byte[] encodeWriteRequestLongField(PlcValue value, boolean signed) {
+        int numBytes = value.getNumberOfValues() * 8;
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.putLong(plcValue.getLong());
             }
         } else {
-            buffer.putLong(fieldItem.getLong());
+            buffer.putLong(value.getLong());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestFloatField(PlcValue fieldItem) {
-        int numBytes = fieldItem.getNumberOfValues() * 4;
+    byte[] encodeWriteRequestFloatField(PlcValue value) {
+        int numBytes = value.getNumberOfValues() * 4;
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.putFloat(plcValue.getFloat());
             }
         } else {
-            buffer.putFloat(fieldItem.getFloat());
+            buffer.putFloat(value.getFloat());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestDoubleField(PlcValue fieldItem) {
-        int numBytes = fieldItem.getNumberOfValues() * 8;
+    byte[] encodeWriteRequestDoubleField(PlcValue value) {
+        int numBytes = value.getNumberOfValues() * 8;
         ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
+        if(value instanceof PlcList) {
+            PlcList plcList = (PlcList) value;
             for (PlcValue plcValue : plcList.getList()) {
                 buffer.putDouble(plcValue.getDouble());
             }
         } else {
-            buffer.putDouble(fieldItem.getDouble());
+            buffer.putDouble(value.getDouble());
         }
         return buffer.array();
     }
 
-    byte[] encodeWriteRequestStringField(PlcValue fieldItem, boolean isUtf16) {
+    byte[] encodeWriteRequestStringField(PlcValue value, boolean isUtf16) {
         // TODO: Implement this ...
         return new byte[0];
     }
@@ -471,7 +471,7 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
             VarPayloadItem payloadItem = payloadItems.get(index);
 
             PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            PlcValue fieldItem = null;
+            PlcValue value = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
                 try {
@@ -480,89 +480,89 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
                         // Bit
                         // -----------------------------------------
                         case BOOL:
-                            fieldItem = decodeReadResponseBitField(field, data);
+                            value = decodeReadResponseBitField(field, data);
                             break;
                         // -----------------------------------------
                         // Bit-strings
                         // -----------------------------------------
                         case BYTE:  // 1 byte
-                            fieldItem = decodeReadResponseByteBitStringField(field, data);
+                            value = decodeReadResponseByteBitStringField(field, data);
                             break;
                         case WORD:  // 2 byte (16 bit)
-                            fieldItem = decodeReadResponseShortBitStringField(field, data);
+                            value = decodeReadResponseShortBitStringField(field, data);
                             break;
                         case DWORD:  // 4 byte (32 bit)
-                            fieldItem = decodeReadResponseIntegerBitStringField(field, data);
+                            value = decodeReadResponseIntegerBitStringField(field, data);
                             break;
                         case LWORD:  // 8 byte (64 bit)
-                            fieldItem = decodeReadResponseLongBitStringField(field, data);
+                            value = decodeReadResponseLongBitStringField(field, data);
                             break;
                         // -----------------------------------------
                         // Integers
                         // -----------------------------------------
                         // 8 bit:
                         case SINT:
-                            fieldItem = decodeReadResponseSignedByteField(field, data);
+                            value = decodeReadResponseSignedByteField(field, data);
                             break;
                         case USINT:
-                            fieldItem = decodeReadResponseUnsignedByteField(field, data);
+                            value = decodeReadResponseUnsignedByteField(field, data);
                             break;
                         // 16 bit:
                         case INT:
-                            fieldItem = decodeReadResponseSignedShortField(field, data);
+                            value = decodeReadResponseSignedShortField(field, data);
                             break;
                         case UINT:
-                            fieldItem = decodeReadResponseUnsignedShortField(field, data);
+                            value = decodeReadResponseUnsignedShortField(field, data);
                             break;
                         // 32 bit:
                         case DINT:
-                            fieldItem = decodeReadResponseSignedIntegerField(field, data);
+                            value = decodeReadResponseSignedIntegerField(field, data);
                             break;
                         case UDINT:
-                            fieldItem = decodeReadResponseUnsignedIntegerField(field, data);
+                            value = decodeReadResponseUnsignedIntegerField(field, data);
                             break;
                         // 64 bit:
                         case LINT:
-                            fieldItem = decodeReadResponseSignedLongField(field, data);
+                            value = decodeReadResponseSignedLongField(field, data);
                             break;
                         case ULINT:
-                            fieldItem = decodeReadResponseUnsignedLongField(field, data);
+                            value = decodeReadResponseUnsignedLongField(field, data);
                             break;
                         // -----------------------------------------
                         // Floating point values
                         // -----------------------------------------
                         case REAL:
-                            fieldItem = decodeReadResponseFloatField(field, data);
+                            value = decodeReadResponseFloatField(field, data);
                             break;
                         case LREAL:
-                            fieldItem = decodeReadResponseDoubleField(field, data);
+                            value = decodeReadResponseDoubleField(field, data);
                             break;
                         // -----------------------------------------
                         // Characters & Strings
                         // -----------------------------------------
                         case CHAR: // 1 byte (8 bit)
-                            fieldItem = decodeReadResponseFixedLengthStringField(1, false, data);
+                            value = decodeReadResponseFixedLengthStringField(1, false, data);
                             break;
                         case WCHAR: // 2 byte
-                            fieldItem = decodeReadResponseFixedLengthStringField(1, true, data);
+                            value = decodeReadResponseFixedLengthStringField(1, true, data);
                             break;
                         case STRING:
-                            fieldItem = decodeReadResponseVarLengthStringField(false, data);
+                            value = decodeReadResponseVarLengthStringField(false, data);
                             break;
                         case WSTRING:
-                            fieldItem = decodeReadResponseVarLengthStringField(true, data);
+                            value = decodeReadResponseVarLengthStringField(true, data);
                             break;
                         // -----------------------------------------
                         // TIA Date-Formats
                         // -----------------------------------------
                         case DATE_AND_TIME:
-                            fieldItem = decodeReadResponseDateAndTime(field, data);
+                            value = decodeReadResponseDateAndTime(field, data);
                             break;
                         case TIME_OF_DAY:
-                            fieldItem = decodeReadResponseTimeOfDay(field, data);
+                            value = decodeReadResponseTimeOfDay(field, data);
                             break;
                         case DATE:
-                            fieldItem = decodeReadResponseDate(field, data);
+                            value = decodeReadResponseDate(field, data);
                             break;
                         default:
                             throw new PlcProtocolException("Unsupported type " + field.getDataType());
@@ -575,7 +575,7 @@ public class Plc4XS7Protocol extends io.netty.handler.codec.MessageToMessageCode
                     logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
                 }
             }
-            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, fieldItem);
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, value);
             values.put(fieldName, result);
             index++;
         }

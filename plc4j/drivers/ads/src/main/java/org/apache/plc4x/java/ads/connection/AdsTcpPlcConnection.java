@@ -301,8 +301,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            PlcValue baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
-                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
+                            PlcValue baseDefaultPlcValue = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
+                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultPlcValue));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }

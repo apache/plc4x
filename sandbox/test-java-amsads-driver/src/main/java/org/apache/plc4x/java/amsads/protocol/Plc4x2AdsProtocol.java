@@ -149,22 +149,22 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         long indexGroup = directAdsField.getIndexGroup();
         long indexOffset = directAdsField.getIndexOffset();
 
-        PlcValue fieldItem = writeRequest.getFieldItems().get(0);
-        Object[] values;
-        if(fieldItem instanceof PlcList) {
-            PlcList plcList = (PlcList) fieldItem;
-            values = plcList.getList().toArray(new Object[0]);
+        PlcValue plcValue = writeRequest.getPlcValues().get(0);
+        Object[] plcValues;
+        if(plcValue instanceof PlcList) {
+            PlcList plcList = (PlcList) plcValue;
+            plcValues = plcList.getList().toArray(new Object[0]);
         } else {
-            values = new Object[1];
-            values[0] = fieldItem.getObject();
+            plcValues = new Object[1];
+            plcValues[0] = plcValue.getObject();
         }
 
-        byte[] bytes = encodeData(directAdsField.getAdsDataType(), values);
+        byte[] bytes = encodeData(directAdsField.getAdsDataType(), plcValues);
         int bytesToBeWritten = bytes.length;
         int maxTheoreticalSize = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
         if (bytesToBeWritten > maxTheoreticalSize) {
             LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
-            throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, values);
+            throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, plcValues);
         }
         AdsWriteRequest data = new AdsWriteRequest(indexGroup, indexOffset, bytes.length, bytes);
         AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), data.getLength(), 0, invokeId), data);
@@ -302,14 +302,14 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
 
         PlcResponseCode responseCode = decodeResponseCode(responseMessage.getResult());
         byte[] bytes = responseMessage.getData();
-        PlcValue fieldItem = decodeData(field.getAdsDataType(), bytes);
+        PlcValue plcValue = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
         Map<String, Pair<PlcResponseCode, PlcValue>> responseItems = plcReadRequest.getFieldNames()
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                ignore -> Pair.of(responseCode, fieldItem)
+                ignore -> Pair.of(responseCode, plcValue)
             ));
 
         return new DefaultPlcReadResponse(plcReadRequest, responseItems);

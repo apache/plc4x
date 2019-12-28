@@ -336,4 +336,16 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <!-- Make sure Boost is built first -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-tools-boost</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <classifier>lib-${os.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
 </project>
