@@ -240,7 +240,7 @@ public class ReadBuffer {
                 buffer[1] = bi.readByte(true, 8);
                 buffer[2] = bi.readByte(true, 8);
                 buffer[3] = bi.readByte(true, 8);
-                return Float.intBitsToFloat(buffer[0] ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
+                return Float.intBitsToFloat((buffer[0] & 0xff) ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
             }
