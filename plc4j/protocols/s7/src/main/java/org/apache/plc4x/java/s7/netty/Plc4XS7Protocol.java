@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.s7.netty;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
@@ -32,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -66,8 +66,6 @@ import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
-import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
-import org.apache.plc4x.java.s7.netty.model.payloads.items.MessageObjectItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.slf4j.Logger;
@@ -88,10 +86,24 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
 
     private Map<Short, PlcRequestContainer> requests;
+    
+    private final BlockingQueue<AlarmMessagePayload> alarmsqueue;
 
     public Plc4XS7Protocol() {
         this.requests = new HashMap<>();
+        this.alarmsqueue = null;
     }
+    /*
+    * @param s7Type
+    * 
+    */
+    public Plc4XS7Protocol(BlockingQueue<AlarmMessagePayload> alarmsqueue) {
+        this.requests = new HashMap<>();
+        //We need check the device here
+        this.alarmsqueue = alarmsqueue;
+    }
+    
+    
 
     /**
      * If this protocol layer catches an {@link S7ConnectedEvent} from the protocol layer beneath,
@@ -490,11 +502,16 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             }
         } else {
             logger.info("Posible mensaje PUSH...");
-            List<S7Payload> payloads = msg.getPayloads();
+            List<S7Payload> payloads = msg.getPayloads();  
+            //TODO: Use alarmsqueue.addAll() method
             for (S7Payload payload:payloads){
                 if (payload instanceof AlarmMessagePayload){
                     logger.info("S7PayLoad tipo AlarmMessagePayload: " + payload.toString());
                     AlarmMessagePayload alarm = (AlarmMessagePayload) payload;
+                    if (!alarmsqueue.offer(alarm)){
+                        logger.info("Alarm queue buffer is full.");
+                    };
+                    /*
                     List<MessageObjectItem> msgobjects = alarm.getMsg().getMsgItems();
                     for (MessageObjectItem msgobject:msgobjects){
                         logger.info("Item tipo MessageObjectItem: " + msgobject.toString() + " Size: " + msgobject.getComingValues().size());
@@ -503,6 +520,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                             logger.info("ReturnCode :" + item.getReturnCode() + " Length: " + item.getLength() + " Data: " + ByteBufUtil.hexDump(item.getData()));
                         }
                     }
+                    */
                 }
             }            
         }
@@ -923,5 +941,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         int dec = (incomingByte >> 4) * 10;
         return dec + (incomingByte & 0x0f);
     }
+    
+
 
 }

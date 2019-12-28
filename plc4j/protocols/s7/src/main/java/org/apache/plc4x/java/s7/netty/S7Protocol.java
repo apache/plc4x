@@ -400,6 +400,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         // This is a mixture of request/response and function group .
         byte nextByte = (byte) (((parameter instanceof CpuServicesRequestParameter) ?
             (byte) 0x40 : (byte) 0x80) | parameter.getFunctionGroup().getCode());
+        //TODO for ALARM_QUERY bypass the next byte
         buf.writeByte(nextByte);
         buf.writeByte(parameter.getSubFunctionGroup().getCode());
         buf.writeByte(parameter.getSequenceNumber());
@@ -701,44 +702,9 @@ public class S7Protocol extends ChannelDuplexHandler {
         
         switch(parameter.getSubFunctionGroup()){
             case READ_SSL: {
-                DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
-                DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-                if(dataTransportSize != DataTransportSize.OCTET_STRING) {
-                        // TODO: Output an error.
-                }
-                short length = userData.readShort();                
-                SslId sslId = SslId.valueOf(userData.readShort());
-                short sslIndex = userData.readShort();
-                // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
-                if(length == 4) {
-                    return new CpuServicesPayload(returnCode, sslId, sslIndex);
-                }
-                // If the length is not 4, then it has to be at least 8.
-                else if(length >= 8) {
-                    // TODO: We should probably ensure we don't read more than this.
-                    // Skip the partial list length in words.
-                    userData.skipBytes(2);
-                    short partialListCount = userData.readShort();
-                    List<SslDataRecord> sslDataRecords = new LinkedList<>();
-                    for(int i = 0; i < partialListCount; i++) {
-                        short index = userData.readShort();
-                        byte[] articleNumberBytes = new byte[20];
-                        userData.readBytes(articleNumberBytes);
-                        String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
-                        short bgType = userData.readShort();
-                        short moduleOrOsVersion = userData.readShort();
-                        short pgDescriptionFileVersion = userData.readShort();
-                        sslDataRecords.add(new SslModuleIdentificationDataRecord(
-                            index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
-                    }
-                    return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
-                }
-                // In all other cases, it's probably an error.
-                else {
-                    // TODO: Output an error.
-                }                
+                CpuServicesPayload msg = decodeReadSslPayload(parameter, userData);
+                return msg;
             }
-                break;
             case MESSAGE_SERVICE:{  
                 AlarmMessagePayload msg = decodeMessageServicePayload(parameter, userData); 
                 return msg;            
@@ -906,6 +872,46 @@ public class S7Protocol extends ChannelDuplexHandler {
 
         return items;
     }
+    
+    private CpuServicesPayload decodeReadSslPayload(CpuServicesParameter parameter, ByteBuf userData){
+        DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
+        DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        if(dataTransportSize != DataTransportSize.OCTET_STRING) {
+                // TODO: Output an error.
+        }
+        short length = userData.readShort();                
+        SslId sslId = SslId.valueOf(userData.readShort());
+        short sslIndex = userData.readShort();
+        // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
+        if(length == 4) {
+            return new CpuServicesPayload(returnCode, sslId, sslIndex);
+        }
+        // If the length is not 4, then it has to be at least 8.
+        else if(length >= 8) {
+            // TODO: We should probably ensure we don't read more than this.
+            // Skip the partial list length in words.
+            userData.skipBytes(2);
+            short partialListCount = userData.readShort();
+            List<SslDataRecord> sslDataRecords = new LinkedList<>();
+            for(int i = 0; i < partialListCount; i++) {
+                short index = userData.readShort();
+                byte[] articleNumberBytes = new byte[20];
+                userData.readBytes(articleNumberBytes);
+                String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
+                short bgType = userData.readShort();
+                short moduleOrOsVersion = userData.readShort();
+                short pgDescriptionFileVersion = userData.readShort();
+                sslDataRecords.add(new SslModuleIdentificationDataRecord(
+                    index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
+            }
+            return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
+        }
+        // In all other cases, it's probably an error.
+        else {
+            // TODO: Output an error.
+        }   
+        return null;   
+    }    
     
     private AlarmMessagePayload decodeMessageServicePayload(CpuServicesParameter parameter, ByteBuf userData){
         logger.info("userData: \r\n" + ByteBufUtil.prettyHexDump(userData) );

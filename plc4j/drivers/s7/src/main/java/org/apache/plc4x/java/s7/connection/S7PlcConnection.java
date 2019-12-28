@@ -23,6 +23,8 @@ import io.netty.channel.*;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +61,7 @@ import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
+import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcEventHandler;
@@ -104,6 +107,9 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final short paramMaxAmqCaller;
     private final short paramMaxAmqCallee;
     private final S7ControllerType paramControllerType;
+
+    private BlockingQueue<AlarmMessagePayload> alarmsqueue;
+    private AlarmsLoop alarmsloopthread;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
@@ -165,6 +171,20 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         this.paramMaxAmqCaller = curParamMaxAmqCaller;
         this.paramMaxAmqCallee = curParamMaxAmqCallee;
         this.paramControllerType = curParamControllerType;
+        
+            
+        /*
+         * Take into account that the size of this buffer depends on the final device.
+         * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000. 
+         * Depending on the configuration of the alarm system, a large number of 
+         * them should be expected when starting the connection. 
+         * (Examples of this are PCS7 and Braumat).
+         * Alarm filtering, ack, etc. must be performed by the client application.
+        */
+        this.alarmsqueue = new ArrayBlockingQueue<>(1024);
+        
+        alarmsloopthread = new AlarmsLoop(channel,this.alarmsqueue);
+
     }
 
     @Override
@@ -176,6 +196,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     public boolean canWrite() {
         return true;
     }
+    
+    
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
@@ -203,7 +225,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                 pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, TpduSize.valueForGivenSize(paramPduSize)));
                 pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, paramPduSize, paramControllerType,
                     new DefaultS7MessageProcessor()));
-                pipeline.addLast(new Plc4XS7Protocol());
+                pipeline.addLast(new Plc4XS7Protocol(alarmsqueue));
             }
         };
     }
@@ -244,7 +266,15 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     }
 
     @Override
+    public void connect() throws PlcConnectionException {
+        super.connect(); 
+        alarmsloopthread.start();
+    }
+
+    
+    @Override
     public void close() throws PlcConnectionException {
+        alarmsloopthread.cancel();
         if ((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
@@ -372,4 +402,50 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private class AlarmsLoop extends Thread {
+        private volatile boolean cancelled;
+        private final Channel channel;
+        private boolean alarmquery;
+        private int delay;
+        private final BlockingQueue<AlarmMessagePayload> alarmsqueue;
+        
+        AlarmsLoop(Channel channel, BlockingQueue<AlarmMessagePayload> alarmsqueue) {
+            this.channel = channel;
+            this.alarmsqueue = alarmsqueue;
+            this.alarmquery = true;
+            this.delay = 1;
+        }
+        
+        @Override
+        public void run() {
+            while (!cancelled) { 
+                try {
+                    AlarmMessagePayload alarm = alarmsqueue.poll(delay, TimeUnit.SECONDS);
+                    if (alarm != null){
+                        logger.info("Alarm type: " + alarm.getMsgtype() + " Número de alarmas: " + alarm.getMsg().getObjects());
+                        
+                    } else {
+                        if (alarmquery){
+                            //TODO Send alarm query to plc
+                        } else {
+                            
+                        }
+                    }
+                } catch (InterruptedException ex) {
+                    logger.info(ex.getLocalizedMessage());
+                }
+            }
+            logger.info("Closing the alarm loop.");
+        }
+        
+        public void cancel() {
+            cancelled = true;  
+        }
+
+        public boolean isCancelled() {
+            return cancelled;
+        }
+        
+    }    
+    
 }
