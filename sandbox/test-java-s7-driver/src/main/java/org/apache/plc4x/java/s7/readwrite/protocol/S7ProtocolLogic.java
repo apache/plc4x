@@ -83,17 +83,30 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     @Override public void setConfiguration(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
         this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
+
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
+        // The Siemens LOGO device seems to only work with very limited settings,
+        // so we're overriding some of the defaults.
         if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
         }
+
+        // Initialize the parameters with initial version (Will be updated during the login process)
         this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
+        // The PDU size is theoretically not bound by the COTP TPDU size, however having a larger
+        // PDU size would make the code extremely complex. But even if the protocol would allow this
+        // I have never seen this happen in reality. Making is smaller would unnecessarily limit the
+        // size, so we're setting it to the maximum that can be included.
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
 
-        // Initialize Transaction Manager
-        this.tm = new RequestTransactionManager(Math.min(this.maxAmqCallee, this.maxAmqCaller));
+        // Initialize Transaction Manager.
+        // Until the number of concurrent requests is successfully negotiated we set it to a
+        // maximum of only one request being able to be sent at a time. During the login process
+        // No concurrent requests can be sent anyway. It will be updated when receiving the
+        // S7ParameterSetupCommunication response.
+        this.tm = new RequestTransactionManager(1);
     }
 
     @Override
@@ -124,13 +137,23 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         maxAmqCallee = setupCommunication.getMaxAmqCallee();
                         pduSize = setupCommunication.getPduLength();
 
-                        // Only if the controller type is set to "ANY", then try to identify the PLC type.
+                        // Update the number of concurrent requests to the negotiated number.
+                        // I have never seen anything else than equal values for caller and
+                        // callee, but if they were different, we're only limiting the outgoing
+                        // requests.
+                        tm.setNumberOfConcurrentRequests(maxAmqCaller);
+
+                        // If the controller type is explicitly set, were finished with the login
+                        // process. If it's set to ANY, we have to query the serial number information
+                        // in order to detect the type of PLC.
                         if (controllerType != S7ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
                             return;
                         }
+
                         // Prepare a message to request the remote to identify itself.
+                        logger.debug("Sending S7 Identification Request");
                         TPKTPacket tpktPacket = createIdentifyRemoteMessage();
                         context.sendRequest(tpktPacket)
                             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -140,6 +163,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                             .unwrap(p -> ((S7MessageUserData) p.getPayload()))
                             .check(p -> p.getPayload() instanceof S7PayloadUserData)
                             .handle(messageUserData -> {
+                                logger.debug("Got S7 Identification Response");
                                 S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
                                 extractControllerTypeAndFireConnected(context, payloadUserData);
                             });
@@ -162,6 +186,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 new S7PayloadReadVarRequest()),
             true, (short) tpduId));
 
+        // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> {
             context.sendRequest(tpktPacket)
@@ -180,6 +205,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     } catch (PlcProtocolException e) {
                         logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
                     }
+                    // Finish the request-transaction.
                     transaction.endRequest();
                 });
         });
@@ -205,6 +231,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 new S7PayloadWriteVarRequest(payloadItems.toArray(new S7VarPayloadDataItem[0]))),
             true, (short) tpduId));
 
+        // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> {
             context.sendRequest(tpktPacket)
@@ -223,6 +250,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     } catch (PlcProtocolException e) {
                         logger.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
                     }
+                    // Finish the request-transaction.
                     transaction.endRequest();
                 });
         });
