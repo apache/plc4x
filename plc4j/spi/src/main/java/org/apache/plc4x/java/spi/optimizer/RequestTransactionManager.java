@@ -19,6 +19,9 @@
 
 package org.apache.plc4x.java.spi.optimizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
@@ -41,6 +44,8 @@ import java.util.function.Consumer;
  * </ul>
  */
 public class RequestTransactionManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
     static final ExecutorService executor = Executors.newFixedThreadPool(4);
@@ -67,7 +72,16 @@ public class RequestTransactionManager {
     }
 
     public void setNumberOfConcurrentRequests(int numberOfConcurrentRequests) {
+        // If we reduced the number of concurrent requests and more requests are in-flight
+        // than should be, at least log a warning.
+        if(numberOfConcurrentRequests < runningRequests.size()) {
+            logger.warn("The number of concurrent requests was reduced and currently more requests are in flight.");
+        }
+
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
+
+        // As we might have increased the number, try to send some more requests.
+        processWorklog();
     }
 
     public void submit(Consumer<RequestTransaction> context) {
