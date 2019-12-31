@@ -27,13 +27,13 @@ public class DefaultImplicitField extends DefaultTaggedField implements Implicit
 
     private final TypeReference type;
     private final String name;
-    private final Term serializationExpression;
+    private final Term serializeExpression;
 
-    public DefaultImplicitField(String[] tags, TypeReference type, String name, Term serializationExpression) {
+    public DefaultImplicitField(String[] tags, TypeReference type, String name, Term serializeExpression) {
         super(tags);
         this.type = type;
         this.name = name;
-        this.serializationExpression = serializationExpression;
+        this.serializeExpression = serializeExpression;
     }
 
     public TypeReference getType() {
@@ -44,8 +44,8 @@ public class DefaultImplicitField extends DefaultTaggedField implements Implicit
         return name;
     }
 
-    public Term getSerializationExpression() {
-        return serializationExpression;
+    public Term getSerializeExpression() {
+        return serializeExpression;
     }
 
     public Term[] getParams() {

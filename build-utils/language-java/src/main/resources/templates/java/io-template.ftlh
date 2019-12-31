@@ -166,7 +166,7 @@ public class ${typeName}IO {
         int _${field.name}Count = ${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)};
         ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}Count];
         for(int i = 0; i < _${field.name}Count; i++) {
-            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.deserializationExpression, type.parserArguments)});
+            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.parseExpression, type.parserArguments)});
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
@@ -177,7 +177,7 @@ public class ${typeName}IO {
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         int ${field.name}EndPos = io.getPos() + _${field.name}Length;
         while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.deserializationExpression, type.parserArguments)}));
+            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.parseExpression, type.parserArguments)}));
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -188,7 +188,7 @@ public class ${typeName}IO {
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toDeserializationExpression(field.loopExpression, type.parserArguments)}))) {
-            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.deserializationExpression, type.parserArguments)}));
+            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.parseExpression, type.parserArguments)}));
 
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
@@ -214,7 +214,7 @@ public class ${typeName}IO {
     <#case "manual">
 
         // Manual Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.deserializationExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.parseExpression, type.parserArguments)});
         <#break>
     <#case "optional">
 
@@ -320,7 +320,7 @@ public class ${typeName}IO {
     <#case "implicit">
 
         // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializeExpression, type.parserArguments)});
         ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#break>
     <#case "manualArray">
@@ -328,14 +328,14 @@ public class ${typeName}IO {
         // Manual Array Field (${field.name})
         if(_value.get${field.name?cap_first}() != null) {
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${field.name?cap_first}()) {
-                ${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)};
+                ${helper.toSerializationExpression(field.serializeExpression, type.parserArguments)};
             }
         }
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializationExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.serializeExpression, type.parserArguments)});
         ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
        <#break>
     <#case "optional">
