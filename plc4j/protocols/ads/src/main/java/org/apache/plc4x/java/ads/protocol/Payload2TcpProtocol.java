@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
+    private ByteBuf retainingBuf = Unpooled.EMPTY_BUFFER;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
 
@@ -49,21 +50,24 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
             return;
         }
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, byteBuf, out);
-        if (byteBuf.readableBytes() < AmsTcpHeader.Reserved.NUM_BYTES + TcpLength.NUM_BYTES) {
-            // wait till we can read the length header
-            return;
-        }
-        if (byteBuf.readableBytes() < byteBuf.getUnsignedIntLE(AmsTcpHeader.Reserved.NUM_BYTES)) {
-            // wait till we have a complete ADS packet
-            return;
-        }
-        // Reserved
-        byteBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
-        TcpLength packetLength = TcpLength.of(byteBuf);
-        AmsTcpHeader amsTcpHeader = AmsTcpHeader.of(packetLength);
-        LOGGER.debug("AMS TCP Header {}", amsTcpHeader);
 
-        out.add(byteBuf.readBytes((int) packetLength.getAsLong()));
+        retainingBuf = Unpooled.wrappedBuffer(retainingBuf, byteBuf.retain());
+
+        while (retainingBuf.readableBytes() >= AmsTcpHeader.Reserved.NUM_BYTES + TcpLength.NUM_BYTES
+                && retainingBuf.readableBytes() >= retainingBuf.getUnsignedIntLE(retainingBuf.readerIndex()
+                        + AmsTcpHeader.Reserved.NUM_BYTES) + AmsTcpHeader.Reserved.NUM_BYTES + TcpLength.NUM_BYTES) {
+            // Reserved
+            retainingBuf.skipBytes(AmsTcpHeader.Reserved.NUM_BYTES);
+            TcpLength packetLength = TcpLength.of(retainingBuf);
+            AmsTcpHeader amsTcpHeader = AmsTcpHeader.of(packetLength);
+            LOGGER.debug("AMS TCP Header {}", amsTcpHeader);
+
+            out.add(retainingBuf.readBytes((int) packetLength.getAsLong()));
+        }
+        if (retainingBuf.readableBytes() == 0) {
+            retainingBuf.release();
+            retainingBuf = Unpooled.EMPTY_BUFFER;
+        }
     }
 
 }
