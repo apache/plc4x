@@ -101,7 +101,7 @@ On a clean Ubuntu 18.04 the following software needs to be installed:
 If you're building a source-distribution and haven't installed git yet, be sure to do so:
 
 ```
-    sudo get install git
+    sudo apt install git
 ```
 
 In order to build the .Net version, please install the .Net package according to this guide:
