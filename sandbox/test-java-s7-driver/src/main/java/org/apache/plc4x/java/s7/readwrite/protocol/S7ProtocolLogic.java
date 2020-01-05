@@ -20,8 +20,10 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.vavr.control.Either;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -30,6 +32,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.s7.readwrite.optimizer.S7MessageProcessor;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
@@ -52,12 +55,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -79,6 +80,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private RequestTransactionManager tm;
+
+    private S7MessageProcessor processor = null;
 
     @Override public void setConfiguration(S7Configuration configuration) {
         this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
@@ -107,6 +110,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
+
+        // REMARK: Perhaps make this configurable.
+        // TODO: Comment in to enable ...
+        //this.processor = new DefaultS7MessageProcessor(tpduGenerator);
     }
 
     @Override
@@ -179,13 +186,76 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         for (PlcField field : request.getFields()) {
             requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
         }
-        final int tpduId = tpduGenerator.getAndIncrement();
-        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
-            new S7MessageRequest(tpduId,
-                new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
-                new S7PayloadReadVarRequest()),
-            true, (short) tpduId));
+        int tpduId = tpduGenerator.getAndIncrement();
+        final S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId,
+            new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
+            new S7PayloadReadVarRequest());
 
+        if(processor != null) {
+            try {
+                final Collection<S7MessageRequest> s7MessageRequests =
+                    processor.processRequest(s7MessageRequest, pduSize);
+                // Only if more than one sub-request is returned, do something special ...
+                // otherwise just do the normal sending.
+                if(s7MessageRequests.size() > 1) {
+                    /////////////////////////////////////////////////////////////////
+                    //
+                    /////////////////////////////////////////////////////////////////
+                    ParentFuture multiRequestFuture = new ParentFuture(
+                        (result) -> {
+                            try {
+                                final S7MessageResponse s7MessageResponse =
+                                    processor.processResponse(s7MessageRequest, result);
+                                final PlcReadResponse plcReadResponse = (PlcReadResponse)
+                                    decodeReadResponse(s7MessageResponse, ((InternalPlcReadRequest) readRequest));
+                                future.complete(plcReadResponse);
+                            } catch (PlcException e) {
+                                logger.error("Something went wrong", e);
+                            }
+                        });
+                    for (S7MessageRequest messageRequest : s7MessageRequests) {
+                        CompletableFuture<PlcReadResponse> childFuture = new CompletableFuture<>();
+                        multiRequestFuture.addChildFuture(childFuture);
+
+                        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, messageRequest, true,
+                            (short) messageRequest.getTpduReference()));
+
+                        // Send the packet
+                        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+                        transaction.submit(() -> {
+                            context.sendRequest(tpktPacket)
+                                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                                .onTimeout(childFuture::completeExceptionally)
+                                .onError((p, e) -> childFuture.completeExceptionally(e))
+                                .check(p -> p.getPayload() instanceof COTPPacketData)
+                                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                                .check(p -> p.getPayload() instanceof S7MessageResponse)
+                                .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+                                .check(p -> p.getTpduReference() == tpduId)
+                                .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
+                                .handle(p -> {
+                                    try {
+                                        childFuture.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
+                                    } catch (PlcProtocolException e) {
+                                        logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
+                                    }
+                                    // Finish the request-transaction.
+                                    transaction.endRequest();
+                                });
+                        });
+                    }
+                    return multiRequestFuture;
+                }
+            } catch (PlcException e) {
+                logger.error("Something went wrong", e);
+            }
+        }
+
+        /////////////////////////////////////////////////////////////////
+        // Do sending of normally sized single-message request.
+        /////////////////////////////////////////////////////////////////
+
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, s7MessageRequest, true, (short) tpduId));
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> {
@@ -492,4 +562,31 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         }
         return null;
     }
+
+    private class ParentFuture extends CompletableFuture<PlcReadResponse> {
+
+        private final Consumer<Map<S7MessageRequest, Either<S7MessageResponse, Throwable>>> action;
+        private final List<CompletableFuture<PlcReadResponse>> childFutures;
+
+        public ParentFuture(Consumer<Map<S7MessageRequest, Either<S7MessageResponse, Throwable>>> action) {
+            this.action = action;
+            this.childFutures = new LinkedList<>();
+        }
+
+        public void addChildFuture(CompletableFuture<PlcReadResponse> childFuture) {
+            childFuture.whenComplete((value, throwable) -> {
+                // If all futures are done (None are not done), do the completion action.
+                if(childFutures.stream().allMatch(CompletableFuture::isDone)) {
+                    // TODO: Create the result list of S7MessageResponses
+                    Map<S7MessageRequest, Either<S7MessageResponse, Throwable>> result = null;
+
+                    // Call the result handler and pass in the list of results.
+                    action.accept(result);
+                }
+            });
+            childFutures.add(childFuture);
+        }
+
+    }
+
 }
