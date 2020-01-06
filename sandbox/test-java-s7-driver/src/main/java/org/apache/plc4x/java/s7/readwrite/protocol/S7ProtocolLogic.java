@@ -25,11 +25,53 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.s7.readwrite.*;
+import org.apache.plc4x.java.s7.readwrite.COTPPacket;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse;
+import org.apache.plc4x.java.s7.readwrite.COTPPacketData;
+import org.apache.plc4x.java.s7.readwrite.COTPParameter;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap;
+import org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize;
+import org.apache.plc4x.java.s7.readwrite.S7Address;
+import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
+import org.apache.plc4x.java.s7.readwrite.S7Message;
+import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
+import org.apache.plc4x.java.s7.readwrite.S7MessageResponse;
+import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadSetupCommunication;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest;
+import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse;
+import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItem;
+import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
+import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
+import org.apache.plc4x.java.s7.readwrite.SzlId;
+import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7MessageProcessor;
@@ -46,16 +88,26 @@ import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.optimizer.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -187,68 +239,80 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         for (PlcField field : request.getFields()) {
             requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
         }
-        int tpduId = tpduGenerator.getAndIncrement();
-        final S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId,
+
+        // tpuId will be inserted before sending in #read0 so we insert -1 as dummy here
+        final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1,
             new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
             new S7PayloadReadVarRequest());
 
-        if(processor != null) {
-            try {
-                final Collection<S7MessageRequest> s7MessageRequests =
-                    processor.processRequest(s7MessageRequest, pduSize);
-                // Only if more than one sub-request is returned, do something special ...
-                // otherwise just do the normal sending.
-                if(s7MessageRequests.size() > 1) {
-                    /////////////////////////////////////////////////////////////////
-                    //
-                    /////////////////////////////////////////////////////////////////
-                    ParentFuture multiRequestFuture = new ParentFuture(
-                        result -> {
-                            try {
-                                final S7MessageResponse s7MessageResponse =
-                                    processor.processResponse(s7MessageRequest, result);
-                                final PlcReadResponse plcReadResponse = (PlcReadResponse)
-                                    decodeReadResponse(s7MessageResponse, ((InternalPlcReadRequest) readRequest));
-                                future.complete(plcReadResponse);
-                            } catch (PlcException e) {
-                                logger.error("Something went wrong", e);
-                            }
-                        });
-                    for (S7MessageRequest messageRequest : s7MessageRequests) {
-                        ChildFuture childFuture = new ChildFuture(messageRequest);
-                        multiRequestFuture.addChildFuture(childFuture);
-
-                        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, messageRequest, true,
-                            (short) messageRequest.getTpduReference()));
-
-                        // Send the packet
-                        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-                        transaction.submit(() -> context.sendRequest(tpktPacket)
-                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                            .onTimeout(childFuture::completeExceptionally)
-                            .onError((p, e) -> childFuture.completeExceptionally(e))
-                            .check(p -> p.getPayload() instanceof COTPPacketData)
-                            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-                            .check(p -> p.getPayload() instanceof S7MessageResponse)
-                            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
-                            .check(p -> p.getTpduReference() == tpduId)
-                            .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
-                            .handle(p -> {
-                                childFuture.complete(p);
-                                // Finish the request-transaction.
-                                transaction.endRequest();
-                            }));
-                    }
-                    return multiRequestFuture;
-                }
-            } catch (PlcException e) {
-                logger.error("Something went wrong", e);
-            }
+        if (processor == null) {
+            // Just send a single response and chain it as Response
+            return toPlcReadResponse((InternalPlcReadRequest) readRequest, read0(s7MessageRequest));
         }
+        try {
+            final Collection<S7MessageRequest> s7MessageRequests =
+                processor.processRequest(s7MessageRequest, pduSize);
+            // Only if more than one sub-request is returned, do something special ...
+            // otherwise just do the normal sending.
+            if (s7MessageRequests.size() == 1) {
+                return toPlcReadResponse((InternalPlcReadRequest) readRequest, read0(s7MessageRequest));
+            }
+            /////////////////////////////////////////////////////////////////
+            //  Here we are in the case that we have multiple requests,
+            //  so we need splitting
+            /////////////////////////////////////////////////////////////////
+            ParentFuture multiRequestFuture = new ParentFuture(
+                result -> {
+                    try {
+                        final S7MessageResponse s7MessageResponse =
+                            processor.processResponse(s7MessageRequest, result);
+                        final PlcReadResponse plcReadResponse = (PlcReadResponse)
+                            decodeReadResponse(s7MessageResponse, ((InternalPlcReadRequest) readRequest));
+                        future.complete(plcReadResponse);
+                    } catch (PlcException e) {
+                        logger.error("Something went wrong", e);
+                    }
+                });
+            for (S7MessageRequest messageRequest : s7MessageRequests) {
+                ChildFuture childFuture = new ChildFuture(messageRequest);
+                multiRequestFuture.addChildFuture(childFuture);
 
-        /////////////////////////////////////////////////////////////////
-        // Do sending of normally sized single-message request.
-        /////////////////////////////////////////////////////////////////
+                read0(messageRequest)
+                    // Forward everything to the remaining future
+                    .handle((res, ex) -> res != null ? childFuture.complete(res) : childFuture.completeExceptionally(ex));
+            }
+            return multiRequestFuture;
+        } catch (PlcException e) {
+            logger.error("Something went wrong", e);
+        }
+        return null;
+    }
+
+    /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadRespoonse */
+    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<S7MessageResponse> response) {
+        return response
+            .thenApply(p -> {
+                try {
+                    return ((PlcReadResponse) decodeReadResponse(p, readRequest));
+                } catch (PlcProtocolException e) {
+                    throw new PlcRuntimeException("Unable to decode Response", e);
+                }
+            });
+    }
+
+    /**
+     * Sends one Read over the Wire and internally returns the Response
+     * Do sending of normally sized single-message request.
+     *
+     * Assumes that the {@link S7MessageRequest} and its expected {@link S7MessageResponse}
+     * and does not further check that!
+     */
+    public CompletableFuture<S7MessageResponse> read0(S7MessageRequest request) {
+        CompletableFuture<S7MessageResponse> future = new CompletableFuture<>();
+        int tpduId = tpduGenerator.getAndIncrement();
+
+        // Create a new Request with correct tpuId (is not known before)
+        S7MessageRequest s7MessageRequest = new S7MessageRequest(tpduId, request.getParameter(), request.getPayload());
 
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, s7MessageRequest, true, (short) tpduId));
         // Start a new request-transaction (Is ended in the response-handler)
@@ -264,13 +328,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             .check(p -> p.getTpduReference() == tpduId)
             .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
             .handle(p -> {
-                try {
-                    future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
-                } catch (PlcProtocolException e) {
-                    logger.warn(String.format("Error sending 'read' message: '%s'", e.getMessage()), e);
-                }
+                future.complete(p);
                 // Finish the request-transaction.
                 transaction.endRequest();
+//                    future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
             }));
         return future;
     }
