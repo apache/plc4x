@@ -19,6 +19,7 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads.items;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -147,6 +148,25 @@ public class MessageObjectItem {
 
     public List<AssociatedValueItem> getGoingValues() {
         return GoingValues;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+        return "MessageObjectItem{" + "VariableSpecification=" + VariableSpecification 
+                + ", Length=" + Length 
+                + ", SyntaxID=" + SyntaxID 
+                + ", NumberOfValues=" + NumberOfValues 
+                + ", EventID=" + EventID 
+                + ", EventState=" + EventState 
+                + ", State=" + State 
+                + ", AckStateGoing=" + AckStateGoing 
+                + ", AckStateComming=" + AckStateComming 
+                + ", TimestampComing=" + TimestampComing
+                + ", TimestampGoing="  + TimestampGoing 
+                + ", ComingValues=" + ComingValues 
+                + ", GoingValues=" + GoingValues 
+                + '}';
     }
 
 

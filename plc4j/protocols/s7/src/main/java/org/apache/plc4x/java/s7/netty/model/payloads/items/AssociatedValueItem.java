@@ -20,6 +20,7 @@ under the License.
 package org.apache.plc4x.java.s7.netty.model.payloads.items;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 
@@ -56,9 +57,13 @@ public class AssociatedValueItem {
         return Data;
     }
 
-
-
-
-
+    @Override
+    public String toString() {
+        return "AssociatedValueItem{" + "returnCode=" + returnCode 
+                + ", dataTransportSize=" + dataTransportSize 
+                + ", Length=" + Length 
+                + ", Data=" + ByteBufUtil.hexDump(Data) 
+                + '}';
+    }
 
 }

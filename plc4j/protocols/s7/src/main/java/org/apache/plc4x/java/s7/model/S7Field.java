@@ -18,17 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 
 public class S7Field implements PlcField {
 
@@ -39,6 +38,10 @@ public class S7Field implements PlcField {
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+    
+    //Event Subscription 
+    private static final Pattern EVENT_SUBSCRIPTION_TYPE_PATTERN = 
+        Pattern.compile("MODE SYS USR ALM");
 
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";

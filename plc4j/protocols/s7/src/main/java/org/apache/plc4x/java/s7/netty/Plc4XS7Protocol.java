@@ -54,6 +54,7 @@ import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
+import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
@@ -87,7 +88,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
     private Map<Short, PlcRequestContainer> requests;
     
-    private final BlockingQueue<AlarmMessagePayload> alarmsqueue;
+    private final BlockingQueue<S7PushMessage> alarmsqueue;
 
     public Plc4XS7Protocol() {
         this.requests = new HashMap<>();
@@ -97,7 +98,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     * @param s7Type
     * 
     */
-    public Plc4XS7Protocol(BlockingQueue<AlarmMessagePayload> alarmsqueue) {
+    public Plc4XS7Protocol(BlockingQueue<S7PushMessage> alarmsqueue) {
         this.requests = new HashMap<>();
         //We need check the device here
         this.alarmsqueue = alarmsqueue;
@@ -222,7 +223,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     }
     
     private void encodeUnsubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
-        
+        //TODO : Perform subscription termination 
     }    
     
     private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
@@ -460,7 +461,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         // TODO: Implement this ...
         return new byte[0];
     }
-
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Decoding
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,16 +470,16 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     @Override
     protected void decode(ChannelHandlerContext ctx, S7Message msg, List<Object> out) throws PlcException {
         // We're currently just expecting responses.
-        logger.info("Message Type: " + msg.getMessageType());
+
         if (!(msg instanceof S7ResponseMessage)) {
             logger.info("Aborta decode: " + msg.getMessageType());
             return;
         }
+        
         S7ResponseMessage responseMessage = (S7ResponseMessage) msg;
         short tpduReference = responseMessage.getTpduReference();
         if (requests.containsKey(tpduReference)) {
             // As every response has a matching request, get this request based on the tpdu.
-            logger.info("tpduReference: " + tpduReference);
             PlcRequestContainer requestContainer = requests.remove(tpduReference);
             PlcRequest request = requestContainer.getRequest();
 
@@ -489,43 +490,40 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcSubscriptionRequest) {
-                logger.info("Debo verificar si la suscripción fu exitosa...");  
+                response = decodeSubscriptionResponse(responseMessage, requestContainer);
             } else {
-                logger.info("Existe la solicitud del cliente, pero no es una respuesta valida...");
+                logger.info("There is the client's request, but it is not a valid response....");
             }
 
             // Confirm the response being handled.
             if (response != null) {
                 requestContainer.getResponseFuture().complete(response);
             } else {
-                logger.info("No se pudo procesar el mensaje...");
+                logger.info("The message could not be processed...");
             }
         } else {
-            logger.info("Posible mensaje PUSH...");
+            //PUSH Message
+            List<S7Parameter> parameters = msg.getParameters();
+            for (S7Parameter parameter:parameters){
+                if (parameter instanceof S7PushMessage){
+                    if (!alarmsqueue.offer((S7PushMessage) parameter)){
+                        logger.info("Alarm queue buffer is full.");
+                    };                    
+                }    
+            }
+            
             List<S7Payload> payloads = msg.getPayloads();  
             //TODO: Use alarmsqueue.addAll() method
             for (S7Payload payload:payloads){
-                if (payload instanceof AlarmMessagePayload){
-                    logger.info("S7PayLoad tipo AlarmMessagePayload: " + payload.toString());
-                    AlarmMessagePayload alarm = (AlarmMessagePayload) payload;
-                    if (!alarmsqueue.offer(alarm)){
+                if (payload instanceof S7PushMessage){
+                    if (!alarmsqueue.offer((S7PushMessage) payload)){
                         logger.info("Alarm queue buffer is full.");
                     };
-                    /*
-                    List<MessageObjectItem> msgobjects = alarm.getMsg().getMsgItems();
-                    for (MessageObjectItem msgobject:msgobjects){
-                        logger.info("Item tipo MessageObjectItem: " + msgobject.toString() + " Size: " + msgobject.getComingValues().size());
-                        List<AssociatedValueItem> items = msgobject.getComingValues();
-                        for (AssociatedValueItem item:items){
-                            logger.info("ReturnCode :" + item.getReturnCode() + " Length: " + item.getLength() + " Data: " + ByteBufUtil.hexDump(item.getData()));
-                        }
-                    }
-                    */
                 }
             }            
         }
     }
-
+        // TODO: Check if it is a CPU service response and proceed as applicable.
     @SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
@@ -841,6 +839,19 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         return new DefaultPlcWriteResponse(plcWriteRequest, values);
     }
 
+    private PlcResponse decodeSubscriptionResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
+        InternalPlcSubscriptionRequest subsRequest = (InternalPlcSubscriptionRequest) requestContainer.getRequest();
+        List<S7Payload> payloads = responseMessage.getPayloads();
+        for (S7Payload payload:payloads){
+            if(payload instanceof AlarmMessagePayload) {  
+                logger.info("OK. Si pasa el mensaje como un Payload...: " + ((AlarmMessagePayload) payload).getReturnCode());
+                //logger.info("Alarm Type...: " + ((AlarmMessagePayload) payload).getMsgtype());                
+            }
+        }
+        return new DefaultPlcSubscriptionResponse(subsRequest, null);
+    }
+    
+    
     private PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
         if (dataTransportErrorCode == null) {
             return PlcResponseCode.INTERNAL_ERROR;

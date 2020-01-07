@@ -47,5 +47,10 @@ public class CpuServicesPushParameter extends CpuServicesParameter {
     public ParameterError getError() {
         return error;
     }
+
+    @Override
+    public String toString() {
+        return "CpuServicesPushParameter{" + "dataUnitReferenceNumber=" + dataUnitReferenceNumber + ", lastDataUnit=" + lastDataUnit + ", error=" + error + '}';
+    }
     
 }

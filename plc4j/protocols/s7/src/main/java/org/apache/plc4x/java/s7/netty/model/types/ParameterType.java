@@ -18,17 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * (Values determined by evaluating generated ".pcap" files)
  */
 public enum ParameterType {
     CPU_SERVICES((byte) 0x00),
+    MODE_TRANSITION((byte) 0x01),
     READ_VAR((byte) 0x04),
     WRITE_VAR((byte) 0x05),
     REQUEST_DOWNLOAD((byte) 0x1A),

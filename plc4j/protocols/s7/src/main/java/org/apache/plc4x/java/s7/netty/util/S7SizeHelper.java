@@ -94,6 +94,8 @@ public class S7SizeHelper {
         }
 
         switch (parameter.getType()) {
+            case MODE_TRANSITION:
+                return 8;
             case READ_VAR:
             case WRITE_VAR:
                 return getReadWriteVarParameterLength((VarParameter) parameter);

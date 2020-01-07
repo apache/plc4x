@@ -61,7 +61,11 @@ import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
 import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
 import org.apache.plc4x.java.s7.netty.S7Protocol;
+import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
+import org.apache.plc4x.java.s7.netty.model.params.CpuDiagnosticPushParameter;
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesPushParameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuDiagnosticMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcEventHandler;
@@ -108,7 +112,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final short paramMaxAmqCallee;
     private final S7ControllerType paramControllerType;
 
-    private BlockingQueue<AlarmMessagePayload> alarmsqueue;
+    private BlockingQueue<S7PushMessage> alarmsqueue;
     private AlarmsLoop alarmsloopthread;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
@@ -171,8 +175,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         this.paramMaxAmqCaller = curParamMaxAmqCaller;
         this.paramMaxAmqCallee = curParamMaxAmqCallee;
         this.paramControllerType = curParamControllerType;
-        
-            
+                    
         /*
          * Take into account that the size of this buffer depends on the final device.
          * S7-300 goes from 20 to 300 and for S7-400 it goes from 300 to 10000. 
@@ -197,8 +200,6 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         return true;
     }
     
-    
-
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
         //short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
@@ -407,9 +408,9 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         private final Channel channel;
         private boolean alarmquery;
         private int delay;
-        private final BlockingQueue<AlarmMessagePayload> alarmsqueue;
+        private final BlockingQueue<S7PushMessage> alarmsqueue;
         
-        AlarmsLoop(Channel channel, BlockingQueue<AlarmMessagePayload> alarmsqueue) {
+        AlarmsLoop(Channel channel, BlockingQueue<S7PushMessage> alarmsqueue) {
             this.channel = channel;
             this.alarmsqueue = alarmsqueue;
             this.alarmquery = true;
@@ -420,10 +421,23 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         public void run() {
             while (!cancelled) { 
                 try {
-                    AlarmMessagePayload alarm = alarmsqueue.poll(delay, TimeUnit.SECONDS);
-                    if (alarm != null){
-                        logger.info("Alarm type: " + alarm.getMsgtype() + " Número de alarmas: " + alarm.getMsg().getObjects());
-                        
+                    S7PushMessage msg = alarmsqueue.poll(delay, TimeUnit.SECONDS);
+                    if (msg != null){
+                        if (msg instanceof AlarmMessagePayload){
+                            AlarmMessagePayload themsg = (AlarmMessagePayload) msg;
+                            logger.info("AlarmMessagePayload: " + themsg);
+                        } else if (msg instanceof CpuDiagnosticPushParameter) {
+                            CpuDiagnosticPushParameter themsg = (CpuDiagnosticPushParameter) msg;
+                            logger.info("CpuDiagnosticPushParameter: " + themsg);;
+                        } else if (msg instanceof CpuDiagnosticMessagePayload) {
+                            CpuDiagnosticMessagePayload themsg = (CpuDiagnosticMessagePayload) msg;
+                            logger.info("CpuDiagnosticMessagePayload: " + themsg);
+                        } else if (msg instanceof CpuServicesPushParameter) {
+                            CpuServicesPushParameter themsg = (CpuServicesPushParameter) msg;
+                            logger.info("CpuServicesPushParameter: " + themsg);
+                        } else {
+                            logger.info("Object type: " + msg.getClass());
+                        }                       
                     } else {
                         if (alarmquery){
                             //TODO Send alarm query to plc
