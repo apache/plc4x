@@ -61,7 +61,8 @@ public class SerialChannelFactoryTest {
         SerialChannelFactory asdf = new SerialChannelFactory("TEST-port1");
         // final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
-            @Override protected void initChannel(SerialChannel ch) throws Exception {
+            @Override
+            protected void initChannel(SerialChannel ch) throws Exception {
                 ch.pipeline().addLast(new DemoCodec());
             }
         });
@@ -80,7 +81,8 @@ public class SerialChannelFactoryTest {
         Channel channel = null;
         try {
             channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
-                @Override protected void initChannel(SerialChannel ch) throws Exception {
+                @Override
+                protected void initChannel(SerialChannel ch) throws Exception {
                     ch.pipeline().addLast(new DemoCodec());
                 }
             });
@@ -94,11 +96,13 @@ public class SerialChannelFactoryTest {
     }
 
     private static class DemoCodec extends ByteToMessageCodec<Object> {
-        @Override protected void encode(ChannelHandlerContext channelHandlerContext, Object o, ByteBuf byteBuf) throws Exception {
+        @Override
+        protected void encode(ChannelHandlerContext channelHandlerContext, Object o, ByteBuf byteBuf) throws Exception {
             // do nothing here
         }
 
-        @Override protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
+        @Override
+        protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
             byteBuf.markReaderIndex();
             StringBuffer sb = new StringBuffer();
             for (int i = 1; i <= byteBuf.readableBytes(); i++) {

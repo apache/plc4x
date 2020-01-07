@@ -53,7 +53,8 @@ public class SerialChannelFactory implements ChannelFactory {
             // Start the client.
             ChannelFuture f = bootstrap.connect(address);
             f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                    @Override public void operationComplete(Future<? super Void> future) throws Exception {
+                    @Override
+                    public void operationComplete(Future<? super Void> future) throws Exception {
                         if (future.isSuccess()) {
                             System.out.println("Connection sucesfull!");
                         } else {

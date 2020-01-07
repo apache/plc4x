@@ -28,19 +28,19 @@ import org.apache.plc4x.java.spi.parser.IntDefaultValue;
  * boolean nodelay = Boolean.parseBoolean(getPropertyOrDefault(TCP_NODELAY, "true"));
  * int connectTimeout = Integer.parseInt(getPropertyOrDefault(CONNECT_TIMEOUT_MILLIS, "1000"));
  */
-public class TcpConfiguration {
+public class TcpSocketConfiguration {
 
     @ConfigurationParameter("SO_KEEPALIVE")
     @BooleanDefaultValue(true)
-    public boolean keepAlive = true;
+    private boolean keepAlive = true;
 
     @ConfigurationParameter("TCP_NODELAY")
     @BooleanDefaultValue(true)
-    public boolean noDelay = true;
+    private boolean noDelay = true;
 
     @ConfigurationParameter("CONNECT_TIMEOUT_MILLIS")
     @IntDefaultValue(1000)
-    public int connectTimeout = 1000;
+    private int connectTimeout = 1000;
 
     public boolean isKeepAlive() {
         return keepAlive;
@@ -66,11 +66,13 @@ public class TcpConfiguration {
         this.connectTimeout = connectTimeout;
     }
 
-    @Override public String toString() {
-        return "TcpConfiguration{" +
+    @Override
+    public String toString() {
+        return "TcpSocketConfiguration{" +
             "keepAlive=" + keepAlive +
             ", noDelay=" + noDelay +
             ", connectTimeout=" + connectTimeout +
             '}';
     }
+
 }

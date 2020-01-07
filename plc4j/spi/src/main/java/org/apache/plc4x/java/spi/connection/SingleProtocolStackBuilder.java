@@ -29,36 +29,37 @@ import java.util.function.Function;
 /**
  * Used to Build Instances of {@link SingleProtocolStackConfigurer}.
  *
- * @param <BASE_PAKET_CLASS> Type of Created Message that is Exchanged.
+ * @param <BASE_PACKET_CLASS> Type of Created Message that is Exchanged.
  */
-public final class SingleProtocolStackBuilder<BASE_PAKET_CLASS extends Message> {
+public final class SingleProtocolStackBuilder<BASE_PACKET_CLASS extends Message> {
 
-    private Class<BASE_PAKET_CLASS> basePaketClass;
-    private Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol;
+    private Class<BASE_PACKET_CLASS> basePacketClass;
+    private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
     private Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
     private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
-    SingleProtocolStackBuilder(Class<BASE_PAKET_CLASS> basePaketClass) {
-        this.basePaketClass = basePaketClass;
+    SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass) {
+        this.basePacketClass = basePacketClass;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withProtocol(Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol) {
+    public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withProtocol(Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol) {
         this.protocol = protocol;
         return this;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withPacketSizeEstimator(Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator) {
+    public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withPacketSizeEstimator(Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator) {
         this.packetSizeEstimator = packetSizeEstimator;
         return this;
     }
 
-    public SingleProtocolStackBuilder<BASE_PAKET_CLASS> withCorruptPacketRemover(Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
+    public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withCorruptPacketRemover(Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
         this.corruptPacketRemover = corruptPacketRemover;
         return this;
     }
 
-    public SingleProtocolStackConfigurer<BASE_PAKET_CLASS> build() {
+    public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
         assert this.protocol != null;
-        return new SingleProtocolStackConfigurer<BASE_PAKET_CLASS>(basePaketClass, protocol, packetSizeEstimator, corruptPacketRemover);
+        return new SingleProtocolStackConfigurer<>(basePacketClass, protocol, packetSizeEstimator, corruptPacketRemover);
     }
+
 }

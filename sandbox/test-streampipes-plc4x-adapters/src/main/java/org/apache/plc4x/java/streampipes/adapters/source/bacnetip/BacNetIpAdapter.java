@@ -31,6 +31,7 @@ import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
 import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
+import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.UdpIpPacketHandler;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,7 +194,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public void startAdapter() throws AdapterException {
-        try {
+        /*try {
             ChannelFactory channelFactory;
             if (deviceName != null) {
                 channelFactory = new RawSocketChannelFactory(deviceName, null,
@@ -203,7 +204,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                 channelFactory = new PcapChannelFactory(new File(pcapFile), null,
                     PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
                     PcapSocketChannelConfig.SPEED_REALTIME,
-                    new org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler());
+                    new UdpIpPacketHandler());
             } else {
                 throw new AdapterException("Configuration Exception. Either device or file have to be selected.");
             }
@@ -347,7 +348,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
         } catch (PlcConnectionException e) {
             logger.error("An error occurred starting the BACnet/IP driver", e);
             throw new AdapterException("An error occurred starting the BACnet/IP driver");
-        }
+        }*/
     }
 
     @Override

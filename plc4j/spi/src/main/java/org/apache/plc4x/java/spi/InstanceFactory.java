@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Generall Class which is used to create instances of Classes.
+ * General Class which is used to create instances of Classes.
  */
 public class InstanceFactory {
 

@@ -159,7 +159,8 @@ public class RawSocketChannel extends OioByteStreamChannel {
         }
     }
 
-    @Override protected int doReadBytes(ByteBuf buf) throws Exception {
+    @Override
+    protected int doReadBytes(ByteBuf buf) throws Exception {
         if (handle == null || !handle.isOpen()) {
             return -1;
         }

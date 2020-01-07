@@ -16,28 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.ast;
+package org.apache.plc4x.java.utils.pcapsockets.netty.handlers;
 
-import java.util.List;
-import java.util.Set;
+import org.pcap4j.packet.Packet;
 
-public class ConstructorDeclaration extends MethodDefinition {
+public interface PacketHandler {
 
-    public ConstructorDeclaration(Set<Modifier> modifiers, List<ParameterExpression> parameters, Block body) {
-        super(modifiers, null, null, parameters, body);
-    }
+    byte[] getData(Packet packet);
 
-    public ConstructorDeclaration(List<ParameterExpression> parameters, Block body) {
-        super(null, null, parameters, body);
-    }
-
-    @Override
-    public <T> T accept(NodeVisitor<T> visitor) {
-        return null;
-    }
-
-    @Override
-    public void write(Generator writer) {
-        throw new UnsupportedOperationException("This should be called by the Class Implementor!");
-    }
 }

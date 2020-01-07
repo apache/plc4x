@@ -19,11 +19,15 @@ under the License.
 package org.apache.plc4x.java.utils.pcapsockets.netty;
 
 import io.netty.channel.ChannelOption;
+import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
 
 public class PcapSocketChannelOption<T> extends ChannelOption<T> {
 
-    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
-        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
+    /**
+     * Option to restrict the captures based on TCP protocol ids.
+     */
+    public static final ChannelOption<Integer> PROTOCOL_ID =
+        ChannelOption.valueOf(Integer.class, "PROTOCOL_ID");
 
     /**
      * Option to increase/decrease the replay speed of the recording.
@@ -31,6 +35,13 @@ public class PcapSocketChannelOption<T> extends ChannelOption<T> {
      */
     public static final ChannelOption<Float> SPEED_FACTOR =
         ChannelOption.valueOf(Float.class, "SPEED_FACTOR");
+
+    /**
+     * Option for providing a PacketHandler, that intercepts the captured packets
+     * before passing the data into the channel.
+     */
+    public static final ChannelOption<String> PACKET_HANDLER =
+        ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
 
     protected PcapSocketChannelOption() {
         super(null);

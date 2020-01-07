@@ -31,11 +31,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class TcpSocketChannelFactory extends NettyChannelFactory implements HasConfiguration<TcpConfiguration> {
+public class TcpSocketChannelFactory extends NettyChannelFactory implements HasConfiguration<TcpSocketConfiguration> {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpSocketChannelFactory.class);
 
-    private TcpConfiguration configuration;
+    private TcpSocketConfiguration configuration;
 
     public TcpSocketChannelFactory() {
         // Default Constructor
@@ -58,17 +58,20 @@ public class TcpSocketChannelFactory extends NettyChannelFactory implements HasC
     }
 
 
-    @Override public void setConfiguration(TcpConfiguration tcpConfiguration) {
+    @Override
+    public void setConfiguration(TcpSocketConfiguration tcpConfiguration) {
         configuration = tcpConfiguration;
     }
 
-    @Override public Class<? extends Channel> getChannel() {
+    @Override
+    public Class<? extends Channel> getChannel() {
         return NioSocketChannel.class;
     }
 
-    @Override public void configureBootstrap(Bootstrap bootstrap) {
+    @Override
+    public void configureBootstrap(Bootstrap bootstrap) {
         if (configuration == null) {
-            this.configuration = new TcpConfiguration();
+            this.configuration = new TcpSocketConfiguration();
         }
         logger.info("Configuring Bootstrap with {}", configuration);
         bootstrap.option(ChannelOption.SO_KEEPALIVE, configuration.isKeepAlive());

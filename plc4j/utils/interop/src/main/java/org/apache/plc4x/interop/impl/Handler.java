@@ -55,7 +55,8 @@ public class Handler implements InteropServer.Iface {
     }
 
 
-    @Override public ConnectionHandle connect(String connectionString) throws TException {
+    @Override
+    public ConnectionHandle connect(String connectionString) throws TException {
         LOGGER.debug("Receiving new connect request to '{}'", connectionString);
         try {
             long id = connectionCounter.getAndIncrement();
@@ -74,7 +75,8 @@ public class Handler implements InteropServer.Iface {
         }
     }
 
-    @Override public void close(ConnectionHandle handle) throws TException {
+    @Override
+    public void close(ConnectionHandle handle) throws TException {
         LOGGER.debug("Receiving new close request for handle {}", handle.getConnectionId());
         if (!connections.containsKey(handle)) {
             LOGGER.warn("Handle for close request {} does not exist. Perhaps already closed?", handle.getConnectionId());
@@ -90,7 +92,8 @@ public class Handler implements InteropServer.Iface {
     }
 
 
-    @Override public Response execute(ConnectionHandle handle, Request request) throws TException {
+    @Override
+    public Response execute(ConnectionHandle handle, Request request) throws TException {
         LOGGER.debug("Executing " + request);
         if (request.getFields() == null) {
             throw new PlcException(

@@ -29,6 +29,7 @@ import org.apache.plc4x.java.spi.parser.ConnectionParser;
 
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
+    // TODO: This should probably be moved somewhere else as it only applies for TCP/UDP transports ...
     protected abstract int getDefaultPortIPv4();
 
     protected abstract PlcFieldHandler getFieldHandler();
@@ -44,6 +45,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // CONFIGURATION configuration = parser.createConfiguration(getConfigurationClass());
 
         // Create Instance of Transport
+        // TODO: This needs to be parametrized.
         NettyChannelFactory transport = instanceFactory.createInstance(getTransportChannelFactory());
 
         return new DefaultNettyPlcConnection<>(

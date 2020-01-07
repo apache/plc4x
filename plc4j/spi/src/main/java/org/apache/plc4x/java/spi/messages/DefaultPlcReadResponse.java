@@ -52,7 +52,8 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         return request;
     }
 
-    @Override public PlcValue getAsPlcValue() {
+    @Override
+    public PlcValue getAsPlcValue() {
         return PlcValues.of(request.getFieldNames().stream()
             .collect(Collectors.toMap(Function.identity(), name -> PlcValues.of(getObject(name)))));
     }

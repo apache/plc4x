@@ -136,9 +136,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     private S7MessageProcessor processor = null;
 
-    @Override public void setConfiguration(S7Configuration configuration) {
-        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, configuration.rack, configuration.slot);
-        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
+    @Override
+    public void setConfiguration(S7Configuration configuration) {
+        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
+        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, configuration.rack, configuration.slot);
 
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
         // The Siemens LOGO device seems to only work with very limited settings,

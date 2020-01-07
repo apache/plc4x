@@ -46,7 +46,8 @@ public class AliasNode extends Node {
         this.name = name;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visit(this);
     }
 }

@@ -75,7 +75,7 @@ public class ConnectionParser {
     }
 
     /**
-     * Convenvience Method, as its sometimes allowed to omit port in the URI String, as its
+     * Convenience Method, as its sometimes allowed to omit port in the URI String, as its
      * default for some protocols.
      * Of course only makes sense for TCP based Protocols
      *
@@ -105,8 +105,7 @@ public class ConnectionParser {
      */
     public Properties getProperties() {
         Properties properties = new Properties();
-        splitQuery(uri).entrySet()
-            .forEach(entry -> properties.setProperty(entry.getKey().toUpperCase(), entry.getValue().get(0)));
+        splitQuery(uri).forEach((key, value) -> properties.setProperty(key.toUpperCase(), value.get(0)));
 
         return properties;
     }
@@ -142,8 +141,9 @@ public class ConnectionParser {
 
         T instance;
         try {
-            instance = pClazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            instance = pClazz.getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | InstantiationException |
+            IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Unable to Instantiate Configuration Class", e);
         }
         try {
@@ -176,8 +176,6 @@ public class ConnectionParser {
                         }
                     }
                     iter.remove();
-                    continue;
-
                 }
             }
 
@@ -188,7 +186,7 @@ public class ConnectionParser {
                     (getConfigurationName(entry.getValue(), entry.getKey())) : entry.getKey())
                 .collect(toList());
 
-            if (missingFields.size() > 0) {
+            if (!missingFields.isEmpty()) {
                 throw new IllegalArgumentException("Missing required fields: " + missingFields);
             }
         } catch (IllegalAccessException e) {
@@ -219,7 +217,7 @@ public class ConnectionParser {
     }
 
     public static AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
-        final int idx = it.indexOf("=");
+        final int idx = it.indexOf('=');
         final String key = idx > 0 ? it.substring(0, idx) : it;
         final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
         return new AbstractMap.SimpleImmutableEntry<>(key, value);

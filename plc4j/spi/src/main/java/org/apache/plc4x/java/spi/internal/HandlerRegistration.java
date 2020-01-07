@@ -79,7 +79,8 @@ public class HandlerRegistration {
         return timeout;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "HandlerRegistration#" + id;
     }
 }

@@ -16,41 +16,16 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen.python;
+package org.apache.plc4x.java.s7.readwrite;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.apache.plc4x.java.base.connection.PcapChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@JsonTypeName("Assign")
-public class AssignNode extends LineEntryNode {
-
-    @JsonProperty("targets")
-    private List<Node> targets = new ArrayList<>();
-
-    @JsonProperty("value")
-    private Node value;
-
-    public List<Node> getTargets() {
-        return targets;
-    }
-
-    public void setTargets(List<Node> targets) {
-        this.targets = targets;
-    }
-
-    public Node getValue() {
-        return value;
-    }
-
-    public void setValue(Node value) {
-        this.value = value;
-    }
+public class S7TestPcapDriver extends S7Driver {
 
     @Override
-    public <T> T accept(NodeVisitor<T> visitor) {
-        return visitor.visit(this);
+    protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
+        return PcapChannelFactory.class;
     }
+
 }

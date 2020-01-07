@@ -43,11 +43,13 @@ public class BinaryExpression extends Expression {
         return op;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
+    @Override
+    public void write(Generator writer) {
         writer.generate(this);
     }
 

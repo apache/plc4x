@@ -19,84 +19,39 @@ under the License.
 package org.apache.plc4x.java.base.connection;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.oio.OioEventLoopGroup;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import io.netty.channel.*;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.plc4x.java.spi.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.apache.plc4x.java.utils.pcapsockets.netty.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.net.InetAddress;
-
-public class PcapChannelFactory implements ChannelFactory {
+public class PcapChannelFactory extends NettyChannelFactory implements HasConfiguration<PcapConfiguration> {
 
     private static final Logger logger = LoggerFactory.getLogger(PcapChannelFactory.class);
 
-    private final File pcapFile;
-    private final InetAddress address;
-    private final int port;
-    private final int protocolId;
-    private final float replaySpeedFactor;
-    private final PacketHandler packetHandler;
+    private PcapConfiguration configuration;
 
-    public PcapChannelFactory(File pcapFile, InetAddress address, int port, int protocolId, float replaySpeedFactor, PacketHandler packetHandler) {
-        this.pcapFile = pcapFile;
-        this.address = address;
-        this.port = port;
-        this.protocolId = protocolId;
-        this.replaySpeedFactor = replaySpeedFactor;
-        this.packetHandler = packetHandler;
+    @Override
+    public void setConfiguration(PcapConfiguration pcapConfiguration) {
+        this.configuration = pcapConfiguration;
     }
 
     @Override
-    public Channel createChannel(ChannelHandler channelHandler)
-        throws PlcConnectionException {
-        try {
-            final EventLoopGroup workerGroup = new OioEventLoopGroup();
+    public Class<? extends Channel> getChannel() {
+        return PcapSocketChannel.class;
+    }
 
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(PcapSocketChannel.class);
-            bootstrap.option(PcapSocketChannelOption.PACKET_HANDLER, packetHandler);
-            bootstrap.option(PcapSocketChannelOption.SPEED_FACTOR, replaySpeedFactor);
-            bootstrap.handler(channelHandler);
-
-            // Start the client.
-            ChannelFuture f = bootstrap.connect(new PcapSocketAddress(pcapFile, address, port, protocolId)).sync();
-            f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (!future.isSuccess()) {
-                        logger.info("Unable to connect, shutting down worker thread.");
-                        workerGroup.shutdownGracefully();
-                    }
-                }
-            });
-            // Wait for sync
-            f.sync();
-            f.awaitUninterruptibly();
-            // Wait till the session is finished initializing.
-            return f.channel();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException("Error creating channel.", e);
+    @Override
+    public void configureBootstrap(Bootstrap bootstrap) {
+        if (configuration == null) {
+            this.configuration = new PcapConfiguration();
         }
-    }
-
-    @Override
-    public void ping() throws PlcException {
-        // Raw-Sockets are absolutely passive, so there is nothing to do for a ping.
-    }
-
-    public File getPcapFile() {
-        return pcapFile;
+        logger.info("Configuring Bootstrap with {}", configuration);
+        bootstrap.option(PcapSocketChannelOption.PROTOCOL_ID, configuration.getProtocolId());
+        bootstrap.option(PcapSocketChannelOption.SPEED_FACTOR, configuration.getReplaySpeedFactor());
+        bootstrap.option(PcapSocketChannelOption.PACKET_HANDLER, configuration.getPacketHandler());
     }
 
 }

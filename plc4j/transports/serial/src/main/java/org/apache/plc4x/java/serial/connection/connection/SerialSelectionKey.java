@@ -47,24 +47,29 @@ class SerialSelectionKey extends AbstractSelectionKey {
         this.index = index;
     }
 
-    @Override public SelectableChannel channel() {
+    @Override
+    public SelectableChannel channel() {
         return this.channel;
     }
 
-    @Override public Selector selector() {
+    @Override
+    public Selector selector() {
         return this.selector;
     }
 
-    @Override public int interestOps() {
+    @Override
+    public int interestOps() {
         return this.interestOps;
     }
 
-    @Override public SelectionKey interestOps(int ops) {
+    @Override
+    public SelectionKey interestOps(int ops) {
         this.interestOps = ops;
         return this;
     }
 
-    @Override public int readyOps() {
+    @Override
+    public int readyOps() {
         final int ops = this.readyOps;
         this.readyOps = 0;
         // Reset events for this here in Selector
@@ -77,4 +82,5 @@ class SerialSelectionKey extends AbstractSelectionKey {
         readyOps = readyOps | event;
         logger.debug("Adding event {} to ready ops, now having ready ops {}", event, readyOps);
     }
+
 }

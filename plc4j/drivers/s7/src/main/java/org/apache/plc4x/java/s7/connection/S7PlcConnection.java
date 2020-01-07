@@ -169,8 +169,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
-        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, rack, slot);
+        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, rack, slot);
+        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
 
         return new ChannelInitializer<Channel>() {
             @Override

@@ -91,7 +91,7 @@ public class AmsSerialFrame implements ByteReadable {
         this.fragmentNumber = fragmentNumber;
         long calculatedLength = userData.getCalculatedLength();
         if (calculatedLength > 255) {
-            throw new IllegalArgumentException("Paket length must not exceed 255");
+            throw new IllegalArgumentException("Packet length must not exceed 255");
         }
         this.userDataLength = UserDataLength.of((byte) calculatedLength);
         byte[] amsPacketBytes = userData.getBytes();

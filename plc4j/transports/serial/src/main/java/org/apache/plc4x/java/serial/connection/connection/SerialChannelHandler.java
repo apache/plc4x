@@ -75,19 +75,23 @@ public abstract class SerialChannelHandler {
             super(address);
         }
 
-        @Override public boolean open() {
+        @Override
+        public boolean open() {
             return true;
         }
 
-        @Override public String getIdentifier() {
+        @Override
+        public String getIdentifier() {
             return null;
         }
 
-        @Override public void registerSelectionKey(SerialSelectionKey selectionKey) {
+        @Override
+        public void registerSelectionKey(SerialSelectionKey selectionKey) {
             this.selectionKey = selectionKey;
         }
 
-        @Override public void close() {
+        @Override
+        public void close() {
             // NOOP
         }
 
@@ -119,7 +123,8 @@ public abstract class SerialChannelHandler {
             comPort = SerialPort.getCommPort(((SerialSocketAddress) address).getIdentifier());
         }
 
-        @Override public boolean open() {
+        @Override
+        public boolean open() {
             if (comPort.openPort()) {
                 comPort.setComPortParameters(19200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
                 return true;
@@ -127,11 +132,13 @@ public abstract class SerialChannelHandler {
             return false;
         }
 
-        @Override public String getIdentifier() {
+        @Override
+        public String getIdentifier() {
             return comPort.getDescriptivePortName();
         }
 
-        @Override public void registerSelectionKey(SerialSelectionKey selectionKey) {
+        @Override
+        public void registerSelectionKey(SerialSelectionKey selectionKey) {
             comPort.addDataListener(new SerialPortDataListener() {
                 @Override
                 public int getListeningEvents() {
@@ -146,7 +153,8 @@ public abstract class SerialChannelHandler {
             });
         }
 
-        @Override public void close() {
+        @Override
+        public void close() {
             this.comPort.closePort();
         }
 
@@ -169,4 +177,5 @@ public abstract class SerialChannelHandler {
             return bytesWritten;
         }
     }
+
 }

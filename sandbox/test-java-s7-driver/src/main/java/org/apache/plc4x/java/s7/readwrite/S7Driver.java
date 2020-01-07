@@ -49,19 +49,23 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
         return "Siemens S7 (Basic)";
     }
 
-    @Override protected int getDefaultPortIPv4() {
+    @Override
+    protected int getDefaultPortIPv4() {
         return ISO_ON_TCP_PORT;
     }
 
-    @Override protected S7PlcFieldHandler getFieldHandler() {
+    @Override
+    protected S7PlcFieldHandler getFieldHandler() {
         return new S7PlcFieldHandler();
     }
 
-    @Override protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
+    @Override
+    protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
         return TcpSocketChannelFactory.class;
     }
 
-    @Override protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
+    @Override
+    protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(TPKTPacket.class)
             .withProtocol(S7ProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
@@ -71,8 +75,8 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     /** Estimate the Length of a Packet */
     public static class ByteLengthEstimator implements Function<ByteBuf, Integer> {
-
-        @Override public Integer apply(ByteBuf byteBuf) {
+        @Override
+        public Integer apply(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
             }
@@ -82,12 +86,13 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     /** Consumes all Bytes till another Magic Byte is found */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
-
-        @Override public void accept(ByteBuf byteBuf) {
+        @Override
+        public void accept(ByteBuf byteBuf) {
             while (byteBuf.getUnsignedByte(0) != TPKTPacket.PROTOCOLID) {
                 // Just consume the bytes till the next possible start position.
                 byteBuf.readByte();
             }
         }
     }
+
 }

@@ -33,39 +33,40 @@ import java.util.function.Function;
 /**
  * Builds a Protocol Stack.
  */
-public class SingleProtocolStackConfigurer<BASE_PAKET_CLASS extends Message> implements ProtocolStackConfigurer<BASE_PAKET_CLASS> {
+public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> implements ProtocolStackConfigurer<BASE_PACKET_CLASS> {
 
-    private final Class<BASE_PAKET_CLASS> basePaketClass;
-    private final Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocolClass;
+    private final Class<BASE_PACKET_CLASS> basePacketClass;
+    private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
     private final Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
     /** Only accessible via Builder */
-    SingleProtocolStackConfigurer(Class<BASE_PAKET_CLASS> basePaketClass, Class<? extends Plc4xProtocolBase<BASE_PAKET_CLASS>> protocol,
+    SingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                   Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
-        this.basePaketClass = basePaketClass;
+        this.basePacketClass = basePacketClass;
         this.protocolClass = protocol;
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPacketRemover = corruptPacketRemover;
     }
 
-    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePaketClass) {
-        return new SingleProtocolStackBuilder<>(basePaketClass);
+    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass) {
+        return new SingleProtocolStackBuilder<>(basePacketClass);
     }
 
     private ChannelHandler getMessageCodec(InstanceFactory instanceFactory) {
-        ReflectionBasedIo<BASE_PAKET_CLASS> io = new ReflectionBasedIo<>(basePaketClass);
-        return new GeneratedProtocolMessageCodec<>(basePaketClass, io, io,
+        ReflectionBasedIo<BASE_PACKET_CLASS> io = new ReflectionBasedIo<>(basePacketClass);
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, io, io,
             packetSizeEstimator != null ? instanceFactory.createInstance(packetSizeEstimator) : null,
             corruptPacketRemover != null ? instanceFactory.createInstance(corruptPacketRemover) : null);
     }
 
     /** Applies the given Stack to the Pipeline */
-    @Override public Plc4xProtocolBase<BASE_PAKET_CLASS> apply(InstanceFactory factory, ChannelPipeline pipeline) {
+    @Override
+    public Plc4xProtocolBase<BASE_PACKET_CLASS> apply(InstanceFactory factory, ChannelPipeline pipeline) {
         pipeline.addLast(getMessageCodec(factory));
-        Plc4xProtocolBase<BASE_PAKET_CLASS> protocol = factory.createInstance(protocolClass);
-        Plc4xNettyWrapper<BASE_PAKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePaketClass);
+        Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = factory.createInstance(protocolClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePacketClass);
         pipeline.addLast(context);
         return protocol;
     }

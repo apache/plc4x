@@ -41,11 +41,13 @@ public class ReflectionBasedIo<BASE extends Message> implements Parser<BASE>, Se
             serializeMethod = MethodUtils.getMatchingMethod(ioClass, "serialize", WriteBuffer.class, clazz);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(
-                String.format("Unnable to get suitable IO Class for given Message. Expected IO Class '%s' for Class '%s'", clazz.getName(), fqcn));
+                String.format("Unable to get suitable IO Class for given Message. Expected IO Class '%s' for Class '%s'", clazz.getName(), fqcn));
         }
     }
 
-    @Override public BASE parse(ReadBuffer io) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public BASE parse(ReadBuffer io) {
         try {
             return (BASE) parseMethod.invoke(null, io);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -53,11 +55,13 @@ public class ReflectionBasedIo<BASE extends Message> implements Parser<BASE>, Se
         }
     }
 
-    @Override public void serialize(WriteBuffer io, BASE message) {
+    @Override
+    public void serialize(WriteBuffer io, BASE message) {
         try {
             serializeMethod.invoke(null, io, message);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Unable to use the serialize Method!", e);
         }
     }
+
 }

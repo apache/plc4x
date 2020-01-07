@@ -34,14 +34,17 @@ public class SerialSocketAddress extends SocketAddress {
         return identifier;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SerialSocketAddress that = (SerialSocketAddress) o;
         return Objects.equals(identifier, that.identifier);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return Objects.hash(identifier);
     }
+
 }

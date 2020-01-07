@@ -16,12 +16,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.utils.pcapsockets.netty;
+package org.apache.plc4x.java.s7.readwrite;
 
-import org.pcap4j.packet.Packet;
+import org.apache.plc4x.java.api.PlcConnection;
 
-public interface PacketHandler {
+public class ManualS7DriverTest {
 
-    byte[] getData(Packet packet);
+    public static void main(String[] args) throws Exception {
+        S7Driver driver = new S7Driver();
+        final PlcConnection connect = driver.connect("s7ng:///Users/christofer.dutz/Projects/Apache/PLC4X/plc4x/sandbox/test-java-s7-driver/src/test/resources/pcaps/s7-1200-reads-writes.pcapng");
+    }
 
 }

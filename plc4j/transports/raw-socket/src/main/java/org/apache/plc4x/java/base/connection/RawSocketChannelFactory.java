@@ -75,7 +75,8 @@ public class RawSocketChannelFactory implements ChannelFactory {
             // Start the client.
             ChannelFuture f = bootstrap.connect(new RawSocketIpAddress(deviceName, protocolId, address, port)).sync();
             f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override public void operationComplete(Future<? super Void> future) throws Exception {
+                @Override
+                public void operationComplete(Future<? super Void> future) throws Exception {
                     if (!future.isSuccess()) {
                         logger.info("Unable to connect, shutting down worker thread.");
                         workerGroup.shutdownGracefully();

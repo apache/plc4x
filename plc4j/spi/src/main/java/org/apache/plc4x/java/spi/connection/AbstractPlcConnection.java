@@ -144,27 +144,33 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return new DefaultPlcUnsubscriptionRequest.Builder(this);
     }
 
-    @Override public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+    @Override
+    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         return protocol.read(readRequest);
     }
 
-    @Override public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+    @Override
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         return protocol.write(writeRequest);
     }
 
-    @Override public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         return protocol.subscribe(subscriptionRequest);
     }
 
-    @Override public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+    @Override
+    public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         return protocol.unsubscribe(unsubscriptionRequest);
     }
 
-    @Override public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
         throw new NotImplementedException("");
     }
 
-    @Override public void unregister(PlcConsumerRegistration registration) {
+    @Override
+    public void unregister(PlcConsumerRegistration registration) {
         throw new NotImplementedException("");
     }
 

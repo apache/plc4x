@@ -29,15 +29,18 @@ public class PythonGenerator implements Generator {
         this.writer = writer;
     }
 
-    @Override public Node prepare(Node root) {
+    @Override
+    public Node prepare(Node root) {
         return null;
     }
 
-    @Override public void generate(ConstantExpression constantExpression) {
+    @Override
+    public void generate(ConstantExpression constantExpression) {
         writer.write(constantExpression.getValue().toString());
     }
 
-    @Override public void generateDeclarationWithInitializer(DeclarationStatement declarationStatement) {
+    @Override
+    public void generateDeclarationWithInitializer(DeclarationStatement declarationStatement) {
         declarationStatement.getParameterExpression().write(this);
         writer.write(": ");
         declarationStatement.getParameterExpression().getType().write(this);
@@ -45,18 +48,21 @@ public class PythonGenerator implements Generator {
         declarationStatement.getInitializer().write(this);
     }
 
-    @Override public void generateDeclaration(DeclarationStatement declarationStatement) {
+    @Override
+    public void generateDeclaration(DeclarationStatement declarationStatement) {
         declarationStatement.getParameterExpression().write(this);
         writer.write(": ");
         declarationStatement.getParameterExpression().getType().write(this);
         writer.write(" = None");
     }
 
-    @Override public void generate(ParameterExpression parameterExpression) {
+    @Override
+    public void generate(ParameterExpression parameterExpression) {
         writer.write(parameterExpression.getName());
     }
 
-    @Override public void generatePrimitive(Primitive.DataType primitive) {
+    @Override
+    public void generatePrimitive(Primitive.DataType primitive) {
         switch (primitive) {
             case STRING:
                 writer.write("string");
@@ -77,7 +83,8 @@ public class PythonGenerator implements Generator {
         }
     }
 
-    @Override public void generate(IfStatement ifStatement) {
+    @Override
+    public void generate(IfStatement ifStatement) {
         writer.startLine("if ");
         ifStatement.getConditions().get(0).write(this);
         writer.write(":\n");
@@ -106,7 +113,8 @@ public class PythonGenerator implements Generator {
 //        }
     }
 
-    @Override public void writeBlock(Block statements) {
+    @Override
+    public void writeBlock(Block statements) {
         writer.startBlock();
         if (statements.getStatements().isEmpty()) {
             writer.writeLine("pass");
@@ -124,7 +132,8 @@ public class PythonGenerator implements Generator {
         writer.endBlock();
     }
 
-    @Override public void generate(BinaryExpression binaryExpression) {
+    @Override
+    public void generate(BinaryExpression binaryExpression) {
         binaryExpression.getLeft().write(this);
         writer.write(" ");
         writer.write(getOperator(binaryExpression.getOp()));
@@ -132,13 +141,15 @@ public class PythonGenerator implements Generator {
         binaryExpression.getRight().write(this);
     }
 
-    @Override public void generate(AssignementExpression assignementExpression) {
+    @Override
+    public void generate(AssignementExpression assignementExpression) {
         assignementExpression.getTarget().write(this);
         writer.write(" = ");
         assignementExpression.getValue().write(this);
     }
 
-    @Override public void generateStaticCall(Method method, List<Node> arguments) {
+    @Override
+    public void generateStaticCall(Method method, List<Node> arguments) {
         writer.write(method.getType().getTypeString());
         writer.write(".");
         writer.write(method.getName());
@@ -156,7 +167,8 @@ public class PythonGenerator implements Generator {
         }
     }
 
-    @Override public void generateCall(Node target, Method method, List<Node> arguments) {
+    @Override
+    public void generateCall(Node target, Method method, List<Node> arguments) {
         target.write(this);
         writer.write(".");
         writer.write(method.getName());
@@ -165,14 +177,16 @@ public class PythonGenerator implements Generator {
         writer.write(")");
     }
 
-    @Override public void generate(NewExpression newExpression) {
+    @Override
+    public void generate(NewExpression newExpression) {
         newExpression.getType().write(this);
         writer.write("(");
         generateArgumentList(newExpression.getArguments());
         writer.write(")");
     }
 
-    @Override public void generate(MethodDefinition methodDefinition) {
+    @Override
+    public void generate(MethodDefinition methodDefinition) {
         if (methodDefinition.getModifiers().contains(Modifier.STATIC)) {
             writer.writeLine("@classmethod");
         }
@@ -203,12 +217,14 @@ public class PythonGenerator implements Generator {
         methodDefinition.getBody().write(this);
     }
 
-    @Override public void generateReturn(Expression value) {
+    @Override
+    public void generateReturn(Expression value) {
         writer.write("return ");
         value.write(this);
     }
 
-    @Override public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses, boolean mainClass) {
+    @Override
+    public void generateClass(String namespace, String className, List<FieldDeclaration> fields, List<ConstructorDeclaration> constructors, List<MethodDefinition> methods, List<ClassDeclaration> innerClasses, boolean mainClass) {
         // Add static?!
         // Own File?
         writer.startLine("class ");
@@ -255,7 +271,8 @@ public class PythonGenerator implements Generator {
         writer.endBlock();
     }
 
-    @Override public void generateFieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer) {
+    @Override
+    public void generateFieldDeclaration(Set<Modifier> modifiers, TypeDefinition type, String name, Expression initializer) {
         writer.startLine("");
         writer.write(name);
         writer.write(": ");
@@ -270,12 +287,14 @@ public class PythonGenerator implements Generator {
         writer.endLine();
     }
 
-    @Override public void generateFieldReference(TypeDefinition type, String name) {
+    @Override
+    public void generateFieldReference(TypeDefinition type, String name) {
         writer.write("self.");
         writer.write(name);
     }
 
-    @Override public void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body) {
+    @Override
+    public void generateConstructor(Set<Modifier> modifiers, String className, List<ParameterExpression> parameters, Block body) {
         writer.startLine("def __init__(");
         for (int i = 0; i < parameters.size(); i++) {
             parameters.get(i).getType().write(this);
@@ -290,19 +309,23 @@ public class PythonGenerator implements Generator {
         body.write(this);
     }
 
-    @Override public void generateFile(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses) {
+    @Override
+    public void generateFile(ClassDeclaration mainClass, List<ClassDeclaration> innerClasses) {
         generateClass(mainClass.getNamespace(), mainClass.getClassName(), mainClass.getFields(), mainClass.getConstructors(), mainClass.getMethods(), innerClasses, true);
     }
 
-    @Override public void generateType(String typeString) {
+    @Override
+    public void generateType(String typeString) {
         writer.write(typeString);
     }
 
-    @Override public void generateComment(String comment) {
+    @Override
+    public void generateComment(String comment) {
         writer.writeLine("# " + comment);
     }
 
-    @Override public void generateNoOp() {
+    @Override
+    public void generateNoOp() {
         writer.write("pass");
     }
 

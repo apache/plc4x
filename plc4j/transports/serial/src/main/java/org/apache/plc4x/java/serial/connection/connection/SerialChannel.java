@@ -189,7 +189,8 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         }
     }
 
-    @Override protected void doClose() throws Exception {
+    @Override
+    protected void doClose() throws Exception {
         if (this.comPort != null) {
             this.comPort.close();
         }
