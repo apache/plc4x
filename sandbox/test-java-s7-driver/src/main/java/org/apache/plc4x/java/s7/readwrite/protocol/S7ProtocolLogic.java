@@ -240,23 +240,28 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             requestItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
         }
 
-        // tpuId will be inserted before sending in #read0 so we insert -1 as dummy here
+        // Create a read request template.
+        // tpuId will be inserted before sending in #readInternal so we insert -1 as dummy here
         final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1,
             new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
             new S7PayloadReadVarRequest());
 
+        // If no processor is provided the request is output as-is without any modification.
         if (processor == null) {
             // Just send a single response and chain it as Response
-            return toPlcReadResponse((InternalPlcReadRequest) readRequest, read0(s7MessageRequest));
+            return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
         }
+
         try {
-            final Collection<S7MessageRequest> s7MessageRequests =
-                processor.processRequest(s7MessageRequest, pduSize);
+            // Do the preprocessing and eventually split up into multiple requests.
+            final Collection<S7MessageRequest> s7MessageRequests = processor.processRequest(s7MessageRequest, pduSize);
+
             // Only if more than one sub-request is returned, do something special ...
             // otherwise just do the normal sending.
             if (s7MessageRequests.size() == 1) {
-                return toPlcReadResponse((InternalPlcReadRequest) readRequest, read0(s7MessageRequest));
+                return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
             }
+
             /////////////////////////////////////////////////////////////////
             //  Here we are in the case that we have multiple requests,
             //  so we need splitting
@@ -277,7 +282,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 ChildFuture childFuture = new ChildFuture(messageRequest);
                 multiRequestFuture.addChildFuture(childFuture);
 
-                read0(messageRequest)
+                readInternal(messageRequest)
                     // Forward everything to the remaining future
                     .handle((res, ex) -> res != null ? childFuture.complete(res) : childFuture.completeExceptionally(ex));
             }
@@ -307,7 +312,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
      * Assumes that the {@link S7MessageRequest} and its expected {@link S7MessageResponse}
      * and does not further check that!
      */
-    public CompletableFuture<S7MessageResponse> read0(S7MessageRequest request) {
+    private CompletableFuture<S7MessageResponse> readInternal(S7MessageRequest request) {
         CompletableFuture<S7MessageResponse> future = new CompletableFuture<>();
         int tpduId = tpduGenerator.getAndIncrement();
 
