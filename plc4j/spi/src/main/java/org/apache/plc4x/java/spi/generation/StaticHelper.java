@@ -24,8 +24,39 @@ public class StaticHelper {
 
     public static int COUNT(Object obj) {
         if (obj.getClass().isArray()) {
-            Object[] arr = (Object[]) obj;
-            return arr.length;
+            if(obj.getClass().getComponentType() != null && obj.getClass().getComponentType().isPrimitive()) {
+                if(obj.getClass().getComponentType() == boolean.class) {
+                    boolean[] arr = (boolean[]) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == byte.class) {
+                    byte[] arr = (byte []) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == short.class) {
+                    short[] arr = (short []) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == int.class) {
+                    int[] arr = (int []) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == long.class) {
+                    long[] arr = (long []) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == float.class) {
+                    float[] arr = (float []) obj;
+                    return arr.length;
+                }
+                if(obj.getClass().getComponentType() == double.class) {
+                    double[] arr = (double[]) obj;
+                    return arr.length;
+                }
+            } else {
+                Object[] arr = (Object[]) obj;
+                return arr.length;
+            }
         } else if (obj instanceof Collection) {
             Collection col = (Collection) obj;
             return col.size();
