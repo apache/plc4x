@@ -51,7 +51,7 @@ import java.time.*;
 import java.util.Objects;
 import java.math.BigInteger;
 
-<#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
 
 <#if helper.isDiscriminatedType(type)>
