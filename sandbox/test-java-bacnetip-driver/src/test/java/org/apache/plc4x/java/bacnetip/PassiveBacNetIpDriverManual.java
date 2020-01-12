@@ -18,16 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.UdpIpPacketHandler;
-
-import java.io.File;
-
 public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {

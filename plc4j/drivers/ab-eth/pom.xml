@@ -75,12 +75,12 @@
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
@@ -99,8 +99,15 @@
     </dependency>
 
     <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.cmpn</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-protocol-test-utils</artifactId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
       <version>0.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

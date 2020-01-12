@@ -24,8 +24,8 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcString;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ public class ScraperTaskTest implements WithAssertions {
     @Test
     public void scrape() throws PlcConnectionException {
         PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
+        MockConnection connection = (MockConnection) driverManager.getConnection("mock:scraper");
         connection.setDevice(mockDevice);
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hallo")));
 
@@ -69,7 +69,7 @@ public class ScraperTaskTest implements WithAssertions {
         public void badResponseCode_shouldHandleException() throws PlcConnectionException {
             // Given
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:scraper");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:scraper");
             connection.setDevice(mockDevice);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.NOT_FOUND, new PlcString("hallo")));
 

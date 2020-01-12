@@ -20,10 +20,8 @@ package org.apache.plc4x.java.api.authentication;
 
 
 import nl.jqno.equalsverifier.EqualsVerifier;
-import org.apache.plc4x.test.FastTests;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -31,7 +29,6 @@ import static org.junit.Assert.assertThat;
 public class PlcUsernamePasswordAuthenticationTest {
 
     @Test
-    @Category(FastTests.class)
     public void authentication() {
         PlcUsernamePasswordAuthentication authenication = new PlcUsernamePasswordAuthentication("user", "password");
 
@@ -45,7 +42,7 @@ public class PlcUsernamePasswordAuthenticationTest {
      * unintentionally.
      */
     @Test
-   public void toStringDoesntLeakPassword() {
+    public void toStringDoesntLeakPassword() {
         PlcUsernamePasswordAuthentication authenication = new PlcUsernamePasswordAuthentication("user", "top-secret");
 
         assertThat(authenication.toString(), Matchers.not(Matchers.containsString("top-secret")));

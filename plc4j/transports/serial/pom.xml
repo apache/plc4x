@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>plc4j-trannsport-serial</artifactId>
-  <name>PLC4J: Transport: Serial</name>
+  <name>PLC4J: Transports: Serial</name>
   <description>Base classes needed to implement plc4x drivers based on Serial connections.</description>
 
   <dependencies>

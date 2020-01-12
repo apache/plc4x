@@ -70,7 +70,7 @@ public class PlcDriverManager {
      */
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
-        PlcConnection connection = driver.connect(url);
+        PlcConnection connection = driver.getConnection(url);
         connection.connect();
         return connection;
     }
@@ -85,7 +85,7 @@ public class PlcDriverManager {
      */
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
-        PlcConnection connection = driver.connect(url, authentication);
+        PlcConnection connection = driver.getConnection(url, authentication);
         connection.connect();
         return connection;
     }

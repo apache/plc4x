@@ -20,21 +20,12 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.ChannelPipeline;
-import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    /** Applies the given Stack to the Pipeline and returns the wired instance */
-    Plc4xProtocolBase<T> apply(InstanceFactory factory, ChannelPipeline pipeline);
+    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline);
 
-    /**
-     * @deprecated New Drivers should use the {@link #apply(InstanceFactory, ChannelPipeline)} method.
-     */
-    @Deprecated
-    default Plc4xProtocolBase<T> apply(ChannelPipeline pipeline) {
-        throw new NotImplementedException("");
-    }
 }

@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.protocol.df1;
 
-import org.apache.plc4x.protocol.test.ProtocolTestsuiteRunner;
+import org.apache.plc4x.test.protocol.ProtocolTestsuiteRunner;
 
 public class Df1Test extends ProtocolTestsuiteRunner {
 

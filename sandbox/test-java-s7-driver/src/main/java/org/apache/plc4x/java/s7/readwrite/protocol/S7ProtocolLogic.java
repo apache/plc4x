@@ -72,7 +72,7 @@ import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
 import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.connection.S7Configuration;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7MessageProcessor;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
@@ -86,7 +86,7 @@ import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.utils.S7Field;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.HasConfiguration;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -138,8 +138,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     @Override
     public void setConfiguration(S7Configuration configuration) {
-        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
-        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, configuration.rack, configuration.slot);
+        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS,
+            configuration.localRack, configuration.localSlot);
+        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
+            configuration.remoteRack, configuration.remoteSlot);
 
         this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
         // The Siemens LOGO device seems to only work with very limited settings,

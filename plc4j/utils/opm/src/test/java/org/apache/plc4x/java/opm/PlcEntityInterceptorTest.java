@@ -24,8 +24,11 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.assertj.core.api.WithAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,6 +59,23 @@ import static org.mockito.Mockito.when;
 public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
+
+    PlcDriverManager driverManager;
+
+    MockConnection connection;
+
+    PlcEntityManager entityManager;
+
+    @Mock
+    MockDevice mockDevice;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        driverManager = new PlcDriverManager();
+        connection = (MockConnection) driverManager.getConnection("mock:test");
+        connection.setDevice(mockDevice);
+        entityManager = new PlcEntityManager(driverManager);
+    }
 
     @Test
     public void getPlcReadResponse_catchesInterruptedException_rethrows() throws InterruptedException {
@@ -105,8 +125,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     @Test
     public void getterWithNoField() throws OPMException {
-        PlcEntityManager entityManager = new PlcEntityManager();
-        BadEntity entity = entityManager.connect(BadEntity.class, "test:test");
+        BadEntity entity = entityManager.connect(BadEntity.class, "mock:test");
 
         assertThatThrownBy(entity::getField1)
             .isInstanceOf(OPMException.class)

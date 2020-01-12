@@ -19,10 +19,14 @@
 package org.apache.plc4x.java.amsads.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
+import org.apache.plc4x.java.amsads.field.DirectAdsField;
+import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.model.*;
 import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.amsads.readwrite.*;
+import org.apache.plc4x.java.amsads.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -36,14 +40,12 @@ import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.transport.tcp.TcpChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -56,6 +58,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsTcpPlcConnection.class);
@@ -82,7 +85,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     private AdsTcpPlcConnection(InetAddress address, Integer port, AmsNetId targetAmsNetId, int targetint, AmsNetId sourceAmsNetId, int sourceint) {
-        super(new TcpSocketChannelFactory(address, port != null ? port : TCP_PORT), targetAmsNetId, targetint, sourceAmsNetId, sourceint);
+        super(new TcpChannelFactory(new InetSocketAddress(address, port)), targetAmsNetId, targetint, sourceAmsNetId, sourceint);
     }
 
     public static AdsTcpPlcConnection of(InetAddress address, AmsNetId targetAmsNetId, int targetint) {
@@ -116,10 +119,6 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 //            }
 //        };
 //    }
-
-    public InetAddress getRemoteAddress() {
-        return ((TcpSocketChannelFactory) channelFactory).getAddress();
-    }
 
     protected static AmsNetId generateAmsNetId() {
         try {
@@ -333,7 +332,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override

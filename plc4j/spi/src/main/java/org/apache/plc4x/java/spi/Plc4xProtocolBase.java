@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 public abstract class Plc4xProtocolBase<T> {
 
@@ -77,4 +76,5 @@ public abstract class Plc4xProtocolBase<T> {
     }
 
     public abstract void close(ConversationContext<T> context);
+
 }

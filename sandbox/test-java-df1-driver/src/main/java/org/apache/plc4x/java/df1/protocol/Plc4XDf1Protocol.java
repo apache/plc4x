@@ -29,11 +29,11 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcInteger;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.df1.field.Df1Field;
 import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.df1.*;
 import org.apache.plc4x.java.df1.readwrite.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// TODO: Refactor this code to be included in Df1ProtocolLogic.
+@Deprecated
 public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcRequestContainer> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4XDf1Protocol.class);

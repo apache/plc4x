@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.s7.model.S7Field;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
@@ -533,7 +532,8 @@ public class TriggerConfiguration{
             this.plcFieldString = plcField;
             this.plcConnectionString = plcConnectionString;
             if(triggerStrategy.equals(S_7_TRIGGER_VAR)){
-                try {
+                // TODO: This really has to be cleaned up by using the connections prepareField method.
+                /*try {
                     this.plcField = S7Field.of(this.plcFieldString);
                 }
                 catch (Exception e){
@@ -541,7 +541,7 @@ public class TriggerConfiguration{
                         logger.debug("Exception occurred parsing a S7Field");
                     }
                     throw new ScraperConfigurationException("Exception on parsing S7Field (" + plcField + "): " + e.getMessage());
-                }
+                }*/
                 this.compareValue = convertCompareValue(compareValue,this.plcField);
                 this.comparatorType = detectComparatorType(comparator);
                 matchTypeAndComparator();

@@ -21,7 +21,6 @@ package org.apache.plc4x.java.spi.internal;
 
 import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -41,7 +40,6 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     private final Object request;
 
-    @SuppressWarnings("unchecked")
     private final ConversationContext context;
 
     protected Class<?> expectClazz;

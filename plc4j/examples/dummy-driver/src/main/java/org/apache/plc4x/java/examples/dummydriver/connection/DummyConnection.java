@@ -33,7 +33,7 @@ import org.apache.plc4x.java.spi.messages.InternalPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

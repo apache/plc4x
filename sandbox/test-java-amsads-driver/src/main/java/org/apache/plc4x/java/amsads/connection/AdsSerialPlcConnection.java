@@ -18,19 +18,11 @@
  */
 package org.apache.plc4x.java.amsads.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.amsads.protocol.Ads2PayloadProtocol;
-import org.apache.plc4x.java.amsads.protocol.Payload2SerialProtocol;
-import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
-import org.apache.plc4x.java.spi.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
+import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
+import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
 
-import java.util.concurrent.CompletableFuture;
-
+@Deprecated
 public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
 
     private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort) {
@@ -38,7 +30,7 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
     }
 
     private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort, AmsNetId sourceAmsNetId, int sourceAmsPort) {
-        super(new SerialChannelFactory(serialPort), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        super(new SerialChannelFactory(new SerialSocketAddress(serialPort)), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
     public static AdsSerialPlcConnection of(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort) {

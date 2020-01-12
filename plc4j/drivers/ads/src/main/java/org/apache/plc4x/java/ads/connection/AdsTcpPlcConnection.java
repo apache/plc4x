@@ -47,7 +47,7 @@ import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.apache.plc4x.java.spi.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

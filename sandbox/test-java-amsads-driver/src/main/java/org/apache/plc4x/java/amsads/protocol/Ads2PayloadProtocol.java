@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Deprecated
 public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ads2PayloadProtocol.class);

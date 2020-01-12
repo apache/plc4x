@@ -19,5 +19,5 @@
 
 package org.apache.plc4x.java.mock;
 
-public class DuplicateMockDriver extends MockDriver {
+public class DuplicateMockDriver extends ApiMockDriver {
 }

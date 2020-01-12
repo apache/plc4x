@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.protocol.test.ProtocolTestsuiteRunner;
+import org.apache.plc4x.test.protocol.ProtocolTestsuiteRunner;
 
 public class KNXNetIpTest extends ProtocolTestsuiteRunner {
 

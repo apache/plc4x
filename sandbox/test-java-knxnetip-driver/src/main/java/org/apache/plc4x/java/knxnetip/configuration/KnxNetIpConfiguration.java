@@ -18,9 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip.configuration;
 
-import org.apache.plc4x.java.spi.parser.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 
-public class KnxNetIpConfiguration {
+public class KnxNetIpConfiguration implements Configuration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;

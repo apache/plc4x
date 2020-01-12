@@ -19,12 +19,12 @@ under the License.
 package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
-import org.apache.plc4x.java.knxnetip.model.KnxNetIpFieldHandler;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -46,18 +46,18 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     }
 
     @Override
-    protected int getDefaultPortIPv4() {
-        return KNXNET_IP_PORT;
+    protected String getDefaultTransport() {
+        return "udp";
+    }
+
+    @Override
+    protected Class<? extends Configuration> getConfigurationType() {
+        return KnxNetIpConfiguration.class;
     }
 
     @Override
     protected PlcFieldHandler getFieldHandler() {
         return new KnxNetIpFieldHandler();
-    }
-
-    @Override
-    protected Class<? extends NettyChannelFactory> getTransportChannelFactory() {
-        return UdpSocketChannelFactory.class;
     }
 
     @Override

@@ -18,20 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.adapters.source.bacnetip;
 
-import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
-import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
-import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.UdpIpPacketHandler;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +40,6 @@ import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
 import org.streampipes.sdk.helpers.*;
 import org.streampipes.sdk.utils.Datatypes;
 
-import java.io.File;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class BacNetIpAdapter extends SpecificDataStreamAdapter {
@@ -73,7 +59,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     private String deviceName;
     private String pcapFile;
-    private NettyPlcConnection connection;
+    private DefaultNettyPlcConnection connection;
 
     public BacNetIpAdapter() {
         super();

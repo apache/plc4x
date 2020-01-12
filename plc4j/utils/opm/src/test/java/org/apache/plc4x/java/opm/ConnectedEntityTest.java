@@ -23,8 +23,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcString;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +45,7 @@ public class ConnectedEntityTest {
 
     PlcDriverManager driverManager;
 
-    PlcMockConnection connection;
+    MockConnection connection;
 
     PlcEntityManager entityManager;
 
@@ -55,7 +55,7 @@ public class ConnectedEntityTest {
     @BeforeEach
     void setUp() throws Exception {
         driverManager = new PlcDriverManager();
-        connection = (PlcMockConnection) driverManager.getConnection("mock:cached");
+        connection = (MockConnection) driverManager.getConnection("mock:cached");
         when(mockDevice.read(any()))
             .thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hallo")));
         connection.setDevice(mockDevice);

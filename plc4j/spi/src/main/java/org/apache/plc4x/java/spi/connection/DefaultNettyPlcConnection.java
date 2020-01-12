@@ -27,21 +27,18 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
-import org.apache.plc4x.java.spi.InstanceFactory;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
-import org.apache.plc4x.java.spi.generation.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.SocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> extends AbstractPlcConnection {
+public class DefaultNettyPlcConnection extends AbstractPlcConnection {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
@@ -49,38 +46,23 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
     // TODO: maybe find a way to make this configurable per jvm
     protected final static Timer timer = new HashedWheelTimer();
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
-    protected final ChannelFactory channelFactory;
 
+    protected final Configuration configuration;
+    protected final ChannelFactory channelFactory;
     protected final boolean awaitSessionSetupComplete;
+    protected final ProtocolStackConfigurer stackConfigurer;
+
     protected Channel channel;
     protected boolean connected;
-    private InstanceFactory factory;
-    private SocketAddress address;
-    private ProtocolStackConfigurer stackConfigurer;
 
-    protected DefaultNettyPlcConnection(ChannelFactory channelFactory) {
-        this(channelFactory, false);
-    }
-
-    protected DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete) {
+    public DefaultNettyPlcConnection(Configuration configuration, ChannelFactory channelFactory,
+                                     boolean awaitSessionSetupComplete, ProtocolStackConfigurer stackConfigurer) {
+        this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
-        this.connected = false;
-    }
-
-    protected DefaultNettyPlcConnection(ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler) {
-        super(true, true, false, handler);
-        this.channelFactory = channelFactory;
-        this.awaitSessionSetupComplete = awaitSessionSetupComplete;
-        this.connected = false;
-    }
-
-    public DefaultNettyPlcConnection(InstanceFactory factory, SocketAddress address, ChannelFactory channelFactory, boolean awaitSessionSetupComplete, PlcFieldHandler handler,
-                                     ProtocolStackConfigurer stackConfigurer) {
-        this(channelFactory, awaitSessionSetupComplete, handler);
-        this.factory = factory;
-        this.address = address;
         this.stackConfigurer = stackConfigurer;
+
+        this.connected = false;
     }
 
 
@@ -93,10 +75,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
 
             // Have the channel factory create a new channel instance.
-            if (address == null) {
-                throw new IllegalStateException("No Address is known, please check driver implementation!");
-            }
-            channel = channelFactory.createChannel(address, getChannelHandler(sessionSetupCompleteFuture));
+            channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
                     sessionSetupCompleteFuture.completeExceptionally(
@@ -121,7 +100,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         }
     }
 
-    @Override
+    /*@Override
     public CompletableFuture<Void> ping() {
         CompletableFuture<Void> future = new CompletableFuture<>();
         try {
@@ -134,7 +113,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
             future.completeExceptionally(e);
         }
         return future;
-    }
+    }*/
 
     @Override
     public void close() throws PlcConnectionException {
@@ -163,9 +142,9 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
-        if (factory == null) {
+        /*if (factory == null) {
             throw new IllegalStateException("No Instance Factory is Present!");
-        }
+        }*/
         return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
@@ -184,7 +163,7 @@ public class DefaultNettyPlcConnection<BASE_PROTOCOL_CLASS extends Message> exte
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.apply(factory, pipeline));
+                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline));
             }
         };
     }

@@ -37,9 +37,9 @@
     <!-- Non-default input options -->
     <module>raw-sockets</module>
     <module>pcap-sockets</module>
+
     <!-- Utilities for building tests -->
     <module>test-utils</module>
-    <module>protocol-test-utils</module>
 
     <!-- Utilities used externally by users -->
     <module>connection-pool</module>

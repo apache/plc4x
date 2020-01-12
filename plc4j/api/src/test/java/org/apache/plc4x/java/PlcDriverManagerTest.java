@@ -22,9 +22,7 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockPlcConnection;
-import org.apache.plc4x.test.FastTests;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -45,9 +43,8 @@ public class PlcDriverManagerTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Category(FastTests.class)
     public void getExistingDriverTest() throws PlcException {
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url");
+        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url");
 
         assertThat(mockConnection.getAuthentication(), nullValue());
         assertThat(mockConnection.isConnected(), is(true));
@@ -59,11 +56,10 @@ public class PlcDriverManagerTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Category(FastTests.class)
     public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url", authentication);
+        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url", authentication);
 
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
@@ -76,7 +72,6 @@ public class PlcDriverManagerTest {
      * @throws PlcConnectionException something went wrong
      */
     @Test(expected = PlcConnectionException.class)
-    @Category(FastTests.class)
     public void getNotExistingDriverTest() throws PlcConnectionException {
         new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url");
     }
@@ -87,7 +82,6 @@ public class PlcDriverManagerTest {
      * @throws PlcConnectionException something went wrong
      */
     @Test(expected = PlcConnectionException.class)
-    @Category(FastTests.class)
     public void getInvalidUriTest() throws PlcConnectionException {
         new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog");
     }
@@ -101,7 +95,6 @@ public class PlcDriverManagerTest {
      * @throws PlcConnectionException something went wrong
      */
     @Test(expected = IllegalStateException.class)
-    @Category(FastTests.class)
     public void getDuplicateDriver() throws MalformedURLException, PlcConnectionException {
         // Save and replace the context classloader as we need to force the ServiceLoader to
         // use a different service file.
@@ -111,7 +104,7 @@ public class PlcDriverManagerTest {
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
 
         // expect exception
-        new PlcDriverManager(fakeClassLoader).getConnection("spi-mock://some-cool-url");
+        new PlcDriverManager(fakeClassLoader).getConnection("api-mock://some-cool-url");
     }
 
 }

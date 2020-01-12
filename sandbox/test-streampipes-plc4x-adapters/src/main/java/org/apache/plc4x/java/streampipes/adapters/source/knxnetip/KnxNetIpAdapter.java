@@ -20,7 +20,7 @@ package org.apache.plc4x.java.streampipes.adapters.source.knxnetip;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXAddress;
-import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class KnxNetIpAdapter extends SpecificDataStreamAdapter {
     private static final Logger logger = LoggerFactory.getLogger(KnxNetIpAdapter.class);
 
     private String gatewayIp;
-    private NettyPlcConnection connection;
+    private DefaultNettyPlcConnection connection;
 
     public KnxNetIpAdapter() {
         super();

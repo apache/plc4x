@@ -37,11 +37,11 @@
     <module>api</module>
     <module>drivers</module>
     <module>utils</module>
-    <module>protocols</module>
+    <!--module>protocols</module-->
     <module>transports</module>
     <module>examples</module>
     <module>integrations</module>
-    <module>karaf-features</module>
+    <!--module>karaf-features</module-->
     <module>spi</module>
   </modules>
 

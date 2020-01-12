@@ -92,7 +92,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
 
     @Test
     void getConnection() throws Exception {
-        when(plcDriver.connect(anyString())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0)));
+        when(plcDriver.getConnection(anyString())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0)));
 
         LinkedList<Callable<PlcConnection>> callables = new LinkedList<>();
 
@@ -127,7 +127,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         LOGGER.info("Statistics after execution {}", SUT.getStatistics());
 
         // As we have a pool size of 8 we should have only 8 + 5 calls for the separate pools
-        verify(plcDriver, times(13)).connect(anyString());
+        verify(plcDriver, times(13)).getConnection(anyString());
 
         assertThat(SUT.getStatistics()).contains(
             entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true'}.numActive", 8)
@@ -148,7 +148,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
 
     @Test
     void getConnectionWithAuth() throws Exception {
-        when(plcDriver.connect(anyString(), any())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0), invocationOnMock.getArgument(1)));
+        when(plcDriver.getConnection(anyString(), any())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0), invocationOnMock.getArgument(1)));
 
         LinkedList<Callable<PlcConnection>> callables = new LinkedList<>();
 
@@ -183,7 +183,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
         LOGGER.info("Statistics after execution {}", SUT.getStatistics());
 
         // As we have a pool size of 8 we should have only 8 + 5 calls for the separate pools
-        verify(plcDriver, times(13)).connect(anyString(), any());
+        verify(plcDriver, times(13)).getConnection(anyString(), any());
 
         assertThat(SUT.getStatistics()).contains(
             entry("PoolKey{url='dummydummy:single/socket1/socket2?fancyOption=true', plcAuthentication=PlcUsernamePasswordAuthentication{username='user', password='*****************'}}.numActive", 8)
@@ -204,7 +204,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
 
     @Test
     void connectionInvalidation() throws Exception {
-        when(plcDriver.connect(anyString())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0)));
+        when(plcDriver.getConnection(anyString())).then(invocationOnMock -> new DummyPlcConnection(invocationOnMock.getArgument(0)));
 
         PlcConnection connection = SUT.getConnection("dummydummy:single/socket1/socket2?fancyOption=true");
         assertThat(connection.isConnected()).isEqualTo(true);
@@ -226,7 +226,7 @@ class PooledPlcDriverManagerTest implements WithAssertions {
     @Test
     void cleanupOfBrokenConnections() throws Exception {
         AtomicBoolean failNow = new AtomicBoolean(false);
-        when(plcDriver.connect(anyString())).then(invocationOnMock -> {
+        when(plcDriver.getConnection(anyString())).then(invocationOnMock -> {
             DummyPlcConnection dummyPlcConnection = spy(new DummyPlcConnection(invocationOnMock.getArgument(0)));
             // we fake an connection which breaks at this call
             doAnswer(invocation -> {

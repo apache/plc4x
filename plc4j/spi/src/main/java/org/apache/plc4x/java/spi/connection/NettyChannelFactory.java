@@ -26,13 +26,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Properties;
 
@@ -48,21 +44,13 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     private static final int PING_TIMEOUT_MS = 1_000;
 
     /**
-     * TODO should be removed together with the Construcotr.
+     * TODO should be removed together with the Constructor.
      */
     private SocketAddress address;
     private Properties properties;
 
-    /**
-     * @Deprecated Only there for Retrofit
-     */
-    @Deprecated
     public NettyChannelFactory(SocketAddress address) {
         this.address = address;
-    }
-
-    public NettyChannelFactory() {
-        // Default Constructor to Use
     }
 
     /**
@@ -93,23 +81,8 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         return new NioEventLoopGroup();
     }
 
-    /**
-     * @Deprecated use {@link #createChannel(SocketAddress, ChannelHandler)} instead.
-     */
-    @Deprecated
     @Override
     public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
-        if (this.address == null) {
-            throw new IllegalStateException("This Method should only be used with the constructor which takes an Address");
-        }
-        return this.createChannel(address, channelHandler);
-    }
-
-    @Override
-    public Channel createChannel(SocketAddress socketAddress, ChannelHandler channelHandler) throws PlcConnectionException {
-        if (this.address == null) {
-            this.address = socketAddress;
-        }
         try {
             final EventLoopGroup workerGroup = getEventLoopGroup();
 
@@ -120,7 +93,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             configureBootstrap(bootstrap);
             bootstrap.handler(channelHandler);
             // Start the client.
-            final ChannelFuture f = bootstrap.connect(socketAddress);
+            final ChannelFuture f = bootstrap.connect(address);
             f.addListener(future -> {
                 if (!future.isSuccess()) {
                     logger.info("Unable to connect, shutting down worker thread.");
@@ -140,18 +113,8 @@ public abstract class NettyChannelFactory implements ChannelFactory {
         }
     }
 
-    @Deprecated
-    public InetAddress getAddress() {
-        return ((InetSocketAddress) this.address).getAddress();
-    }
-
-    @Deprecated
-    public int getPort() {
-        return ((InetSocketAddress) this.address).getPort();
-    }
-
     // TODO do we want to keep this like that?
-    @Override
+    /*@Override
     public void ping() throws PlcException {
         // TODO: Replace this check with a more accurate one ...
         InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
@@ -186,6 +149,6 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     protected String getPropertyOrDefault(String key, String defaultValue) {
         return getProperties().getProperty(key, defaultValue);
-    }
+    }*/
 
 }

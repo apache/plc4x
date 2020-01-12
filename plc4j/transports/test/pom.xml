@@ -28,14 +28,13 @@
   </parent>
 
   <artifactId>plc4j-transport-test</artifactId>
-  <name>PLC4J: Transport: Test</name>
+  <name>PLC4J: Transports: Test</name>
   <description>Base classes needed to implement plc4x drivers for testing using internal byte streams.</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
+      <artifactId>plc4j-spi</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
 
@@ -74,25 +73,11 @@
       <!-- This is a compile dependency for this test artifact -->
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-spi</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
 

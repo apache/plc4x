@@ -25,8 +25,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcString;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ public class PlcEntityManagerTest implements WithAssertions {
             // Prepare the Mock
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             when(mockDevice.read(any())).thenAnswer(invocation -> {
                 // Sleep for 3s
                 Thread.sleep(3_000);
@@ -117,7 +117,7 @@ public class PlcEntityManagerTest implements WithAssertions {
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("value")));
             connection.setDevice(mockDevice);
@@ -166,7 +166,7 @@ public class PlcEntityManagerTest implements WithAssertions {
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.write(anyString(), any())).thenReturn(PlcResponseCode.OK);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("value")));
@@ -196,7 +196,7 @@ public class PlcEntityManagerTest implements WithAssertions {
         void simpleWrite_uses_getter() throws Exception {
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("value")));
             connection.setDevice(mockDevice);
@@ -229,7 +229,7 @@ public class PlcEntityManagerTest implements WithAssertions {
 
             // Mock
             PlcDriverManager driverManager = new PlcDriverManager();
-            PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:test");
+            MockConnection connection = (MockConnection) driverManager.getConnection("mock:test");
             MockDevice mockDevice = Mockito.mock(MockDevice.class);
             when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("value")));
             connection.setDevice(mockDevice);

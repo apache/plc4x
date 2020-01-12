@@ -26,9 +26,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.serial.connection.connection.SerialChannel;
-import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
-import org.apache.plc4x.java.serial.connection.connection.SerialChannelHandler;
+import org.apache.plc4x.java.transport.serial.SerialChannel;
+import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
+import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
+import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class SerialChannelFactoryTest {
 
     @Test
     public void createChannel() throws PlcConnectionException, InterruptedException, UnknownHostException {
-        SerialChannelFactory asdf = new SerialChannelFactory("TEST-port1");
+        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("TEST-port1"));
         // final TcpSocketChannelFactory factory = new TcpSocketChannelFactory(InetAddress.getLocalHost(), 5432);
         final Channel channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
             @Override
@@ -77,7 +78,7 @@ public class SerialChannelFactoryTest {
 
     @Test
     public void createChannelToSBL() throws PlcConnectionException, InterruptedException, UnknownHostException {
-        SerialChannelFactory asdf = new SerialChannelFactory("JBLFlip3-SPPDev");
+        SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("JBLFlip3-SPPDev"));
         Channel channel = null;
         try {
             channel = asdf.createChannel(new ChannelInitializer<SerialChannel>() {
@@ -104,9 +105,9 @@ public class SerialChannelFactoryTest {
         @Override
         protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
             byteBuf.markReaderIndex();
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 1; i <= byteBuf.readableBytes(); i++) {
-                sb.append(byteBuf.readByte() + ", ");
+                sb.append(byteBuf.readByte()).append(", ");
             }
             byteBuf.resetReaderIndex();
             logger.debug("We currently have {} readable bytes: {}", byteBuf.readableBytes(), sb.toString());

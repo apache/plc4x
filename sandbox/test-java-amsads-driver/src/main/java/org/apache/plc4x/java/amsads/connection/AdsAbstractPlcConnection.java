@@ -21,9 +21,9 @@ package org.apache.plc4x.java.amsads.connection;
 import io.netty.channel.ChannelFuture;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
-import org.apache.plc4x.java.amsads.model.AdsPlcFieldHandler;
-import org.apache.plc4x.java.amsads.model.DirectAdsField;
-import org.apache.plc4x.java.amsads.model.SymbolicAdsField;
+import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
+import org.apache.plc4x.java.amsads.field.DirectAdsField;
+import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -38,6 +38,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.*;
 
+@Deprecated
 public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnection.class);
@@ -60,7 +61,7 @@ public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection
     }
 
     protected AdsAbstractPlcConnection(ChannelFactory channelFactory, AmsNetId targetAmsNetId, int targetAmsPort, AmsNetId sourceAmsNetId, int sourceAmsPort) {
-        super(channelFactory);
+        super(null, channelFactory, false, null);
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -94,12 +95,12 @@ public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override

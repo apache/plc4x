@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.abeth.model.AbEthField;
+import org.apache.plc4x.java.abeth.field.AbEthField;
 import org.apache.plc4x.java.abeth.readwrite.*;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Deprecated
 public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulationPacket, PlcRequestContainer> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4xAbEthProtocol.class);

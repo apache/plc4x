@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+// TODO: Refactor this code to be included in Df1ProtocolLogic.
+@Deprecated
 public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     private static final Logger logger = LoggerFactory.getLogger(Df1Protocol.class);

@@ -25,7 +25,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
 import org.apache.plc4x.java.spi.protocol.SingleItemToSingleRequestProtocol;
 import org.apache.plc4x.java.modbus.netty.Plc4XModbusProtocol;
 import org.slf4j.Logger;

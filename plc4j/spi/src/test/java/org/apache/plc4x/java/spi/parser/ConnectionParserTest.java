@@ -19,34 +19,28 @@
 
 package org.apache.plc4x.java.spi.parser;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.junit.jupiter.api.Test;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.junit.jupiter.api.Test;
 
 class ConnectionParserTest {
 
     @Test
     void parse() throws PlcConnectionException {
-        ConnectionParser parser = new ConnectionParser("s7", "s7://192.168.167.1?rackId=1");
-        PropertiesDescriptor properties = parser.createConfiguration(PropertiesDescriptor.class);
+        PropertiesDescriptor properties = new ConfigurationFactory().createConfiguration(
+            PropertiesDescriptor.class, "rackId=2");
 
-        assertEquals(1, properties.getRackId());
+        assertEquals(2, properties.getRackId());
         assertEquals(1, properties.getSlotId());
     }
 
-    @Test
-    void parseHost() throws PlcConnectionException {
-        ConnectionParser parser = new ConnectionParser("s7", "s7://192.168.167.1?rackId=1");
-        SocketAddress inetSocketAddress = parser.getSocketAddress(102);
-
-        assertEquals(new InetSocketAddress("192.168.167.1", 102), inetSocketAddress);
-    }
-
-    public static class PropertiesDescriptor {
+    public static class PropertiesDescriptor implements Configuration {
 
         @ConfigurationParameter("rackId")
         @IntDefaultValue(1)
@@ -72,5 +66,7 @@ class ConnectionParserTest {
         public void setSlotId(int slotId) {
             this.slotId = slotId;
         }
+
     }
+
 }

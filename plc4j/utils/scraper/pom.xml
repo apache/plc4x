@@ -81,24 +81,13 @@
       <artifactId>plc4j-connection-pool</artifactId>
       <version>0.6.0-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-s7</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
       <version>0.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-test</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
 
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -118,7 +107,12 @@
       <version>0.6.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-mock</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

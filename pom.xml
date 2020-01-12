@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>21</version>
+    <version>22</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -103,7 +103,7 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
-    <plc4x-code-generation.version>1.1.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.1.0</plc4x-code-generation.version>
 
     <antlr.version>4.7.2</antlr.version>
     <asm.version>5.0.4</asm.version>

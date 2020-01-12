@@ -19,14 +19,18 @@
 
 package org.apache.plc4x.java.spi.connection;
 
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.spi.InstanceFactory;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.exceptions.InternalPlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.Message;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,38 +41,85 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     private final Class<BASE_PACKET_CLASS> basePacketClass;
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
-    private final Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
-    private final Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
-
-    /** Only accessible via Builder */
-    SingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
-                                  Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator,
-                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
-        this.basePacketClass = basePacketClass;
-        this.protocolClass = protocol;
-        this.packetSizeEstimator = packetSizeEstimator;
-        this.corruptPacketRemover = corruptPacketRemover;
-    }
+    private final Class<? extends Function<ByteBuf, Integer>> packetSizeEstimatorClass;
+    private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
 
     public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass) {
         return new SingleProtocolStackBuilder<>(basePacketClass);
     }
 
-    private ChannelHandler getMessageCodec(InstanceFactory instanceFactory) {
+    /** Only accessible via Builder */
+    SingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
+                                  Class<? extends Function<ByteBuf, Integer>> packetSizeEstimatorClass,
+                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
+        this.basePacketClass = basePacketClass;
+        this.protocolClass = protocol;
+        this.packetSizeEstimatorClass = packetSizeEstimatorClass;
+        this.corruptPacketRemoverClass = corruptPacketRemoverClass;
+    }
+
+    private ChannelHandler getMessageCodec(Configuration configuration) {
         ReflectionBasedIo<BASE_PACKET_CLASS> io = new ReflectionBasedIo<>(basePacketClass);
         return new GeneratedProtocolMessageCodec<>(basePacketClass, io, io,
-            packetSizeEstimator != null ? instanceFactory.createInstance(packetSizeEstimator) : null,
-            corruptPacketRemover != null ? instanceFactory.createInstance(corruptPacketRemover) : null);
+            packetSizeEstimatorClass != null ? configure(configuration, createInstance(packetSizeEstimatorClass)) : null,
+            corruptPacketRemoverClass != null ? configure(configuration, createInstance(corruptPacketRemoverClass)) : null);
     }
 
     /** Applies the given Stack to the Pipeline */
     @Override
-    public Plc4xProtocolBase<BASE_PACKET_CLASS> apply(InstanceFactory factory, ChannelPipeline pipeline) {
-        pipeline.addLast(getMessageCodec(factory));
-        Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = factory.createInstance(protocolClass);
+    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
+            Configuration configuration, ChannelPipeline pipeline) {
+        pipeline.addLast(getMessageCodec(configuration));
+        Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, createInstance(protocolClass));
         Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePacketClass);
         pipeline.addLast(context);
         return protocol;
+    }
+
+    private <T> T createInstance(Class<T> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+            throw new InternalPlcRuntimeException("Error creating instance of class " + clazz.getName());
+        }
+    }
+
+    /**
+     * Used to Build Instances of {@link SingleProtocolStackConfigurer}.
+     *
+     * @param <BASE_PACKET_CLASS> Type of Created Message that is Exchanged.
+     */
+    public static final class SingleProtocolStackBuilder<BASE_PACKET_CLASS extends Message> {
+
+        private Class<BASE_PACKET_CLASS> basePacketClass;
+        private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
+        private Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
+        private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
+
+        SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass) {
+            this.basePacketClass = basePacketClass;
+        }
+
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withProtocol(Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol) {
+            this.protocol = protocol;
+            return this;
+        }
+
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withPacketSizeEstimator(Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator) {
+            this.packetSizeEstimator = packetSizeEstimator;
+            return this;
+        }
+
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withCorruptPacketRemover(Class<? extends Consumer<ByteBuf>> corruptPacketRemover) {
+            this.corruptPacketRemover = corruptPacketRemover;
+            return this;
+        }
+
+        public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
+            assert this.protocol != null;
+            return new SingleProtocolStackConfigurer<>(basePacketClass, protocol, packetSizeEstimator, corruptPacketRemover);
+        }
+
     }
 
 }

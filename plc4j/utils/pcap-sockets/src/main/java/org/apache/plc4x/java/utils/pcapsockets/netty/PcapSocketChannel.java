@@ -221,15 +221,15 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         StringBuilder sb = new StringBuilder();
         sb.append("(ether proto \\ip)");
         // Add a filter for source or target address.
-        if(pcapSocketAddress.getAddress() != null) {
-            sb.append(" and (host ").append(pcapSocketAddress.getAddress().getHostAddress()).append(")");
+        /*if(config.getAddress() != null) {
+            sb.append(" and (host ").append(config.getAddress().getHostAddress()).append(")");
         }
         // Add a filter for TCP or UDP port.
-        if(pcapSocketAddress.getPort() != PcapSocketAddress.ALL_PORTS) {
-            sb.append(" and (port ").append(pcapSocketAddress.getPort()).append(")");
-        }
-        if(pcapSocketAddress.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
-            sb.append("(ether proto ").append(pcapSocketAddress.getProtocolId()).append(")");
+        if(config.getPort() != PcapSocketAddress.ALL_PORTS) {
+            sb.append(" and (port ").append(config.getPort()).append(")");
+        }*/
+        if(config.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
+            sb.append("(ether proto ").append(config.getProtocolId()).append(")");
         }
         return sb.toString();
     }

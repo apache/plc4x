@@ -20,7 +20,7 @@ package org.apache.plc4x.java.ethernetip.connection;
 
 import io.netty.channel.*;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.ethernetip.netty.EnipCodec;

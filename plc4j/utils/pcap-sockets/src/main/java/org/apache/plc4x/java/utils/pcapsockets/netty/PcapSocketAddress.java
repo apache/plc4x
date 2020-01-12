@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.utils.pcapsockets.netty;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.net.SocketAddress;
 
 public class PcapSocketAddress extends SocketAddress {
@@ -30,31 +29,13 @@ public class PcapSocketAddress extends SocketAddress {
     public static final int ALL_PROTOCOLS = -1;
 
     private final File pcapFile;
-    private final InetAddress address;
-    private final int port;
-    private final int protocolId;
 
-    public PcapSocketAddress(File pcapFile, InetAddress address, int port, int protocolId) {
+    public PcapSocketAddress(File pcapFile) {
         this.pcapFile = pcapFile;
-        this.address = address;
-        this.port = port;
-        this.protocolId = protocolId;
     }
 
     public File getPcapFile() {
         return pcapFile;
-    }
-
-    public InetAddress getAddress() {
-        return address;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public int getProtocolId() {
-        return protocolId;
     }
 
 }

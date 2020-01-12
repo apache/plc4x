@@ -46,7 +46,7 @@ public interface PlcDriver {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    PlcConnection connect(String url) throws PlcConnectionException;
+    PlcConnection getConnection(String url) throws PlcConnectionException;
 
     /**
      * Connects to a PLC using the given plc connection string using given authentication credentials.
@@ -55,6 +55,6 @@ public interface PlcDriver {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException;
+    PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException;
 
 }

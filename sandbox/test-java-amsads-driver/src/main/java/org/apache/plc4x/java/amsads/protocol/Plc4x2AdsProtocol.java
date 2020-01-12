@@ -21,10 +21,10 @@ package org.apache.plc4x.java.amsads.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.amsads.model.AdsDataType;
-import org.apache.plc4x.java.amsads.model.AdsField;
-import org.apache.plc4x.java.amsads.model.DirectAdsField;
-import org.apache.plc4x.java.amsads.model.SymbolicAdsField;
+import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.amsads.field.AdsField;
+import org.apache.plc4x.java.amsads.field.DirectAdsField;
+import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.amsads.readwrite.types.CommandId;
@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 import static org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder.decodeData;
 import static org.apache.plc4x.java.amsads.protocol.util.LittleEndianEncoder.encodeData;
 
+@Deprecated
 public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4x2AdsProtocol.class);

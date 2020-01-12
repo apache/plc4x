@@ -40,13 +40,13 @@ public class PooledDummyDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        return mockedPlcDriver.connect(url);
+    public PlcConnection getConnection(String url) throws PlcConnectionException {
+        return mockedPlcDriver.getConnection(url);
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        return mockedPlcDriver.connect(url, authentication);
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        return mockedPlcDriver.getConnection(url, authentication);
     }
 
 }

@@ -27,8 +27,8 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcInteger;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
@@ -93,7 +93,7 @@ class ScraperTest implements WithAssertions {
     @Test
     void scraper_schedulesJob() throws InterruptedException, PlcConnectionException {
         PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
+        MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcInteger(1)));
@@ -144,7 +144,7 @@ class ScraperTest implements WithAssertions {
     @Test
     void restart_works() throws PlcConnectionException {
         PlcDriverManager driverManager = new PlcDriverManager();
-        PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:m1");
+        MockConnection connection = (MockConnection) driverManager.getConnection("mock:m1");
         connection.setDevice(mockDevice);
 
         when(mockDevice.read(any())).thenReturn(Pair.of(PlcResponseCode.OK, new PlcInteger(1)));

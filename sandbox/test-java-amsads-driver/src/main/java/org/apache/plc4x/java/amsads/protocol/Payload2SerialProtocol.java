@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Deprecated
 public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2SerialProtocol.class);
