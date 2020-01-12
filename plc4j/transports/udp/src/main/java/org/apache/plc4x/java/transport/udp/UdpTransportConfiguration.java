@@ -22,4 +22,10 @@ import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
 public interface UdpTransportConfiguration extends TransportConfiguration {
 
+    int NO_DEFAULT_PORT = -1;
+
+    default int getDefaultPort() {
+        return NO_DEFAULT_PORT;
+    }
+
 }

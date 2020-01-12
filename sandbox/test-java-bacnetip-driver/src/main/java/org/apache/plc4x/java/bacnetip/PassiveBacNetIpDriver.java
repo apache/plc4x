@@ -31,7 +31,7 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 @Component(service = PlcDriver.class, immediate = true)
 public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
@@ -73,9 +73,9 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements Function<ByteBuf, Integer> {
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
-        public Integer apply(ByteBuf byteBuf) {
+        public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
             }

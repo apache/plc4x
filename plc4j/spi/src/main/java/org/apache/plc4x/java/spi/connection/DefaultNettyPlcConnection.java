@@ -55,11 +55,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(Configuration configuration, PlcFieldHandler fieldHandler,
+    public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
+                                     PlcFieldHandler fieldHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
                                      ProtocolStackConfigurer stackConfigurer) {
-        // TODO: Perhaps the thr booleans should be provided another way ...
-        super(true, true, true, fieldHandler);
+        super(canRead, canWrite, canSubscribe, fieldHandler);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;
@@ -67,7 +67,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
 
         this.connected = false;
     }
-
 
     @Override
     public void connect() throws PlcConnectionException {
@@ -77,6 +76,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
             // finished initializing.
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
 
+            if(channelFactory == null) {
+                throw new PlcConnectionException("No channel factory provided");
+            }
             // Have the channel factory create a new channel instance.
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
             channel.closeFuture().addListener(future -> {

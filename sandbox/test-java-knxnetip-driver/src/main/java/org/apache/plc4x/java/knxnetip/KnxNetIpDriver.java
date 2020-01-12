@@ -29,7 +29,7 @@ import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
 
@@ -51,6 +51,21 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     }
 
     @Override
+    protected boolean canRead() {
+        return false;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
     protected Class<? extends Configuration> getConfigurationType() {
         return KnxNetIpConfiguration.class;
     }
@@ -68,9 +83,9 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
             .build();
     }
 
-    public static class PacketSizeEstimator implements Function<ByteBuf, Integer> {
+    public static class PacketSizeEstimator implements ToIntFunction<ByteBuf> {
         @Override
-        public Integer apply(ByteBuf byteBuf) {
+        public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 6) {
                 return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
             }

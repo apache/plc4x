@@ -37,9 +37,25 @@ import java.util.regex.Pattern;
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
     private static final Pattern URI_PATTERN = Pattern.compile(
-        "^(?<protocolCode>[a-z0-9]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>.*)(?<paramString>\\?.*)?");
+        "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
     protected abstract Class<? extends Configuration> getConfigurationType();
+
+    protected boolean canRead() {
+        return false;
+    }
+
+    protected boolean canWrite() {
+        return false;
+    }
+
+    protected boolean canSubscribe() {
+        return false;
+    }
+
+    protected boolean awaitSetupComplete() {
+        return true;
+    }
 
     protected abstract PlcFieldHandler getFieldHandler();
 
@@ -71,6 +87,9 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // Create the configuration object.
         Configuration configuration = new ConfigurationFactory().createConfiguration(
             getConfigurationType(), paramString);
+        if(configuration == null) {
+            throw new PlcConnectionException("Unsupported configuration");
+        }
 
         // Try to find a transport in order to create a communication channel.
         Transport transport = null;
@@ -91,12 +110,16 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
+        if(channelFactory == null) {
+            throw new PlcConnectionException("Unable to get channel factory from url " + transportConfig);
+        }
 
         return new DefaultNettyPlcConnection(
-            configuration,
+            canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
+            configuration,
             channelFactory,
-            true,
+            awaitSetupComplete(),
             getStackConfigurer());
     }
 

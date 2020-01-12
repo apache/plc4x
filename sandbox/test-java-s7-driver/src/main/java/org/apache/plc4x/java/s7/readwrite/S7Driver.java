@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
-import org.apache.plc4x.java.s7.readwrite.utils.S7PlcFieldHandler;
+import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -30,7 +30,7 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 @Component(service = PlcDriver.class, immediate = true)
 public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
@@ -58,6 +58,16 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
+    protected boolean canRead() {
+        return true;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return true;
+    }
+
+    @Override
     protected S7PlcFieldHandler getFieldHandler() {
         return new S7PlcFieldHandler();
     }
@@ -72,9 +82,9 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
     }
 
     /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements Function<ByteBuf, Integer> {
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
-        public Integer apply(ByteBuf byteBuf) {
+        public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
             }

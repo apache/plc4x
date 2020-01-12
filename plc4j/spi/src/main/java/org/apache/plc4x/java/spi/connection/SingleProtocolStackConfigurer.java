@@ -32,7 +32,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 /**
  * Builds a Protocol Stack.
@@ -41,7 +41,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     private final Class<BASE_PACKET_CLASS> basePacketClass;
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
-    private final Class<? extends Function<ByteBuf, Integer>> packetSizeEstimatorClass;
+    private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
 
     public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass) {
@@ -50,7 +50,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     /** Only accessible via Builder */
     SingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
-                                  Class<? extends Function<ByteBuf, Integer>> packetSizeEstimatorClass,
+                                  Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
         this.basePacketClass = basePacketClass;
         this.protocolClass = protocol;
@@ -93,7 +93,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         private Class<BASE_PACKET_CLASS> basePacketClass;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
-        private Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator;
+        private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
         SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass) {
@@ -105,7 +105,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             return this;
         }
 
-        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withPacketSizeEstimator(Class<? extends Function<ByteBuf, Integer>> packetSizeEstimator) {
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withPacketSizeEstimator(Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator) {
             this.packetSizeEstimator = packetSizeEstimator;
             return this;
         }

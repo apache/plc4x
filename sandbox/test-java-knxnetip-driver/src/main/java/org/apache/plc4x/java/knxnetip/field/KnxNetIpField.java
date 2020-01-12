@@ -26,19 +26,61 @@ import java.util.regex.Pattern;
 
 public class KnxNetIpField implements PlcField {
 
-    private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})(/(?<bitNumber>\\d{1,7}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+    private static final Pattern KNX_GROUP_ADDRESS_1_LEVEL =
+        Pattern.compile("^(?<mainGroup>(\\d{1,5}|\\*))");
+    private static final Pattern KNX_GROUP_ADDRESS_2_LEVEL =
+        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<subGroup>(\\d{1,4}|\\*))");
+    private static final Pattern KNX_GROUP_ADDRESS_3_LEVEL =
+        Pattern.compile("^(?<mainGroup>(\\d{1,2}|\\*))/(?<middleGroup>(\\d|\\*))/(?<subGroup>(\\d{1,3}|\\*))");
+
+    private final int levels;
+    private final String mainGroup;
+    private final String middleGroup;
+    private final String subGroup;
 
     public static boolean matches(String fieldString) {
-        return ADDRESS_PATTERN.matcher(fieldString).matches();
+        return KNX_GROUP_ADDRESS_3_LEVEL.matcher(fieldString).matches() ||
+            KNX_GROUP_ADDRESS_2_LEVEL.matcher(fieldString).matches() ||
+            KNX_GROUP_ADDRESS_1_LEVEL.matcher(fieldString).matches();
     }
 
     public static KnxNetIpField of(String fieldString) {
-        Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
+        Matcher matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField();
+            return new KnxNetIpField(3, matcher.group("main"), null, null);
+        }
+        matcher = KNX_GROUP_ADDRESS_2_LEVEL.matcher(fieldString);
+        if(matcher.matches()) {
+            return new KnxNetIpField(2, matcher.group("main"), null, matcher.group("subGroup"));
+        }
+        matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(fieldString);
+        if(matcher.matches()) {
+            return new KnxNetIpField(1, matcher.group("main"), matcher.group("middleGroup"), matcher.group("subGroup"));
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+    }
+
+    public KnxNetIpField(int levels, String mainGroup, String middleGroup, String subGroup) {
+        this.levels = levels;
+        this.mainGroup = mainGroup;
+        this.middleGroup = middleGroup;
+        this.subGroup = subGroup;
+    }
+
+    public int getLevels() {
+        return levels;
+    }
+
+    public String getMainGroup() {
+        return mainGroup;
+    }
+
+    public String getMiddleGroup() {
+        return middleGroup;
+    }
+
+    public String getSubGroup() {
+        return subGroup;
     }
 
 }

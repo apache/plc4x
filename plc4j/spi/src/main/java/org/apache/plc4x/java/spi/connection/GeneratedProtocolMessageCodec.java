@@ -24,11 +24,11 @@ import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.spi.generation.*;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends GeneratedDriverByteToMessageCodec<BASE_PACKET_CLASS> {
 
-    private final Function<ByteBuf, Integer> packetSizeEstimator;
+    private final ToIntFunction<ByteBuf> packetSizeEstimator;
     private final Consumer<ByteBuf> corruptPackageRemover;
 
     public GeneratedProtocolMessageCodec(Class<BASE_PACKET_CLASS> basePacketClass,
@@ -41,17 +41,16 @@ class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends G
         Class<BASE_PACKET_CLASS> basePacketClass,
         Parser<BASE_PACKET_CLASS> parser,
         Serializer<BASE_PACKET_CLASS> serializer,
-        Function<ByteBuf, Integer> packetSizeEstimator,
+        ToIntFunction<ByteBuf> packetSizeEstimator,
         Consumer<ByteBuf> corruptPackageRemover) {
         super(new MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>() {
             @Override
-            public BASE_PACKET_CLASS parse(ReadBuffer io) throws ParseException {
-                // return TPKTPacketIO.parse(io);
+            public BASE_PACKET_CLASS parse(ReadBuffer io) {
                 return parser.parse(io);
             }
 
             @Override
-            public void serialize(WriteBuffer io, BASE_PACKET_CLASS value) throws ParseException {
+            public void serialize(WriteBuffer io, BASE_PACKET_CLASS value) {
                 serializer.serialize(io, value);
             }
 
@@ -65,7 +64,7 @@ class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends G
         if (this.packetSizeEstimator == null) {
             return -1;
         }
-        return packetSizeEstimator.apply(byteBuf);
+        return packetSizeEstimator.applyAsInt(byteBuf);
     }
 
     @Override

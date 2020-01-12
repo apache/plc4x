@@ -18,16 +18,23 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip.configuration;
 
+import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 
-public class KnxNetIpConfiguration implements Configuration {
+public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
 
     @ConfigurationParameter
     public int groupAddressType = 3;
+
+    @Override
+    public int getDefaultPort() {
+        return KnxNetIpDriver.KNXNET_IP_PORT;
+    }
 
     @Override
     public String toString() {
