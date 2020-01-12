@@ -55,8 +55,11 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
     protected Channel channel;
     protected boolean connected;
 
-    public DefaultNettyPlcConnection(Configuration configuration, ChannelFactory channelFactory,
-                                     boolean awaitSessionSetupComplete, ProtocolStackConfigurer stackConfigurer) {
+    public DefaultNettyPlcConnection(Configuration configuration, PlcFieldHandler fieldHandler,
+                                     ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
+                                     ProtocolStackConfigurer stackConfigurer) {
+        // TODO: Perhaps the thr booleans should be provided another way ...
+        super(true, true, true, fieldHandler);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;

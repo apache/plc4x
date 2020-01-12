@@ -94,6 +94,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         return new DefaultNettyPlcConnection(
             configuration,
+            getFieldHandler(),
             channelFactory,
             true,
             getStackConfigurer());

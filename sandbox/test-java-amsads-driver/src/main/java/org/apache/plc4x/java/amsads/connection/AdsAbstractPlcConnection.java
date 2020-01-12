@@ -61,7 +61,7 @@ public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection
     }
 
     protected AdsAbstractPlcConnection(ChannelFactory channelFactory, AmsNetId targetAmsNetId, int targetAmsPort, AmsNetId sourceAmsNetId, int sourceAmsPort) {
-        super(null, channelFactory, false, null);
+        super(null, new AdsFieldHandler(), channelFactory, false, null);
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
