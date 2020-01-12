@@ -20,9 +20,11 @@ package org.apache.plc4x.java.transport.udp;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
+import org.apache.plc4x.java.transport.udp.protocol.DatagramUnpackingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,11 @@ public class UdpChannelFactory extends NettyChannelFactory implements HasConfigu
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
         }
+    }
+
+    @Override
+    public void initializePipeline(ChannelPipeline pipeline) {
+        pipeline.addLast(new DatagramUnpackingHandler());
     }
 
 }

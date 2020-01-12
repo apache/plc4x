@@ -21,6 +21,7 @@ package org.apache.plc4x.java.knxnetip.configuration;
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 
 public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration {
@@ -28,8 +29,25 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
 
-    @ConfigurationParameter
+    @ConfigurationParameter("group-address-type")
+    @IntDefaultValue(3)
     public int groupAddressType = 3;
+
+    public String getKnxprojFilePath() {
+        return knxprojFilePath;
+    }
+
+    public void setKnxprojFilePath(String knxprojFilePath) {
+        this.knxprojFilePath = knxprojFilePath;
+    }
+
+    public int getGroupAddressType() {
+        return groupAddressType;
+    }
+
+    public void setGroupAddressType(int groupAddressType) {
+        this.groupAddressType = groupAddressType;
+    }
 
     @Override
     public int getDefaultPort() {

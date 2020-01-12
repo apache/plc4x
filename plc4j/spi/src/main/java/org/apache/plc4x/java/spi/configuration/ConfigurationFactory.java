@@ -29,9 +29,11 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaul
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -89,9 +91,11 @@ public class ConfigurationFactory {
                 if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
                     try {
+                        // As the arguments might be URL encoded, be sure it's decoded.
+                        stringValue = URLDecoder.decode(stringValue, "utf-8");
                         BeanUtils.setProperty(instance, field.getName(), toFieldValue(field, stringValue));
                         missingFieldNames.remove(configName);
-                    } catch (InvocationTargetException e) {
+                    } catch (InvocationTargetException | UnsupportedEncodingException e) {
                         throw new IllegalArgumentException("Error setting property of bean: " + field.getName(), e);
                     }
                 } else {
