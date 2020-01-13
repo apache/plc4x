@@ -11,11 +11,14 @@ New Features
 
 Incompatible changes
 --------------------
-
 - Moved the C++, C# and Python drivers into the `sandbox`
 
 Bug Fixes
 ---------
+- Fixed Promise Chain for InternalPlcWriteRequest
+- PLC4X-45 Add float support to Modbus Protocol
+- PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
+- PLC4X-166 Fixed Download Page
 
 Known Issues
 --------
