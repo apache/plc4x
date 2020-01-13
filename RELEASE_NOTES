@@ -2,7 +2,7 @@
 Apache PLC4X 0.6.0
 ==============================================================
 
-This is the last release of PLC4X ith the "handwritten" drivers.
+This is the last release of PLC4X with the "handwritten" drivers.
 This Minor release will thus receive updates and fixes until
 most users have switched to 0.7 and above (with generated drivers).
 
