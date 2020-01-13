@@ -330,9 +330,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+            .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload() instanceof S7MessageResponse)
-            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+            .unwrap(p -> (S7MessageResponse) p.getPayload())
             .check(p -> p.getTpduReference() == tpduId)
             .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
             .handle(p -> {
