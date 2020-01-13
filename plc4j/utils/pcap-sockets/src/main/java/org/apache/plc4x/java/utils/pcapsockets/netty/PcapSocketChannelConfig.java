@@ -34,8 +34,9 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
     public static float SPEED_FAST_DOUBLE = 0.5f;
     public static float SPEED_FAST_FULL = 0f;
 
-    private int protocolId;
-    private float speedFactor;
+    private int port = PcapSocketAddress.ALL_PORTS;
+    private int protocolId = PcapSocketAddress.ALL_PROTOCOLS;
+    private float speedFactor = SPEED_REALTIME;
     private PacketHandler packetHandler;
 
     public PcapSocketChannelConfig(Channel channel) {
@@ -51,13 +52,16 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
     @Override
     public Map<ChannelOption<?>, Object> getOptions() {
         return getOptions(super.getOptions(),
-            PcapSocketChannelOption.PROTOCOL_ID, PcapSocketChannelOption.SPEED_FACTOR,
-            PcapSocketChannelOption.PACKET_HANDLER);
+            PcapSocketChannelOption.PORT, PcapSocketChannelOption.PROTOCOL_ID,
+            PcapSocketChannelOption.SPEED_FACTOR, PcapSocketChannelOption.PACKET_HANDLER);
     }
 
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
-        if(option == PcapSocketChannelOption.PROTOCOL_ID) {
+        if(option == PcapSocketChannelOption.PORT) {
+            port = (int) value;
+            return true;
+        } else if(option == PcapSocketChannelOption.PROTOCOL_ID) {
             if(value instanceof Integer) {
                 protocolId = (Integer) value;
                 return true;
@@ -80,6 +84,14 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
         } else {
             return super.setOption(option, value);
         }
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public int getProtocolId() {

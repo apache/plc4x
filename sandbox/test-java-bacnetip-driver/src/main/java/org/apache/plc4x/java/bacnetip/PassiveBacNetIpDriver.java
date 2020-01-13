@@ -40,12 +40,12 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     @Override
     public String getProtocolCode() {
-        return "bacnet-ip-passive";
+        return "bacnet-ip";
     }
 
     @Override
     public String getProtocolName() {
-        return "BACnet/IP (Passive)";
+        return "BACnet/IP";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     @Override
     protected String getDefaultTransport() {
-        return "raw";
+        return "udp";
     }
 
     @Override

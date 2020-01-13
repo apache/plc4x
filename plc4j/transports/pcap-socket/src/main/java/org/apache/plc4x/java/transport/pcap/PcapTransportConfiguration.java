@@ -19,11 +19,16 @@ under the License.
 package org.apache.plc4x.java.transport.pcap;
 
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
 
 public interface PcapTransportConfiguration extends TransportConfiguration {
+
+    int getDefaultPort();
 
     Integer getProtocolId();
 
     float getReplaySpeedFactor();
+
+    PacketHandler getPcapPacketHandler();
 
 }

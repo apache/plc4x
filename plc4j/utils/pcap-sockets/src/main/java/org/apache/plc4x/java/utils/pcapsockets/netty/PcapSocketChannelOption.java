@@ -24,6 +24,12 @@ import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
 public class PcapSocketChannelOption<T> extends ChannelOption<T> {
 
     /**
+     * Option to restrict the captures based on packet port.
+     */
+    public static final ChannelOption<Integer> PORT =
+        ChannelOption.valueOf(Integer.class, "PORT");
+
+    /**
      * Option to restrict the captures based on TCP protocol ids.
      */
     public static final ChannelOption<Integer> PROTOCOL_ID =
@@ -40,7 +46,7 @@ public class PcapSocketChannelOption<T> extends ChannelOption<T> {
      * Option for providing a PacketHandler, that intercepts the captured packets
      * before passing the data into the channel.
      */
-    public static final ChannelOption<String> PACKET_HANDLER =
+    public static final ChannelOption<PacketHandler> PACKET_HANDLER =
         ChannelOption.valueOf(PacketHandler.class, "PACKET_HANDLER");
 
     protected PcapSocketChannelOption() {

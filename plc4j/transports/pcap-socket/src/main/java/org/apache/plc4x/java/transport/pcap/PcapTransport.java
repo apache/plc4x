@@ -41,7 +41,7 @@ public class PcapTransport implements Transport {
     public ChannelFactory createChannelFactory(String transportConfig) {
         File pcapFile = new File(transportConfig);
         if(!pcapFile.exists() || !pcapFile.isFile()) {
-            throw new PlcRuntimeException("");
+            throw new PlcRuntimeException("File not found at " + transportConfig);
         }
         PcapSocketAddress address = new PcapSocketAddress(pcapFile);
         return new PcapChannelFactory(address);

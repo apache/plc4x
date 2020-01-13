@@ -127,7 +127,8 @@ public class PcapSocketChannel extends OioByteStreamChannel {
                         }
 
                         // Send the bytes to the netty pipeline.
-                        buffer.writeBytes(config.getPacketHandler().getData(packet));
+                        byte[] data = config.getPacketHandler().getData(packet);
+                        buffer.writeBytes(data);
 
                         // Remember the timestamp of the current packet.
                         lastPacketTime = curPacketTime;
@@ -223,13 +224,13 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         // Add a filter for source or target address.
         /*if(config.getAddress() != null) {
             sb.append(" and (host ").append(config.getAddress().getHostAddress()).append(")");
-        }
+        }*/
         // Add a filter for TCP or UDP port.
         if(config.getPort() != PcapSocketAddress.ALL_PORTS) {
             sb.append(" and (port ").append(config.getPort()).append(")");
-        }*/
+        }
         if(config.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
-            sb.append("(ether proto ").append(config.getProtocolId()).append(")");
+            sb.append(" and (ether proto ").append(config.getProtocolId()).append(")");
         }
         return sb.toString();
     }

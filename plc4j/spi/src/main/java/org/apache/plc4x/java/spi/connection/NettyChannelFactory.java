@@ -26,6 +26,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +92,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             bootstrap.group(workerGroup);
             bootstrap.channel(getChannel());
             // Callback to allow subclasses to modify the Bootstrap
+
             configureBootstrap(bootstrap);
             bootstrap.handler(channelHandler);
             // Start the client.

@@ -21,8 +21,16 @@ package org.apache.plc4x.java.bacnetip.configuration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
+import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
+import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
+import org.pcap4j.packet.Packet;
 
-public class PassiveBacNetIpConfiguration implements Configuration, RawSocketTransportConfiguration, PcapTransportConfiguration {
+public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapTransportConfiguration {
+
+    @Override
+    public int getDefaultPort() {
+        return 47808;
+    }
 
     @Override
     public Integer getProtocolId() {
@@ -32,6 +40,22 @@ public class PassiveBacNetIpConfiguration implements Configuration, RawSocketTra
     @Override
     public float getReplaySpeedFactor() {
         return 0;
+    }
+
+    /**
+     * Packet handler to use when running in PCAP mode.
+     * In this case all packets are Ethernet frames and we need to first get the
+     * IP packet and then the UDP packet and then the raw data from that.
+     * @return payload of the packet.
+     */
+    @Override
+    public PacketHandler getPcapPacketHandler() {
+        return new PacketHandler() {
+            @Override
+            public byte[] getData(Packet packet) {
+                return packet.getPayload().getPayload().getPayload().getRawData();
+            }
+        };
     }
 
 }

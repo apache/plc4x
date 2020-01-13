@@ -51,8 +51,12 @@ public class PcapChannelFactory extends NettyChannelFactory implements HasConfig
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
+            bootstrap.option(PcapSocketChannelOption.PORT, configuration.getDefaultPort());
             bootstrap.option(PcapSocketChannelOption.PROTOCOL_ID, configuration.getProtocolId());
             bootstrap.option(PcapSocketChannelOption.SPEED_FACTOR, configuration.getReplaySpeedFactor());
+            if(configuration.getPcapPacketHandler() != null) {
+                bootstrap.option(PcapSocketChannelOption.PACKET_HANDLER, configuration.getPcapPacketHandler());
+            }
         }
     }
 

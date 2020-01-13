@@ -29,6 +29,7 @@ import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
@@ -79,6 +80,10 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
             if(channelFactory == null) {
                 throw new PlcConnectionException("No channel factory provided");
             }
+
+            // Inject the configuration
+            ConfigurationFactory.configure(configuration, channelFactory);
+
             // Have the channel factory create a new channel instance.
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture));
             channel.closeFuture().addListener(future -> {
