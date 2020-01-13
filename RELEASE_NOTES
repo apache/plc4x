@@ -1,6 +1,10 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.6.0-SNAPSHOT
+Apache PLC4X 0.6.0
 ==============================================================
+
+This is the last release of PLC4X ith the "handwritten" drivers.
+This Minor release will thus receive updates and fixes until
+most users have switched to 0.7 and above (with generated drivers).
 
 New Features
 ------------
@@ -12,6 +16,11 @@ Incompatible changes
 
 Bug Fixes
 ---------
+
+Known Issues
+--------
+- PLC4X-163 cannot be fixed in this branch. If you are hit
+  by this issue please move to 0.7+
 
 ==============================================================
 Apache PLC4X 0.5.0
