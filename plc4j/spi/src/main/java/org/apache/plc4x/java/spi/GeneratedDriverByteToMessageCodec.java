@@ -35,16 +35,18 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     private static final Logger logger = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
-    private MessageIO<T, T> io;
+    private final boolean bigEndian;
+    private final MessageIO<T, T> io;
 
-    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz) {
+    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian) {
         super(clazz);
         this.io = io;
+        this.bigEndian = bigEndian;
     }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) throws Exception {
-        WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes());
+        WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
         io.serialize(buffer, packet);
         byteBuf.writeBytes(buffer.getData());
         logger.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
@@ -64,7 +66,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
             // Read the packet data into a new ReadBuffer
             byte[] bytes = new byte[packetSize];
             byteBuf.readBytes(bytes);
-            ReadBuffer readBuffer = new ReadBuffer(bytes);
+            ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
 
             try {
                 // Parse the packet.

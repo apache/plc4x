@@ -33,7 +33,7 @@ public class ReadBuffer {
     private final long totalBytes;
 
     public ReadBuffer(byte[] input) {
-        this(input, true);
+        this(input, false);
     }
 
     public ReadBuffer(byte[] input, boolean littleEndian) {
@@ -97,6 +97,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
+            // No need to flip here as we're only reading one byte.
             return bi.readShort(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -111,7 +112,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            if (!littleEndian) {
+            if (littleEndian) {
                 return Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16;
             }
             return bi.readInt(true, bitLength);
@@ -128,7 +129,7 @@ public class ReadBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            if (!littleEndian) {
+            if (littleEndian) {
                 return Long.reverseBytes(bi.readLong(true, bitLength)) >> 32;
             }
             return bi.readLong(true, bitLength);
@@ -163,7 +164,7 @@ public class ReadBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            if (!littleEndian) {
+            if (littleEndian) {
                 return Short.reverseBytes(bi.readShort(false, bitLength));
             }
             return bi.readShort(false, bitLength);
@@ -180,7 +181,7 @@ public class ReadBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if (!littleEndian) {
+            if (littleEndian) {
                 return Integer.reverseBytes(bi.readInt(false, bitLength));
             }
             return bi.readInt(false, bitLength);
@@ -197,7 +198,7 @@ public class ReadBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if (!littleEndian) {
+            if (littleEndian) {
                 return Long.reverseBytes(bi.readLong(false, bitLength));
             }
             return bi.readLong(false, bitLength);

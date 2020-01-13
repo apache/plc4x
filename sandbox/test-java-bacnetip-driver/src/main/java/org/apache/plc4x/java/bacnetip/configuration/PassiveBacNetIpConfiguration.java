@@ -19,13 +19,19 @@ under the License.
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 
-public class PassiveBacNetIpConfiguration implements Configuration, RawSocketTransportConfiguration {
+public class PassiveBacNetIpConfiguration implements Configuration, RawSocketTransportConfiguration, PcapTransportConfiguration {
 
     @Override
     public Integer getProtocolId() {
         return null;
+    }
+
+    @Override
+    public float getReplaySpeedFactor() {
+        return 0;
     }
 
 }

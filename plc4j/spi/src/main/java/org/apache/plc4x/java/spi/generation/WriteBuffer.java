@@ -94,7 +94,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            if(!littleEndian) {
+            if(littleEndian) {
                 value = Integer.reverseBytes(value) >> 16;
             }
             bo.writeInt(true, bitLength, value);
@@ -111,7 +111,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            if(!littleEndian) {
+            if(littleEndian) {
                 value = Long.reverseBytes(value) >> 32;
             }
             bo.writeLong(true, bitLength, value);
@@ -146,7 +146,7 @@ public class WriteBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            if(!littleEndian) {
+            if(littleEndian) {
                 value = Short.reverseBytes(value);
             }
             bo.writeShort(false, bitLength, value);
@@ -163,7 +163,7 @@ public class WriteBuffer {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if(!littleEndian) {
+            if(littleEndian) {
                 value = Integer.reverseBytes(value);
             }
             bo.writeInt(false, bitLength, value);
@@ -180,7 +180,7 @@ public class WriteBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if(!littleEndian) {
+            if(littleEndian) {
                 value = Long.reverseBytes(value);
             }
             bo.writeLong(false, bitLength, value);
