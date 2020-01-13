@@ -23,12 +23,12 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-utils</artifactId>
+    <artifactId>plc4j-tools</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>interop-server</artifactId>
-  <name>PLC4J: Utils: Interop-Server</name>
+  <name>PLC4J: Tools: Interop-Server</name>
 
   <build>
     <plugins>

@@ -23,23 +23,29 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4j-tools</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-utils</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4j-connection-pool</artifactId>
 
-  <name>PLC4J: Utils</name>
-  <description>A collection of utilities used internally.</description>
+  <name>PLC4J: Tools: Connection Pool</name>
+  <description>An implementation of a connection pool based on Apache Commons Pool.</description>
 
-  <modules>
-    <!-- Non-default input options -->
-    <module>raw-sockets</module>
-    <module>pcap-sockets</module>
-
-    <!-- Utilities for building tests -->
-    <module>test-utils</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.6.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

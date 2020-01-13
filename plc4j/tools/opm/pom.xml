@@ -22,14 +22,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-tools</artifactId>
     <version>0.6.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-opm</artifactId>
 
-  <name>PLC4J: Utils: Object PLC Mapping</name>
+  <name>PLC4J: Tools: Object PLC Mapping</name>
   <description>Layer on top of Plc4X that enables mapping between Objects and PLCs.</description>
 
   <dependencies>
