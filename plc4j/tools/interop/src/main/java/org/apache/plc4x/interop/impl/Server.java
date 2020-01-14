@@ -20,7 +20,6 @@
 package org.apache.plc4x.interop.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.interop.InteropServer;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -29,8 +28,8 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcLong;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.mock.MockDevice;
-import org.apache.plc4x.java.mock.PlcMockConnection;
+import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -45,7 +44,7 @@ public class Server {
         final PlcDriverManager driverManager = new PlcDriverManager();
 
         // Do some mocking
-        final PlcMockConnection mockConnection = (PlcMockConnection) driverManager.getConnection("mock:a");
+        final MockConnection mockConnection = (MockConnection) driverManager.getConnection("mock:a");
 
         mockConnection.setDevice(new MyMockDevice());
 

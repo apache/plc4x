@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.scraper;
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
@@ -60,10 +59,4 @@ public class TriggeredScraperRunnerModbus {
         scraper.start();
     }
 
-    /**
-     * dummy function to have Modbus Driver available in DriverManager
-     */
-    private void dummy(){
-        ModbusConnectionFactory modbusConnectionFactory = new ModbusConnectionFactory();
-    }
 }

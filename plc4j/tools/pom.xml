@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools</artifactId>
@@ -39,13 +39,14 @@
     <module>scraper</module>
   </modules>
 
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>interop</module>
-      </modules>
-    </profile>
-  </profiles>
+  <!-- This module requires the Interop-Server which is disabled for incompatibility reasons. -->
+  <!--profiles>
+     <profile>
+       <id>with-proxies</id>
+       <modules>
+         <module>interop</module>
+       </modules>
+     </profile>
+   </profiles-->
 
 </project>

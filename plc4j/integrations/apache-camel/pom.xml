@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-camel</artifactId>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -84,15 +84,15 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <!-- avoids java.lang.NoClassDefFoundError: javax/activation/DataHandler in Plc4XProducerTest on Java 11-->
       <groupId>javax.activation</groupId>
