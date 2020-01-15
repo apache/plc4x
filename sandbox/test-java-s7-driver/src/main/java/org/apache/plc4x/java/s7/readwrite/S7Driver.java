@@ -39,7 +39,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     public String getProtocolCode() {
-        return "s7ng";
+        return "s7";
     }
 
     @Override

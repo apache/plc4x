@@ -24,8 +24,8 @@ public class ManualS7DriverTest {
 
     public static void main(String[] args) throws Exception {
         final S7Driver driver = new S7Driver();
-        //final PlcConnection connection = driver.getConnection("s7ng:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X/plc4x/sandbox/test-java-s7-driver/src/test/resources/pcaps/s7-1200-reads-writes.pcapng");
-        final PlcConnection connection = driver.getConnection("s7ng://10.10.64.20");
+        //final PlcConnection connection = driver.getConnection("s7:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X/plc4x/sandbox/test-java-s7-driver/src/test/resources/pcaps/s7-1200-reads-writes.pcapng");
+        final PlcConnection connection = driver.getConnection("s7://10.10.64.20");
         connection.connect();
         System.out.println(connection.readRequestBuilder().addItem("inputs", "%I0:BYTE").build().execute().get().getObject("inputs"));
     }
