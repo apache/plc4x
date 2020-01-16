@@ -59,8 +59,11 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
         if(option == PcapSocketChannelOption.PORT) {
-            port = (int) value;
-            return true;
+            if(value instanceof Integer) {
+                port = (Integer) value;
+                return true;
+            }
+            return false;
         } else if(option == PcapSocketChannelOption.PROTOCOL_ID) {
             if(value instanceof Integer) {
                 protocolId = (Integer) value;
