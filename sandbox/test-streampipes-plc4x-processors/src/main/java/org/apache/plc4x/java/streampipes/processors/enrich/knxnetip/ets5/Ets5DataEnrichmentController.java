@@ -31,7 +31,6 @@ import org.streampipes.sdk.helpers.EpRequirements;
 import org.streampipes.sdk.helpers.Labels;
 import org.streampipes.sdk.helpers.Locales;
 import org.streampipes.sdk.helpers.OutputStrategies;
-import org.streampipes.sdk.utils.Assets;
 import org.streampipes.sdk.utils.Datatypes;
 import org.streampipes.wrapper.standalone.ConfiguredEventProcessor;
 import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
@@ -85,7 +84,7 @@ public class Ets5DataEnrichmentController extends StandaloneEventProcessingDecla
         try {
             fileContents = extractor.fileContentsAsString(PROJECT_FILE_KEY);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error accessing the " + PROJECT_FILE_KEY + " contents", e);
         }
         Ets5DataEnrichmentParameters params = new Ets5DataEnrichmentParameters(graph, destinationIdFieldName, payloadIdFieldName);
         return new ConfiguredEventProcessor<>(params, Ets5DataEnrichment::new);

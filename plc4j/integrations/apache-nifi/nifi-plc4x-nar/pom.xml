@@ -49,10 +49,10 @@
             <usedDependencies>
               <usedDependency>org.apache.plc4x:plc4j-nifi-plc4x-processors</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-api</usedDependency>
-              <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+              <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-              <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+              <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency-->
               <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
             </usedDependencies>
           </configuration>
@@ -74,7 +74,7 @@
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <!-- Bundle Drivers -->
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
       <version>0.7.0-SNAPSHOT</version>
@@ -93,7 +93,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
       <version>0.7.0-SNAPSHOT</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>

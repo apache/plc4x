@@ -18,22 +18,19 @@
  */
 package org.apache.plc4x.java.df1;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.df1.connection.SerialDf1Connection;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.df1.configuration.Df1Configuration;
+import org.apache.plc4x.java.df1.field.Df1FieldHandler;
+import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;
+import org.apache.plc4x.java.df1.readwrite.DF1Command;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.osgi.service.component.annotations.Component;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class DF1PlcDriver implements PlcDriver {
-
-    // TODO there is only serial, I guess?
-    public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.]+)(:(?<port>\\d*))?");
-    public static final Pattern SERIAL_PATTERN = Pattern.compile("serial://(?<serialDefinition>/?[a-zA-Z0-9/]*)");
-    public static final Pattern DF1_URI_PATTERN = Pattern.compile("^df1:(" + INET_ADDRESS_PATTERN + "|" + SERIAL_PATTERN + ")/?" + "(?<params>\\?.*)?");
+@Component(service = PlcDriver.class, immediate = true)
+public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
 
     @Override
     public String getProtocolCode() {
@@ -46,29 +43,25 @@ public class DF1PlcDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = DF1_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'df1:{type}//{port|host}'");
-        }
-
-        String host = matcher.group("host");
-        String serialDefinition = matcher.group("serialDefinition");
-        String portString = matcher.group("port");
-        Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-
-        if (serialDefinition != null) {
-            return new SerialDf1Connection(serialDefinition, params);
-        } else {
-            throw new PlcConnectionException("TCP DF1 connections not implemented yet.");
-        }
+    protected Class<? extends Configuration> getConfigurationType() {
+        return Df1Configuration.class;
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("DF1 connections doesn't support authentication.");
+    protected String getDefaultTransport() {
+        return "serial";
+    }
+
+    @Override
+    protected Df1FieldHandler getFieldHandler() {
+        return new Df1FieldHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<DF1Command> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(DF1Command.class)
+            .withProtocol(Df1ProtocolLogic.class)
+            .build();
     }
 
 }

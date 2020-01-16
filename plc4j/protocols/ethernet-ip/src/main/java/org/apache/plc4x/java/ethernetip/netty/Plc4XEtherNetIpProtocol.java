@@ -37,12 +37,12 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.events.ConnectEvent;
-import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.api.value.PlcLong;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.ethernetip.model.EtherNetIpField;
+import org.apache.plc4x.java.spi.events.ConnectEvent;
+import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -467,7 +467,7 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
         UnconnectedDataItemResponse enipResponse = (UnconnectedDataItemResponse) payload;
         ByteBuf data = enipResponse.getData();
         if (data.readableBytes() > 0) {
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> values = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
             // TODO: This is not quite correct as this will probalby not work when requesting more than one item.
             for (String fieldName : request.getFieldNames()) {
                 MessageRouterResponse cipResponse = MessageRouterResponse.decode(data);
@@ -478,8 +478,8 @@ public class Plc4XEtherNetIpProtocol extends MessageToMessageCodec<EnipPacket, P
                 } else {
                     value = -1;
                 }
-                DefaultLongFieldItem fieldItem = new DefaultLongFieldItem((long) value);
-                values.put(fieldName, new ImmutablePair<>(responseCode, fieldItem));
+                PlcValue plcValue = new PlcLong(value);
+                values.put(fieldName, new ImmutablePair<>(responseCode, plcValue));
             }
             InternalPlcReadResponse response = new DefaultPlcReadResponse(request, values);
             plcRequestContainer.getResponseFuture().complete(response);

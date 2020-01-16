@@ -25,7 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.mock.util.HexUtil;
+//import org.apache.plc4x.java.mock.util.HexUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 
 public class ManualPlc4XModbusTest {
 
-    public static void main(String... args) {
+/*    public static void main(String... args) {
         String connectionUrl;
         if (args.length > 0 && "serial".equalsIgnoreCase(args[0])) {
             System.out.println("Using serial");
@@ -134,5 +134,5 @@ public class ManualPlc4XModbusTest {
             System.exit(1);
         }
         System.exit(0);
-    }
+    }*/
 }

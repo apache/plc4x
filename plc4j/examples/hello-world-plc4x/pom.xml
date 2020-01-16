@@ -68,7 +68,7 @@
       <version>0.7.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
       <version>0.7.0-SNAPSHOT</version>
@@ -97,10 +97,16 @@
       <artifactId>plc4j-driver-s7</artifactId>
       <version>0.7.0-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x.sandbox</groupId>
+      <artifactId>test-java-s7-driver</artifactId>
       <version>0.7.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
@@ -114,12 +120,13 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency-->
             <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.apache.plc4x.sandbox:test-java-s7-driver</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>

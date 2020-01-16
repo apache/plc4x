@@ -19,13 +19,13 @@ under the License.
 package org.apache.plc4x.simulator.server.s7.protocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.MessageIO;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacket> {
 
@@ -50,7 +50,7 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
                     throw new ParseException("Error serializing message", e);
                 }
             }
-        });
+        }, TPKTPacket.class, true);
     }
 
     @Override

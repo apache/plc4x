@@ -177,7 +177,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
 
                                                 S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
                                                     new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                                                        (short) 0xFF, DataTransportSize.OCTET_STRING, szlId,
+                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, szlId,
                                                         readSzlRequestPayload.getSzlIndex(), items);
 
                                                 S7ParameterUserDataItem[] responseParameterItems =

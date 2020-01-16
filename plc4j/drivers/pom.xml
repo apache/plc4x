@@ -35,12 +35,13 @@
 
   <modules>
     <module>ab-eth</module>
-    <module>ads</module>
-    <module>ethernet-ip</module>
-    <module>modbus</module>
+    <!--module>ads</module>
+    <module>ethernet-ip</module-->
+    <module>mock</module>
+    <!--module>modbus</module>
     <module>s7</module>
+	  <module>opcua</module-->
     <module>simulated</module>
-	<module>opcua</module>
   </modules>
 
 </project>

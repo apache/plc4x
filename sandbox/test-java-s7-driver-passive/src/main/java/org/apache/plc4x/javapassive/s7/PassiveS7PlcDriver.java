@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 import org.apache.plc4x.javapassive.s7.connection.PassiveS7PlcConnection;
 

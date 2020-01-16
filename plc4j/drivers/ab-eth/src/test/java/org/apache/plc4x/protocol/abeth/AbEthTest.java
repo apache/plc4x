@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.protocol.abeth;
 
-import org.apache.plc4x.protocol.test.ProtocolTestsuiteRunner;
+import org.apache.plc4x.test.protocol.ProtocolTestsuiteRunner;
 
 public class AbEthTest extends ProtocolTestsuiteRunner {
 

@@ -30,26 +30,25 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.events.ConnectEvent;
-import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
+import org.apache.plc4x.java.s7.netty.S7Protocol;
+import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
+import org.apache.plc4x.java.s7.types.S7ControllerType;
+import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
+import org.apache.plc4x.java.spi.events.ConnectEvent;
+import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.isoontcp.protocol.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.protocol.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.protocol.model.tpdus.DisconnectRequestTpdu;
 import org.apache.plc4x.java.isotp.protocol.model.types.DeviceGroup;
 import org.apache.plc4x.java.isotp.protocol.model.types.DisconnectReason;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
-import org.apache.plc4x.java.s7.model.S7Field;
-import org.apache.plc4x.java.s7.netty.Plc4XS7Protocol;
-import org.apache.plc4x.java.s7.netty.S7Protocol;
-import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
-import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
-import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
-import org.apache.plc4x.java.s7.types.S7ControllerType;
-import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +75,7 @@ import java.util.concurrent.TimeoutException;
  *     {memory area}/{byte offset}/{bit offset}
  * </pre>
  * where the {bit-offset} is optional.
- * All Available Memory Areas for this mode are defined in the {@link MemoryArea} enum.
+ * All Available Memory Areas for this mode are defined in the MemoryArea enum.
  */
 public class S7PlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter {
 
@@ -170,10 +169,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, 0, 0);
-        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, rack, slot);
+        short calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OS, rack, slot);
+        short callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC, 0, 0);
 
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.

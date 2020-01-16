@@ -39,7 +39,7 @@
   </properties>
 
   <modules>
-    <module>dummy-driver</module>
+    <!--module>dummy-driver</module-->
     <module>hello-cloud-azure</module>
     <module>hello-cloud-google</module>
     <module>hello-connectivity-kafka</module>

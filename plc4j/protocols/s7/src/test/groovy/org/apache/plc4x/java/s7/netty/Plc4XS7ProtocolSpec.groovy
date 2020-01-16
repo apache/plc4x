@@ -30,7 +30,6 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse
 import org.apache.plc4x.java.api.messages.PlcResponse
 import org.apache.plc4x.java.api.messages.PlcWriteRequest
 import org.apache.plc4x.java.api.types.PlcResponseCode
-import org.apache.plc4x.java.base.messages.*
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage
@@ -42,6 +41,13 @@ import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem
 import org.apache.plc4x.java.s7.netty.model.types.*
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest
+import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest
+import org.apache.plc4x.java.spi.messages.PlcReader
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer
+import org.apache.plc4x.java.spi.messages.PlcWriter
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -232,7 +238,11 @@ class Plc4XS7ProtocolSpec extends Specification {
         } else {
             assert actualValues.length == expectedValues.length
             for (int i = 0; i < actualValues.length; i++) {
-                assert actualValues[i].class == expectedValues[i].class
+                Class expectedType = expectedValues[i].class
+                if((expectedValues[i].class == Byte.class) || (expectedValues[i].class == Short.class)) {
+                    expectedType = Integer.class
+                }
+                assert actualValues[i].class == expectedType
                 assert actualValues[i] == expectedValues[i]
             }
         }

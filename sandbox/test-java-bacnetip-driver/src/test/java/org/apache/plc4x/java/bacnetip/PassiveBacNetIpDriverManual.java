@@ -18,24 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler;
-
-import java.io.File;
+import org.apache.plc4x.java.api.PlcConnection;
 
 public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {
-        NettyPlcConnection connection = new PassiveBacNetIpPlcConnection(new PcapChannelFactory(
-            //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
-            new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
-            PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
-            PcapSocketChannelConfig.SPEED_FAST_DOUBLE, new UdpIpPacketHandler()), "", new HelloWorldProtocol());
+        final PassiveBacNetIpDriver driver = new PassiveBacNetIpDriver();
+        final PlcConnection connection = driver.getConnection("bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng");
         connection.connect();
     }
 

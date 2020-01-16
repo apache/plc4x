@@ -63,11 +63,13 @@ public class ClassDeclaration implements Node {
         return innerClasses;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
+    @Override
+    public void write(Generator writer) {
         writer.generateClass(this.namespace, this.className, this.fields, this.constructors, this.methods, innerClasses, true);
     }
 }

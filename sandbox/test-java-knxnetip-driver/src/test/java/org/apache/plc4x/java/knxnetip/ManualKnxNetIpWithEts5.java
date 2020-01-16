@@ -18,30 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip;
 
-import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.UdpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.ets5.passive.*;
-import org.apache.plc4x.java.ets5.passive.io.KNXGroupAddressIO;
-import org.apache.plc4x.java.ets5.passive.io.KnxDatapointIO;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
+import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
-import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.*;
-import org.apache.plc4x.java.utils.ReadBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ManualKnxNetIpWithEts5 {
@@ -59,6 +45,7 @@ public class ManualKnxNetIpWithEts5 {
     }
 
     private void start() throws PlcConnectionException {
+        /*
         ChannelFactory channelFactory = new UdpSocketChannelFactory(
             gatewayInetAddress, KnxNetIpConnection.KNXNET_IP_PORT);
 
@@ -131,6 +118,7 @@ public class ManualKnxNetIpWithEts5 {
                 // Just ignore this.
             }
         }));
+        */
     }
 
     protected static String toString(KNXAddress knxAddress) {

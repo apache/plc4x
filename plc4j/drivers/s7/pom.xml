@@ -37,6 +37,11 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -53,14 +58,10 @@
       <artifactId>plc4j-protocol-s7</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
+      <artifactId>plc4j-transport-tcp</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
@@ -90,12 +91,12 @@
       <artifactId>commons-io</artifactId>
     </dependency>
 
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-test</artifactId>
+      <artifactId>plc4j-transport-test</artifactId>
       <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.pcap4j</groupId>
       <artifactId>pcap4j-core</artifactId>

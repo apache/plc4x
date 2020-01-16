@@ -29,19 +29,19 @@ public class DefaultManualArrayField extends DefaultTaggedField implements Manua
     private final String name;
     private final LoopType loopType;
     private final Term loopExpression;
-    private final Term serializeExpression;
     private final Term parseExpression;
+    private final Term serializeExpression;
     private final Term lengthExpression;
     private final Term[] params;
 
-    public DefaultManualArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term serializeExpression, Term parseExpression, Term lengthExpression, Term[] params) {
+    public DefaultManualArrayField(String[] tags, TypeReference type, String name, LoopType loopType, Term loopExpression, Term parseExpression, Term serializeExpression, Term lengthExpression, Term[] params) {
         super(tags);
         this.type = type;
         this.name = name;
         this.loopType = loopType;
         this.loopExpression = loopExpression;
-        this.serializeExpression = serializeExpression;
         this.parseExpression = parseExpression;
+        this.serializeExpression = serializeExpression;
         this.lengthExpression = lengthExpression;
         this.params = params;
     }
@@ -62,12 +62,12 @@ public class DefaultManualArrayField extends DefaultTaggedField implements Manua
         return loopExpression;
     }
 
-    public Term getSerializeExpression() {
-        return serializeExpression;
-    }
-
     public Term getParseExpression() {
         return parseExpression;
+    }
+
+    public Term getSerializeExpression() {
+        return serializeExpression;
     }
 
     public Term getLengthExpression() {

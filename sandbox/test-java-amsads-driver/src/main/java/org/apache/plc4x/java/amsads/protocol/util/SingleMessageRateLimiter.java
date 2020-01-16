@@ -72,7 +72,7 @@ public class SingleMessageRateLimiter extends ChannelDuplexHandler {
 
     @Override
     public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        LOGGER.debug("disconnect({}, {}, {}, {})", ctx, promise);
+        LOGGER.debug("disconnect({}, {})", ctx, promise);
         sender.cancel(false);
         super.disconnect(ctx, promise);
     }

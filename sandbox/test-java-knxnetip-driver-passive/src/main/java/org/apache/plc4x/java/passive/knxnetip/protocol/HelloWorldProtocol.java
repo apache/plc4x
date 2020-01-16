@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.passive.knxnetip.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.knxnetip.passive.KNXNetIPMessage;
 
 import java.util.List;

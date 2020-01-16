@@ -26,7 +26,7 @@ The driver can be found in the Maven module
 ```
 <dependency>
   <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-protocol-driver-base-test</artifactId>
+  <artifactId>plc4j-transport-test</artifactId>
   <version>${current.version}</version>
   <scope>test</scope>
 </dependency>
@@ -40,7 +40,7 @@ The Interface for the Mock Device is
 ```
 public interface MockDevice {
 
-    Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery);
+    Pair<PlcResponseCode, PlcValue> read(String fieldQuery);
 
     PlcResponseCode write(String fieldQuery, Object value);
 
@@ -73,9 +73,9 @@ Here, we pass it an instance of `MockDevice` which could be a simple Implementat
 ```
 MockDevice mockDevice = new MockDevice() {
 
-    Pair<PlcResponseCode, BaseDefaultFieldItem> read(String fieldQuery) {
+    Pair<PlcResponseCode, PlcValue> read(String fieldQuery) {
         System.out.println("I got a read to " + fieldQuery);
-        return Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hello"));
+        return Pair.of(PlcResponseCode.OK, new PlcString("hello"));
     }
 
     PlcResponseCode write(String fieldQuery, Object value) {
@@ -102,7 +102,7 @@ PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("
 connection.setDevice(mockDevice);
 
 // Populate the Mock to avoid a NPE
-when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hello")));
+when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hello")));
 
 // Some Demo code that uses the same Driver Manager and either the connection from above
 // or at least mock:my-mock-connection as connection string
@@ -128,7 +128,7 @@ PlcDriverManager driverManager = new PlcDriverManager();
 PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:my-mock-connection");
 connection.setDevice(mockDevice);
 // Populate the Mock to avoid a NPE
-when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new DefaultStringFieldItem("hello")));
+when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hello")));
 
 // Some Demo code that uses the same Driver Manager and either the connection from above
 // or at least mock:my-mock-connection as connection string

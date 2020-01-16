@@ -27,9 +27,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -122,6 +120,15 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 case STRING: {
                     return "String";
                 }
+                case TIME: {
+                    return "LocalTime";
+                }
+                case DATE: {
+                    return "LocalDate";
+                }
+                case DATETIME: {
+                    return "LocalDateTime";
+                }
             }
             return "Hurz";
         } else {
@@ -193,6 +200,30 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return "Hurz";
     }
 
+    public int getNumBits(SimpleTypeReference simpleTypeReference) {
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT: {
+                return 1;
+            }
+            case UINT:
+            case INT: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                return integerTypeReference.getSizeInBits();
+            }
+            case FLOAT: {
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                return floatTypeReference.getSizeInBits();
+            }
+            case STRING: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                return integerTypeReference.getSizeInBits();
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
+
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
@@ -232,7 +263,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                StringBuilder sb = new StringBuilder("((Supplier<Float>) (() -> {");
+                String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
+                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
+                String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
+                StringBuilder sb = new StringBuilder("((Supplier<").append(type).append(">) (() -> {");
                 sb.append("\n            try {");
                 if (floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
                     sb.append("\n               boolean negative = io.readBit();");
@@ -241,16 +275,17 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
                 sb.append("\n               long exponent = io.readUnsignedLong(").append(floatTypeReference.getExponent()).append(");");
                 sb.append("\n               long mantissa = io.readUnsignedLong(").append(floatTypeReference.getMantissa()).append(");");
-                sb.append("\n               return (float) ((negative ? -1 : 1) * (0.01 * mantissa) * (2 ^ exponent));");
+                sb.append("\n               return (").append(typeCast).append(") ((negative ? -1 : 1) * (0.01 * mantissa) * Math.pow(2, exponent));");
                 sb.append("\n            } catch(ParseException e) {");
-                sb.append("\n               return 0.0f;");
+                sb.append("\n               return ").append(defaultNull).append(";");
                 sb.append("\n            }");
                 sb.append("\n        })).get()");
                 return sb.toString();
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return "io.readString(" + integerTypeReference.getSizeInBits() + ")";
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return "io.readString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                    stringTypeReference.getEncoding() + "\")";
             }
         }
         return "Hurz";
@@ -308,8 +343,9 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 return sb.toString().substring(9);
             }
             case STRING: {
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                return "io.writeString(" + integerTypeReference.getSizeInBits() + ", (String) " + fieldName + ")";
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return "io.writeString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                    stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
             }
         }
         return "Hurz";
@@ -427,8 +463,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         return sb.toString();
     }
 
-    public String toDeserializationExpression(Term term, Argument[] parserArguments) {
-        return toExpression(term, term1 -> toVariableDeserializationExpression(term1, parserArguments));
+    public String toParseExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableParseExpression(term1, parserArguments));
     }
 
     public String toSerializationExpression(Term term, Argument[] parserArguments) {
@@ -498,7 +534,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         }
     }
 
-    private String toVariableDeserializationExpression(Term term, Argument[] parserArguments) {
+    private String toVariableParseExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         if("CAST".equals(vl.getName())) {
@@ -506,7 +542,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
-            sb.append("(").append(toVariableDeserializationExpression(vl.getArgs().get(0), parserArguments))
+            sb.append("(").append(toVariableParseExpression(vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         }
@@ -538,7 +574,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(isDeserializerArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
                     } else {
-                        sb.append(toVariableDeserializationExpression(va, null));
+                        sb.append(toVariableParseExpression(va, null));
                     }
                 } else if(arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -557,7 +593,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                     if(!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toVariableDeserializationExpression(arg, parserArguments));
+                    sb.append(toParseExpression(arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");
@@ -666,6 +702,42 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
     }
 
+    public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition) {
+        int sizeInBits = 0;
+        StringBuilder sb = new StringBuilder("");
+        for (Field field : complexTypeDefinition.getFields()) {
+            if(field instanceof ArrayField) {
+                ArrayField arrayField = (ArrayField) field;
+                final SimpleTypeReference type = (SimpleTypeReference) arrayField.getType();
+                switch (arrayField.getLoopType()) {
+                    case COUNT:
+                        sb.append("(").append(toSerializationExpression(arrayField.getLoopExpression(), null)).append(" * ").append(type.getSizeInBits()).append(") + ");
+                        break;
+                    case LENGTH:
+                        sb.append("(").append(toSerializationExpression(arrayField.getLoopExpression(), null)).append(" * 8) + ");
+                        break;
+                    case TERMINATED:
+                        // No terminated.
+                        break;
+                }
+            } else if(field instanceof TypedField) {
+                TypedField typedField = (TypedField) field;
+                final TypeReference type = typedField.getType();
+                if(field instanceof ManualField) {
+                    ManualField manualField = (ManualField) field;
+                    sb.append("(").append(toSerializationExpression(manualField.getLengthExpression(), null)).append(") + ");
+                }
+                else if(type instanceof SimpleTypeReference) {
+                    SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
+                    sizeInBits += simpleTypeReference.getSizeInBits();
+                } else {
+                    // No ComplexTypeReference supported.
+                }
+            }
+        }
+        return sb.toString() + sizeInBits;
+    }
+
     public String escapeValue(TypeReference typeReference, String valueString) {
         if(valueString == null) {
             return null;
@@ -694,6 +766,41 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         ComplexTypeReference complexType = (ComplexTypeReference) enumType;
         EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) types.get(complexType.getName());
         return (SimpleTypeReference) enumTypeDefinition.getType();
+    }
+
+    public List<Argument> getSerializerArguments(Argument[] arguments) {
+        List<Argument> serializerArguments = new LinkedList<>();
+        if(arguments != null) {
+            for (Argument argument : arguments) {
+                if ("lastItem".equals(argument.getName())) {
+                    serializerArguments.add(argument);
+                }
+            }
+        }
+        return serializerArguments;
+    }
+
+    public boolean hasLastItemTerm(Term[] terms) {
+        if(terms != null) {
+            for (Term term : terms) {
+                if (term.contains("lastItem")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<Term> getSerializerTerms(Term[] terms) {
+        List<Term> serializerTerms = new LinkedList<>();
+        if(terms != null) {
+            for (Term term : terms) {
+                if (term.contains("lastItem")) {
+                    serializerTerms.add(term);
+                }
+            }
+        }
+        return serializerTerms;
     }
 
 }

@@ -23,13 +23,13 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
-import org.apache.plc4x.java.base.events.ConnectedEvent;
-import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.transport.rawsocket.RawSocketChannelFactory;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.NettyPlcConnection;
+import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.passive.knxnetip.model.KnxNetIpField;
-import org.apache.plc4x.java.passive.knxnetip.protocol.KnxNetIpProtocol;
+import org.apache.plc4x.java.passive.knxnetip.protocol.KnxNetIpProtocolMessage;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.UdpIpPacketHandler;
@@ -67,7 +67,7 @@ public class PassiveKnxNetIpPlcConnection extends NettyPlcConnection implements 
 
     @Override
     protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
+        return new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel channel) {
                 // Build the protocol stack for communicating with the s7 protocol.
@@ -82,7 +82,7 @@ public class PassiveKnxNetIpPlcConnection extends NettyPlcConnection implements 
                         }
                     }
                 });
-                pipeline.addLast(new KnxNetIpProtocol());
+                pipeline.addLast(new KnxNetIpProtocolMessage());
                 pipeline.addLast(handler);
             }
         };

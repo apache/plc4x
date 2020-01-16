@@ -18,20 +18,21 @@ under the License.
 */
 package org.apache.plc4x.java.abeth;
 
-import org.apache.plc4x.java.abeth.connection.AbEthPlcConnection;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
+import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
+import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
+import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.osgi.service.component.annotations.Component;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+@Component(service = PlcDriver.class, immediate = true)
+public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
-public class AbEthDriver implements PlcDriver {
-
-    private static final Pattern ABETH_URI_PATTERN = Pattern.compile("^ab-eth://(?<host>.*)/(?<station>\\d{1,2})(?<params>\\?.*)?");
+    public static final int AB_ETH_PORT = 2222;
 
     @Override
     public String getProtocolCode() {
@@ -43,30 +44,27 @@ public class AbEthDriver implements PlcDriver {
         return "Allen Bradley ETH";
     }
 
-    @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = ABETH_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'ab-eth://{host|ip}/{station}'");
-        }
-        int station = Integer.parseInt(matcher.group("station"));
-        String host = matcher.group("host");
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
 
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            return new AbEthPlcConnection(serverInetAddress, station, params);
-        } catch (UnknownHostException e) {
-            throw new PlcConnectionException("Error parsing address", e);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error connecting to host", e);
-        }
+    @Override
+    protected Class<? extends Configuration> getConfigurationType() {
+        return AbEthConfiguration.class;
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("AB-ETH connections don't support authentication.");
+    protected String getDefaultTransport() {
+        return "raw";
+    }
+
+    @Override
+    protected AbEthFieldHandler getFieldHandler() {
+        return new AbEthFieldHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class)
+            .withProtocol(AbEthProtocolLogic.class)
+            .build();
     }
 
 }

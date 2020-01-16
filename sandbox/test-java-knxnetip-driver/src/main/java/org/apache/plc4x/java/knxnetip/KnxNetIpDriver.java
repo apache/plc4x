@@ -18,21 +18,22 @@ under the License.
 */
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.knxnetip.connection.KnxNetIpConnection;
-import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpPlc4xProtocol;
-import org.apache.plc4x.java.spi.PlcDriver;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
+import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
+import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
-import java.net.InetAddress;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.function.ToIntFunction;
 
-public class KnxNetIpDriver implements PlcDriver {
+public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
 
-    private static final Pattern PASSIVE_KNXNET_IP_URI_PATTERN =
-        Pattern.compile("^knxnet-ip://(?<host>.*)(?<params>\\?.*)?");
+    public static final int KNXNET_IP_PORT = 3671;
 
     @Override
     public String getProtocolCode() {
@@ -45,35 +46,51 @@ public class KnxNetIpDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = PASSIVE_KNXNET_IP_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'knxnet-ip://{host|ip}'");
-        }
-        String host = matcher.group("host");
-
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-
-        try {
-            InetAddress serverInetAddress = InetAddress.getByName(host);
-            PlcConnection connection = new KnxNetIpConnection(serverInetAddress, params, new KnxNetIpPlc4xProtocol());
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    connection.close();
-                } catch (Exception e) {
-                    // Ignore this ...
-                }
-            }));
-            return connection;
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error connecting to host", e);
-        }
+    protected String getDefaultTransport() {
+        return "udp";
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("KNXNet/IP connections don't support authentication.");
+    protected boolean canRead() {
+        return false;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
+    protected Class<? extends Configuration> getConfigurationType() {
+        return KnxNetIpConfiguration.class;
+    }
+
+    @Override
+    protected PlcFieldHandler getFieldHandler() {
+        return new KnxNetIpFieldHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class)
+            .withProtocol(KnxNetIpProtocolLogic.class)
+            .withPacketSizeEstimator(PacketSizeEstimator.class)
+            .build();
+    }
+
+    public static class PacketSizeEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 6) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
+            }
+            return -1;
+        }
     }
 
 }

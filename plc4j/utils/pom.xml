@@ -31,31 +31,15 @@
   <packaging>pom</packaging>
 
   <name>PLC4J: Utils</name>
-  <description>A collection of utilities used in multiple modules.</description>
+  <description>A collection of utilities used internally.</description>
 
   <modules>
-    <!-- Base module for all types of PLC4X drivers -->
-    <module>driver-base-java</module>
     <!-- Non-default input options -->
     <module>raw-sockets</module>
     <module>pcap-sockets</module>
+
     <!-- Utilities for building tests -->
     <module>test-utils</module>
-    <module>protocol-test-utils</module>
-
-    <!-- Utilities used externally by users -->
-    <module>connection-pool</module>
-    <module>opm</module>
-    <module>scraper</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>with-proxies</id>
-      <modules>
-        <module>interop</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

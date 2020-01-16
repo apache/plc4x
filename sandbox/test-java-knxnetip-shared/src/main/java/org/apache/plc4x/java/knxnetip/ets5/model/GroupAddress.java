@@ -22,23 +22,22 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
 
 public class GroupAddress {
 
-    private final KNXGroupAddress groupAddress;
+    private final String groupAddress;
     private final String name;
     private final AddressType type;
     private final Function function;
 
-    public GroupAddress(KNXGroupAddress groupAddress, String name, AddressType type, Function function) {
+    public GroupAddress(String groupAddress, String name, AddressType type, Function function) {
         this.groupAddress = groupAddress;
         this.name = name;
         this.type = type;
         this.function = function;
     }
 
-    public KNXGroupAddress getGroupAddress() {
+    public String getGroupAddress() {
         return groupAddress;
     }
 
@@ -87,7 +86,7 @@ public class GroupAddress {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("groupAddress", groupAddress.toString(ToStringStyle.SHORT_PREFIX_STYLE))
+            .append("groupAddress", groupAddress)
             .append("name", name)
             .append("type", type)
             .append("function", function)

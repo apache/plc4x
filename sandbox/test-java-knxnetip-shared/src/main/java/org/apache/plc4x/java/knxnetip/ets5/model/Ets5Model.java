@@ -22,16 +22,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
 
 import java.util.Map;
 
 public class Ets5Model {
 
     private final byte groupAddressType;
-    private final Map<KNXGroupAddress, GroupAddress> groupAddresses;
+    private final Map<String, GroupAddress> groupAddresses;
 
-    public Ets5Model(byte groupAddressType, Map<KNXGroupAddress, GroupAddress> groupAddresses) {
+    public Ets5Model(byte groupAddressType, Map<String, GroupAddress> groupAddresses) {
         this.groupAddressType = groupAddressType;
         this.groupAddresses = groupAddresses;
     }
@@ -40,7 +39,41 @@ public class Ets5Model {
         return groupAddressType;
     }
 
-    public Map<KNXGroupAddress, GroupAddress> getGroupAddresses() {
+    public static String parseGroupAddress(byte groupAddressType, byte[] addressBytes) {
+        int addressInt = (addressBytes[0] << 8) | addressBytes[1];
+        return parseGroupAddress(groupAddressType, addressInt);
+    }
+
+    public static String parseGroupAddress(byte groupAddressType, int addressInt) {
+        switch (groupAddressType) {
+            case 1: {
+                return Integer.toString(addressInt);
+            }
+            case 2: {
+                int mainGroup = (addressInt & 0xF800) >> 11;
+                int subGroup = (addressInt & 0x07FF);
+                return mainGroup + "/" + subGroup;
+            }
+            case 3: {
+                int mainGroup = (addressInt & 0xF800) >> 11;
+                int middleGroup = (addressInt & 0x0700) >> 8;
+                int subGroup = (addressInt & 0x00FF);
+                return mainGroup + "/" + middleGroup + "/" + subGroup;
+            }
+        }
+        return null;
+    }
+
+    public String parseGroupAddress(byte[] addressBytes) {
+        int addressInt = (addressBytes[0] << 8) | addressBytes[1];
+        return parseGroupAddress(getGroupAddressType(), addressInt);
+    }
+
+    public String parseGroupAddress(int addressInt) {
+        return parseGroupAddress(getGroupAddressType(), addressInt);
+    }
+
+    public Map<String, GroupAddress> getGroupAddresses() {
         return groupAddresses;
     }
 

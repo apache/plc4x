@@ -20,14 +20,10 @@ package org.apache.plc4x.java.knxnetip.ets5;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.plc4x.java.ets5.passive.KNXGroupAddress;
-import org.apache.plc4x.java.ets5.passive.io.KNXGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.ets5.model.AddressType;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.Function;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,15 +106,12 @@ public class Ets5Parser {
                 final String spaceName = spaceNode.getAttribute("Name");
 
                 final Function function = new Function(refId, functionName, functionTypeId, spaceName);
-                if(groupAddressRefs.containsKey(refId)) {
-                    System.out.println("Duplicate refId");
-                }
                 groupAddressRefs.put(refId, function);
             }
 
             final XPathExpression xpathGroupAddresses = xPath.compile("//GroupAddress");
             NodeList groupAddressNodes = (NodeList) xpathGroupAddresses.evaluate(projectDoc, XPathConstants.NODESET);
-            Map<KNXGroupAddress, GroupAddress> groupAddresses = new HashMap<>();
+            Map<String, GroupAddress> groupAddresses = new HashMap<>();
             for(int i = 0; i < groupAddressNodes.getLength(); i++) {
                 final Element groupAddressNode = (Element) groupAddressNodes.item(i);
 
@@ -126,11 +119,7 @@ public class Ets5Parser {
                 final Function function = groupAddressRefs.get(id);
 
                 final int addressInt = Integer.parseInt(groupAddressNode.getAttribute("Address"));
-                final byte[] addressBytes = new byte[2];
-                addressBytes[0] = (byte) ((addressInt >> 8) & 0xFF);
-                addressBytes[1] = (byte) (addressInt & 0xFF);
-                ReadBuffer readBuffer = new ReadBuffer(addressBytes);
-                final KNXGroupAddress knxGroupAddress = KNXGroupAddressIO.parse(readBuffer, groupAddressStyleCode);
+                final String knxGroupAddress = Ets5Model.parseGroupAddress(groupAddressStyleCode, addressInt);
 
                 final String name = groupAddressNode.getAttribute("Name");
 
@@ -153,9 +142,6 @@ public class Ets5Parser {
             e.printStackTrace();
         } catch (XPathExpressionException e) {
             // XML Stuff
-            e.printStackTrace();
-        } catch (ParseException e) {
-            // KNXNet/IP Parser Stuff
             e.printStackTrace();
         }
         return null;

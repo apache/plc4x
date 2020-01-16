@@ -59,25 +59,17 @@
       <artifactId>plc4j-api</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <artifactId>plc4j-trannsport-serial</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
+      <artifactId>plc4j-transport-tcp</artifactId>
       <version>0.7.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-serial</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-driver-base-java</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -87,6 +79,13 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.cmpn</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -134,7 +133,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-protocol-test-utils</artifactId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
       <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>

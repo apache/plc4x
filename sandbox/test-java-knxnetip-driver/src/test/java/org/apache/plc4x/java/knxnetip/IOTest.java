@@ -24,8 +24,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class IOTest {
         KNXNetIPMessage packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = knxNetIPMessageIO.parse(rBuf);
+            packet = KNXNetIPMessageIO.parse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -80,7 +80,7 @@ public class IOTest {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            knxNetIPMessageIO.serialize(wBuf, packet);
+            KNXNetIPMessageIO.serialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();
