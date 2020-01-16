@@ -293,6 +293,7 @@ println "Detected Arch: " + arch
 println "Enabled profiles:"
 def boostEnabled = false
 def cppEnabled = false
+def dockerEnabled = false;
 def dotnetEnabled = false
 def javaEnabled = true
 def pythonEnabled = false
@@ -306,6 +307,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
+    } else if(activeProfile == "with-docker") {
+        dockerEnabled = true
+        println "docker"
     } else if(activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
@@ -382,7 +386,7 @@ if(!boostEnabled && cppEnabled) {
     checkBoost()
 }
 
-if(sandboxEnabled) {
+if(sandboxEnabled && dockerEnabled) {
     checkDocker()
 }
 
