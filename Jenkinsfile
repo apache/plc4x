@@ -173,7 +173,7 @@ pipeline {
             steps {
                 echo 'Building Site'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -pl .'
             }
         }
 
@@ -185,7 +185,7 @@ pipeline {
                 echo 'Staging Site'
                 // Build a directory containing the aggregated website.
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site:stage'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site:stage'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site:stage -pl .'
                 // Make sure the script is executable.
                 sh 'chmod +x tools/clean-site.sh'
                 // Remove some redundant resources, which shouldn't be required.
