@@ -49,8 +49,9 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
 
     protected Duration timeout;
 
-    public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Duration timeout, ConversationContext context) {
+    public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext context) {
         this.finisher = finisher;
+        this.expectClazz = expectClazz;
         this.timeout = timeout;
         this.context = context;
     }

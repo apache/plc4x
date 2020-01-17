@@ -89,11 +89,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            public ExpectRequestContext<T> expectRequest(Duration timeout) {
+            public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
                 return new DefaultExpectRequestContext<>(handler -> {
                     logger.trace("Adding Request Handler ...");
                     registeredHandlers.add(handler);
-                }, timeout, this);
+                }, clazz, timeout, this);
             }
 
         });
@@ -213,11 +213,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         }
 
         @Override
-        public ExpectRequestContext<T1> expectRequest(Duration timeout) {
+        public ExpectRequestContext<T1> expectRequest(Class<T1> clazz, Duration timeout) {
             return new DefaultExpectRequestContext<>(handler -> {
                 logger.trace("Adding Request Handler ...");
                 registeredHandlers.add(handler);
-            }, timeout, this);
+            }, clazz, timeout, this);
         }
     }
 
