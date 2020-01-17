@@ -112,7 +112,7 @@ public class ProtocolTestsuiteRunner {
         try {
             Object msg = messageIO.parse(readBuffer);
             String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
-            Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreWhitespace().build();
+            Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
             if(diff.hasDifferences()) {
                 System.out.println(xmlString);
                 throw new ProtocolTestsuiteException("Differences were found after parsing.\n" + diff.toString());
