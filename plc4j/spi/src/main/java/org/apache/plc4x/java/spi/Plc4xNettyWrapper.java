@@ -29,11 +29,13 @@ import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
 import org.apache.plc4x.java.spi.events.DisconnectedEvent;
+import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
 import org.apache.plc4x.java.spi.internal.DefaultSendRequestContext;
 import org.apache.plc4x.java.spi.internal.HandlerRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Deque;
 import java.util.Iterator;
@@ -80,11 +82,20 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<T>(handler -> {
-                    logger.trace("Adding Response Handler...");
+                return new DefaultSendRequestContext<>(handler -> {
+                    logger.trace("Adding Response Handler ...");
                     registeredHandlers.add(handler);
                 }, packet, this);
             }
+
+            @Override
+            public ExpectRequestContext<T> expectRequest(Duration timeout) {
+                return new DefaultExpectRequestContext<>(handler -> {
+                    logger.trace("Adding Request Handler ...");
+                    registeredHandlers.add(handler);
+                }, timeout, this);
+            }
+
         });
     }
 
@@ -195,10 +206,19 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
         @Override
         public SendRequestContext<T1> sendRequest(T1 packet) {
-            return new DefaultSendRequestContext<T1>(handler -> {
-                logger.trace("Adding Response Handler...");
+            return new DefaultSendRequestContext<>(handler -> {
+                logger.trace("Adding Response Handler ...");
                 registeredHandlers.add(handler);
             }, packet, this);
         }
+
+        @Override
+        public ExpectRequestContext<T1> expectRequest(Duration timeout) {
+            return new DefaultExpectRequestContext<>(handler -> {
+                logger.trace("Adding Request Handler ...");
+                registeredHandlers.add(handler);
+            }, timeout, this);
+        }
     }
+
 }

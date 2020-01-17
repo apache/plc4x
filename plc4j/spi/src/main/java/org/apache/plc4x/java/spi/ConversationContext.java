@@ -58,6 +58,23 @@ public interface ConversationContext<T> {
         <R> SendRequestContext<R> only(Class<R> clazz);
     }
 
+    ExpectRequestContext expectRequest(Duration timeout);
+
+    interface ExpectRequestContext<T> {
+
+        ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout);
+
+        ExpectRequestContext<T> check(Predicate<T> checker);
+
+        void handle(Consumer<T> packetConsumer);
+
+        <E extends Throwable> ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
+
+        <E extends Throwable> ExpectRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
+
+        <R> ExpectRequestContext<R> unwrap(Function<T, R> unwrapper);
+    }
+
     class PlcCompletionException extends PlcRuntimeException {
 
         public PlcCompletionException(String message) {
@@ -78,7 +95,6 @@ public interface ConversationContext<T> {
     }
 
     class PlcWiringException extends PlcRuntimeException {
-
         public PlcWiringException(String message) {
             super(message);
         }
