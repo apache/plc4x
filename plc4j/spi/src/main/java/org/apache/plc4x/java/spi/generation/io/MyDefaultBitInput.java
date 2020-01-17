@@ -17,7 +17,10 @@
  under the License.
  */
 
-package com.github.jinahya.bit.io;
+package org.apache.plc4x.java.spi.generation.io;
+
+import com.github.jinahya.bit.io.ArrayByteInput;
+import com.github.jinahya.bit.io.DefaultBitInput;
 
 /**
  * Modified version that exposes the position.
@@ -29,7 +32,7 @@ public class MyDefaultBitInput extends DefaultBitInput<ArrayByteInput> {
     }
 
     public long getPos() {
-        return count;
+        return delegate.getIndex();
     }
 
 }

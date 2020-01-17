@@ -131,10 +131,15 @@ public class ${typeName}IO {
     <#case "checksum">
 
         // Checksum Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-        ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.checksumExpression, type.parserArguments)});
-        if(${field.name} != _${field.name}Ref) {
-            throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+        {
+            // Create an array of all the bytes read in this message element so far.
+            byte[] checksumRawData = io.getBytes(startPos, io.getPos());
+            ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.checksumExpression, type.parserArguments)});
+            if(${field.name} != _${field.name}Ref) {
+                throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
+            }
         }
         <#break>
     <#case "const">
@@ -292,6 +297,8 @@ public class ${typeName}IO {
 
 <#if outputFlavor != "passive">
     public static void serialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+        int startPos = io.getPos();
+
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -314,8 +321,13 @@ public class ${typeName}IO {
     <#case "checksum">
 
         // Checksum Field (${field.name}) (Calculated)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.checksumExpression, type.parserArguments)});
-        ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+        {
+            // Create an array of all the bytes written in this message element so far.
+            byte[] checksumRawData = io.getBytes(startPos, io.getPos());
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field.checksumExpression, type.parserArguments)});
+            ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        }
         <#break>
     <#case "const">
 

@@ -19,9 +19,8 @@
 
 package org.apache.plc4x.java.spi.generation;
 
-import com.github.jinahya.bit.io.BitOutput;
 import com.github.jinahya.bit.io.BufferByteOutput;
-import com.github.jinahya.bit.io.DefaultBitOutput;
+import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,8 +30,8 @@ import java.nio.ByteBuffer;
 public class WriteBuffer {
 
     private final ByteBuffer bb;
-    private final BufferByteOutput bbo;
-    private final BitOutput bo;
+    private final BufferByteOutput<ByteBuffer> bbo;
+    private final MyDefaultBitOutput bo;
     private final boolean littleEndian;
 
     public WriteBuffer(int size) {
@@ -42,12 +41,23 @@ public class WriteBuffer {
     public WriteBuffer(int size, boolean littleEndian) {
         bb = ByteBuffer.allocate(size);
         bbo = new BufferByteOutput<>(bb);
-        bo = new DefaultBitOutput<>(bbo);
+        bo = new MyDefaultBitOutput(bbo);
         this.littleEndian = littleEndian;
     }
 
     public byte[] getData() {
         return bb.array();
+    }
+
+    public int getPos() {
+        return (int) bo.getPos();
+    }
+
+    public byte[] getBytes(int startPos, int endPos) {
+        int numBytes = endPos - startPos;
+        byte[] data = new byte[numBytes];
+        System.arraycopy(bb.array(), startPos, data, 0, numBytes);
+        return data;
     }
 
     public void writeBit(boolean value) throws ParseException {

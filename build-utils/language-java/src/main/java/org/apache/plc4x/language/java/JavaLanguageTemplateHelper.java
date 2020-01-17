@@ -682,6 +682,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             return sb.toString();
         }
         boolean isSerializerArg = false;
+        // The synthetic checksumRawData is a local field and should not be accessed as bean property.
+        if(vl.getName().equals("checksumRawData")) {
+            isSerializerArg = true;
+        }
         if(parserArguments != null) {
             for (Argument parserArgument : parserArguments) {
                 if (parserArgument.getName().equals(vl.getName())) {

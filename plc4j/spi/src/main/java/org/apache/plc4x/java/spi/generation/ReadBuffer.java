@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.ArrayByteInput;
-import com.github.jinahya.bit.io.MyDefaultBitInput;
+import org.apache.plc4x.java.spi.generation.io.MyDefaultBitInput;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -45,6 +45,13 @@ public class ReadBuffer {
 
     public int getPos() {
         return (int) bi.getPos();
+    }
+
+    public byte[] getBytes(int startPos, int endPos) {
+        int numBytes = endPos - startPos;
+        byte[] data = new byte[numBytes];
+        System.arraycopy(bi.getDelegate().getSource(), startPos, data, 0, numBytes);
+        return data;
     }
 
     public boolean hasMore(int numBits) {
