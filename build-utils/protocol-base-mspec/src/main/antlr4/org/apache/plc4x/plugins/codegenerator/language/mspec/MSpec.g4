@@ -27,7 +27,7 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
  | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
