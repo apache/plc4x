@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>21</version>
+    <version>22</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -1301,6 +1301,19 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>3.0.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-provider-gitexe</artifactId>
+              <version>1.10.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>3.2.1</version>
           <configuration>
@@ -1364,7 +1377,7 @@
             </dependency>
 
             <!-- add support for scm/git site deployment -->
-            <dependency>
+            <!--dependency>
               <groupId>org.apache.maven.wagon</groupId>
               <artifactId>wagon-scm</artifactId>
               <version>3.3.4</version>
@@ -1383,7 +1396,7 @@
               <groupId>org.apache.maven.scm</groupId>
               <artifactId>maven-scm-provider-gitexe</artifactId>
               <version>1.11.2</version>
-            </dependency>
+            </dependency-->
 
             <!-- Add support for asciidoctor -->
             <dependency>
