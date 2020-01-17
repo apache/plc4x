@@ -1299,6 +1299,7 @@
           </configuration>
         </plugin>
 
+        <!-- TODO: This is only required till the release of apache-parent 23 and can be removed after updating to that -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-publish-plugin</artifactId>
@@ -1376,29 +1377,7 @@
               <version>${reflow.skin.version}</version>
             </dependency>
 
-            <!-- add support for scm/git site deployment -->
-            <!--dependency>
-              <groupId>org.apache.maven.wagon</groupId>
-              <artifactId>wagon-scm</artifactId>
-              <version>3.3.4</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.maven.scm</groupId>
-              <artifactId>maven-scm-api</artifactId>
-              <version>1.11.2</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.maven.scm</groupId>
-              <artifactId>maven-scm-manager-plexus</artifactId>
-              <version>1.11.2</version>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.maven.scm</groupId>
-              <artifactId>maven-scm-provider-gitexe</artifactId>
-              <version>1.11.2</version>
-            </dependency-->
-
-            <!-- Add support for asciidoctor -->
+           <!-- Add support for asciidoctor -->
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctor-maven-plugin</artifactId>
