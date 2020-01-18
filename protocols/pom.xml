@@ -33,6 +33,16 @@
   <name>Protocols</name>
   <description>Base protocol specifications.</description>
 
+  <modules>
+    <module>ab-eth</module>
+    <module>amsads</module>
+    <module>bacnetip</module>
+    <module>df1</module>
+    <module>knxnetip</module>
+    <module>modbus</module>
+    <module>s7</module>
+  </modules>
+
   <build>
     <plugins>
       <!--
@@ -188,15 +198,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <modules>
-    <module>amsads</module>
-    <module>ab-eth</module>
-    <module>bacnetip</module>
-    <module>df1</module>
-    <module>knxnetip</module>
-    <module>s7</module>
-  </modules>
 
   <profiles>
     <profile>
