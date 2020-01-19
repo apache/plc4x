@@ -32,7 +32,7 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
     public S7Step7Protocol() {
         super(new MessageIO<TPKTPacket, TPKTPacket>() {
             @Override
-            public TPKTPacket parse(ReadBuffer io) throws ParseException {
+            public TPKTPacket parse(ReadBuffer io, Object... args) throws ParseException {
                 try {
                     return TPKTPacketIO.parse(io);
                 } catch (Exception e) {

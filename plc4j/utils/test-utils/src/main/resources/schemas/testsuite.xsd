@@ -42,6 +42,14 @@
                             <xs:element name="raw" type="xs:hexBinary"/>
                             <!-- The root type we should use for serializing and parsing -->
                             <xs:element name="root-type" type="xs:string"/>
+                            <!-- If the root type need additional arguments for parsing, provide them here -->
+                            <xs:element name="parser-arguments" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                                        <xs:any processContents="lax" namespace="##local"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
                             <!-- An Xml serialized representation of the expected model -->
                             <xs:element name="xml" type="xs:anyType"/>
                         </xs:sequence>

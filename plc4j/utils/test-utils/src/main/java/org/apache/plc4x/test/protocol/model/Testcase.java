@@ -21,19 +21,23 @@ package org.apache.plc4x.test.protocol.model;
 
 import org.dom4j.Element;
 
+import java.util.List;
+
 public class Testcase {
 
     private final String name;
     private final String description;
     private final byte[] raw;
     private final String rootType;
+    private final List<String> parserArguments;
     private final Element xml;
 
-    public Testcase(String name, String description, byte[] raw, String rootType, Element xml) {
+    public Testcase(String name, String description, byte[] raw, String rootType, List<String> parserArguments, Element xml) {
         this.name = name;
         this.description = description;
         this.raw = raw;
         this.rootType = rootType;
+        this.parserArguments = parserArguments;
         this.xml = xml;
     }
 
@@ -51,6 +55,10 @@ public class Testcase {
 
     public String getRootType() {
         return rootType;
+    }
+
+    public List<String> getParserArguments() {
+        return parserArguments;
     }
 
     public Element getXml() {

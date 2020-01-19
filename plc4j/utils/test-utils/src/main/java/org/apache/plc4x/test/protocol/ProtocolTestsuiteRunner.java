@@ -44,6 +44,7 @@ import org.xmlunit.diff.Diff;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class ProtocolTestsuiteRunner {
@@ -85,6 +86,7 @@ public class ProtocolTestsuiteRunner {
                 Element descriptionElement = testcaseXml.element(new QName("description"));
                 Element rawElement = testcaseXml.element(new QName("raw"));
                 Element rootTypeElement = testcaseXml.element(new QName("root-type"));
+                Element parserArgumentsElement = testcaseXml.element(new QName("parser-arguments"));
                 Element xmlElement = testcaseXml.element(new QName("xml"));
 
                 String name = nameElement.getTextTrim();
@@ -92,7 +94,15 @@ public class ProtocolTestsuiteRunner {
                 byte[] raw = Hex.decodeHex(rawElement.getTextTrim());
                 String rootType = rootTypeElement.getTextTrim();
 
-                testcases.add(new Testcase(name, description, raw, rootType, xmlElement));
+                // Parse additional parser arguments.
+                List<String> parserArguments = new LinkedList<>();
+                if(parserArgumentsElement != null) {
+                    for (Element element : parserArgumentsElement.elements()) {
+                        parserArguments.add(element.getTextTrim());
+                    }
+                }
+
+                testcases.add(new Testcase(name, description, raw, rootType, parserArguments, xmlElement));
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
             return new ProtocolTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
@@ -110,7 +120,7 @@ public class ProtocolTestsuiteRunner {
 
         MessageIO messageIO = getMessageIOForTestcase(testcase);
         try {
-            Object msg = messageIO.parse(readBuffer);
+            Object msg = messageIO.parse(readBuffer, testcase.getParserArguments().toArray());
             String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(msg);
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
             if(diff.hasDifferences()) {
@@ -150,13 +160,62 @@ public class ProtocolTestsuiteRunner {
         try {
             Class<?> ioRootClass = Class.forName(ioRootClassName);
             Class<?> ioClass = Class.forName(ioClassName);
-            final Method parseMethod = ioClass.getMethod("parse", ReadBuffer.class);
-            final Method serializeMethod = ioClass.getMethod("serialize", WriteBuffer.class, ioRootClass);
+            Method parseMethodTmp = null;
+            Method serializeMethodTmp = null;
+            final List<Class<?>> parameterTypes = new LinkedList<>();
+            for (Method method : ioClass.getMethods()) {
+                if(method.getName().equals("parse") && Modifier.isStatic(method.getModifiers()) &&
+                    (method.getReturnType() == ioRootClass)) {
+                    parseMethodTmp = method;
+
+                    // Get a list of additional parameter types for the parser.
+                    for(int i = 1; i < method.getParameterCount(); i++) {
+                        Class<?> parameterType = parseMethodTmp.getParameterTypes()[i];
+                        parameterTypes.add(parameterType);
+                    }
+                }
+                if(method.getName().equals("serialize") && Modifier.isStatic(method.getModifiers()) &&
+                    (method.getParameterTypes()[1] == ioRootClass)) {
+                    serializeMethodTmp = method;
+                }
+            }
+            if((parseMethodTmp == null) || (serializeMethodTmp == null)) {
+                throw new ProtocolTestsuiteException(
+                    "Unable to instantiate IO component. Missing static parse or serialize methods.");
+            }
+            final Method parseMethod = parseMethodTmp;
+            final Method serializeMethod = serializeMethodTmp;
             return new MessageIO() {
                 @Override
-                public Object parse(ReadBuffer io) throws ParseException {
+                public Object parse(ReadBuffer io, Object... args) throws ParseException {
                     try {
-                        return parseMethod.invoke(null, io);
+                        Object[] argValues = new Object[args.length + 1];
+                        argValues[0] = io;
+                        for (int i = 1; i <= args.length; i++) {
+                            String parameterValue = (String) args[i - 1];
+                            Class<?> parameterType = parameterTypes.get(i - 1);
+                            if (parameterType == Boolean.class) {
+                                argValues[i] = Boolean.parseBoolean(parameterValue);
+                            } else if (parameterType == Byte.class) {
+                                argValues[i] = Byte.parseByte(parameterValue);
+                            } else if (parameterType == Short.class) {
+                                argValues[i] = Short.parseShort(parameterValue);
+                            } else if (parameterType == Integer.class) {
+                                argValues[i] = Integer.parseInt(parameterValue);
+                            } else if (parameterType == Long.class) {
+                                argValues[i] = Long.parseLong(parameterValue);
+                            } else if (parameterType == Float.class) {
+                                argValues[i] = Float.parseFloat(parameterValue);
+                            } else if (parameterType == Double.class) {
+                                argValues[i] = Double.parseDouble(parameterValue);
+                            } else if (parameterType == String.class) {
+                                argValues[i] = parameterValue;
+                            } else {
+                                throw new ParseException("Currently unsupported parameter type");
+                            }
+                        }
+
+                        return parseMethod.invoke(null, argValues);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new ParseException("error parsing", e);
                     }
@@ -171,7 +230,7 @@ public class ProtocolTestsuiteRunner {
                     }
                 }
             };
-        } catch (NoSuchMethodException | ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw new ProtocolTestsuiteException("Unable to instantiate IO component", e);
         }
     }

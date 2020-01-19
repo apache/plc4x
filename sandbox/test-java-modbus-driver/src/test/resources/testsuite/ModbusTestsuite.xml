@@ -21,26 +21,24 @@
 
   <name>Modbus</name>
 
-  <!--testcase>
-    <name>Search Request</name>
-    <raw>06100201000e0801c0a82a46ef8e</raw>
-    <root-type>KNXNetIPMessage</root-type>
+  <testcase>
+    <name>Read Input Registers Request</name>
+    <raw>000000000006ff0408d20002</raw>
+    <root-type>ModbusTcpADU</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
-      <SearchRequest className="org.apache.plc4x.java.knxnetip.readwrite.SearchRequest">
-        <hpaiIDiscoveryEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
-          </ipAddress>
-          <ipPort>61326</ipPort>
-        </hpaiIDiscoveryEndpoint>
-      </SearchRequest>
+      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+        <transactionIdentifier>0</transactionIdentifier>
+        <length>6</length>
+        <unitItendifier>255</unitItendifier>
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPduReadDiscreteInputsRequest">
+          <startingAddress>2258</startingAddress>
+          <quantity>2</quantity>
+        </pdu>
+      </ModbusTcpADU>
     </xml>
-  </testcase-->
+  </testcase>
 
 </test:testsuite>

@@ -110,7 +110,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 <#list type.virtualFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.valueExpression, type.parserArguments)});
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
     }
 
 </#list>
@@ -161,12 +161,12 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "manualArray">
 
         // Manual Array Field (${field.name})
-        lengthInBits += ${helper.toParseExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        lengthInBits += ${helper.toParseExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
         <#break>
     <#case "optional">
 
@@ -183,7 +183,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Padding Field (${field.name})
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        if((boolean) (${helper.toParseExpression(field.paddingCondition, type.parserArguments)?replace("lastItem", "false")?no_esc})) {
+        if((boolean) (${helper.toParseExpression(field, field.paddingCondition, type.parserArguments)?replace("lastItem", "false")?no_esc})) {
             lengthInBits += ${field.type.sizeInBits};
         }
         <#break>
