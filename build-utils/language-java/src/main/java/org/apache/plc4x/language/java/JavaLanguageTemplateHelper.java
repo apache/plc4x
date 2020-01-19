@@ -645,6 +645,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             sb.append(")");
             return sb.toString();
         }
+        // Discriminator values have to be handled a little differently.
+        else if(vl.getName().equals("DISCRIMINATOR_VALUES")) {
+            return "_value.getDiscriminatorValues()[" + vl.getIndex() + "]";
+        }
         // All uppercase names are not fields, but utility methods.
         else if(vl.getName().equals(vl.getName().toUpperCase())) {
             StringBuilder sb = new StringBuilder(vl.getName());

@@ -22,6 +22,23 @@ import java.util.Collection;
 
 public class StaticHelper {
 
+    public static int ARRAY_SIZE_IN_BYTES(Object obj) {
+        if (obj.getClass().isArray() && !obj.getClass().getComponentType().isPrimitive()) {
+            Object[] arr = (Object[]) obj;
+            int numBytes = 0;
+            for (Object element : arr) {
+                if(element instanceof Message) {
+                    numBytes += ((Message) element).getLengthInBytes();
+                } else {
+                    throw new RuntimeException(
+                        "Array elements for array size in bytes must implement Message interface");
+                }
+            }
+            return numBytes;
+        }
+        throw new RuntimeException("Unable to calculate array size in bytes for type " + obj.getClass().getName());
+    }
+
     public static int COUNT(Object obj) {
         if (obj.getClass().isArray()) {
             if(obj.getClass().getComponentType() != null && obj.getClass().getComponentType().isPrimitive()) {

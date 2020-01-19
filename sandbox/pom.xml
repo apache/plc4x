@@ -47,6 +47,8 @@
     <!--module>test-java-knxnetip-driver-passive</module-->
     <module>test-java-knxnetip-shared</module>
 
+    <module>test-java-modbus-driver</module>
+
     <module>test-java-s7-driver</module>
     <!--module>test-java-s7-driver-passive</module-->
 
