@@ -49,7 +49,14 @@ public class ReflectionBasedIo<BASE extends Message> implements Parser<BASE>, Se
     @SuppressWarnings("unchecked")
     public BASE parse(ReadBuffer io, Object... args) {
         try {
-            return (BASE) parseMethod.invoke(null, io, args);
+            if(args != null) {
+                Object[] mergedArgs = new Object[args.length + 1];
+                mergedArgs[0] = io;
+                System.arraycopy(args, 0, mergedArgs, 1, args.length);
+                return (BASE) parseMethod.invoke(null, mergedArgs);
+            } else {
+                return (BASE) parseMethod.invoke(null, io);
+            }
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new IllegalStateException("Unable to use the parse Method!", e);
         }
