@@ -50,7 +50,7 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
                     throw new ParseException("Error serializing message", e);
                 }
             }
-        }, TPKTPacket.class, true);
+        }, TPKTPacket.class, true, null);
     }
 
     @Override

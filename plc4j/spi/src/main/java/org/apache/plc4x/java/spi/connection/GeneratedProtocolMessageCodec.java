@@ -36,6 +36,7 @@ class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends G
         Parser<BASE_PACKET_CLASS> parser,
         Serializer<BASE_PACKET_CLASS> serializer,
         boolean bigEndian,
+        Object[] parserArgs,
         ToIntFunction<ByteBuf> packetSizeEstimator,
         Consumer<ByteBuf> corruptPackageRemover) {
         super(new MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>() {
@@ -49,7 +50,7 @@ class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends G
                 serializer.serialize(io, value);
             }
 
-        }, basePacketClass, bigEndian);
+        }, basePacketClass, bigEndian, parserArgs);
         this.packetSizeEstimator = packetSizeEstimator;
         this.corruptPackageRemover = corruptPackageRemover;
     }

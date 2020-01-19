@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.config;
 
-import org.apache.plc4x.java.modbus.ModbusDriver;
+import org.apache.plc4x.java.modbus.readwrite.ModbusConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
@@ -26,7 +26,7 @@ public class ModbusConfiguration implements Configuration, TcpTransportConfigura
 
     @Override
     public int getDefaultPort() {
-        return ModbusDriver.MODBUS_IP_PORT;
+        return ModbusConstants.MODBUSTCPDEFAULTPORT;
     }
 
     @Override

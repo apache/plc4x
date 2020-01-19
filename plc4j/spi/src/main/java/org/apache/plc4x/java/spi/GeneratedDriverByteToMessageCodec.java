@@ -36,12 +36,14 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     private static final Logger logger = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
     private final boolean bigEndian;
+    private final Object[] parserArgs;
     private final MessageIO<T, T> io;
 
-    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian) {
+    public GeneratedDriverByteToMessageCodec(MessageIO<T, T> io, Class<T> clazz, boolean bigEndian, Object[] parserArgs) {
         super(clazz);
         this.io = io;
         this.bigEndian = bigEndian;
+        this.parserArgs = parserArgs;
     }
 
     @Override
@@ -70,7 +72,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
             try {
                 // Parse the packet.
-                T packet = io.parse(readBuffer);
+                T packet = io.parse(readBuffer, parserArgs);
 
                 // Pass the packet to the pipeline.
                 out.add(packet);

@@ -44,6 +44,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
+    private final Object[] parserArgs;
 
     public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass) {
         return new SingleProtocolStackBuilder<>(basePacketClass);
@@ -52,11 +53,13 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     /** Only accessible via Builder */
     SingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass,
                                   boolean bigEndian,
+                                  Object[] parserArgs,
                                   Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
                                   Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
         this.basePacketClass = basePacketClass;
         this.bigEndian = bigEndian;
+        this.parserArgs = parserArgs;
         this.protocolClass = protocol;
         this.packetSizeEstimatorClass = packetSizeEstimatorClass;
         this.corruptPacketRemoverClass = corruptPacketRemoverClass;
@@ -64,7 +67,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
     private ChannelHandler getMessageCodec(Configuration configuration) {
         ReflectionBasedIo<BASE_PACKET_CLASS> io = new ReflectionBasedIo<>(basePacketClass);
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, io, io, bigEndian,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, io, io, bigEndian, parserArgs,
             packetSizeEstimatorClass != null ? configure(configuration, createInstance(packetSizeEstimatorClass)) : null,
             corruptPacketRemoverClass != null ? configure(configuration, createInstance(corruptPacketRemoverClass)) : null);
     }
@@ -97,6 +100,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         private Class<BASE_PACKET_CLASS> basePacketClass;
         private boolean bigEndian = true;
+        private Object[] parserArgs;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
@@ -107,6 +111,11 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         public SingleProtocolStackBuilder<BASE_PACKET_CLASS> littleEndian() {
             this.bigEndian = false;
+            return this;
+        }
+
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withParserArgs(Object... parserArgs) {
+            this.parserArgs = parserArgs;
             return this;
         }
 
@@ -128,7 +137,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
             return new SingleProtocolStackConfigurer<>(
-                basePacketClass, bigEndian, protocol, packetSizeEstimator, corruptPacketRemover);
+                basePacketClass, bigEndian, parserArgs, protocol, packetSizeEstimator, corruptPacketRemover);
         }
 
     }

@@ -18,33 +18,77 @@ under the License.
 */
 package org.apache.plc4x.java.modbus;
 
-import org.apache.plc4x.java.api.PlcConnection;
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
+import org.apache.plc4x.java.modbus.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.protocol.ModbusProtocolLogic;
+import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.osgi.service.component.annotations.Component;
 
-public class ModbusDriver implements PlcDriver {
+import java.util.function.ToIntFunction;
 
-    public static final int MODBUS_IP_PORT = 502;
+@Component(service = PlcDriver.class, immediate = true)
+public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
     public String getProtocolCode() {
-        return null;
+        return "modbus";
     }
 
     @Override
     public String getProtocolName() {
-        return null;
+        return "Modbus";
     }
 
     @Override
-    public PlcConnection getConnection(String url) throws PlcConnectionException {
-        return null;
+    protected Class<? extends Configuration> getConfigurationType() {
+        return ModbusConfiguration.class;
     }
 
     @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        return null;
+    protected String getDefaultTransport() {
+        return "tcp";
+    }
+
+    @Override
+    protected boolean canRead() {
+        return true;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return true;
+    }
+
+    @Override
+    protected ModbusFieldHandler getFieldHandler() {
+        return new ModbusFieldHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<ModbusTcpADU> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(ModbusTcpADU.class)
+            .withProtocol(ModbusProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            // Every incoming message is to be treated as a response.
+            .withParserArgs(true)
+            .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 6) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
+            }
+            return -1;
+        }
     }
 
 }
