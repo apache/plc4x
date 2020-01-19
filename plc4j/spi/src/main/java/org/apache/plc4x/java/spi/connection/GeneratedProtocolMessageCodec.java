@@ -42,7 +42,7 @@ class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends G
         super(new MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>() {
             @Override
             public BASE_PACKET_CLASS parse(ReadBuffer io, Object... args) {
-                return parser.parse(io);
+                return parser.parse(io, args);
             }
 
             @Override

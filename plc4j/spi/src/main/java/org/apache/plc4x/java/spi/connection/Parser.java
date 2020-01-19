@@ -24,6 +24,6 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 public interface Parser<RESULT extends Message> {
 
-    RESULT parse(ReadBuffer io);
+    RESULT parse(ReadBuffer io, Object... args);
 
 }
