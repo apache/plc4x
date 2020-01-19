@@ -24,6 +24,13 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This is not really an address, but a different type of operation.
+ * Perhaps in the future we will use this in order to send optimized requests,
+ * but for now it shouldn't be used and is just implemented for the sake of
+ * completeness.
+ */
+@Deprecated
 public class ModbusFieldMaskWriteRegister extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("maskwrite:" + ModbusField.ADDRESS_PATTERN + "/" + "(?<andMask>\\d+)/(?<orMask>\\d+)");
@@ -77,7 +84,6 @@ public class ModbusFieldMaskWriteRegister extends ModbusField {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), andMask, orMask);
     }
 
@@ -88,4 +94,5 @@ public class ModbusFieldMaskWriteRegister extends ModbusField {
             ", orMask=" + orMask +
             "} " + super.toString();
     }
+
 }

@@ -23,15 +23,15 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ModbusFieldReadHoldingRegisters extends ModbusField {
+public class ModbusFieldHoldingRegister extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("readholdingregisters:" + ModbusField.ADDRESS_PATTERN);
 
-    protected ModbusFieldReadHoldingRegisters(int address, Integer quantity) {
+    protected ModbusFieldHoldingRegister(int address, Integer quantity) {
         super(address, quantity);
     }
 
-    public static ModbusFieldReadHoldingRegisters of(String addressString) throws PlcInvalidFieldException {
+    public static ModbusFieldHoldingRegister of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
@@ -40,6 +40,7 @@ public class ModbusFieldReadHoldingRegisters extends ModbusField {
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldReadHoldingRegisters(address, quantity);
+        return new ModbusFieldHoldingRegister(address, quantity);
     }
+
 }

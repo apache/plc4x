@@ -19,18 +19,10 @@ under the License.
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,12 +33,12 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
         if (ModbusFieldMaskWriteRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
             return ModbusFieldMaskWriteRegister.of(fieldQuery);
-        } else if (ModbusFieldReadDiscreteInputs.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ModbusFieldReadDiscreteInputs.of(fieldQuery);
-        } else if (ModbusFieldReadHoldingRegisters.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ModbusFieldReadHoldingRegisters.of(fieldQuery);
-        } else if (ModbusFieldReadInputRegisters.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
-            return ModbusFieldReadInputRegisters.of(fieldQuery);
+        } else if (ModbusFieldDiscreteInput.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ModbusFieldDiscreteInput.of(fieldQuery);
+        } else if (ModbusFieldHoldingRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ModbusFieldHoldingRegister.of(fieldQuery);
+        } else if (ModbusFieldInputRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+            return ModbusFieldInputRegister.of(fieldQuery);
         } else if (ModbusFieldCoil.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
             return ModbusFieldCoil.of(fieldQuery);
         } else if (ModbusFieldRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {

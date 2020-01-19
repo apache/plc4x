@@ -33,13 +33,13 @@
 
     // The length field is a byte count of the following fields, including the Unit Identifier and
     // data fields.
-    [simple         uint 16     'length']
+    [implicit       uint 16     'length'                'pdu.lengthInBytes + 1']
 
     // This field is used for intra-system routing purpose. It is typically used to communicate to
     // a MODBUS+ or a MODBUS serial line slave through a gateway between an Ethernet TCP-IP network
     // and a MODBUS serial line. This field is set by the MODBUS Client in the request and must be
     // returned with the same value in the response by the server.
-    [simple         uint 8      'unitItendifier']
+    [simple         uint 8      'unitIdentifier']
 
     // The actual modbus payload
     [simple         ModbusPDU   'pdu' ['response']]
@@ -59,89 +59,89 @@
     [implicit       uint 7      'function'  'DISCRIMINATOR_VALUES[1]']
     [implicit       bit         'error'     'DISCRIMINATOR_VALUES[0]']
     [typeSwitch 'error','function','response'
-        ['true'                     ModbusPduError
+        ['true'                     ModbusPDUError
             [simple     uint 8      'exceptionCode']
         ]
 
         // Bit Access
-        ['false','0x02','false'     ModbusPduReadDiscreteInputsRequest
+        ['false','0x02','false'     ModbusPDUReadDiscreteInputsRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
-        ['false','0x02','true'      ModbusPduReadDiscreteInputsResponse
+        ['false','0x02','true'      ModbusPDUReadDiscreteInputsResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x01','false'     ModbusPduReadCoilsRequest
+        ['false','0x01','false'     ModbusPDUReadCoilsRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
-        ['false','0x01','true'      ModbusPduReadCoilsResponse
+        ['false','0x01','true'      ModbusPDUReadCoilsResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x05','false'     ModbusPduWriteSingleCoilRequest
+        ['false','0x05','false'     ModbusPDUWriteSingleCoilRequest
             [simple     uint 16     'address']
             [simple     uint 16     'value']
         ]
-        ['false','0x05','true'      ModbusPduWriteSingleCoilResponse
+        ['false','0x05','true'      ModbusPDUWriteSingleCoilResponse
             [simple     uint 16     'address']
             [simple     uint 16     'value']
         ]
 
-        ['false','0x0F','false'     ModbusPduWriteMultipleCoilsRequest
+        ['false','0x0F','false'     ModbusPDUWriteMultipleCoilsRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
-        ['false','0x0F','true'      ModbusPduWriteMultipleCoilsResponse
+        ['false','0x0F','true'      ModbusPDUWriteMultipleCoilsResponse
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
 
         // Uint 16 Access (short)
-        ['false','0x04','false'     ModbusPduReadInputRegistersRequest
+        ['false','0x04','false'     ModbusPDUReadInputRegistersRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
-        ['false','0x04','true'      ModbusPduReadInputRegistersResponse
+        ['false','0x04','true'      ModbusPDUReadInputRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x03','false'     ModbusPduReadHoldingRegistersRequest
+        ['false','0x03','false'     ModbusPDUReadHoldingRegistersRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
-        ['false','0x03','true'      ModbusPduReadHoldingRegistersResponse
+        ['false','0x03','true'      ModbusPDUReadHoldingRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x06','false'     ModbusPduWriteSingleRegisterRequest
+        ['false','0x06','false'     ModbusPDUWriteSingleRegisterRequest
             [simple     uint 16     'address']
             [simple     uint 16     'value']
         ]
-        ['false','0x06','true'      ModbusPduWriteSingleRegisterResponse
+        ['false','0x06','true'      ModbusPDUWriteSingleRegisterResponse
             [simple     uint 16     'address']
             [simple     uint 16     'value']
         ]
 
-        ['false','0x10','false'     ModbusPduWriteMultipleRegistersRequest
+        ['false','0x10','false'     ModbusPDUWriteMultipleRegistersRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
-        ['false','0x10','true'      ModbusPduWriteMultipleRegistersResponse
+        ['false','0x10','true'      ModbusPDUWriteMultipleRegistersResponse
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
 
-        ['false','0x17','false'     ModbusPduReadWriteMultipleRegistersRequest
+        ['false','0x17','false'     ModbusPDUReadWriteMultipleRegistersRequest
             [simple     uint 16     'readStartingAddress']
             [simple     uint 16     'readQuantity']
             [simple     uint 16     'writeStartingAddress']
@@ -149,74 +149,74 @@
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
-        ['false','0x17','true'      ModbusPduReadWriteMultipleRegistersResponse
+        ['false','0x17','true'      ModbusPDUReadWriteMultipleRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x16','false'     ModbusPduMaskWriteRegisterRequest
+        ['false','0x16','false'     ModbusPDUMaskWriteRegisterRequest
             [simple     uint 16     'referenceAddress']
             [simple     uint 16     'andMask']
             [simple     uint 16     'orMask']
         ]
-        ['false','0x16','true'      ModbusPduMaskWriteRegisterResponse
+        ['false','0x16','true'      ModbusPDUMaskWriteRegisterResponse
             [simple     uint 16     'referenceAddress']
             [simple     uint 16     'andMask']
             [simple     uint 16     'orMask']
         ]
 
-        ['false','0x18','false'     ModbusPduReadFifoQueueRequest
+        ['false','0x18','false'     ModbusPDUReadFifoQueueRequest
             [simple     uint 16     'fifoPointerAddress']
         ]
-        ['false','0x18','true'      ModbusPduReadFifoQueueResponse
+        ['false','0x18','true'      ModbusPDUReadFifoQueueResponse
             [implicit   uint 16     'byteCount'     '(COUNT(fifoValue) * 2) + 2']
             [implicit   uint 16     'fifoCount'     '(COUNT(fifoValue) * 2) / 2']
             [array      uint 16     'fifoValue'     count   'fifoCount']
         ]
 
         // File Record Access
-        ['false','0x14','false'     ModbusPduReadFileRecordRequest
+        ['false','0x14','false'     ModbusPDUReadFileRecordRequest
             [implicit   uint 8      'byteCount'                 'ARRAY_SIZE_IN_BYTES(items)']
-            [array      ModbusPduReadFileRecordRequestItem      'items' length 'byteCount']
+            [array      ModbusPDUReadFileRecordRequestItem      'items' length 'byteCount']
         ]
-        ['false','0x14','true'      ModbusPduReadFileRecordResponse
+        ['false','0x14','true'      ModbusPDUReadFileRecordResponse
             [implicit   uint 8      'byteCount'                 'ARRAY_SIZE_IN_BYTES(items)']
-            [array      ModbusPduReadFileRecordResponseItem     'items' length 'byteCount']
+            [array      ModbusPDUReadFileRecordResponseItem     'items' length 'byteCount']
         ]
 
-        ['false','0x15','false'     ModbusPduWriteFileRecordRequest
+        ['false','0x15','false'     ModbusPDUWriteFileRecordRequest
             [implicit   uint 8      'byteCount'                 'ARRAY_SIZE_IN_BYTES(items)']
-            [array      ModbusPduWriteFileRecordRequestItem     'items' length 'byteCount']
+            [array      ModbusPDUWriteFileRecordRequestItem     'items' length 'byteCount']
         ]
-        ['false','0x15','true'      ModbusPduWriteFileRecordResponse
+        ['false','0x15','true'      ModbusPDUWriteFileRecordResponse
             [implicit   uint 8      'byteCount'                 'ARRAY_SIZE_IN_BYTES(items)']
-            [array      ModbusPduWriteFileRecordResponseItem    'items' length 'byteCount']
+            [array      ModbusPDUWriteFileRecordResponseItem    'items' length 'byteCount']
         ]
 
         // Diagnostics (Serial Line Only)
-        ['false','0x07','false'     ModbusPduReadExceptionStatusRequest
+        ['false','0x07','false'     ModbusPDUReadExceptionStatusRequest
         ]
-        ['false','0x07','true'      ModbusPduReadExceptionStatusResponse
+        ['false','0x07','true'      ModbusPDUReadExceptionStatusResponse
             [simple     uint 8      'value']
         ]
 
-        ['false','0x08','false'     ModbusPduDiagnosticRequest
+        ['false','0x08','false'     ModbusPDUDiagnosticRequest
             // TODO: Implement the sub-request discriminated type [simple uint 8  'subfunction']
         ]
-        ['false','0x08','true'      ModbusPduDiagnosticResponse
+        ['false','0x08','true'      ModbusPDUDiagnosticResponse
             // TODO: Implement the sub-request discriminated type [simple uint 8  'subfunction']
         ]
 
-        ['false','0x0B','false'     ModbusPduGetComEventCounterRequest
+        ['false','0x0B','false'     ModbusPDUGetComEventCounterRequest
         ]
-        ['false','0x0B','true'      ModbusPduGetComEventCounterResponse
+        ['false','0x0B','true'      ModbusPDUGetComEventCounterResponse
             [simple     uint 16     'status']
             [simple     uint 16     'eventCount']
         ]
 
-        ['false','0x0C','false'     ModbusPduGetComEventLogRequest
+        ['false','0x0C','false'     ModbusPDUGetComEventLogRequest
         ]
-        ['false','0x0C','true'      ModbusPduGetComEventLogResponse
+        ['false','0x0C','true'      ModbusPDUGetComEventLogResponse
             [implicit   uint 8      'byteCount'    'COUNT(events) + 6']
             [simple     uint 16     'status']
             [simple     uint 16     'eventCount']
@@ -224,35 +224,35 @@
             [array      int 8       'events'       count   'byteCount - 6']
         ]
 
-        ['false','0x11','false'     ModbusPduReportServerIdRequest
+        ['false','0x11','false'     ModbusPDUReportServerIdRequest
         ]
-        ['false','0x11','true'      ModbusPduReportServerIdResponse
+        ['false','0x11','true'      ModbusPDUReportServerIdResponse
             // TODO: This is not specified very well in the spec ... investigate.
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x2B','false'     ModbusPduReadDeviceIdentificationRequest
+        ['false','0x2B','false'     ModbusPDUReadDeviceIdentificationRequest
         ]
-        ['false','0x2B','true'      ModbusPduReadDeviceIdentificationResponse
+        ['false','0x2B','true'      ModbusPDUReadDeviceIdentificationResponse
         ]
     ]
 ]
 
-[type 'ModbusPduReadFileRecordRequestItem'
+[type 'ModbusPDUReadFileRecordRequestItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
     [simple     uint 16    'recordLength']
 ]
 
-[type 'ModbusPduReadFileRecordResponseItem'
+[type 'ModbusPDUReadFileRecordResponseItem'
     [implicit   uint 8     'dataLength'     '(COUNT(data) * 2) + 1']
     [simple     uint 8     'referenceType']
     [array      uint 16    'data'           length  'dataLength - 1']
 ]
 
-[type 'ModbusPduWriteFileRecordRequestItem'
+[type 'ModbusPDUWriteFileRecordRequestItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
@@ -260,7 +260,7 @@
     [array      uint 16    'recordData'     length  'recordLength * 2']
 ]
 
-[type 'ModbusPduWriteFileRecordResponseItem'
+[type 'ModbusPDUWriteFileRecordResponseItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
