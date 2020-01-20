@@ -268,12 +268,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                             Map<String, PlcValue> dataPointMap = new HashMap<>();
                             dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
                             dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
-                            dataPointMap.put("name", new PlcString(groupAddress.getName()));
-                            dataPointMap.put("type", new PlcString(groupAddress.getType().getName()));
-                            dataPointMap.put("functionId", new PlcString(groupAddress.getFunction().getId()));
-                            dataPointMap.put("functionName", new PlcString(groupAddress.getFunction().getName()));
-                            dataPointMap.put("functionType", new PlcString(groupAddress.getFunction().getType()));
-                            dataPointMap.put("functionSpace", new PlcString(groupAddress.getFunction().getSpaceName()));
+                            dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
+                            dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
+                            dataPointMap.put("description", new PlcString(groupAddress.getName()));
+                            dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
                             dataPointMap.put("value", value);
                             final PlcStruct dataPoint = new PlcStruct(dataPointMap);
 
