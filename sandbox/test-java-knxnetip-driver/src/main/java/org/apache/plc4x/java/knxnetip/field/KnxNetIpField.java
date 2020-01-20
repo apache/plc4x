@@ -47,15 +47,15 @@ public class KnxNetIpField implements PlcField {
     public static KnxNetIpField of(String fieldString) {
         Matcher matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField(3, matcher.group("main"), null, null);
+            return new KnxNetIpField(3, matcher.group("mainGroup"), null, null);
         }
         matcher = KNX_GROUP_ADDRESS_2_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField(2, matcher.group("main"), null, matcher.group("subGroup"));
+            return new KnxNetIpField(2, matcher.group("mainGroup"), null, matcher.group("subGroup"));
         }
         matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField(1, matcher.group("main"), matcher.group("middleGroup"), matcher.group("subGroup"));
+            return new KnxNetIpField(1, matcher.group("mainGroup"), matcher.group("middleGroup"), matcher.group("subGroup"));
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }

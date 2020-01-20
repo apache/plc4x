@@ -20,15 +20,48 @@ package org.apache.plc4x.java.knxnetip;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ManualKnxNetIp {
 
     public static void main(String[] args) throws Exception {
         final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
-        TimeUnit.SECONDS.sleep(300);
-        connection.close();
+        // Make sure we hang up correctly when terminating.
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                connection.close();
+            } catch (Exception  e) {
+                throw new PlcRuntimeException("Error closing connection", e);
+            }
+        }));
+
+        // Create a new subscription request.
+        // The address and the name is just bogus as we're always returning everything.
+        // We will probably refactor the API in the near future.
+        final PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
+            .addEventField("knxData", "*/*/*")
+            .build();
+
+        // Register the subscription
+        // The timeout is also just a bogus value as the data is coming in actively
+        // We will probably refactor the API in the near future.
+        final PlcSubscriptionResponse subscriptionResponse =
+            subscriptionRequest.execute().get(1000, TimeUnit.MILLISECONDS);
+
+        // Register a callback which is called on new data being available.
+        final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle("knxData");
+        subscriptionHandle.register(knxData -> {
+            System.out.println(knxData.getTimestamp().toString() + " - " +
+                ((DefaultPlcSubscriptionEvent) knxData).getValues().get("knxData"));
+        });
     }
 
 }

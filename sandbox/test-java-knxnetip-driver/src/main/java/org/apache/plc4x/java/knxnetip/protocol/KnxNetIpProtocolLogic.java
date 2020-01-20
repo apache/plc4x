@@ -20,6 +20,16 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.socket.DatagramChannel;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcString;
+import org.apache.plc4x.java.api.value.PlcStruct;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
@@ -38,15 +48,26 @@ import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
 import org.apache.plc4x.java.knxnetip.readwrite.types.Status;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
-public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements HasConfiguration<KnxNetIpConfiguration> {
+public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> implements HasConfiguration<KnxNetIpConfiguration>, PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocolLogic.class);
 
@@ -60,6 +81,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
     private byte groupAddressType;
     private Ets5Model ets5Model;
+
+    private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     @Override
     public void setConfiguration(KnxNetIpConfiguration configuration) {
@@ -233,19 +256,31 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                         final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
                         if(groupAddress != null) {
-                            ReadBuffer rawDataReader = new ReadBuffer(payload);
-                            final PlcValue datapoint = KnxDatapointIO.parse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+                            LOGGER.info("Message from: '" + toString(sourceAddress) +
+                                "' to: '" + destinationAddress + "'");
 
-                            LOGGER.info("Message from: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
-                                " to: '" + destinationAddress + "'" +
-                                "\n location: '" + groupAddress.getFunction().getSpaceName() + "'" +
-                                " function: '" + groupAddress.getFunction().getName() + "'" +
-                                " meaning: '" + groupAddress.getName() + "'" +
-                                " type: '" + groupAddress.getType().getName() + "'" +
-                                "\n value: '" + datapoint + "'"
-                            );
+                            // Parse the payload depending on the type of the group-address.
+                            ReadBuffer rawDataReader = new ReadBuffer(payload);
+                            final PlcValue value = KnxDatapointIO.parse(rawDataReader,
+                                groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+
+                            // Assemble the plc4x return data-structure.
+                            Map<String, PlcValue> dataPointMap = new HashMap<>();
+                            dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
+                            dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
+                            dataPointMap.put("name", new PlcString(groupAddress.getName()));
+                            dataPointMap.put("type", new PlcString(groupAddress.getType().getName()));
+                            dataPointMap.put("functionId", new PlcString(groupAddress.getFunction().getId()));
+                            dataPointMap.put("functionName", new PlcString(groupAddress.getFunction().getName()));
+                            dataPointMap.put("functionType", new PlcString(groupAddress.getFunction().getType()));
+                            dataPointMap.put("functionSpace", new PlcString(groupAddress.getFunction().getSpaceName()));
+                            dataPointMap.put("value", value);
+                            final PlcStruct dataPoint = new PlcStruct(dataPointMap);
+
+                            // Send the data-structure.
+                            publishEvent("knxData", dataPoint);
                         } else {
-                            LOGGER.warn("Message from: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
+                            LOGGER.warn("Message from: '" + toString(sourceAddress) + "'" +
                                 " to unknown group address: '" + destinationAddress + "'" +
                                 "\n payload: '" + Hex.encodeHexString(payload) + "'");
                         }
@@ -273,6 +308,41 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         // TODO Implement Closing on Protocol Level
     }
 
+    @Override
+    public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values = new HashMap<>();
+        for (String fieldName : subscriptionRequest.getFieldNames()) {
+            values.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
+        }
+        return CompletableFuture.completedFuture(
+            new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, values));
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
+        final DefaultPlcConsumerRegistration consumerRegistration =
+            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new InternalPlcSubscriptionHandle[0]));
+        consumerIdMap.put(consumerRegistration.getConsumerHash(), consumer);
+        return consumerRegistration;
+    }
+
+    @Override
+    public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
+        DefaultPlcConsumerRegistration consumerRegistration = (DefaultPlcConsumerRegistration) plcConsumerRegistration;
+        consumerIdMap.remove(consumerRegistration.getConsumerHash());
+    }
+
+    protected void publishEvent(String name, PlcValue plcValue) {
+        // Create a subscription event from the input.
+        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
+            Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, plcValue)));
+
+        // Send the subscription event to all listeners.
+        for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {
+            consumer.accept(event);
+        }
+    }
+
     protected static String toString(KNXAddress knxAddress) {
         return knxAddress.getMainGroup() + "." + knxAddress.getMiddleGroup() + "." + knxAddress.getSubGroup();
     }
@@ -290,4 +360,5 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         }
         throw new RuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
     }
+
 }
