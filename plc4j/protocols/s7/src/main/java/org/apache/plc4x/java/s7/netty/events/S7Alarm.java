@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Hashtable;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -87,8 +88,8 @@ public class S7Alarm implements PlcSubscriptionEvent {
     }
     
     @Override
-    public Instant getTimestamp() {
-        return s7alarm.getTimestampComing().toInstant();
+    public Instant getTimestamp() {        
+        return s7alarm.getTimestampComing().toInstant(ZoneOffset.UTC);
     }
 
     @Override

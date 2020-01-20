@@ -18,15 +18,22 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum CpuServicesParameterFunctionGroup {
 
-    CPU_FUNCTIONS((byte) 0x04);
+    MODE_TRANSITION((byte) 0x00),
+    PROGRAMMER_COMMANDS((byte) 0x01),
+    CYCLIC_SERVICES((byte) 0x02),
+    BLOCK_FUNCTIONS((byte) 0x03),
+    CPU_FUNCTIONS((byte) 0x04),
+    SECURITY((byte) 0x05),
+    PCB_BSEND_BRECV((byte) 0x06),
+    TIMER_FUNCTIONS((byte) 0x07),
+    NC_PROGRAMMING((byte) 0x0f);
 
     private static final Logger logger = LoggerFactory.getLogger(CpuServicesParameterFunctionGroup.class);
 

@@ -35,12 +35,26 @@ public class AlarmMessageItem {
     private final byte function;
     private final byte objects;
     private final int Length;
-    private final List<MessageObjectItem> msgItems; 
-
+    private final List<Object> msgItems; 
+   
+    
+    public AlarmMessageItem(byte function, 
+            byte objects, 
+            List<Object> msgItems) {
+        
+        this.timestamp = null;
+        this.function = function;
+        this.objects = objects;
+        this.msgItems = msgItems;
+        this.returnCode = null;
+        this.dataTransportSize = null;
+        this.Length = 0;
+    }    
+    
     public AlarmMessageItem(LocalDateTime timestamp, 
             byte function, 
             byte objects, 
-            List<MessageObjectItem> msgItems) {
+            List<Object> msgItems) {
         
         this.timestamp = timestamp;
         this.function = function;
@@ -56,7 +70,7 @@ public class AlarmMessageItem {
             DataTransportErrorCode returnCode,
             DataTransportSize dataTransportSize,
             int Length,
-            List<MessageObjectItem> msgItems){
+            List<Object> msgItems){
         this.function = function;
         this.objects = objects;
         this.returnCode = returnCode;
@@ -92,7 +106,7 @@ public class AlarmMessageItem {
         return Length;
     }
 
-    public List<MessageObjectItem> getMsgItems() {
+    public List<Object> getMsgItems() {
         return msgItems;
     }
 

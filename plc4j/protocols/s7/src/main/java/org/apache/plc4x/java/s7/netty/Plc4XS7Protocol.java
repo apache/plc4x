@@ -20,12 +20,15 @@ package org.apache.plc4x.java.s7.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,6 +37,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -46,29 +50,41 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.base.messages.items.*;
+import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.model.S7SubscriptionField;
 import org.apache.plc4x.java.s7.netty.events.S7ConnectedEvent;
 import org.apache.plc4x.java.s7.netty.model.messages.S7Message;
 import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.messages.S7ResponseMessage;
+import org.apache.plc4x.java.s7.netty.model.params.CpuCyclicServicesRequestParameter;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesParameter;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
+import org.apache.plc4x.java.s7.netty.model.params.CpuServicesResponseParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesRequestPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesResponsePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AlarmMessageItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.MessageObjectItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.S7AnyVarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.*;
+import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,6 +187,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer msg, List<Object> out) throws PlcException {
         PlcRequest request = msg.getRequest();
+
         if (request instanceof PlcReadRequest) {
             encodeReadRequest(msg, out);
         } else if (request instanceof PlcWriteRequest) {
@@ -182,7 +199,48 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         }
     }
 
+    //TODO: Todo el proceso de suscripcion a eventos, suscripcion de variable y reconocimientos de alarmas
+    // se ejecuta aqui. Se debe separar en funciones bien definidas.
+    // Subscripcion a Eventos
+    // Reconocimiento de alarmas
+    // Consulta de alarmas.
+    // Subscripcion a eventos ciclicos
+    // 
     private void encodeSubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        //Chequear el campo prueba que ya incluyte la información del tipo
+                
+        PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();        
+
+        if ( subsRequest.getFields().get(0) instanceof S7SubscriptionField){  
+
+            S7SubscriptionField event = (S7SubscriptionField) subsRequest.getFields().get(0);
+
+            switch(event.getFieldtype()){
+                case EVENT_SUBSCRIPTION:;
+                    encodeEventSubcriptionRequest(msg, out);
+                    break;
+                case EVENT_UNSUBSCRIPTION:;
+                    encodeEventUnSubcriptionRequest(msg, out);
+                    break;
+                case ALARM_ACK:;
+                    encodeAlarmAckRequest(msg, out);
+                    break;
+                case ALARM_QUERY:;
+                    encodeAlarmQueryRequest(msg, out);
+                    break;
+                case CYCLIC_SUBSCRIPTION:;
+                    encodeCycledSubscriptionRequest(msg, out);
+                    break;
+                case CYCLIC_UNSUBSCRIPTION:;
+                    break;                     
+                default:;                     
+             };
+
+        };            
+    }
+    
+    //TODO: Suppport for ALARM_8
+    private void encodeEventSubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
         byte subsevent = 0;
         List<S7Parameter> parameterItems = new LinkedList<>();
         List<S7Payload> payloadItems = new LinkedList<>();
@@ -190,9 +248,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
         
         for (String fieldName : subsRequest.getFieldNames()) {                        
-            if ( subsRequest.getField(fieldName) instanceof SubscribedEventType){
-                 SubscribedEventType event = (SubscribedEventType) subsRequest.getField(fieldName);
-                 subsevent = (byte) (subsevent | event.getCode());
+            if ( subsRequest.getField(fieldName) instanceof S7SubscriptionField){
+                 S7SubscriptionField event = (S7SubscriptionField) subsRequest.getField(fieldName);
+                 subsevent = (byte) (subsevent | event.getEventtype().getCode());
             }
         }
         
@@ -218,8 +276,209 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
 
         requests.put(s7ReadRequest.getTpduReference(), msg);
 
-        out.add(s7ReadRequest);            
-  
+        out.add(s7ReadRequest);         
+    }    
+    
+    private void encodeEventUnSubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        byte subsevent = 0;
+        List<S7Parameter> parameterItems = new LinkedList<>();
+        List<S7Payload> payloadItems = new LinkedList<>();
+         
+        PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
+        
+        for (String fieldName : subsRequest.getFieldNames()) {                        
+            if ( subsRequest.getField(fieldName) instanceof S7SubscriptionField){
+                 S7SubscriptionField event = (S7SubscriptionField) subsRequest.getField(fieldName);
+                 subsevent = (byte) (subsevent | event.getEventtype().getCode());
+            }
+        }
+        
+        CpuServicesParameter cpuservice = new CpuServicesRequestParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+            CpuServicesParameterSubFunctionGroup.MESSAGE_SERVICE, (byte) 0x00);
+        
+        parameterItems.add(cpuservice);
+        
+       
+        S7Payload Data = new CpuMessageSubscriptionServicePayload(DataTransportErrorCode.OK,
+                                DataTransportSize.OCTET_STRING,
+                                subsevent,
+                                new String("HmiRtm  "),
+                                AlarmType.ALARM_S_INITIATE);
+        payloadItems.add(Data);
+
+        
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+            (short) tpduGenerator.getAndIncrement(), 
+            parameterItems,
+            payloadItems, 
+            msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);         
+    }  
+    
+    //TODO: Check for ALARM_D and ALARM_8
+    private void encodeAlarmAckRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        byte subsevent = 0;
+        List<S7Parameter> parameterItems = new LinkedList<>();
+        List<S7Payload> payloadItems = new LinkedList<>();
+         
+        PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
+        S7SubscriptionField event = (S7SubscriptionField) subsRequest.getFields().get(0);
+
+        
+        CpuServicesParameter cpuservice = new CpuServicesRequestParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+            CpuServicesParameterSubFunctionGroup.ALARM_ACK, (byte) 0x00);
+
+        parameterItems.add(cpuservice);
+        
+        
+        ArrayList<Object> items = new ArrayList<>();
+        for(Integer eventid:event.getAckalarms()){
+            items.add(new MessageObjectItem((byte) 0x12,
+                            (byte) 0x08,
+                            VariableAddressingMode.ALARM_ACK, 
+                            (byte) 0x00,
+                            eventid,
+                            (byte) 0x01,
+                            (byte) 0x01)); //ONLY for Alarm_SQ
+        }
+
+        AlarmMessageItem messageitem = new  AlarmMessageItem((byte) 0x09,
+                                                (byte) items.size(),
+                                                items)     ;
+        
+        S7Payload Data = new AlarmMessagePayload(DataTransportErrorCode.OK,
+                                DataTransportSize.OCTET_STRING,
+                                (2+items.size()*10),
+                                messageitem);
+        payloadItems.add(Data);
+
+        
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+            (short) tpduGenerator.getAndIncrement(), 
+            parameterItems,
+            payloadItems, 
+            msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);         
+    }   
+    
+    //TODO: Check for ALARM_D and ALARM_8
+    private void encodeAlarmQueryRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+
+        byte subsevent = 0;
+        List<S7Parameter> parameterItems = new LinkedList<>();
+        List<S7Payload> payloadItems = new LinkedList<>();
+         
+        PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
+        S7SubscriptionField event = (S7SubscriptionField) subsRequest.getFields().get(0);
+        
+        CpuServicesParameter cpuservice = new CpuServicesRequestParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+            CpuServicesParameterSubFunctionGroup.ALARM_QUERY, (byte) 0x00);
+
+        parameterItems.add(cpuservice);
+        
+        ArrayList<Object> items = new ArrayList<>();
+        
+        //TODO: Multiple AlarmQueryType from the same request.
+        items.add(new MessageObjectItem((byte) 0x12,
+                        (byte) 0x08,
+                        VariableAddressingMode.ALARM_QUERYREQ, 
+                        QueryType.BYALARMTYPE,
+                        event.getAlarmquerytype())); //ONLY for Alarm_S
+
+
+        AlarmMessageItem messageitem = new  AlarmMessageItem((byte) 0x00,
+                                                (byte) items.size(),
+                                                items)     ;
+        
+        S7Payload Data = new AlarmMessagePayload(DataTransportErrorCode.OK,
+                                DataTransportSize.OCTET_STRING,
+                                (2+items.size()*10),
+                                messageitem);
+        payloadItems.add(Data);
+
+
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+            (short) tpduGenerator.getAndIncrement(), 
+            parameterItems,
+            payloadItems, 
+            msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);         
+    }    
+    
+    private void encodeCycledSubscriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+        List<S7Parameter> parameterItems = new LinkedList<>();
+        List<S7Payload> payloads = new LinkedList<>();        
+        DefaultPlcSubscriptionRequest prueba = (DefaultPlcSubscriptionRequest)  msg.getRequest();
+        List<SubscriptionPlcField> fields = prueba.getSubscriptionFields();
+        Optional<Duration> optionalduration = prueba.getSubscriptionFields().get(0).getDuration();
+        Duration duration  = optionalduration.get();
+        
+        List<S7AnyVarPayloadItem> payloadItems = new LinkedList<>();
+        
+        fields.forEach((action) ->{
+            PlcField field = action.getPlcField();
+            if (!(field instanceof S7SubscriptionField)) {
+                logger.info("The field should have been of type S7SubscriptionField");
+                return;
+            }  
+            S7SubscriptionField subsS7Field = (S7SubscriptionField) field; 
+            S7Field s7Field = subsS7Field.getS7field();
+            S7AnyVarPayloadItem varPayloadItem = new S7AnyVarPayloadItem(
+                SpecificationType.VARIABLE_SPECIFICATION, s7Field.getMemoryArea(),
+                s7Field.getDataType(),
+                s7Field.getNumElements(), s7Field.getBlockNumber(), s7Field.getByteOffset(), (byte) s7Field.getBitOffset());
+            payloadItems.add(varPayloadItem);            
+        });
+        
+        //TODO: Play with Time factor. Actually only 1..9
+        CpuCyclicServiceTimeBaseType timeBase = null;
+        byte timefactor = 0x00;
+        if (duration.getSeconds() == 0) {
+            timeBase = CpuCyclicServiceTimeBaseType.TB_100_MS;
+            timefactor = (byte) (duration.toMillis() / 100);
+        } else if (duration.getSeconds() <= 9) {
+            timeBase = CpuCyclicServiceTimeBaseType.TB_1_SEC;
+            timefactor = (byte) duration.getSeconds();            
+        } else if (duration.getSeconds() <= 90) {
+            timeBase = CpuCyclicServiceTimeBaseType.TB_10_SEC;
+            timefactor = (byte) (duration.getSeconds() / 10);  
+        }
+        
+        CpuCyclicServicesRequestPayload payload = new CpuCyclicServicesRequestPayload(DataTransportErrorCode.OK,
+                                                        DataTransportSize.OCTET_STRING,
+                                                        (4+payloadItems.size()*12),
+                                                        payloadItems.size(),
+                                                        timeBase,
+                                                        timefactor,
+                                                        payloadItems);
+                                                        
+        payloads.add(payload);
+        
+        CpuCyclicServicesRequestParameter parameter = new CpuCyclicServicesRequestParameter(CpuUserDataMethodType.REQUEST,
+                                                            CpuServicesParameterFunctionGroup.CYCLIC_SERVICES,
+                                                            CpuCyclicServicesParameterSubFunctionGroupType.CYCLIC_TRANSFER,
+                                                            (byte) 0x00);
+        parameterItems.add(parameter);
+        
+
+        
+        // Assemble the request.
+        S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+            (short) tpduGenerator.getAndIncrement(), parameterItems,
+            payloads, msg);
+
+        requests.put(s7ReadRequest.getTpduReference(), msg);
+
+        out.add(s7ReadRequest);        
     }
     
     private void encodeUnsubcriptionRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
@@ -227,6 +486,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     }    
     
     private void encodeReadRequest(PlcRequestContainer msg, List<Object> out) throws PlcException {
+
         List<VarParameterItem> parameterItems = new LinkedList<>();
 
         PlcReadRequest readRequest = (PlcReadRequest) msg.getRequest();
@@ -491,15 +751,53 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                 response = decodeWriteResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcSubscriptionRequest) {
                 response = decodeSubscriptionResponse(responseMessage, requestContainer);
+                
+                if (response == null){ //Fragmented message? Query again!
+                    requests.put(tpduReference, requestContainer);
+                    List<S7Parameter> parameterItems = new LinkedList<>();
+                    List<S7Payload> payloadItems = new LinkedList<>();
+                    
+                    AlarmMessagePayload payload = new AlarmMessagePayload(DataTransportErrorCode.NOT_FOUND,
+                                                                            DataTransportSize.NULL,
+                                                                            0x0000,
+                                                                            null);
+                    payloadItems.add(payload);
+                    
+                    //TODO: Check multiple parameters
+                    CpuServicesParameter cpuservice = new CpuServicesResponseParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+                    CpuServicesParameterSubFunctionGroup.ALARM_QUERY, ((CpuServicesParameter) msg.getParameters().get(0)).getSequenceNumber());
+
+                    parameterItems.add(cpuservice); 
+                    
+                    S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
+                        msg.getTpduReference(), 
+                        parameterItems,
+                        payloadItems, 
+                        null);  
+
+                    try {
+                        ChannelFuture future = ctx.writeAndFlush(s7ReadRequest);
+                        future.addListener(new ChannelFutureListener() {
+                            public void operationComplete(ChannelFuture future) {
+                                logger.debug("Request fragment ALARM_QUERY done: " + future.isSuccess());
+                            }
+                        });                        
+                        //out.add(s7ReadRequest);
+                        //ctx.pipeline().
+                    } catch (Exception ex) {
+                        java.util.logging.Logger.getLogger(Plc4XS7Protocol.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                }
             } else {
-                logger.info("There is the client's request, but it is not a valid response....");
+                logger.debug("There is the client's request, but it is not a valid response....");
             }
 
             // Confirm the response being handled.
             if (response != null) {
                 requestContainer.getResponseFuture().complete(response);
             } else {
-                logger.info("The message could not be processed...");
+                logger.debug("The message could not be processed...");
             }
         } else {
             //PUSH Message
@@ -513,7 +811,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             }
             
             List<S7Payload> payloads = msg.getPayloads();  
-            //TODO: Use alarmsqueue.addAll() method
+            //TODO: Use alarmsqueue.addAll() method using streams
             for (S7Payload payload:payloads){
                 if (payload instanceof S7PushMessage){
                     if (!alarmsqueue.offer((S7PushMessage) payload)){
@@ -523,7 +821,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             }            
         }
     }
-        // TODO: Check if it is a CPU service response and proceed as applicable.
+    
+    // TODO: Check if it is a CPU service response and proceed as applicable.
     @SuppressWarnings("unchecked")
     private PlcResponse decodeReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
@@ -839,16 +1138,83 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         return new DefaultPlcWriteResponse(plcWriteRequest, values);
     }
 
+
     private PlcResponse decodeSubscriptionResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
-        InternalPlcSubscriptionRequest subsRequest = (InternalPlcSubscriptionRequest) requestContainer.getRequest();
+        InternalPlcSubscriptionRequest subsRequest = (InternalPlcSubscriptionRequest) requestContainer.getRequest(); 
+        //TODO: Try multiple ALARM_ACK in the same request and multiple EVENT_ID.
+        S7SubscriptionField event = (S7SubscriptionField) subsRequest.getFields().get(0);
+        
+        //TODO: Multiple parameters. Try with S7400. At this point if we have embedded more parameter will be lost.
+        CpuServicesResponseParameter parameter = (CpuServicesResponseParameter) responseMessage.getParameters().get(0);
+
         List<S7Payload> payloads = responseMessage.getPayloads();
+        
+        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values = new HashMap<>();
+
+        //May be only one iteration?:
         for (S7Payload payload:payloads){
-            if(payload instanceof AlarmMessagePayload) {  
-                logger.info("OK. Si pasa el mensaje como un Payload...: " + ((AlarmMessagePayload) payload).getReturnCode());
-                //logger.info("Alarm Type...: " + ((AlarmMessagePayload) payload).getMsgtype());                
-            }
+            if (payload instanceof AlarmMessagePayload) {
+                AlarmMessagePayload payloadItem = (AlarmMessagePayload) payload;   
+                switch(parameter.getSubFunctionGroup()){
+                    case ALARM_ACK:{
+                        List<Object> items = payloadItem.getMsg().getMsgItems();
+                        ArrayList<Integer> eventids = event.getAckalarms();
+                        int index = 0;
+                        for (Object item:items){
+                            // A ack response contains only the return code for every item.
+                            // Is direct response for the ALARM_ACK, don't pass to
+                            // push message handler.
+                            //subsBuilder2.addEventField("MyAck", "ACK:16#60000001,16#60000002,16#60000003");
+                            values.put("16#"+Integer.toHexString(eventids.get(index)), new ImmutablePair(decodeResponseCode((DataTransportErrorCode) item),null));                    
+                            index++;
+                        }                       
+                    }
+                    break;
+                    case ALARM_QUERY:{
+                        if (payloadItem.getMsg() == null) {
+                            return null;   
+                        } 
+
+                        if (payloadItem instanceof S7PushMessage){
+                            if (payloadItem.getMsg().getMsgItems().size() > 0){
+                                if (!alarmsqueue.offer((S7PushMessage) payload)){
+                                    logger.info("decodeSubscriptionResponse: Alarm queue buffer is full.");
+                                };
+                            };
+                        } else {
+                            logger.debug("Check for ALARM_QUERY not attended: " + payloadItem);   
+                        }                    
+                    }
+                    break;
+                    default:;
+                } 
+            } else if (payload instanceof CpuCyclicServicesResponsePayload) {
+                    CpuCyclicServicesResponsePayload  cyclicPayloadItem = (CpuCyclicServicesResponsePayload) payload;
+                    //
+                    //
+                    logger.info("CpuCyclicServicesResponsePayload: " + subsRequest.getFieldNames().toString());
+                    List<AssociatedValueItem> valueitems = cyclicPayloadItem.getItems();
+                    Map<String,AssociatedValueItem> items = new LinkedHashMap();
+                    int i=0;
+                    if (parameter.getError().getCode() == 0x0000){                    
+                        for (String fieldname:subsRequest.getFieldNames()){
+                            items.put(fieldname, valueitems.get(i));
+                            i++;                        
+                        };
+                    };
+                   
+                    S7CyclicServicesSubscriptionHandle handler = new S7CyclicServicesSubscriptionHandle("UNO", 
+                                                                        parameter.getSequenceNumber(),
+                                                                        parameter.getError().getCode(),
+                                                                        items);
+                                        
+                    for (String fieldname:subsRequest.getFieldNames()){
+                        logger.info("*****" + fieldname);
+                        values.put(fieldname, new ImmutablePair(decodeResponseCode(items.get(fieldname).getReturnCode()), handler));                    
+                    }
+                }  
         }
-        return new DefaultPlcSubscriptionResponse(subsRequest, null);
+        return new DefaultPlcSubscriptionResponse(subsRequest, values);
     }
     
     

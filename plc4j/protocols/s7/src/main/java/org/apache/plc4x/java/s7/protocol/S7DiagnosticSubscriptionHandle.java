@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+   http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -15,24 +15,32 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- */
+*/
+package org.apache.plc4x.java.s7.protocol;
 
-package org.apache.plc4x.java.s7.netty.util;
-
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.netty.model.types.SubscribedEventType;
 
 /**
  *
- * 
+ * @author cgarcia
  */
-public class S7PlcEventHandler extends DefaultPlcFieldHandler {
-
+public class S7DiagnosticSubscriptionHandle implements PlcSubscriptionHandle {
+    Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
+    
+    //Diagnostic events
+    List<SubscribedEventType> subscribedevents; 
+        
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        return SubscribedEventType.valueOfEvent(fieldQuery);
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        consumers.add(consumer);
+        return () -> {consumers.remove(consumer);};
     }
     
 }

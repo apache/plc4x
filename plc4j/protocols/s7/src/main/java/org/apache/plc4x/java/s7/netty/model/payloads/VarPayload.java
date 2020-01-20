@@ -18,11 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
-import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
+import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 
 /**
  * Used for writes to S7 as part of a Valid {@link org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage} together

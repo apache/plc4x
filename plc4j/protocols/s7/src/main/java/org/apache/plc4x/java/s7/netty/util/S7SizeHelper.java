@@ -19,11 +19,14 @@ under the License.
 package org.apache.plc4x.java.s7.netty.util;
 
 import java.util.List;
+import org.apache.plc4x.java.s7.netty.model.params.CpuCyclicServicesRequestParameter;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesRequestParameter;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
 import org.apache.plc4x.java.s7.netty.model.params.VarParameter;
 import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesRequestPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuMessageSubscriptionServicePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuServicesPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
@@ -83,6 +86,16 @@ public class S7SizeHelper {
                     return 16;                    
                 }
   
+            } else if(payload instanceof AlarmMessagePayload) {
+                AlarmMessagePayload data = (AlarmMessagePayload) payload;
+                l += data.getLength();
+                l += 0x04; //TODO: Check for other combinations
+                return l;
+            } else if(payload instanceof CpuCyclicServicesRequestPayload) {
+                CpuCyclicServicesRequestPayload data = (CpuCyclicServicesRequestPayload) payload;
+                l += data.getLength();
+                l += 0x04; //TODO: Check for other combinations
+                return l;
             }
         }
         return l;
@@ -104,6 +117,8 @@ public class S7SizeHelper {
             case CPU_SERVICES:
                 if(parameter instanceof CpuServicesRequestParameter) {
                     return 8;
+                } else if(parameter instanceof CpuCyclicServicesRequestParameter) {
+                    return 8;   
                 } else {
                     return 12;
                 }

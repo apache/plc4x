@@ -18,11 +18,15 @@
  */
 package org.apache.plc4x.java.s7.connection;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -33,6 +37,7 @@ import java.util.function.Consumer;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -47,6 +52,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -65,11 +71,14 @@ import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
 import org.apache.plc4x.java.s7.netty.model.params.CpuDiagnosticPushParameter;
 import org.apache.plc4x.java.s7.netty.model.params.CpuServicesPushParameter;
 import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesResponsePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuDiagnosticMessagePayload;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
-import org.apache.plc4x.java.s7.netty.util.S7PlcEventHandler;
+import org.apache.plc4x.java.s7.netty.util.S7PlcFieldEventHandler;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
+import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
@@ -113,7 +122,12 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     private final S7ControllerType paramControllerType;
 
     private BlockingQueue<S7PushMessage> alarmsqueue;
-    private AlarmsLoop alarmsloopthread;
+    
+    Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions = new HashMap();
+    
+    Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles = new HashMap();
+    
+    private EventLoop alarmsloopthread;
 
     public S7PlcConnection(InetAddress address, int rack, int slot, String params) {
         this(new TcpSocketChannelFactory(address, ISO_ON_TCP_PORT), rack, slot, params);
@@ -186,7 +200,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         */
         this.alarmsqueue = new ArrayBlockingQueue<>(1024);
         
-        alarmsloopthread = new AlarmsLoop(channel,this.alarmsqueue);
+        alarmsloopthread = new EventLoop(channel,
+                                this.alarmsqueue,
+                                cyclicServicesSubscriptions,
+                                cyclicServicesHandles);
 
     }
 
@@ -327,7 +344,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new S7PlcEventHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, new S7PlcFieldEventHandler());
     }    
     
     @Override
@@ -367,35 +384,59 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        
         InternalPlcSubscriptionRequest internalSubsRequest = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
+        
         CompletableFuture<InternalPlcSubscriptionResponse> future = new CompletableFuture<>();
+        
         PlcRequestContainer<InternalPlcSubscriptionRequest, InternalPlcSubscriptionResponse> container =
             new PlcRequestContainer<>(internalSubsRequest, future);
+        
         channel.writeAndFlush(container).addListener(f -> {
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());
             }
-        });        
+        });       
+        
         return future.thenApply(PlcSubscriptionResponse.class::cast);       
     }
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        
         InternalPlcUnsubscriptionRequest internalUnsubsRequest = checkInternal(unsubscriptionRequest, InternalPlcUnsubscriptionRequest.class);
+        
         CompletableFuture<InternalPlcUnsubscriptionResponse> future = new CompletableFuture<>();
+        
         PlcRequestContainer<InternalPlcUnsubscriptionRequest, InternalPlcUnsubscriptionResponse> container =
             new PlcRequestContainer<>(internalUnsubsRequest, future);
+        
         channel.writeAndFlush(container).addListener(f -> {
             if (!f.isSuccess()) {
                 future.completeExceptionally(f.cause());
             }
-        });        
+        });      
+        
         return future.thenApply(PlcUnsubscriptionResponse.class::cast);        
     }
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Add any handler to 
+        handles.forEach(handle ->{
+            if (handle instanceof S7CyclicServicesSubscriptionHandle) {
+                S7CyclicServicesSubscriptionHandle s7handle = (S7CyclicServicesSubscriptionHandle) handle;
+                if (!cyclicServicesHandles.containsKey(s7handle.getJobId())){
+                    cyclicServicesHandles.put(s7handle.getJobId(), s7handle);
+                }
+            }
+        });
+        
+        if (!cyclicServicesSubscriptions.containsKey(consumer)){
+            cyclicServicesSubscriptions.put(consumer, handles);
+        }
+        
+        return null;
     }
 
     @Override
@@ -403,25 +444,33 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private class AlarmsLoop extends Thread {
+    private class EventLoop extends Thread {
         private volatile boolean cancelled;
         private final Channel channel;
         private boolean alarmquery;
         private int delay;
+        private final Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions;        
+        private final Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles;
         private final BlockingQueue<S7PushMessage> alarmsqueue;
         
-        AlarmsLoop(Channel channel, BlockingQueue<S7PushMessage> alarmsqueue) {
+        EventLoop(Channel channel, 
+                BlockingQueue<S7PushMessage> alarmsqueue, 
+                Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions,
+                Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles) {
             this.channel = channel;
             this.alarmsqueue = alarmsqueue;
+            this.cyclicServicesSubscriptions = cyclicServicesSubscriptions;
+            this.cyclicServicesHandles = cyclicServicesHandles;
             this.alarmquery = true;
-            this.delay = 1;
+            this.delay = 1000;
         }
         
         @Override
         public void run() {
             while (!cancelled) { 
                 try {
-                    S7PushMessage msg = alarmsqueue.poll(delay, TimeUnit.SECONDS);
+                    S7PushMessage msg = alarmsqueue.poll(delay, TimeUnit.MILLISECONDS);
+                    
                     if (msg != null){
                         if (msg instanceof AlarmMessagePayload){
                             AlarmMessagePayload themsg = (AlarmMessagePayload) msg;
@@ -435,6 +484,16 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         } else if (msg instanceof CpuServicesPushParameter) {
                             CpuServicesPushParameter themsg = (CpuServicesPushParameter) msg;
                             logger.info("CpuServicesPushParameter: " + themsg);
+                        } else if (msg instanceof CpuCyclicServicesResponsePayload) {
+                            CpuCyclicServicesResponsePayload themsg = (CpuCyclicServicesResponsePayload) msg;
+                            logger.debug("CpuCyclicServicesResponsePayload: " + themsg + " JobId:" + themsg.getJobId());
+                            
+                            S7CyclicServicesSubscriptionHandle handle = 
+                                    (S7CyclicServicesSubscriptionHandle) cyclicServicesHandles.get(themsg.getJobId());
+                            if (handle != null) {
+                                UpdateCyclicServicesData(handle, themsg);                            
+                            };
+                            
                         } else {
                             logger.info("Object type: " + msg.getClass());
                         }                       
@@ -445,12 +504,50 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                             
                         }
                     }
+                    
+                    
+                    
                 } catch (InterruptedException ex) {
                     logger.info(ex.getLocalizedMessage());
                 }
             }
             logger.info("Closing the alarm loop.");
         }
+        
+        private void UpdateCyclicServicesData(S7CyclicServicesSubscriptionHandle handle,CpuCyclicServicesResponsePayload themsg){
+            
+            Map<String, AssociatedValueItem> items = handle.getItems();
+            Collection<AssociatedValueItem> values = items.values();
+            List<AssociatedValueItem> newvalues = themsg.getItems();
+            int i = 0;
+            synchronized(values) {
+                for (AssociatedValueItem value:values){
+                    AssociatedValueItem newvalue = newvalues.get(i);
+                    value.getData().setBytes(0, newvalue.getData());
+                    i++;                
+                }
+            }
+            
+            cyclicServicesSubscriptions.forEach((consumer,handles)->{
+                if (handles.contains(handle)){
+                    handles.forEach((exehandle)->{
+                        Map<String, Pair<PlcResponseCode, ByteBuf>> fields = new HashMap<>();
+                        S7CyclicServicesSubscriptionHandle exe2handle = (S7CyclicServicesSubscriptionHandle) exehandle;
+                        Map<String, AssociatedValueItem> values2consumer = exe2handle.getItems();
+                        
+                        //PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
+                        
+                        values2consumer.forEach((index, itemvalue)->{
+                            consumer.accept(null);
+                            //logger.info("Procesando valores : " + index + "\r\n" + ByteBufUtil.prettyHexDump(itemvalue.getData()));
+                        });
+                        //Pair<PlcResponseCode, ByteBuf> newPair = new ImmutablePair<>(PlcResponseCode, stringItem);
+                        //exehandle
+                    });
+                }
+            });
+            
+        }              
         
         public void cancel() {
             cancelled = true;  

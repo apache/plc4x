@@ -31,6 +31,7 @@ public enum ParameterType {
     MODE_TRANSITION((byte) 0x01),
     READ_VAR((byte) 0x04),
     WRITE_VAR((byte) 0x05),
+    ALARM_ACK((byte) 0x0b),
     REQUEST_DOWNLOAD((byte) 0x1A),
     DOWNLOAD_BLOCK((byte) 0x1B),
     DOWNLOAD_ENDED((byte) 0x1C),

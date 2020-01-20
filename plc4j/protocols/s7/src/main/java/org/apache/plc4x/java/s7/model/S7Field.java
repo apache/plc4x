@@ -39,10 +39,8 @@ public class S7Field implements PlcField {
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
     
-    //Event Subscription 
-    private static final Pattern EVENT_SUBSCRIPTION_TYPE_PATTERN = 
-        Pattern.compile("MODE SYS USR ALM");
 
+            
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
     private static final String BLOCK_NUMBER = "blockNumber";
@@ -186,6 +184,8 @@ public class S7Field implements PlcField {
                 return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
             }
         }
+        
+        
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
 

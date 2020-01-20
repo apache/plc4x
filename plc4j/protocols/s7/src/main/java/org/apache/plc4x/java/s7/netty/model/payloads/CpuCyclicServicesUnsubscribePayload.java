@@ -19,8 +19,6 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
-import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
-import org.apache.plc4x.java.s7.netty.model.payloads.items.AlarmMessageItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
@@ -29,41 +27,23 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
  *
  * @author cgarcia
  */
-public class AlarmMessagePayload implements S7Payload, S7PushMessage {
-    
+public class CpuCyclicServicesUnsubscribePayload implements S7Payload {
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
-    private final Object msgtype; 
-    private final Integer length;
-    private final AlarmMessageItem msg;    
+    private final int length;
+    private final byte function;
+    private final byte jobId;
 
-    public AlarmMessagePayload(DataTransportErrorCode returnCode, 
+    public CpuCyclicServicesUnsubscribePayload(DataTransportErrorCode returnCode, 
             DataTransportSize dataTransportSize, 
-            Integer length,
-            AlarmMessageItem msg) {
+            int length, 
+            byte function, 
+            byte jobId) {
         this.returnCode = returnCode;
         this.dataTransportSize = dataTransportSize;
-        this.msgtype = null;
         this.length = length;
-        this.msg = msg;
-    }    
-    
-    public AlarmMessagePayload(DataTransportErrorCode returnCode, 
-            DataTransportSize dataTransportSize, 
-            Object msgtype, 
-            Integer length,
-            AlarmMessageItem msg) {
-        this.returnCode = returnCode;
-        this.dataTransportSize = dataTransportSize;
-        this.msgtype = msgtype;
-        this.length = length;
-        this.msg = msg;
-    }
-
-
-    @Override
-    public ParameterType getType() {
-        return ParameterType.CPU_SERVICES;
+        this.function = function;
+        this.jobId = jobId;
     }
 
     public DataTransportErrorCode getReturnCode() {
@@ -74,28 +54,26 @@ public class AlarmMessagePayload implements S7Payload, S7PushMessage {
         return dataTransportSize;
     }
 
-    public Object getMsgtype() {
-        return msgtype;
-    }
-
-    public Integer getLength() {
+    public int getLength() {
         return length;
     }
 
-    public AlarmMessageItem getMsg() {
-        return msg;
+    public byte getFunction() {
+        return function;
     }
 
-    @Override
-    public String toString() {
-        return "AlarmMessagePayload{" + "returnCode=" + returnCode 
-                + ", dataTransportSize=" + dataTransportSize 
-                + ", msgtype=" + msgtype 
-                + ", length=" + length 
-                + ", msg=" + msg 
-                + '}';
+    public byte getJobId() {
+        return jobId;
     }
+
     
-    
-    
+
+
+
+
+    @Override
+    public ParameterType getType() {
+        return ParameterType.CPU_SERVICES;
+    }
+
 }

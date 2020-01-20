@@ -24,6 +24,8 @@ import java.util.Map;
 /**
  * (Values determined by evaluating generated ".pcap" files)
  * Renamed from "SyntaxId".
+ * 
+ * Is the same DataItemSyntaxIdType
  */
 public enum VariableAddressingMode {
     S7ANY((byte) 0x10),

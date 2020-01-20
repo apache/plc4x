@@ -19,8 +19,9 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
+import java.util.List;
 import org.apache.plc4x.java.s7.netty.model.messages.S7PushMessage;
-import org.apache.plc4x.java.s7.netty.model.payloads.items.AlarmMessageItem;
+import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.DataTransportSize;
 import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
@@ -29,41 +30,26 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
  *
  * @author cgarcia
  */
-public class AlarmMessagePayload implements S7Payload, S7PushMessage {
-    
+public class CpuCyclicServicesResponsePayload implements S7Payload, S7PushMessage {
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
-    private final Object msgtype; 
-    private final Integer length;
-    private final AlarmMessageItem msg;    
+    private final byte jobId;
+    private final int length;
+    private final int itemCount;
+    private final List<AssociatedValueItem> items;    
 
-    public AlarmMessagePayload(DataTransportErrorCode returnCode, 
+    public CpuCyclicServicesResponsePayload(DataTransportErrorCode returnCode, 
             DataTransportSize dataTransportSize, 
-            Integer length,
-            AlarmMessageItem msg) {
+            byte jobId, 
+            int length, 
+            int itemCount, 
+            List<AssociatedValueItem> items) {
         this.returnCode = returnCode;
         this.dataTransportSize = dataTransportSize;
-        this.msgtype = null;
+        this.jobId = jobId;
         this.length = length;
-        this.msg = msg;
-    }    
-    
-    public AlarmMessagePayload(DataTransportErrorCode returnCode, 
-            DataTransportSize dataTransportSize, 
-            Object msgtype, 
-            Integer length,
-            AlarmMessageItem msg) {
-        this.returnCode = returnCode;
-        this.dataTransportSize = dataTransportSize;
-        this.msgtype = msgtype;
-        this.length = length;
-        this.msg = msg;
-    }
-
-
-    @Override
-    public ParameterType getType() {
-        return ParameterType.CPU_SERVICES;
+        this.itemCount = itemCount;
+        this.items = items;
     }
 
     public DataTransportErrorCode getReturnCode() {
@@ -74,28 +60,25 @@ public class AlarmMessagePayload implements S7Payload, S7PushMessage {
         return dataTransportSize;
     }
 
-    public Object getMsgtype() {
-        return msgtype;
-    }
-
-    public Integer getLength() {
+    public int getLength() {
         return length;
     }
 
-    public AlarmMessageItem getMsg() {
-        return msg;
+    public byte getJobId() {
+        return jobId;
+    }    
+    
+    public int getItemCount() {
+        return itemCount;
+    }
+
+    public List<AssociatedValueItem> getItems() {
+        return items;
     }
 
     @Override
-    public String toString() {
-        return "AlarmMessagePayload{" + "returnCode=" + returnCode 
-                + ", dataTransportSize=" + dataTransportSize 
-                + ", msgtype=" + msgtype 
-                + ", length=" + length 
-                + ", msg=" + msg 
-                + '}';
+    public ParameterType getType() {
+        return ParameterType.CPU_SERVICES;
     }
-    
-    
-    
+
 }

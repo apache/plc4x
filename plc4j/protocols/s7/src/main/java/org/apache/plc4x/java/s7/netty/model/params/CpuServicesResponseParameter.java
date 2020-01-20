@@ -30,6 +30,16 @@ public class CpuServicesResponseParameter extends CpuServicesParameter {
 
     public CpuServicesResponseParameter(CpuServicesParameterFunctionGroup functionGroup, 
             CpuServicesParameterSubFunctionGroup subFunctionGroup,
+            byte sequenceNumber) {
+        
+        super(functionGroup, subFunctionGroup, sequenceNumber);
+        this.dataUnitReferenceNumber = 0x00;
+        this.lastDataUnit = false;
+        this.error = null;
+    }    
+    
+    public CpuServicesResponseParameter(CpuServicesParameterFunctionGroup functionGroup, 
+            CpuServicesParameterSubFunctionGroup subFunctionGroup,
             byte sequenceNumber, 
             byte dataUnitReferenceNumber, 
             boolean lastDataUnit, ParameterError error) {

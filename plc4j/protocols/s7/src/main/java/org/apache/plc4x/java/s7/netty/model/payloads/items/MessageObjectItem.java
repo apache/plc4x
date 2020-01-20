@@ -19,9 +19,11 @@ under the License.
 
 package org.apache.plc4x.java.s7.netty.model.payloads.items;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.plc4x.java.s7.netty.model.types.AlarmQueryType;
+import org.apache.plc4x.java.s7.netty.model.types.QueryType;
+import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 
 /**
  *
@@ -31,21 +33,102 @@ public class MessageObjectItem {
     
     private final byte VariableSpecification;
     private final byte Length;
-    private final Object SyntaxID;
+    private final VariableAddressingMode SyntaxID;
     private final byte NumberOfValues;
     private final int EventID;
     private final byte EventState;
     private final byte State;
     private final byte AckStateGoing;
     private final byte AckStateComming;
-    private final Calendar TimestampComing;
-    private final Calendar TimestampGoing;
+    private final LocalDateTime TimestampComing;
+    private final LocalDateTime TimestampGoing;
     private final List<AssociatedValueItem> ComingValues;
-    private final List<AssociatedValueItem> GoingValues;     
+    private final List<AssociatedValueItem> GoingValues;  
+    //For Query alarms.
+    private final QueryType querytype;
+    private final AlarmQueryType alarmtype;
+     
+    //For Query request
+    public MessageObjectItem(byte VariableSpecification, 
+            byte Length, 
+            VariableAddressingMode SyntaxID, 
+            QueryType querytype, 
+            AlarmQueryType alarmtype) {
+        
+        this.VariableSpecification = VariableSpecification;
+        this.Length = Length;
+        this.SyntaxID = SyntaxID;
+        this.NumberOfValues = 0x00;
+        this.EventID = 0x0000;
+        this.EventState = 0x00;
+        this.State = 0x00;
+        this.AckStateGoing = 0x00;
+        this.AckStateComming = 0x00;
+        this.TimestampComing = null;
+        this.ComingValues = null;
+        this.TimestampGoing = null;               
+        this.GoingValues = null;
+        this.querytype = querytype;
+        this.alarmtype = alarmtype;
+    }   
+    
+    //For Query reply
+    public MessageObjectItem(byte Length, 
+            AlarmQueryType alarmtype, 
+            int EventID, 
+            byte EventState, 
+            byte AckStateGoing, 
+            byte AckStateComming, 
+            LocalDateTime TimestampComing,
+            List<AssociatedValueItem> ComingValues,
+            LocalDateTime TimestampGoing, 
+            List<AssociatedValueItem> GoingValues) {
+        
+        this.VariableSpecification = 0x00;
+        this.Length = Length;
+        this.SyntaxID = null;
+        this.NumberOfValues = 0x00;
+        this.EventID = EventID;
+        this.EventState = EventState;
+        this.State = 0x00;
+        this.AckStateGoing = AckStateGoing;
+        this.AckStateComming = AckStateComming;
+        this.TimestampComing = TimestampComing;
+        this.ComingValues = ComingValues;
+        this.TimestampGoing = TimestampGoing;               
+        this.GoingValues = GoingValues;
+        this.querytype = null;
+        this.alarmtype = alarmtype;        
+    }    
 
     public MessageObjectItem(byte VariableSpecification, 
             byte Length, 
-            Object SyntaxID, 
+            VariableAddressingMode SyntaxID, 
+            byte NumberOfValues, 
+            int EventID, 
+            byte AckStateGoing, 
+            byte AckStateComming) {
+        
+        this.VariableSpecification = VariableSpecification;
+        this.Length = Length;
+        this.SyntaxID = SyntaxID;
+        this.NumberOfValues = NumberOfValues;
+        this.EventID = EventID;
+        this.EventState = 0x00;
+        this.State = 0x00;
+        this.AckStateGoing = AckStateGoing;
+        this.AckStateComming = AckStateComming;
+        this.TimestampComing = null;
+        this.ComingValues = null;
+        this.TimestampGoing = null;               
+        this.GoingValues = null;
+        this.querytype = null;
+        this.alarmtype = null;
+    }    
+    
+    public MessageObjectItem(byte VariableSpecification, 
+            byte Length, 
+            VariableAddressingMode SyntaxID, 
             byte NumberOfValues, 
             int EventID, 
             byte EventState, 
@@ -67,20 +150,22 @@ public class MessageObjectItem {
         this.ComingValues = Values;
         this.TimestampGoing = null;               
         this.GoingValues = null;
+        this.querytype = null;
+        this.alarmtype = null;        
     }
     
     public MessageObjectItem(byte VariableSpecification, 
             byte Length, 
-            Object SyntaxID, 
+            VariableAddressingMode SyntaxID, 
             byte NumberOfValues, 
             int EventID, 
             byte EventState, 
             byte State, 
             byte AckStateGoing, 
             byte AckStateComming,
-            Calendar TimestampComing,
+            LocalDateTime TimestampComing,
             List<AssociatedValueItem> ComingValues,
-            Calendar TimestampGoing,
+            LocalDateTime TimestampGoing,
             List<AssociatedValueItem> GoingValues) {
         
         this.VariableSpecification = VariableSpecification;
@@ -96,8 +181,10 @@ public class MessageObjectItem {
         this.ComingValues = ComingValues;
         this.TimestampGoing = TimestampGoing;               
         this.GoingValues = GoingValues;
+        this.querytype = null;
+        this.alarmtype = null;        
     }    
-
+    
     public byte getVariableSpecification() {
         return VariableSpecification;
     }
@@ -106,7 +193,7 @@ public class MessageObjectItem {
         return Length;
     }
 
-    public Object getSyntaxID() {
+    public VariableAddressingMode getSyntaxID() {
         return SyntaxID;
     }
 
@@ -134,11 +221,11 @@ public class MessageObjectItem {
         return AckStateComming;
     }
 
-    public Calendar getTimestampComing() {
+    public LocalDateTime getTimestampComing() {
         return TimestampComing;
     }
 
-    public Calendar getTimestampGoing() {
+    public LocalDateTime getTimestampGoing() {
         return TimestampGoing;
     }
 
@@ -150,29 +237,34 @@ public class MessageObjectItem {
         return GoingValues;
     }
 
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
-        return "MessageObjectItem{" + "VariableSpecification=" + VariableSpecification 
-                + ", Length=" + Length 
-                + ", SyntaxID=" + SyntaxID 
-                + ", NumberOfValues=" + NumberOfValues 
-                + ", EventID=" + EventID 
-                + ", EventState=" + EventState 
-                + ", State=" + State 
-                + ", AckStateGoing=" + AckStateGoing 
-                + ", AckStateComming=" + AckStateComming 
-                + ", TimestampComing=" + TimestampComing
-                + ", TimestampGoing="  + TimestampGoing 
-                + ", ComingValues=" + ComingValues 
-                + ", GoingValues=" + GoingValues 
-                + '}';
+    public QueryType getQuerytype() {
+        return querytype;
     }
 
+    public AlarmQueryType getAlarmtype() {
+        return alarmtype;
+    }
+
+    @Override
+    public String toString() {
+        return "MessageObjectItem{" + "VariableSpecification=" + VariableSpecification +
+                ", Length=" + Length +
+                ", SyntaxID=" + SyntaxID +
+                ", NumberOfValues=" + NumberOfValues +
+                ", EventID=" + EventID +
+                ", EventState=" + EventState +
+                ", State=" + State +
+                ", AckStateGoing=" + AckStateGoing +
+                ", AckStateComming=" + AckStateComming +
+                ", TimestampComing=" + TimestampComing +
+                ", TimestampGoing=" + TimestampGoing +
+                ", ComingValues=" + ComingValues +
+                ", GoingValues=" + GoingValues +
+                ", querytype=" + querytype +
+                ", alarmtype=" + alarmtype + '}';
+    }
+        
 
 
-    
- 
-    
     
 }
