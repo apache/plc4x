@@ -120,7 +120,7 @@ public class ReadBuffer {
         }
         try {
             if (littleEndian) {
-                return Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16;
+                return (Integer.reverseBytes(bi.readInt(true, bitLength)) >> 16) & 0xFFFF;
             }
             return bi.readInt(true, bitLength);
         } catch (IOException e) {
