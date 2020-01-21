@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: images/
+:imagesdir: ../images/
 
 == About PLC4J
 
@@ -95,6 +95,6 @@ It also demonstrates two ways this information can be accessed:
 
 [source,java]
 ----
-include::../../../examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
+include::../../../plc4j/examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
 ----
 

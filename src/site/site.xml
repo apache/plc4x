@@ -142,7 +142,6 @@
       <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
     </menu>
-    <menu ref="modules" inherit="bottom"/>
   </body>
 
 </project>
