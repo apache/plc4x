@@ -27,15 +27,10 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <SearchRequest className="org.apache.plc4x.java.knxnetip.readwrite.SearchRequest">
-        <hpaiIDiscoveryEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiIDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>61326</ipPort>
         </hpaiIDiscoveryEndpoint>
@@ -49,93 +44,38 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <SearchResponse className="org.apache.plc4x.java.knxnetip.readwrite.SearchResponse">
-        <hpaiControlEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>11</addr>
-            </addr>
+        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqCw==</addr>
           </ipAddress>
           <ipPort>3671</ipPort>
         </hpaiControlEndpoint>
-        <dibDeviceInfo>
+        <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
           <descriptionType>1</descriptionType>
           <knxMedium>2</knxMedium>
-          <deviceStatus>
+          <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
-          <knxAddress>
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
             <mainGroup>15</mainGroup>
             <middleGroup>15</middleGroup>
             <subGroup>255</subGroup>
           </knxAddress>
-          <projectInstallationIdentifier>
+          <projectInstallationIdentifier className="org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier">
             <projectNumber>0</projectNumber>
             <installationNumber>0</installationNumber>
           </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>0</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>8</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>45</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>64</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>152</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>82</knxNetIpDeviceSerialNumber>
-          </knxNetIpDeviceSerialNumber>
-          <knxNetIpDeviceMulticastAddress>
-            <addr>
-              <addr>224</addr>
-              <addr>0</addr>
-              <addr>23</addr>
-              <addr>12</addr>
-            </addr>
+          <knxNetIpDeviceSerialNumber>AAgtQJhS</knxNetIpDeviceSerialNumber>
+          <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>4AAXDA==</addr>
           </knxNetIpDeviceMulticastAddress>
-          <knxNetIpDeviceMacAddress>
-            <addr>
-              <addr>0</addr>
-              <addr>10</addr>
-              <addr>179</addr>
-              <addr>39</addr>
-              <addr>85</addr>
-              <addr>54</addr>
-            </addr>
+          <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
+            <addr>AAqzJ1U2</addr>
           </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>
-            <deviceFriendlyName>71</deviceFriendlyName>
-            <deviceFriendlyName>105</deviceFriendlyName>
-            <deviceFriendlyName>114</deviceFriendlyName>
-            <deviceFriendlyName>97</deviceFriendlyName>
-            <deviceFriendlyName>32</deviceFriendlyName>
-            <deviceFriendlyName>75</deviceFriendlyName>
-            <deviceFriendlyName>78</deviceFriendlyName>
-            <deviceFriendlyName>88</deviceFriendlyName>
-            <deviceFriendlyName>47</deviceFriendlyName>
-            <deviceFriendlyName>73</deviceFriendlyName>
-            <deviceFriendlyName>80</deviceFriendlyName>
-            <deviceFriendlyName>45</deviceFriendlyName>
-            <deviceFriendlyName>83</deviceFriendlyName>
-            <deviceFriendlyName>99</deviceFriendlyName>
-            <deviceFriendlyName>104</deviceFriendlyName>
-            <deviceFriendlyName>110</deviceFriendlyName>
-            <deviceFriendlyName>105</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>115</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>101</deviceFriendlyName>
-            <deviceFriendlyName>108</deviceFriendlyName>
-            <deviceFriendlyName>108</deviceFriendlyName>
-            <deviceFriendlyName>101</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-          </deviceFriendlyName>
+          <deviceFriendlyName>R2lyYSBLTlgvSVAtU2Nobml0dHN0ZWxsZQAAAAAA</deviceFriendlyName>
         </dibDeviceInfo>
-        <dibSuppSvcFamilies>
+        <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
           <descriptionType>2</descriptionType>
           <serviceIds>
             <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore">
@@ -159,15 +99,10 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DescriptionRequest className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionRequest">
-        <hpaiControlEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>0</addr>
-              <addr>0</addr>
-              <addr>0</addr>
-              <addr>0</addr>
-            </addr>
+        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>AAAAAA==</addr>
           </ipAddress>
           <ipPort>0</ipPort>
         </hpaiControlEndpoint>
@@ -181,81 +116,31 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DescriptionResponse className="org.apache.plc4x.java.knxnetip.readwrite.DescriptionResponse">
-        <dibDeviceInfo>
+        <dibDeviceInfo className="org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo">
           <descriptionType>1</descriptionType>
           <knxMedium>2</knxMedium>
-          <deviceStatus>
+          <deviceStatus className="org.apache.plc4x.java.knxnetip.readwrite.DeviceStatus">
             <programMode>false</programMode>
           </deviceStatus>
-          <knxAddress>
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
             <mainGroup>15</mainGroup>
             <middleGroup>15</middleGroup>
             <subGroup>255</subGroup>
           </knxAddress>
-          <projectInstallationIdentifier>
+          <projectInstallationIdentifier className="org.apache.plc4x.java.knxnetip.readwrite.ProjectInstallationIdentifier">
             <projectNumber>0</projectNumber>
             <installationNumber>0</installationNumber>
           </projectInstallationIdentifier>
-          <knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>0</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>8</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>45</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>64</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>152</knxNetIpDeviceSerialNumber>
-            <knxNetIpDeviceSerialNumber>82</knxNetIpDeviceSerialNumber>
-          </knxNetIpDeviceSerialNumber>
-          <knxNetIpDeviceMulticastAddress>
-            <addr>
-              <addr>224</addr>
-              <addr>0</addr>
-              <addr>23</addr>
-              <addr>12</addr>
-            </addr>
+          <knxNetIpDeviceSerialNumber>AAgtQJhS</knxNetIpDeviceSerialNumber>
+          <knxNetIpDeviceMulticastAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>4AAXDA==</addr>
           </knxNetIpDeviceMulticastAddress>
-          <knxNetIpDeviceMacAddress>
-            <addr>
-              <addr>0</addr>
-              <addr>10</addr>
-              <addr>179</addr>
-              <addr>39</addr>
-              <addr>85</addr>
-              <addr>54</addr>
-            </addr>
+          <knxNetIpDeviceMacAddress className="org.apache.plc4x.java.knxnetip.readwrite.MACAddress">
+            <addr>AAqzJ1U2</addr>
           </knxNetIpDeviceMacAddress>
-          <deviceFriendlyName>
-            <deviceFriendlyName>71</deviceFriendlyName>
-            <deviceFriendlyName>105</deviceFriendlyName>
-            <deviceFriendlyName>114</deviceFriendlyName>
-            <deviceFriendlyName>97</deviceFriendlyName>
-            <deviceFriendlyName>32</deviceFriendlyName>
-            <deviceFriendlyName>75</deviceFriendlyName>
-            <deviceFriendlyName>78</deviceFriendlyName>
-            <deviceFriendlyName>88</deviceFriendlyName>
-            <deviceFriendlyName>47</deviceFriendlyName>
-            <deviceFriendlyName>73</deviceFriendlyName>
-            <deviceFriendlyName>80</deviceFriendlyName>
-            <deviceFriendlyName>45</deviceFriendlyName>
-            <deviceFriendlyName>83</deviceFriendlyName>
-            <deviceFriendlyName>99</deviceFriendlyName>
-            <deviceFriendlyName>104</deviceFriendlyName>
-            <deviceFriendlyName>110</deviceFriendlyName>
-            <deviceFriendlyName>105</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>115</deviceFriendlyName>
-            <deviceFriendlyName>116</deviceFriendlyName>
-            <deviceFriendlyName>101</deviceFriendlyName>
-            <deviceFriendlyName>108</deviceFriendlyName>
-            <deviceFriendlyName>108</deviceFriendlyName>
-            <deviceFriendlyName>101</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-            <deviceFriendlyName>0</deviceFriendlyName>
-          </deviceFriendlyName>
+          <deviceFriendlyName>R2lyYSBLTlgvSVAtU2Nobml0dHN0ZWxsZQAAAAAA</deviceFriendlyName>
         </dibDeviceInfo>
-        <dibSuppSvcFamilies>
+        <dibSuppSvcFamilies className="org.apache.plc4x.java.knxnetip.readwrite.DIBSuppSvcFamilies">
           <descriptionType>2</descriptionType>
           <serviceIds>
             <serviceIds className="org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpCore">
@@ -279,32 +164,22 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
-        <hpaiDiscoveryEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiDiscoveryEndpoint>
-        <hpaiDataEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>62514</ipPort>
         </hpaiDataEndpoint>
         <connectionRequestInformation className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection">
-          <knxLayer>2</knxLayer>
+          <knxLayer>TUNNEL_LINK_LAYER</knxLayer>
         </connectionRequestInformation>
       </ConnectionRequest>
     </xml>
@@ -317,21 +192,16 @@
     <xml>
       <ConnectionResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponse">
         <communicationChannelId>102</communicationChannelId>
-        <status>0</status>
-        <hpaiDataEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>11</addr>
-            </addr>
+        <status>NO_ERROR</status>
+        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqCw==</addr>
           </ipAddress>
           <ipPort>3671</ipPort>
         </hpaiDataEndpoint>
         <connectionResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection">
-          <knxAddress>
+          <knxAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
             <mainGroup>1</mainGroup>
             <middleGroup>1</middleGroup>
             <subGroup>1</subGroup>
@@ -348,15 +218,10 @@
     <xml>
       <ConnectionStateRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest">
         <communicationChannelId>102</communicationChannelId>
-        <hpaiControlEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiControlEndpoint>
@@ -371,7 +236,7 @@
     <xml>
       <ConnectionStateResponse className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateResponse">
         <communicationChannelId>102</communicationChannelId>
-        <status>0</status>
+        <status>NO_ERROR</status>
       </ConnectionStateResponse>
     </xml>
   </testcase>
@@ -382,7 +247,7 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DeviceConfigurationRequest className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequest">
-        <deviceConfigurationRequestDataBlock>
+        <deviceConfigurationRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationRequestDataBlock">
           <communicationChannelId>103</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
         </deviceConfigurationRequestDataBlock>
@@ -403,10 +268,10 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <DeviceConfigurationAck className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAck">
-        <deviceConfigurationAckDataBlock>
+        <deviceConfigurationAckDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAckDataBlock">
           <communicationChannelId>103</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
-          <status>0</status>
+          <status>NO_ERROR</status>
         </deviceConfigurationAckDataBlock>
       </DeviceConfigurationAck>
     </xml>
@@ -419,15 +284,10 @@
     <xml>
       <DisconnectRequest className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectRequest">
         <communicationChannelId>103</communicationChannelId>
-        <hpaiControlEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiControlEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIControlEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>62513</ipPort>
         </hpaiControlEndpoint>
@@ -442,7 +302,7 @@
     <xml>
       <DisconnectResponse className="org.apache.plc4x.java.knxnetip.readwrite.DisconnectResponse">
         <communicationChannelId>102</communicationChannelId>
-        <status>0</status>
+        <status>NO_ERROR</status>
       </DisconnectResponse>
     </xml>
   </testcase>
@@ -453,11 +313,11 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
-        <tunnelingRequestDataBlock>
+        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
           <communicationChannelId>107</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
         </tunnelingRequestDataBlock>
-        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMILBusmonInd">
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
           <additionalInformationLength>7</additionalInformationLength>
           <additionalInformation>
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
@@ -469,25 +329,33 @@
               <sequenceNumber>5</sequenceNumber>
             </additionalInformation>
             <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp">
-              <relativeTimestamp>
+              <relativeTimestamp className="org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp">
                 <timestamp>17666</timestamp>
               </relativeTimestamp>
             </additionalInformation>
           </additionalInformation>
-          <rawFrame>
-            <rawFrame>188</rawFrame>
-            <rawFrame>54</rawFrame>
-            <rawFrame>10</rawFrame>
-            <rawFrame>30</rawFrame>
-            <rawFrame>12</rawFrame>
-            <rawFrame>225</rawFrame>
-            <rawFrame>0</rawFrame>
-            <rawFrame>129</rawFrame>
-            <rawFrame>13</rawFrame>
-          </rawFrame>
+          <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData">
+            <standardFrame>true</standardFrame>
+            <polling>false</polling>
+            <doNotRepeat>true</doNotRepeat>
+            <priority>LOW</priority>
+            <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
+              <mainGroup>3</mainGroup>
+              <middleGroup>6</middleGroup>
+              <subGroup>10</subGroup>
+            </sourceAddress>
+            <destinationAddress>Hgw=</destinationAddress>
+            <groupAddress>true</groupAddress>
+            <hopCount>6</hopCount>
+            <dataLength>1</dataLength>
+            <tpci>0</tpci>
+            <apci>GROUP_VALUE_WRITE_PDU</apci>
+            <dataFirstByte>1</dataFirstByte>
+            <data></data>
+            <crc>13</crc>
+          </cemiFrame>
         </cemi>
       </TunnelingRequest>
-
     </xml>
   </testcase>
 
@@ -497,10 +365,10 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <TunnelingResponse className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponse">
-        <tunnelingResponseDataBlock>
+        <tunnelingResponseDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingResponseDataBlock">
           <communicationChannelId>107</communicationChannelId>
           <sequenceCounter>0</sequenceCounter>
-          <status>0</status>
+          <status>NO_ERROR</status>
         </tunnelingResponseDataBlock>
       </TunnelingResponse>
     </xml>
@@ -512,27 +380,17 @@
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <ConnectionRequest className="org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest">
-        <hpaiDiscoveryEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiDiscoveryEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDiscoveryEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>50185</ipPort>
         </hpaiDiscoveryEndpoint>
-        <hpaiDataEndpoint>
-          <hostProtocolCode>1</hostProtocolCode>
-          <ipAddress>
-            <addr>
-              <addr>192</addr>
-              <addr>168</addr>
-              <addr>42</addr>
-              <addr>70</addr>
-            </addr>
+        <hpaiDataEndpoint className="org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint">
+          <hostProtocolCode>IPV4_UDP</hostProtocolCode>
+          <ipAddress className="org.apache.plc4x.java.knxnetip.readwrite.IPAddress">
+            <addr>wKgqRg==</addr>
           </ipAddress>
           <ipPort>50186</ipPort>
         </hpaiDataEndpoint>

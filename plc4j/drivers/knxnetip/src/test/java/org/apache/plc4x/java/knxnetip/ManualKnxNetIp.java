@@ -24,10 +24,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ManualKnxNetIp {

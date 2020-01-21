@@ -37,6 +37,7 @@
     <module>ab-eth</module>
     <!--module>ads</module>
     <module>ethernet-ip</module-->
+    <module>knxnetip</module>
     <module>mock</module>
     <!--module>modbus</module>
     <module>s7</module>

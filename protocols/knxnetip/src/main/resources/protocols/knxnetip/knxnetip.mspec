@@ -520,7 +520,9 @@
 ]
 
 [enum uint 8 'KnxLayer'
-   ['0x80' TUNNEL_BUSMONITOR]
+    ['0x02' TUNNEL_LINK_LAYER]
+    ['0x04' TUNNEL_RAW]
+    ['0x80' TUNNEL_BUSMONITOR]
 ]
 
 [enum uint 4 'APCI'
