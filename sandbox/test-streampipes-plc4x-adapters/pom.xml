@@ -79,13 +79,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-bacnetip-driver</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-knxnetip</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-knxnetip-driver</artifactId>
+      <artifactId>test-java-bacnetip-driver</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
 

@@ -24,6 +24,7 @@ import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
+import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -72,7 +73,7 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
 
     @Override
     protected ProtocolStackConfigurer<AmsPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(AmsPacket.class)
+        return SingleProtocolStackConfigurer.builder(AmsPacket.class, AmsPacketIO.class)
             .withProtocol(AdsProtocolLogic.class)
             .build();
     }

@@ -34,7 +34,7 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
             @Override
             public TPKTPacket parse(ReadBuffer io, Object... args) throws ParseException {
                 try {
-                    return TPKTPacketIO.parse(io);
+                    return TPKTPacketIO.staticParse(io);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new ParseException("Error parsing message", e);
@@ -42,9 +42,9 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
             }
 
             @Override
-            public void serialize(WriteBuffer io, TPKTPacket value) throws ParseException {
+            public void serialize(WriteBuffer io, TPKTPacket value, Object... args) throws ParseException {
                 try {
-                    TPKTPacketIO.serialize(io, value);
+                    TPKTPacketIO.staticSerialize(io, value);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new ParseException("Error serializing message", e);

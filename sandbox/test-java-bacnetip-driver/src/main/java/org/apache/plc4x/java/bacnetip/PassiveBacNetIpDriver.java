@@ -24,6 +24,7 @@ import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
 import org.apache.plc4x.java.bacnetip.protocol.PassiveBacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
+import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -65,7 +66,7 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     @Override
     protected ProtocolStackConfigurer<BVLC> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(BVLC.class)
+        return SingleProtocolStackConfigurer.builder(BVLC.class, BVLCIO.class)
             .withProtocol(PassiveBacNetIpProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)

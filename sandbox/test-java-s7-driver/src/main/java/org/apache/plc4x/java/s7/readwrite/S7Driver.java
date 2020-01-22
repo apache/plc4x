@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
+import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.apache.plc4x.java.s7.readwrite.field.S7PlcFieldHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -74,7 +75,7 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(TPKTPacket.class)
+        return SingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacketIO.class)
             .withProtocol(S7ProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)

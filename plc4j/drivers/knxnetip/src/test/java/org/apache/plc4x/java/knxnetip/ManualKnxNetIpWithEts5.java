@@ -78,12 +78,12 @@ public class ManualKnxNetIpWithEts5 {
                                 ReadBuffer addressReadBuffer = new ReadBuffer(destinationGroupAddress);
                                 // Decode the group address depending on the project settings.
                                 KNXGroupAddress destinationAddress =
-                                    KNXGroupAddressIO.parse(addressReadBuffer, groupAddressType);
+                                    KNXGroupAddressIO.staticParse(addressReadBuffer, groupAddressType);
                                 final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
                                 ReadBuffer rawDataReader = new ReadBuffer(payload);
 
-                                final KnxDatapoint datapoint = KnxDatapointIO.parse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+                                final KnxDatapoint datapoint = KnxDatapointIO.staticParse(rawDataReader, groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
                                 final String jsonDatapoint = datapoint.toString(ToStringStyle.JSON_STYLE);
 
                                 if("Isttemperatur".equals(groupAddress.getName())) {

@@ -520,7 +520,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         try {
             DataTransportSize transportSize = (field.getDataType().getDataProtocolId() == 1) ?
                 DataTransportSize.BIT : DataTransportSize.BYTE_WORD_DWORD;
-            WriteBuffer writeBuffer = DataItemIO.serialize(plcValue, field.getDataType().getDataProtocolId());
+            WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, field.getDataType().getDataProtocolId());
             if(writeBuffer != null) {
                 byte[] data = writeBuffer.getData();
                 return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
@@ -534,7 +534,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
     private PlcValue parsePlcValue(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
-            return DataItemIO.parse(readBuffer, field.getDataType().getDataProtocolId());
+            return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
         } catch (ParseException e) {
             logger.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
         }

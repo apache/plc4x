@@ -164,7 +164,7 @@ public class ProtocolTestsuiteRunner {
             Method serializeMethodTmp = null;
             final List<Class<?>> parameterTypes = new LinkedList<>();
             for (Method method : ioClass.getMethods()) {
-                if(method.getName().equals("parse") && Modifier.isStatic(method.getModifiers()) &&
+                if(method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) &&
                     (method.getReturnType() == ioRootClass)) {
                     parseMethodTmp = method;
 
@@ -174,7 +174,7 @@ public class ProtocolTestsuiteRunner {
                         parameterTypes.add(parameterType);
                     }
                 }
-                if(method.getName().equals("serialize") && Modifier.isStatic(method.getModifiers()) &&
+                if(method.getName().equals("staticSerialize") && Modifier.isStatic(method.getModifiers()) &&
                     (method.getParameterTypes()[1] == ioRootClass)) {
                     serializeMethodTmp = method;
                 }
@@ -222,7 +222,7 @@ public class ProtocolTestsuiteRunner {
                 }
 
                 @Override
-                public void serialize(WriteBuffer io, Object value) throws ParseException {
+                public void serialize(WriteBuffer io, Object value, Object... args) throws ParseException {
                     try {
                         serializeMethod.invoke(null, io, value);
                     } catch (IllegalAccessException | InvocationTargetException e) {

@@ -43,6 +43,7 @@ import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 <#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,47 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ${typeName}IO {
+public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if></#if> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-    public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+<#if !helper.isDiscriminatedType(type)>
+    @Override
+    public ${typeName} parse(ReadBuffer io, Object... args) throws ParseException {
+        <#if type.parserArguments?has_content>
+        if((args == null) || (args.length != ${type.parserArguments?size})) {
+            throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
+        }
+        <#list type.parserArguments as parserArgument>
+        if(!(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeName(parserArgument.type, false)})) {
+            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeName(parserArgument.type, false)} but was " + args[${parserArgument?index}].getClass().getName());
+        }
+        ${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name} = (${helper.getLanguageTypeName(parserArgument.type, false)}) args[${parserArgument?index}];
+        </#list>
+        </#if>
+        return ${typeName}IO.staticParse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+    }
+
+    <#if outputFlavor != "passive">
+    @Override
+    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+        <#if helper.getSerializerArguments(type.parserArguments)?has_content>
+        if((args == null) || (args.length != ${type.parserArguments?size})) {
+            throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
+        }
+        <#list helper.getSerializerArguments(type.parserArguments) as serializerArgument>
+        if(!(args[${serializerArgument?index}] instanceof ${helper.getLanguageTypeName(serializerArgument.type, false)})) {
+            throw new PlcRuntimeException("Argument ${serializerArgument?index} expected to be of type ${helper.getLanguageTypeName(serializerArgument.type, false)} but was " + args[${serializerArgument?index}].getClass().getName());
+        }
+        ${helper.getLanguageTypeName(serializerArgument.type, false)} ${serializerArgument.name} = (${helper.getLanguageTypeName(serializerArgument.type, false)}) args[${serializerArgument?index}];
+        </#list>
+        </#if>
+        ${typeName}IO.staticSerialize(io, value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+    }
+
+    </#if>
+</#if>
+    public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
         int curPos;
 <#list type.fields as field>
@@ -82,7 +119,7 @@ public class ${typeName}IO {
             ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
             for(int curItem = 0; curItem < itemCount; curItem++) {
                 <#if !helper.isSimpleType(field.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-                ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+                ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -94,7 +131,7 @@ public class ${typeName}IO {
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         int ${field.name}EndPos = io.getPos() + _${field.name}Length;
         while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
@@ -105,7 +142,7 @@ public class ${typeName}IO {
         // Terminated array
         List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
         while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}))) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
 
             <#-- After parsing, update the current position, but only if it's needed -->
             <#if field.loopExpression.contains("curPos")>
@@ -236,7 +273,7 @@ public class ${typeName}IO {
         </#if>
         ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
         if(${helper.toParseExpression(field, field.conditionExpression, type.parserArguments)?no_esc}) {
-            ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#break>
     <#case "padding">
@@ -261,7 +298,7 @@ public class ${typeName}IO {
     <#case "simple">
 
         // Simple Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         <#break>
     <#case "switch">
 
@@ -269,7 +306,7 @@ public class ${typeName}IO {
         ${typeName}Builder builder = null;
         <#list field.cases as case>
         <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
-            builder = ${case.name}IO.parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+            builder = ${case.name}IO.staticParse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
         if (builder == null) {
@@ -296,7 +333,7 @@ public class ${typeName}IO {
     }
 
 <#if outputFlavor != "passive">
-    public static void serialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static void staticSerialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
 
 <#list type.fields as field>
@@ -312,7 +349,7 @@ public class ${typeName}IO {
                 ${helper.getWriteBufferReadMethodCall(field.type, "element")?no_esc};
                 <#else>
                 boolean lastItem = curItem == (itemCount - 1);
-                ${field.type.name}IO.serialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+                ${field.type.name}IO.staticSerialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
                 </#if>
                 curItem++;
             }
@@ -375,7 +412,7 @@ public class ${typeName}IO {
             <#if helper.isSimpleType(field.type)>
             ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
             <#else>
-            ${field.type.name}IO.serialize(io, ${field.name});
+            ${field.type.name}IO.staticSerialize(io, ${field.name});
             </#if>
         }
         <#break>
@@ -400,7 +437,7 @@ public class ${typeName}IO {
         <#if helper.isSimpleType(field.type)>
         ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#else>
-        ${field.type.name}IO.serialize(io, ${field.name});
+        ${field.type.name}IO.staticSerialize(io, ${field.name});
         </#if>
         <#break>
     <#case "switch">
@@ -408,7 +445,7 @@ public class ${typeName}IO {
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
         <#list field.cases as case>
         if(_value instanceof ${case.name}) {
-            ${case.name}IO.serialize(io, (${case.name}) _value);
+            ${case.name}IO.staticSerialize(io, (${case.name}) _value);
         }<#sep> else </#sep>
         </#list>
         <#break>

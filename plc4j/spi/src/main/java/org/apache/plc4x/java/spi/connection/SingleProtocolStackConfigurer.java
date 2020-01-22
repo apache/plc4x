@@ -24,11 +24,13 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.exceptions.InternalPlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.generation.MessageIO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
@@ -42,12 +44,13 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final Class<BASE_PACKET_CLASS> basePacketClass;
     private boolean bigEndian = true;
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
+    private final MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO;
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
     private final Object[] parserArgs;
 
-    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass) {
-        return new SingleProtocolStackBuilder<>(basePacketClass);
+    public static <BPC extends Message> SingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, Class<? extends MessageIO<BPC, BPC>> messageIoClass) {
+        return new SingleProtocolStackBuilder<>(basePacketClass, messageIoClass);
     }
 
     /** Only accessible via Builder */
@@ -55,19 +58,20 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   boolean bigEndian,
                                   Object[] parserArgs,
                                   Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
+                                  MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO,
                                   Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
         this.basePacketClass = basePacketClass;
         this.bigEndian = bigEndian;
         this.parserArgs = parserArgs;
         this.protocolClass = protocol;
+        this.protocolIO = protocolIO;
         this.packetSizeEstimatorClass = packetSizeEstimatorClass;
         this.corruptPacketRemoverClass = corruptPacketRemoverClass;
     }
 
     private ChannelHandler getMessageCodec(Configuration configuration) {
-        ReflectionBasedIo<BASE_PACKET_CLASS> io = new ReflectionBasedIo<>(basePacketClass);
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, io, io, bigEndian, parserArgs,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO, bigEndian, parserArgs,
             packetSizeEstimatorClass != null ? configure(configuration, createInstance(packetSizeEstimatorClass)) : null,
             corruptPacketRemoverClass != null ? configure(configuration, createInstance(corruptPacketRemoverClass)) : null);
     }
@@ -98,15 +102,17 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
      */
     public static final class SingleProtocolStackBuilder<BASE_PACKET_CLASS extends Message> {
 
-        private Class<BASE_PACKET_CLASS> basePacketClass;
+        private final Class<BASE_PACKET_CLASS> basePacketClass;
+        private final Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass;
         private boolean bigEndian = true;
         private Object[] parserArgs;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;
         private Class<? extends Consumer<ByteBuf>> corruptPacketRemover;
 
-        public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass) {
+        public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass) {
             this.basePacketClass = basePacketClass;
+            this.messageIoClass = messageIoClass;
         }
 
         public SingleProtocolStackBuilder<BASE_PACKET_CLASS> littleEndian() {
@@ -136,8 +142,13 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         public SingleProtocolStackConfigurer<BASE_PACKET_CLASS> build() {
             assert this.protocol != null;
-            return new SingleProtocolStackConfigurer<>(
-                basePacketClass, bigEndian, parserArgs, protocol, packetSizeEstimator, corruptPacketRemover);
+            try {
+                final MessageIO messageIo = messageIoClass.getDeclaredConstructor().newInstance();
+                return new SingleProtocolStackConfigurer<>(
+                    basePacketClass, bigEndian, parserArgs, protocol, messageIo, packetSizeEstimator, corruptPacketRemover);
+            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                throw new PlcRuntimeException("Error initializing MessageIO instance", e);
+            }
         }
 
     }

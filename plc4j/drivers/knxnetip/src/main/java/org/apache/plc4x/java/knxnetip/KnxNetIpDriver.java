@@ -20,6 +20,7 @@ package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
@@ -77,7 +78,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
 
     @Override
     protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class)
+        return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class, KNXNetIPMessageIO.class)
             .withProtocol(KnxNetIpProtocolLogic.class)
             .withPacketSizeEstimator(PacketSizeEstimator.class)
             .build();

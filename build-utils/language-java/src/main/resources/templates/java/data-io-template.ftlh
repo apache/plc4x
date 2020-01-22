@@ -62,7 +62,7 @@ public class ${typeName}IO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
-    public static PlcValue parse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
             <#list case.fields as field>
                 <#assign skipReturn=false>
@@ -85,7 +85,7 @@ public class ${typeName}IO {
                 int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc};
                 ${field.name} = new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[itemCount];
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+                    ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -97,7 +97,7 @@ public class ${typeName}IO {
             List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
             int ${field.name}EndPos = io.getPos() + _${field.name}Length;
             while(io.getPos() < ${field.name}EndPos) {
-                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if field.loopExpression.contains("curPos")>
                 curPos = io.getPos() - startPos;
@@ -108,7 +108,7 @@ public class ${typeName}IO {
             // Terminated array
             List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
             while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}))) {
-                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+                _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
 
                 <#-- After parsing, update the current position, but only if it's needed -->
                                 <#if field.loopExpression.contains("curPos")>
@@ -185,7 +185,7 @@ public class ${typeName}IO {
                     <#case "simple">
 
             // Simple Field (${field.name})
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.parse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+            ${helper.getNonPrimitiveLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
                     <#break>
                 </#switch>
             </#list>
@@ -225,7 +225,7 @@ public class ${typeName}IO {
     }
 
 <#if outputFlavor != "passive">
-    public static WriteBuffer serialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
             WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case)});
             <#list case.fields as field>
@@ -264,7 +264,7 @@ public class ${typeName}IO {
                         <#if helper.isSimpleType(field.type)>
             ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
                         <#else>
-            ${field.type.name}IO.serialize(io, ${field.name});
+            ${field.type.name}IO.staticSerialize(io, ${field.name});
                         </#if>
                     <#break>
                 </#switch>

@@ -68,7 +68,7 @@ public class IOTest {
         KNXNetIPMessage packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = KNXNetIPMessageIO.parse(rBuf);
+            packet = KNXNetIPMessageIO.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -80,7 +80,7 @@ public class IOTest {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            KNXNetIPMessageIO.serialize(wBuf, packet);
+            KNXNetIPMessageIO.staticSerialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();

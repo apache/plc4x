@@ -19,8 +19,12 @@
 
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.api.value.PlcValue;
+
 public interface Message {
 
     int getLengthInBytes();
+
+    PlcValue toPlcValue();
 
 }

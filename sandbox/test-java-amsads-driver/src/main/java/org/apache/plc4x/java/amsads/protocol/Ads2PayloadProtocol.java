@@ -62,7 +62,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         }
         WriteBuffer writeBuffer = new WriteBuffer(amsPacket.getLengthInBytes(), true);
         try {
-            AmsPacketIO.serialize(writeBuffer, amsPacket);
+            AmsPacketIO.staticSerialize(writeBuffer, amsPacket);
         } catch (ParseException e) {
             throw new AdsException(invokeId, e);
         }
@@ -83,7 +83,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         ReadBuffer readBuffer = new ReadBuffer(bytes);
         while (readBuffer.getPos() < bytes.length) {
             try {
-                AmsPacket packet = AmsPacketIO.parse(readBuffer);
+                AmsPacket packet = AmsPacketIO.staticParse(readBuffer);
                 out.add(packet);
             } catch (Exception e) {
                 LOGGER.warn("Error decoding package: " + e.getMessage());

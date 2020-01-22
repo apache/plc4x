@@ -37,7 +37,7 @@ public class BenchmarkGeneratedS7 {
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = TPKTPacketIO.parse(rBuf);
+            packet = TPKTPacketIO.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -49,7 +49,7 @@ public class BenchmarkGeneratedS7 {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            TPKTPacketIO.serialize(wBuf, packet);
+            TPKTPacketIO.staticSerialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();

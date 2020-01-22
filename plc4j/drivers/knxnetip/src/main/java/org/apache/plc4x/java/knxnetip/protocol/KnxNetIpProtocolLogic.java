@@ -261,7 +261,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
                             // Parse the payload depending on the type of the group-address.
                             ReadBuffer rawDataReader = new ReadBuffer(payload);
-                            final PlcValue value = KnxDatapointIO.parse(rawDataReader,
+                            final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
                                 groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
 
                             // Assemble the plc4x return data-structure.
