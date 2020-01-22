@@ -22,11 +22,6 @@
 This File contains the names and outputs of some tests that have been seen to fail without direct code-changes.
 It's sort of a collection of places we should keep an eye out for improving tests-
 
-## Module: plc4l-opm
+## Module: plc4j-spi
 
-[ERROR]   ConnectedEntityTest.useCache_timeout_refetches:83
-mockDevice.read(<any>);
-Wanted 2 times:
--> at org.apache.plc4x.java.opm.ConnectedEntityTest.useCache_timeout_refetches(ConnectedEntityTest.java:83)
-But was 1 time:
--> at org.apache.plc4x.java.mock.PlcMockConnection.lambda$null$0(PlcMockConnection.java:111)
+RequestTransactionManagerTest.abortTransactionFromExternally
