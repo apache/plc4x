@@ -107,11 +107,11 @@
       <item name="Wiki" href="developers/wiki.html"/>
     </menu>
     <menu name="Apache" inherit="bottom">
-      <item name="Apache Software Foundation" href="http://www.apache.org/"/>
+      <item name="Apache Software Foundation" href="https://www.apache.org/"/>
       <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
-      <item name="License" href="http://www.apache.org/licenses/"/>
-      <item name="Sponsoring Apache" href="http://www.apache.org/foundation/sponsorship.html"/>
-      <item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
+      <item name="License" href="https://www.apache.org/licenses/"/>
+      <item name="Sponsoring Apache" href="https://www.apache.org/foundation/sponsorship.html"/>
+      <item name="Thanks" href="https://www.apache.org/foundation/thanks.html"/>
     </menu>
   </body>
 
