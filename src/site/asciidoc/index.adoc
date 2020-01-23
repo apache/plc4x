@@ -17,85 +17,61 @@
 :imagesdir: images/
 :icons: font
 
-== Apache PLC4X™: Universal Protocol Adapter for Industrial IoT
-
-image::iot-lab.jpg[width=480, float=right]
-
-[.lead]
-Just like OPC-UA, but totally different.
-
-We are currently probably experiencing the greatest advances in the way we process information in human history.
-
-While these advances are taking over more and more parts of our world, it seems one large segment has continuously been missing out all the fun.
-
-As everyone is talking about IoT, virtualization, BigData, FastData and machine-learning, the manufacturing industry has seemed to been stuck in a closed-source proprietary world.
-
-Unfortunately the industry's Programmable Logic Controllers (PLCs) communicate with a large number of usually incompatible protocols.
-This has made it difficult to create applications that integrate these systems with the new world.
-
-This is where PLC4X™ comes in:
-
-*It is our goal to create a set of libraries, that allow unified access to any type of PLC*
-
-In general we are trying to achieve the same goal OPC-UA is trying to address, but we try to do this by going a completely different path.
-
-While with OPC-UA every device has to be retrofitted with the ability to speak a new protocol and use a common client to speak with these devices,
-PLC4X tries to provide a unified API by implementing drivers for communicating with most industrial controllers in the protocols they natively understand.
-
-Each of these drivers is being implemented from the specs or by reverse engineering protocols in order to be fully Apache 2.0 licensed.
-
-The major benefits of PLC4X™ over OPC-UA, from our point of view are:
-
-- No need to modify existing hardware
-- Activating OPC-UA support on existing PLCs greatly increases the load on the PLCs
-- No need to pay for licenses to activate OPC-UA support
-
-At first we will be concentrating on providing adapters for the most widely used protocols such as:
-
-- icon:pause-circle[role=light-gray] BACnet
-- icon:check[role=green] link:protocols/ads/index.html[Beckhoff ADS (TCP)]
-- icon:wrench[role=yellow] link:protocpls/delta-v/index.html[Emerson DeltaV (UDP)]
-- icon:wrench[role=yellow] link:protocols/ethernet-ip/index.html[EtherNet/IP (TCP)]
-- icon:wrench[role=yellow] KNXNet/IP (UDP)
-- icon:check[role=green] link:protocols/modbus/index.html[Modbus (TCP)]
-- icon:check[role=green] link:protocols/opc-ua/index.html[OPC-UA (TCP)]
-- icon:pause-circle[role=light-gray] Profinet
-- icon:check[role=green] link:protocols/s7/index.html[S7-STEP7 (TCP)]
-- icon:wrench[role=yellow] link:protocols/s7/index.html[S7-TIA (TCP)]
-
-We are planning on providing support for the following programming languages:
-
-- icon:wrench[role=yellow] C++
-- icon:wrench[role=yellow] C# (.Net)
-- icon:check[role=green] link:plc4j/index.html[Java]
-- icon:wrench[role=yellow] Python
-
-Beyond implementing the pure adapters we have already implemented some of the planned integration modules to popular projects in the Apache IoT world such as:
-
-[width=100%]
-|===
-a|image::apache_edgent_logo.png[width=80%,link=https://edgent.apache.org] a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] a|image::apache_kafka_logo.png[width=80%,link=https://kafka.apache.org]
-|icon:check[role=green] https://edgent.apache.org[Apache Edgent™ (Incubating)] |icon:check[role=green] https://camel.apache.org[Apache Camel™] |icon:check[role=green] https://kafka.apache.org[Apache Kafka™]
-
-a|image::apache_nifi_logo.svg[width=80%,link=https://nifi.apache.org] a|image::apache_brooklyn_logo.png[width=80%,link=https://brooklyn.apache.org] a|image::apache_mynewt_logo.png[width=80%,link=https://mynewt.apache.org]
-|icon:wrench[role=yellow] https://nifi.apache.org[Apache Nifi™] |icon:pause-circle[role=light-gray] https://brooklyn.apache.org[Apache Brooklyn™] |icon:pause-circle[role=light-gray] https://mynewt.apache.org[Apache Mynewt™]
-|===
-
-This greatly reduces the barriers and the learning curve for creating industrial IoT applications.
-
-=== Upcoming Conferences & Meetups
-
-On this page we are listing options to attend talks and events around PLC4X.
-
-[width="100%",cols="2,^2,2,^2,^3",options="header"]
-|=========================================================
-|Date           |Location        |Type   |Event                                                                 |Title
-|24th May 2019  |Frankfurt (GER) |Meetup |https://www.meetup.com/de-DE/IoT-Hessen/events/261422034/[IoT Hessen] |Industrial IoT goes Open Source: Apache PLC4X Talks & Party
-|18th June 2019 |Erfurt (GER)    |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen]  |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
-|=========================================================
-
-A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.html[here].
-
-Looking forward to meeting you.
-
-If you've got or found any events or talks we might be missing, please inform us on dev@plc4x.apache.org.
+++++
+    <header class="bg-light text-white align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <h1>The universal protocol adapter for Industrial IoT</h1>
+            <p class="lead">Building bridges between IT and OT</p>
+        </div>
+    </header>
+    <section id="no-retrofit" class="align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Connect your shopfloor assets without having to retrofit them</h2>
+                    <p class="lead">In contrast to other approches, Apache PLC4X lets you connect your industrial assets without needing to modify them.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="secure" class="bg-light align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Secure by design</h2>
+                    <p class="lead">Not only are Apache PLC4X drivers implemented with security in mind, also do our <b>passive-mode drivers</b> bring to you guaranteed side-effect-freeness without the need to pay for validated software.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="performant" class="align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Get the performance you need</h2>
+                    <p class="lead">Most approaches like OPC-UA currently don't deliver the performance needed for machine learning, deep learning and AI. Apache PLC4X allows you to get the data volumes in the resolutons needed, without stressing out your industial hardware.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="costs" class="bg-light align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>No license-costs, no restrictive licenses</h2>
+                    <p class="lead">Being open-source, Apache PLC4X is <b>free of charge</b>. Start experimenting without worrying about license costs or shady license agreements. The Apache 2.0 is one of the worlds <b>most trusted and adopted</b> open-source licenses out there.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="with-support" class="align-middle" style="height: 300px;">
+        <div class="container text-center pt-5">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h2>Get the commercial support you need</h2>
+                    <p class="lead">Just because you can download and use Apache PLC4X for free doesn't mean that your're left on your own. Some of our community member's comapnies can also provide your with the <b>commercial support</b> you need.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+++++

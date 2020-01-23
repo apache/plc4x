@@ -166,11 +166,6 @@
     <asciidoctor.maven.plugin.version>2.0.0-RC.1</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.0.0</asciidoctorj.version>
     <asciidoctorj.diagram.version>1.5.16</asciidoctorj.diagram.version>
-    <reflow.skin.version>1.5.0</reflow.skin.version>
-    <bootstrap.version>3.3.7</bootstrap.version>
-    <jquery.version>3.3.1</jquery.version>
-    <anchorjs.version>3.2.2</anchorjs.version>
-    <fontawesome.version>5.2.0</fontawesome.version>
   </properties>
 
   <modules>
@@ -986,160 +981,7 @@
 
         Starting here the following plugins are used for generating the projects website.
 
-        Most of the complexity is due to the fact that we selected "localResouces" in the site.xml
-        This causes the generated output not to rely on external resources. Therefore we have to
-        manually take care of fetching and packaging these external resources with the generated site.
       -->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>io.github.devacfr.maven.skins</groupId>
-                  <artifactId>reflow-default-webdeps</artifactId>
-                  <version>${reflow.skin.version}</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <includes>
-                    **/css/bootstrap.min.css,
-                    **/css/fontawesome/*,
-                    **/js/*.js,
-                    **/js/languages/*,
-                    **/js/styles/default.min.css
-                  </includes>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
-        Replace the bootstrap css with the version of the theme
-      -->
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>get-fontawesome</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://use.fontawesome.com/releases/v${fontawesome.version}/fontawesome-free-${fontawesome.version}-web.zip</url>
-              <unpack>true</unpack>
-              <outputDirectory>${project.build.directory}/dependency/fontawesome</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-site-resources</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web
-                  </directory>
-                  <includes>
-                    <include>css/all.min.css</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/dependency/fontawesome/fontawesome-free-${fontawesome.version}-web/webfonts
-                  </directory>
-                  <targetPath>${project.build.directory}/site/fonts</targetPath>
-                </resource>
-                <resource>
-                  <directory>${project.basedir}/src/site/resources-filtered</directory>
-                  <filtering>true</filtering>
-                  <targetPath>${project.build.directory}/site</targetPath>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
-        The bootstrap uses "fonts" as directory for locating fonts and fontawesome uses "webfonts".
-        This plugin updates the css to also use "fonts".
-      -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <executions>
-          <execution>
-            <id>streamline-font-urls</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${project.build.directory}/site/css/all.min.css</file>
-              <replacements>
-                <replacement>
-                  <token>../webfonts/</token>
-                  <value>../fonts/</value>
-                </replacement>
-              </replacements>
-            </configuration>
-          </execution>
-          <execution>
-            <id>convert-property-to-adoc</id>
-            <!-- Only execute this for the parent module -->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${project.build.directory}/pom.adoc</file>
-              <replacements>
-                <replacement>
-                  <token>(.*)=(.*)</token>
-                  <value>\:$1\: $2</value>
-                </replacement>
-                <replacement>
-                  <token>#(.*)</token>
-                  <value>// $1</value>
-                </replacement>
-              </replacements>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
       <!--
         Make the maven-site-plugin stage the output in the "asf-site" branch
@@ -1375,13 +1217,6 @@
             </asciidoc>
           </configuration>
           <dependencies>
-            <!-- All dependencies needed by the reflow skin -->
-            <dependency>
-              <groupId>io.github.devacfr.maven.skins</groupId>
-              <artifactId>reflow-velocity-tools</artifactId>
-              <version>${reflow.skin.version}</version>
-            </dependency>
-
            <!-- Add support for asciidoctor -->
             <dependency>
               <groupId>org.asciidoctor</groupId>

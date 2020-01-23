@@ -1,0 +1,165 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Testing (or using PLC4X without a PLC)
+
+=== The Mock Driver
+
+PLC4X has a _Mock Driver_ which was initially implemented to be used for Unit Tests and this still is its main purpose.
+But this driver is also very suitable to play around a bit with the PLC4X API if no _Hardware_ PLC is available.
+The driver can be found in the Maven module
+
+```
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-test</artifactId>
+  <version>${current.version}</version>
+  <scope>test</scope>
+</dependency>
+```
+
+The connection string Syntax for the mock driver is `mock:{name-of-the-connection}`. So you can use multiple Mock Devices at the same time.
+
+The Mock Driver does nothing else than forwarding all Requests to a _Virtual Device_ which we can provide to control all responses and also Monitor them, e.g. for unit tests.
+The Interface for the Mock Device is
+
+```
+public interface MockDevice {
+
+    Pair<PlcResponseCode, PlcValue> read(String fieldQuery);
+
+    PlcResponseCode write(String fieldQuery, Object value);
+
+    Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery);
+
+    void unsubscribe();
+
+    // ...
+
+}
+```
+
+=== Simple Example
+
+Imagine we have some Code which we cannot control or whose functionality we want to test.
+This can be done with the Mock Driver in the following way.
+
+First, a new Mock Connection is established (like any other connection also would be):
+```
+PlcDriverManager driverManager = new PlcDriverManager();
+PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:my-mock-connection");
+```
+You see, that we directly cast the Connection to a `PlcMockConnection`. This is done, because we need to _connect_ a Device to this Mock Connection.
+
+This is done in the following Snippet
+```
+connection.setDevice(mockDevice);
+```
+Here, we pass it an instance of `MockDevice` which could be a simple Implementation of the interface like
+```
+MockDevice mockDevice = new MockDevice() {
+
+    Pair<PlcResponseCode, PlcValue> read(String fieldQuery) {
+        System.out.println("I got a read to " + fieldQuery);
+        return Pair.of(PlcResponseCode.OK, new PlcString("hello"));
+    }
+
+    PlcResponseCode write(String fieldQuery, Object value) {
+        System.out.println("I got a write to " + fieldQuery + " with the value " + value);
+        return PlcResponseCode.OK;
+    }
+
+    // ...
+
+}
+```
+This would just return a String Value `hello` for every request and print all read and write requests to the Console.
+
+=== Unit Testing with the Mock Driver
+
+To use the Mock driver in Unit Tests the easiest way is to generate the `MockDriver` instance as Mockito (or any other Framework) Mock.
+Like in the following Example
+
+```
+MockDevice mockDevice = Mockito.mock(MockDevice.class);
+
+PlcDriverManager driverManager = new PlcDriverManager();
+PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:my-mock-connection");
+connection.setDevice(mockDevice);
+
+// Populate the Mock to avoid a NPE
+when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hello")));
+
+// Some Demo code that uses the same Driver Manager and either the connection from above
+// or at least mock:my-mock-connection as connection string
+// Here: send a request to the field "MyAdress"
+connection
+    .readRequestBuilder
+    .addItem("station", "MyAdress")
+    .build()
+    .execute()
+    .get();
+
+// Check that the we really issued a Read request to the Field "MyAdress"
+verify(mockDevice).read(eq("MyAdress"));
+```
+
+But as the _MockDriver_ uses a static Mock Connection registry the following Code works also
+
+```
+MockDevice mockDevice = Mockito.mock(MockDevice.class);
+
+// Setup
+PlcDriverManager driverManager = new PlcDriverManager();
+PlcMockConnection connection = (PlcMockConnection) driverManager.getConnection("mock:my-mock-connection");
+connection.setDevice(mockDevice);
+// Populate the Mock to avoid a NPE
+when(mockDevice).read(anyString()).thenReturn(Pair.of(PlcResponseCode.OK, new PlcString("hello")));
+
+// Some Demo code that uses the same Driver Manager and either the connection from above
+// or at least mock:my-mock-connection as connection string
+// Here: send a request to the field "MyAdress"
+// and we build up a new Connection
+try (PlcConnection conn = driverManager.getConnection("mock:my-mock-connection")) {
+    conn
+        .readRequestBuilder
+        .addItem("station", "MyAdress")
+        .build()
+        .execute()
+        .get();
+} catch (Exception e) {
+    // do nothing
+}
+
+// Check that the we really issued a Read request to the Field "MyAdress"
+verify(mockDevice).read(eq("MyAdress"));
+```
+
+The Snippet above shows that the part under test really has to share nothing with the test code except for the connection string.
+
+=== Conclusion
+
+The above examples show that the `MockDriver` driver can not only be used to play around with the API but is also a powerful tool to
+do unit testing of Code which uses the PLC4X API.
+All that needs to be done is to either pass an instance of the Mocked Connection or just use the same Connection string (e.g. from a test configuration) that was used to Prepare a Mock Device.
+Some Examples of futher (more Complex) use cases can be found in the PLC4X Codebases, e.g. in the following classes
+
+* `org.apache.plc4x.java.opm.PlcEntityManagerTest`
+* `org.apache.plc4x.java.opm.PlcEntityManagerComplexTest`
+* `org.apache.plc4x.java.scraper.ScraperTest`
+
+and many more Test classes, especially in the OPM and the Scraper Module.
