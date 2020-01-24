@@ -18,3 +18,8 @@
 :icons: font
 
 == Eclipse Ditto
+… where IoT devices and their digital twins get together
+
+https://www.eclipse.org/ditto/
+
+Eclipse Ditto - PLC4X Example: https://github.com/eclipse/ditto-examples/tree/master/plc4x
