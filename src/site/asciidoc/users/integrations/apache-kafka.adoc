@@ -18,3 +18,7 @@
 :icons: font
 
 == Apache Kafka
+
+Website: https://kafka.apache.org/[Apache Kafka]
+
+Apache Kafka® is a distributed streaming platform.
