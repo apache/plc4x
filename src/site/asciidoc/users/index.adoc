@@ -23,6 +23,25 @@ This part of the PLC4X website is dedicated to people wanting to use Apache PLC4
 
 It will provide information on the features and how to use them as well as documentation on how to use the different integration modules.
 
+Apache PLC4X allows you to communicate directly with your industrial Hardware, without having to retrofit it.
+
+This is possible, as PLC4X implements drivers for the most common industrial communication protocols and uses these to access industrial hardware using a shared API.
+
+Currently we support the following protocols:
+
+- link:protocols/ab-eth.html[Allen Bradley: AB-ETH]
+- link:protocols/ads.html[Beckhoff: ADS/AMS]
+- link:protocols/bacnetip.html[BACnet/IP]
+- link:protocols/deltav.html[Emerson DeltaV]
+- link:protocols/df1.html[DF1]
+- link:protocols/ethernet-ip.html[EtherNet/IP]
+- link:protocols/knxnetip.html[KNXnet/IP]
+- link:protocols/modbus.html[Modbus (TCP/Serial)]
+- link:protocols/opc-ua.html[OPC UA]
+- link:protocols/s7.html[Siemens: S7 (Step7)]
+
+Besides providing access to devices using one of above protocols, PLC4X also ships with integration modules for the following tools and frameworks.
+
 [width=100%,cols="^.^,^.^,^.^"]
 |===
 a|image::apache_calcite_logo.svg[width=80%,link=https://calcite.apache.org] a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] a|image::apache_edgent_logo.png[width=80%,link=https://edgent.apache.org]
@@ -32,3 +51,11 @@ a|image::apache_iotdb_logo.png[width=80%,link=https://iotdb.apache.org]     a|im
 a|image::apache_streampipes_logo.png[width=80%,link=https://streampipes.apache.org]     a|image::eclipse_ditto_logo.png[link=https://www.eclipse.org/ditto/] a|image::elastic_logstash_logo.png[width=80%,link=https://www.elastic.co/de/products/logstash]
 |icon:wrench[role=yellow] https://mynewt.apache.org[Apache StreamPipes™ (incubating)]   |icon:wrench[role=yellow] https://kafka.apache.org[Apache Kafka™]              |icon:wrench[role=green] https://www.elastic.co/de/products/logstash[Elastic Logstash™]
 |===
+
+As last category of tools come modules that can be used in your applications:
+
+- link:protocols/connection-pool.html[Connection Pool]
+- link:protocols/opm.html[Object PLC Mapping (OPM)]
+- link:protocols/scraper.html[Scraper]
+- link:protocols/testing.html[Testing-Utils]
+

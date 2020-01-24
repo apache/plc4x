@@ -77,8 +77,10 @@
         <item name="Elastic Logstash " href="users/integrations/elastic-logstash.html"/>
       </item>
       <item name="Tools" href="users/tools/index.html">
-        <item name="PLC4X without a PLC and Unit Testing" href="users/testing.html"/>
+        <item name="Connection Pool" href="users/connection-pool.html"/>
         <item name="Object PLC Mapping (OPM)" href="users/opm.html"/>
+        <item name="Scraper" href="users/scraper.html"/>
+        <item name="PLC4X without a PLC and Unit Testing" href="users/testing.html"/>
       </item>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
       <item name="Security" href="users/security.html"/>
