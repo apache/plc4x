@@ -18,3 +18,7 @@
 :icons: font
 
 == Apache Calcite
+
+https://calcite.apache.org/[Apache Calcite]
+Standard SQL
+Industry-standard SQL parser, validator and JDBC driver.
