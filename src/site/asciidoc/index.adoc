@@ -223,7 +223,7 @@
                    <div class="col-lg-12 mx-auto">
                        <i class="fas fa-tachometer-alt fa-7x highlight-icon highlight-icon-secondary"></i>
                        <h2 class="section-highlight-text-secondary">Get the performance you need.</h2>
-                       <p class="lead">Most approaches like OPC-UA currently don't deliver the performance needed for machine learning, deep learning and AI. PLC4X allows you to get the data volumes in the resolutons needed, without stressing out your industial hardware.</p>
+                       <p class="lead">Most approaches like OPC-UA currently don't deliver the performance needed for machine learning, deep learning and AI. PLC4X allows you to get the data volumes in the resolutions needed, without stressing out your industrial hardware.</p>
                    </div>
                </div>
            </div>
@@ -245,7 +245,7 @@
                <div class="row">
                    <div class="col-lg-12 mx-auto">
                        <i class="fas fa-info-circle fa-7x highlight-icon highlight-icon-secondary"></i>
-                       <h2 class="section-highlight-text-secondary">Get the support you need.</h2>
+                       <h2 class="section-highlight-text-secondary">Get the commercial support you need.</h2>
                        <p class="lead">Just because you can download and use PLC4X for free doesn't mean that your're left on your own. Some of our community member's companies can also provide your with the <b>commercial support</b> you need.</p>
                    </div>
                </div>
