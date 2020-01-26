@@ -73,7 +73,7 @@
                        <div id="integrationCarousel" class="carousel slide" data-ride="carousel">
                            <div class="carousel-inner">
                                <div class="carousel-item active">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://calcite.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -86,7 +86,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://camel.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -99,7 +99,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://edgent.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -112,7 +112,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://iotdb.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -125,7 +125,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://kafka.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -138,7 +138,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://nifi.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
@@ -151,7 +151,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://streampipes.apache.org';"
                                             style="cursor:pointer;">
@@ -165,7 +165,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://www.eclipse.org/ditto/';"
                                             style="cursor:pointer;">
@@ -179,7 +179,7 @@
                                    </div>
                                </div>
                                <div class="carousel-item">
-                                   <div class="col-md-4">
+                                   <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://www.elastic.co/products/logstash';"
                                             style="cursor:pointer;">
