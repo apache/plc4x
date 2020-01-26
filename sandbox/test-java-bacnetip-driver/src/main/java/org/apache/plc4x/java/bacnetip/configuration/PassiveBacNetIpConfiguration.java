@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
@@ -26,6 +27,17 @@ import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Packet;
 
 public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapTransportConfiguration {
+
+    @ConfigurationParameter("ede-file-path")
+    public String edeFilePath;
+
+    public String getEdeFilePath() {
+        return edeFilePath;
+    }
+
+    public void setEdeFilePath(String edeFilePath) {
+        this.edeFilePath = edeFilePath;
+    }
 
     @Override
     public int getDefaultPort() {

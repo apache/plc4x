@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip.field;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
@@ -27,10 +28,14 @@ import java.util.regex.Pattern;
 public class BacNetIpField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})(/(?<bitNumber>\\d{1,7}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+        Pattern.compile("^(?<deviceIdentifier>(\\d|\\*))/(?<objectType>(\\d|\\*))/(?<objectInstance>(\\d|\\*))");
 
-    public BacNetIpField() {
-    }
+    public static final int INT_WILDCARD = -1;
+    public static final long LONG_WILDCARD = -1;
+
+    private final long deviceIdentifier;
+    private final int objectType;
+    private final long objectInstance;
 
     public static boolean matches(String fieldString) {
         return ADDRESS_PATTERN.matcher(fieldString).matches();
@@ -39,9 +44,48 @@ public class BacNetIpField implements PlcField {
     public static BacNetIpField of(String fieldString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()) {
-            return new BacNetIpField();
+            long deviceIdentifier = matcher.group("deviceIdentifier").equals("*") ?
+                LONG_WILDCARD : Long.parseLong(matcher.group("deviceIdentifier"));
+            int objectType = matcher.group("objectType").equals("*") ?
+                INT_WILDCARD : Integer.parseInt(matcher.group("objectType"));
+            long objectInstance = matcher.group("objectInstance").equals("*") ?
+                LONG_WILDCARD : Long.parseLong(matcher.group("objectInstance"));
+            return new BacNetIpField(deviceIdentifier, objectType, objectInstance);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+    }
+
+    public BacNetIpField(long deviceIdentifier, int objectType, long objectInstance) {
+        this.deviceIdentifier = deviceIdentifier;
+        this.objectType = objectType;
+        this.objectInstance = objectInstance;
+    }
+
+    public long getDeviceIdentifier() {
+        return deviceIdentifier;
+    }
+
+    public int getObjectType() {
+        return objectType;
+    }
+
+    public long getObjectInstance() {
+        return objectInstance;
+    }
+
+    public boolean matches(BacNetIpField otherField) {
+        return ((deviceIdentifier == LONG_WILDCARD) || (deviceIdentifier == otherField.deviceIdentifier)) &&
+            ((objectType == INT_WILDCARD) || (objectType == otherField.objectType)) &&
+            ((objectInstance == LONG_WILDCARD) || (objectInstance == otherField.objectInstance));
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("deviceIdentifier", deviceIdentifier)
+            .append("objectType", objectType)
+            .append("objectInstance", objectInstance)
+            .toString();
     }
 
 }

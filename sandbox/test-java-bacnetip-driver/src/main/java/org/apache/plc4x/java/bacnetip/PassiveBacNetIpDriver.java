@@ -60,6 +60,21 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     @Override
+    protected boolean canRead() {
+        return false;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
     protected BacNetIpFieldHandler getFieldHandler() {
         return new BacNetIpFieldHandler();
     }
