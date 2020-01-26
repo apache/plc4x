@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.commons.codec.binary.Hex;
+
 import java.util.Collection;
 
 public class StaticHelper {
@@ -91,6 +93,46 @@ public class StaticHelper {
 
     public static int CEIL(double value) {
         return (int) Math.ceil(value);
+    }
+
+    public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
+        try {
+            boolean negative = (signed) && io.readBit();
+            long exponent = io.readUnsignedLong(bitsExponent) - (((long) Math.pow(2, bitsExponent) / 2) - 1);
+            double mantissa = 1D;
+            for(int i = 1; i < bitsMantissa; i++) {
+                if(io.readBit()) {
+                    mantissa += Math.pow(2, (double) i * -1);
+                }
+            }
+            return ((negative) ? -1 : 1) * mantissa * Math.pow(2, exponent);
+        } catch(ParseException e) {
+            return 0.0f;
+        }
+    }
+
+    public static boolean fromFloatSign(double value) {
+        return value < 0;
+    }
+
+    public static long fromFloatExponent(double value, int bitsExponent) {
+        return 0;
+    }
+
+    public static long fromFloatMantissa(double value, int bitsMantissa) {
+        return 0;
+    }
+
+    public static void main(String[] args) throws Exception {
+        /*final byte[] bytes = Hex.decodeHex("420B9000");
+        ReadBuffer io = new ReadBuffer(bytes);
+        final double v = toFloat(io, true, 8, 23);
+        System.out.println(v);*/
+
+        final byte[] bytes = Hex.decodeHex("0C65");
+        ReadBuffer io = new ReadBuffer(bytes);
+        final double v = toFloat(io, true, 4, 11);
+        System.out.println(v);
     }
 
 }

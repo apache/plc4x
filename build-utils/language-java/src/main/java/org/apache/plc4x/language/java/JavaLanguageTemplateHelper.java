@@ -49,6 +49,17 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
 
     public String getLanguageTypeNameForField(TypedField field) {
         boolean optional = field instanceof OptionalField;
+        // If the referenced type is a DataIo type, the value is of type PlcValue.
+        if(field instanceof PropertyField) {
+            PropertyField propertyField = (PropertyField) field;
+            if(propertyField.getType() instanceof ComplexTypeReference) {
+                ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
+                final TypeDefinition typeDefinition = types.get(complexTypeReference.getName());
+                if(typeDefinition instanceof DataIoTypeDefinition) {
+                    return "PlcValue";
+                }
+            }
+        }
         return getLanguageTypeNameForField(field, !optional);
     }
 
@@ -267,18 +278,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
                 String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
                 StringBuilder sb = new StringBuilder("((Supplier<").append(type).append(">) (() -> {");
-                sb.append("\n            try {");
-                if (floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
-                    sb.append("\n               boolean negative = io.readBit();");
-                } else {
-                    sb.append("\n               boolean negative = false;");
-                }
-                sb.append("\n               long exponent = io.readUnsignedLong(").append(floatTypeReference.getExponent()).append(");");
-                sb.append("\n               long mantissa = io.readUnsignedLong(").append(floatTypeReference.getMantissa()).append(");");
-                sb.append("\n               return (").append(typeCast).append(") ((negative ? -1 : 1) * (0.01 * mantissa) * Math.pow(2, exponent));");
-                sb.append("\n            } catch(ParseException e) {");
-                sb.append("\n               return ").append(defaultNull).append(";");
-                sb.append("\n            }");
+                sb.append("\n            return (").append(typeCast).append(") toFloat(io, ").append(
+                    (floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false")
+                    .append(", ").append(floatTypeReference.getExponent()).append(", ")
+                    .append(floatTypeReference.getMantissa()).append(");");
                 sb.append("\n        })).get()");
                 return sb.toString();
             }
@@ -423,6 +426,10 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
 
     public boolean isDiscriminatedType(TypeDefinition typeDefinition) {
         return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
+    }
+
+    public boolean isAbstractField(Field field) {
+        return field instanceof AbstractField;
     }
 
     public boolean isCountArray(ArrayField arrayField) {

@@ -39,6 +39,7 @@ import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddressFreeLevel;
+import org.apache.plc4x.java.knxnetip.readwrite.io.KNXGroupAddressIO;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -248,8 +249,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     final byte[] destinationGroupAddress = cemiDataFrame.getDestinationAddress();
 
                     // Decode the group address depending on the project settings.
-                    final String destinationAddress =
-                        Ets5Model.parseGroupAddress(groupAddressType, destinationGroupAddress);
+                    ReadBuffer addressBuffer = new ReadBuffer(destinationGroupAddress);
+                    final KNXGroupAddress knxGroupAddress =
+                        KNXGroupAddressIO.staticParse(addressBuffer, groupAddressType);
+                    final String destinationAddress = toString(knxGroupAddress);
 
                     // If there is an ETS5 model provided, continue decoding the payload.
                     if(ets5Model != null) {
@@ -268,8 +271,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                             Map<String, PlcValue> dataPointMap = new HashMap<>();
                             dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
                             dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
-                            dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
-                            dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
+                            if(groupAddress.getFunction() != null) {
+                                dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
+                                dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
+                            } else {
+                                dataPointMap.put("location", null);
+                                dataPointMap.put("function", null);
+                            }
                             dataPointMap.put("description", new PlcString(groupAddress.getName()));
                             dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
                             dataPointMap.put("value", value);

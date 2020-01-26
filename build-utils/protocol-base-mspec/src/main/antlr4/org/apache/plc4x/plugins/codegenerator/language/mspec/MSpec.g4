@@ -42,7 +42,8 @@ dataIoDefinition
  ;
 
 field
- : arrayField
+ : abstractField
+ | arrayField
  | checksumField
  | constField
  | discriminatorField
@@ -56,6 +57,10 @@ field
  | simpleField
  | typeSwitchField
  | virtualField
+ ;
+
+abstractField
+ : 'abstract' type=typeReference name=idExpression
  ;
 
 arrayField

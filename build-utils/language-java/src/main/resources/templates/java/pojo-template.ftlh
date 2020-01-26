@@ -104,9 +104,13 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 
 <#list type.propertyFields as field>
+    <#if helper.isAbstractField(field)>
+    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> abstract get${field.name?cap_first}();
+    <#else>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         return ${field.name};
     }
+    </#if>
 
 </#list>
 <#list type.virtualFields as field>

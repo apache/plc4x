@@ -64,8 +64,8 @@ public class ${typeName}IO {
 
     public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
+            <#assign skipReturn=false>
             <#list case.fields as field>
-                <#assign skipReturn=false>
                 <#switch field.typeName>
                     <#case "array">
 
@@ -227,7 +227,7 @@ public class ${typeName}IO {
 <#if outputFlavor != "passive">
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
-            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case)});
+            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case)} / 8 );
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">

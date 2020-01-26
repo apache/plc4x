@@ -76,6 +76,12 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
                 // Pass the packet to the pipeline.
                 out.add(packet);
+
+                // It seems that one batch of 16 messages is the maximum, so we have to give up
+                // and process the rest next time.
+                if(out.size() >= 16) {
+                    return;
+                }
             } catch (Exception e) {
                 logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "
                     + e.getMessage(), e);

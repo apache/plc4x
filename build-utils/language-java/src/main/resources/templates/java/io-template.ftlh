@@ -45,6 +45,7 @@ import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -362,7 +363,7 @@ public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#i
         {
             // Create an array of all the bytes written in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.checksumExpression, type.parserArguments)});
+            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.checksumExpression, type.parserArguments)?no_esc});
             ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         }
         <#break>
@@ -386,7 +387,7 @@ public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#i
     <#case "implicit">
 
         // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)?no_esc});
         ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
         <#break>
     <#case "manualArray">
@@ -394,14 +395,14 @@ public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#i
         // Manual Array Field (${field.name})
         if(_value.get${field.name?cap_first}() != null) {
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${field.name?cap_first}()) {
-                ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)};
+                ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)?no_esc};
             }
         }
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)};
+        ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)?no_esc};
        <#break>
     <#case "optional">
 
@@ -421,7 +422,7 @@ public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#i
         // Padding Field (${field.name})
         boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field, field.paddingCondition, type.parserArguments)?no_esc});
         if(_${field.name}NeedsPadding) {
-            ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.paddingValue, type.parserArguments)});
+            ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.paddingValue, type.parserArguments)?no_esc});
             ${helper.getWriteBufferReadMethodCall(field.type, "(_" + field.name + "PaddingValue)")?no_esc};
         }
         <#break>

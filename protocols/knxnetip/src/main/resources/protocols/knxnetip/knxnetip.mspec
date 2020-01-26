@@ -424,7 +424,7 @@
         ]
         ['9' Float
             [reserved uint  8    '0x0']
-            [simple   float 4.11 'value']
+            [manual   float 4.11 'value' 'STATIC_CALL("org.apache.plc4x.java.knxnetip.utils.KnxHelper.bytesToF16", io)' 'STATIC_CALL("org.apache.plc4x.java.knxnetip.utils.KnxHelper.f16toBytes", io, object)' '16']
         ]
         ['14' Float
             [reserved uint  8    '0x0']

@@ -139,6 +139,17 @@ public class MessageFormatListener extends MSpecBaseListener {
     }
 
     @Override
+    public void enterAbstractField(MSpecParser.AbstractFieldContext ctx) {
+        TypeReference type = getTypeReference(ctx.type);
+        String name = ctx.name.id.getText();
+        Term[] params = getFieldParams((MSpecParser.FieldDefinitionContext) ctx.parent.parent);
+        Field field = new DefaultAbstractField(null, type, name, params);
+        if (parserContexts.peek() != null) {
+            parserContexts.peek().add(field);
+        }
+    }
+
+    @Override
     public void enterArrayField(MSpecParser.ArrayFieldContext ctx) {
         TypeReference type = getTypeReference(ctx.type);
         String name = ctx.name.id.getText();
