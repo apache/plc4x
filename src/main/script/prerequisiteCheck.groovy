@@ -233,6 +233,33 @@ def checkOpenSSL() {
     }
 }
 
+// When building the StreamPipes modules we need Docker.
+// Not only should the docker executable be available, but also should the docker daemon be running.
+def checkDocker() {
+    print "Detecting Docker version:  "
+    def output = "docker info".execute().text
+    // Check if Docker is installed at all
+    def matcher1 = output =~ /Server:/
+    if(matcher1.size() > 0) {
+        // If it is check if the daemon is running and if the version is ok
+        def matcher2 = output =~ /Server Version: (\d+\.\d+(\.\d+)?).*/
+        if(matcher2.size() > 0) {
+            def curVersion = matcher2[0][1]
+            def result = checkVersionAtLeast(curVersion, "1.0.0")
+            if(!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "Docker daemon probably not running"
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+        // TODO: Implement the actual check ...
+}
+
 /**
  * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -266,6 +293,7 @@ println "Detected Arch: " + arch
 println "Enabled profiles:"
 def boostEnabled = false
 def cppEnabled = false
+def dockerEnabled = false;
 def dotnetEnabled = false
 def javaEnabled = true
 def pythonEnabled = false
@@ -279,6 +307,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
+    } else if(activeProfile == "with-docker") {
+        dockerEnabled = true
+        println "docker"
     } else if(activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
@@ -319,6 +350,9 @@ if(pythonEnabled && !proxiesEnabled) {
 
 if(proxiesEnabled) {
     checkBison()
+    if(!boostEnabled) {
+        checkBoost()
+    }
 }
 
 if(dotnetEnabled) {
@@ -350,6 +384,10 @@ if(pythonEnabled) {
 // We only need this check, if boost is not enabled but we're enabling cpp.
 if(!boostEnabled && cppEnabled) {
     checkBoost()
+}
+
+if(sandboxEnabled && dockerEnabled) {
+    checkDocker()
 }
 
 if(!allConditionsMet) {

@@ -18,7 +18,7 @@
   under the License.
   -->
 <test:testsuite xmlns:test="https://plc4x.apache.org/schemas/testsuite.xsd"
-                bigEndian="false">
+                bigEndian="true">
 
   <name>Allen-Bradley ETH</name>
 

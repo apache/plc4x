@@ -27,7 +27,7 @@
     [array         uint 8 'arrTerm'       terminated                'terminationExpression']
     [checksum      uint 8 'crc'           'checksumExpression']
     [const         uint 8 'con'           '0x03']
-    [implicit      uint 8 'impl'          'serializationExpression']
+    [implicit      uint 8 'impl'          'serializeExpression']
     [manualArray   uint 8 'manArrayCount' count                     'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']
     [manualArray   uint 8 'manArrayLen'   length                    'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']
     [manualArray   uint 8 'manArrayTerm'  terminated                'loopExpression'            'serializationExpression' 'deserializationExpression' 'lengthExpression']

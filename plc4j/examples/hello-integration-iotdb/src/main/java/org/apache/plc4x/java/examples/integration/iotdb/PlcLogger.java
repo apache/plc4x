@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * modified according to hello-integration-edgent
  *
  * arguments example:
- * --connection-string test://127.0.0.1 --field-address RANDOM/foo:BYTE  --polling-interval 1000
+ * --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:BYTE  --polling-interval 1000
  * --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi
  * --iotdb-device d1 --iotdb-datatype INT32
  */

@@ -1,0 +1,100 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+
+== About PLC4J
+
+`PLC4J` is a sub-project of `PLC4X` with implementations based on `Java` targeted at runtimes for `Java 1.8` or above.
+
+One of PLC4X's core principals is, that an application using PLC4X should be independent of the PLC or protocol being used.
+
+When addressing a resource on a remote there are two parts that are dependent on the protocol and the type of PLC:
+
+- Addressing the PLC itself
+- Addressing a resource on the PLC
+
+Providing this independence to addressing the PLC itself is completely handled by the `PlcDriverManager` the application requests a connection from.
+
+Hereby the design of the `url string` passed to the `getConnection` method is greatly inspired by `JDBC`.
+
+The protocol prefix of the url specifies the type of driver being used.
+
+For example, when connecting to a Siemens PLC using the S7/Step7 Protocol, the url: `s7://192.42.0.98/1/2` causes the driver manager to create a S7 connection instance.
+The part behind the `:` is hereby used by the driver implementation to configure that particular connection.
+
+For a S7 connection, for example, this is `IP address/host name`/`rack number`/`slot number`. For different types of connections this url structure will greatly differ.
+
+As mentioned above, the second platform dependent information is the address of resources on a PLC.
+The format of an address greatly depends on the type of connection. Therefore `parseAddress` is one of the only methods defined in the `PlcConnection` interface any connection has to implement.
+
+This method returns an object implementing the `Address` interface which then can be used by the same connection to identify remote resources.
+
+[ditaa,plc4x-architecture]
+....
++----------------------------------------------------------------------------------------------+
+|c05A                                                                                          |
+|                                                                                              |
+|                              User Application                                                |
+|                                                                                              |
+|                                                                                              |
+|                  +-----------+------------------+------------------+------------------+------+
+|                  |           |                  |                  |                  |
+|                  |           |                  |                  |                  |
+|                  |           v                  v                  v                  v
+|                  |    +-------------+    +-------------+    +-------------+    +-------------+
+|                  |    |c0BA         |    |c0BA         |    |c0BA         |    |c0BA         |
+|                  |    |   Apache    |    |   Apache    |    |   Apache    |    |   Apache    |
+|                  |    |   Kafka     |    |    Camel    |    |   Edgent    |    |    Nifi     |
+|                  |    |   Connect   |    | Integration |    | Integration |    | Integration |
+|                  |    |             |    |             |    |             |    |             |
++---------+--------+    +------+------+    +------+------+    +------+------+    +------+------+
+          |                    |                  |                  |                  |
+          |                    |                  |                  |                  |
+          v                    v                  v                  v                  v
++----------------------------------------------------------------------------------------------+
+|cAAA                                                                                          |
+|                                                                                              |
+|                                             PLC4X API                                        |
+|                                                                                              |
+|                                                                                              |
++------+---------------+---------------+---------------+---------------+---------------+-------+
+       |               |               |               |               |               |
+       |               |               |               |               |               |
+       v               v               v               v               v               v
+ +-----------+   +-----------+   +-----------+   +-----------+   +-----------+   +-----------+
+ |c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c0BA       |   |c05A       |
+ |  Siemens  |   | Beckhoff  |   |  Modbus   |   |  OPC UA   |   |  Emerson  |   |   User    |
+ |    S7     |   |   ADS     |   |  Driver   |   |  Driver   |   |  DeltaV   |   |  Driver   |
+ |  Driver   |   |  Driver   |   |           |   |           |   |  Driver   |   |           |
+ |           |   |           |   |           |   |           |   |           |   |           |
+ +-----------+   +-----------+   +-----------+   +-----------+   +-----------+   +-----------+
+....
+
+=== Usage
+
+Below code example connects to a remote Siemens S7 PLC using the S7/Step7 protocol and then reads the state of the `inputs` and `outputs` from this.
+
+It also demonstrates two ways this information can be accessed:
+
+- Synchronously (The application pauses, till the response is received)
+- Asynchronously (The application continues and can
+
+[source,java]
+----
+include::../../../plc4j/examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
+----
+

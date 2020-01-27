@@ -22,8 +22,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.isoontcp.protocol.IsoOnTcpProtocol;
 import org.apache.plc4x.java.isotp.protocol.IsoTPProtocol;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduSize;
@@ -33,7 +33,6 @@ import org.apache.plc4x.java.s7.types.S7ControllerType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class BenchmarkS7 {
 

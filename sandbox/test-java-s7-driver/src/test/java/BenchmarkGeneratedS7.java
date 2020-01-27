@@ -20,8 +20,8 @@
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ public class BenchmarkGeneratedS7 {
         TPKTPacket packet = null;
         for(int i = 0; i < numRunsParse; i++) {
             ReadBuffer rBuf = new ReadBuffer(rData);
-            packet = tpktPacketIO.parse(rBuf);
+            packet = TPKTPacketIO.staticParse(rBuf);
         }
         long endParsing = System.currentTimeMillis();
 
@@ -49,7 +49,7 @@ public class BenchmarkGeneratedS7 {
         byte[] oData = null;
         for(int i = 0; i < numRunsSerialize; i++) {
             WriteBuffer wBuf = new WriteBuffer(packet.getLengthInBytes());
-            tpktPacketIO.serialize(wBuf, packet);
+            TPKTPacketIO.staticSerialize(wBuf, packet);
             oData = wBuf.getData();
         }
         long endSerializing = System.currentTimeMillis();

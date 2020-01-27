@@ -27,7 +27,6 @@ import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaPlcDriverTest {
@@ -62,6 +61,8 @@ public class OpcuaPlcDriverTest {
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254:1337");
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254");
 
+        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1&discovery=false");
+        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer&discovery=false");
 
     }
 

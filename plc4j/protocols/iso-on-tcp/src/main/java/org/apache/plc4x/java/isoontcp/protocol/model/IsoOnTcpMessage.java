@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.isoontcp.protocol.model;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.messages.PlcRawMessage;
+import org.apache.plc4x.java.spi.messages.PlcRawMessage;
 
 public class IsoOnTcpMessage extends PlcRawMessage {
 

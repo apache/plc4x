@@ -39,11 +39,13 @@ public class Primitive extends TypeDefinition {
         return type;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator generator) {
+    @Override
+    public void write(Generator generator) {
         generator.generatePrimitive(this.getType());
     }
 

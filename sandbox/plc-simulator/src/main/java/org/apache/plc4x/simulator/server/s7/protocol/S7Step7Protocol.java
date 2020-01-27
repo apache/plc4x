@@ -19,22 +19,22 @@ under the License.
 package org.apache.plc4x.simulator.server.s7.protocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
-import org.apache.plc4x.java.utils.MessageIO;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.MessageIO;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacket> {
 
     public S7Step7Protocol() {
         super(new MessageIO<TPKTPacket, TPKTPacket>() {
             @Override
-            public TPKTPacket parse(ReadBuffer io) throws ParseException {
+            public TPKTPacket parse(ReadBuffer io, Object... args) throws ParseException {
                 try {
-                    return TPKTPacketIO.parse(io);
+                    return TPKTPacketIO.staticParse(io);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new ParseException("Error parsing message", e);
@@ -42,15 +42,15 @@ public class S7Step7Protocol extends GeneratedDriverByteToMessageCodec<TPKTPacke
             }
 
             @Override
-            public void serialize(WriteBuffer io, TPKTPacket value) throws ParseException {
+            public void serialize(WriteBuffer io, TPKTPacket value, Object... args) throws ParseException {
                 try {
-                    TPKTPacketIO.serialize(io, value);
+                    TPKTPacketIO.staticSerialize(io, value);
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new ParseException("Error serializing message", e);
                 }
             }
-        });
+        }, TPKTPacket.class, true, null);
     }
 
     @Override

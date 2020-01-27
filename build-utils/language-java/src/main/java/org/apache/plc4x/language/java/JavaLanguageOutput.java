@@ -39,17 +39,32 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
         return Arrays.asList("read-write", "read-only", "passive");
     }
 
+    @Override
+    protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/java/enum-package-info-template.ftlh"));
+    }
+
+    @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Arrays.asList(
             freemarkerConfiguration.getTemplate("templates/java/pojo-template.ftlh"),
             freemarkerConfiguration.getTemplate("templates/java/io-template.ftlh"));
     }
 
+    @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
         return Collections.singletonList(
             freemarkerConfiguration.getTemplate("templates/java/enum-template.ftlh"));
     }
 
+    @Override
+    protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/java/data-io-template.ftlh"));
+    }
+
+    @Override
     protected FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types) {
         return new JavaLanguageTemplateHelper(types);
     }

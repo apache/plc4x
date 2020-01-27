@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.isotp.protocol.model.tpdus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.messages.PlcProtocolMessage;
-import org.apache.plc4x.java.base.messages.PlcRawMessage;
+import org.apache.plc4x.java.spi.messages.PlcProtocolMessage;
+import org.apache.plc4x.java.spi.messages.PlcRawMessage;
 import org.apache.plc4x.java.isotp.protocol.model.params.Parameter;
 import org.apache.plc4x.java.isotp.protocol.model.types.TpduCode;
 

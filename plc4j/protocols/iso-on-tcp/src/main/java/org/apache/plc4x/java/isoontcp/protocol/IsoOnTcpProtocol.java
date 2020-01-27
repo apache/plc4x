@@ -21,15 +21,15 @@ package org.apache.plc4x.java.isoontcp.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.base.PlcByteToMessageCodec;
 import org.apache.plc4x.java.isoontcp.protocol.model.IsoOnTcpMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
+public class IsoOnTcpProtocol extends ByteToMessageCodec<IsoOnTcpMessage> {
 
     static final byte ISO_ON_TCP_MAGIC_NUMBER = 0x03;
 

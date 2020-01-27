@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.DefaultChannelConfig;
+import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Packet;
 
 import java.util.Map;
@@ -29,12 +30,14 @@ import java.util.Map;
 public class PcapSocketChannelConfig extends DefaultChannelConfig implements ChannelConfig {
 
     public static float SPEED_SLOW_HALF = 2f;
-    public static float SPEED_REALTIME = -1f;
+    public static float SPEED_REALTIME = 1f;
     public static float SPEED_FAST_DOUBLE = 0.5f;
     public static float SPEED_FAST_FULL = 0f;
 
+    private int port = PcapSocketAddress.ALL_PORTS;
+    private int protocolId = PcapSocketAddress.ALL_PROTOCOLS;
+    private float speedFactor = SPEED_REALTIME;
     private PacketHandler packetHandler;
-    private float speedFactor;
 
     public PcapSocketChannelConfig(Channel channel) {
         super(channel);
@@ -49,14 +52,21 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
     @Override
     public Map<ChannelOption<?>, Object> getOptions() {
         return getOptions(super.getOptions(),
-            PcapSocketChannelOption.PACKET_HANDLER, PcapSocketChannelOption.SPEED_FACTOR);
+            PcapSocketChannelOption.PORT, PcapSocketChannelOption.PROTOCOL_ID,
+            PcapSocketChannelOption.SPEED_FACTOR, PcapSocketChannelOption.PACKET_HANDLER);
     }
 
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
-        if(option == PcapSocketChannelOption.PACKET_HANDLER) {
-            if(value instanceof PacketHandler) {
-                packetHandler = (PacketHandler) value;
+        if(option == PcapSocketChannelOption.PORT) {
+            if(value instanceof Integer) {
+                port = (Integer) value;
+                return true;
+            }
+            return false;
+        } else if(option == PcapSocketChannelOption.PROTOCOL_ID) {
+            if(value instanceof Integer) {
+                protocolId = (Integer) value;
                 return true;
             }
             return false;
@@ -68,17 +78,31 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
                 }
             }
             return false;
+        } else if(option == PcapSocketChannelOption.PACKET_HANDLER) {
+            if(value instanceof PacketHandler) {
+                packetHandler = (PacketHandler) value;
+                return true;
+            }
+            return false;
         } else {
             return super.setOption(option, value);
         }
     }
 
-    public void setPacketHandler(PacketHandler packetHandler) {
-        this.packetHandler = packetHandler;
+    public int getPort() {
+        return port;
     }
 
-    public PacketHandler getPacketHandler() {
-        return packetHandler;
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getProtocolId() {
+        return protocolId;
+    }
+
+    public void setProtocolId(int protocolId) {
+        this.protocolId = protocolId;
     }
 
     public float getSpeedFactor() {
@@ -87,6 +111,14 @@ public class PcapSocketChannelConfig extends DefaultChannelConfig implements Cha
 
     public void setSpeedFactor(float speedFactor) {
         this.speedFactor = speedFactor;
+    }
+
+    public void setPacketHandler(PacketHandler packetHandler) {
+        this.packetHandler = packetHandler;
+    }
+
+    public PacketHandler getPacketHandler() {
+        return packetHandler;
     }
 
 }

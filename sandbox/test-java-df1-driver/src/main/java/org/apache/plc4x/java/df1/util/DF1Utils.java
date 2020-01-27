@@ -21,13 +21,13 @@ package org.apache.plc4x.java.df1.util;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest;
 import org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public class DF1Utils {
 
-    public static short crcCheck(Object... args) {
+    public static int crcCheck(Object... args) {
         short destinationAddress = (short) args[0];
         short sourceAddress = (short) args[1];
         DF1Command command = (DF1Command) args[2];
@@ -48,7 +48,7 @@ public class DF1Utils {
                 writeBuffer.writeUnsignedShort(8, (byte) 0x03);
 
                 byte[] data = writeBuffer.getData();
-                return calculateCRC(data);
+                return calculateCRC(data) & 0xFFFF;
 
             } catch (ParseException e) {
                 throw new RuntimeException("Something went wrong during the CRC check", e);
@@ -77,7 +77,7 @@ public class DF1Utils {
                 writeBuffer.writeUnsignedShort(8, (byte) 0x03);
 
                 byte[] data = writeBuffer.getData();
-                return calculateCRC(data);
+                return calculateCRC(data) & 0xFFFF;
 
             } catch (ParseException e) {
                 throw new RuntimeException("Something went wrong during the CRC check", e);
@@ -153,6 +153,6 @@ public class DF1Utils {
                     tmp = tmp >> 1;
                 }
         }
-        return (short)tmp;
+        return Short.reverseBytes((short) tmp);
     }
 }

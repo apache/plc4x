@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-tools</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-tools-thrift</artifactId>
@@ -335,5 +335,17 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <!-- Make sure Boost is built first -->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-tools-boost</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <classifier>lib-${os.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

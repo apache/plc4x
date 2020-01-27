@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnectionTest {
@@ -47,7 +46,7 @@ public class OpcuaTcpPlcConnectionTest {
         24152
     };
     private final String[] nDiscoveryParams = {
-        "nDiscovery=true"
+        "discovery=false"
     };
 
     @BeforeEach
@@ -68,9 +67,6 @@ public class OpcuaTcpPlcConnectionTest {
                 for (String discoveryParam :
                     nDiscoveryParams) {
                     String param = "";
-                    if (!param.isEmpty()) {
-                        param += "&";
-                    }
                     param += discoveryParam;
 
                     OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();

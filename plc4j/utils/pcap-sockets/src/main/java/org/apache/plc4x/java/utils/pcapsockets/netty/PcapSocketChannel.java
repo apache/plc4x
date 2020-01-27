@@ -127,7 +127,8 @@ public class PcapSocketChannel extends OioByteStreamChannel {
                         }
 
                         // Send the bytes to the netty pipeline.
-                        buffer.writeBytes(config.getPacketHandler().getData(packet));
+                        byte[] data = config.getPacketHandler().getData(packet);
+                        buffer.writeBytes(data);
 
                         // Remember the timestamp of the current packet.
                         lastPacketTime = curPacketTime;
@@ -175,7 +176,8 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         }
     }
 
-    @Override protected int doReadBytes(ByteBuf buf) throws Exception {
+    @Override
+    protected int doReadBytes(ByteBuf buf) throws Exception {
         if (handle == null || !handle.isOpen()) {
             return -1;
         }
@@ -220,15 +222,15 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         StringBuilder sb = new StringBuilder();
         sb.append("(ether proto \\ip)");
         // Add a filter for source or target address.
-        if(pcapSocketAddress.getAddress() != null) {
-            sb.append(" and (host ").append(pcapSocketAddress.getAddress().getHostAddress()).append(")");
-        }
+        /*if(config.getAddress() != null) {
+            sb.append(" and (host ").append(config.getAddress().getHostAddress()).append(")");
+        }*/
         // Add a filter for TCP or UDP port.
-        if(pcapSocketAddress.getPort() != PcapSocketAddress.ALL_PORTS) {
-            sb.append(" and (port ").append(pcapSocketAddress.getPort()).append(")");
+        if(config.getPort() != PcapSocketAddress.ALL_PORTS) {
+            sb.append(" and (port ").append(config.getPort()).append(")");
         }
-        if(pcapSocketAddress.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
-            sb.append("(ether proto ").append(pcapSocketAddress.getProtocolId()).append(")");
+        if(config.getProtocolId() != PcapSocketAddress.ALL_PROTOCOLS) {
+            sb.append(" and (ether proto ").append(config.getProtocolId()).append(")");
         }
         return sb.toString();
     }

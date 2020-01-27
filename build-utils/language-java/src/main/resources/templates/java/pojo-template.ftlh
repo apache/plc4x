@@ -38,12 +38,21 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
-<#if helper.getEnumTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;</#if>
+import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
+
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;
-import org.apache.plc4x.java.utils.Message;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.spi.generation.Message;
 
-<#if type.abstract>@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")</#if>
+import java.time.*;
+import java.util.*;
+import java.math.BigInteger;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??> extends ${type.parentType.name}</#if> implements Message {
 
 <#if helper.isDiscriminatedType(type)>
@@ -95,14 +104,18 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#if>
 
 <#list type.propertyFields as field>
+    <#if helper.isAbstractField(field)>
+    public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> abstract get${field.name?cap_first}();
+    <#else>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
         return ${field.name};
     }
+    </#if>
 
 </#list>
 <#list type.virtualFields as field>
     public ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> get${field.name?cap_first}() {
-        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toDeserializationExpression(field.valueExpression, type.parserArguments)});
+        return (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
     }
 
 </#list>
@@ -116,7 +129,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 
         // Array field
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.size} * ${field.name}.length;
+        lengthInBits += ${field.type.sizeInBits} * ${field.name}.length;
         <#else>
         if(${field.name} != null) {
             for(Message element : ${field.name}) {
@@ -128,44 +141,44 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "checksum">
 
         // Checksum Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "const">
 
         // Const Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "discriminator">
 
         // Discriminator Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "enum">
 
         // Enum Field (${field.name})
-        lengthInBits += ${helper.getEnumBaseType(field.type).size};
+        lengthInBits += ${helper.getEnumBaseType(field.type).sizeInBits};
         <#break>
     <#case "implicit">
 
         // Implicit Field (${field.name})
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "manualArray">
 
         // Manual Array Field (${field.name})
-        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
         <#break>
     <#case "manual">
 
         // Manual Field (${field.name})
-        lengthInBits += ${helper.toDeserializationExpression(field.lengthExpression, null)} * 8;
+        lengthInBits += ${helper.toParseExpression(field, field.lengthExpression, null)} * 8;
         <#break>
     <#case "optional">
 
         // Optional Field (${field.name})
         if(${field.name} != null) {
         <#if helper.isSimpleType(field.type)>
-            lengthInBits += ${field.type.size};
+            lengthInBits += ${field.type.sizeInBits};
         <#else>
             lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>
@@ -174,20 +187,21 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     <#case "padding">
 
         // Padding Field (${field.name})
-        if((boolean) (${helper.toDeserializationExpression(field.paddingCondition, type.parserArguments)})) {
-            lengthInBits += ${field.type.size};
+        <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
+        if((boolean) (${helper.toParseExpression(field, field.paddingCondition, type.parserArguments)?replace("lastItem", "false")?no_esc})) {
+            lengthInBits += ${field.type.sizeInBits};
         }
         <#break>
     <#case "reserved">
 
         // Reserved Field
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#break>
     <#case "simple">
 
         // Simple field (${field.name})
         <#if helper.isSimpleType(field.type)>
-        lengthInBits += ${field.type.size};
+        lengthInBits += ${field.type.sizeInBits};
         <#else>
         lengthInBits += ${field.name}.getLengthInBytes() * 8;
         </#if>
@@ -204,6 +218,127 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#list>
 
         return lengthInBits / 8;
+    }
+
+    public PlcValue toPlcValue() {
+<#if type.propertyFields?has_content>
+        Map<String, PlcValue> fieldValues = new TreeMap<>();
+<#list type.propertyFields as field>
+<#switch field.typeName>
+<#case "array">
+<#case "manualArray">
+
+        {
+            List<PlcValue> plcValues = new ArrayList<>(${field.name}.length);
+            for(${helper.getLanguageTypeNameForField(field)} item : ${field.name}) {
+                <#if helper.isSimpleType(field.type)>
+                plcValues.add(PlcValues.of(item));
+                <#else>
+                plcValues.add(item.toPlcValue());
+                </#if>
+            }
+            fieldValues.put("${field.name}", new PlcList(plcValues));
+        }
+<#break>
+<#case "enum">
+
+        fieldValues.put("${field.name}", new PlcString(${field.name}.name()));
+<#break>
+<#case "manual">
+<#case "simple">
+
+    <#if helper.isSimpleType(field.type)>
+        fieldValues.put("${field.name}", PlcValues.of(${field.name}));
+    <#else>
+        fieldValues.put("${field.name}", ${field.name}.toPlcValue());
+    </#if>
+<#break>
+<#case "optional">
+
+        if(${field.name} != null) {
+            <#if helper.isSimpleType(field.type)>
+            fieldValues.put("${field.name}", PlcValues.of(${field.name}));
+            <#else>
+            fieldValues.put("${field.name}", ${field.name}.toPlcValue());
+            </#if>
+        } else {
+            fieldValues.put("${field.name}", null);
+        }
+<#break>
+<#case "switch">
+
+        PlcStruct superStruct = (PlcStruct) super.toPlcValue();
+        fieldValues.putAll(superStruct.getStruct());
+<#break>
+<#case "virtual">
+    <#if helper.isSimpleType(field.type)>
+
+        fieldValues.put("${field.name}", PlcValues.of(${field.name}));
+    </#if>
+<#break>
+</#switch>
+</#list>
+
+        return new PlcStruct(fieldValues);
+<#else>
+        return null;
+</#if>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ${typeName})) {
+            return false;
+        }
+        ${typeName} that = (${typeName}) o;
+        return
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            (get${field.name?cap_first}() == that.get${field.name?cap_first}()) &&
+            </#list>
+            </#if>
+            <#if type.parentType??>
+            super.equals(that) &&
+            </#if>
+            true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            <#if type.parentType??>
+            super.hashCode()<#if type.propertyFields?has_content>,</#if>
+            </#if>
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            get${field.name?cap_first}()<#sep>,</#sep>
+            </#list>
+            </#if>
+        );
+    }
+
+    @Override
+    public String toString() {
+        return toString(ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public String toString(ToStringStyle style) {
+        return new ToStringBuilder(this, style)
+            <#if type.parentType??>
+            .appendSuper(super.toString(style))
+            </#if>
+            <#if type.propertyFields?has_content>
+            <#list type.propertyFields as field>
+            .append("${field.name}", get${field.name?cap_first}())
+            </#list>
+            </#if>
+            <#list type.virtualFields as field>
+            .append("${field.name}", get${field.name?cap_first}())
+            </#list>
+            .toString();
     }
 
 }

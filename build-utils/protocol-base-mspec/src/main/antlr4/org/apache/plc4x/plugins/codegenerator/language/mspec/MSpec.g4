@@ -23,23 +23,27 @@ file
  ;
 
 complexTypeDefinition
- : COMMENT
- | LBRACKET complexType RBRACKET
+ : (COMMENT.*?)? LBRACKET complexType RBRACKET
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
 
-
 fieldDefinition
- : LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ ;
+
+dataIoDefinition
+ : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 field
- : arrayField
+ : abstractField
+ | arrayField
  | checksumField
  | constField
  | discriminatorField
@@ -53,6 +57,10 @@ field
  | simpleField
  | typeSwitchField
  | virtualField
+ ;
+
+abstractField
+ : 'abstract' type=typeReference name=idExpression
  ;
 
 arrayField
@@ -76,15 +84,15 @@ enumField
  ;
 
 implicitField
- : 'implicit' type=dataType name=idExpression serializationExpression=expression
+ : 'implicit' type=dataType name=idExpression serializeExpression=expression
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 manualField
- : 'manual' type=typeReference name=idExpression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manual' type=typeReference name=idExpression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 optionalField
@@ -112,9 +120,12 @@ virtualField
  ;
 
 enumValueDefinition
- : LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
  ;
 
+bitmaskValueDefinition
+ : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ ;
 
 typeReference
  : complexTypeReference=IDENTIFIER
@@ -122,15 +133,20 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : (COMMENT.*?)? LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType
  : base='bit'
  | base='int' size=INTEGER_LITERAL
  | base='uint' size=INTEGER_LITERAL
- | base='float' size=INTEGER_LITERAL
- | base='string'
+ | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
+ | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
+/* For the following types the parsing/serialization has to be handled manually */
+ | base='string' size=INTEGER_LITERAL encoding=idExpression
+ | base='time'
+ | base='date'
+ | base='dateTime'
  ;
 
 argument
@@ -164,8 +180,9 @@ innerExpression
  ;
 
 COMMENT
- : K_COMMENT [a-zA-Z0-9,.'":;()/ \t\r\n\u000C-]*
- | '//' [a-zA-Z0-9,.'":;()/ \t-]*
+ : K_COMMENT [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t\r\n\u000C-]*
+ | '//' [a-zA-Z0-9,.'":;()/ =@<>_?&`´’\t-]*
+ | '/*' .*? '*/'
  ;
 
 INTEGER_LITERAL
@@ -184,13 +201,23 @@ fragment HexDigit
 ;
 
 arrayType
- : 'count'
- | 'length'
- | 'terminated'
+ : K_COUNT
+ | K_LENGTH
+ | K_TERMINATE
  ;
 
 idExpression
- : TICK id=IDENTIFIER TICK
+ : TICK id=idString TICK
+ ;
+
+idString
+ : IDENTIFIER
+ | keywords
+ ;
+
+keywords
+ : K_TERMINATE
+ | K_LENGTH
  ;
 
 fragment K_COMMENT : '<--';
@@ -202,19 +229,28 @@ RBRACKET : ']';
 LCBRACKET : '{';
 RCBRACKET : '}';
 
+K_COUNT : C O U N T;
+K_LENGTH : L E N G T H;
+K_TERMINATE : T E R M I N A T E D;
+
 BinaryOperator
  : '+'
  | '-'
  | '/'
  | '*'
+ | '^'
  | '=='
  | '!='
+ | '>>'
+ | '<<'
  | '>'
  | '<'
  | '>='
  | '<='
  | '&&'
  | '||'
+ | '&'
+ | '|'
  | '%'
  ;
 
@@ -224,6 +260,33 @@ HEX_VALUE : [0-9A-F];
 IDENTIFIER
  : [A-Za-z0-9_-]+
  ;
+
+fragment A : [aA];
+fragment B : [bB];
+fragment C : [cC];
+fragment D : [dD];
+fragment E : [eE];
+fragment F : [fF];
+fragment G : [gG];
+fragment H : [hH];
+fragment I : [iI];
+fragment J : [jJ];
+fragment K : [kK];
+fragment L : [lL];
+fragment M : [mM];
+fragment N : [nN];
+fragment O : [oO];
+fragment P : [pP];
+fragment Q : [qQ];
+fragment R : [rR];
+fragment S : [sS];
+fragment T : [tT];
+fragment U : [uU];
+fragment V : [vV];
+fragment W : [wW];
+fragment X : [xX];
+fragment Y : [yY];
+fragment Z : [zZ];
 
 WS  :  [ \t\r\n\u000C]+ -> skip
 ;

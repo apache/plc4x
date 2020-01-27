@@ -23,14 +23,13 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Matthias Milan Strljic
  * Created by Matthias Milan Strljic on 10.05.2019
  */
 public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
@@ -50,8 +49,8 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                 if (paramElements.length == 2) {
                     String paramValue = paramElements[1];
                     switch (paramName) {
-                        case "nDiscovery":
-                            skipDiscovery = Boolean.valueOf(paramValue);
+                        case "discovery":
+                            skipDiscovery = !Boolean.valueOf(paramValue);
                             break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);

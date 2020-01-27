@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols</artifactId>
@@ -32,6 +32,16 @@
 
   <name>Protocols</name>
   <description>Base protocol specifications.</description>
+
+  <modules>
+    <module>ab-eth</module>
+    <module>amsads</module>
+    <module>bacnetip</module>
+    <module>df1</module>
+    <module>knxnetip</module>
+    <module>modbus</module>
+    <module>s7</module>
+  </modules>
 
   <build>
     <plugins>
@@ -188,14 +198,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <modules>
-    <module>ab-eth</module>
-    <module>bacnetip</module>
-    <module>df1</module>
-    <module>knxnetip</module>
-    <module>s7</module>
-  </modules>
 
   <profiles>
     <profile>

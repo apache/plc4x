@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.java.isotp.protocol.model;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.base.messages.PlcRawMessage;
+import org.apache.plc4x.java.spi.messages.PlcRawMessage;
 import org.apache.plc4x.java.isotp.protocol.model.tpdus.Tpdu;
 
 public class IsoTPMessage extends PlcRawMessage {
