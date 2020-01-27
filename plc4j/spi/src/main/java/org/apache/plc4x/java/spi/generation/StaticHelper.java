@@ -98,9 +98,10 @@ public class StaticHelper {
     public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
         try {
             boolean negative = (signed) && io.readBit();
-            long exponent = io.readUnsignedLong(bitsExponent) - (((long) Math.pow(2, bitsExponent) / 2) - 1);
+            long exponent = io.readUnsignedLong(bitsExponent);
+            exponent = exponent - (((long) Math.pow(2, bitsExponent) / 2) - 1);
             double mantissa = 1D;
-            for(int i = 1; i < bitsMantissa; i++) {
+            for(int i = 1; i <= bitsMantissa; i++) {
                 if(io.readBit()) {
                     mantissa += Math.pow(2, (double) i * -1);
                 }
