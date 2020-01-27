@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip.field;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -77,6 +79,34 @@ public class BacNetIpField implements PlcField {
         return ((deviceIdentifier == LONG_WILDCARD) || (deviceIdentifier == otherField.deviceIdentifier)) &&
             ((objectType == INT_WILDCARD) || (objectType == otherField.objectType)) &&
             ((objectInstance == LONG_WILDCARD) || (objectInstance == otherField.objectInstance));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof BacNetIpField)) {
+            return false;
+        }
+
+        BacNetIpField that = (BacNetIpField) o;
+
+        return new EqualsBuilder()
+            .append(getDeviceIdentifier(), that.getDeviceIdentifier())
+            .append(getObjectType(), that.getObjectType())
+            .append(getObjectInstance(), that.getObjectInstance())
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(getDeviceIdentifier())
+            .append(getObjectType())
+            .append(getObjectInstance())
+            .toHashCode();
     }
 
     @Override

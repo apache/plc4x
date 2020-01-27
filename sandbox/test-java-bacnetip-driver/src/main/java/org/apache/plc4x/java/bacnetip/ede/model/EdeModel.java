@@ -18,5 +18,20 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip.ede.model;
 
+import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+
+import java.util.Map;
+
 public class EdeModel {
+
+    private final Map<BacNetIpField, Datapoint> datapoints;
+
+    public EdeModel(Map<BacNetIpField, Datapoint> datapoints) {
+        this.datapoints = datapoints;
+    }
+
+    public Datapoint getDatapoint(BacNetIpField field) {
+        return datapoints.get(field);
+    }
+
 }

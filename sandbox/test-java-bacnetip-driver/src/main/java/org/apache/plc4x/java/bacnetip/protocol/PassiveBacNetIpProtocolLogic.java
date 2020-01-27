@@ -27,16 +27,18 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcString;
+import org.apache.plc4x.java.api.value.PlcStruct;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
+import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
 import org.apache.plc4x.java.bacnetip.readwrite.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
@@ -80,6 +82,11 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
     }
 
     @Override
+    public void onConnect(ConversationContext<BVLC> context) {
+        context.fireConnected();
+    }
+
+    @Override
     public void close(ConversationContext<BVLC> context) {
         // Nothing to do here ...
     }
@@ -112,22 +119,29 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
                     long objectInstance = valueChange.getIssueConfirmedNotificationsInstanceNumber();
                     BacNetIpField curField = new BacNetIpField(deviceIdentifier, objectType, objectInstance);
 
-                    System.out.println("Value change for " + curField.toString());
-
+                    // The actual value change is in the notifications ... iterate throught them to get it.
                     for (BACnetTagWithContent notification : valueChange.getNotifications()) {
+                        // These are value change notifications. Ignore the rest.
                         if(notification.getPropertyIdentifier()[0] == (short) 0x55) {
                             final BACnetTag baCnetTag = notification.getValue();
-                            if(baCnetTag instanceof BACnetTagApplicationReal) {
-                                System.out.println(baCnetTag);
+                            final PlcValue plcValue = baCnetTag.toPlcValue();
+
+                            // Initialize an enriched version of the PlcStruct.
+                            final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
+                            enrichedPlcValue.put("address", new PlcString(toString(curField)));
+                            // Add all of the existing attributes.
+                            enrichedPlcValue.putAll(plcValue.getStruct());
+
+                            // Use the information in the edeModel to enrich the information.
+                            if(edeModel != null) {
+                                final Datapoint datapoint = edeModel.getDatapoint(curField);
+                                if(datapoint != null) {
+                                    // Add all the attributes from the ede file.
+                                    enrichedPlcValue.putAll(datapoint.toPlcValues());
+                                }
                             }
-                        }
-                        // Use the information in the edeModel to enrich the information.
-                        if(edeModel != null) {
-                            // TODO: Implement.
-                        }
-                        // Else just output the information without enriching it.
-                        else {
-                            // TODO: Implement.
+                            // Send out the enriched event.
+                            publishEvent(curField, new PlcStruct(enrichedPlcValue));
                         }
                     }
                 }
@@ -196,22 +210,20 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
         consumerIdMap.remove(consumerRegistration.getConsumerHash());
     }
 
-    protected void publishEvent(String name, PlcValue plcValue) {
+    protected void publishEvent(BacNetIpField field, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("event", Pair.of(PlcResponseCode.OK, plcValue)));
 
         // Send the subscription event to all listeners.
         for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {
+            // TODO: Check if the subscription matches the current field ..
             consumer.accept(event);
         }
     }
 
-    /*protected PlcValue toPlcValue(BACnetTag tag) {
-        if(tag instanceof BACnetTagApplicationReal) {
-            BACnetTagApplicationReal baCnetTagApplicationReal = (BACnetTagApplicationReal) tag;
-            baCnetTagApplicationReal.getData();
-        }
-    }*/
+    private String toString(BacNetIpField field) {
+        return field.getDeviceIdentifier() + "/" + field.getObjectType() + "/" + field.getObjectInstance();
+    }
 
 }

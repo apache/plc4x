@@ -356,6 +356,9 @@ public class PlcValues {
     }
 
     public static PlcValue of(Object o) {
+        if(o == null) {
+            return null;
+        }
         try {
             String simpleName = o.getClass().getSimpleName();
             Class<?> clazz = o.getClass();
