@@ -44,12 +44,12 @@ Besides providing access to devices using one of above protocols, PLC4X also shi
 
 [width=100%,cols="^.^,^.^,^.^"]
 |===
-a|image::apache_calcite_logo.svg[width=80%,link=https://calcite.apache.org] a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] a|image::apache_edgent_logo.png[width=80%,link=https://edgent.apache.org]
-|icon:check[role=green] https://calcite.apache.org[Apache Calcite™]         |icon:check[role=green] https://camel.apache.org[Apache Camel™]         |icon:check[role=green] https://edgent.apache.org[Apache Edgent™ (retired)]
+a|image::apache_calcite_logo.svg[width=80%,link=https://calcite.apache.org] a|image::apache_camel_logo.png[width=80%,link=https://camel.apache.org] a|image::apache_edgent_logo.png[width=80%,link=https://edgent.incubator.apache.org]
+|icon:check[role=green] https://calcite.apache.org[Apache Calcite™]         |icon:check[role=green] https://camel.apache.org[Apache Camel™]         |icon:check[role=green] https://edgent.incubator.apache.org[Apache Edgent™ (retired)]
 a|image::apache_iotdb_logo.png[width=80%,link=https://iotdb.apache.org]     a|image::apache_kafka_logo.png[width=80%,link=https://kafka.apache.org] a|image::apache_nifi_logo.svg[width=80%,link=https://nifi.apache.org]
 |icon:check[role=green] https://iotdb.apache.org[Apache IoTDB™ (incubating)]|icon:check[role=green] https://kafka.apache.org[Apache Kafka™]         |icon:wrench[role=green] https://nifi.apache.org[Apache Nifi™]
 a|image::apache_streampipes_logo.png[width=80%,link=https://streampipes.apache.org]     a|image::eclipse_ditto_logo.png[link=https://www.eclipse.org/ditto/] a|image::elastic_logstash_logo.png[width=80%,link=https://www.elastic.co/de/products/logstash]
-|icon:wrench[role=yellow] https://mynewt.apache.org[Apache StreamPipes™ (incubating)]   |icon:wrench[role=yellow] https://kafka.apache.org[Apache Kafka™]              |icon:wrench[role=green] https://www.elastic.co/de/products/logstash[Elastic Logstash™]
+|icon:wrench[role=yellow] https://streampipes.apache.org[Apache StreamPipes™ (incubating)]   |icon:wrench[role=yellow] https://www.eclipse.org/ditto/]              |icon:wrench[role=green] https://www.elastic.co/de/products/logstash[Elastic Logstash™]
 |===
 
 As last category of tools come modules that can be used in your applications:
