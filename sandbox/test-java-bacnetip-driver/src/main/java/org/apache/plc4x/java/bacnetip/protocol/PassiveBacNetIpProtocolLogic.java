@@ -27,9 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcString;
-import org.apache.plc4x.java.api.value.PlcStruct;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
 import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
@@ -128,6 +126,9 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
 
                             // Initialize an enriched version of the PlcStruct.
                             final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
+                            enrichedPlcValue.put("deviceIdentifier", new PlcLong(deviceIdentifier));
+                            enrichedPlcValue.put("objectType", new PlcInteger(objectType));
+                            enrichedPlcValue.put("objectInstance", new PlcLong(objectInstance));
                             enrichedPlcValue.put("address", new PlcString(toString(curField)));
                             // Add all of the existing attributes.
                             enrichedPlcValue.putAll(plcValue.getStruct());
