@@ -46,7 +46,6 @@ import java.util.function.Consumer;
  * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
  * Afterwards the code represented here will be used as an example for the introduction page.
  * <p>
- * TODO: replace current public server with local Milo instance
  *
  * Created by Matthias Milan Strljic on 10.05.2019
  */
@@ -112,6 +111,7 @@ public class ManualPLC4XOpcua {
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = opcuaConnection.read(request).get();
+
             Collection coll = response.getAllStrings("String");
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
