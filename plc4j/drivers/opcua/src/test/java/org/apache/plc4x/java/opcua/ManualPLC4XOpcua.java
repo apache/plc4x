@@ -34,7 +34,6 @@ import org.eclipse.milo.examples.server.ExampleServer;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
@@ -110,21 +109,21 @@ public class ManualPLC4XOpcua {
             builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
-            PlcReadResponse response = opcuaConnection.read(request).get();
+            //PlcReadResponse response = opcuaConnection.read(request).get();
 
-            Collection coll = response.getAllStrings("String");
+            //Collection coll = response.getAllStrings("String");
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             wBuilder.addItem("w-Bool", BOOL_IDENTIFIER, true);
             //wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
-            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 1);
+            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 0x00);
             wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double) 0.25);
             wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float) 0.25);
             wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short) 12);
             wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int) 314);
             wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long) 123125);
             wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int) 314);
-            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (short) 23);
+            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (byte) 23);
             wBuilder.addItem("w-String", STRING_IDENTIFIER, "TEST");
             wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int) 222);
             wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long) 21412);

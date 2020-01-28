@@ -65,6 +65,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
 
 /**
  * Corresponding implementaion for a TCP-based connection for an OPC UA server.
@@ -433,8 +434,11 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for (String fieldName : writeRequest.getFieldNames()) {
                 OpcuaField uaField = (OpcuaField) writeRequest.getField(fieldName);
                 NodeId idNode = generateNodeId(uaField);
-                Variant var = new Variant(internalPlcWriteRequest.getPlcValue(fieldName).getObject());
-                DataValue value = new DataValue(var, null, null);
+                Object valueObject = internalPlcWriteRequest.getPlcValue(fieldName).getObject();
+                // Added small work around for handling BigIntegers as input type for UInt64
+                if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
+                Variant var = new Variant(valueObject);
+                DataValue value = new DataValue(var, null, null, null);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);
@@ -458,6 +462,8 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                         resultCode = PlcResponseCode.OK;
                     } else if (statusCodes.get(counter).isUncertain()) {
                         resultCode = PlcResponseCode.NOT_FOUND;
+                    } else if (statusCodes.get(counter).isBad() && statusCodes.get(counter).getValue() == 2155085824L) {
+                        resultCode = PlcResponseCode.INVALID_DATATYPE;
                     } else {
                         resultCode = PlcResponseCode.ACCESS_DENIED;
                     }
