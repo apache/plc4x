@@ -27,7 +27,7 @@ public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {
         final PassiveBacNetIpDriver driver = new PassiveBacNetIpDriver();
-        final PlcConnection connection = driver.getConnection("bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files/M32/edeDataText3014.csv");
+        final PlcConnection connection = driver.getConnection("bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
         connection.connect();
         final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField("Hurz", "*/*/*").build().execute().get();
         subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {

@@ -67,15 +67,26 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
 
     @Override
     public void setConfiguration(PassiveBacNetIpConfiguration configuration) {
-        if (configuration.edeFilePath != null) {
-            File edeFile = new File(configuration.edeFilePath);
+        if (configuration.getEdeFilePath() != null) {
+            File edeFile = new File(configuration.getEdeFilePath());
             if (edeFile.exists() && edeFile.isFile()) {
-                edeModel = new EdeParser().parse(edeFile);
+                edeModel = new EdeParser().parseFile(edeFile);
             } else {
                 throw new PlcRuntimeException(String.format(
                     "File specified with 'ede-file-path' does not exist or is not a file: '%s'",
-                    configuration.edeFilePath));
+                    configuration.getEdeFilePath()));
             }
+        }
+        else if (configuration.getEdeDirectoryPath() != null) {
+            File edeDirectory = new File(configuration.getEdeDirectoryPath());
+            if (edeDirectory.exists() && edeDirectory.isDirectory()) {
+                edeModel = new EdeParser().parseDirectory(edeDirectory);
+            } else {
+                throw new PlcRuntimeException(String.format(
+                    "File specified with 'ede-directory-path' does not exist or is not a directory: '%s'",
+                    configuration.getEdeDirectoryPath()));
+            }
+
         }
     }
 

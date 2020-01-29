@@ -20,16 +20,30 @@ package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
 import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
-import org.pcap4j.packet.Packet;
 
 public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapTransportConfiguration {
 
+    // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
-    public String edeFilePath;
+    private String edeFilePath;
+
+    // Path to a directory containing many EDE files.
+    @ConfigurationParameter("ede-directory-path")
+    private String edeDirectoryPath;
+
+    // The speed in which the pcap file is replayed:
+    // - 1.0 being the original speed
+    // - 0   being as fast as possible (no delays between the packets)
+    // - 0.5 being double speed
+    // - 2.0 being half speed
+    @ConfigurationParameter("pcap-replay-speed")
+    @DoubleDefaultValue(1.0F)
+    private double pcapReplaySpeed;
 
     public String getEdeFilePath() {
         return edeFilePath;
@@ -37,6 +51,23 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
 
     public void setEdeFilePath(String edeFilePath) {
         this.edeFilePath = edeFilePath;
+    }
+
+    public String getEdeDirectoryPath() {
+        return edeDirectoryPath;
+    }
+
+    public void setEdeDirectoryPath(String edeDirectoryPath) {
+        this.edeDirectoryPath = edeDirectoryPath;
+    }
+
+    public void setPcapReplaySpeed(double pcapReplaySpeed) {
+        this.pcapReplaySpeed = pcapReplaySpeed;
+    }
+
+    @Override
+    public float getReplaySpeedFactor() {
+        return (float) pcapReplaySpeed;
     }
 
     @Override
@@ -49,10 +80,6 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
         return null;
     }
 
-    @Override
-    public float getReplaySpeedFactor() {
-        return 1.0F;
-    }
 
     /**
      * Packet handler to use when running in PCAP mode.
@@ -62,12 +89,7 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
      */
     @Override
     public PacketHandler getPcapPacketHandler() {
-        return new PacketHandler() {
-            @Override
-            public byte[] getData(Packet packet) {
-                return packet.getPayload().getPayload().getPayload().getRawData();
-            }
-        };
+        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
     }
 
 }

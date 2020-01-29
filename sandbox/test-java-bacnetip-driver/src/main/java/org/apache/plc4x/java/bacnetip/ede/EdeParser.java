@@ -22,21 +22,72 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.bacnetip.ede.layouts.EdeLayout;
+import org.apache.plc4x.java.bacnetip.ede.layouts.EdeLayoutFactory;
 import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
 
 public class EdeParser {
 
-    public EdeModel parse(File edeFile) {
+    public EdeModel parseDirectory(File edeDirectory) {
+        Map<BacNetIpField, Datapoint> datapoints = new HashMap<>();
+        List<File> edeFiles = findAllEdeFiles(edeDirectory);
+        try {
+            for (File edeFile : edeFiles) {
+                datapoints.putAll(parseFileDatapoints(edeFile));
+            }
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing EDE files", e);
+        }
+        return new EdeModel(datapoints);
+    }
+
+    public EdeModel parseFile(File edeFile) {
         if(!edeFile.exists()) {
             throw new PlcRuntimeException("EDE File at " + edeFile.getPath() + " doesn't exist.");
         }
+        return new EdeModel(parseFileDatapoints(edeFile));
+    }
+
+    private List<File> findAllEdeFiles(File curDir) {
+        List<File> edeFiles = new LinkedList<>();
+        try {
+            Files.walkFileTree(curDir.toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                    final File file = path.toFile();
+                    if(file.isFile()) {
+                        // If the name starts with "edeDataText" this is probably an EDE file.
+                        if (file.getName().startsWith("edeDataText")) {
+                            String suffix = file.getName().substring("edeDataText".length());
+                            // If there's a matching "edeStateText" file, we've found a match.
+                            File stateFile = new File(file.getParentFile(), "edeStateText" + suffix);
+                            if (stateFile.exists() && stateFile.isFile()) {
+                                edeFiles.add(path.toFile());
+                            }
+                        }
+                    } else if (file.isDirectory()) {
+                        edeFiles.addAll(findAllEdeFiles(file));
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new PlcRuntimeException("Error scanning EDE directories", e);
+        }
+        return edeFiles;
+    }
+
+    private Map<BacNetIpField, Datapoint> parseFileDatapoints(File edeFile) {
         try {
             Reader in = new FileReader(edeFile);
             final CSVParser parser = CSVFormat.newFormat(';').parse(in);
@@ -50,52 +101,107 @@ public class EdeParser {
                 iterator.next();
             }
             final CSVRecord layoutVersionRow = iterator.next();
-            // Check if the version of the layout is 3
-            if(!layoutVersionRow.get(1).equals("3")) {
-                throw new PlcRuntimeException("Unsupported EDE file layout version " + layoutVersionRow.get(2) +
-                    ". Currently only version 3 is supported.");
+
+            EdeLayout edeLayout = EdeLayoutFactory.getLayoutForVersion(safeCastInteger(layoutVersionRow, 1));
+            if(edeLayout == null) {
+                throw new PlcRuntimeException("rted EDE file layout version " + layoutVersionRow.get(1));
             }
             // Just skip the next row.
             iterator.next();
             // Get the column names.
             final CSVRecord columnNames = iterator.next();
 
-
             Map<BacNetIpField, Datapoint> datapoints = new HashMap<>();
             // Process the content.
             iterator.forEachRemaining(record -> {
-                BacNetIpField address = new BacNetIpField(Long.parseLong(
-                    record.get(1)), Integer.parseInt(record.get(3)), Long.parseLong(record.get(4)));
-                String keyName = (record.get(0).length() == 0) ? null : record.get(0);
-                String objectName = (record.get(2).length() == 0) ? null : record.get(2);
-                String description = (record.get(5).length() == 0) ? null : record.get(5);
-                Double defaultValue = (record.get(6).length() == 0) ? null : Double.valueOf(record.get(6).replace(",", "."));
-                Double minValue = (record.get(7).length() == 0) ? null : Double.valueOf(record.get(7).replace(",", "."));
-                Double maxValue = (record.get(8).length() == 0) ? null : Double.valueOf(record.get(8).replace(",", "."));
-                Boolean commandable = (record.get(9).length() == 0) ? null :
-                    record.get(9).equalsIgnoreCase("Y") ? Boolean.TRUE : record.get(9).equalsIgnoreCase("N") ? Boolean.TRUE : null;
-                Boolean supportsCov = (record.get(10).length() == 0) ? null :
-                    record.get(10).equalsIgnoreCase("Y") ? Boolean.TRUE : record.get(10).equalsIgnoreCase("N") ? Boolean.TRUE : null;
-                Double hiLimit = (record.get(11).length() == 0) ? null : Double.valueOf(record.get(11).replace(",", "."));
-                Double lowLimit = (record.get(12).length() == 0) ? null : Double.valueOf(record.get(12).replace(",", "."));
-                String stateTextReference = (record.get(13).length() == 0) ? null : record.get(13);
-                Integer unitCode = (record.get(14).length() == 0) ? null : Integer.valueOf(record.get(14));
-                Integer vendorSpecificAddress = (record.get(15).length() == 0) ? null : Integer.valueOf(record.get(15));
+                Long deviceInstance = safeCastLong(record, edeLayout.getDeviceInstancePos());
+                Integer objectType = safeCastInteger(record, edeLayout.getObjectTypePos());
+                Long objectInstance = safeCastLong(record, edeLayout.getObjectInstancePos());
+                if((deviceInstance == null) || (objectType == null) || (objectInstance == null)) {
+                    return;
+                }
+                BacNetIpField address = new BacNetIpField(deviceInstance, objectType, objectInstance);
+                String keyName = safeString(record, edeLayout.getKeyNamePos());
+                String objectName = safeString(record, edeLayout.getObjectNamePos());
+                String description = safeString(record, edeLayout.getDescriptionPos());
+                Double defaultValue = safeCastDouble(record, edeLayout.getDefaultValuePos());
+                Double minValue = safeCastDouble(record, edeLayout.getMinValuePos());
+                Double maxValue = safeCastDouble(record, edeLayout.getMaxValuePos());
+                Boolean commandable = safeCastBoolean(record, edeLayout.getCommandablePos());
+                Boolean supportsCov = safeCastBoolean(record, edeLayout.getSupportsCovPos());
+                Double hiLimit = safeCastDouble(record, edeLayout.getHiLimitPos());
+                Double lowLimit = safeCastDouble(record, edeLayout.getLowLimitPos());
+                String stateTextReference = safeString(record, edeLayout.getStateTextReferencePos());
+                Integer unitCode = safeCastInteger(record, edeLayout.getUnitCodePos());
+                Integer vendorSpecificAddress = safeCastInteger(record, edeLayout.getVendorSpecificAddressPos());
+                Integer notificationClass = safeCastInteger(record, edeLayout.getNotificationClassPos());
                 Datapoint datapoint = new Datapoint(address, keyName, objectName, description, defaultValue, minValue,
                     maxValue, commandable, supportsCov, hiLimit, lowLimit, stateTextReference, unitCode,
-                    vendorSpecificAddress);
+                    vendorSpecificAddress, notificationClass);
                 datapoints.put(address, datapoint);
             });
-            return new EdeModel(datapoints);
+            return datapoints;
         } catch (IOException e) {
             throw new PlcRuntimeException("Error parsing EDE file", e);
         }
-
     }
 
-    public static void main(String[] args) throws Exception {
-        EdeModel model = new EdeParser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files/F135/edeDataText3029.csv"));
-        System.out.println(model);
+    private String safeString(CSVRecord record, int pos) {
+        if((pos == -1) || (record.get(pos) == null) || record.get(pos).isEmpty()) {
+            return null;
+        }
+        return record.get(pos);
+    }
+
+    private Double safeCastDouble(CSVRecord record, int pos) {
+        if(pos == -1) {
+            return null;
+        }
+        try {
+            return Double.valueOf(record.get(pos).replace(",", "."));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Long safeCastLong(CSVRecord record, int pos) {
+        if(pos == -1) {
+            return null;
+        }
+        try {
+            return Long.valueOf(record.get(pos));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Integer safeCastInteger(CSVRecord record, int pos) {
+        if(pos == -1) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(record.get(pos));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Boolean safeCastBoolean(CSVRecord record, int pos) {
+        if(pos == -1) {
+            return null;
+        }
+        try {
+            switch (record.get(pos)) {
+                case "Y":
+                    return true;
+                case "N":
+                    return false;
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

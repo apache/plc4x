@@ -40,8 +40,9 @@ public class Datapoint {
     private final String stateTextReference;
     private final Integer unitCode;
     private final Integer vendorSpecificAddress;
+    private final Integer notificationClass;
 
-    public Datapoint(BacNetIpField address, String keyName, String objectName, String description, Double defaultValue, Double minValue, Double maxValue, Boolean commandable, Boolean supportsCov, Double hiLimit, Double lowLimit, String stateTextReference, Integer unitCode, Integer vendorSpecificAddress) {
+    public Datapoint(BacNetIpField address, String keyName, String objectName, String description, Double defaultValue, Double minValue, Double maxValue, Boolean commandable, Boolean supportsCov, Double hiLimit, Double lowLimit, String stateTextReference, Integer unitCode, Integer vendorSpecificAddress, Integer notificationClass) {
         this.address = address;
         this.keyName = keyName;
         this.objectName = objectName;
@@ -56,6 +57,7 @@ public class Datapoint {
         this.stateTextReference = stateTextReference;
         this.unitCode = unitCode;
         this.vendorSpecificAddress = vendorSpecificAddress;
+        this.notificationClass = notificationClass;
     }
 
     public BacNetIpField getAddress() {
@@ -114,6 +116,10 @@ public class Datapoint {
         return vendorSpecificAddress;
     }
 
+    public Integer getNotificationClass() {
+        return notificationClass;
+    }
+
     public Map<String, PlcValue> toPlcValues() {
         Map<String, PlcValue> values = new HashMap<>();
         values.put("keyName", (keyName == null) ? null : new PlcString(keyName));
@@ -129,6 +135,7 @@ public class Datapoint {
         values.put("stateTextReference", (stateTextReference == null) ? null : new PlcString(stateTextReference));
         values.put("unitCode", (unitCode == null) ? null : new PlcInteger(unitCode));
         values.put("vendorSpecificAddress", (vendorSpecificAddress == null) ? null : new PlcInteger(vendorSpecificAddress));
+        values.put("notificationClass", (notificationClass == null) ? null : new PlcInteger(notificationClass));
         return values;
     }
 
