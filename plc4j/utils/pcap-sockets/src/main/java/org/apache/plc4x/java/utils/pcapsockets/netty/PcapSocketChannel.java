@@ -39,6 +39,7 @@ import java.io.OutputStream;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author julian
@@ -212,9 +213,10 @@ public class PcapSocketChannel extends OioByteStreamChannel {
      * @param numNanos number of nano-seconds to wait.
      */
     private void nanoSecondSleep(long numNanos) {
-        long endTime = System.nanoTime() + numNanos;
-        while(endTime > System.nanoTime()) {
-            // Do Nothing ...
+        try {
+            TimeUnit.NANOSECONDS.sleep(numNanos);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
