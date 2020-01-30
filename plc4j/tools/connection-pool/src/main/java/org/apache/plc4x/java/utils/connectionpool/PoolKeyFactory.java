@@ -43,7 +43,7 @@ public class PoolKeyFactory {
         switch (protocol) {
             case "s7":
                 return new PoolKey(url, plcAuthentication) {
-                    private final Pattern s7URIPattern = Pattern.compile("^(?<poolablePart>s7://(?<host>.*))(?<params>\\?.*)?");
+                    private final Pattern s7URIPattern = Pattern.compile("^(?<poolablePart>s7://((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9\\.\\-]+))(:(?<port>[0-9]{1,5}))?)(?<params>\\?.*)?");
 
                     @Override
                     public String getPoolableKey() {

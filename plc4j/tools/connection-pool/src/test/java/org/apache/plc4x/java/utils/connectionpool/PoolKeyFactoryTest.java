@@ -43,10 +43,10 @@ class PoolKeyFactoryTest implements WithAssertions {
     class S7 {
         @Test
         void getPoolKey() throws Exception {
-            PoolKey poolKey = SUT.getPoolKey("s7://localhost/1/2?randomOption=true", PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getUrl()).isEqualTo("s7://localhost/1/2?randomOption=true");
+            PoolKey poolKey = SUT.getPoolKey("s7://localhost?randomOption=true", PooledPlcDriverManager.noPlcAuthentication);
+            assertThat(poolKey.getUrl()).isEqualTo("s7://localhost?randomOption=true");
             assertThat(poolKey.getPlcAuthentication()).isEqualTo(PooledPlcDriverManager.noPlcAuthentication);
-            assertThat(poolKey.getPoolableKey()).isEqualTo("s7://localhost/1/2");
+            assertThat(poolKey.getPoolableKey()).isEqualTo("s7://localhost");
         }
     }
 
