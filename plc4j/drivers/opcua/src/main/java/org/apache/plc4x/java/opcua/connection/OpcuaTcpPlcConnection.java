@@ -168,13 +168,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         EndpointDescription endpoint = null;
 
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params.split("\\?")[0])).get();
+            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params)).get();
             //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
             logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
 
             // try the explicit discovery endpoint as well
-            String discoveryUrl = getEndpointUrl(address, port, params.split("\\?")[0]);
+            String discoveryUrl = getEndpointUrl(address, port, params);
 
             if (!discoveryUrl.endsWith("/")) {
                 discoveryUrl += "/";
