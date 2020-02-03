@@ -37,8 +37,11 @@ public class CpuCyclicServicesRequestPayload implements S7Payload {
     private final int itemCount;
     private final CpuCyclicServiceTimeBaseType timeBase;
     private final byte timeFactor;
-    private final List<S7AnyVarPayloadItem> items;    
-
+    private final List<S7AnyVarPayloadItem> items;  
+    //For Cancel Subcription
+    private final byte function;
+    private final byte jobId;
+    
     public CpuCyclicServicesRequestPayload(DataTransportErrorCode returnCode, 
             DataTransportSize dataTransportSize, 
             int length, 
@@ -53,8 +56,27 @@ public class CpuCyclicServicesRequestPayload implements S7Payload {
         this.timeBase = timeBase;
         this.timeFactor = timeFactor;
         this.items = items;
+        this.function = 0x00;
+        this.jobId = 0x00;
     }
 
+
+    public CpuCyclicServicesRequestPayload(DataTransportErrorCode returnCode, 
+            DataTransportSize dataTransportSize, 
+            int length,
+            byte function,
+            byte jobId) {
+        this.returnCode = returnCode;
+        this.dataTransportSize = dataTransportSize;
+        this.length = length;
+        this.itemCount = 0x00;
+        this.timeBase = null;
+        this.timeFactor = 0x00;
+        this.items = null;
+        this.function = function;
+        this.jobId = jobId;
+    }
+    
     public DataTransportErrorCode getReturnCode() {
         return returnCode;
     }
@@ -83,6 +105,14 @@ public class CpuCyclicServicesRequestPayload implements S7Payload {
         return items;
     }
 
+    public byte getFunction() {
+        return function;
+    }
+
+    public byte getJobId() {
+        return jobId;
+    }
+    
     @Override
     public ParameterType getType() {
         return ParameterType.CPU_SERVICES;

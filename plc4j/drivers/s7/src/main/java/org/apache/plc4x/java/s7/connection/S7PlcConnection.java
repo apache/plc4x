@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import java.net.InetAddress;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,10 +76,14 @@ import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesResponsePa
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuDiagnosticMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
+import org.apache.plc4x.java.s7.netty.model.types.SubscribedEventType;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldEventHandler;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
+import org.apache.plc4x.java.s7.protocol.S7DiagnosticSubscriptionHandle;
+import org.apache.plc4x.java.s7.protocol.event.S7ModeEvent;
+import org.apache.plc4x.java.s7.protocol.event.S7SysEvent;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
 import org.apache.plc4x.java.s7.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
@@ -125,7 +130,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     
     Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions = new HashMap();
     
-    Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles = new HashMap();
+    Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles = new HashMap();    
+    Map<Short, PlcSubscriptionHandle> cyclicServicesHandles = new HashMap();
     
     private EventLoop alarmsloopthread;
 
@@ -200,9 +206,20 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         */
         this.alarmsqueue = new ArrayBlockingQueue<>(1024);
         
+        Map<Short, PlcSubscriptionHandle> usrEventHandle = new HashMap();
+        Map<Short, PlcSubscriptionHandle> sysEventHandle = new HashMap();
+        Map<Short, PlcSubscriptionHandle> modeEventHandle = new HashMap();
+        Map<Short, PlcSubscriptionHandle> almEventHandle = new HashMap();
+        
+        pushEventHandles.put(SubscribedEventType.USR, usrEventHandle);
+        pushEventHandles.put(SubscribedEventType.SYS, usrEventHandle);
+        pushEventHandles.put(SubscribedEventType.MODE, modeEventHandle);
+        pushEventHandles.put(SubscribedEventType.ALM, almEventHandle);
+        
         alarmsloopthread = new EventLoop(channel,
                                 this.alarmsqueue,
                                 cyclicServicesSubscriptions,
+                                pushEventHandles,
                                 cyclicServicesHandles);
 
     }
@@ -427,8 +444,18 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             if (handle instanceof S7CyclicServicesSubscriptionHandle) {
                 S7CyclicServicesSubscriptionHandle s7handle = (S7CyclicServicesSubscriptionHandle) handle;
                 if (!cyclicServicesHandles.containsKey(s7handle.getJobId())){
-                    cyclicServicesHandles.put(s7handle.getJobId(), s7handle);
+                    cyclicServicesHandles.put((short) s7handle.getJobId(), s7handle);
                 }
+            }
+            
+            if (handle instanceof S7DiagnosticSubscriptionHandle) {
+                S7DiagnosticSubscriptionHandle s7handle = (S7DiagnosticSubscriptionHandle) handle; 
+                s7handle.getConsumers().add(consumer);
+                s7handle.getSubscribedevents().forEach((event)->{
+                    pushEventHandles.get(event).put(s7handle.getJobId(), s7handle);
+                    logger.info("Suscripcion: " + s7handle.getSubscribedevents().toString()); 
+                });
+                
             }
         });
         
@@ -449,17 +476,20 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         private final Channel channel;
         private boolean alarmquery;
         private int delay;
-        private final Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions;        
-        private final Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles;
+        private final Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions; 
+        private final Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles;        
+        private final Map<Short, PlcSubscriptionHandle> cyclicServicesHandles;
         private final BlockingQueue<S7PushMessage> alarmsqueue;
         
         EventLoop(Channel channel, 
                 BlockingQueue<S7PushMessage> alarmsqueue, 
                 Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions,
-                Map<Byte, PlcSubscriptionHandle> cyclicServicesHandles) {
+                Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles,
+                Map<Short, PlcSubscriptionHandle> cyclicServicesHandles) {
             this.channel = channel;
             this.alarmsqueue = alarmsqueue;
             this.cyclicServicesSubscriptions = cyclicServicesSubscriptions;
+            this.pushEventHandles = pushEventHandles;
             this.cyclicServicesHandles = cyclicServicesHandles;
             this.alarmquery = true;
             this.delay = 1000;
@@ -475,15 +505,22 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         if (msg instanceof AlarmMessagePayload){
                             AlarmMessagePayload themsg = (AlarmMessagePayload) msg;
                             logger.info("AlarmMessagePayload: " + themsg);
-                        } else if (msg instanceof CpuDiagnosticPushParameter) {
+                            dispathAlmEvents(pushEventHandles.get(SubscribedEventType.ALM), themsg); 
+                            
+                        } else if (msg instanceof CpuDiagnosticPushParameter) {                            
                             CpuDiagnosticPushParameter themsg = (CpuDiagnosticPushParameter) msg;
-                            logger.info("CpuDiagnosticPushParameter: " + themsg);;
+                            logger.info("CpuDiagnosticPushParameter: " + themsg);  
+                            dispathModeEvents(pushEventHandles.get(SubscribedEventType.MODE), themsg);
+                            
                         } else if (msg instanceof CpuDiagnosticMessagePayload) {
                             CpuDiagnosticMessagePayload themsg = (CpuDiagnosticMessagePayload) msg;
                             logger.info("CpuDiagnosticMessagePayload: " + themsg);
+                            dispathSysEvents(pushEventHandles.get(SubscribedEventType.SYS), themsg);  
+                            
                         } else if (msg instanceof CpuServicesPushParameter) {
                             CpuServicesPushParameter themsg = (CpuServicesPushParameter) msg;
                             logger.info("CpuServicesPushParameter: " + themsg);
+                            
                         } else if (msg instanceof CpuCyclicServicesResponsePayload) {
                             CpuCyclicServicesResponsePayload themsg = (CpuCyclicServicesResponsePayload) msg;
                             logger.debug("CpuCyclicServicesResponsePayload: " + themsg + " JobId:" + themsg.getJobId());
@@ -504,15 +541,46 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                             
                         }
                     }
-                    
-                    
-                    
+                                                            
                 } catch (InterruptedException ex) {
                     logger.info(ex.getLocalizedMessage());
                 }
             }
             logger.info("Closing the alarm loop.");
         }
+        
+        private void dispathSysEvents(Map<Short, PlcSubscriptionHandle> handles, CpuDiagnosticMessagePayload payload)
+        {
+            handles.forEach((index,handle)->{
+                S7DiagnosticSubscriptionHandle thehandle = (S7DiagnosticSubscriptionHandle) handle;
+                thehandle.getConsumers().forEach((consumer)->{
+                    S7SysEvent event = new S7SysEvent(payload.getMsg());
+                    consumer.accept(event);
+                });
+            });              
+        }        
+        
+        private void dispathModeEvents(Map<Short, PlcSubscriptionHandle> handles, CpuDiagnosticPushParameter parameter)
+        {
+            handles.forEach((index,handle)->{
+                S7DiagnosticSubscriptionHandle thehandle = (S7DiagnosticSubscriptionHandle) handle;
+                thehandle.getConsumers().forEach((consumer)->{
+                    S7ModeEvent event = new S7ModeEvent(Instant.now(), parameter);
+                    consumer.accept(event);
+                });
+            });              
+        }        
+        
+        private void dispathAlmEvents(Map<Short, PlcSubscriptionHandle> handles, AlarmMessagePayload payload)
+        {
+            handles.forEach((index,handle)->{
+                S7DiagnosticSubscriptionHandle thehandle = (S7DiagnosticSubscriptionHandle) handle;
+                thehandle.getConsumers().forEach((consumer)->{
+                    consumer.accept(null);
+                });
+            });              
+        } 
+        
         
         private void UpdateCyclicServicesData(S7CyclicServicesSubscriptionHandle handle,CpuCyclicServicesResponsePayload themsg){
             
@@ -538,7 +606,9 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                         //PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
                         
                         values2consumer.forEach((index, itemvalue)->{
-                            consumer.accept(null);
+                            if (consumer != null) {
+                                consumer.accept(null);
+                            };
                             //logger.info("Procesando valores : " + index + "\r\n" + ByteBufUtil.prettyHexDump(itemvalue.getData()));
                         });
                         //Pair<PlcResponseCode, ByteBuf> newPair = new ImmutablePair<>(PlcResponseCode, stringItem);

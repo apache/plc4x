@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.payloads;
 
+import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 import java.util.List;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
@@ -31,12 +32,14 @@ public class CpuServicesPayload implements S7Payload {
     private SslId sslId;
     private short sslIndex;
     private List<SslDataRecord> sslDataRecords;
+    private ByteBuf sslPayload;
 
     public CpuServicesPayload(DataTransportErrorCode returnCode, SslId sslId, short sslIndex) {
         this.returnCode = returnCode;
         this.sslId = sslId;
         this.sslIndex = sslIndex;
         this.sslDataRecords = Collections.emptyList();
+        this.sslPayload = null;        
     }
 
     public CpuServicesPayload(DataTransportErrorCode returnCode, SslId sslId, short sslIndex, List<SslDataRecord> sslDataRecords) {
@@ -44,7 +47,16 @@ public class CpuServicesPayload implements S7Payload {
         this.sslId = sslId;
         this.sslIndex = sslIndex;
         this.sslDataRecords = sslDataRecords;
+        this.sslPayload = null;        
     }
+    
+    public CpuServicesPayload(DataTransportErrorCode returnCode, SslId sslId, short sslIndex, ByteBuf sslPayload) {
+        this.returnCode = returnCode;
+        this.sslId = sslId;
+        this.sslIndex = sslIndex;
+        this.sslDataRecords = null;
+        this.sslPayload = sslPayload;
+    }    
 
     @Override
     public ParameterType getType() {
@@ -67,4 +79,8 @@ public class CpuServicesPayload implements S7Payload {
         return sslDataRecords;
     }
 
+    public ByteBuf getSslPayload() {
+        return sslPayload;
+    }
+       
 }

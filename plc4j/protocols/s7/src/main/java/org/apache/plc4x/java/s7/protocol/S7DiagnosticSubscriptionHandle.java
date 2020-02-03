@@ -24,19 +24,53 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.netty.model.types.SubscribedEventType;
 
 /**
  *
  * @author cgarcia
  */
-public class S7DiagnosticSubscriptionHandle implements PlcSubscriptionHandle {
+public class S7DiagnosticSubscriptionHandle implements InternalPlcSubscriptionHandle{
     Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
     
-    //Diagnostic events
-    List<SubscribedEventType> subscribedevents; 
-        
+    //CyClic Services information hanler
+    private final String fieldName; //Subscription id from the request
+    private final short jobId; //Job-Id from cyclic subscriotion
+    private final PlcResponseCode error; //Register the error from the suscription.       
+    private final List<SubscribedEventType> subscribedevents;     //Diagnostic events
+
+    public S7DiagnosticSubscriptionHandle(String fieldName, 
+            short jobId, 
+            PlcResponseCode error, 
+            List<SubscribedEventType> subscribedevents) {
+        this.fieldName = fieldName;
+        this.jobId = jobId;
+        this.error = error;
+        this.subscribedevents = subscribedevents;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public short getJobId() {
+        return jobId;
+    }
+
+    public PlcResponseCode getError() {
+        return error;
+    }
+
+    public List<SubscribedEventType> getSubscribedevents() {
+        return subscribedevents;
+    }
+
+    public Set<Consumer<PlcSubscriptionEvent>> getConsumers() {
+        return consumers;
+    }            
+    
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
         consumers.add(consumer);

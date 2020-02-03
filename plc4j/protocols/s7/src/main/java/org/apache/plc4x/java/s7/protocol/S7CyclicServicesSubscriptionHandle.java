@@ -24,14 +24,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
 
 /**
  *
  * @author cgarcia
  */
-public class S7CyclicServicesSubscriptionHandle implements PlcSubscriptionHandle {
+public class S7CyclicServicesSubscriptionHandle implements InternalPlcSubscriptionHandle {
     Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
         
     //CyClic Services information hanler

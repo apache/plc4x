@@ -26,7 +26,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -64,8 +64,6 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.CpuDiagnosticMessageI
 import org.apache.plc4x.java.s7.netty.model.payloads.items.MessageObjectItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.S7AnyVarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
-import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
-import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslModuleIdentificationDataRecord;
 import org.apache.plc4x.java.s7.netty.model.types.*;
 import org.apache.plc4x.java.s7.netty.strategies.S7MessageProcessor;
 import org.apache.plc4x.java.s7.netty.util.S7SizeHelper;
@@ -420,16 +418,23 @@ public class S7Protocol extends ChannelDuplexHandler {
        }         
     }    
 
-   private void encodeCpuCyclicSubscriptionPayload(CpuCyclicServicesRequestPayload payload, ByteBuf buf) {
-       buf.writeByte(payload.getReturnCode().getCode());
-       buf.writeByte(payload.getDataTransportSize().getCode());
-       buf.writeShort(payload.getLength());
-       buf.writeShort(payload.getItemCount());
-       buf.writeByte(payload.getTimeBase().getCode());
-       buf.writeByte(payload.getTimeFactor());
-       payload.getItems().forEach((anyvar)->{
-           encodeS7AnyPayloadItem(anyvar,buf);
-       });       
+    private void encodeCpuCyclicSubscriptionPayload(CpuCyclicServicesRequestPayload payload, ByteBuf buf) {
+        buf.writeByte(payload.getReturnCode().getCode());
+        buf.writeByte(payload.getDataTransportSize().getCode());
+        buf.writeShort(payload.getLength());
+        //Unsuscription
+        if (payload.getLength() == 2) {
+            buf.writeByte(payload.getFunction());
+            buf.writeByte(payload.getJobId());
+        } else {
+           //Suscription message
+           buf.writeShort(payload.getItemCount());
+           buf.writeByte(payload.getTimeBase().getCode());
+           buf.writeByte(payload.getTimeFactor());
+           payload.getItems().forEach((anyvar)->{
+               encodeS7AnyPayloadItem(anyvar,buf);
+           });     
+       };
    }    
     
     private void encodeParameters(S7Message in, ByteBuf buf) throws PlcProtocolException {
@@ -655,7 +660,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         short userDataLength = userData.readShort();
         byte errorClass = 0;
         byte errorCode = 0;
-        
+
         if (isResponse) {
             errorClass = userData.readByte();
             errorCode = userData.readByte();
@@ -672,14 +677,21 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             i += S7SizeHelper.getParameterLength(parameter);
         }
-
+        
         List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, s7Parameters);
-
         logger.debug("S7 Message with id {} received", tpduReference);
         
-        //Case: USER_DATA
+        //Case: USER_DATA CpuCyclicServicesResponseParameter
         if (messageType == MessageType.USER_DATA){
-            if (s7Parameters.get(0) instanceof CpuServicesResponseParameter){
+            if (s7Parameters.get(0) instanceof CpuCyclicServicesResponseParameter){
+                CpuCyclicServicesResponseParameter parameter = (CpuCyclicServicesResponseParameter) s7Parameters.get(0);
+                if (parameter.getSubCycFunctionGroup() == CpuCyclicServicesParameterSubFunctionGroupType.CYCLIC_UNSUBSCRIBE){
+                    isResponse = true;
+                }
+            }
+            
+            //TODO: Check for other combinations
+            if (s7Parameters.get(0) instanceof CpuServicesResponseParameter){                
                 CpuServicesResponseParameter parameter = (CpuServicesResponseParameter) s7Parameters.get(0);
                 if (parameter.getSubFunctionGroup() == CpuServicesParameterSubFunctionGroup.ALARM_ACK){
                     isResponse = true;
@@ -715,7 +727,6 @@ public class S7Protocol extends ChannelDuplexHandler {
 
                 if(responseMessage != null) {
                     out.add(responseMessage);
-
                     // If this is a USER_DATA packet the probability is high that this is
                     // a response to the identification request, we have to handle that.
                     if(responseMessage.getMessageType() == MessageType.USER_DATA) {
@@ -802,6 +813,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private void handleIdentifyRemote(ChannelHandlerContext ctx, CpuServicesPayload cpuServicesPayload) {
         controllerType = S7ControllerType.ANY;
+        /*
         for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
             if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
                 SslModuleIdentificationDataRecord sslModuleIdentificationDataRecord =
@@ -809,6 +821,13 @@ public class S7Protocol extends ChannelDuplexHandler {
                 if(sslModuleIdentificationDataRecord.getIndex() == (short) 0x0001) {
                     controllerType = lookupControllerType(sslModuleIdentificationDataRecord.getArticleNumber());
                 }
+            }
+        */
+        if (cpuServicesPayload.getSslId() == SslId.MODULE_IDENTIFICATION) {
+            if ((cpuServicesPayload.getSslIndex() == 0x0000) || (cpuServicesPayload.getSslIndex() == 0x0001)){
+                ByteBuf payload = cpuServicesPayload.getSslPayload();
+                CharSequence MlfB = payload.getCharSequence(6, 20, Charset.defaultCharset());
+                controllerType = lookupControllerType(MlfB.toString());
             }
         }
         if(logger.isDebugEnabled()) {
@@ -837,7 +856,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 s7Payloads.add(cpuServicesPayload);
             } else if (s7Parameter instanceof CpuServicesPushParameter){
                 S7Payload cpuServicesPayload = decodeCpuServicesPayload((CpuServicesParameter)s7Parameter, userData);
-                s7Payloads.add(cpuServicesPayload);                
+                s7Payloads.add(cpuServicesPayload); 
             }
         }
         return s7Payloads;
@@ -947,11 +966,15 @@ public class S7Protocol extends ChannelDuplexHandler {
                         break;
                     case CYCLIC_RDREC:;    
                         break;
-                    case CYCLIC_TRANSFER: 
+                    case CYCLIC_TRANSFER: {
                         CpuCyclicServicesResponsePayload payload = decodeCyclicServiceResponsePayload(pushparameter, userData);
                         return payload;
-                    case CYCLIC_UNSUBSCRIBE:;    
-                        break;                        
+                    }
+                    case CYCLIC_UNSUBSCRIBE:{   
+                        CpuCyclicServicesResponsePayload payload = decodeCyclicServiceResponsePayload(pushparameter, userData);
+                        return payload;
+                    }
+                    default: logger.info("decodeCpuServicesPayload: No Sub Cyc Function Group.");
                 }
             }
         }
@@ -1124,10 +1147,21 @@ public class S7Protocol extends ChannelDuplexHandler {
     private CpuServicesPayload decodeReadSslPayload(CpuServicesParameter parameter, ByteBuf userData){
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+        short length;
+        
         if(dataTransportSize != DataTransportSize.OCTET_STRING) {
-                // TODO: Output an error.
+            if(dataTransportSize == DataTransportSize.NULL) {
+                length = userData.readShort();
+                if (length == 0x0000) {
+                    return new CpuServicesPayload(returnCode, SslId.NULL, (short) 0x0000);
+                } else {
+                // TODO: Output an error.                    
+                }
+                
+            }   
         }
-        short length = userData.readShort();                
+        
+        length = userData.readShort();                
         SslId sslId = SslId.valueOf(userData.readShort());
         short sslIndex = userData.readShort();
         // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
@@ -1136,8 +1170,11 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
         // If the length is not 4, then it has to be at least 8.
         else if(length >= 8) {
+            
             // TODO: We should probably ensure we don't read more than this.
             // Skip the partial list length in words.
+            // TODO: Transfer all Payload to the client app. Use helper class.
+            /*
             userData.skipBytes(2);
             short partialListCount = userData.readShort();
             List<SslDataRecord> sslDataRecords = new LinkedList<>();
@@ -1152,12 +1189,16 @@ public class S7Protocol extends ChannelDuplexHandler {
                 sslDataRecords.add(new SslModuleIdentificationDataRecord(
                     index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
             }
-            return new CpuServicesPayload(returnCode, sslId, sslIndex, sslDataRecords);
+            */
+            ByteBuf payload = Unpooled.copiedBuffer(userData);
+                            
+            return new CpuServicesPayload(returnCode, sslId, sslIndex, payload);
         }
         // In all other cases, it's probably an error.
         else {
             // TODO: Output an error.
         }   
+
         return null;   
     }    
     
@@ -1484,42 +1525,46 @@ public class S7Protocol extends ChannelDuplexHandler {
     
     
     private CpuCyclicServicesResponsePayload decodeCyclicServiceResponsePayload(CpuCyclicServicesResponseParameter parameter, ByteBuf userData){
-        logger.info("decodeCyclicServiceResponsePayload :\r\n" + ByteBufUtil.prettyHexDump(userData));
+        //logger.info("decodeCyclicServiceResponsePayload :\r\n" + ByteBufUtil.prettyHexDump(userData));
         DataTransportErrorCode AlarmReturnCode;
         DataTransportSize AlarmTransportSize;
         int length;
-        int itemcount;
+        int itemcount = 0;
+        List<AssociatedValueItem> Values = new LinkedList<>();
         
         //Data section
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
         length = userData.readShort(); //Number of bytes
-        userData.readByte(); //TODO: Sometimes is 0x00 another 0x01, Blinking when I have TIA running
-        itemcount = (length==0?0x0000:userData.readByte());
-        List<AssociatedValueItem> Values = new LinkedList<>();
-        try {
-        for (int i=0; i < itemcount; i++ ){                         
-            DataTransportErrorCode valueCode = DataTransportErrorCode.valueOf(userData.readByte());
-            DataTransportSize valueTransportSize = DataTransportSize.valueOf(userData.readByte());
-                        
-            int valueLength = userData.readShort() / 8;  
-            if ((valueLength % 2 != 0) && (userData.isReadable(valueLength+1))) {
-
-                userData.readByte(); //Fill byte for odd number of bytes
-            }
-
-            ByteBuf Data = userData.readBytes(valueLength);
-            
-            Values.add(new AssociatedValueItem(valueCode,
-                            valueTransportSize,
-                            valueLength,
-                            Data));            
-        }
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-            return null;
-        }
         
+        //Check for Unsubscribe
+        if (length != 0x0000) {
+            userData.readByte(); //TODO: Sometimes is 0x00 another 0x01, Blinking when I have TIA running
+            itemcount = (length==0?0x0000:userData.readByte());
+            try {
+                for (int i=0; i < itemcount; i++ ){                         
+                    DataTransportErrorCode valueCode = DataTransportErrorCode.valueOf(userData.readByte());
+                    DataTransportSize valueTransportSize = DataTransportSize.valueOf(userData.readByte());
+
+                    int valueLength = userData.readShort() / 8;  
+                    if ((valueLength % 2 != 0) && (userData.isReadable(valueLength+1))) {
+
+                        userData.readByte(); //Fill byte for odd number of bytes
+                    }
+
+                    ByteBuf Data = userData.readBytes(valueLength);
+
+                    Values.add(new AssociatedValueItem(valueCode,
+                                    valueTransportSize,
+                                    valueLength,
+                                    Data));            
+                }
+            } catch (Exception e) {
+                logger.info(e.getMessage());
+                return null;
+            }
+        }
+
         return new CpuCyclicServicesResponsePayload(
                     returnCode,
                     dataTransportSize,

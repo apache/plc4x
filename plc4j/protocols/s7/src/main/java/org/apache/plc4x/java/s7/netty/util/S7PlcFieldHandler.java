@@ -18,19 +18,19 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.util;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.base.messages.items.*;
-import org.apache.plc4x.java.s7.model.S7Field;
-
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.base.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.base.messages.items.*;
+import org.apache.plc4x.java.s7.model.S7Field;
+import org.apache.plc4x.java.s7.model.S7SslField;
 
 public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
@@ -39,6 +39,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         if (S7Field.matches(fieldQuery)) {
             return S7Field.of(fieldQuery);
         }
+        if (S7SslField.matches(fieldQuery)) {
+            return S7SslField.of(fieldQuery);
+        }        
         throw new PlcInvalidFieldException(fieldQuery);
     }
 

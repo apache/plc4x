@@ -23,7 +23,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ *  |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1|
+ *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ *  \__________/\__________/\____________________/
+ *   Event class     IDs         Event number
+ * 
+ *   Event Class:
+ *      1   Standard OB Events
+ *      2   Synchronous errors
+ *      3   Asynchronous errors
+ *      4   Mode transition
+ *      5   Run-time events
+ *      6   Communications events
+ *      7   Events for fail-safe and fault tolerant systems
+ *      8   Standardized diagnostic data on modules
+ *      9   Predefined user events
+ *    A,B   Freely definable events
+ *  C,D,E   Reserved
+ *      F   Events for modules other than CPUs (for example, CPs, FMs)
+ * 
+ *  IDs (Bit)
+ *      8   0:Event leaving state, 1:Event entering state
+ *      9   1:Entry in diagnostic buffer
+ *     10   1:Internal error
+ *     11   1:External error
+ * 
  * @author cgarcia
  */
 public enum S7DiagnosticEventId {
@@ -37,6 +62,8 @@ public enum S7DiagnosticEventId {
     EVENTID_0x115A((short) 0x115A, "Manufacturer interrupt for PROFINET IO"),
     EVENTID_0x115B((short) 0x115B, "IO: Profile-specific interrupt"),
     EVENTID_0x116A((short) 0x116A, "Technology synchronization interrupt"),
+    
+    //Event Class 1 - Standard OB Events
     EVENTID_0x1381((short) 0x1381, "Request for manual warm restart"),
     EVENTID_0x1382((short) 0x1382, "Request for automatic warm restart"),
     EVENTID_0x1383((short) 0x1383, "Request for manual hot restart"),
@@ -49,6 +76,8 @@ public enum S7DiagnosticEventId {
     EVENTID_0x138B((short) 0x138B, "Master CPU: request for automatic warm restart"),
     EVENTID_0x138C((short) 0x138C, "Standby CPU: request for manual hot restart"),
     EVENTID_0x138D((short) 0x138D, "Standby CPU: request for automatic hot restart"),
+    
+    //Event Class 2 - Synchronous Errors
     EVENTID_0x2521((short) 0x2521, "BCD conversion error"),
     EVENTID_0x2522((short) 0x2522, "Area length error when reading"),
     EVENTID_0x2523((short) 0x2523, "Area length error when writing"),
@@ -71,9 +100,9 @@ public enum S7DiagnosticEventId {
     EVENTID_0x253F((short) 0x253F, "SFB not loaded"),
     EVENTID_0x2942((short) 0x2942, "I/O access error, reading"),
     EVENTID_0x2943((short) 0x2943, "I/O access error, writing"),
-    EVENTID_0x3267((short) 0x3267, "End of module reconfiguration"),
-    EVENTID_0x3367((short) 0x3367, "Start of module reconfiguration"),
-    EVENTID_0x34A4((short) 0x34A4, "PROFInet Interface DB can be addressed again"),
+
+    
+    //Event Class 3 - Asynchronous Errors
     EVENTID_0x3501((short) 0x3501, "Cycle time exceeded"),
     EVENTID_0x3502((short) 0x3502, "User interface (OB or FRB) request error"),
     EVENTID_0x3503((short) 0x3503, "Delay too long processing a priority class"),
@@ -174,7 +203,9 @@ public enum S7DiagnosticEventId {
     EVENTID_0x39CD((short) 0x39CD, "PROFINET IO station operational again, but expected configuration does not match actual configuration"),
     EVENTID_0x39CE((short) 0x39CE, "PROFINET IO station operational again, but error(s) in module parameter assignment"),
     EVENTID_0x42F3((short) 0x42F3, "Checksum error detected and corrected by the operating system"),
-    EVENTID_0x42F4((short) 0x42F4, "Standby CPU: connection/update via SFC90 is locked in the master CPU"),
+
+    
+    //Event Class 4 - Stop Events and Other Mode Changes
     EVENTID_0x4300((short) 0x4300, "Backed-up power on"),
     EVENTID_0x4301((short) 0x4301, "Mode transition from STOP to STARTUP"),
     EVENTID_0x4302((short) 0x4302, "Mode transition from STARTUP to RUN"),
@@ -295,15 +326,17 @@ public enum S7DiagnosticEventId {
     EVENTID_0x49D2((short) 0x49D2, "Standby CPU changed to STOP due to STOP on the master CPU during link-up"),
     EVENTID_0x49D4((short) 0x49D4, "STOP on a master, since partner CPU is also a master (link-up error)"),
     EVENTID_0x49D7((short) 0x49D7, "LINK-UP rejected due to change in user program or in configuration"),
-    EVENTID_0x510F((short) 0x510F, "A problem as occurred with WinLC. This problem has caused the CPU to go into STOP mode or has caused a fault in the CPU"),
+    EVENTID_0x42F4((short) 0x42F4, "Standby CPU: connection/update via SFC90 is locked in the master CPU"),
+            
+    //Event Class 5 - Mode Run-time Events
     EVENTID_0x530D((short) 0x530D, "New startup information in the STOP mode"),
+    EVENTID_0x510F((short) 0x510F, "A problem as occurred with WinLC. This problem has caused the CPU to go into STOP mode or has caused a fault in the CPU"),    
     EVENTID_0x5311((short) 0x5311, "Startup despite Not Ready message from module(s)"),
     EVENTID_0x5371((short) 0x5371, "Distributed I/Os: end of the synchronization with a DP master"),
     EVENTID_0x5380((short) 0x5380, "Diagnostic buffer entries of interrupt and asynchronous errors disabled"),
     EVENTID_0x5395((short) 0x5395, "Distributed I/Os: reset of a DP master"),
     EVENTID_0x53A2((short) 0x53A2, "Download of technology firmware successful"),
     EVENTID_0x53A4((short) 0x53A4, "Download of technology DB not successful"),
-    EVENTID_0x53FF((short) 0x53FF, "Reset to factory setting"),
     EVENTID_0x5445((short) 0x5445, "Start of System reconfiguration in RUN mode"),
     EVENTID_0x5481((short) 0x5481, "All licenses for runtime software are complete again"),
     EVENTID_0x5498((short) 0x5498, "No more inconsistency with DP master systems due to CiR"),
@@ -331,7 +364,11 @@ public enum S7DiagnosticEventId {
     EVENTID_0x59A0((short) 0x59A0, "The interrupt can not be associated in the CPU"),
     EVENTID_0x59A1((short) 0x59A1, "Configuration error in the integrated technology"),
     EVENTID_0x59A3((short) 0x59A3, "Error when downloading the integrated technology"),
-    EVENTID_0x6253((short) 0x6253, "Firmware update: End of firmware download over the network"),
+    EVENTID_0x53FF((short) 0x53FF, "Reset to factory setting"),
+    
+
+    
+    //Event Class 6 - Communication Events
     EVENTID_0x6316((short) 0x6316, "Interface error when starting programmable controller"),
     EVENTID_0x6353((short) 0x6353, "Firmware update: Start of firmware download over the network"),
     EVENTID_0x6390((short) 0x6390, "Formatting of Micro Memory Card complete"),
@@ -370,11 +407,14 @@ public enum S7DiagnosticEventId {
     EVENTID_0x6549((short) 0x6549, "Structure error in block"),
     EVENTID_0x6550((short) 0x6550, "A block has an error in the CRC"),
     EVENTID_0x6551((short) 0x6551, "A block has no CRC"),
+    EVENTID_0x6253((short) 0x6253, "Firmware update: End of firmware download over the network"),    
     EVENTID_0x6560((short) 0x6560, "SCAN overflow"),
     EVENTID_0x6805((short) 0x6805, "Resource problem on configured connections, eliminated"),
     EVENTID_0x6881((short) 0x6881, "Interface error leaving state"),
     EVENTID_0x6905((short) 0x6905, "Resource problem on configured connections"),
     EVENTID_0x6981((short) 0x6981, "Interface error entering state"),
+    
+    //Event Class 7 - H/F Events
     EVENTID_0x72A2((short) 0x72A2, "Failure of a DP master or a DP master system"),
     EVENTID_0x72A3((short) 0x72A3, "Redundancy restored on the DP slave"),
     EVENTID_0x72DB((short) 0x72DB, "Safety program: safety mode disabled"),
@@ -448,17 +488,168 @@ public enum S7DiagnosticEventId {
     EVENTID_0x79E5((short) 0x79E5, "F-I/O device passivated"),
     EVENTID_0x79E6((short) 0x79E6, "Inconsistent safety program"),
     EVENTID_0x79E7((short) 0x79E7, "Simulation block (F system block) loaded"),
+    EVENTID_0x73E8((short) 0x73E8, "Consistency of the safety program verified by testing"),
+    EVENTID_0x73E9((short) 0x73E9, "Consistency of the safety program cannot be checked"),
+    
+    //Event Class 8 - Diagnostic Events for Modules
+    EVENTID_0x8x00((short) 0x8000, "Module fault/OK"),
+    EVENTID_0x8x01((short) 0x8001, "Internal error"),
+    EVENTID_0x8x02((short) 0x8002, "External error"),
+    EVENTID_0x8x03((short) 0x8003, "Channel error"),
+    EVENTID_0x8x04((short) 0x8004, "External error"),
+    EVENTID_0x8x05((short) 0x8005, "No front connector"),
+    EVENTID_0x8x06((short) 0x8006, "No parameter assignment"),
+    EVENTID_0x8x07((short) 0x8007, "Incorrect parameters in module"),  
+    EVENTID_0x8x30((short) 0x8030, "User submodule incorrect/not found"),
+    EVENTID_0x8x31((short) 0x8031, "Communication problem"),
+    EVENTID_0x8x32((short) 0x8032, "Operating mode: RUN/STOP (STOP: entering state, RUN: leaving state)"),
+    EVENTID_0x8x33((short) 0x8033, "Time monitoring responded (watchdog)"),
+    EVENTID_0x8x34((short) 0x8034, "Internal module power failure"),
+    EVENTID_0x8x35((short) 0x8035, "BATTF: battery exhausted"),
+    EVENTID_0x8x36((short) 0x8036, "Total backup failed"),
+    EVENTID_0x8x40((short) 0x8040, "Expansion rack failed"),
+    EVENTID_0x8x41((short) 0x8041, "Processor failure"),
+    EVENTID_0x8x42((short) 0x8042, "EPROM error"),
+    EVENTID_0x8x43((short) 0x8043, "RAM error"),
+    EVENTID_0x8x44((short) 0x8044, "ADC/DAC error"),
+    EVENTID_0x8x45((short) 0x8045, "Fuse blown"),
+    EVENTID_0x8x46((short) 0x8046, "Hardware interrupt lost"),    
+    EVENTID_0x8x50((short) 0x8050, "Configuration/parameter assignment error. Analog input"), 
+    EVENTID_0x8x51((short) 0x8051, "Common mode error"), 
+    EVENTID_0x8x52((short) 0x8052, "Short circuit to phase"),
+    EVENTID_0x8x53((short) 0x8053, "Short circuit to ground"),
+    EVENTID_0x8x54((short) 0x8054, "Wire break"),
+    EVENTID_0x8x55((short) 0x8055, "Reference channel error"),
+    EVENTID_0x8x56((short) 0x8056, "Below measuring range"),
+    EVENTID_0x8x57((short) 0x8057, "Above measuring range"),
+    EVENTID_0x8x60((short) 0x8060, "Configuration/parameter assignment error. Analog output"),
+    EVENTID_0x8x61((short) 0x8061, "Common mode error"),
+    EVENTID_0x8x62((short) 0x8062, "Short circuit to phase"),
+    EVENTID_0x8x63((short) 0x8063, "Short circuit to ground"),
+    EVENTID_0x8x64((short) 0x8064, "Wire break"),
+    EVENTID_0x8x66((short) 0x8066, "No load voltage"),
+    EVENTID_0x8x70((short) 0x8070, "Configuration/parameter assignment error. Digital input"),
+    EVENTID_0x8x71((short) 0x8071, "Chassis ground fault"),
+    EVENTID_0x8x72((short) 0x8072, "Short circuit to phase (sensor)"),
+    EVENTID_0x8x73((short) 0x8073, "Short circuit to ground (sensor)"),
+    EVENTID_0x8x74((short) 0x8074, "Wire break"),
+    EVENTID_0x8x75((short) 0x8075, "No sensor power supply"),
+    EVENTID_0x8x80((short) 0x8080, "Configuration/parameter assignment error. Digital output"),
+    EVENTID_0x8x81((short) 0x8081, "Chassis ground fault"),
+    EVENTID_0x8x82((short) 0x8082, "Short circuit to phase"),
+    EVENTID_0x8x83((short) 0x8083, "Short circuit to ground"),
+    EVENTID_0x8x84((short) 0x8084, "Wire break"),
+    EVENTID_0x8x85((short) 0x8085, "Fuse tripped"),
+    EVENTID_0x8x86((short) 0x8086, "No load voltage"),
+    EVENTID_0x8x87((short) 0x8087, "Excess temperature"),
+    EVENTID_0x8xB0((short) 0x80B0, "Counter module, signal A faulty. FM"),
+    EVENTID_0x8xB1((short) 0x80B1, "Counter module, signal B faulty"),
+    EVENTID_0x8xB2((short) 0x80B2, "Counter module, signal N faulty"),
+    EVENTID_0x8xB3((short) 0x80B3, "Counter module, incorrect value passed between the channels"),
+    EVENTID_0x8xB4((short) 0x80B4, "Counter module, 5.2 V sensor supply faulty"),
+    EVENTID_0x8xB5((short) 0x80B5, "Counter module, 24 V sensor supply faulty"),
+    
+    //Event Class 9 - Standard User Events
+    EVENTID_0x9001((short) 0x9001, "Automatic mode"),
+    EVENTID_0x9101((short) 0x9101, "Manual mode"),
+    EVENTID_0x9x02((short) 0x9002, "OPEN/CLOSED, ON/OFF"),
+    EVENTID_0x9x03((short) 0x9003, "Manual command enable"),
+    EVENTID_0x9x04((short) 0x9004, "Unit protective command (OPEN/CLOSED)"),
+    EVENTID_0x9x05((short) 0x9005, "Process enable"),
+    EVENTID_0x9x06((short) 0x9006, "System protection command"),
+    EVENTID_0x9x07((short) 0x9007, "Process value monitoring responded"),
+    EVENTID_0x9x08((short) 0x9008, "Manipulated variable monitoring responded"),
+    EVENTID_0x9x09((short) 0x9009, "System deviation greater than permitted"),
+    EVENTID_0x9x0A((short) 0x900A, "Limit position error"),
+    EVENTID_0x9x0B((short) 0x900B, "Runtime error"),
+    EVENTID_0x9x0C((short) 0x900C, "Command execution error (sequencer)"),
+    EVENTID_0x9x0D((short) 0x900D, "Operating status running > OPEN"),
+    EVENTID_0x9x0E((short) 0x900E, "Operating status running > CLOSED"),
+    EVENTID_0x9x0F((short) 0x900F, "Command blocking"),
+    EVENTID_0x9x11((short) 0x9011, "Process status OPEN/ON"),
+    EVENTID_0x9x12((short) 0x9012, "Process status CLOSED/OFF"),
+    EVENTID_0x9x13((short) 0x9013, "Process status intermediate position"),
+    EVENTID_0x9x14((short) 0x9014, "Process status ON via AUTO"),
+    EVENTID_0x9x15((short) 0x9015, "Process status ON via manual"),
+    EVENTID_0x9x16((short) 0x9016, "Process status ON via protective command"),
+    EVENTID_0x9x17((short) 0x9017, "Process status OFF via AUTO"),
+    EVENTID_0x9x18((short) 0x9018, "Process status OFF via manual"),
+    EVENTID_0x9x19((short) 0x9019, "Process status OFF via protective command"),
+    EVENTID_0x9x21((short) 0x9021, "Function error on approach"),
+    EVENTID_0x9x22((short) 0x9022, "Function error on leaving"),
+    EVENTID_0x9x31((short) 0x9031, "Actuator (DE/WE) limit position OPEN"),
+    EVENTID_0x9x32((short) 0x9032, "Actuator (DE/WE) limit position not OPEN"),
+    EVENTID_0x9x33((short) 0x9033, "Actuator (DE/WE) limit position CLOSED"),
+    EVENTID_0x9x34((short) 0x9034, "Actuator (DE/WE) limit position not CLOSED"),
+    EVENTID_0x9x41((short) 0x9041, "Illegal status, tolerance time elapsed"),
+    EVENTID_0x9x42((short) 0x9042, "Illegal status, tolerance time not elapsed"),
+    EVENTID_0x9x43((short) 0x9043, "Interlock error, tolerance time = 0"),
+    EVENTID_0x9x44((short) 0x9044, "Interlock error, tolerance time > 0"),
+    EVENTID_0x9x45((short) 0x9045, "No reaction"),
+    EVENTID_0x9x46((short) 0x9046, "Final status exited illegally, tolerance time = 0"),
+    EVENTID_0x9x47((short) 0x9047, "Final status exited illegally, tolerance time > 0"),
+    EVENTID_0x9x50((short) 0x9050, "Upper limit of signal range USR"),
+    EVENTID_0x9x51((short) 0x9051, "Upper limit of measuring range UMR"),
+    EVENTID_0x9x52((short) 0x9052, "Lower limit of signal range LSR"),
+    EVENTID_0x9x53((short) 0x9053, "Lower limit of measuring range LMR"),
+    EVENTID_0x9x54((short) 0x9054, "Upper alarm limit UAL"),
+    EVENTID_0x9x55((short) 0x9055, "Upper warning limit UWL"),
+    EVENTID_0x9x56((short) 0x9056, "Upper tolerance limit UTL"),
+    EVENTID_0x9x57((short) 0x9057, "Lower tolerance limit LTL"),
+    EVENTID_0x9x58((short) 0x9058, "Lower warning limit LWL"),
+    EVENTID_0x9x59((short) 0x9059, "Lower alarm limit LAL"),
+    EVENTID_0x9x60((short) 0x9060, "GRAPH7 step entering/leaving"),
+    EVENTID_0x9x61((short) 0x9061, "GRAPH7 interlock error"),
+    EVENTID_0x9x62((short) 0x9062, "GRAPH7 execution error"),
+    EVENTID_0x9x63((short) 0x9063, "GRAPH7 error noted"),
+    EVENTID_0x9x64((short) 0x9064, "GRAPH7 error acknowledged"),
+    EVENTID_0x9x70((short) 0x9070, "Trend exceeded in positive direction"),
+    EVENTID_0x9x71((short) 0x9071, "Trend exceeded in negative direction"),
+    EVENTID_0x9x72((short) 0x9072, "No reaction"),
+    EVENTID_0x9x73((short) 0x9073, "Final state exited illegally"),
+    EVENTID_0x9x80((short) 0x9080, "Limit value exceeded, tolerance time = 0"),
+    EVENTID_0x9x81((short) 0x9081, "Limit value exceeded, tolerance time > 0"),
+    EVENTID_0x9x82((short) 0x9082, "Below limit value, tolerance time = 0"),
+    EVENTID_0x9x83((short) 0x9083, "Below limit value, tolerance time > 0"),
+    EVENTID_0x9x84((short) 0x9084, "Gradient exceeded, tolerance time = 0"),
+    EVENTID_0x9x85((short) 0x9085, "Gradient exceeded, tolerance time > 0"),
+    EVENTID_0x9x86((short) 0x9086, "Below gradient, tolerance time = 0"),
+    EVENTID_0x9x87((short) 0x9087, "Below gradient, tolerance time > 0"),
+    EVENTID_0x9090((short) 0x9090, "User parameter assignment error entering/leaving"),
+    EVENTID_0x9190((short) 0x9190, "User parameter assignment error entering/leaving"),
+    EVENTID_0x91F0((short) 0x91F0, "Overflow"),
+    EVENTID_0x91F1((short) 0x91F1, "Underflow"),
+    EVENTID_0x91F2((short) 0x91F2, "Division by 0"),
+    EVENTID_0x91F3((short) 0x91F3, "Illegal calculation operation"),
+    
+    //Event Classes A and B - Free User Events
+    
+    
+    //Event Classes C,D & E - Reserved Event Classes
+    
+    //Event Classes F -  Reserved for modules not in central 
+    //                   rack (for example, CPs or FMs)
+    
     EVENTID_0x0000((short) 0x0000, "NULL"),;
 
     
     
     private static final Map<Short, S7DiagnosticEventId> map;
     
+    private static final Map<Short, String> idstr;
+    
     static {
         map = new HashMap<>();
+        idstr = new HashMap<>();
         for (S7DiagnosticEventId  subevent : S7DiagnosticEventId .values()) {
             map.put(subevent.code, subevent);
         }
+       
+        idstr.put((short) 0x0000, "Event leaving state. ");
+        idstr.put((short) 0x0100, "Event entering state. ");
+        idstr.put((short) 0x0200, "Entry in diagnostic buffer. ");
+        idstr.put((short) 0x0400, "Internal error. ");
+        idstr.put((short) 0x0800, "External error. ");
     }    
     
     private final String event;
@@ -470,6 +661,7 @@ public enum S7DiagnosticEventId {
     }
     
     public String getEvent(){
+        short id = (short) (code & 0x0F00);
         return event;
     }    
     
@@ -487,6 +679,13 @@ public enum S7DiagnosticEventId {
     }
 
     public static S7DiagnosticEventId  valueOf(short code) {
+        
+        if ((code > 0x8000) & (code < 0xA000)){
+            if ((code != 0x9101) & (code != 0x9190) & (code != 0x91F0)
+                    & (code != 0x91F1) & (code != 0x91F2)
+                    & (code != 0x91F3))
+            code = (short) (code & 0xF0FF);
+        }
         return map.get(code);
     }    
 }

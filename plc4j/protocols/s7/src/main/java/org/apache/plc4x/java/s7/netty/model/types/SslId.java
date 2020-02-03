@@ -18,11 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An SSL ID is a short value build up the following way:
@@ -44,12 +43,14 @@ public enum SslId {
     USER_MEMORY_AREAS((short) 0x0013),
     SYSTEM_AREAS((short) 0x0014),
     BLOCK_TYPES((short) 0x0015),
+    COMPONENT_IDENTIFICATION((short) 0x001c),
     INTERRUPT_STATUS((short) 0x0022),
     ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS((short) 0x0025),
     COMPUTATION_STATUS_DATA((short) 0x0032),
     H_CPU_GROUP_INFORMATION((short) 0x0071),
     STATUS_OF_THE_MODULE_LEDS((short) 0x0074),
     SWITCHED_DP_SLAVES_IN_THE_H_SYSTEM((short) 0x0075),
+    DP_MASTER_SYSTEM_INFORMATION((short) 0x0090),    
     MODULE_STATUS_INFORMATION((short) 0x0091),
     RACK_STATION_STATUS_INFORMATION_1((short) 0x0092),
     RACK_STATION_STATUS_INFORMATION_2((short) 0x0094),
@@ -60,11 +61,11 @@ public enum SslId {
     MODULE_DIAGNOSTIC_INFORMATION_DATA_RECORD_0((short) 0x00B1),
     MODULE_DIAGNOSTIC_INFORMATION_DATA_RECORD_1_GEOGRAPHICAL_ADDRESS((short) 0x00B2),
     MODULE_DIAGNOSTIC_INFORMATION_DATA_RECORD_1_LOGICAL_ADDRESS((short) 0x00B3),
-    DIAGNOSTIC_DATA_OF_A_DP_SLAVE((short) 0x00B4),
-
+    DIAGNOSTIC_DATA_OF_A_DP_SLAVE((short) 0x00B4),    
     IDENTIFICATION_OF_ALL_COMPONENTS((short) 0x001c),
     INFORMATION_ABOUT_COMMUNICATION_UNIT((short) 0x0131),
-    CURRENT_MODE_TRANSITION((short) 0x0424);
+    CURRENT_MODE_TRANSITION((short) 0x0424),
+    NULL((short) 0x0000);
 
     private static final Logger logger = LoggerFactory.getLogger(SslId.class);
 
