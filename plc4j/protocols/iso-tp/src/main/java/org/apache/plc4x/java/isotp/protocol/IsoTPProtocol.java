@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -220,6 +221,8 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
 
         ByteBuf userData = in.getUserData();
         if (userData.writerIndex() < 1) {
+            // Release
+            ReferenceCountUtil.release(userData);
             return;
         }
 
@@ -272,6 +275,9 @@ public class IsoTPProtocol extends PlcMessageToMessageCodec<IsoOnTcpMessage, Tpd
                     tpduSizeParameter -> tpduSize = tpduSizeParameter.getTpduSize());
             }
             out.add(new IsoTPMessage(tpdu, userData));
+        } else {
+            // No Further Operation -> Release
+            ReferenceCountUtil.release(userData);
         }
     }
 
