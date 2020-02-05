@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -440,6 +441,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
         ByteBuf userData = in.getUserData();
         if (userData.readableBytes() == 0) {
+            // Release
+            ReferenceCountUtil.release(userData);
             return;
         }
 
@@ -448,6 +451,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             if (logger.isDebugEnabled()) {
                 logger.debug("Got Data: {}", ByteBufUtil.hexDump(userData));
             }
+            ReferenceCountUtil.release(userData);
             return;
         }
 
@@ -477,6 +481,10 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
 
         List<S7Payload> s7Payloads = decodePayloads(userData, isResponse, userDataLength, s7Parameters);
+
+        // ...
+        ReferenceCountUtil.release(userData);
+        // ...
 
         logger.debug("S7 Message with id {} received", tpduReference);
 
