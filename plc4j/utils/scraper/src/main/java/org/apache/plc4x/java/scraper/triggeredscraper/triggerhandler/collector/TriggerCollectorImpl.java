@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,9 @@ public class TriggerCollectorImpl implements TriggerCollector {
     private final ExecutorService executorService;
 
     public TriggerCollectorImpl(PlcDriverManager plcDriverManager, long schedulerInterval, long futureTimeout, int poolSizeScheduler, int poolSizeExecutor) {
+        if (!(plcDriverManager instanceof PooledPlcDriverManager)) {
+            logger.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
+        }
         this.plcDriverManager = plcDriverManager;
         this.currentRequestElements = new ConcurrentHashMap<>();
         this.schedulerInterval = schedulerInterval;
