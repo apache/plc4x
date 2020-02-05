@@ -19,12 +19,37 @@ under the License.
 
 package org.apache.plc4x.java.s7.protocol.event;
 
+import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 
 /**
- *
+ * Like JMS but different.
+ * Maintain the same pattern as JMS MapMessage. 
+ * S7Event is a Map whose key is a String and its value is an 
+ * Object of primitive values.
+ * Classes derived from the S7Event must respect the following 
+ * conversion table.
+ * 
+ *  |        | boolean byte short char int long float double String byte[]
+ *  |--------+-------------------------------------------------------------
+ *  |boolean |    X                                            X
+ *  |byte    |          X     X         X   X                  X
+ *  |short   |                X         X   X                  X
+ *  |char    |                     X                           X
+ *  |int     |                          X   X                  X
+ *  |long    |                              X                  X
+ *  |float   |                                    X     X      X
+ *  |double  |                                          X      X
+ *  |String  |    X     X     X         X   X     X     X      X
+ *  |byte[]  |                                                        X
+ *  |--------+-------------------------------------------------------------
+ * 
  * @author cgarcia
  */
 public interface S7Event extends PlcSubscriptionEvent{
+    
+        
+    public Map<String, Object> getMap();
+    
     
 }

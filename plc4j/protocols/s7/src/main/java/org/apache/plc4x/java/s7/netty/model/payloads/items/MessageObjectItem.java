@@ -40,6 +40,9 @@ public class MessageObjectItem {
     private final byte State;
     private final byte AckStateGoing;
     private final byte AckStateComming;
+    private final byte EventGoing;
+    private final byte EventComming;
+    private final byte EventLastChange;
     private final LocalDateTime TimestampComing;
     private final LocalDateTime TimestampGoing;
     private final List<AssociatedValueItem> ComingValues;
@@ -64,6 +67,9 @@ public class MessageObjectItem {
         this.State = 0x00;
         this.AckStateGoing = 0x00;
         this.AckStateComming = 0x00;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;
         this.TimestampComing = null;
         this.ComingValues = null;
         this.TimestampGoing = null;               
@@ -93,6 +99,9 @@ public class MessageObjectItem {
         this.State = 0x00;
         this.AckStateGoing = AckStateGoing;
         this.AckStateComming = AckStateComming;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;        
         this.TimestampComing = TimestampComing;
         this.ComingValues = ComingValues;
         this.TimestampGoing = TimestampGoing;               
@@ -118,6 +127,9 @@ public class MessageObjectItem {
         this.State = 0x00;
         this.AckStateGoing = AckStateGoing;
         this.AckStateComming = AckStateComming;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;        
         this.TimestampComing = null;
         this.ComingValues = null;
         this.TimestampGoing = null;               
@@ -146,6 +158,9 @@ public class MessageObjectItem {
         this.State = State;
         this.AckStateGoing = AckStateGoing;
         this.AckStateComming = AckStateComming;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;        
         this.TimestampComing = null;
         this.ComingValues = Values;
         this.TimestampGoing = null;               
@@ -177,6 +192,9 @@ public class MessageObjectItem {
         this.State = State;
         this.AckStateGoing = AckStateGoing;
         this.AckStateComming = AckStateComming;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;        
         this.TimestampComing = TimestampComing;
         this.ComingValues = ComingValues;
         this.TimestampGoing = TimestampGoing;               
@@ -184,6 +202,40 @@ public class MessageObjectItem {
         this.querytype = null;
         this.alarmtype = null;        
     }    
+    
+    public MessageObjectItem(byte VariableSpecification, 
+            byte Length, 
+            VariableAddressingMode SyntaxID, 
+            byte NumberOfValues, 
+            int EventID, 
+            byte EventState, 
+            byte State, 
+            byte AckStateGoing, 
+            byte AckStateComming,
+            byte EventGoing,
+            byte EventComming,
+            byte EventLastChange,
+            List<AssociatedValueItem> ComingValues) {
+        
+        this.VariableSpecification = VariableSpecification;
+        this.Length = Length;
+        this.SyntaxID = SyntaxID;
+        this.NumberOfValues = NumberOfValues;
+        this.EventID = EventID;
+        this.EventState = EventState;
+        this.State = State;
+        this.AckStateGoing = AckStateGoing;
+        this.AckStateComming = AckStateComming;
+        this.EventGoing = 0x00;
+        this.EventComming = 0x00;
+        this.EventLastChange = 0x00;        
+        this.TimestampComing = null;
+        this.ComingValues = ComingValues;
+        this.TimestampGoing = null;               
+        this.GoingValues = null;
+        this.querytype = null;
+        this.alarmtype = null;        
+    }     
     
     public byte getVariableSpecification() {
         return VariableSpecification;
@@ -225,6 +277,18 @@ public class MessageObjectItem {
         return TimestampComing;
     }
 
+    public byte getEventGoing() {
+        return EventGoing;
+    }
+
+    public byte getEventComming() {
+        return EventComming;
+    }
+
+    public byte getEventLastChange() {
+        return EventLastChange;
+    }
+    
     public LocalDateTime getTimestampGoing() {
         return TimestampGoing;
     }

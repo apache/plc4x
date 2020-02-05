@@ -41,7 +41,8 @@ public enum CpuServicesParameterSubFunctionGroup {
     ALARM_SQ_IND((byte) 0x11),  
     ALARM_S_IND((byte) 0x12),    
     ALARM_QUERY((byte) 0x13),    
-    NOTIFY8((byte) 0x16); //TODO
+    NOTIFY8((byte) 0x16),
+    NONE((byte) 0x00); //TODO
 
     private static final Logger logger = LoggerFactory.getLogger(CpuServicesParameterSubFunctionGroup.class);
 

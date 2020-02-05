@@ -40,24 +40,28 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.CpuDiagnosticMessageI
  */
 public class S7SysEvent implements S7Event{
  
-    public static final String EVENT_ID = "EVENT_ID";
-    public static final String PRIORITY_CLASS = "PRIORITY_CLASS";
-    public static final String OB_NUMBER = "OB_NUMBER";
-    public static final String DAT_ID = "DAT_ID";
-    public static final String INFO1 = "INFO1";
-    public static final String INFO2 = "INFO2";
+    public enum Fields{
+        TIMESTAMP,
+        EVENT_ID,
+        PRIORITY_CLASS,
+        OB_NUMBER,
+        DAT_ID,
+        INFO1,
+        INFO2       
+    }
     
     private final Instant timeStamp;
     private Map<String, Object> map = new HashMap();
 
     public S7SysEvent(CpuDiagnosticMessageItem item) {
-        map.put(EVENT_ID, item.getEventID());
-        map.put(PRIORITY_CLASS, item.getPriorityClass());
-        map.put(OB_NUMBER, item.getObNumber());
-        map.put(DAT_ID, item.getDatID());
-        map.put(INFO1, item.getInfo1());
-        map.put(INFO2, item.getInfo2());
+        map.put(Fields.EVENT_ID.name(), item.getEventID());
+        map.put(Fields.PRIORITY_CLASS.name(), item.getPriorityClass());
+        map.put(Fields.OB_NUMBER.name(), item.getObNumber());
+        map.put(Fields.DAT_ID.name(), item.getDatID());
+        map.put(Fields.INFO1.name(), item.getInfo1());
+        map.put(Fields.INFO2.name(), item.getInfo2());
         this.timeStamp = item.getTimeStamp().toInstant(ZoneOffset.UTC);
+        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
     }
 
     @Override
@@ -77,7 +81,11 @@ public class S7SysEvent implements S7Event{
 
     @Override
     public Object getObject(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        switch(S7AlarmEvent.Fields.valueOf(name)){
+            case MAP: return map;
+            default:;
+        }
+        return null;
     }
 
     @Override
@@ -339,7 +347,11 @@ public class S7SysEvent implements S7Event{
 
     @Override
     public String getString(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        Object object = map.get(name);
+        if (object instanceof Integer){
+            return object.toString();
+        }
+        return null;         
     }
 
     @Override
@@ -470,6 +482,11 @@ public class S7SysEvent implements S7Event{
     @Override
     public String toString() {
         return "S7SysEvent{" + "timeStamp=" + timeStamp + ", map=" + map + '}';
+    }
+
+    @Override
+    public Map<String, Object> getMap() {
+        return map;
     }
     
     

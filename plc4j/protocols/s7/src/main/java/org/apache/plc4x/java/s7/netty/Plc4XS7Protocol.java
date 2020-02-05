@@ -250,6 +250,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         byte subsevent = 0;
         List<S7Parameter> parameterItems = new LinkedList<>();
         List<S7Payload> payloadItems = new LinkedList<>();
+        AlarmType alarmType = AlarmType.ALARM_S_INITIATE;
          
         PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
         
@@ -257,6 +258,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             if ( subsRequest.getField(fieldName) instanceof S7SubscriptionField){
                  S7SubscriptionField event = (S7SubscriptionField) subsRequest.getField(fieldName);
                  subsevent = (byte) (subsevent | event.getEventtype().getCode());
+                 if (event.getEventtype() == SubscribedEventType.ALM_8) {
+                    alarmType = AlarmType.ALARM_INITIATE;
+                 }
             }
         }
         
@@ -270,8 +274,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                                 DataTransportSize.OCTET_STRING,
                                 subsevent,
                                 new String("HmiRtm  "),
-                                AlarmType.ALARM_S_INITIATE);
+                                alarmType);
+  
+        
         payloadItems.add(Data);
+      
 
         
         S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
@@ -469,6 +476,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         byte subsevent = 0;
         List<S7Parameter> parameterItems = new LinkedList<>();
         List<S7Payload> payloadItems = new LinkedList<>();
+        AlarmType alarmType = AlarmType.ALARM_S_INITIATE;
          
         PlcSubscriptionRequest subsRequest = (PlcSubscriptionRequest)  msg.getRequest();
         
@@ -476,6 +484,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             if ( subsRequest.getField(fieldName) instanceof S7SubscriptionField){
                  S7SubscriptionField event = (S7SubscriptionField) subsRequest.getField(fieldName);
                  subsevent = (byte) (subsevent | event.getEventtype().getCode());
+                 if (event.getEventtype() == SubscribedEventType.ALM_8) {
+                    alarmType = AlarmType.ALARM_INITIATE;
+                 }                 
             }
         }
         
@@ -489,7 +500,8 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                                 DataTransportSize.OCTET_STRING,
                                 subsevent,
                                 new String("HmiRtm  "),
-                                AlarmType.ALARM_S_INITIATE);
+                                alarmType);
+        
         payloadItems.add(Data);
 
         
@@ -1304,17 +1316,21 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         }    
                     break;
                     case ALARM_ACK:{
-                        List<Object> items = payloadItem.getMsg().getMsgItems();
-                        ArrayList<Integer> eventids = event.getAckalarms();
-                        int index = 0;
-                        for (Object item:items){
-                            // A ack response contains only the return code for every item.
-                            // Is direct response for the ALARM_ACK, don't pass to
-                            // push message handler.
-                            //subsBuilder2.addEventField("MyAck", "ACK:16#60000001,16#60000002,16#60000003");
-                            values.put("16#"+Integer.toHexString(eventids.get(index)), new ImmutablePair(decodeResponseCode((DataTransportErrorCode) item),null));                    
-                            index++;
-                        }                       
+                        if (payloadItem.getLength() != 0) {
+                            List<Object> items = payloadItem.getMsg().getMsgItems();                            
+                            ArrayList<Integer> eventids = event.getAckalarms();
+                            int index = 0;
+                            for (Object item:items){
+                                // A ack response contains only the return code for every item.
+                                // Is direct response for the ALARM_ACK, don't pass to
+                                // push message handler.
+                                //subsBuilder2.addEventField("MyAck", "ACK:16#60000001,16#60000002,16#60000003");
+                                values.put("16#"+Integer.toHexString(eventids.get(index)), new ImmutablePair(decodeResponseCode((DataTransportErrorCode) item),null));                    
+                                index++;
+                            }    
+                        } else {
+                            values.put("ERROR", new ImmutablePair(PlcResponseCode.NOT_FOUND,null));                                                
+                        }
                     }
                     break;
                     case ALARM_QUERY:{

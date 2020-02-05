@@ -917,14 +917,20 @@ public class S7Protocol extends ChannelDuplexHandler {
                     return payload;
                 }
                 case ALARM8:;
+                    logger.info("decode ALARM8.....");
+                    
                     break;
                 case NOTIFY:;
+                    logger.info("decode NOTIFY.....");
                     break;
                 case ALARM8_LOCK:;
+                    logger.info("decode ALARM8_LOCK.....");
                     break;
                 case ALARM8_UNLOCK:;
+                    logger.info("decode ALARM8_UNLOCK.....");
                     break;
                 case SCAN:;
+                    logger.info("decode SCAN.....");
                     break;
                 case ALARM_ACK:{  
                     AlarmMessagePayload payload = decodeMessageServiceAckPayload(parameter, userData);                
@@ -935,8 +941,10 @@ public class S7Protocol extends ChannelDuplexHandler {
                     return payload;
                 }
                 case ALARM8_LOCK_IND:;
+                    logger.info("decode ALARM8_LOCK_IND.....");
                     break;
                 case ALARM8_UNLOCK_IND:;
+                    logger.info("decode ALARM8_UNLOCK_IND.....");
                     break;
                 case ALARM_SQ_IND:{  
                     AlarmMessagePayload payload = decodeMessageServicePushPayload(parameter, userData);                
@@ -950,8 +958,10 @@ public class S7Protocol extends ChannelDuplexHandler {
                     AlarmMessagePayload payload = decodeMessageServiceQueryPayload(parameter, userData);
                     return payload;
                 }
-                case NOTIFY8:;
-                    break;
+                case NOTIFY8: {
+                    AlarmMessagePayload payload = decodeMessageServicePushPayload(parameter, userData);
+                    return payload;
+                }
                 default:;
                     break;
             } 
@@ -1259,7 +1269,6 @@ public class S7Protocol extends ChannelDuplexHandler {
     }    
     
     private AlarmMessagePayload decodeMessageServicePushPayload(CpuServicesParameter parameter, ByteBuf userData){
-
         List<Object> MessageObjects = new LinkedList<>();
         List<ByteBuf> values = new LinkedList<>();
         int length;
@@ -1267,13 +1276,18 @@ public class S7Protocol extends ChannelDuplexHandler {
         LocalDateTime timestamp;
         Byte FunctionID;
         byte NumberOfMessgaeObjects;
+        byte EventGoing = 0x00;
+        byte EventComming = 0x00;
+        byte EventLastChange = 0x00;
+        
+        
         //
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
         length = userData.readShort();
         
         //It is assumed that you have synchronized the time of your PLC with PC.
-        //
+        //The most important field.
         timestamp = readDateAndTime(userData);
         
         FunctionID = userData.readByte();
@@ -1296,6 +1310,17 @@ public class S7Protocol extends ChannelDuplexHandler {
                 
                 byte AckStateGoing = userData.readByte();
                 byte AckStateComming = userData.readByte();
+                
+                switch(parameter.getSubFunctionGroup()){
+                    case ALARM8:
+                    case NOTIFY8:
+                    case NOTIFY:
+                        EventGoing  = userData.readByte(); 
+                        EventComming  = userData.readByte(); 
+                        EventLastChange  = userData.readByte(); 
+                        userData.readByte(); //Reserved = 0x00
+                        break;                    
+                }                
                 
                 //TODO: If NumberOfValues == 0 then AssociatedValues is null
                 List<AssociatedValueItem> AssociatedValues = new LinkedList<>();
@@ -1326,6 +1351,9 @@ public class S7Protocol extends ChannelDuplexHandler {
                                             State,
                                             AckStateGoing,
                                             AckStateComming,
+                                            EventGoing,
+                                            EventComming, 
+                                            EventLastChange,                        
                                             AssociatedValues));
                 
             }            
@@ -1504,23 +1532,31 @@ public class S7Protocol extends ChannelDuplexHandler {
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
         int length = userData.readShort(); //Number of message objects?
         
-        //Alarm message section
-        byte FunctionID = userData.readByte();
-        byte NumberOfMessageObjects = userData.readByte();
+        if (returnCode == DataTransportErrorCode.OK) {
         
-        //In the next leve if is != null -> Success
-        for(int i=0; i< NumberOfMessageObjects; i++) {
-            MessageObjects.add(DataTransportErrorCode.valueOf(userData.readByte()));
-        };
+            //Alarm message section
+            byte FunctionID = userData.readByte();
+            byte NumberOfMessageObjects = userData.readByte();
+
+            //In the next leve if is != null -> Success
+            for(int i=0; i< NumberOfMessageObjects; i++) {
+                MessageObjects.add(DataTransportErrorCode.valueOf(userData.readByte()));
+            };
+
+            return new AlarmMessagePayload(returnCode,
+                        dataTransportSize,
+                        CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
+                        length,
+                        new AlarmMessageItem(FunctionID,
+                                NumberOfMessageObjects,
+                                MessageObjects)); 
+        }
         
         return new AlarmMessagePayload(returnCode,
                     dataTransportSize,
                     CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
                     length,
-                    new AlarmMessageItem(FunctionID,
-                            NumberOfMessageObjects,
-                            MessageObjects));        
-        
+                    null);                 
     }    
     
     

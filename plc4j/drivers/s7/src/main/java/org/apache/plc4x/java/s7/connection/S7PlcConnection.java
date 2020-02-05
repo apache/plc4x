@@ -75,6 +75,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.AlarmMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuCyclicServicesResponsePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.CpuDiagnosticMessagePayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
+import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.SubscribedEventType;
 import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
@@ -82,6 +83,8 @@ import org.apache.plc4x.java.s7.netty.util.S7PlcFieldEventHandler;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
 import org.apache.plc4x.java.s7.protocol.S7DiagnosticSubscriptionHandle;
+import org.apache.plc4x.java.s7.protocol.event.S7AlarmEvent;
+import org.apache.plc4x.java.s7.protocol.event.S7Event;
 import org.apache.plc4x.java.s7.protocol.event.S7ModeEvent;
 import org.apache.plc4x.java.s7.protocol.event.S7SysEvent;
 import org.apache.plc4x.java.s7.types.S7ControllerType;
@@ -212,9 +215,10 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         Map<Short, PlcSubscriptionHandle> almEventHandle = new HashMap();
         
         pushEventHandles.put(SubscribedEventType.USR, usrEventHandle);
-        pushEventHandles.put(SubscribedEventType.SYS, usrEventHandle);
+        pushEventHandles.put(SubscribedEventType.SYS, sysEventHandle);
         pushEventHandles.put(SubscribedEventType.MODE, modeEventHandle);
-        pushEventHandles.put(SubscribedEventType.ALM, almEventHandle);
+        pushEventHandles.put(SubscribedEventType.ALM_S, almEventHandle);
+        pushEventHandles.put(SubscribedEventType.ALM_8, almEventHandle);
         
         alarmsloopthread = new EventLoop(channel,
                                 this.alarmsqueue,
@@ -453,7 +457,6 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                 s7handle.getConsumers().add(consumer);
                 s7handle.getSubscribedevents().forEach((event)->{
                     pushEventHandles.get(event).put(s7handle.getJobId(), s7handle);
-                    logger.info("Suscripcion: " + s7handle.getSubscribedevents().toString()); 
                 });
                 
             }
@@ -504,18 +507,23 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                     if (msg != null){
                         if (msg instanceof AlarmMessagePayload){
                             AlarmMessagePayload themsg = (AlarmMessagePayload) msg;
-                            logger.info("AlarmMessagePayload: " + themsg);
-                            dispathAlmEvents(pushEventHandles.get(SubscribedEventType.ALM), themsg); 
+                            logger.debug("AlarmMessagePayload: " + themsg);
+                            dispathAlmEvents(pushEventHandles.get(SubscribedEventType.ALM_8), themsg); 
                             
                         } else if (msg instanceof CpuDiagnosticPushParameter) {                            
                             CpuDiagnosticPushParameter themsg = (CpuDiagnosticPushParameter) msg;
-                            logger.info("CpuDiagnosticPushParameter: " + themsg);  
+                            logger.debug("CpuDiagnosticPushParameter: " + themsg);  
                             dispathModeEvents(pushEventHandles.get(SubscribedEventType.MODE), themsg);
                             
                         } else if (msg instanceof CpuDiagnosticMessagePayload) {
                             CpuDiagnosticMessagePayload themsg = (CpuDiagnosticMessagePayload) msg;
-                            logger.info("CpuDiagnosticMessagePayload: " + themsg);
-                            dispathSysEvents(pushEventHandles.get(SubscribedEventType.SYS), themsg);  
+                            logger.debug("CpuDiagnosticMessagePayload: " + themsg);
+                            int EventID = Short.toUnsignedInt(themsg.getMsg().getEventID());
+                            if ((EventID >= 0x0A000) & (EventID <= 0x0BFFF)) {
+                                dispathSysEvents(pushEventHandles.get(SubscribedEventType.USR), themsg);  
+                            } else {
+                                dispathSysEvents(pushEventHandles.get(SubscribedEventType.SYS), themsg);                                
+                            }
                             
                         } else if (msg instanceof CpuServicesPushParameter) {
                             CpuServicesPushParameter themsg = (CpuServicesPushParameter) msg;
@@ -549,6 +557,29 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             logger.info("Closing the alarm loop.");
         }
         
+        private void dispathAlmEvents(Map<Short, PlcSubscriptionHandle> handles, AlarmMessagePayload payload)
+        {          
+            List<S7Event> alarmsEvent = null;
+            Object object = payload.getMsgtype();
+            if (object != null) {
+                if (object instanceof CpuServicesParameterSubFunctionGroup) {
+                    CpuServicesParameterSubFunctionGroup subFunction = (CpuServicesParameterSubFunctionGroup) object;
+                    alarmsEvent = S7AlarmEvent.getAlarmsEvents(subFunction, payload);
+                }
+            }     
+            
+            for (PlcSubscriptionHandle handle:handles.values()){ 
+                S7DiagnosticSubscriptionHandle s7handle = (S7DiagnosticSubscriptionHandle) handle;
+                for (Consumer consumer:s7handle.getConsumers()){ 
+                    if (alarmsEvent != null) {
+                        for (S7Event event:alarmsEvent) {
+                            consumer.accept(event);
+                        }
+                    }
+                };
+            };              
+        }         
+        
         private void dispathSysEvents(Map<Short, PlcSubscriptionHandle> handles, CpuDiagnosticMessagePayload payload)
         {
             handles.forEach((index,handle)->{
@@ -569,18 +600,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                     consumer.accept(event);
                 });
             });              
-        }        
-        
-        private void dispathAlmEvents(Map<Short, PlcSubscriptionHandle> handles, AlarmMessagePayload payload)
-        {
-            handles.forEach((index,handle)->{
-                S7DiagnosticSubscriptionHandle thehandle = (S7DiagnosticSubscriptionHandle) handle;
-                thehandle.getConsumers().forEach((consumer)->{
-                    consumer.accept(null);
-                });
-            });              
-        } 
-        
+        }              
         
         private void UpdateCyclicServicesData(S7CyclicServicesSubscriptionHandle handle,CpuCyclicServicesResponsePayload themsg){
             

@@ -43,19 +43,22 @@ import org.apache.plc4x.java.s7.netty.model.types.CpuUserDataParameterType;
  */
 public class S7ModeEvent implements S7Event {
     
-    public static final String METHOD = "METHOD";
-    public static final String TYPE = "TYPE";
-    public static final String FUNCTION = "FUNCTION";
-    public static final String CURRENT_MODE = "CURRENT_MODE";
-    
+    public enum Fields{
+        MAP,
+        METHOD,
+        TYPE,
+        FUNCTION,
+        CURRENT_MODE
+    }
+   
     private final Instant timeStamp;
     private Map<String, Object> map = new HashMap();
 
     public S7ModeEvent(Instant timeStamp, CpuDiagnosticPushParameter parameter) {
-      map.put(METHOD, parameter.getMethod());
-      map.put(TYPE, parameter.getParameterType());
-      map.put(FUNCTION, parameter.getParameterFunction());
-      map.put(CURRENT_MODE, parameter.getCurrentMode());
+      map.put(Fields.METHOD.name(), parameter.getMethod());
+      map.put(Fields.TYPE.name(), parameter.getParameterType());
+      map.put(Fields.FUNCTION.name(), parameter.getParameterFunction());
+      map.put(Fields.CURRENT_MODE.name(), parameter.getCurrentMode());
       this.timeStamp = timeStamp;
     }
 
@@ -76,8 +79,11 @@ public class S7ModeEvent implements S7Event {
 
     @Override
     public Object getObject(String name) {
-        Object object = map.get(name);
-        return object;
+        switch(Fields.valueOf(name)){
+            case MAP: return map;
+            default:;
+        }
+        return null;
     }
 
     @Override
@@ -483,5 +489,12 @@ public class S7ModeEvent implements S7Event {
     public String toString() {
         return "S7ModeEvent{" + "timeStamp=" + timeStamp + ", map=" + map + '}';
     }
+
+    @Override
+    public Map<String, Object> getMap() {
+        return map;
+    }
+ 
+    
     
 }

@@ -30,7 +30,7 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
  * @author cgarcia
  */
 public class AlarmMessagePayload implements S7Payload, S7PushMessage {
-    
+        
     private final DataTransportErrorCode returnCode;
     private final DataTransportSize dataTransportSize;
     private final Object msgtype; 

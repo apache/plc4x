@@ -32,7 +32,8 @@ public enum SubscribedEventType implements PlcField {
     MODE("MODE", (byte) 0x01),
     SYS("SYS", (byte) 0x02),
     USR("USR", (byte) 0x04),
-    ALM("ALM", (byte) 0x80);
+    ALM_S("ALM_S", (byte) 0x80),
+    ALM_8("ALM_8", (byte) 0x80);
     
     private static final Map<Byte, SubscribedEventType> map;
     
