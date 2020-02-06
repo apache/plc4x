@@ -8,7 +8,8 @@ most users have switched to 0.7 and above (with generated drivers).
 
 New Features
 ------------
-This release contains no new features and mostly stabilization.
+- PLC4X-168 A shorter S7 Field Syntax is Introduced.
+This release contains no furter features and mostly stabilization.
 
 Incompatible changes
 --------------------
@@ -20,6 +21,8 @@ Bug Fixes
 - PLC4X-45 Add float support to Modbus Protocol
 - PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
 - PLC4X-166 Fixed Download Page
+- PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
+- PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
 
 Known Issues
 --------
