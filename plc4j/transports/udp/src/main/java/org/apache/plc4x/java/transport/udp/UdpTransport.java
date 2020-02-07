@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class UdpTransport implements Transport, HasConfiguration<UdpTransportConfiguration> {
 
     private static final Pattern TRANSPORT_UDP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9\\.\\-]+))(:(?<port>[1-9]{5}))?");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9\\.\\-]+))(:(?<port>[0-9]{1,5}))?");
 
     private UdpTransportConfiguration configuration;
 
