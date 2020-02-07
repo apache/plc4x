@@ -6,6 +6,9 @@ This is the last release of PLC4X with the "handwritten" drivers.
 This Minor release will thus receive updates and fixes until
 most users have switched to 0.7 and above (with generated drivers).
 
+If you are using the S7 Driver you should update to this Version
+as the critical (memory leak) bug PLC4X-163 is fixed.
+
 New Features
 ------------
 - PLC4X-168 A shorter S7 Field Syntax is Introduced.
@@ -23,11 +26,6 @@ Bug Fixes
 - PLC4X-166 Fixed Download Page
 - PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
 - PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
-
-Known Issues
---------
-- PLC4X-163 cannot be fixed in this branch. If you are hit
-  by this issue please move to 0.7+
 
 ==============================================================
 Apache PLC4X 0.5.0
@@ -226,7 +224,7 @@ Incompatible changes
 - NONE -
 
 Miscellaneous changes
----------------------  
+---------------------
 
 - NONE -
 
@@ -236,7 +234,7 @@ Known Issues
 - NONE -
 
 Most drivers should be treated experimental and are not near production ready.
-The S7 driver is probably the furthest implemented and tested driver and hereby can be 
+The S7 driver is probably the furthest implemented and tested driver and hereby can be
 considered to be the most mature.
 
 Bug Fixes
@@ -246,7 +244,3 @@ PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
 PLC4X-48	S7 driver failes to parse response with multiple items
-
-
-
-
