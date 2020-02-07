@@ -47,7 +47,8 @@ class S7FieldTests {
             Arguments.of("%DB1.DBX38.1:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1),
             Arguments.of("%DB1:38.1:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1),
             Arguments.of("%DB1:8.0:REAL",   TransportSize.REAL,  MemoryArea.DATA_BLOCKS, 1,  8, 0),
-            Arguments.of("%DB400:8.0:REAL",   TransportSize.REAL,  MemoryArea.DATA_BLOCKS, 400,  8, 0)/*,
+            Arguments.of("%DB400:8.0:REAL",   TransportSize.REAL,  MemoryArea.DATA_BLOCKS, 400,  8, 0),
+            Arguments.of("%DB444:14.0:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 444,  14, 0)/*,
             // Not quite sure about how Data Block addresses look like, in my TIA portal they all have the prefix "DB".
             Arguments.of("%DB3.DX4.1:BOOL",     S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 3,  4,  1),
             Arguments.of("%DB3.DB4:INT",        S7DataType.INT,   MemoryArea.DATA_BLOCKS, 3,  4,  0),

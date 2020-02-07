@@ -189,7 +189,8 @@ public class S7Field implements PlcField {
         } else if (DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches()) {
             matcher = DATA_BLOCK_SHORT_PATTERN.matcher(fieldString);
 
-            assert matcher.matches();
+            boolean matches = matcher.matches();
+            assert matches;
 
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
