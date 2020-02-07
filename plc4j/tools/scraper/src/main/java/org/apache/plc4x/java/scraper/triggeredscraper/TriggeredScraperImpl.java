@@ -136,6 +136,9 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
     public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
         this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
+        if (!(plcDriverManager instanceof PooledPlcDriverManager)) {
+            LOGGER.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
+        }
         this.driverManager = plcDriverManager;
         this.jobs = jobs;
         this.triggerCollector = triggerCollector;
