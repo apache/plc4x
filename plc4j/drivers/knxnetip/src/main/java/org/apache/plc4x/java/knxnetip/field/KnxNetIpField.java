@@ -20,12 +20,14 @@ package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class KnxNetIpField implements PlcField {
 
+    private static final String WILDCARD = "*";
     private static final Pattern KNX_GROUP_ADDRESS_1_LEVEL =
         Pattern.compile("^(?<mainGroup>(\\d{1,5}|\\*))");
     private static final Pattern KNX_GROUP_ADDRESS_2_LEVEL =
@@ -45,17 +47,17 @@ public class KnxNetIpField implements PlcField {
     }
 
     public static KnxNetIpField of(String fieldString) {
-        Matcher matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(fieldString);
+        Matcher matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField(3, matcher.group("mainGroup"), null, null);
+            return new KnxNetIpField(1, matcher.group("mainGroup"), null, null);
         }
         matcher = KNX_GROUP_ADDRESS_2_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
             return new KnxNetIpField(2, matcher.group("mainGroup"), null, matcher.group("subGroup"));
         }
-        matcher = KNX_GROUP_ADDRESS_1_LEVEL.matcher(fieldString);
+        matcher = KNX_GROUP_ADDRESS_3_LEVEL.matcher(fieldString);
         if(matcher.matches()) {
-            return new KnxNetIpField(1, matcher.group("mainGroup"), matcher.group("middleGroup"), matcher.group("subGroup"));
+            return new KnxNetIpField(3, matcher.group("mainGroup"), matcher.group("middleGroup"), matcher.group("subGroup"));
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
@@ -81,6 +83,31 @@ public class KnxNetIpField implements PlcField {
 
     public String getSubGroup() {
         return subGroup;
+    }
+
+    // As our fields can contain wildcards and complex matching logic,
+    // do a check if a given GroupAddress is actually compatible with this field.
+    public boolean matchesGroupAddress(GroupAddress groupAddress) {
+        KnxNetIpField otherAddress = KnxNetIpField.of(groupAddress.getGroupAddress());
+        // If the levels don't match the whole address can't match.
+        if(otherAddress.getLevels() != getLevels()) {
+            return false;
+        }
+        // NOTE: This case fallthrough is intentional :-)
+        switch (getLevels()) {
+            case 3:
+                if(!WILDCARD.equals(getMiddleGroup()) && !getMiddleGroup().equals(otherAddress.getMiddleGroup())) {
+                    return false;
+                }
+            case 2:
+                if(!WILDCARD.equals(getSubGroup()) && !getSubGroup().equals(otherAddress.getSubGroup())) {
+                    return false;
+                }
+            case 1:
+                return WILDCARD.equals(getMainGroup()) || getMainGroup().equals(otherAddress.getMainGroup());
+            default:
+                return false;
+        }
     }
 
 }

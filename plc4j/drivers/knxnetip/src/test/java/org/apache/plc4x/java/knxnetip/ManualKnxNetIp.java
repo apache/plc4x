@@ -52,7 +52,7 @@ public class ManualKnxNetIp {
         // The address and the name is just bogus as we're always returning everything.
         // We will probably refactor the API in the near future.
         final PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
-            .addEventField("knxData", "*/*/*")
+            .addEventField("knxData", "*/*/10")
             .build();
 
         // Register the subscription

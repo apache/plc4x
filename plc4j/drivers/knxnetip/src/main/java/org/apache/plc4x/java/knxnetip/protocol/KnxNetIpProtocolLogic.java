@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcString;
@@ -35,6 +36,8 @@ import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.ets5.Ets5Parser;
 import org.apache.plc4x.java.knxnetip.ets5.model.Ets5Model;
 import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
+import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
+import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress2Level;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXGroupAddress3Level;
@@ -54,7 +57,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +85,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     private byte groupAddressType;
     private Ets5Model ets5Model;
 
-    private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
+    private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
 
     @Override
     public void setConfiguration(KnxNetIpConfiguration configuration) {
@@ -284,7 +286,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                             final PlcStruct dataPoint = new PlcStruct(dataPointMap);
 
                             // Send the data-structure.
-                            publishEvent("knxData", dataPoint);
+                            publishEvent(groupAddress, dataPoint);
                         } else {
                             LOGGER.warn("Message from: '" + toString(sourceAddress) + "'" +
                                 " to unknown group address: '" + destinationAddress + "'" +
@@ -318,7 +320,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values = new HashMap<>();
         for (String fieldName : subscriptionRequest.getFieldNames()) {
-            values.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
+            final PlcField field = subscriptionRequest.getField(fieldName);
+            if(!(field instanceof KnxNetIpField)) {
+                values.put(fieldName, new ImmutablePair<>(PlcResponseCode.INVALID_ADDRESS, null));
+            } else {
+                values.put(fieldName, new ImmutablePair<>(PlcResponseCode.OK,
+                    new KnxNetIpSubscriptionHandle(this, (KnxNetIpField) field)));
+            }
         }
         return CompletableFuture.completedFuture(
             new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, values));
@@ -328,24 +336,35 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
         final DefaultPlcConsumerRegistration consumerRegistration =
             new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new InternalPlcSubscriptionHandle[0]));
-        consumerIdMap.put(consumerRegistration.getConsumerHash(), consumer);
+        consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }
 
     @Override
     public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
         DefaultPlcConsumerRegistration consumerRegistration = (DefaultPlcConsumerRegistration) plcConsumerRegistration;
-        consumerIdMap.remove(consumerRegistration.getConsumerHash());
+        consumers.remove(consumerRegistration);
     }
 
-    protected void publishEvent(String name, PlcValue plcValue) {
+    protected void publishEvent(GroupAddress groupAddress, PlcValue plcValue) {
         // Create a subscription event from the input.
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("knxData", Pair.of(PlcResponseCode.OK, plcValue)));
 
-        // Send the subscription event to all listeners.
-        for (Consumer<PlcSubscriptionEvent> consumer : consumerIdMap.values()) {
-            consumer.accept(event);
+        // Try sending the subscription event to all listeners.
+        for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
+            final DefaultPlcConsumerRegistration registration = entry.getKey();
+            final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
+            // Only if the current data point matches the subscription, publish the event to it.
+            for (InternalPlcSubscriptionHandle handle : registration.getAssociatedHandles()) {
+                if(handle instanceof KnxNetIpSubscriptionHandle) {
+                    KnxNetIpSubscriptionHandle subscriptionHandle = (KnxNetIpSubscriptionHandle) handle;
+                    // Check if the subscription matches this current event.
+                    if (subscriptionHandle.getField().matchesGroupAddress(groupAddress)) {
+                        consumer.accept(event);
+                    }
+                }
+            }
         }
     }
 
