@@ -146,7 +146,10 @@ public class RequestTransactionManagerTest {
         // Exception case
         handle.failRequest(new RuntimeException());
 
-        // Wait some millis?
+        // Wait that the fail is handled internally surely
+        Thread.sleep(100);
+
+        // Assert that no requests are active
         assertEquals(0, tm.getNumberOfActiveRequests());
 
         // Assert that its cancelled
