@@ -78,7 +78,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://calcite.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_calcite_logo.svg" alt="Card image cap">
+                                               <img src="images/integrations/apache_calcite_logo.svg" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache Calcite</b></h5>
@@ -91,7 +91,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://camel.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_camel_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/apache_camel_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache Camel</b></h5>
@@ -104,7 +104,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://edgent.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_edgent_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/apache_edgent_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache Edgent</b></h5>
@@ -117,7 +117,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://iotdb.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_iotdb_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/apache_iotdb_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache IoTDB (incubating)</b></h5>
@@ -130,7 +130,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://kafka.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_kafka_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/apache_kafka_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache Kafka</b></h5>
@@ -143,7 +143,7 @@
                                        <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://nifi.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_nifi_logo.svg" alt="Card image cap">
+                                               <img src="images/integrations/apache_nifi_logo.svg" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache Nifi</b></h5>
@@ -157,7 +157,7 @@
                                             onclick="location.href='https://streampipes.apache.org';"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/apache_streampipes_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/apache_streampipes_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Apache StreamPipes (incubating)</b></h5>
@@ -171,7 +171,7 @@
                                             onclick="location.href='https://www.eclipse.org/ditto/';"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/eclipse_ditto_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/eclipse_ditto_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Eclipse Ditto</b></h5>
@@ -185,7 +185,7 @@
                                             onclick="location.href='https://www.elastic.co/products/logstash';"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/elastic_logstash_logo.png" alt="Card image cap">
+                                               <img src="images/integrations/elastic_logstash_logo.png" alt="Card image cap">
                                            </div>
                                            <div class="card-body">
                                                <h5 class="card-title"><b>Elastic Logstash</b></h5>
