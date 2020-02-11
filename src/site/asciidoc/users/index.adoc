@@ -335,8 +335,8 @@ Besides providing access to devices using one of above protocols, PLC4X also shi
 
 As last category of tools come modules that can be used in your applications:
 
-- link:protocols/connection-pool.html[Connection Pool]
-- link:protocols/opm.html[Object PLC Mapping (OPM)]
-- link:protocols/scraper.html[Scraper]
-- link:protocols/testing.html[Testing-Utils]
+- link:tools/connection-pool.html[Connection Pool]
+- link:tools/opm.html[Object PLC Mapping (OPM)]
+- link:tools/scraper.html[Scraper]
+- link:tools/testing.html[Testing-Utils]
 
