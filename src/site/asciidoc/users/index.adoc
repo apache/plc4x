@@ -49,9 +49,9 @@ Currently we support the following protocols:
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='protocols/ads.html';" style="cursor:pointer;">
-          <!--div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/protocols/ads-logo.png" alt="Card image cap">
-          </div-->
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/ads-ams.png" alt="Card image cap">
+          </div>
           <div class="card-body">
             <h5 class="card-title"><b>ADS/AMS</b></h5>
           </div>
@@ -62,9 +62,9 @@ Currently we support the following protocols:
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='protocols/bacnetip.html';" style="cursor:pointer;">
-          <!--div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/protocols/bacnetip-logo.png" alt="Card image cap">
-          </div-->
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/bacnet-ip.gif" alt="Card image cap">
+          </div>
           <div class="card-body">
             <h5 class="card-title"><b>BACnet/IP</b></h5>
           </div>

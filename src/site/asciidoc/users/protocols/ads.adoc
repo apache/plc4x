@@ -18,3 +18,5 @@
 :icons: font
 
 == ADS/AMS
+
+For details about the protocol look here: http://www.beckhoff.com/
