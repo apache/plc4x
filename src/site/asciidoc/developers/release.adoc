@@ -14,7 +14,6 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-include::{pom-adoc}[]
 :imagesdir: ../images/
 :icons: font
 
@@ -102,13 +101,16 @@ This can and should be automated by the `maven-release-plugin`.
 Per default the plugin will ask for the working copy version during the build execution.
 This is the version the `develop` branch will be changed to.
 
+In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
+Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
+
 The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
 Otherwise we would have to define the working copy version for each module.
 
    mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
-So in case of preparing the release branch for `0.6.0-SNAPSHOT` the command would be the following:
+So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
@@ -166,6 +168,10 @@ If any problems are found they have to be fixed in the release branch.
 Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems ans we no longer have the same versions.
 
 === Preparing a release
+
+Same as with creating the branch it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
+Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
+For people building with some of the additional profiles from the source release will be impossible.
 
 As especially when switching a lot between different branches, it is recommended to do a clean checkout of the repository.
 Otherwise a lot of directories can be left over, which would be included in the source-release zip.

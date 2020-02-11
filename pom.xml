@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>22</version>
+    <version>23</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -844,7 +844,7 @@
       </plugin>
 
       <!-- Write all the properties into a file so we can access them from asciidoctor -->
-      <plugin>
+      <!--plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>properties-maven-plugin</artifactId>
         <executions>
@@ -858,7 +858,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
 
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
@@ -1013,6 +1013,38 @@
           </execution>
         </executions>
       </plugin>
+
+      <!--
+        Convert the pom.adoc file from a java property file into an asciidoctor property file.
+      -->
+      <!--plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <executions>
+          <execution>
+            <id>convert-property-to-adoc</id>
+            <!- Only execute this for the parent module ->
+            <inherited>false</inherited>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+            <configuration>
+              <file>${project.build.directory}/pom.adoc</file>
+              <replacements>
+                <replacement>
+                  <token>(.*)=(.*)</token>
+                  <value>\:$1\: $2</value>
+                </replacement>
+                <replacement>
+                  <token>#(.*)</token>
+                  <value>// $1</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
 
       <!--
         Make the maven-site-plugin stage the output in the "asf-site" branch
@@ -1177,20 +1209,6 @@
           </configuration>
         </plugin>
 
-        <!-- TODO: This is only required till the release of apache-parent 23 and can be removed after updating to that -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>3.0.0</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.scm</groupId>
-              <artifactId>maven-scm-provider-gitexe</artifactId>
-              <version>1.10.0</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
@@ -1240,7 +1258,7 @@
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
-                <pom-adoc>${project.build.directory}/pom.adoc</pom-adoc>
+                <!--pom-adoc>${project.build.directory}/pom.adoc</pom-adoc-->
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
