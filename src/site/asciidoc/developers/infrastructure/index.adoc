@@ -17,4 +17,6 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Integrations
+== Infrastructure
+
+In this section you can find information on the services the Apache PLC4X project makes use of.

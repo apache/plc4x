@@ -21,14 +21,6 @@
 
 This part of the Apache PLC4X dedicated to provide information to people wanting to build PLC4X and hopefully also start contributing to this awesome project.
 
-=== Getting Help
-
-The primary source for getting help definitely is our project mailing list dev@plc4x.apache.org.
-
-You can search previous content in our link:++https://lists.apache.org/list.html?dev@plc4x.apache.org++[Mail Archive]
-
-In order to post to the list you first need to subscribe. This can be done by sending an empty Email to dev-subscribe@plc4x.apache.org.
-
 === Getting Started
 
 We have tried to make the PLC4X build experience as smooth as possible and have tried to reduce the number of required third party tools to an absolute minimum.
@@ -49,7 +41,17 @@ We have a dedicated page on link:bulding.html[Building PLC4X].
 
 Please read this page on information about how to build Apache PLC4X.
 
+=== Contributing
 
+If you want to work on Apache PLC4X in order to `fix thing`, `add things` and start contributing back to the project, please have a look at our link:contributng.html[Contributing] page. It should contain all the information you need.
+
+=== Getting Help
+
+The primary source for getting help definitely is our project mailing list dev@plc4x.apache.org.
+
+You can search previous content in our link:++https://lists.apache.org/list.html?dev@plc4x.apache.org++[Mail Archive]
+
+In order to post to the list you first need to subscribe. This can be done by sending an empty Email to dev-subscribe@plc4x.apache.org.
 
 
 

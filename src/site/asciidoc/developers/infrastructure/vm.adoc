@@ -74,8 +74,6 @@ Instead of now entering a password, a challenge is displayed:
 If you now enter your normal password, you'll simply get `permission denied` errors.
 
 In order to execute operations as root on the machine, you need to use an opie client.
-As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a really bad idea, Apache has a service to calculate:
-https://reference.apache.org/pdf.lua?/committer/opie
 
    otp-md5 496 pl8230
 
@@ -86,6 +84,9 @@ In the `password` field you provide your Apache LDAP password.
 When hitting enter or clicking on `Compute` the tool should automatically generate a response.
 
 Now all you need to do is copy & paste that as password into your SSH client session.
+
+TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a really bad idea, Apache has a service to calculate:
+https://selfserve.apache.org/otp-md5.html
 
 === Required software
 

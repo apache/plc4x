@@ -17,4 +17,8 @@
 
 == Code Analysis
 
-https://builds.apache.org/analysis/overview?id=55410
+We are using `SonarCloud` as the service for static code analysis.
+
+This is an externally hosted service and is available here:
+
+https://sonarcloud.io/dashboard?id=apache_plc4x

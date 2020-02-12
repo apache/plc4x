@@ -17,4 +17,8 @@
 
 == Bug & Issue Tracker
 
+Our bug & issue tracker is Apache's Jira instance.
+
+This service is available here:
+
 https://issues.apache.org/jira/projects/PLC4X

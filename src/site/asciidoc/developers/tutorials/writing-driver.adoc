@@ -29,7 +29,7 @@ The general pipeline for a Protocol looks like the following:
                   :
                   v
 +-------------------------------------+
-|  PLC4X Optimizier                   :
+|  PLC4X Optimizer                    :
 |  Possibly collapse requests         |
 +-------------------------------------+
                   |

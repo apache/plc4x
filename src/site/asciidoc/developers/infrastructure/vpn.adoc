@@ -14,7 +14,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-:imagesdir: ../images/
+:imagesdir: ../../images/
 
 == The PLC4X PLC VPN
 
@@ -64,7 +64,7 @@ The following PLCs have been configured and should be available in the VPN.
 
 ==== Fatek: FBs-40MC
 
-image::plc4x-vpn-fatek.jpg[float=right, width=200]
+image::plcs/plc4x-vpn-fatek.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
@@ -75,7 +75,7 @@ It is configured to use the IP: `10.10.64.10`
 
 ==== Siemens: S7-1212AC/DC
 
-image::plc4x-vpn-siemens-s7.jpg[float=right, width=200]
+image::plcs/plc4x-vpn-siemens-s7.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
@@ -87,7 +87,7 @@ It is configured to use the IP: `10.10.64.20`
 
 ==== Siemens: KTP 400 Basic Mono
 
-image::plc4x-vpn-siemens-hmi.jpg[float=right, width=200]
+image::plcs/plc4x-vpn-siemens-hmi.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
@@ -99,7 +99,7 @@ It is configured to use the IP: `10.10.64.25`
 
 ==== WaGo: 750-352 Feldbuskoppler ETHERNET
 
-image::plc4x-vpn-wago.jpg[float=right, width=200]
+image::plcs/plc4x-vpn-wago.jpg[float=right, width=200]
 
 This device is not a typical PLC, but more a device making I/O values available via Ethernet protocols.
 
@@ -116,7 +116,7 @@ The login for this is user: 'admin' pass: 'wago'.
 
 ==== Beckhoff: C6920-0030
 
-image::plc4x-vpn-beckhoff.jpg[float=right, width=200]
+image::plcs/plc4x-vpn-beckhoff.jpg[float=right, width=200]
 
 This device is able to use the following protocols:
 
@@ -138,15 +138,15 @@ Right now we hope that as soon as routes have been added for quite some ips, eve
 
 Adding a route is done by opening the ADS Route Editor on the Beckhoff machine:
 
-image::plc4x-vpn-beckhoff-route-1.png[]
+image::plcs/plc4x-vpn-beckhoff-route-1.png[]
 
 Here you click on add:
 
-image::plc4x-vpn-beckhoff-route-2.png[]
+image::plcs/plc4x-vpn-beckhoff-route-2.png[]
 
 And enter the details of the new route:
 
-image::plc4x-vpn-beckhoff-route-3.png[]
+image::plcs/plc4x-vpn-beckhoff-route-3.png[]
 
 Here it is important to give the route a name.
 The `AmsNetId` is sort of like a 6-segment ipv4-address. It could be chosen independently from the real ip address, however the default is to use the ip address for the first 4 segments and to append `.1.1` after this.
@@ -178,7 +178,7 @@ By accessing the following URL with the `username` and `password`, provided by `
 
    https://vpn.plc4x.apache.org:444
 
-image::plc4x-vpn-client-download.png[float=right]
+image::plcs/plc4x-vpn-client-download.png[float=right]
 
 However it is also possible to use other VPN clients based on `OpenVPN`.
 

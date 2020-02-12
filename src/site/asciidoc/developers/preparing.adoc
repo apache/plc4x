@@ -43,6 +43,8 @@ However in the past with Oracle's new release strategy, there have been a few bu
 * bison
 * flex
 * python
+| `with-docker ` | Adds building of Docker images                          a|
+* docker
 |===
 
 The following chapters will describe how to provide these requirements sorted by operating system.
@@ -182,7 +184,7 @@ Yum based systems:
 
  sudo yum install flex
 
-=== macOS
+=== MacOS
 
 Most libraries on Mac are installed using `Homebrew`.
 
