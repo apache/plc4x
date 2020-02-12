@@ -27,6 +27,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
@@ -54,37 +55,31 @@ public class TcpSocketChannelFactory implements ChannelFactory {
     @Override
     public Channel createChannel(ChannelHandler channelHandler)
         throws PlcConnectionException {
-        try {
-            final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+        final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-            Bootstrap bootstrap = new Bootstrap();
-            bootstrap.group(workerGroup);
-            bootstrap.channel(NioSocketChannel.class);
-            bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.option(ChannelOption.TCP_NODELAY, true);
-            // TODO we should use an explicit (configurable?) timeout here
-            // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
-            bootstrap.handler(channelHandler);
-            // Start the client.
+        Bootstrap bootstrap = new Bootstrap();
+        bootstrap.group(workerGroup);
+        bootstrap.channel(NioSocketChannel.class);
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.option(ChannelOption.TCP_NODELAY, true);
+        // TODO we should use an explicit (configurable?) timeout here
+        // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
+        bootstrap.handler(channelHandler);
+        // Start the client.
+        try {
+            logger.trace("Starting connection attempt on tcp layer to {}:{}", address.getHostAddress(), port);
             final ChannelFuture f = bootstrap.connect(address, port);
-            f.addListener(new GenericFutureListener<Future<? super Void>>() {
-                @Override public void operationComplete(Future<? super Void> future) throws Exception {
-                    if (!future.isSuccess()) {
-                        logger.info("Unable to connect, shutting down worker thread.");
-                        workerGroup.shutdownGracefully();
-                    }
-                }
-            });
             // Wait for sync
+
             f.sync();
-            f.awaitUninterruptibly(); // jf: unsure if we need that
             // Wait till the session is finished initializing.
             return f.channel();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException("Error creating channel.", e);
         } catch (Exception e) {
-            throw new PlcConnectionException("Error creating channel.", e);
+            // Shutdown worker group here and wait for it
+            logger.info("Unable to connect, shutting down worker thread.");
+            workerGroup.shutdownGracefully().awaitUninterruptibly();
+            logger.debug("Worker Group is shutdown successfully.");
+            throw new PlcConnectionException("Unable to Connect on TCP Layer to " + address.getHostAddress() + ":" + port, e);
         }
     }
 
