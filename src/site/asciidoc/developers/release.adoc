@@ -239,7 +239,7 @@ However it will not delete the tag in GIT (locally and remotely). So you have to
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform -DreleaseProfiles=apache-release,with-proxies,with-logstash
+   mvn release:perform -DreleaseProfiles=apache-release,with-boost,with-proxies,with-logstash
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
 
