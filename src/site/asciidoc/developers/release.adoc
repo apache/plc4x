@@ -246,7 +246,7 @@ This executes automatically as all information it requires is located in the `re
 The first step is that the `perform` goal checks out the previously tagged revision into the root modules `target/checkout` directory.
 Here it automatically executes a maven build (You don't have to do this, it's just that you know what's happening):
 
-   mvn clean deploy -P apache-release,with-proxies,with-logstash
+   mvn clean deploy -P apache-release,with-boots,with-proxies,with-logstash
 
 As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
