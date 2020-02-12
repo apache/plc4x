@@ -85,14 +85,14 @@
             <Version>
                 <name>Latest 0.5.0 release</name>
                 <created>2019-11-25</created>
-                <revision>0.3.1</revision>
+                <revision>0.5.0</revision>
             </Version>
         </release>
         <release>
             <Version>
                 <name>Latest 0.4.0 release</name>
                 <created>2019-05-27</created>
-                <revision>0.3.1</revision>
+                <revision>0.4.0</revision>
             </Version>
         </release>
         <release>

@@ -27,7 +27,7 @@ When using Maven, all you need to do is add this dependency:
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>{project-version}</version>
+      <version>{current-last-released-version}</version>
     </dependency>
 ----
 
@@ -41,7 +41,7 @@ For example in order to communicate with an `S7 device` using the `S7 Protocol`,
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>{project-version}</version>
+      <version>{current-last-released-version}</version>
       <scope>runtime</scope>
     </dependency>
 ----
@@ -50,7 +50,7 @@ So as soon as your project has the API and a driver implementation available, yo
 This is done via the `PlcDriverManager` by asking this to create an instance for a given `PLC4X connection string`.
 
 ----
-String connectionString = "s7://10.10.64.20/1/1";
+String connectionString = "s7://10.10.64.20";
 
 try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionString)) {
 

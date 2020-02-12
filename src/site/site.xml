@@ -101,6 +101,7 @@
       <item name="Maturity" href="developers/maturity.html"/>
       <item name="Preparing your Computer" href="developers/preparing.html"/>
       <item name="Releasing" href="developers/release.html"/>
+      <item name="Release Validation" href="developers/release-validation.html"/>
       <item name="Releasing Build-Tools" href="developers/release-build-tools.html"/>
       <item name="Team" href="developers/team.html"/>
       <item name="VM Access" href="developers/vm.html"/>

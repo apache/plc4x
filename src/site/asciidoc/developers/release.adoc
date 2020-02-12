@@ -426,6 +426,18 @@ This will move all artifacts into the Apache release repository and delete the s
 
 All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
 
+=== Add the version to the DOAP file
+
+Now that the release is out, in the `develop` branch, update the `DOAP` file for plc4x.
+
+This is found at:
+
+    src/site/resources-filtered/plc4x-doap.rdf
+
+Please add the just released version to the top of the versions.
+
+This file is needed for Apache's tooling to automatically keep track of project release activity and we use this internally too to automatically update the documentation to always reference the latest released version automatically.
+
 === Merge back release version to master branch
 
 The master branch should always point to the last released version.

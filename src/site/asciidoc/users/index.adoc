@@ -194,7 +194,7 @@ Currently we support the following protocols:
 <br/>
 ++++
 
-Besides providing access to devices using one of above protocols, PLC4X also ships with integration modules for the following tools and frameworks.
+Besides providing access to devices using one of above protocols, Apache PLC4X also ships with integration modules for the following tools and frameworks.
 
 ++++
                     <div id="integrationCarousel" class="carousel slide" data-ride="carousel">
@@ -335,8 +335,8 @@ Besides providing access to devices using one of above protocols, PLC4X also shi
 
 As last category of tools come modules that can be used in your applications:
 
-- link:tools/connection-pool.html[Connection Pool]
-- link:tools/opm.html[Object PLC Mapping (OPM)]
-- link:tools/scraper.html[Scraper]
-- link:tools/testing.html[Testing-Utils]
+- link:tools/connection-pool.html[Connection Pool] (Connection Pool for PLC connections)
+- link:tools/opm.html[Object PLC Mapping (OPM)] (Object PLC Mapping - Like JPA for PLC data)
+- link:tools/scraper.html[Scraper] (Util for automating fetching PLC data using a variety of triggers)
+- link:tools/testing.html[Testing-Utils] (Want to build/test an application without having a PLC ... this is the tool for you)
 
