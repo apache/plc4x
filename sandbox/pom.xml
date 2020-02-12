@@ -67,13 +67,12 @@
     </profile>
 
     <!-- Build PLC4X including the Python modules -->
-    <!-- This module requires the Interop-Server which is disabled for incompatibility reasons. -->
-    <!--profile>
+    <profile>
       <id>with-python</id>
       <modules>
         <module>plc4py</module>
       </modules>
-    </profile-->
+    </profile>
 
   </profiles>
 

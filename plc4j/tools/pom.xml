@@ -39,14 +39,13 @@
     <module>scraper</module>
   </modules>
 
-  <!-- This module requires the Interop-Server which is disabled for incompatibility reasons. -->
-  <!--profiles>
+  <profiles>
      <profile>
        <id>with-proxies</id>
        <modules>
          <module>interop</module>
        </modules>
      </profile>
-   </profiles-->
+   </profiles>
 
 </project>

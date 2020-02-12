@@ -20,6 +20,7 @@
 package org.apache.plc4x.interop.impl;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.interop.InteropServer;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
