@@ -66,16 +66,24 @@ public class TcpSocketChannelFactory implements ChannelFactory {
         // bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000);
         bootstrap.handler(channelHandler);
         // Start the client.
+        ChannelFuture f = null;
         try {
             logger.trace("Starting connection attempt on tcp layer to {}:{}", address.getHostAddress(), port);
-            final ChannelFuture f = bootstrap.connect(address, port);
+            f = bootstrap.connect(address, port)
+                .addListener(event -> {
+                    logger.trace("Connection process finished, success is {}", event.isSuccess());
+                });
             // Wait for sync
-
-            f.sync();
             // Wait till the session is finished initializing.
+            f.sync();
+            logger.trace("Sync completed, connection established on tcp layer");
+
             return f.channel();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // Shutdown worker group here and wait for it
+            if (f != null) {
+                f.channel().closeFuture().awaitUninterruptibly();
+            }
             logger.info("Unable to connect, shutting down worker thread.");
             workerGroup.shutdownGracefully().awaitUninterruptibly();
             logger.debug("Worker Group is shutdown successfully.");
