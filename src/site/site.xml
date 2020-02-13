@@ -88,7 +88,7 @@
     <menu name="Developers">
       <item name="Section Home" href="developers/index.html"/>
       <item name="Preparing your Computer" href="developers/preparing/index.html">
-        <item name="Liunx" href="developers/preparing/linux.html"/>
+        <item name="Linux" href="developers/preparing/linux.html"/>
         <item name="Mac OS" href="developers/preparing/macos.html"/>
         <item name="Windows" href="developers/preparing/windows.html"/>
       </item>

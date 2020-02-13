@@ -43,7 +43,7 @@ Please read this page on information about how to build Apache PLC4X.
 
 === Contributing
 
-If you want to work on Apache PLC4X in order to `fix thing`, `add things` and start contributing back to the project, please have a look at our link:contributng.html[Contributing] page. It should contain all the information you need.
+If you want to work on Apache PLC4X in order to `fix things`, `add things` and start `contributing` in general, please have a look at our link:contributng.html[Contributing] page. It should contain all the information you need.
 
 === Getting Help
 
