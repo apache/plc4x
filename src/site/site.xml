@@ -87,7 +87,11 @@
     </menu>
     <menu name="Developers">
       <item name="Section Home" href="developers/index.html"/>
-      <item name="Preparing your Computer" href="developers/preparing.html"/>
+      <item name="Preparing your Computer" href="developers/preparing/index.html">
+        <item name="Liunx" href="developers/preparing/linux.html"/>
+        <item name="Mac OS" href="developers/preparing/macos.html"/>
+        <item name="Windows" href="developers/preparing/windows.html"/>
+      </item>
       <item name="Building" href="developers/building.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
       <item name="Tutorials" href="developers/tutorials/index.html">
