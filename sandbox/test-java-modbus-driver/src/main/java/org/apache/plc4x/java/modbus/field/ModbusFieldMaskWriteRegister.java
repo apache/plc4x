@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 @Deprecated
 public class ModbusFieldMaskWriteRegister extends ModbusField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("maskwrite:" + ModbusField.ADDRESS_PATTERN + "/" + "(?<andMask>\\d+)/(?<orMask>\\d+)");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("mask-write:" + ModbusField.ADDRESS_PATTERN + "/" + "(?<andMask>\\d+)/(?<orMask>\\d+)");
 
     private final int andMask;
     private final int orMask;

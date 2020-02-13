@@ -56,6 +56,15 @@ public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
         return "tcp";
     }
 
+    /**
+     * Modbus doesn't have a login procedure, so there is no need to wait for a login to finish.
+     * @return false
+     */
+    @Override
+    protected boolean awaitSetupComplete() {
+        return false;
+    }
+
     @Override
     protected boolean canRead() {
         return true;
@@ -86,7 +95,7 @@ public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 6) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4);
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 4) + 6;
             }
             return -1;
         }

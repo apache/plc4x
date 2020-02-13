@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class ModbusFieldHoldingRegister extends ModbusField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readholdingregisters:" + ModbusField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("holding-register:" + ModbusField.ADDRESS_PATTERN);
 
     protected ModbusFieldHoldingRegister(int address, Integer quantity) {
         super(address, quantity);

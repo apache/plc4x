@@ -56,8 +56,8 @@
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']
-    [implicit       uint 7      'function'  'DISCRIMINATOR_VALUES[1]']
     [implicit       bit         'error'     'DISCRIMINATOR_VALUES[0]']
+    [implicit       uint 7      'function'  'DISCRIMINATOR_VALUES[1]']
     [typeSwitch 'error','function','response'
         ['true'                     ModbusPDUError
             [simple     uint 8      'exceptionCode']
@@ -267,3 +267,22 @@
     [implicit   uint 16    'recordLength'   '(COUNT(recordData) * 2) / 2']
     [array      uint 16    'recordData'     length  'recordLength * 2']
 ]
+
+[dataIo 'DataItem' [uint 8 'dataType', uint 8 'numberOfValues']
+    [typeSwitch 'dataType','numberOfValues'
+        ['1','1' Boolean
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+        ]
+        ['1' List
+            [array bit 'value' count 'numberOfValues']
+        ]
+        ['2','1' Integer
+            [simple int 16 'value']
+        ]
+        ['2' List
+            [array int 16 'value' count 'numberOfValues']
+        ]
+    ]
+]
+

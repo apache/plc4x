@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class ModbusFieldDiscreteInput extends ModbusField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("readdiscreteinputs:" + ModbusField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("discrete-input:" + ModbusField.ADDRESS_PATTERN);
 
     public ModbusFieldDiscreteInput(int address, Integer quantity) {
         super(address, quantity);

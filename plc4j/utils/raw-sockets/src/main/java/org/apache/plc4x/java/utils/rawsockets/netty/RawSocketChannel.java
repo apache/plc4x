@@ -84,9 +84,9 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // Try to get the device name of the network interface that we want to open.
         String deviceName = getDeviceName(remoteRawSocketAddress);
         if(deviceName == null) {
-            logger.error("Network device not specified and coudln't detect it automatically");
+            logger.error("Network device not specified and couldn't detect it automatically");
             pipeline().fireExceptionCaught(
-                new RawSocketException("Network device not specified and coudln't detect it automatically"));
+                new RawSocketException("Network device not specified and couldn't detect it automatically"));
             return;
         }
 

@@ -31,7 +31,7 @@ public class PlcList extends PlcValueAdapter {
         List<PlcValue> safelist = listItems.stream().map(plcValue -> {
             // to avoid unwrapped list cause of type erasure
             if (plcValue instanceof PlcValue) {
-                return (PlcValue)plcValue;
+                return (PlcValue) plcValue;
             } else {
                 return PlcValues.of(plcValue);
             }

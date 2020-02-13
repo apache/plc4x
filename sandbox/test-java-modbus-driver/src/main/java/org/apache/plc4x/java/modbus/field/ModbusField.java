@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?");
 
     private final int address;
 
