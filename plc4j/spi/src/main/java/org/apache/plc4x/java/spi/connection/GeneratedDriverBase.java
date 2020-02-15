@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import java.util.ServiceLoader;
@@ -55,6 +56,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected boolean awaitSetupComplete() {
         return true;
+    }
+
+    protected BaseOptimizer getOptimizer() {
+        return null;
     }
 
     protected abstract PlcFieldHandler getFieldHandler();
@@ -120,7 +125,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             configuration,
             channelFactory,
             awaitSetupComplete(),
-            getStackConfigurer());
+            getStackConfigurer(),
+            getOptimizer());
     }
 
     @Override

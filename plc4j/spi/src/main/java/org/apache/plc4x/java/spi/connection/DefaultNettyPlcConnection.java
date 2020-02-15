@@ -33,6 +33,7 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.CloseConnectionEvent;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +60,8 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
     public DefaultNettyPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe,
                                      PlcFieldHandler fieldHandler, Configuration configuration,
                                      ChannelFactory channelFactory, boolean awaitSessionSetupComplete,
-                                     ProtocolStackConfigurer stackConfigurer) {
-        super(canRead, canWrite, canSubscribe, fieldHandler);
+                                     ProtocolStackConfigurer stackConfigurer, BaseOptimizer optimizer) {
+        super(canRead, canWrite, canSubscribe, fieldHandler, optimizer);
         this.configuration = configuration;
         this.channelFactory = channelFactory;
         this.awaitSessionSetupComplete = awaitSessionSetupComplete;

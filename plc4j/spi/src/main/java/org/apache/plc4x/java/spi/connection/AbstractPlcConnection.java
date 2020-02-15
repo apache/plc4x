@@ -42,6 +42,7 @@ import org.apache.plc4x.java.spi.messages.InternalPlcMessage;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -61,6 +62,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canSubscribe = false;
     private PlcFieldHandler fieldHandler;
     private Plc4xProtocolBase<?> protocol;
+    private BaseOptimizer optimizer;
 
     /**
      * @deprecated only for compatibility reasons.
@@ -69,11 +71,13 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     public AbstractPlcConnection() {
     }
 
-    public AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler) {
+    public AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler,
+                                 BaseOptimizer optimizer) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.fieldHandler = fieldHandler;
+        this.optimizer = optimizer;
     }
 
     public void setProtocol(Plc4xProtocolBase<?> protocol) {
@@ -145,21 +149,33 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        if(optimizer != null) {
+            return optimizer.optimizedRead(readRequest, protocol);
+        }
         return protocol.read(readRequest);
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        if(optimizer != null) {
+            return optimizer.optimizedWrite(writeRequest, protocol);
+        }
         return protocol.write(writeRequest);
     }
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
+        if(optimizer != null) {
+            return optimizer.optimizedSubscribe(subscriptionRequest, protocol);
+        }
         return protocol.subscribe(subscriptionRequest);
     }
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
+        if(optimizer != null) {
+            return optimizer.optmizedUnsubscribe(unsubscriptionRequest, protocol);
+        }
         return protocol.unsubscribe(unsubscriptionRequest);
     }
 

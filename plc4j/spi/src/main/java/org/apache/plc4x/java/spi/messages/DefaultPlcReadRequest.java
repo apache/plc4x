@@ -39,7 +39,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
     private final PlcReader reader;
     private LinkedHashMap<String, PlcField> fields;
 
-    protected DefaultPlcReadRequest(PlcReader reader, LinkedHashMap<String, PlcField> fields) {
+    public DefaultPlcReadRequest(PlcReader reader, LinkedHashMap<String, PlcField> fields) {
         this.reader = reader;
         this.fields = fields;
     }
@@ -78,7 +78,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    protected PlcReader getReader() {
+    public PlcReader getReader() {
         return reader;
     }
 

@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
 import org.apache.plc4x.java.modbus.field.ModbusFieldHandler;
+import org.apache.plc4x.java.modbus.optimizer.ModbusOptimizer;
 import org.apache.plc4x.java.modbus.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.readwrite.io.ModbusTcpADUIO;
@@ -29,6 +30,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.function.ToIntFunction;
@@ -73,6 +75,11 @@ public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
     @Override
     protected boolean canWrite() {
         return true;
+    }
+
+    @Override
+    protected BaseOptimizer getOptimizer() {
+        return new ModbusOptimizer();
     }
 
     @Override

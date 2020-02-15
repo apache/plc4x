@@ -87,9 +87,13 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         return protocol;
     }
 
-    private <T> T createInstance(Class<T> clazz) {
+    private <T> T createInstance(Class<T> clazz, Object... args) {
         try {
-            return clazz.getDeclaredConstructor().newInstance();
+            Class<?>[] parameterTypes = new Class<?>[args.length];
+            for(int i = 0; i < args.length; i++) {
+                parameterTypes[i] = args[i].getClass();
+            }
+            return clazz.getDeclaredConstructor(parameterTypes).newInstance(args);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
             throw new InternalPlcRuntimeException("Error creating instance of class " + clazz.getName());
         }
