@@ -43,7 +43,7 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.optimizer.RequestTransactionManager;
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
 import java.time.Duration;
 import java.util.ArrayList;

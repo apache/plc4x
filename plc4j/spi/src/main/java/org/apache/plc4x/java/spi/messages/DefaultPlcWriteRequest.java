@@ -51,7 +51,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
     private final PlcWriter writer;
     private final LinkedHashMap<String, Pair<PlcField, PlcValue>> fields;
 
-    protected DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields) {
+    public DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields) {
         this.writer = writer;
         this.fields = fields;
     }
@@ -101,6 +101,10 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
                     stringPairEntry.getValue().getKey()
                 )
             ).collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    public PlcWriter getWriter() {
+        return writer;
     }
 
     @Override

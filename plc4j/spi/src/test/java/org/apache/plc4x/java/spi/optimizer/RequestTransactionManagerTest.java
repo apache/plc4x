@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.spi.optimizer;
 
+import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
