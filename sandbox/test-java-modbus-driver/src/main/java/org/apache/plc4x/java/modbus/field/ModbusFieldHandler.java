@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,24 +93,57 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
         }
     }
 
-    /*@Override
-    public PlcValue encodeByteArray(PlcField field, Object[] values) {
-        ModbusField modbusField = (ModbusField) field;
-        List<Byte[]> byteArrays = new LinkedList<>();
-        for (Object value : values) {
-            if (value instanceof byte[]) {
-                byte[] byteArray = (byte[]) value;
-                byteArrays.add(ArrayUtils.toObject(byteArray));
-            } else if (value instanceof Byte[]) {
-                Byte[] byteArray = (Byte[]) value;
-                byteArrays.add(byteArray);
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + value.getClass().getName() +
-                        " is not assignable to " + modbusField + " fields.");
+    @Override
+    public PlcValue encodeByte(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeInteger(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeLong(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeBigInteger(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeFloat(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeDouble(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
+        return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeShort(PlcField field, Object[] values) {
+        if(values.length == 1) {
+            return new PlcShort(((Number) values[0]).shortValue());
+        } else {
+            List<PlcShort> shorts = new ArrayList<>(values.length);
+            for (Object value : values) {
+                Number numberValue = (Number) value;
+                // Intentionally checking the next larger type.
+                if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
+                    throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
+                }
+                shorts.add(new PlcShort(((Number) value).shortValue()));
             }
+            return new PlcList(shorts);
         }
-        return new DefaultModbusByteArrayPlcValue(byteArrays.toArray(new Byte[0][0]));
-    }*/
+    }
 
 }

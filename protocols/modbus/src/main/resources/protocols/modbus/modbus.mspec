@@ -130,18 +130,18 @@
             [simple     uint 16     'value']
         ]
 
-        ['false','0x10','false'     ModbusPDUWriteMultipleRegistersRequest
+        ['false','0x10','false'     ModbusPDUWriteMultipleHoldingRegistersRequest
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
-        ['false','0x10','true'      ModbusPDUWriteMultipleRegistersResponse
+        ['false','0x10','true'      ModbusPDUWriteMultipleHoldingRegistersResponse
             [simple     uint 16     'startingAddress']
             [simple     uint 16     'quantity']
         ]
 
-        ['false','0x17','false'     ModbusPDUReadWriteMultipleRegistersRequest
+        ['false','0x17','false'     ModbusPDUReadWriteMultipleHoldingRegistersRequest
             [simple     uint 16     'readStartingAddress']
             [simple     uint 16     'readQuantity']
             [simple     uint 16     'writeStartingAddress']
@@ -149,17 +149,17 @@
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
-        ['false','0x17','true'      ModbusPDUReadWriteMultipleRegistersResponse
+        ['false','0x17','true'      ModbusPDUReadWriteMultipleHoldingRegistersResponse
             [implicit   uint 8      'byteCount'     'COUNT(value)']
             [array      int 8       'value'         count   'byteCount']
         ]
 
-        ['false','0x16','false'     ModbusPDUMaskWriteRegisterRequest
+        ['false','0x16','false'     ModbusPDUMaskWriteHoldingRegisterRequest
             [simple     uint 16     'referenceAddress']
             [simple     uint 16     'andMask']
             [simple     uint 16     'orMask']
         ]
-        ['false','0x16','true'      ModbusPDUMaskWriteRegisterResponse
+        ['false','0x16','true'      ModbusPDUMaskWriteHoldingRegisterResponse
             [simple     uint 16     'referenceAddress']
             [simple     uint 16     'andMask']
             [simple     uint 16     'orMask']

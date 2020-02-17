@@ -43,6 +43,8 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
 import java.time.Duration;
@@ -88,10 +90,10 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         // 2. Split up into multiple sub-requests
 
         // Example for sending a request ...
-        // TODO: Break down multiple items into sub-futures that are acknowledged at the end
-        for (String fieldName : request.getFieldNames()) {
+        if(request.getFieldNames().size() == 1) {
+            String fieldName = request.getFieldNames().iterator().next();
             PlcField field = request.getField(fieldName);
-            ModbusPDU requestPdu = getRequestPdu(field);
+            final ModbusPDU requestPdu = getReadRequestPdu(field);
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
             ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -123,13 +125,17 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     // Finish the request-transaction.
                     transaction.endRequest();
             }));
+        } else {
+            future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
         }
-        // TODO: Merge all the sub-futures to one big response.
         return future;
     }
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+
         // 1. Sort all items by type:
         //      - DiscreteInput     (read-only)     --> Error
         //      - Coil              (read-write)    --> ModbusPduWriteSingleCoilRequest / ModbusPduWriteMultipleCoilsRequest
@@ -138,10 +144,44 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         //      - FifoQueue         (read-only)     --> Error
         //      - FileRecord        (read-write)    --> ModbusPduWriteFileRecordRequest
         // 2. Split up into multiple sub-requests
-        return super.write(writeRequest);
+        if(request.getFieldNames().size() == 1) {
+            String fieldName = request.getFieldNames().iterator().next();
+            PlcField field = request.getField(fieldName);
+            final ModbusPDU requestPdu = getWriteRequestPdu(field, ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName));
+            int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
+            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
+            RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+            transaction.submit(() -> context.sendRequest(modbusTcpADU)
+                .expectResponse(ModbusTcpADU.class, requestTimeout)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p.getTransactionIdentifier() == transactionIdentifier)
+                .unwrap(ModbusTcpADU::getPdu)
+                .handle(responsePdu -> {
+                    // TODO: Check the correct number of elements were written.
+
+                    // Try to decode the response data based on the corresponding request.
+                    PlcValue plcValue = null;
+                    PlcResponseCode responseCode = PlcResponseCode.OK;
+
+                    // Prepare the response.
+                    PlcWriteResponse response = new DefaultPlcWriteResponse(request,
+                        Collections.singletonMap(fieldName, responseCode));
+
+                    // Pass the response back to the application.
+                    future.complete(response);
+
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+                }));
+
+        } else {
+            future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
+        }
+        return future;
     }
 
-    private ModbusPDU getRequestPdu(PlcField field) {
+    private ModbusPDU getReadRequestPdu(PlcField field) {
         if(field instanceof ModbusFieldDiscreteInput) {
             ModbusFieldDiscreteInput discreteInput = (ModbusFieldDiscreteInput) field;
             return new ModbusPDUReadDiscreteInputsRequest(discreteInput.getAddress(), discreteInput.getQuantity());
@@ -155,7 +195,20 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;
             return new ModbusPDUReadHoldingRegistersRequest(holdingRegister.getAddress(), holdingRegister.getQuantity());
         }
-        throw new PlcRuntimeException("Unsupported field type " + field.getClass().getName());
+        throw new PlcRuntimeException("Unsupported read field type " + field.getClass().getName());
+    }
+
+    private ModbusPDU getWriteRequestPdu(PlcField field, PlcValue plcValue) {
+        if(field instanceof ModbusFieldCoil) {
+            ModbusFieldCoil coil = (ModbusFieldCoil) field;
+            return new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getQuantity(),
+                fromPlcValue(plcValue));
+        } else if(field instanceof ModbusFieldHoldingRegister) {
+            ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;
+            return new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
+                holdingRegister.getQuantity(), fromPlcValue(plcValue));
+        }
+        throw new PlcRuntimeException("Unsupported write field type " + field.getClass().getName());
     }
 
     private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response) throws ParseException {
@@ -191,6 +244,44 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             return DataItemIO.staticParse(io, (short) 2, (short) req.getQuantity());
         }
         return null;
+    }
+
+    private byte[] fromPlcValue(PlcValue plcValue) {
+        if(plcValue instanceof PlcList) {
+            PlcList plcList = (PlcList) plcValue;
+            BitSet booleans = null;
+            List<Short> shorts = null;
+            int b = 0;
+            for (PlcValue value : plcList.getList()) {
+                if("PlcBoolean".equals(value.getClass().getSimpleName())) {
+                    if(booleans == null) {
+                        booleans = new BitSet(plcList.getList().size());
+                    }
+                    PlcBoolean plcBoolean = (PlcBoolean) value;
+                    booleans.set(b, plcBoolean.getBoolean());
+                    b++;
+                } else if(value.isShort()) {
+                    if(shorts == null) {
+                        shorts = new ArrayList<>(plcList.getList().size());
+                    }
+                    shorts.add(value.getShort());
+                } else {
+                    throw new PlcRuntimeException("Can only encode boolean or short values");
+                }
+            }
+            if(booleans != null) {
+                return booleans.toByteArray();
+            } else if(shorts != null) {
+                byte[] bytes = new byte[shorts.size() * 2];
+                for(int i = 0; i < shorts.size(); i++) {
+                    Short shortValue = shorts.get(i);
+                    bytes[i * 2] = (byte)((shortValue >> 8) & 0xff);
+                    bytes[(i * 2) + 1] = (byte)(shortValue & 0xff);
+                }
+                return bytes;
+            }
+        }
+        return new byte[0];
     }
 
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
