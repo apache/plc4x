@@ -51,6 +51,7 @@
       <item name="Download" href="users/download.html"/>
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Java" href="users/plc4j/gettingstarted.html"/>
+        <item name="Virtual Modbus" href="users/plc4j/virtual-modbus.html"/>
       </item>
       <item name="Protocols" href="users/protocols/index.html">
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
