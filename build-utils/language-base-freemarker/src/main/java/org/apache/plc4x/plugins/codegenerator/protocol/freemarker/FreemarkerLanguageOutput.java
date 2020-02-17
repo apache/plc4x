@@ -141,14 +141,15 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
             }
 
             // Output the rest to that file
-            BufferedWriter outputFileWriter = Files.newBufferedWriter(
-                outputFile.toPath(), StandardCharsets.UTF_8);
-            String line;
-            while ((line = input.readLine()) != null) {
-                outputFileWriter.write(line);
-                outputFileWriter.newLine();
+            try(BufferedWriter outputFileWriter = Files.newBufferedWriter(
+                outputFile.toPath(), StandardCharsets.UTF_8)) {
+                String line;
+                while ((line = input.readLine()) != null) {
+                    outputFileWriter.write(line);
+                    outputFileWriter.newLine();
+                }
+                outputFileWriter.flush();
             }
-            outputFileWriter.flush();
         }
     }
 

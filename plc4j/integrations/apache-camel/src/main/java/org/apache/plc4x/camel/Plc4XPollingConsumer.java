@@ -80,7 +80,10 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         try {
             PlcReadResponse plcReadResponse = read.get();
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            exchange.setException(e);
+        } catch (ExecutionException e) {
             exchange.setException(e);
         }
         return exchange;
@@ -98,7 +101,10 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
             exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            exchange.setException(e);
+        } catch (ExecutionException | TimeoutException e) {
             exchange.setException(e);
         }
         return exchange;

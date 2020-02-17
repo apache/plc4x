@@ -674,7 +674,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         } else {
                             try {
                                 subResult = Either.left(childFuture.get());
-                            } catch (InterruptedException | ExecutionException e) {
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
                                 e.printStackTrace();
                             }
                         }

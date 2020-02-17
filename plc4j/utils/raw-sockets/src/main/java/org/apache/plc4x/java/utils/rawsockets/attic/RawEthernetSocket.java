@@ -98,7 +98,11 @@ public class RawEthernetSocket {
             pool.execute(() -> {
                 try {
                     receiveHandle.loop(-1, packetListener);
-                } catch (PcapNativeException | InterruptedException | NotOpenException e) {
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Error receiving packet for protocol {} from MAC address {}",
+                        etherType.valueAsString(), remoteMacAddress, e);
+                } catch (PcapNativeException | NotOpenException e) {
                     logger.error("Error receiving packet for protocol {} from MAC address {}",
                         etherType.valueAsString(), remoteMacAddress, e);
                 }

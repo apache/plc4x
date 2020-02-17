@@ -61,7 +61,7 @@ public class RobotController {
 
     @RequestMapping("move")
     public boolean move(@RequestParam(value="direction", defaultValue="stop") String direction) {
-        logger.info("Move in direction: " + direction);
+        logger.info(String.format("Move in direction: %s", direction));
         byte state;
         switch (direction) {
             case "forward-right":
@@ -96,7 +96,11 @@ public class RobotController {
             PlcWriteRequest updateRequest = connection.writeRequestBuilder().addItem("state", addressString, state).build();
             updateRequest.execute().get(2000, TimeUnit.MILLISECONDS);
             return true;
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Caught Exception:", e);
+            return false;
+        } catch(ExecutionException | TimeoutException e) {
             logger.error("Caught Exception:", e);
             return false;
         }

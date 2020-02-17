@@ -48,89 +48,89 @@ public class Ets5Parser {
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xPath = xPathFactory.newXPath();
 
-            ZipFile zipFile = new ZipFile(knxprojFile);
+            try (ZipFile zipFile = new ZipFile(knxprojFile)) {
 
-            ////////////////////////////////////////////////////////////////////////////////
-            // File containing the information on the type of encoding used for group addresses.
-            ////////////////////////////////////////////////////////////////////////////////
-            ZipArchiveEntry projectHeaderFile = zipFile.getEntry("P-05CD/project.xml");
-            if(projectHeaderFile == null) {
-                throw new RuntimeException("Error accessing project header file.");
+                ////////////////////////////////////////////////////////////////////////////////
+                // File containing the information on the type of encoding used for group addresses.
+                ////////////////////////////////////////////////////////////////////////////////
+                ZipArchiveEntry projectHeaderFile = zipFile.getEntry("P-05CD/project.xml");
+                if (projectHeaderFile == null) {
+                    throw new RuntimeException("Error accessing project header file.");
+                }
+                Document projectHeaderDoc = builder.parse(zipFile.getInputStream(projectHeaderFile));
+                final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
+                Attr groupAddressStyle = (Attr) xpathGroupAddressStyle.evaluate(projectHeaderDoc, XPathConstants.NODE);
+                byte groupAddressStyleCode = getGroupAddressLevel(groupAddressStyle.getTextContent());
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // General information on the type of encoding and the value ranges.
+                ////////////////////////////////////////////////////////////////////////////////
+                ZipArchiveEntry knxMasterDataFile = zipFile.getEntry("knx_master.xml");
+                if (knxMasterDataFile == null) {
+                    throw new RuntimeException("Error accessing KNX master file.");
+                }
+                Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
+                final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
+                NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
+                Map<String, AddressType> addressTypes = new HashMap<>();
+                for (int i = 0; i < datapointSubtypeNodes.getLength(); i++) {
+                    final Element datapointSubtypeNode = (Element) datapointSubtypeNodes.item(i);
+                    final String id = datapointSubtypeNode.getAttribute("Id");
+                    final int subType = Integer.parseInt(datapointSubtypeNode.getAttribute("Number"));
+                    final int mainType = Integer.parseInt(
+                        ((Element) datapointSubtypeNode.getParentNode().getParentNode()).getAttribute("Number"));
+                    final String name = datapointSubtypeNode.getAttribute("Text");
+                    addressTypes.put(id, new AddressType(id, mainType, subType, name));
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // File containing all the information about group addresses used, their names, types etc.
+                ////////////////////////////////////////////////////////////////////////////////
+                ZipArchiveEntry projectFile = zipFile.getEntry("P-05CD/0.xml");
+                if (projectFile == null) {
+                    throw new RuntimeException("Error accessing project file.");
+                }
+                Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
+
+                final Map<String, Function> groupAddressRefs = new HashMap();
+                final XPathExpression xpathGroupAddressRef = xPath.compile("//GroupAddressRef");
+                NodeList groupAddressRefNodes = (NodeList) xpathGroupAddressRef.evaluate(projectDoc, XPathConstants.NODESET);
+                for (int i = 0; i < groupAddressRefNodes.getLength(); i++) {
+                    final Element groupAddressRefNode = (Element) groupAddressRefNodes.item(i);
+                    final String refId = groupAddressRefNode.getAttribute("RefId");
+                    final Element functionNode = (Element) groupAddressRefNode.getParentNode();
+                    final String functionName = functionNode.getAttribute("Name");
+                    // Function Type information is stored in knx_master.xml (//FunctionType[@id='functionTypeId']
+                    final String functionTypeId = functionNode.getAttribute("Type");
+                    final Element spaceNode = (Element) functionNode.getParentNode();
+                    final String spaceName = spaceNode.getAttribute("Name");
+
+                    final Function function = new Function(refId, functionName, functionTypeId, spaceName);
+                    groupAddressRefs.put(refId, function);
+                }
+
+                final XPathExpression xpathGroupAddresses = xPath.compile("//GroupAddress");
+                NodeList groupAddressNodes = (NodeList) xpathGroupAddresses.evaluate(projectDoc, XPathConstants.NODESET);
+                Map<String, GroupAddress> groupAddresses = new HashMap<>();
+                for (int i = 0; i < groupAddressNodes.getLength(); i++) {
+                    final Element groupAddressNode = (Element) groupAddressNodes.item(i);
+
+                    final String id = groupAddressNode.getAttribute("Id");
+                    final Function function = groupAddressRefs.get(id);
+
+                    final int addressInt = Integer.parseInt(groupAddressNode.getAttribute("Address"));
+                    final String knxGroupAddress = Ets5Model.parseGroupAddress(groupAddressStyleCode, addressInt);
+
+                    final String name = groupAddressNode.getAttribute("Name");
+
+                    final String typeString = groupAddressNode.getAttribute("DatapointType");
+                    final AddressType addressType = addressTypes.get(typeString);
+
+                    GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, addressType, function);
+                    groupAddresses.put(knxGroupAddress, groupAddress);
+                }
+                return new Ets5Model(groupAddressStyleCode, groupAddresses);
             }
-            Document projectHeaderDoc = builder.parse(zipFile.getInputStream(projectHeaderFile));
-            final XPathExpression xpathGroupAddressStyle = xPath.compile("/KNX/Project/ProjectInformation/@GroupAddressStyle");
-            Attr groupAddressStyle = (Attr) xpathGroupAddressStyle.evaluate(projectHeaderDoc, XPathConstants.NODE);
-            byte groupAddressStyleCode = getGroupAddressLevel(groupAddressStyle.getTextContent());
-
-            ////////////////////////////////////////////////////////////////////////////////
-            // General information on the type of encoding and the value ranges.
-            ////////////////////////////////////////////////////////////////////////////////
-            ZipArchiveEntry knxMasterDataFile = zipFile.getEntry("knx_master.xml");
-            if(knxMasterDataFile == null) {
-                throw new RuntimeException("Error accessing KNX master file.");
-            }
-            Document knxMasterDoc = builder.parse(zipFile.getInputStream(knxMasterDataFile));
-            final XPathExpression xpathDatapointSubtype = xPath.compile("//DatapointSubtype");
-            NodeList datapointSubtypeNodes = (NodeList) xpathDatapointSubtype.evaluate(knxMasterDoc, XPathConstants.NODESET);
-            Map<String, AddressType> addressTypes = new HashMap<>();
-            for(int i = 0; i < datapointSubtypeNodes.getLength(); i++) {
-                final Element datapointSubtypeNode = (Element) datapointSubtypeNodes.item(i);
-                final String id = datapointSubtypeNode.getAttribute("Id");
-                final int subType = Integer.parseInt(datapointSubtypeNode.getAttribute("Number"));
-                final int mainType = Integer.parseInt(
-                    ((Element) datapointSubtypeNode.getParentNode().getParentNode()).getAttribute("Number"));
-                final String name = datapointSubtypeNode.getAttribute("Text");
-                addressTypes.put(id, new AddressType(id, mainType, subType, name));
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////
-            // File containing all the information about group addresses used, their names, types etc.
-            ////////////////////////////////////////////////////////////////////////////////
-            ZipArchiveEntry projectFile = zipFile.getEntry("P-05CD/0.xml");
-            if(projectFile == null) {
-                throw new RuntimeException("Error accessing project file.");
-            }
-            Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
-
-            final Map<String, Function> groupAddressRefs = new HashMap();
-            final XPathExpression xpathGroupAddressRef = xPath.compile("//GroupAddressRef");
-            NodeList groupAddressRefNodes = (NodeList) xpathGroupAddressRef.evaluate(projectDoc, XPathConstants.NODESET);
-            for(int i = 0; i < groupAddressRefNodes.getLength(); i++) {
-                final Element groupAddressRefNode = (Element) groupAddressRefNodes.item(i);
-                final String refId = groupAddressRefNode.getAttribute("RefId");
-                final Element functionNode = (Element) groupAddressRefNode.getParentNode();
-                final String functionName = functionNode.getAttribute("Name");
-                // Function Type information is stored in knx_master.xml (//FunctionType[@id='functionTypeId']
-                final String functionTypeId = functionNode.getAttribute("Type");
-                final Element spaceNode = (Element) functionNode.getParentNode();
-                final String spaceName = spaceNode.getAttribute("Name");
-
-                final Function function = new Function(refId, functionName, functionTypeId, spaceName);
-                groupAddressRefs.put(refId, function);
-            }
-
-            final XPathExpression xpathGroupAddresses = xPath.compile("//GroupAddress");
-            NodeList groupAddressNodes = (NodeList) xpathGroupAddresses.evaluate(projectDoc, XPathConstants.NODESET);
-            Map<String, GroupAddress> groupAddresses = new HashMap<>();
-            for(int i = 0; i < groupAddressNodes.getLength(); i++) {
-                final Element groupAddressNode = (Element) groupAddressNodes.item(i);
-
-                final String id = groupAddressNode.getAttribute("Id");
-                final Function function = groupAddressRefs.get(id);
-
-                final int addressInt = Integer.parseInt(groupAddressNode.getAttribute("Address"));
-                final String knxGroupAddress = Ets5Model.parseGroupAddress(groupAddressStyleCode, addressInt);
-
-                final String name = groupAddressNode.getAttribute("Name");
-
-                final String typeString = groupAddressNode.getAttribute("DatapointType");
-                final AddressType addressType = addressTypes.get(typeString);
-
-                GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, addressType, function);
-                groupAddresses.put(knxGroupAddress, groupAddress);
-            }
-
-            return new Ets5Model(groupAddressStyleCode, groupAddresses);
         } catch (IOException e) {
             // Zip and Xml Stuff
             e.printStackTrace();

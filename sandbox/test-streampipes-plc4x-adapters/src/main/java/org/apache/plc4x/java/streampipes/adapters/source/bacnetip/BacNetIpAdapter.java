@@ -358,14 +358,14 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
         StaticPropertyAlternatives sources = (StaticPropertyAlternatives) extractor.getStaticPropertyByName("source");
         final Optional<StaticPropertyAlternative> selectedAlternative = sources.getAlternatives().stream().filter(
-            staticPropertyAlternative -> staticPropertyAlternative.getSelected()).findFirst();
+            StaticPropertyAlternative::getSelected).findFirst();
         if (selectedAlternative.isPresent()) {
             final StaticPropertyAlternative staticPropertyAlternative = selectedAlternative.get();
             if ("device".equals(staticPropertyAlternative.getInternalName())) {
                 final Optional<Option> first =
                     ((OneOfStaticProperty) staticPropertyAlternative.getStaticProperty()).getOptions().stream().filter(
-                        option -> option.isSelected()).findFirst();
-                deviceName = first.get().getName();
+                        Option::isSelected).findFirst();
+                deviceName = first.isPresent() ? first.get().getName() : "Unknown";
             } else {
                 pcapFile = ((FileStaticProperty) staticPropertyAlternative.getStaticProperty()).getLocationPath();
             }

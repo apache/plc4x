@@ -77,6 +77,10 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                             return;
                         }
                     }
+                    if(proposedTpduSize == null) {
+                        LOGGER.error("Missing COTP Connection-Request Parameter Tpdu Size");
+                        return;
+                    }
 
                     remoteReference = cotpConnectionRequest.getSourceReference();
                     protocolClass = cotpConnectionRequest.getProtocolClass();

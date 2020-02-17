@@ -62,7 +62,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
             });
             PlcReadRequest readRequest = builder.build();
             PlcReadResponse response = readRequest.execute().get();
-            Map attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             for (String fieldName : response.getFieldNames()) {
                 for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {
                     Object value = response.getObject(fieldName, i);
@@ -70,7 +70,10 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 }
             }
             flowFile = session.putAllAttributes(flowFile, attributes);
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ProcessException(e);
+        } catch (ExecutionException e) {
             throw new ProcessException(e);
         }
         session.transfer(flowFile, SUCCESS);

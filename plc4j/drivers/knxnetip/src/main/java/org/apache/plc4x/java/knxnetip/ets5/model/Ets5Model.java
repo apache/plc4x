@@ -40,7 +40,7 @@ public class Ets5Model {
     }
 
     public static String parseGroupAddress(byte groupAddressType, byte[] addressBytes) {
-        int addressInt = (addressBytes[0] << 8) | addressBytes[1];
+        int addressInt = (addressBytes[0] << 8) | (addressBytes[1] & 0xFF);
         return parseGroupAddress(groupAddressType, addressInt);
     }
 
@@ -65,7 +65,7 @@ public class Ets5Model {
     }
 
     public String parseGroupAddress(byte[] addressBytes) {
-        int addressInt = (addressBytes[0] << 8) | addressBytes[1];
+        int addressInt = (addressBytes[0] << 8) | (addressBytes[1] & 0xFF);
         return parseGroupAddress(getGroupAddressType(), addressInt);
     }
 

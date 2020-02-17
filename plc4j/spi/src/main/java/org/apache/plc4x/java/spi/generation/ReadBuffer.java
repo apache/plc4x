@@ -40,7 +40,7 @@ public class ReadBuffer {
         ArrayByteInput abi = new ArrayByteInput(input);
         this.bi = new MyDefaultBitInput(abi);
         this.littleEndian = littleEndian;
-        this.totalBytes = input.length * 8;
+        this.totalBytes = (long) input.length * 8;
     }
 
     public int getPos() {

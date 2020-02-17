@@ -53,6 +53,7 @@ public class WaterTankSimulationModule implements SimulationModule {
             context.put(PROP_WATER_LEVEL, ((Integer) context.get(PROP_WATER_LEVEL)) + 1);
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             e.printStackTrace();
         }
     }
