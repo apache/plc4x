@@ -253,7 +253,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             List<Short> shorts = null;
             int b = 0;
             for (PlcValue value : plcList.getList()) {
-                if("PlcBoolean".equals(value.getClass().getSimpleName())) {
+                if(value instanceof PlcBoolean) {
                     if(booleans == null) {
                         booleans = new BitSet(plcList.getList().size());
                     }
