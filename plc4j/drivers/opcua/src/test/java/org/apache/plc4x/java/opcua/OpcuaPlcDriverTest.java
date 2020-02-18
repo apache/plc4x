@@ -34,7 +34,6 @@ import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaPlcDriverTest {
     // Read only variables of milo example server of version 3.6

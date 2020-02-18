@@ -71,7 +71,6 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
  * Corresponding implementaion for a TCP-based connection for an OPC UA server.
  * TODO: At the moment are just connections without any security mechanism possible
  * <p>
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
@@ -168,13 +167,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         EndpointDescription endpoint = null;
 
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params)).get();
+            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params.split("\\?")[0])).get();
             //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
             logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
 
             // try the explicit discovery endpoint as well
-            String discoveryUrl = getEndpointUrl(address, port, params);
+            String discoveryUrl = getEndpointUrl(address, port, params.split("\\?")[0]);
 
             if (!discoveryUrl.endsWith("/")) {
                 discoveryUrl += "/";
