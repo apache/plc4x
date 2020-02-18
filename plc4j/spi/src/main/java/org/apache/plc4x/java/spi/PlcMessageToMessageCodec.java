@@ -32,7 +32,7 @@ public abstract class PlcMessageToMessageCodec<INBOUND_IN, OUTBOUND_IN>
 
     private static final Logger logger = LoggerFactory.getLogger(PlcMessageToMessageCodec.class);
 
-    private volatile ChannelHandler prevChannelHandler = null;
+    private ChannelHandler prevChannelHandler = null;
 
     public PlcMessageToMessageCodec() {
     }

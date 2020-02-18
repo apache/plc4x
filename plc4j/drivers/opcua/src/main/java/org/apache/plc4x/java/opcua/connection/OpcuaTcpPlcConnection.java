@@ -183,7 +183,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             logger.info("Trying explicit discovery URL: {}", discoveryUrl);
             try {
                 endpoints = DiscoveryClient.getEndpoints(discoveryUrl).get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
+            } catch (ExecutionException e) {
                 throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
             }
 
@@ -255,7 +258,11 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             isConnected = false;
             String message = (config == null) ? "NULL" : config.toString();
             throw new PlcConnectionException("The given input values are a not valid OPC UA connection configuration [CONFIG]: " + message);
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            isConnected = false;
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
+        } catch (ExecutionException e) {
             isConnected = false;
             throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
         }
@@ -333,7 +340,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
                         subHandle = subsriptionHandle;
                         responseCode = PlcResponseCode.OK;
-                    } catch (InterruptedException | ExecutionException e) {
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
+                    } catch (ExecutionException e) {
                         logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
                     }
 
@@ -354,7 +364,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             OpcuaSubsriptionHandle opcSubHandle = (OpcuaSubsriptionHandle) o;
             try {
                 client.getSubscriptionManager().deleteSubscription(opcSubHandle.getClientHandle()).get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
+            } catch (ExecutionException e) {
                 logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
             }
         });
@@ -391,7 +404,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             List<DataValue> readValues = null;
             try {
                 readValues = dataValueCompletableFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Unable to read Elements because of: {}", e.getMessage());
+            } catch (ExecutionException e) {
                 logger.warn("Unable to read Elements because of: {}", e.getMessage());
             }
             for (int counter = 0; counter < readValueIds.size(); counter++) {
@@ -447,7 +463,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             List<StatusCode> statusCodes = null;
             try {
                 statusCodes = opcRequest.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                statusCodes = new LinkedList<>();
+                for (int counter = 0; counter < ids.size(); counter++) {
+                    ((LinkedList<StatusCode>) statusCodes).push(StatusCode.BAD);
+                }
+            } catch (ExecutionException e) {
                 statusCodes = new LinkedList<>();
                 for (int counter = 0; counter < ids.size(); counter++) {
                     ((LinkedList<StatusCode>) statusCodes).push(StatusCode.BAD);

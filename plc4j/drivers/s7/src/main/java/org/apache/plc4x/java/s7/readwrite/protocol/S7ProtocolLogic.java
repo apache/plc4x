@@ -20,7 +20,6 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.vavr.control.Either;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -100,13 +99,10 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -118,14 +114,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private S7DriverContext driverContext;
+    private S7DriverContext s7DriverContext;
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private RequestTransactionManager tm;
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.driverContext = (S7DriverContext) driverContext;
+        this.s7DriverContext = (S7DriverContext) driverContext;
 
         // Initialize Transaction Manager.
         // Until the number of concurrent requests is successfully negotiated we set it to a
@@ -140,7 +136,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         logger.debug("Sending COTP Connection Request");
         // Open the session on ISO Transport Protocol first.
         TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(
-            driverContext.getCalledTsapId(), driverContext.getCallingTsapId(), driverContext.getCotpTpduSize()));
+            s7DriverContext.getCalledTsapId(), s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
 
         context.sendRequest(packet)
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -160,20 +156,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     .handle(setupCommunication -> {
                         logger.debug("Got S7 Connection Response");
                         // Save some data from the response.
-                        driverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
-                        driverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
-                        driverContext.setPduSize(setupCommunication.getPduLength());
+                        s7DriverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
+                        s7DriverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
+                        s7DriverContext.setPduSize(setupCommunication.getPduLength());
 
                         // Update the number of concurrent requests to the negotiated number.
                         // I have never seen anything else than equal values for caller and
                         // callee, but if they were different, we're only limiting the outgoing
                         // requests.
-                        tm.setNumberOfConcurrentRequests(driverContext.getMaxAmqCallee());
+                        tm.setNumberOfConcurrentRequests(s7DriverContext.getMaxAmqCallee());
 
                         // If the controller type is explicitly set, were finished with the login
                         // process. If it's set to ANY, we have to query the serial number information
                         // in order to detect the type of PLC.
-                        if (driverContext.getControllerType() != S7ControllerType.ANY) {
+                        if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
                             return;
@@ -259,7 +255,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 future.complete(p);
                 // Finish the request-transaction.
                 transaction.endRequest();
-//                    future.complete(((PlcReadResponse) decodeReadResponse(p, ((InternalPlcReadRequest) readRequest))));
             }));
         return future;
     }
@@ -324,7 +319,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     continue;
                 }
                 final String articleNumber = new String(readSzlResponseItemItem.getMlfb());
-                driverContext.setControllerType(decodeControllerType(articleNumber));
+                s7DriverContext.setControllerType(decodeControllerType(articleNumber));
 
                 // Send an event that connection setup is complete.
                 context.fireConnected();
@@ -346,16 +341,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
             if (parameter instanceof COTPParameterCalledTsap) {
                 COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
-                driverContext.setCalledTsapId(cotpParameterCalledTsap.getTsapId());
+                s7DriverContext.setCalledTsapId(cotpParameterCalledTsap.getTsapId());
             } else if (parameter instanceof COTPParameterCallingTsap) {
                 COTPParameterCallingTsap cotpParameterCallingTsap = (COTPParameterCallingTsap) parameter;
-                if(cotpParameterCallingTsap.getTsapId() != driverContext.getCallingTsapId()) {
-                    driverContext.setCallingTsapId(cotpParameterCallingTsap.getTsapId());
-                    logger.warn(String.format("Switching calling TSAP id to '%s'", driverContext.getCallingTsapId()));
+                if(cotpParameterCallingTsap.getTsapId() != s7DriverContext.getCallingTsapId()) {
+                    s7DriverContext.setCallingTsapId(cotpParameterCallingTsap.getTsapId());
+                    logger.warn(String.format("Switching calling TSAP id to '%s'", s7DriverContext.getCallingTsapId()));
                 }
             } else if (parameter instanceof COTPParameterTpduSize) {
                 COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
-                driverContext.setCotpTpduSize(cotpParameterTpduSize.getTpduSize());
+                s7DriverContext.setCotpTpduSize(cotpParameterTpduSize.getTpduSize());
             } else {
                 logger.warn(String.format("Got unknown parameter type '%s'", parameter.getClass().getName()));
             }
@@ -364,7 +359,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Send an S7 login message.
         S7ParameterSetupCommunication s7ParameterSetupCommunication =
             new S7ParameterSetupCommunication(
-                driverContext.getMaxAmqCaller(), driverContext.getMaxAmqCallee(), driverContext.getPduSize());
+                s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             new S7PayloadSetupCommunication());
         COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
@@ -522,81 +517,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     protected S7Address encodeS7Address(PlcField field) {
         if (!(field instanceof S7Field)) {
-            throw new RuntimeException("Unsupported address type " + field.getClass().getName());
+            throw new PlcRuntimeException("Unsupported address type " + field.getClass().getName());
         }
         S7Field s7Field = (S7Field) field;
         return new S7AddressAny(s7Field.getDataType(), s7Field.getNumElements(), s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
-    }
-
-    private static class ChildFuture extends CompletableFuture<S7MessageResponse> {
-
-        private final S7MessageRequest request;
-
-        private Throwable exception;
-
-        public ChildFuture(S7MessageRequest request) {
-            this.request = request;
-        }
-
-        @Override
-        public boolean completeExceptionally(Throwable exception) {
-            this.exception = exception;
-            return super.completeExceptionally(exception);
-        }
-
-        public S7MessageRequest getRequest() {
-            return request;
-        }
-
-        public Throwable getException() {
-            return exception;
-        }
-
-    }
-
-    private static class ParentFuture extends CompletableFuture<PlcReadResponse> {
-
-        private final Consumer<Map<S7MessageRequest, Either<S7MessageResponse, Throwable>>> action;
-        private final List<ChildFuture> childFutures;
-
-        public ParentFuture(Consumer<Map<S7MessageRequest, Either<S7MessageResponse, Throwable>>> action) {
-            this.action = action;
-            this.childFutures = new LinkedList<>();
-        }
-
-        public void addChildFuture(ChildFuture future) {
-            future.whenComplete((value, throwable) -> {
-                // If all futures are done (None are not done), do the completion action.
-                if(childFutures.stream().allMatch(CompletableFuture::isDone)) {
-                    Map<S7MessageRequest, Either<S7MessageResponse, Throwable>> result = new HashMap<>();
-                    childFutures.forEach(childFuture -> {
-                        Either<S7MessageResponse, Throwable> subResult = null;
-                        if (childFuture.isCancelled()) {
-                            subResult = Either.right(new Exception("Cancelled"));
-                        } else if (childFuture.isCompletedExceptionally()) {
-                            // Get the original exception and pass it along.
-                            subResult = Either.right(childFuture.getException());
-                        } else {
-                            try {
-                                subResult = Either.left(childFuture.get());
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        result.put(childFuture.getRequest(), subResult);
-                    });
-
-                    // Call the result handler and pass in the list of results.
-                    action.accept(result);
-                }
-            });
-            childFutures.add(future);
-        }
-
     }
 
 }

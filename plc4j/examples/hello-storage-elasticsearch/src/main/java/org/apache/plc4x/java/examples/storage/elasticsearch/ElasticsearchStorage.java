@@ -147,7 +147,10 @@ public class ElasticsearchStorage {
             try {
                 esNode.close();
                 mainThread.join();
-            } catch (IOException | InterruptedException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new PlcRuntimeException("Error closing ES Node", e);
+            } catch (IOException e) {
                 throw new PlcRuntimeException("Error closing ES Node", e);
             }
         }));

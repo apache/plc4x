@@ -163,7 +163,7 @@ public class TriggerConfiguration{
             return javaDataType;
         }
         else{
-            String exceptionMessage = String.format("Unsupported plc-trigger variable %s with converted data-type %s used",plcField,plcField.getDefaultJavaType());
+            String exceptionMessage = "Null plc-trigger variable used";
             throw new ScraperConfigurationException(exceptionMessage);
         }
 

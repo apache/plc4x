@@ -236,7 +236,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         private boolean inFlush0; // Copied from AbstractUnsafe
         private Throwable initialCloseCause; // Copied from AbstractUnsafe
 
-        private volatile ChannelOutboundBuffer outboundBuffer;
+        private ChannelOutboundBuffer outboundBuffer;
 
         private RecvByteBufAllocator.Handle recvHandle;
 
