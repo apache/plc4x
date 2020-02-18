@@ -22,7 +22,6 @@ import java.net.InetAddress;
 import java.util.Objects;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaConnectionFactory {
 

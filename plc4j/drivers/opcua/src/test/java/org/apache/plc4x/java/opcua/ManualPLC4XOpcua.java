@@ -46,7 +46,6 @@ import java.util.function.Consumer;
  * Afterwards the code represented here will be used as an example for the introduction page.
  * <p>
  *
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class ManualPLC4XOpcua {
     private static final String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -109,7 +108,7 @@ public class ManualPLC4XOpcua {
             builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER);
 
             PlcReadRequest request = builder.build();
-            //PlcReadResponse response = opcuaConnection.read(request).get();
+            PlcReadResponse response = opcuaConnection.read(request).get();
 
             //Collection coll = response.getAllStrings("String");
 
