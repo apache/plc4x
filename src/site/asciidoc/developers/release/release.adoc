@@ -19,6 +19,44 @@
 
 == Releasing PLC4X
 
+=== TL/DR
+
+IMPORTANT: Please be sure to execute the release with a Java version between 1.8 and 11 or the Karaf feature tests will not run.
+
+[%interactive]
+* [ ] Update the `RELEASE_NOTES`
+* [ ] Check year in `NOTICE`
+* [ ] Create release branch:
+[subs="verbatim,attributes"]
+----
+   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version} -DautoVersionSubmodules=true
+----
+[%interactive]
+* [ ] Add a new section to the `RELEASE_NOTES` on `develop`
+* [ ] Prepare the release:
+[subs="verbatim,attributes"]
+----
+   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DautoVersionSubmodules=true
+----
+[%interactive]
+* [ ] Perform the release:
+[subs="verbatim,attributes"]
+----
+   mvn release:perform -DreleaseProfiles=apache-release,with-boost,with-proxies,with-logstash
+----
+[%interactive]
+* [ ] Close the staging repo on `Nexus`
+* [ ] Stage the release artifacts in `SVN`
+* [ ] Vote on the mailing list
+* [ ] Move RC to the release section of `SVN`
+* [ ] Remove old releases in `SVN`
+* [ ] Release staging repo on `Nexus`
+* [ ] Add the version to the DOAP file on `develop`
+* [ ] Update Download site
+* [ ] Update Jira
+* [ ] Merge back release version to `master` branch
+* [ ] Send announce email
+
 === Preparing your system for being able to release
 
 As part of the release process, Maven will upload maven release artifacts to a so-called staging repository.
