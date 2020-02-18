@@ -22,8 +22,6 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
@@ -60,9 +58,9 @@ public class HelloPlc4x {
 
             // Create a new read request:
             // - Give the single item requested the alias name "value"
-            /*PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
             for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("r-" + i, options.getFieldAddress()[i]);
+                builder.addItem("value-" + i, options.getFieldAddress()[i]);
             }
             PlcReadRequest readRequest = builder.build();
 
@@ -74,16 +72,22 @@ public class HelloPlc4x {
             PlcReadResponse syncResponse = readRequest.execute().get();
             // Simply iterating over the field names returned in the response.
             printResponse(syncResponse);
+
             PlcValue asPlcValue = syncResponse.getAsPlcValue();
-            System.out.println(asPlcValue);*/
+            System.out.println(asPlcValue);
 
-            final PlcWriteRequest.Builder writeRequestBuilder = plcConnection.writeRequestBuilder();
-            writeRequestBuilder.addItem("w-1", options.getFieldAddress()[0], 23, 42, 7);
-            PlcWriteRequest writeRequest = writeRequestBuilder.build();
-            System.out.println(writeRequest);
-
-            logger.info("Synchronous write ...");
-            final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
+            //////////////////////////////////////////////////////////
+            // Read asynchronously ...
+            // Register a callback executed as soon as a response arrives.
+            logger.info("Asynchronous request ...");
+            CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+            asyncResponse.whenComplete((readResponse, throwable) -> {
+                if (readResponse != null) {
+                    printResponse(readResponse);
+                } else {
+                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+                }
+            });
 
             // Give the async request a little time...
             TimeUnit.MILLISECONDS.sleep(1000);
