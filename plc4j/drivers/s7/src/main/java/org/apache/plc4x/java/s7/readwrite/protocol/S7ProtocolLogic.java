@@ -23,7 +23,6 @@ import io.netty.buffer.Unpooled;
 import io.vavr.control.Either;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -72,22 +71,19 @@ import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
 import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
+import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.s7.readwrite.optimizer.S7MessageProcessor;
 import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
 import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
-import org.apache.plc4x.java.s7.readwrite.types.DeviceGroup;
 import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
 import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
-import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -103,7 +99,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,47 +113,19 @@ import java.util.function.Consumer;
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements HasConfiguration<S7Configuration> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private int callingTsapId;
-    private int calledTsapId;
-    private COTPTpduSize cotpTpduSize;
-    private int pduSize;
-    private int maxAmqCaller;
-    private int maxAmqCallee;
-    private S7ControllerType controllerType;
-
+    private S7DriverContext driverContext;
     private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private RequestTransactionManager tm;
 
-    private S7MessageProcessor processor = null;
-
     @Override
-    public void setConfiguration(S7Configuration configuration) {
-        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS,
-            configuration.localRack, configuration.localSlot);
-        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
-            configuration.remoteRack, configuration.remoteSlot);
-
-        this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
-        // The Siemens LOGO device seems to only work with very limited settings,
-        // so we're overriding some of the defaults.
-        if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
-            configuration.pduSize = 480;
-        }
-
-        // Initialize the parameters with initial version (Will be updated during the login process)
-        this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
-        // The PDU size is theoretically not bound by the COTP TPDU size, however having a larger
-        // PDU size would make the code extremely complex. But even if the protocol would allow this
-        // I have never seen this happen in reality. Making is smaller would unnecessarily limit the
-        // size, so we're setting it to the maximum that can be included.
-        this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
-        this.maxAmqCaller = configuration.maxAmqCaller;
-        this.maxAmqCallee = configuration.maxAmqCallee;
+    public void setDriverContext(DriverContext driverContext) {
+        super.setDriverContext(driverContext);
+        this.driverContext = (S7DriverContext) driverContext;
 
         // Initialize Transaction Manager.
         // Until the number of concurrent requests is successfully negotiated we set it to a
@@ -166,17 +133,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
-
-        // REMARK: Perhaps make this configurable.
-        // TODO: Comment in to enable ...
-        //this.processor = new DefaultS7MessageProcessor(tpduGenerator);
     }
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         logger.debug("Sending COTP Connection Request");
         // Open the session on ISO Transport Protocol first.
-        TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(calledTsapId, callingTsapId, cotpTpduSize));
+        TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(
+            driverContext.getCalledTsapId(), driverContext.getCallingTsapId(), driverContext.getCotpTpduSize()));
 
         context.sendRequest(packet)
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
@@ -196,20 +160,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     .handle(setupCommunication -> {
                         logger.debug("Got S7 Connection Response");
                         // Save some data from the response.
-                        maxAmqCaller = setupCommunication.getMaxAmqCaller();
-                        maxAmqCallee = setupCommunication.getMaxAmqCallee();
-                        pduSize = setupCommunication.getPduLength();
+                        driverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
+                        driverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
+                        driverContext.setPduSize(setupCommunication.getPduLength());
 
                         // Update the number of concurrent requests to the negotiated number.
                         // I have never seen anything else than equal values for caller and
                         // callee, but if they were different, we're only limiting the outgoing
                         // requests.
-                        tm.setNumberOfConcurrentRequests(maxAmqCaller);
+                        tm.setNumberOfConcurrentRequests(driverContext.getMaxAmqCallee());
 
                         // If the controller type is explicitly set, were finished with the login
                         // process. If it's set to ANY, we have to query the serial number information
                         // in order to detect the type of PLC.
-                        if (controllerType != S7ControllerType.ANY) {
+                        if (driverContext.getControllerType() != S7ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
                             return;
@@ -236,7 +200,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         List<S7VarRequestParameterItem> requestItems = new ArrayList<>(request.getNumberOfFields());
         for (PlcField field : request.getFields()) {
@@ -249,51 +212,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
             new S7PayloadReadVarRequest());
 
-        // If no processor is provided the request is output as-is without any modification.
-        if (processor == null) {
-            // Just send a single response and chain it as Response
-            return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
-        }
-
-        try {
-            // Do the preprocessing and eventually split up into multiple requests.
-            final Collection<S7MessageRequest> s7MessageRequests = processor.processRequest(s7MessageRequest, pduSize);
-
-            // Only if more than one sub-request is returned, do something special ...
-            // otherwise just do the normal sending.
-            if (s7MessageRequests.size() == 1) {
-                return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
-            }
-
-            /////////////////////////////////////////////////////////////////
-            //  Here we are in the case that we have multiple requests,
-            //  so we need splitting
-            /////////////////////////////////////////////////////////////////
-            ParentFuture multiRequestFuture = new ParentFuture(
-                result -> {
-                    try {
-                        final S7MessageResponse s7MessageResponse =
-                            processor.processResponse(s7MessageRequest, result);
-                        final PlcReadResponse plcReadResponse = (PlcReadResponse)
-                            decodeReadResponse(s7MessageResponse, ((InternalPlcReadRequest) readRequest));
-                        future.complete(plcReadResponse);
-                    } catch (PlcException e) {
-                        logger.error("Something went wrong", e);
-                    }
-                });
-            for (S7MessageRequest messageRequest : s7MessageRequests) {
-                ChildFuture childFuture = new ChildFuture(messageRequest);
-                multiRequestFuture.addChildFuture(childFuture);
-
-                readInternal(messageRequest)
-                    // Forward everything to the remaining future
-                    .handle((res, ex) -> res != null ? childFuture.complete(res) : childFuture.completeExceptionally(ex));
-            }
-            return multiRequestFuture;
-        } catch (PlcException e) {
-            logger.error("Something went wrong", e);
-        }
-        return null;
+        // Just send a single response and chain it as Response
+        return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
     }
 
     /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadRespoonse */
@@ -404,7 +324,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                     continue;
                 }
                 final String articleNumber = new String(readSzlResponseItemItem.getMlfb());
-                controllerType = decodeControllerType(articleNumber);
+                driverContext.setControllerType(decodeControllerType(articleNumber));
 
                 // Send an event that connection setup is complete.
                 context.fireConnected();
@@ -426,16 +346,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         for (COTPParameter parameter : cotpPacketConnectionResponse.getParameters()) {
             if (parameter instanceof COTPParameterCalledTsap) {
                 COTPParameterCalledTsap cotpParameterCalledTsap = (COTPParameterCalledTsap) parameter;
-                calledTsapId = cotpParameterCalledTsap.getTsapId();
+                driverContext.setCalledTsapId(cotpParameterCalledTsap.getTsapId());
             } else if (parameter instanceof COTPParameterCallingTsap) {
                 COTPParameterCallingTsap cotpParameterCallingTsap = (COTPParameterCallingTsap) parameter;
-                if(cotpParameterCallingTsap.getTsapId() != callingTsapId) {
-                    callingTsapId = cotpParameterCallingTsap.getTsapId();
-                    logger.warn(String.format("Switching calling TSAP id to '%s'", callingTsapId));
+                if(cotpParameterCallingTsap.getTsapId() != driverContext.getCallingTsapId()) {
+                    driverContext.setCallingTsapId(cotpParameterCallingTsap.getTsapId());
+                    logger.warn(String.format("Switching calling TSAP id to '%s'", driverContext.getCallingTsapId()));
                 }
             } else if (parameter instanceof COTPParameterTpduSize) {
                 COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
-                cotpTpduSize = cotpParameterTpduSize.getTpduSize();
+                driverContext.setCotpTpduSize(cotpParameterTpduSize.getTpduSize());
             } else {
                 logger.warn(String.format("Got unknown parameter type '%s'", parameter.getClass().getName()));
             }
@@ -443,7 +363,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
         // Send an S7 login message.
         S7ParameterSetupCommunication s7ParameterSetupCommunication =
-            new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduSize);
+            new S7ParameterSetupCommunication(
+                driverContext.getMaxAmqCaller(), driverContext.getMaxAmqCallee(), driverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
             new S7PayloadSetupCommunication());
         COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
@@ -606,21 +527,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         S7Field s7Field = (S7Field) field;
         return new S7AddressAny(s7Field.getDataType(), s7Field.getNumElements(), s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
-    }
-
-    /**
-     * Iterate over all values until one is found that the given tpdu size will fit.
-     *
-     * @param tpduSizeParameter requested tpdu size.
-     * @return smallest {@link COTPTpduSize} which will fit a given size of tpdu.
-     */
-    protected COTPTpduSize getNearestMatchingTpduSize(short tpduSizeParameter) {
-        for (COTPTpduSize value : COTPTpduSize.values()) {
-            if (value.getSizeInBytes() >= tpduSizeParameter) {
-                return value;
-            }
-        }
-        return null;
     }
 
     private static class ChildFuture extends CompletableFuture<S7MessageResponse> {

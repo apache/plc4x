@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
@@ -36,7 +37,7 @@ import java.util.function.Function;
 
 public abstract class BaseOptimizer {
 
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest) {
+    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
         return Collections.singletonList(readRequest);
     }
 
@@ -59,7 +60,7 @@ public abstract class BaseOptimizer {
         return new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, fields);
     }
 
-    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest) {
+    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
         return Collections.singletonList(writeRequest);
     }
 
@@ -80,7 +81,8 @@ public abstract class BaseOptimizer {
         return new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, fields);
     }
 
-    protected List<PlcRequest> processSubscriptionRequest(PlcSubscriptionRequest subscriptionRequest) {
+    protected List<PlcRequest> processSubscriptionRequest(PlcSubscriptionRequest subscriptionRequest,
+                                                          DriverContext driverContext) {
         return Collections.singletonList(subscriptionRequest);
     }
 
@@ -90,7 +92,8 @@ public abstract class BaseOptimizer {
         return null;
     }
 
-    protected List<PlcRequest> processUnsubscriptionRequest(PlcRequest unsubscriptionRequest) {
+    protected List<PlcRequest> processUnsubscriptionRequest(PlcRequest unsubscriptionRequest,
+                                                            DriverContext driverContext) {
         return Collections.singletonList(unsubscriptionRequest);
     }
 
@@ -101,27 +104,27 @@ public abstract class BaseOptimizer {
     }
 
     public CompletableFuture<PlcReadResponse> optimizedRead(PlcReadRequest readRequest, Plc4xProtocolBase reader) {
-        List<PlcRequest> subRequests = processReadRequest(readRequest);
+        List<PlcRequest> subRequests = processReadRequest(readRequest, reader.getDriverContext());
         return send(readRequest, subRequests, request -> reader.read((PlcReadRequest) request),
             response -> processReadResponses(readRequest, response));
     }
 
     public CompletableFuture<PlcWriteResponse> optimizedWrite(PlcWriteRequest writeRequest, Plc4xProtocolBase writer) {
-        List<PlcRequest> subRequests = processWriteRequest(writeRequest);
+        List<PlcRequest> subRequests = processWriteRequest(writeRequest, writer.getDriverContext());
         return send(writeRequest, subRequests, request -> writer.write((PlcWriteRequest) request),
             response -> processWriteResponses(writeRequest, response));
     }
 
     public CompletableFuture<PlcSubscriptionResponse> optimizedSubscribe(
             PlcSubscriptionRequest subscriptionRequest, Plc4xProtocolBase subscriber) {
-        List<PlcRequest> subRequests = processSubscriptionRequest(subscriptionRequest);
+        List<PlcRequest> subRequests = processSubscriptionRequest(subscriptionRequest, subscriber.getDriverContext());
         return send(subscriptionRequest, subRequests, request -> subscriber.subscribe((PlcSubscriptionRequest) request),
             response -> processSubscriptionResponses(subscriptionRequest, response));
     }
 
     public CompletableFuture<PlcUnsubscriptionResponse> optmizedUnsubscribe(
             PlcUnsubscriptionRequest unsubscriptionRequest, Plc4xProtocolBase subscriber) {
-        List<PlcRequest> subRequests = processUnsubscriptionRequest(unsubscriptionRequest);
+        List<PlcRequest> subRequests = processUnsubscriptionRequest(unsubscriptionRequest, subscriber.getDriverContext());
         return send(unsubscriptionRequest, subRequests, request -> subscriber.unsubscribe((PlcUnsubscriptionRequest) request),
             response -> processUnsubscriptionResponses(unsubscriptionRequest, response));
     }

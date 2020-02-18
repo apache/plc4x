@@ -28,12 +28,23 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Plc4xProtocolBase<T> {
 
     protected ConversationContext<T> context;
+
+    protected DriverContext driverContext;
+
+    public void setDriverContext(DriverContext driverContext) {
+        this.driverContext = driverContext;
+    }
+
+    public DriverContext getDriverContext() {
+        return driverContext;
+    }
 
     public void setContext(ConversationContext<T> context) {
         this.context = context;

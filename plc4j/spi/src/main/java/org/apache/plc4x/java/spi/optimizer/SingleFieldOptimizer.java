@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 
@@ -35,7 +36,7 @@ import java.util.List;
 public class SingleFieldOptimizer extends BaseOptimizer {
 
     @Override
-    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest) {
+    protected List<PlcRequest> processReadRequest(PlcReadRequest readRequest, DriverContext driverContext) {
         if(readRequest.getNumberOfFields() == 1) {
             return Collections.singletonList(readRequest);
         }
@@ -51,7 +52,7 @@ public class SingleFieldOptimizer extends BaseOptimizer {
     }
 
     @Override
-    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest) {
+    protected List<PlcRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
         if(writeRequest.getNumberOfFields() == 1) {
             return Collections.singletonList(writeRequest);
         }

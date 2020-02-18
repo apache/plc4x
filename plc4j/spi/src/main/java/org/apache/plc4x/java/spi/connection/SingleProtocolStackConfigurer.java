@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.exceptions.InternalPlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageIO;
@@ -44,6 +45,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     private final Class<BASE_PACKET_CLASS> basePacketClass;
     private boolean bigEndian = true;
     private final Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocolClass;
+    private final Class<? extends DriverContext> driverContextClass;
     private final MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO;
     private final Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass;
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
@@ -58,6 +60,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
                                   boolean bigEndian,
                                   Object[] parserArgs,
                                   Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
+                                  Class<? extends DriverContext> driverContextClass,
                                   MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS> protocolIO,
                                   Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
                                   Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass) {
@@ -65,6 +68,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         this.bigEndian = bigEndian;
         this.parserArgs = parserArgs;
         this.protocolClass = protocol;
+        this.driverContextClass = driverContextClass;
         this.protocolIO = protocolIO;
         this.packetSizeEstimatorClass = packetSizeEstimatorClass;
         this.corruptPacketRemoverClass = corruptPacketRemoverClass;
@@ -82,6 +86,9 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             Configuration configuration, ChannelPipeline pipeline) {
         pipeline.addLast(getMessageCodec(configuration));
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, createInstance(protocolClass));
+        if(driverContextClass != null) {
+            protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
+        }
         Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePacketClass);
         pipeline.addLast(context);
         return protocol;
@@ -108,6 +115,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
 
         private final Class<BASE_PACKET_CLASS> basePacketClass;
         private final Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass;
+        private Class<? extends DriverContext> driverContextClass;
         private boolean bigEndian = true;
         private Object[] parserArgs;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
@@ -117,6 +125,11 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         public SingleProtocolStackBuilder(Class<BASE_PACKET_CLASS> basePacketClass, Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass) {
             this.basePacketClass = basePacketClass;
             this.messageIoClass = messageIoClass;
+        }
+
+        public SingleProtocolStackBuilder<BASE_PACKET_CLASS> withDriverContext(Class<? extends DriverContext> driverContextClass) {
+            this.driverContextClass = driverContextClass;
+            return this;
         }
 
         public SingleProtocolStackBuilder<BASE_PACKET_CLASS> littleEndian() {
@@ -149,7 +162,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
             try {
                 final MessageIO messageIo = messageIoClass.getDeclaredConstructor().newInstance();
                 return new SingleProtocolStackConfigurer<>(
-                    basePacketClass, bigEndian, parserArgs, protocol, messageIo, packetSizeEstimator, corruptPacketRemover);
+                    basePacketClass, bigEndian, parserArgs, protocol, driverContextClass, messageIo, packetSizeEstimator, corruptPacketRemover);
             } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
                 throw new PlcRuntimeException("Error initializing MessageIO instance", e);
             }
