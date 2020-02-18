@@ -398,15 +398,15 @@ As it is sometimes to do the vote counting, if voting and discussions are going 
 
 [subs="verbatim,attributes"]
 ----
-   E-Mail Topic:
-   [DISCUSS] Apache PLC4X {current-full-version} RC1
+E-Mail Topic:
+[DISCUSS] Apache PLC4X {current-full-version} RC1
 
-   Message:
-   This is the discussion thread for the corresponding VOTE thread.
+Message:
+This is the discussion thread for the corresponding VOTE thread.
 
-   Please keep discussions in this thread to simplify the counting of votes.
+Please keep discussions in this thread to simplify the counting of votes.
 
-   If you have to vote -1 please mention a brief description on why and then take the details to this thread.
+If you have to vote -1 please mention a brief description on why and then take the details to this thread.
 ----
 
 Now we have to wait 72 hours till we can announce the result of the vote.
@@ -423,9 +423,7 @@ E-Mail Topic:
 [RESULT] [VOTE] Apache PLC4X {current-full-version} RC1
 
 Message:
-So, the vote passes with 3 +1 votes by PMC members and one +1 vote by a non PMC member.
-
-{Release Manager Name}
+So, the vote passes with {number of +1 votes} +1 votes by PMC members {number of +1 votes from non-pmc members} +1 vote by a non PMC member.
 ----
 
 === Releasing after a successful vote
@@ -524,18 +522,18 @@ After that it is time to announce your release to the world:
 
 [subs="verbatim,attributes"]
 ----
-    From:
+From:
 your apache email address
-    To:
+To:
 announce@apache.org
 
-    CC:
+CC:
 dev@plc4x.apache.org
 
-    E-Mail Topic:
+E-Mail Topic:
 [ANNOUNCE] Apache PLC4X {current-full-version} released
 
-    Message:
+Message:
 The Apache PLC4X team is pleased to announce the release of Apache PLC4X {current-full-version}
 
 PLC4X is a set of libraries for communicating with industrial programmable
