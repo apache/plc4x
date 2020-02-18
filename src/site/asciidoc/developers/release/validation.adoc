@@ -21,46 +21,46 @@
 
 TIP: On MacOS and Linux the first 4 steps can be automated. For details please read the section about tooling after this chapter.
 
-1. Download all staged artifacts under the url specified in the release vote email into a directory we'll now call `download-dir`.
-2. Verify the signature is correct:
+[%interactive]
+* [ ] Download all staged artifacts under the url specified in the release vote email into a directory we'll now call `download-dir`.
+* [ ] Verify the signature is correct:
 Additional Apache tutorial on how to verify downloads can be found http://www.apache.org/info/verification.html[here].
-+
 [subs="attributes"]
 ----
 gpg --verify apache-plc4x-{current-full-version}-source-release.zip.asc apache-plc4x-#{current-full-version}-source-release.zip
 ----
-+
-3. Check if the check is successful.
-4. Check if the signature references an Apache email address.
-5. Verify the SHA512 hashes:
-+
+[%interactive]
+* [ ] Check if the check is successful.
+* [ ] Check if the signature references an Apache email address.
+* [ ] Verify the SHA512 hashes:
 [subs="attributes"]
 ----
 shasum -a512 apache-plc4x-{current-full-version}-source-release.zip
 ----
-+
-6. Unzip the archive:
-+
+[%interactive]
+* [ ] Unzip the archive:
 [subs="attributes"]
 ----
 unzip apache-plc4x-{current-full-version}-source-release.zip
 ----
-+
-7. Verify the existence of `LICENSE`, `NOTICE, `README`, `RELEASE_NOTES` files in the extracted source bundle.
-8. Verify the content of `LICENSE`, `NOTICE`, `README`, `RELEASE_NOTES files in the extracted source bundle.
-** (Especially pay attention to the year in the `NOTICE` file if this is the first release of the year)
-9. [RM] Verify the staged source README, RELEASE_NOTE files correspond to those in the extracted source bundle.
-10. [RM] Run RAT externally to ensure there are no surprises.
+[%interactive]
+* [ ] Verify the existence of `LICENSE`, `NOTICE`, `README`, `RELEASE_NOTES` files in the extracted source bundle.
+* [ ] Verify the content of `LICENSE`, `NOTICE`, `README`, `RELEASE_NOTES` files in the extracted source bundle.
+
+TIP: (Especially pay attention to the year in the `NOTICE` file if this is the first release of the year)
+
+[%interactive]
+* [ ] [RM] Verify the staged source README, RELEASE_NOTE files correspond to those in the extracted source bundle.
+* [ ] [RM] Run RAT externally to ensure there are no surprises.
 ** TODO: Document this.
-11. Search for `SNAPSHOT` references:
-+
+* [ ] Search for `SNAPSHOT` references:
 [subs="attributes"]
 ----
 find . -type f -name 'pom.xml' -exec grep -l "SNAPSHOT" {} \;
 ----
-+
-12. Build the project according to the information in the README.md file.
-** [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appendng `-Dmaven.repo.local=../.m2`.
+[%interactive]
+* [ ] Build the project according to the information in the README.md file.
+* [ ] [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appendng `-Dmaven.repo.local=../.m2`.
 
 === Release Tooling
 

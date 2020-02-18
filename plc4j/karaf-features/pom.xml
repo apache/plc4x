@@ -31,9 +31,13 @@
 
   <name>PLC4J: Karaf-Features</name>
 
+  <properties>
+    <karaf.version>4.2.8</karaf.version>
+  </properties>
+
   <modules>
-<!--    <module>s7</module>-->
-<!--    <module>karaf-itest</module>-->
+    <module>s7</module>
+    <module>karaf-itest</module>
   </modules>
 
   <dependencies>

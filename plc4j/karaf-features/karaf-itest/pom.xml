@@ -31,7 +31,6 @@
   <name>PLC4J: Karaf-Features: Integration-Tests</name>
 
   <properties>
-    <karaf.version>4.2.6</karaf.version>
     <pax.version>4.13.1</pax.version>
   </properties>
 
@@ -120,6 +119,26 @@
     </dependency>
   </dependencies>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.ops4j.base</groupId>
+        <artifactId>ops4j-base-lang</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.base</groupId>
+        <artifactId>ops4j-base-util-property</artifactId>
+        <version>1.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.istack</groupId>
+        <artifactId>istack-commons-runtime</artifactId>
+        <version>3.0.10</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <plugins>
       <plugin>
@@ -168,9 +187,9 @@
   <profiles>
     <profile>
       <id>java12andAbove</id>
-      <activation>
+      <!--activation>
         <jdk>(12,]</jdk>
-      </activation>
+      </activation-->
       <build>
         <plugins>
           <plugin>

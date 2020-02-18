@@ -32,7 +32,7 @@
       <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
         <transactionIdentifier>0</transactionIdentifier>
         <unitIdentifier>255</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest">
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersRequest">
           <startingAddress>2258</startingAddress>
           <quantity>2</quantity>
         </pdu>
@@ -51,7 +51,7 @@
       <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
         <transactionIdentifier>31998</transactionIdentifier>
         <unitIdentifier>255</unitIdentifier>
-        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadDiscreteInputsResponse">
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersResponse">
           <value>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAAAAAAAAAAAAdsAAAHWAABKOAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRhaW0AbgAAAAAAAAAAAAAAAAAAMDEAMAAAAAAAAAAAAAAA
