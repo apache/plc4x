@@ -54,7 +54,7 @@
               <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
               <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-              <!--usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency-->
+              <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
               <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
             </usedDependencies>
@@ -102,11 +102,11 @@
       <artifactId>plc4j-driver-modbus</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
       <version>0.7.0-SNAPSHOT</version>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
