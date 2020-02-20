@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.test.protocol.model;
+package org.apache.plc4x.test.parserserializer.model;
 
 import org.dom4j.Element;
 

@@ -17,7 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<xs:schema targetNamespace="https://plc4x.apache.org/schemas/testsuite.xsd"
+<xs:schema targetNamespace="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
     <xs:element name="testsuite">

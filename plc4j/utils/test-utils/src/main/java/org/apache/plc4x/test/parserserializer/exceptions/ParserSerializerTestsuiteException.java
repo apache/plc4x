@@ -17,15 +17,15 @@
  under the License.
  */
 
-package org.apache.plc4x.test.protocol.exceptions;
+package org.apache.plc4x.test.parserserializer.exceptions;
 
-public class ProtocolTestsuiteException extends Exception {
+public class ParserSerializerTestsuiteException extends Exception {
 
-    public ProtocolTestsuiteException(String message) {
+    public ParserSerializerTestsuiteException(String message) {
         super(message);
     }
 
-    public ProtocolTestsuiteException(String message, Throwable cause) {
+    public ParserSerializerTestsuiteException(String message, Throwable cause) {
         super(message, cause);
     }
 

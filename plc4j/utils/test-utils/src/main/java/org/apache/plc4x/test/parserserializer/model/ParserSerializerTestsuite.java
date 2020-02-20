@@ -17,17 +17,17 @@
  under the License.
  */
 
-package org.apache.plc4x.test.protocol.model;
+package org.apache.plc4x.test.parserserializer.model;
 
 import java.util.List;
 
-public class ProtocolTestsuite {
+public class ParserSerializerTestsuite {
 
     private final String name;
     private final List<Testcase> testcases;
     private final boolean littleEndian;
 
-    public ProtocolTestsuite(String name, List<Testcase> testcases, boolean littleEndian) {
+    public ParserSerializerTestsuite(String name, List<Testcase> testcases, boolean littleEndian) {
         this.name = name;
         this.testcases = testcases;
         this.littleEndian = littleEndian;

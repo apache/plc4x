@@ -17,7 +17,7 @@
  under the License.
  */
 
-package org.apache.plc4x.test.protocol;
+package org.apache.plc4x.test.parserserializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,9 +29,9 @@ import org.apache.plc4x.java.spi.generation.MessageIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.test.protocol.exceptions.ProtocolTestsuiteException;
-import org.apache.plc4x.test.protocol.model.ProtocolTestsuite;
-import org.apache.plc4x.test.protocol.model.Testcase;
+import org.apache.plc4x.test.parserserializer.exceptions.ParserSerializerTestsuiteException;
+import org.apache.plc4x.test.parserserializer.model.ParserSerializerTestsuite;
+import org.apache.plc4x.test.parserserializer.model.Testcase;
 import org.dom4j.*;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -47,19 +47,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public class ProtocolTestsuiteRunner {
+public class ParserSerializerTestsuiteRunner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolTestsuiteRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParserSerializerTestsuiteRunner.class);
 
     private final String testsuiteDocument;
 
-    public ProtocolTestsuiteRunner(String testsuiteDocument) {
+    public ParserSerializerTestsuiteRunner(String testsuiteDocument) {
         this.testsuiteDocument = testsuiteDocument;
     }
 
     @TestFactory
-    public Iterable<DynamicTest> getTestsuiteTests() throws ProtocolTestsuiteException {
-        ProtocolTestsuite testSuite = parseTestsuite(ProtocolTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
+    public Iterable<DynamicTest> getTestsuiteTests() throws ParserSerializerTestsuiteException {
+        ParserSerializerTestsuite testSuite = parseTestsuite(ParserSerializerTestsuiteRunner.class.getResourceAsStream(testsuiteDocument));
         List<DynamicTest> dynamicTests = new LinkedList<>();
         for(Testcase testcase : testSuite.getTestcases()) {
             String testcaseName = testcase.getName();
@@ -72,7 +72,7 @@ public class ProtocolTestsuiteRunner {
         return dynamicTests;
     }
 
-    private ProtocolTestsuite parseTestsuite(InputStream testsuiteDocumentXml) throws ProtocolTestsuiteException {
+    private ParserSerializerTestsuite parseTestsuite(InputStream testsuiteDocumentXml) throws ParserSerializerTestsuiteException {
         try {
             SAXReader reader = new SAXReader();
             Document document = reader.read(testsuiteDocumentXml);
@@ -105,15 +105,15 @@ public class ProtocolTestsuiteRunner {
                 testcases.add(new Testcase(name, description, raw, rootType, parserArguments, xmlElement));
             }
             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-            return new ProtocolTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
+            return new ParserSerializerTestsuite(testsuiteName.getTextTrim(), testcases, littleEndian);
         } catch (DocumentException e) {
-            throw new ProtocolTestsuiteException("Error parsing testsuite xml", e);
+            throw new ParserSerializerTestsuiteException("Error parsing testsuite xml", e);
         } catch (DecoderException e) {
-            throw new ProtocolTestsuiteException("Error parsing testcase raw data", e);
+            throw new ParserSerializerTestsuiteException("Error parsing testcase raw data", e);
         }
     }
 
-    private void run(ProtocolTestsuite testSuite, Testcase testcase) throws ProtocolTestsuiteException {
+    private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
         ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         ReadBuffer readBuffer = new ReadBuffer(testcase.getRaw(), testSuite.isLittleEndian());
         String referenceXml = testcase.getXml().elements().get(0).asXML();
@@ -125,7 +125,7 @@ public class ProtocolTestsuiteRunner {
             Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
             if(diff.hasDifferences()) {
                 System.out.println(xmlString);
-                throw new ProtocolTestsuiteException("Differences were found after parsing.\n" + diff.toString());
+                throw new ParserSerializerTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
             WriteBuffer writeBuffer = new WriteBuffer(((Message) msg).getLengthInBytes(), testSuite.isLittleEndian());
             messageIO.serialize(writeBuffer, msg);
@@ -141,18 +141,18 @@ public class ProtocolTestsuiteRunner {
                         break;
                     }
                 }
-                throw new ProtocolTestsuiteException("Differences were found after serializing.\nExpected: " +
+                throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
                     Hex.encodeHexString(testcase.getRaw()) + "\nBut Got:  " + Hex.encodeHexString(data) +
                     "\n          " + String.join("", Collections.nCopies(i, "--")) + "^");
             }
         } catch (ParseException e) {
-            throw new ProtocolTestsuiteException("Unable to parse message", e);
+            throw new ParserSerializerTestsuiteException("Unable to parse message", e);
         } catch (JsonProcessingException e) {
-            throw new ProtocolTestsuiteException("Unable to serialize parsed message as XML string", e);
+            throw new ParserSerializerTestsuiteException("Unable to serialize parsed message as XML string", e);
         }
     }
 
-    private MessageIO getMessageIOForTestcase(Testcase testcase) throws ProtocolTestsuiteException {
+    private MessageIO getMessageIOForTestcase(Testcase testcase) throws ParserSerializerTestsuiteException {
         String className = testcase.getXml().elements().get(0).attributeValue(new QName("className"));
         String ioRootClassName = className.substring(0, className.lastIndexOf('.') + 1) + testcase.getRootType();
         String ioClassName = className.substring(0, className.lastIndexOf('.') + 1) + "io." +
@@ -180,7 +180,7 @@ public class ProtocolTestsuiteRunner {
                 }
             }
             if((parseMethodTmp == null) || (serializeMethodTmp == null)) {
-                throw new ProtocolTestsuiteException(
+                throw new ParserSerializerTestsuiteException(
                     "Unable to instantiate IO component. Missing static parse or serialize methods.");
             }
             final Method parseMethod = parseMethodTmp;
@@ -231,7 +231,7 @@ public class ProtocolTestsuiteRunner {
                 }
             };
         } catch (ClassNotFoundException e) {
-            throw new ProtocolTestsuiteException("Unable to instantiate IO component", e);
+            throw new ParserSerializerTestsuiteException("Unable to instantiate IO component", e);
         }
     }
 

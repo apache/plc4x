@@ -97,6 +97,7 @@
       <item name="Contributing" href="developers/contributing.html"/>
       <item name="Tutorials" href="developers/tutorials/index.html">
         <item name="Writing Drivers" href="developers/tutorials/writing-driver.html"/>
+        <item name="Testing Drivers" href="developers/tutorials/testing-serializers-and-parsers.html"/>
       </item>
       <item name="Code Generation" href="developers/code-gen/index.html">
         <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>

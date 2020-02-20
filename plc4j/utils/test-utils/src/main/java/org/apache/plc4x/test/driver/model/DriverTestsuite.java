@@ -16,14 +16,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.java.modbus;
+package org.apache.plc4x.test.driver.model;
 
-import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+import java.util.List;
 
-public class ModbusIOTest extends ParserSerializerTestsuiteRunner {
+public class DriverTestsuite {
 
-    public ModbusIOTest() {
-        super("/testsuite/ModbusTestsuite.xml");
+    private final String name;
+    private final List<Testcase> testcases;
+
+    public DriverTestsuite(String name, List<Testcase> testcases) {
+        this.name = name;
+        this.testcases = testcases;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Testcase> getTestcases() {
+        return testcases;
     }
 
 }

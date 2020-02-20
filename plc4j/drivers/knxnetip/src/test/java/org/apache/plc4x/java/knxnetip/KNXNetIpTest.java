@@ -19,9 +19,9 @@
 
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.test.protocol.ProtocolTestsuiteRunner;
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class KNXNetIpTest extends ProtocolTestsuiteRunner {
+public class KNXNetIpTest extends ParserSerializerTestsuiteRunner {
 
     public KNXNetIpTest() {
         super("/testsuite/KNXNetIPTestsuite.xml");

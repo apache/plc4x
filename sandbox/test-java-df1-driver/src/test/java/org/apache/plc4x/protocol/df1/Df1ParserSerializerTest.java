@@ -17,15 +17,14 @@
   under the License.
 */
 
-package org.apache.plc4x.protocol.amsads;
+package org.apache.plc4x.protocol.df1;
 
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-import org.apache.plc4x.test.protocol.ProtocolTestsuiteRunner;
+public class Df1ParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
-public class Df1Test /*extends ProtocolTestsuiteRunner*/ {
-
-    public Df1Test() {
-        //super("/testsuite/Df1Testsuite.xml");
+    public Df1ParserSerializerTest() {
+        super("/testsuite/Df1Testsuite.xml");
     }
 
 }
