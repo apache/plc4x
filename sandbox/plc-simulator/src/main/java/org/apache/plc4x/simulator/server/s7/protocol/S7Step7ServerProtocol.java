@@ -129,8 +129,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                     S7ParameterSetupCommunication s7ParameterSetupCommunicationResponse =
                         new S7ParameterSetupCommunication(amqCaller, amqCallee, pduLength);
                     S7MessageResponse s7MessageResponse = new S7MessageResponse(
-                        s7TpduReference, s7ParameterSetupCommunicationResponse, new S7PayloadSetupCommunication(),
-                        (short) 0, (short) 0);
+                        s7TpduReference, s7ParameterSetupCommunicationResponse, null, (short) 0, (short) 0);
                     ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef)));
 
                     state = State.S7_CONNECTED;

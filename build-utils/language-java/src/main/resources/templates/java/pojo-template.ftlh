@@ -40,6 +40,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)};
 
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
+import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 
 import com.fasterxml.jackson.annotation.*;
@@ -47,6 +48,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.generation.MessageIO;
 
 import java.time.*;
 import java.util.*;
@@ -283,6 +285,12 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 <#else>
         return null;
 </#if>
+    }
+
+    @Override
+    @JsonIgnore
+    public MessageIO<<#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>, <#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>> getMessageIO() {
+        return new <#if type.parentType??>${type.parentType.name}<#else>${typeName}</#if>IO();
     }
 
     @Override

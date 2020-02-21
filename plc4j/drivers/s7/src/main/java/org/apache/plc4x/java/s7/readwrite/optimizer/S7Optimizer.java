@@ -38,7 +38,7 @@ import java.util.*;
 public class S7Optimizer extends BaseOptimizer {
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
-        new S7VarRequestParameterItem[0]), new S7PayloadReadVarRequest()).getLengthInBytes();
+        new S7VarRequestParameterItem[0]), null).getLengthInBytes();
     public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponse(0, new S7ParameterReadVarResponse(
         (short) 0), new S7PayloadReadVarResponse(new S7VarPayloadDataItem[0]), (short) 0, (short) 0).getLengthInBytes();
     public static final int EMPTY_WRITE_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterWriteVarRequest(

@@ -27,4 +27,6 @@ public interface Message {
 
     PlcValue toPlcValue();
 
+    MessageIO<? extends Message, ? extends Message> getMessageIO();
+
 }

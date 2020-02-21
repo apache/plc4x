@@ -20,17 +20,59 @@
 <xs:schema targetNamespace="https://plc4x.apache.org/schemas/driver-testsuite.xsd"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="testsuite">
+    <xs:element name="driver-testsuite">
         <xs:complexType>
             <xs:sequence>
+                <!-- Name of the tessuite -->
                 <xs:element name="name" type="xs:string"/>
-                <!--
-                    Each testcase is a set of hexadecimal input and expected output.
-                    A test will parse the binary input and compare the parsed result
-                    with the expected output. If that matches, it serializes the model
-                    back to it's binary representation and then compares the binary
-                    output with the original.
-                -->
+
+                <!-- The name of the driver we want to test (as it's used in the connection-string) -->
+                <xs:element name="driver-name" type="xs:string"/>
+                <!-- Additional parameters passed to the driver in the connection-string -->
+                <xs:element name="driver-parameters" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="parameter">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="name" type="xs:string"/>
+                                        <xs:element name="value" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Interaction which is performed to initiate the driver connection -->
+                <xs:element name="setup" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:choice>
+                                <xs:element name="send-bytes" type="xs:anyType"/>
+                                <xs:element name="receive-bytes" type="xs:anyType"/>
+                                <xs:element name="plc4x-request" type="xs:anyType"/>
+                                <xs:element name="plc4x-response" type="xs:anyType"/>
+                            </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Interaction which is performed to terminate the driver connection -->
+                <xs:element name="teardown" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xs:choice>
+                                <xs:element name="send-bytes" type="xs:anyType"/>
+                                <xs:element name="receive-bytes" type="xs:anyType"/>
+                                <xs:element name="plc4x-request" type="xs:anyType"/>
+                                <xs:element name="plc4x-response" type="xs:anyType"/>
+                            </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Actual test cases -->
                 <xs:element name="testcase" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
@@ -38,24 +80,23 @@
                             <xs:element name="name" type="xs:string"/>
                             <!-- Some optional description of what the test should do -->
                             <xs:element name="description" type="xs:string" minOccurs="0"/>
-                            <!-- A hexadecimal representation of the input to the parser -->
-                            <xs:element name="raw" type="xs:hexBinary"/>
-                            <!-- The root type we should use for serializing and parsing -->
-                            <xs:element name="root-type" type="xs:string"/>
-                            <!-- If the root type need additional arguments for parsing, provide them here -->
-                            <xs:element name="parser-arguments" minOccurs="0" maxOccurs="1">
+                            <xs:element name="steps">
                                 <xs:complexType>
                                     <xs:sequence minOccurs="1" maxOccurs="unbounded">
-                                        <xs:any processContents="lax" namespace="##local"/>
+                                        <xs:choice>
+                                            <xs:element name="send-bytes" type="xs:anyType"/>
+                                            <xs:element name="receive-bytes" type="xs:anyType"/>
+                                            <xs:element name="plc4x-request" type="xs:anyType"/>
+                                            <xs:element name="plc4x-response" type="xs:anyType"/>
+                                        </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <!-- An Xml serialized representation of the expected model -->
-                            <xs:element name="xml" type="xs:anyType"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+
             <xs:attribute name="bigEndian" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>

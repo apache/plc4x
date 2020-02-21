@@ -54,9 +54,7 @@ import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarRequest;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadSetupCommunication;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
@@ -206,7 +204,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // tpuId will be inserted before sending in #readInternal so we insert -1 as dummy here
         final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1,
             new S7ParameterReadVarRequest(requestItems.toArray(new S7VarRequestParameterItem[0])),
-            new S7PayloadReadVarRequest());
+            null);
 
         // Just send a single response and chain it as Response
         return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
@@ -361,7 +359,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7ParameterSetupCommunication(
                 s7DriverContext.getMaxAmqCaller(), s7DriverContext.getMaxAmqCallee(), s7DriverContext.getPduSize());
         S7Message s7Message = new S7MessageRequest(0, s7ParameterSetupCommunication,
-            new S7PayloadSetupCommunication());
+            null);
         COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (short) 1);
         return new TPKTPacket(cotpPacketData);
     }

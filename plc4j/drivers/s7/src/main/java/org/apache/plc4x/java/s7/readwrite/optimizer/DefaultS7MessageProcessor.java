@@ -21,9 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.optimizer;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +46,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     private AtomicInteger tpduRefGen;
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
-        new S7VarRequestParameterItem[0]), new S7PayloadReadVarRequest()).getLengthInBytes();
+        new S7VarRequestParameterItem[0]), null).getLengthInBytes();
     public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponse(0, new S7ParameterReadVarResponse(
         (short) 0), new S7PayloadReadVarResponse(new S7VarPayloadDataItem[0]), (short) 0, (short) 0).getLengthInBytes();
     public static final int EMPTY_WRITE_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterWriteVarRequest(
@@ -125,7 +123,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                 S7MessageRequest subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                     new S7ParameterReadVarRequest(
                         curRequestItems.toArray(new S7VarRequestParameterItem[0])),
-                    new S7PayloadReadVarRequest());
+                    null);
                 result.add(subMessage);
 
                 // Reset the counters.
@@ -156,7 +154,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
                         // Create a new sub message.
                         subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                             new S7ParameterReadVarRequest(new S7VarRequestParameterItem[] {subVarParameterItem}),
-                            new S7PayloadReadVarRequest());
+                            null);
                         result.add(subMessage);
 
                         remainingNumElements -= maxNumElements;
@@ -181,7 +179,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             S7MessageRequest subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                 new S7ParameterReadVarRequest(
                     curRequestItems.toArray(new S7VarRequestParameterItem[0])),
-                new S7PayloadReadVarRequest());
+                null);
             result.add(subMessage);
         }
 

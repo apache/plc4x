@@ -20,30 +20,16 @@ package org.apache.plc4x.test.driver.model;
 
 import org.dom4j.Element;
 
-import java.util.List;
+public class TestStep {
 
-public class Testcase {
+    private final Element payload;
 
-    private final String name;
-    private final String description;
-    private final List<TestStep> steps;
-
-    public Testcase(String name, String description, List<TestStep> steps) {
-        this.name = name;
-        this.description = description;
-        this.steps = steps;
+    public TestStep(Element payload) {
+        this.payload = payload;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<TestStep> getSteps() {
-        return steps;
+    public Element getPayload() {
+        return payload;
     }
 
 }

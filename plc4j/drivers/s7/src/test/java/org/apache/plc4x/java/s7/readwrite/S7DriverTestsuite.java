@@ -16,34 +16,14 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model;
+package org.apache.plc4x.java.s7.readwrite;
 
-import org.dom4j.Element;
+import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-import java.util.List;
+public class S7DriverTestsuite extends DriverTestsuiteRunner {
 
-public class Testcase {
-
-    private final String name;
-    private final String description;
-    private final List<TestStep> steps;
-
-    public Testcase(String name, String description, List<TestStep> steps) {
-        this.name = name;
-        this.description = description;
-        this.steps = steps;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public List<TestStep> getSteps() {
-        return steps;
+    public S7DriverTestsuite() {
+        super("/testsuite/S7DriverTestsuie.xml");
     }
 
 }

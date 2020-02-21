@@ -99,20 +99,24 @@
     [discriminator uint 8  'messageType']
     [reserved      uint 16 '0x0000']
     [simple        uint 16 'tpduReference']
-    [implicit      uint 16 'parameterLength' 'parameter.lengthInBytes']
-    [implicit      uint 16 'payloadLength'   'payload.lengthInBytes']
+    [implicit      uint 16 'parameterLength' 'parameter != null ? parameter.lengthInBytes : 0']
+    [implicit      uint 16 'payloadLength'   'payload != null ? payload.lengthInBytes : 0']
     [typeSwitch 'messageType'
         ['0x01' S7MessageRequest
         ]
-        ['0x03' S7MessageResponse
+        ['0x02' S7MessageResponse
+            [simple uint 8 'errorClass']
+            [simple uint 8 'errorCode']
+        ]
+        ['0x03' S7MessageResponseData
             [simple uint 8 'errorClass']
             [simple uint 8 'errorCode']
         ]
         ['0x07' S7MessageUserData
         ]
     ]
-    [simple S7Parameter 'parameter' ['messageType']]
-    [simple S7Payload   'payload'   ['messageType', 'parameter']]
+    [optional S7Parameter 'parameter' 'parameterLength > 0' ['messageType']]
+    [optional S7Payload   'payload'   'payloadLength > 0'   ['messageType', 'parameter']]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -209,10 +213,6 @@
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
     [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
-        ['0xF0' S7PayloadSetupCommunication
-        ]
-        ['0x04','0x01' S7PayloadReadVarRequest
-        ]
         ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems' ['lastItem']]
         ]
