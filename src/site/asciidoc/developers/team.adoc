@@ -38,14 +38,14 @@ Founder / CEO
 pragmatic minds GmbH /
 pragmatic industries GmbH
 
-Nürtingen |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as (P)PMC but he is also engaged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
+Nürtingen |Has studied mathematics in Stuttgart. Besides his interest in open source software and big data, he focuses on the analysis of time series and traces from testing or manufacturing. PLC4X was the first project where he was offered a position as PMC but he is also engaged in other Apache projects like Edgent and IotDB. | a|image::team/jfeinauer.jpg[jfeinauer, 240, 320]
 | *Sebastian Rühl*
 
 IoT Consultant
 
 codecentric AG
 
-Frankfurt |Software engineer, member of the (P)PMC of PLC4X| a| image::team/sruehl.jpg[sruehl, 240, 320]
+Frankfurt |Software engineer, member of the PMC of PLC4X| a| image::team/sruehl.jpg[sruehl, 240, 320]
 | *Tim Mitsch*
 
 Engineer
