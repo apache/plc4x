@@ -96,6 +96,7 @@ plc4cpp/cmake-build-debug/
 plc4py/venv/
 **/__pycache__/**/*
 /plc4cpp/.vscode/ipch
+*.egg-info
 
 # Exclude gradle stuff
 .gradle
