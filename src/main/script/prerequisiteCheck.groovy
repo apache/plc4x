@@ -52,7 +52,12 @@ def checkVersionAtLeast(String current, String minimum) {
 
 def checkBison() {
     print "Detecting Bison version:   "
-    def output = "bison --version".execute().text
+    def output
+    try {
+        output = "bison --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -68,7 +73,12 @@ def checkBison() {
 
 def checkDotnet() {
     print "Detecting Dotnet version:  "
-    def output = "dotnet --version".execute().text
+    def output
+    try {
+        output = "dotnet --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -84,7 +94,12 @@ def checkDotnet() {
 
 def checkFlex() {
     print "Detecting Flex version:    "
-    def output = "flex --version".execute().text
+    def output
+    try {
+        output = "flex --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -100,7 +115,12 @@ def checkFlex() {
 
 def checkGcc() {
     print "Detecting Gcc version:     "
-    def output = "gcc --version".execute().text
+    def output
+    try {
+        output = "gcc --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -116,7 +136,12 @@ def checkGcc() {
 
 def checkGit() {
     print "Detecting Git version:     "
-    def output = "git --version".execute().text
+    def output
+    try {
+        output = "git --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -132,7 +157,12 @@ def checkGit() {
 
 def checkGpp() {
     print "Detecting G++ version:     "
-    def output = "g++ --version".execute().text
+    def output
+    try {
+        output = "g++ --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -148,7 +178,12 @@ def checkGpp() {
 
 def checkClang() {
     print "Detecting clang version:   "
-    def output = "clang --version".execute().text
+    def output
+    try {
+        output = "clang --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -164,35 +199,40 @@ def checkClang() {
 
 def checkPython() {
     print "Detecting Python version:  "
-    def process = ("python --version").execute()
-    def stdOut = new StringBuilder()
-    def stdErr = new StringBuilder()
-    process.consumeProcessOutput(stdOut, stdErr)
-    process.waitForOrKill(500)
-    Matcher matcher = extractVersion(stdErr)
-    if(matcher.size() > 0) {
-        def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.7.0")
-        if(!result) {
+    try {
+        def process = ("python --version").execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        Matcher matcher = extractVersion(stdErr)
+        if (matcher.size() > 0) {
+            def curVersion = matcher[0][1]
+            def result = checkVersionAtLeast(curVersion, "2.7.0")
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "missing"
+            // For debugging regular build failures on our build vm
+            println "StdOut: " + stdOut
+            println "StrErr: " + stdErr
+            println "matcher size: " + matcher.size()
+            for (int i = 0; i < matcher.size(); i++) {
+                println "matcher[" + i + "]=" + matcher[i]
+            }
+            // Example for a failed python detection:
+            //
+            //Detecting Python version: missing
+            //StdOut:
+            //StrErr: Python 2.7.12
+            // Example of a successful detection
+            //StrErr:
+            //2.7.15        OK
             allConditionsMet = false
         }
-    } else {
+    } catch(Exception e) {
         println "missing"
-        // For debugging regular build failures on our build vm
-        println "StdOut: " + stdOut
-        println "StrErr: " + stdErr
-        println "matcher size: " + matcher.size()
-        for(int i = 0; i < matcher.size(); i++) {
-            println "matcher[" + i + "]=" + matcher[i]
-        }
-        // Example for a failed python detection:
-        //
-        //Detecting Python version: missing
-        //StdOut:
-        //StrErr: Python 2.7.12
-        // Example of a successful detection
-        //StrErr:
-        //2.7.15        OK
         allConditionsMet = false
     }
 }
