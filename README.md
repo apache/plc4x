@@ -73,7 +73,7 @@ the language of choice.
 ### Java
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
-[https://plc4x.apache.org/plc4j/users/gettingstarted.html](https://plc4x.apache.org/plc4j/users/gettingstarted.html)
+[https://plc4x.apache.org/users/plc4j/gettingstarted.html](https://plc4x.apache.org/users/plc4j/gettingstarted.html)
 
 ## Developers
 
