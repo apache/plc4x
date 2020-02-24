@@ -133,11 +133,10 @@ public class ConfigurationFactory {
                 .map(type -> ((ParameterizedType) type))
                 .filter(type -> type.getRawType().equals(HasConfiguration.class))
                 .findAny();
-            if (!typeOptional.isPresent()) {
-                throw new IllegalStateException("This should never happen!");
+            if (typeOptional.isPresent()) {
+                ((HasConfiguration) obj).setConfiguration(configuration);
             }
 
-            ((HasConfiguration) obj).setConfiguration(configuration);
         }
         return obj;
     }
