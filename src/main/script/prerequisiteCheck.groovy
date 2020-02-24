@@ -197,6 +197,32 @@ def checkClang() {
     }
 }
 
+def checkCmake() {
+    print "Detecting cmake version:   "
+    def output
+    try {
+        output = "cmake --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
+    Matcher matcher = extractVersion(output)
+    if(matcher.size() > 0) {
+        def curVersion = matcher[0][1]
+        def result = checkVersionAtLeast(curVersion, "3.0.0")
+        if(!result) {
+            allConditionsMet = false
+            
+            
+            
+            
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+}
+
+
 def checkPython() {
     print "Detecting Python version:  "
     try {
@@ -406,6 +432,7 @@ if(proxiesEnabled) {
 
 if(proxiesEnabled || cppEnabled) {
     checkClang()
+    checkCmake()
     checkGcc()
 }
 
