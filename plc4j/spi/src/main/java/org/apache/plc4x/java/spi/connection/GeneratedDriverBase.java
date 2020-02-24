@@ -68,6 +68,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer();
 
+    protected void initializePipeline(ChannelFactory channelFactory) {
+        // Override in derived drivers.
+    }
+
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
         // Split up the connection string into it's individual segments.
@@ -118,6 +122,9 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         if(channelFactory == null) {
             throw new PlcConnectionException("Unable to get channel factory from url " + transportConfig);
         }
+
+        // Give drivers the option to customize the channel.
+        initializePipeline(channelFactory);
 
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
