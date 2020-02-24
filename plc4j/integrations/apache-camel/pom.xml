@@ -140,7 +140,6 @@
         </executions>
       </plugin>
       <!-- to generate the MANIFEST-FILE of the bundle -->
-      <!-- TODO: Seems this plugin is messing up the jqassistant execution. Also it doesn't seem to have any effect on the output as it is not executed at all and there is no MANIFEST.MF in the output -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>

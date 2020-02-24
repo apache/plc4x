@@ -1331,12 +1331,6 @@
         </plugin>
 
         <plugin>
-          <groupId>com.buschmais.jqassistant</groupId>
-          <artifactId>jqassistant-maven-plugin</artifactId>
-          <version>1.6.0</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
           <version>${owasp-dependency-check.version}</version>
@@ -1714,52 +1708,6 @@
           </plugin-->
         </plugins>
       </build>
-    </profile>
-
-    <profile>
-      <id>with-jqassistant</id>
-      <build>
-        <plugins>
-          <!-- Plugin for analysing the project based on neo4j queries -->
-          <plugin>
-            <groupId>com.buschmais.jqassistant</groupId>
-            <artifactId>jqassistant-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>scan</goal>
-                  <goal>analyze</goal>
-                </goals>
-                <configuration>
-                  <rulesDirectory>${project.basedir}/src/jqassistant</rulesDirectory>
-                  <failOnSeverity>MAJOR</failOnSeverity>
-                  <warnOnSeverity>MINOR</warnOnSeverity>
-                  <scanIncludes>
-                    <scanInclude>
-                      <path>${project.basedir}/.git</path>
-                    </scanInclude>
-                  </scanIncludes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>com.buschmais.jqassistant</groupId>
-            <artifactId>jqassistant-maven-plugin</artifactId>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>report</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
 
     <!--
