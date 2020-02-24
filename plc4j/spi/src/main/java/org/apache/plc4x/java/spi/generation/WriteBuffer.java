@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 public class WriteBuffer {
 
@@ -215,8 +216,15 @@ public class WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeString(int bitLength, String encoding, String value) {
-        throw new UnsupportedOperationException("not implemented yet");
+    public void writeString(int bitLength, String encoding, String value) throws ParseException {
+        final byte[] bytes = value.getBytes(Charset.forName(encoding));
+        try {
+            for (byte aByte : bytes) {
+                bo.writeByte(false, 8, aByte);
+            }
+        } catch (IOException e) {
+           throw new ParseException("Error writing string", e);
+        }
     }
 
 }
