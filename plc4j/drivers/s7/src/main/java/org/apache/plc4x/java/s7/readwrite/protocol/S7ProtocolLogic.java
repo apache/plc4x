@@ -44,7 +44,7 @@ import org.apache.plc4x.java.s7.readwrite.S7Address;
 import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.S7Message;
 import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
-import org.apache.plc4x.java.s7.readwrite.S7MessageResponse;
+import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
 import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
@@ -148,7 +148,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     .unwrap(TPKTPacket::getPayload)
                     .only(COTPPacketData.class)
                     .unwrap(COTPPacket::getPayload)
-                    .only(S7MessageResponse.class)
+                    .only(S7MessageResponseData.class)
                     .unwrap(S7Message::getParameter)
                     .only(S7ParameterSetupCommunication.class)
                     .handle(setupCommunication -> {
@@ -211,7 +211,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadRespoonse */
-    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<S7MessageResponse> response) {
+    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<S7MessageResponseData> response) {
         return response
             .thenApply(p -> {
                 try {
@@ -226,11 +226,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * Sends one Read over the Wire and internally returns the Response
      * Do sending of normally sized single-message request.
      *
-     * Assumes that the {@link S7MessageRequest} and its expected {@link S7MessageResponse}
+     * Assumes that the {@link S7MessageRequest} and its expected {@link S7MessageResponseData}
      * and does not further check that!
      */
-    private CompletableFuture<S7MessageResponse> readInternal(S7MessageRequest request) {
-        CompletableFuture<S7MessageResponse> future = new CompletableFuture<>();
+    private CompletableFuture<S7MessageResponseData> readInternal(S7MessageRequest request) {
+        CompletableFuture<S7MessageResponseData> future = new CompletableFuture<>();
         int tpduId = tpduGenerator.getAndIncrement();
 
         // Create a new Request with correct tpuId (is not known before)
@@ -245,8 +245,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
-            .check(p -> p.getPayload() instanceof S7MessageResponse)
-            .unwrap(p -> (S7MessageResponse) p.getPayload())
+            .check(p -> p.getPayload() instanceof S7MessageResponseData)
+            .unwrap(p -> (S7MessageResponseData) p.getPayload())
             .check(p -> p.getTpduReference() == tpduId)
             .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
             .handle(p -> {
@@ -284,8 +284,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageResponse)
-            .unwrap(p -> ((S7MessageResponse) p.getPayload()))
+            .check(p -> p.getPayload() instanceof S7MessageResponseData)
+            .unwrap(p -> ((S7MessageResponseData) p.getPayload()))
             .check(p -> p.getTpduReference() == tpduId)
             .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
             .handle(p -> {
@@ -373,7 +373,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
 
-    private PlcResponse decodeReadResponse(S7MessageResponse responseMessage, InternalPlcReadRequest plcReadRequest) throws PlcProtocolException {
+    private PlcResponse decodeReadResponse(S7MessageResponseData responseMessage, InternalPlcReadRequest plcReadRequest) throws PlcProtocolException {
         S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
 
         // If the numbers of items don't match, we're in big trouble as the only
@@ -405,7 +405,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
-    private PlcResponse decodeWriteResponse(S7MessageResponse responseMessage, InternalPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
+    private PlcResponse decodeWriteResponse(S7MessageResponseData responseMessage, InternalPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
         S7PayloadWriteVarResponse payload = (S7PayloadWriteVarResponse) responseMessage.getPayload();
 
         // If the numbers of items don't match, we're in big trouble as the only

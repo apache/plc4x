@@ -47,11 +47,11 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
         new S7VarRequestParameterItem[0]), null).getLengthInBytes();
-    public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponse(0, new S7ParameterReadVarResponse(
+    public static final int EMPTY_READ_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterReadVarResponse(
         (short) 0), new S7PayloadReadVarResponse(new S7VarPayloadDataItem[0]), (short) 0, (short) 0).getLengthInBytes();
     public static final int EMPTY_WRITE_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterWriteVarRequest(
         new S7VarRequestParameterItem[0]), new S7PayloadWriteVarRequest(new S7VarPayloadDataItem[0])).getLengthInBytes();
-    public static final int EMPTY_WRITE_RESPONSE_SIZE = new S7MessageResponse(0, new S7ParameterWriteVarResponse(
+    public static final int EMPTY_WRITE_RESPONSE_SIZE = new S7MessageResponseData(0, new S7ParameterWriteVarResponse(
         (short) 0), new S7PayloadWriteVarResponse(new S7VarPayloadStatusItem[0]), (short) 0, (short) 0).getLengthInBytes();
 
     public DefaultS7MessageProcessor(AtomicInteger tpduGenerator) {
@@ -193,8 +193,8 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     }
 
     @Override
-    public S7MessageResponse processResponse(S7MessageRequest originalRequest,
-                                             Map<S7MessageRequest, Either<S7MessageResponse, Throwable>> result) {
+    public S7MessageResponseData processResponse(S7MessageRequest originalRequest,
+                                             Map<S7MessageRequest, Either<S7MessageResponseData, Throwable>> result) {
         /*MessageType messageType = null;
         short tpduReference = requestMessage.getTpduReference();
         List<S7Parameter> s7Parameters = new LinkedList<>();

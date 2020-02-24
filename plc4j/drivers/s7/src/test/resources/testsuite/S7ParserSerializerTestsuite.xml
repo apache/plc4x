@@ -377,4 +377,133 @@
     </xml>
   </testcase>
 
+  <testcase>
+    <name>S7 Write Request</name>
+    <raw>0300005b02f08e32010000000e003200180504120a10010001000082000000120a10010001000082000001120a10010001000082000002120a10010001000082000003ff0300010100ff0300010100ff0300010100ff0300010100</raw>
+    <root-type>TPKTPacket</root-type>
+    <xml>
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+            <tpduReference>14</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                  <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                    <transportSize>BOOL</transportSize>
+                    <numberOfElements>1</numberOfElements>
+                    <dbNumber>0</dbNumber>
+                    <area>OUTPUTS</area>
+                    <byteAddress>0</byteAddress>
+                    <bitAddress>0</bitAddress>
+                  </address>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                  <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                    <transportSize>BOOL</transportSize>
+                    <numberOfElements>1</numberOfElements>
+                    <dbNumber>0</dbNumber>
+                    <area>OUTPUTS</area>
+                    <byteAddress>0</byteAddress>
+                    <bitAddress>1</bitAddress>
+                  </address>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                  <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                    <transportSize>BOOL</transportSize>
+                    <numberOfElements>1</numberOfElements>
+                    <dbNumber>0</dbNumber>
+                    <area>OUTPUTS</area>
+                    <byteAddress>0</byteAddress>
+                    <bitAddress>2</bitAddress>
+                  </address>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                  <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                    <transportSize>BOOL</transportSize>
+                    <numberOfElements>1</numberOfElements>
+                    <dbNumber>0</dbNumber>
+                    <area>OUTPUTS</area>
+                    <byteAddress>0</byteAddress>
+                    <bitAddress>3</bitAddress>
+                  </address>
+                </items>
+              </items>
+            </parameter>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                  <returnCode>OK</returnCode>
+                  <transportSize>BIT</transportSize>
+                  <dataLength>1</dataLength>
+                  <data>AQ==</data>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                  <returnCode>OK</returnCode>
+                  <transportSize>BIT</transportSize>
+                  <dataLength>1</dataLength>
+                  <data>AQ==</data>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                  <returnCode>OK</returnCode>
+                  <transportSize>BIT</transportSize>
+                  <dataLength>1</dataLength>
+                  <data>AQ==</data>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
+                  <returnCode>OK</returnCode>
+                  <transportSize>BIT</transportSize>
+                  <dataLength>1</dataLength>
+                  <data>AQ==</data>
+                </items>
+              </items>
+            </payload>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>14</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>S7 Write Response</name>
+    <raw>0300001902f08032030000000e0002000400000504ffffffff</raw>
+    <root-type>TPKTPacket</root-type>
+    <xml>
+      <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+        <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+          <parameters/>
+          <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+            <tpduReference>14</tpduReference>
+            <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse">
+              <numItems>4</numItems>
+            </parameter>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse">
+              <items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem">
+                  <returnCode>OK</returnCode>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem">
+                  <returnCode>OK</returnCode>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem">
+                  <returnCode>OK</returnCode>
+                </items>
+                <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem">
+                  <returnCode>OK</returnCode>
+                </items>
+              </items>
+            </payload>
+            <errorClass>0</errorClass>
+            <errorCode>0</errorCode>
+          </payload>
+          <eot>true</eot>
+          <tpduRef>0</tpduRef>
+        </payload>
+      </TPKTPacket>
+    </xml>
+  </testcase>
+
 </test:testsuite>

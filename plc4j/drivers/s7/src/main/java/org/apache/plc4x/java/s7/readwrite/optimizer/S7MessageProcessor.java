@@ -21,7 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.optimizer;
 import io.vavr.control.Either;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
-import org.apache.plc4x.java.s7.readwrite.S7MessageResponse;
+import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
 
 import java.util.Collection;
 import java.util.Map;
@@ -35,6 +35,6 @@ public interface S7MessageProcessor {
 
     Collection<S7MessageRequest> processRequest(S7MessageRequest request, int pduSize) throws PlcException;
 
-    S7MessageResponse processResponse(S7MessageRequest originalRequest, Map<S7MessageRequest, Either<S7MessageResponse, Throwable>> result) throws PlcException;
+    S7MessageResponseData processResponse(S7MessageRequest originalRequest, Map<S7MessageRequest, Either<S7MessageResponseData, Throwable>> result) throws PlcException;
 
 }
