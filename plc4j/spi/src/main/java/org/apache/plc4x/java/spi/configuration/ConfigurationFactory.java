@@ -33,6 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.function.Function;
@@ -134,7 +135,14 @@ public class ConfigurationFactory {
                 .filter(type -> type.getRawType().equals(HasConfiguration.class))
                 .findAny();
             if (typeOptional.isPresent()) {
-                ((HasConfiguration) obj).setConfiguration(configuration);
+                final ParameterizedType parameterizedType = typeOptional.get();
+                final Type configType = parameterizedType.getActualTypeArguments()[0];
+                if(configType instanceof Class) {
+                    Class<?> configClass = (Class<?>) configType;
+                    if(configClass.isAssignableFrom(configuration.getClass())) {
+                        ((HasConfiguration) obj).setConfiguration(configuration);
+                    }
+                }
             }
 
         }
