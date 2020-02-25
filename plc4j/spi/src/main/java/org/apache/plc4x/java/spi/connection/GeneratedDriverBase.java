@@ -37,6 +37,8 @@ import java.util.regex.Pattern;
 
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
+    public static final String PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE = "PLC4X_FORCE_AWAIT_SETUP_COMPLETE";
+
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
@@ -126,12 +128,18 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
+        // Make the "await setup complete" overridable via system property.
+        boolean awaitSetupComplete = awaitSetupComplete();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
+            awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
+        }
+
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
             configuration,
             channelFactory,
-            awaitSetupComplete(),
+            awaitSetupComplete,
             getStackConfigurer(),
             getOptimizer());
     }
