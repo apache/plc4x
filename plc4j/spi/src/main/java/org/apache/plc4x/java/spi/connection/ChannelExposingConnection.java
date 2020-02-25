@@ -16,26 +16,12 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model;
+package org.apache.plc4x.java.spi.connection;
 
-import org.dom4j.Element;
+import io.netty.channel.Channel;
 
-public class TestStep {
+public interface ChannelExposingConnection {
 
-    private final StepType type;
-    private final Element payload;
-
-    public TestStep(StepType type, Element payload) {
-        this.type = type;
-        this.payload = payload;
-    }
-
-    public StepType getType() {
-        return type;
-    }
-
-    public Element getPayload() {
-        return payload;
-    }
+    Channel getChannel();
 
 }

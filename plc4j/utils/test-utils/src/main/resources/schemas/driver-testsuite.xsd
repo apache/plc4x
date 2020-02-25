@@ -49,10 +49,13 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-bytes" type="xs:anyType"/>
-                                <xs:element name="receive-bytes" type="xs:anyType"/>
-                                <xs:element name="plc4x-request" type="xs:anyType"/>
-                                <xs:element name="plc4x-response" type="xs:anyType"/>
+                                <xs:element name="send-plc-message" type="xs:anyType"/>
+                                <xs:element name="send-plc-bytes" type="xs:hexBinary"/>
+                                <xs:element name="receive-plc-message" type="xs:anyType"/>
+                                <xs:element name="receive-plc-bytes" type="xs:hexBinary"/>
+                                <xs:element name="api-request" type="xs:anyType"/>
+                                <xs:element name="api-response" type="xs:anyType"/>
+                                <xs:element name="delay" type="xs:integer"/>
                             </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
@@ -63,10 +66,13 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-bytes" type="xs:anyType"/>
-                                <xs:element name="receive-bytes" type="xs:anyType"/>
-                                <xs:element name="plc4x-request" type="xs:anyType"/>
-                                <xs:element name="plc4x-response" type="xs:anyType"/>
+                                <xs:element name="send-plc-message" type="xs:anyType"/>
+                                <xs:element name="send-plc-bytes" type="xs:hexBinary"/>
+                                <xs:element name="receive-plc-message" type="xs:anyType"/>
+                                <xs:element name="receive-plc-bytes" type="xs:hexBinary"/>
+                                <xs:element name="api-request" type="xs:anyType"/>
+                                <xs:element name="api-response" type="xs:anyType"/>
+                                <xs:element name="delay" type="xs:integer"/>
                             </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
@@ -84,10 +90,13 @@
                                 <xs:complexType>
                                     <xs:sequence minOccurs="1" maxOccurs="unbounded">
                                         <xs:choice>
-                                            <xs:element name="send-bytes" type="xs:anyType"/>
-                                            <xs:element name="receive-bytes" type="xs:anyType"/>
-                                            <xs:element name="plc4x-request" type="xs:anyType"/>
-                                            <xs:element name="plc4x-response" type="xs:anyType"/>
+                                            <xs:element name="send-plc-message" type="xs:anyType"/>
+                                            <xs:element name="send-plc-bytes" type="xs:hexBinary"/>
+                                            <xs:element name="receive-plc-message" type="xs:anyType"/>
+                                            <xs:element name="receive-plc-bytes" type="xs:hexBinary"/>
+                                            <xs:element name="api-request" type="xs:anyType"/>
+                                            <xs:element name="api-response" type="xs:anyType"/>
+                                            <xs:element name="delay" type="xs:integer"/>
                                         </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>

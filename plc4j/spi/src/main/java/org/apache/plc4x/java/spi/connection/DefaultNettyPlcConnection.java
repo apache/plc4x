@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class DefaultNettyPlcConnection extends AbstractPlcConnection {
+public class DefaultNettyPlcConnection extends AbstractPlcConnection implements ChannelExposingConnection {
 
     /**
      * a {@link HashedWheelTimer} shall be only instantiated once.
@@ -145,6 +145,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
         return connected && channel.isActive();
     }
 
+    @Override
     public Channel getChannel() {
         return channel;
     }

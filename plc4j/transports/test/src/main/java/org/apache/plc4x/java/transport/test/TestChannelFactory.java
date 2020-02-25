@@ -20,7 +20,10 @@ package org.apache.plc4x.java.transport.test;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.DefaultEventLoop;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
 import org.slf4j.Logger;
@@ -45,11 +48,17 @@ public class TestChannelFactory extends NettyChannelFactory implements HasConfig
 
     @Override
     public Class<? extends Channel> getChannel() {
-        return EmbeddedChannel.class;
+        return Plc4xEmbeddedChannel.class;
+    }
+
+    @Override
+    public EventLoopGroup getEventLoopGroup() {
+        return null;
     }
 
     @Override
     public void configureBootstrap(Bootstrap bootstrap) {
+        bootstrap.localAddress(new TestSocketAddress("lalala"));
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
         }

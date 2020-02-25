@@ -18,24 +18,24 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model;
 
-import org.dom4j.Element;
+public enum StepType {
 
-public class TestStep {
+    /*
+                                PLC --------- PLC4X --------- Application
+        SEND_PLC_MESSAGE:           <--------
+        SEND_PLC_BYTES:             <--------
+        RECEIVE_PLC_MESSAGE:        -------->
+        RECEIVE_PLC_BYTES:          -------->
+        API_REQUEST:                                <--------
+        API_RESPONSE:                               -------->
+     */
 
-    private final StepType type;
-    private final Element payload;
-
-    public TestStep(StepType type, Element payload) {
-        this.type = type;
-        this.payload = payload;
-    }
-
-    public StepType getType() {
-        return type;
-    }
-
-    public Element getPayload() {
-        return payload;
-    }
+    SEND_PLC_MESSAGE,
+    SEND_PLC_BYTES,
+    RECEIVE_PLC_MESSAGE,
+    RECEIVE_PLC_BYTES,
+    API_REQUEST,
+    API_RESPONSE,
+    DELAY
 
 }

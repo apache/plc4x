@@ -18,22 +18,21 @@ under the License.
 */
 package org.apache.plc4x.test.driver.model;
 
+import org.apache.plc4x.java.api.PlcConnection;
+
 import java.util.List;
-import java.util.Map;
 
 public class DriverTestsuite {
 
     private final String name;
-    private final String driverName;
-    private final Map<String, String> parameters;
+    private final PlcConnection connection;
     private final List<TestStep> setupSteps;
     private final List<TestStep> teardownSteps;
     private final List<Testcase> testcases;
 
-    public DriverTestsuite(String name, String driverName, Map<String, String> parameters, List<TestStep> setupSteps, List<TestStep> teardownSteps, List<Testcase> testcases) {
+    public DriverTestsuite(String name, PlcConnection connection, List<TestStep> setupSteps, List<TestStep> teardownSteps, List<Testcase> testcases) {
         this.name = name;
-        this.driverName = driverName;
-        this.parameters = parameters;
+        this.connection = connection;
         this.setupSteps = setupSteps;
         this.teardownSteps = teardownSteps;
         this.testcases = testcases;
@@ -43,12 +42,8 @@ public class DriverTestsuite {
         return name;
     }
 
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public Map<String, String> getParameters() {
-        return parameters;
+    public PlcConnection getConnection() {
+        return connection;
     }
 
     public List<TestStep> getSetupSteps() {
