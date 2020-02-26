@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>test-streampipes-plc4x-adapters</artifactId>
@@ -55,40 +55,40 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-pcap-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
       <!--scope>test</scope-->
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-streampipes-plc4x-shared</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-java-bacnetip-driver</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-java-knxnetip-driver</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
