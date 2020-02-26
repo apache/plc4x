@@ -21,12 +21,14 @@ package org.apache.plc4x.test.driver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -35,6 +37,10 @@ import org.apache.plc4x.test.driver.model.DriverTestsuite;
 import org.apache.plc4x.test.driver.model.StepType;
 import org.apache.plc4x.test.driver.model.TestStep;
 import org.apache.plc4x.test.driver.model.Testcase;
+import org.apache.plc4x.test.driver.model.api.TestField;
+import org.apache.plc4x.test.driver.model.api.TestReadRequest;
+import org.apache.plc4x.test.driver.model.api.TestRequest;
+import org.apache.plc4x.test.driver.model.api.TestWriteRequest;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -82,7 +88,7 @@ public class DriverTestsuiteRunner {
             SAXReader reader = new SAXReader();
             Document document = reader.read(testsuiteDocumentXml);
             Element testsuiteXml = document.getRootElement();
-            boolean littleEndian = !"true".equals(testsuiteXml.attributeValue("bigEndian"));
+            boolean bigEndian = !"false".equals(testsuiteXml.attributeValue("bigEndian"));
             String testsuiteName = testsuiteXml.element(new QName("name")).getTextTrim();
             String driverName = testsuiteXml.element(new QName("driver-name")).getTextTrim();
             Element driverParametersElement = testsuiteXml.element(new QName("driver-parameters"));
@@ -137,7 +143,7 @@ public class DriverTestsuiteRunner {
 
             TimeUnit.MILLISECONDS.sleep(200);
 
-            return new DriverTestsuite(testsuiteName, connection, setupSteps, teardownSteps, testcases);
+            return new DriverTestsuite(testsuiteName, connection, setupSteps, teardownSteps, testcases, bigEndian);
         } catch (DocumentException e) {
             throw new DriverTestsuiteException("Error parsing testsuite xml", e);
         } catch (InterruptedException e) {
@@ -164,50 +170,72 @@ public class DriverTestsuiteRunner {
         }
     }
 
-    private void run(DriverTestsuite testSuite, Testcase testcase) throws DriverTestsuiteException {
-        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(testSuite);
-        if(!testSuite.getSetupSteps().isEmpty()) {
+    private void run(DriverTestsuite testsuite, Testcase testcase) throws DriverTestsuiteException {
+        final PlcConnection plcConnection = testsuite.getConnection();
+        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(testsuite);
+        final boolean bigEndian = testsuite.isBigEndian();
+        if(!testsuite.getSetupSteps().isEmpty()) {
             LOGGER.info("Running setup steps");
-            for (TestStep setupStep : testSuite.getSetupSteps()) {
-                executeStep(setupStep, embeddedChannel);
+            for (TestStep setupStep : testsuite.getSetupSteps()) {
+                executeStep(setupStep, plcConnection, embeddedChannel, bigEndian);
             }
             LOGGER.info("Finished setup steps");
         }
         LOGGER.info("Running test steps");
         for (TestStep step : testcase.getSteps()) {
-            executeStep(step, embeddedChannel);
+            executeStep(step, plcConnection, embeddedChannel, bigEndian);
         }
         LOGGER.info("Finished test steps");
-        if(!testSuite.getTeardownSteps().isEmpty()) {
+        if(!testsuite.getTeardownSteps().isEmpty()) {
             LOGGER.info("Running teardown steps");
-            for (TestStep teardownStep : testSuite.getTeardownSteps()) {
-                executeStep(teardownStep, embeddedChannel);
+            for (TestStep teardownStep : testsuite.getTeardownSteps()) {
+                executeStep(teardownStep, plcConnection, embeddedChannel, bigEndian);
             }
             LOGGER.info("Finished teardown steps");
         }
     }
 
-    private void executeStep(TestStep testStep, Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
-        LOGGER.info("  - Running step " + testStep.getType());
-        ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+    private void executeStep(TestStep testStep, PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
+        LOGGER.info("  - Running step: '" + testStep.getName() + "' - " + testStep.getType());
+        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final Element payload = testStep.getPayload();
-        final String className = payload.attributeValue(new QName("className"));
-        String referenceXml = payload.asXML();
         try {
-            final MessageIO messageIO = getMessageIOType(className).newInstance();
             switch (testStep.getType()) {
                 case SEND_PLC_BYTES: {
+                    final ByteBuf byteBuf = embeddedChannel.readOutbound();
+                    if(byteBuf == null) {
+                        throw new DriverTestsuiteException("No outbound message available");
+                    }
+                    final byte[] data = new byte[byteBuf.readableBytes()];
+                    byteBuf.readBytes(data);
+
+                    // TODO: Compare the read bytes with the expected byte array.
+
                     break;
                 }
                 case SEND_PLC_MESSAGE: {
-                    final ByteBuf byteBuf = embeddedChannel.readOutbound();
-                    byte[] data = new byte[byteBuf.readableBytes()];
-                    byteBuf.readBytes(data);
-                    ReadBuffer readBuffer = new ReadBuffer(data);
                     try {
+                        TimeUnit.MILLISECONDS.sleep(200);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new DriverTestsuiteException("Interrupted during delay.");
+                    }
+
+                    final ByteBuf byteBuf = embeddedChannel.readOutbound();
+                    if(byteBuf == null) {
+                        throw new DriverTestsuiteException("No outbound message available");
+                    }
+                    final byte[] data = new byte[byteBuf.readableBytes()];
+                    byteBuf.readBytes(data);
+
+                    final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
+                    try {
+                        final String className = payload.attributeValue(new QName("className"));
+                        final MessageIO messageIO = getMessageIOType(className).newInstance();
                         final Object parsedOutput = messageIO.parse(readBuffer);
-                        String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
-                        Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
+                        final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
+                        final String referenceXml = payload.asXML();
+                        final Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
                         if (diff.hasDifferences()) {
                             System.out.println(xmlString);
                             throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
@@ -221,19 +249,43 @@ public class DriverTestsuiteRunner {
                     break;
                 }
                 case RECEIVE_PLC_MESSAGE: {
+                    final String className = payload.attributeValue(new QName("className"));
+                    final MessageIO messageIO = getMessageIOType(className).newInstance();
+                    final String referenceXml = payload.asXML();
                     final Message message = mapper.readValue(referenceXml, getMessageType(className));
-                    WriteBuffer writeBuffer = new WriteBuffer(1024);
+                    final WriteBuffer writeBuffer = new WriteBuffer(1024, !bigEndian);
                     try {
                         messageIO.serialize(writeBuffer, message);
-                        byte[] data = new byte[writeBuffer.getPos()];
+                        final byte[] data = new byte[writeBuffer.getPos()];
                         System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
-                        embeddedChannel.writeOutbound(data);
+                        embeddedChannel.writeInbound(Unpooled.wrappedBuffer(data));
                     } catch (ParseException e) {
                         throw new DriverTestsuiteException("Error serializing message", e);
                     }
                     break;
                 }
                 case API_REQUEST: {
+                    final String referenceXml = payload.asXML();
+                    final TestRequest request = mapper.readValue(referenceXml, TestRequest.class);
+                    if(request instanceof TestReadRequest) {
+                        final TestReadRequest readRequest = (TestReadRequest) request;
+                        final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+                        for (TestField testField : readRequest.getFields()) {
+                            builder.addItem(testField.getName(), testField.getAddress());
+                        }
+                        final PlcReadRequest plc4xRequest = builder.build();
+                        // Don't block here or the test will not be able to process the rest.
+                        plc4xRequest.execute().whenComplete((result, throwable) -> {
+                            // TODO: Do something in here ...
+                            if(result != null) {
+                                System.out.println("Success");
+                            } else {
+                                System.out.println("Failure " + throwable.getMessage());
+                            }
+                        });
+                    } else if(request instanceof TestWriteRequest) {
+
+                    }
                     break;
                 }
                 case API_RESPONSE: {
@@ -241,13 +293,16 @@ public class DriverTestsuiteRunner {
                 }
                 case DELAY: {
                     try {
-                        TimeUnit.MILLISECONDS.sleep(200);
+                        TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         throw new DriverTestsuiteException("Interrupted during delay.");
                     }
+                    break;
                 }
-
+                case TERMINATE: {
+                    embeddedChannel.close();
+                }
             }
         } catch (IOException e) {
             throw new DriverTestsuiteException("Error processing the xml", e);
@@ -260,8 +315,12 @@ public class DriverTestsuiteRunner {
     private TestStep parseTestStep(Element curElement) {
         final String elementName = curElement.getName();
         final StepType stepType = StepType.valueOf(elementName.toUpperCase().replace("-", "_"));
-        final Element definition = curElement.elementIterator().next();
-        return new TestStep(stepType, definition);
+        final String stepName = curElement.attributeValue(new QName("name"));
+        Element definition = null;
+        if(curElement.hasMixedContent()) {
+            definition = curElement.elementIterator().next();
+        }
+        return new TestStep(stepType, stepName, definition);
     }
 
     private Plc4xEmbeddedChannel getEmbeddedChannel(DriverTestsuite testSuite) {
@@ -282,19 +341,20 @@ public class DriverTestsuiteRunner {
             if(Message.class.isAssignableFrom(messageClass)) {
                 return (Class<? extends Message>) messageClass;
             }
-            throw new DriverTestsuiteException("IO class muss implement Message interface");
+            throw new DriverTestsuiteException("IO class must implement Message interface");
         } catch (ClassNotFoundException e) {
             throw new DriverTestsuiteException("Error loading message class", e);
         }
     }
 
-    private Class<? extends MessageIO> getMessageIOType(String messageClassName) throws DriverTestsuiteException {
+    @SuppressWarnings("unchecked")
+    private Class<? extends MessageIO<?,?>> getMessageIOType(String messageClassName) throws DriverTestsuiteException {
         String ioClassName = messageClassName.substring(0, messageClassName.lastIndexOf('.')) + ".io." +
             messageClassName.substring(messageClassName.lastIndexOf('.') + 1) + "IO";
         try {
             final Class<?> ioClass = Class.forName(ioClassName);
             if(MessageIO.class.isAssignableFrom(ioClass)) {
-                return (Class<? extends MessageIO>) ioClass;
+                return (Class<? extends MessageIO<?,?>>) ioClass;
             }
             throw new DriverTestsuiteException("IO class muss implement MessageIO interface");
         } catch (ClassNotFoundException e) {

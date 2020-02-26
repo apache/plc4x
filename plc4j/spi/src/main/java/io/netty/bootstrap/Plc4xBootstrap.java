@@ -19,10 +19,6 @@ under the License.
 package io.netty.bootstrap;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelPromise;
-
-import java.net.SocketAddress;
 
 public class Plc4xBootstrap extends Bootstrap {
 
@@ -48,19 +44,6 @@ public class Plc4xBootstrap extends Bootstrap {
             group = ((EventLoopProvider) channel).getEventLoop();
         }
         super.init(channel);
-    }
-
-    @Override
-    public ChannelFuture connect(SocketAddress remoteAddress) {
-        final ChannelFuture connectFuture = super.connect(remoteAddress);
-
-        if("Plc4xEmbeddedEventLoop".equals(group.getClass().getSimpleName())) {
-            if (connectFuture instanceof ChannelPromise) {
-                ChannelPromise connectPromise = (ChannelPromise) connectFuture;
-                connectPromise.setSuccess();
-            }
-        }
-        return connectFuture;
     }
 
 }

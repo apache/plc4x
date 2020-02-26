@@ -105,14 +105,23 @@ public abstract class NettyChannelFactory implements ChannelFactory {
                     workerGroup.shutdownGracefully();
                 }
             });
-            // Wait for sync
-            f.sync();
-            f.awaitUninterruptibly(); // jf: unsure if we need that
-            // Wait till the session is finished initializing.
-            return f.channel();
-        } catch (InterruptedException e) {
+
+            final Channel channel = f.channel();
+
+            // It seems the embedded channel operates differently.
+            // Intentionally using the class name as we don't want to require a
+            // hard dependency on the test-channel.
+            if(!"Plc4xEmbeddedChannel".equals(channel.getClass().getSimpleName())) {
+                // Wait for sync
+                f.sync();
+                // Wait till the session is finished initializing.
+                f.awaitUninterruptibly(); // jf: unsure if we need that
+            }
+
+            return channel;
+/*        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new PlcConnectionException("Error creating channel.", e);
+            throw new PlcConnectionException("Error creating channel.", e);*/
         } catch (Exception e) {
             throw new PlcConnectionException("Error creating channel.", e);
         }

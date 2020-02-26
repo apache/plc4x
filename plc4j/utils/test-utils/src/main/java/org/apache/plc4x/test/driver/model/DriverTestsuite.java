@@ -20,6 +20,7 @@ package org.apache.plc4x.test.driver.model;
 
 import org.apache.plc4x.java.api.PlcConnection;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class DriverTestsuite {
@@ -29,13 +30,16 @@ public class DriverTestsuite {
     private final List<TestStep> setupSteps;
     private final List<TestStep> teardownSteps;
     private final List<Testcase> testcases;
+    private final boolean bigEndian;
 
-    public DriverTestsuite(String name, PlcConnection connection, List<TestStep> setupSteps, List<TestStep> teardownSteps, List<Testcase> testcases) {
+    public DriverTestsuite(String name, PlcConnection connection, List<TestStep> setupSteps,
+                           List<TestStep> teardownSteps, List<Testcase> testcases, boolean bigEndian) {
         this.name = name;
         this.connection = connection;
         this.setupSteps = setupSteps;
         this.teardownSteps = teardownSteps;
         this.testcases = testcases;
+        this.bigEndian = bigEndian;
     }
 
     public String getName() {
@@ -56,6 +60,10 @@ public class DriverTestsuite {
 
     public List<Testcase> getTestcases() {
         return testcases;
+    }
+
+    public boolean isBigEndian() {
+        return bigEndian;
     }
 
 }

@@ -26,7 +26,7 @@
 
   <setup>
     <!-- First the driver is expected to send a COTP connection request -->
-    <send-plc-message>
+    <send-plc-message name="Send COTP Connection Request">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest">
           <parameters>
@@ -48,7 +48,7 @@
       </TPKTPacket>
     </send-plc-message>
     <!-- The PLC will send a COTP connection response -->
-    <receive-plc-message>
+    <receive-plc-message name="Receive COTP Connection Response">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse">
           <parameters>
@@ -70,7 +70,7 @@
       </TPKTPacket>
     </receive-plc-message>
     <!-- After that the driver will send a S7 connection request -->
-    <send-plc-message>
+    <send-plc-message name="Send S7 Connection Request">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
           <parameters/>
@@ -89,7 +89,7 @@
       </TPKTPacket>
     </send-plc-message>
     <!-- The PLC will send a S7 connection response -->
-    <receive-plc-message>
+    <receive-plc-message name="Receive S7 Connection Response">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
           <parameters/>
@@ -110,7 +110,7 @@
       </TPKTPacket>
     </receive-plc-message>
     <!-- Next we'll query some type information -->
-    <send-plc-message>
+    <send-plc-message name="Send S7 Identification Request">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
           <parameters/>
@@ -151,7 +151,7 @@
       </TPKTPacket>
     </send-plc-message>
     <!-- Which the PLC will gladly provide to us -->
-    <receive-plc-message>
+    <receive-plc-message name="Receive S7 Identification Response">
       <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
         <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
           <parameters/>
@@ -219,15 +219,21 @@
   <testcase>
     <name>Single element read request</name>
     <steps>
-      <!--api-request-message>
-
-      </api-request-message-->
-      <send-plc-message>
+      <api-request name="Send Read Request">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz</name>
+              <address>%Q0.0:BOOL</address>
+            </field>
+          </fields>
+        </TestReadRequest>      </api-request>
+      <send-plc-message name="Send S7 Read Request">
         <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
           <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
             <parameters/>
             <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
-              <tpduReference>11</tpduReference>
+              <tpduReference>10</tpduReference>
               <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest">
                 <items>
                   <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
@@ -245,16 +251,16 @@
               <payload/>
             </payload>
             <eot>true</eot>
-            <tpduRef>11</tpduRef>
+            <tpduRef>10</tpduRef>
           </payload>
         </TPKTPacket>
       </send-plc-message>
-      <receive-plc-message>
+      <receive-plc-message name="Receive S7 Read Response">
         <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
           <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
             <parameters/>
             <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
-              <tpduReference>11</tpduReference>
+              <tpduReference>10</tpduReference>
               <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse">
                 <numItems>1</numItems>
               </parameter>
@@ -279,6 +285,7 @@
       <!--api-response-message>
 
       </api-response-message-->
+      <delay>1000</delay>
     </steps>
   </testcase>
 

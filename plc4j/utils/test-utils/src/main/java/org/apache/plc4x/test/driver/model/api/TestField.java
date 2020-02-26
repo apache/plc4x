@@ -16,32 +16,30 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.test.driver.model;
+package org.apache.plc4x.test.driver.model.api;
 
-import org.dom4j.Element;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class TestStep {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
+public class TestField {
 
-    private final StepType type;
     private final String name;
-    private final Element payload;
+    private final String address;
 
-    public TestStep(StepType type, String name, Element payload) {
-        this.type = type;
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public TestField(@JsonProperty("name") String name, @JsonProperty("address") String address) {
         this.name = name;
-        this.payload = payload;
-    }
-
-    public StepType getType() {
-        return type;
+        this.address = address;
     }
 
     public String getName() {
         return name;
     }
 
-    public Element getPayload() {
-        return payload;
+    public String getAddress() {
+        return address;
     }
 
 }

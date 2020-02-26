@@ -36,6 +36,7 @@ public enum StepType {
     RECEIVE_PLC_BYTES,
     API_REQUEST,
     API_RESPONSE,
-    DELAY
+    DELAY,
+    TERMINATE
 
 }
