@@ -45,4 +45,14 @@ public class VarPayloadItem {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return "VarPayloadItem{" + 
+                "returnCode=" + returnCode + 
+                ", dataTransportSize=" + dataTransportSize + 
+                ", data=" + data.length + '}';
+    }
+
+    
+    
 }

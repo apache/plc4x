@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
@@ -470,9 +469,12 @@ public class S7ByteReadResponse implements InternalPlcReadResponse{
         if (values.get(name) == null) {
             throw new PlcInvalidFieldException(name);
         }
+        //TODO: Check for error respont
+        /*
         if (values.get(name).getKey() != PlcResponseCode.OK) {
             throw new PlcRuntimeException("Field '" + name + "' could not be fetched, response was " + values.get(name).getKey());
         }
+        */
         // No need to check for "null" as this is already captured by the constructors.
         return values.get(name).getValue();
     }    

@@ -846,11 +846,39 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             PlcResponse response = null;
             if (request instanceof PlcReadRequest) {
                 response = decodeReadResponse(responseMessage, requestContainer);
+                //If responseMessage is SSL type and response is null
+                //At moments Alarms and SSL request must be fragmented
+                if (response == null){ //Fragmented message? Query again!
+                    if (responseMessage.getPayloads().get(0) instanceof CpuServicesPayload){
+                        requests.put(tpduReference, requestContainer);
+                        S7RequestMessage sslRequestMessage = new S7RequestMessage(MessageType.USER_DATA,
+                                msg.getTpduReference(),
+                            Collections.singletonList(new  CpuServicesResponseParameter(
+                                CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
+                                CpuServicesParameterSubFunctionGroup.READ_SSL, 
+                                ((CpuServicesParameter) msg.getParameters().get(0)).getSequenceNumber())),
+                            Collections.singletonList(new CpuServicesPayload(DataTransportErrorCode.NOT_FOUND, 
+                                    SslId.NULL,
+                                (short) 0x0000)), null); 
+                        try {
+                            ChannelFuture future = ctx.writeAndFlush(sslRequestMessage);
+                            future.addListener(new ChannelFutureListener() {
+                                public void operationComplete(ChannelFuture future) {
+                                    logger.info("Request fragment READ_SSL done: " + future.isSuccess());
+                                }
+                            });                        
+                        } catch (Exception ex) {
+                            java.util.logging.Logger.getLogger(Plc4XS7Protocol.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                
             } else if (request instanceof PlcWriteRequest) {
                 response = decodeWriteResponse(responseMessage, requestContainer);
             } else if (request instanceof PlcSubscriptionRequest) {
                 response = decodeSubscriptionResponse(responseMessage, requestContainer);
                 
+                //At moments Alarms and SSL request must be fragmented
                 if (response == null){ //Fragmented message? Query again!
                     requests.put(tpduReference, requestContainer);
                     List<S7Parameter> parameterItems = new LinkedList<>();
@@ -861,13 +889,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                                                                             0x0000,
                                                                             null);
                     payloadItems.add(payload);
-                    
+
                     //TODO: Check multiple parameters
                     CpuServicesParameter cpuservice = new CpuServicesResponseParameter(CpuServicesParameterFunctionGroup.CPU_FUNCTIONS,
                     CpuServicesParameterSubFunctionGroup.ALARM_QUERY, ((CpuServicesParameter) msg.getParameters().get(0)).getSequenceNumber());
 
                     parameterItems.add(cpuservice); 
-                    
+
                     S7RequestMessage s7ReadRequest = new S7RequestMessage(MessageType.USER_DATA,
                         msg.getTpduReference(), 
                         parameterItems,
@@ -1069,9 +1097,17 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     private PlcResponse decodeSslReadResponse(S7ResponseMessage responseMessage, PlcRequestContainer requestContainer) throws PlcProtocolException {
         InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
         
-        Map<String, Pair<PlcResponseCode, ByteBuf>> values = new HashMap<>();
-        
+        Map<String, Pair<PlcResponseCode, ByteBuf>> values = new HashMap<>();                
         List<S7Payload> payloads = responseMessage.getPayloads();
+        
+        if (payloads.get(0) instanceof CpuServicesPayload){
+            CpuServicesPayload payload = (CpuServicesPayload) payloads.get(0); 
+            if (payload.getSslPayload() == null) {
+                logger.debug("decodeSslReadResponse: Check for fragment payload");
+                return null;
+            }
+        }
+        
         payloads.forEach((payload)->{
             CpuServicesPayload s7payload = (CpuServicesPayload) payload;});    
              
@@ -1083,7 +1119,6 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
             Pair<PlcResponseCode, ByteBuf> result = new ImmutablePair<>( 
                     decodeResponseCode(payload.getReturnCode()), 
                     payload.getSslPayload());
-
             values.put(requestName, result);
 
             index++;

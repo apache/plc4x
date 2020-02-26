@@ -630,7 +630,7 @@ public enum S7DiagnosticEventId {
     //Event Classes F -  Reserved for modules not in central 
     //                   rack (for example, CPs or FMs)
     
-    EVENTID_0x0000((short) 0x0000, "NULL"),;
+    EVENTID_0x0000((short) 0x0000, "NULL: Check for user information.");
 
     
     
@@ -641,8 +641,8 @@ public enum S7DiagnosticEventId {
     static {
         map = new HashMap<>();
         idstr = new HashMap<>();
-        for (S7DiagnosticEventId  subevent : S7DiagnosticEventId .values()) {
-            map.put(subevent.code, subevent);
+        for (S7DiagnosticEventId  event : S7DiagnosticEventId.values()) {
+            map.put(event.code, event);
         }
        
         idstr.put((short) 0x0000, "Event leaving state. ");
@@ -652,40 +652,34 @@ public enum S7DiagnosticEventId {
         idstr.put((short) 0x0800, "External error. ");
     }    
     
-    private final String event;
+    private final String description;
     private final short code;
     
-    S7DiagnosticEventId(short code, String event){
-        this.event = event;
-        this.code = code;
+    S7DiagnosticEventId(final short code, final String description){
+        this.code = code;        
+        this.description = description;
     }
     
-    public String getEvent(){
-        short id = (short) (code & 0x0F00);
-        return event;
+    public String getDescription(){
+        //short id = (short) (code & 0x0F00);
+        return description;
     }    
     
     public short getCode() {
         return code;
     }    
-    
-    public static S7DiagnosticEventId  valueOfEvent(String event) {
-        for (S7DiagnosticEventId  value : S7DiagnosticEventId .values()) {
-            if(value.getEvent().equals(event)) {
-                return value;
-            }
-        }
-        return null;
-    }
 
     public static S7DiagnosticEventId  valueOf(short code) {
         
-        if ((code > 0x8000) & (code < 0xA000)){
-            if ((code != 0x9101) & (code != 0x9190) & (code != 0x91F0)
-                    & (code != 0x91F1) & (code != 0x91F2)
-                    & (code != 0x91F3))
-            code = (short) (code & 0xF0FF);
-        }
-        return map.get(code);
+        Integer intcode = Short.toUnsignedInt(code);
+        
+        if ((intcode > 0x8000) && (intcode < 0xA000)){
+            if ((intcode != 0x9101) && (intcode != 0x9190) && (intcode != 0x91F0)
+                    && (intcode != 0x91F1) && (intcode != 0x91F2)
+                    && (intcode != 0x91F3))
+            intcode = (intcode & 0xF0FF);
+        } else if (((intcode >= 0xA000) && (intcode <= 0xBFFF))) intcode = 0x0000;
+                
+        return map.get(intcode.shortValue());
     }    
 }

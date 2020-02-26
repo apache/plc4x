@@ -265,64 +265,94 @@ public class S7Protocol extends ChannelDuplexHandler {
         }
     }
 
+    /*
+    * 
+    */
     private void encodeWriteVarPayload(VarPayload varPayload, ByteBuf buf, boolean lastItem) {
         for (VarPayloadItem payloadItem : varPayload.getItems()) {
             buf.writeByte(payloadItem.getReturnCode().getCode());
             buf.writeByte(payloadItem.getDataTransportSize().getCode());
-            // TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
-            buf.writeShort(payloadItem.getData().length);
-            buf.writeBytes(payloadItem.getData());
+            //TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
+            //TODO: This field is in BCD
+            switch (payloadItem.getDataTransportSize()){
+                case BIT: 
+                    //Check for bits length
+                    buf.writeShort(payloadItem.getData().length);                    
+                    break;
+                case BYTE_WORD_DWORD: 
+                case INTEGER:
+                    //Length in bits
+                    buf.writeShort(payloadItem.getData().length * 8);                      
+                    break;
+                case  NULL:
+                    break;
+                case DINTEGER:                    
+                case OCTET_STRING:
+                case REAL:
+                    //Length in bytes
+                    buf.writeShort(payloadItem.getData().length);                     
+                    break;
+            }           
+            buf.writeBytes(payloadItem.getData());            
             // if this is not the last item and it's payload is exactly one byte, we need to output a fill-byte.
             if((payloadItem.getData().length == 1) && !lastItem) {
                 buf.writeByte(0x00);
             }
+            
+            System.out.println("encodeWriteVarPayload ByteBuf:... \r\n" + ByteBufUtil.prettyHexDump(buf));
+            
         }
     }
-
     
     private void encodeCpuServicesPayload(CpuServicesPayload cpuServicesPayload, ByteBuf buf)
             throws PlcProtocolException {
 
         buf.writeByte(cpuServicesPayload.getReturnCode().getCode());
-        // This seems to be constantly set to this.
-        buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
 
-        // A request payload is simple.
-        if (cpuServicesPayload.getSslDataRecords().isEmpty()) {
-            buf.writeShort(4);
-            buf.writeShort(cpuServicesPayload.getSslId().getCode());
-            buf.writeShort(cpuServicesPayload.getSslIndex());
-        }
-        // The response payload contains a lot more information.
-        else {
-            throw new PlcProtocolException("Unexpected SZL Data Records");
-            /*short length = 8;
-            short sizeOfDataItem = 0;
-            for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
-                sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
-                length += sizeOfDataItem;
+        if (cpuServicesPayload.getReturnCode() == DataTransportErrorCode.NOT_FOUND) {
+            buf.writeByte(DataTransportSize.NULL.getCode()); 
+            buf.writeShort(0x0000);
+        // This seems to be constantly set to this.
+        } else {
+            buf.writeByte(DataTransportSize.OCTET_STRING.getCode());
+
+            // A request payload is simple.
+            if (cpuServicesPayload.getSslDataRecords().isEmpty()) {
+                buf.writeShort(4);
+                buf.writeShort(cpuServicesPayload.getSslId().getCode());
+                buf.writeShort(cpuServicesPayload.getSslIndex());
             }
-            buf.writeShort(length);
-            buf.writeShort(cpuServicesPayload.getSslId().getCode());
-            buf.writeShort(cpuServicesPayload.getSslIndex());
-            buf.writeShort(sizeOfDataItem);
-            buf.writeShort(cpuServicesPayload.getSslDataRecords().size());
-            // Output any sort of ssl list items, if there are any.
-            for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
-                if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
-                    SslModuleIdentificationDataRecord midr = (SslModuleIdentificationDataRecord) sslDataRecord;
-                    buf.writeShort(midr.getIndex());
-                    byte[] articleNumberBytes = midr.getArticleNumber().getBytes(StandardCharsets.UTF_8);
-                    // An array full of 20 spaces.
-                    byte[] data = new byte[]{0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-                        0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20};
-                    // Copy max 20 bytes from the article number into the dest array.
-                    System.arraycopy(articleNumberBytes, 0, data, 0, 20);
-                    buf.writeBytes(data);
-                    buf.writeShort(midr.getModuleOrOsVersion());
-                    buf.writeShort(midr.getPgDescriptionFileVersion());
+            // The response payload contains a lot more information.
+            else {
+                throw new PlcProtocolException("Unexpected SZL Data Records");
+                /*short length = 8;
+                short sizeOfDataItem = 0;
+                for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                    sizeOfDataItem = (short) (sslDataRecord.getLengthInWords() * (short) 2);
+                    length += sizeOfDataItem;
                 }
-            }*/
+                buf.writeShort(length);
+                buf.writeShort(cpuServicesPayload.getSslId().getCode());
+                buf.writeShort(cpuServicesPayload.getSslIndex());
+                buf.writeShort(sizeOfDataItem);
+                buf.writeShort(cpuServicesPayload.getSslDataRecords().size());
+                // Output any sort of ssl list items, if there are any.
+                for (SslDataRecord sslDataRecord : cpuServicesPayload.getSslDataRecords()) {
+                    if(sslDataRecord instanceof SslModuleIdentificationDataRecord) {
+                        SslModuleIdentificationDataRecord midr = (SslModuleIdentificationDataRecord) sslDataRecord;
+                        buf.writeShort(midr.getIndex());
+                        byte[] articleNumberBytes = midr.getArticleNumber().getBytes(StandardCharsets.UTF_8);
+                        // An array full of 20 spaces.
+                        byte[] data = new byte[]{0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+                            0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20};
+                        // Copy max 20 bytes from the article number into the dest array.
+                        System.arraycopy(articleNumberBytes, 0, data, 0, 20);
+                        buf.writeBytes(data);
+                        buf.writeShort(midr.getModuleOrOsVersion());
+                        buf.writeShort(midr.getPgDescriptionFileVersion());
+                    }
+                }*/
+            }
         }
     }    
     
@@ -1060,7 +1090,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         
         CpuServicesParameterFunctionGroup functionGroup =
             CpuServicesParameterFunctionGroup.valueOf(typeAndFunctionGroup);
-        
+
         CpuServicesParameterSubFunctionGroup subFunctionGroup =
             CpuServicesParameterSubFunctionGroup.valueOf(in.readByte());
         
@@ -1073,6 +1103,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                byte dataUnitReferenceNumber = in.readByte();
                boolean lastDataUnit = in.readByte() == 0x00;
                ParameterError error = ParameterError.valueOf(in.readShort());
+               logger.info("decodeParameter.: " + error);
 
                 return new CpuCyclicServicesResponseParameter(functionGroup, subCycFunctionGroup, sequenceNumber,
                             dataUnitReferenceNumber, lastDataUnit, error);               
@@ -1085,6 +1116,7 @@ public class S7Protocol extends ChannelDuplexHandler {
             byte dataUnitReferenceNumber = in.readByte();
             boolean lastDataUnit = in.readByte() == 0x00;
             ParameterError error = ParameterError.valueOf(in.readShort());
+
             return new CpuServicesResponseParameter(functionGroup, subFunctionGroup, sequenceNumber,
                 dataUnitReferenceNumber, lastDataUnit, error);
         }
@@ -1154,11 +1186,23 @@ public class S7Protocol extends ChannelDuplexHandler {
         return items;
     }
     
-    private CpuServicesPayload decodeReadSslPayload(CpuServicesParameter parameter, ByteBuf userData){
+    private CpuServicesPayload decodeReadSslPayload(CpuServicesParameter parameter, ByteBuf userData){ 
+        //logger.info("decodeReadSslPayload: \r\n" + ByteBufUtil.prettyHexDump(userData));
+        CpuServicesResponseParameter thisparameter = null;
+        short length;
+        short dataUnitReferenceNumber = 0x0000;
+        boolean lastdataunit = true;
+        
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
-        short length;
+
         
+        if (parameter instanceof CpuServicesResponseParameter){           
+            thisparameter = (CpuServicesResponseParameter) parameter;
+            dataUnitReferenceNumber = (short) thisparameter.getDataUnitReferenceNumber();
+            lastdataunit = thisparameter.isLastDataUnit();
+        }        
+        /*
         if(dataTransportSize != DataTransportSize.OCTET_STRING) {
             if(dataTransportSize == DataTransportSize.NULL) {
                 length = userData.readShort();
@@ -1170,39 +1214,78 @@ public class S7Protocol extends ChannelDuplexHandler {
                 
             }   
         }
+          */      
+        length = userData.readShort();         
+        //If is fragment message 
+        SslId sslId = SslId.NULL;
+        short sslIndex = 0x0000;
         
-        length = userData.readShort();                
-        SslId sslId = SslId.valueOf(userData.readShort());
-        short sslIndex = userData.readShort();
+        
+        //Check for service not found
+        if (returnCode == DataTransportErrorCode.NOT_FOUND && !lastdataunit){
+            userData.clear();           
+            if (thisparameter != null){               
+                userData.writeShort(thisparameter.getError().getCode());
+            } else {
+                userData.writeShort(ParameterError.PROTOCOL_ERROR.getCode());
+            }
+           return new CpuServicesPayload(returnCode, sslId, sslIndex, userData);            
+        }        
+        
         // If the length is 4 there is no `partial list length in bytes` and `partial list count` parameters.
         if(length == 4) {
+            //logger.info("decodeReadSslPayload: error response.");
+            sslId = SslId.valueOf(userData.readShort());
+            sslIndex = userData.readShort();            
             return new CpuServicesPayload(returnCode, sslId, sslIndex);
         }
         // If the length is not 4, then it has to be at least 8.
-        else if(length >= 8) {
-            
-            // TODO: We should probably ensure we don't read more than this.
-            // Skip the partial list length in words.
-            // TODO: Transfer all Payload to the client app. Use helper class.
-            /*
-            userData.skipBytes(2);
-            short partialListCount = userData.readShort();
-            List<SslDataRecord> sslDataRecords = new LinkedList<>();
-            for(int i = 0; i < partialListCount; i++) {
-                short index = userData.readShort();
-                byte[] articleNumberBytes = new byte[20];
-                userData.readBytes(articleNumberBytes);
-                String articleNumber = new String(articleNumberBytes, StandardCharsets.UTF_8).trim();
-                short bgType = userData.readShort();
-                short moduleOrOsVersion = userData.readShort();
-                short pgDescriptionFileVersion = userData.readShort();
-                sslDataRecords.add(new SslModuleIdentificationDataRecord(
-                    index, articleNumber, bgType, moduleOrOsVersion, pgDescriptionFileVersion));
+        else if((length >= 8) || ((length == 0) && lastdataunit)) {                                           
+            if (!lastdataunit) {   
+                //TODO: Work with two fragments, we need test with 3 and more
+                Pair<LocalDateTime, Queue<ByteBuf>> fragments = fragmentedData.get(dataUnitReferenceNumber);
+                if (fragments != null) {
+                    Queue<ByteBuf> bytebufqueue = fragments.getValue();
+                    bytebufqueue.add(userData);
+                } else {
+                    sslId = SslId.valueOf(userData.readShort());
+                    sslIndex = userData.readShort();                       
+                    Queue<ByteBuf> bytebufqueue = new ArrayDeque();
+                    bytebufqueue.add(userData);
+                    Pair<LocalDateTime, Queue<ByteBuf>> firtsfragment = new ImmutablePair(LocalDateTime.now(), bytebufqueue);
+                    fragmentedData.put(dataUnitReferenceNumber, firtsfragment);
+                } 
+                return new CpuServicesPayload(returnCode, sslId, sslIndex);   
             }
-            */
-            ByteBuf payload = Unpooled.copiedBuffer(userData);
-                            
-            return new CpuServicesPayload(returnCode, sslId, sslIndex, payload);
+            
+            //Reemsable the fragments   
+            
+            if (dataUnitReferenceNumber != 0x0000){
+                Pair<LocalDateTime, Queue<ByteBuf>> fragments = fragmentedData.get(dataUnitReferenceNumber);
+                if (fragments != null){ 
+                    Queue<ByteBuf> bytebufqueue = fragments.getValue();
+                    ByteBuf payload = bytebufqueue.remove();
+                    for(ByteBuf nextpayload:bytebufqueue){
+                        if (nextpayload != null) { 
+                            payload.writeBytes(nextpayload);
+                            nextpayload.release();                          
+                        };
+                    }               
+                    payload.writeBytes(userData);
+                    userData.clear();                 
+                    userData.writeBytes(payload);                
+                    payload.release();               
+                    fragmentedData.remove(dataUnitReferenceNumber);
+                    returnCode = DataTransportErrorCode.OK;
+                }                  
+            } else {
+                sslId = SslId.valueOf(userData.readShort());
+                sslIndex = userData.readShort();                  
+            }
+
+            //TODO: sslId & sslIndex in this point dont care, we need check!
+            return new CpuServicesPayload(returnCode, sslId, sslIndex, userData);
+            
         }
         // In all other cases, it's probably an error.
         else {

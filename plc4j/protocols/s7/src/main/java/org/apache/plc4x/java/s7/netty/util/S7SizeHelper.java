@@ -33,6 +33,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.S7Payload;
 import org.apache.plc4x.java.s7.netty.model.payloads.VarPayload;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.ssls.SslDataRecord;
+import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 import org.apache.plc4x.java.s7.netty.model.types.VariableAddressingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,9 @@ public class S7SizeHelper {
                 }
             } else if(payload instanceof CpuServicesPayload) {
                 CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) payload;
-                if(cpuServicesPayload.getSslDataRecords().isEmpty()) {
+                if(cpuServicesPayload.getReturnCode() == DataTransportErrorCode.NOT_FOUND ){
+                    return 4;
+                } else  if(cpuServicesPayload.getSslDataRecords().isEmpty()) {
                     return 8;
                 } else {
                     short length = 0;

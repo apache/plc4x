@@ -54,7 +54,6 @@ public class S7SslField implements PlcField {
     }
           
     public static boolean matches(String fieldString) {
-        System.out.println("fieldString: " + fieldString);
         return SSL_ADDRESS_PATTERN.matcher(fieldString).matches();      
     }   
     

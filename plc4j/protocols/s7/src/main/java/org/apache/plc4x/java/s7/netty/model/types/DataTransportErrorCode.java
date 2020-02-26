@@ -18,11 +18,10 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.model.types;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum DataTransportErrorCode {
     RESERVED((byte) 0x00),
@@ -30,6 +29,7 @@ public enum DataTransportErrorCode {
     ACCESS_DENIED((byte) 0x03),
     INVALID_ADDRESS((byte) 0x05),
     DATA_TYPE_NOT_SUPPORTED((byte) 0x06),
+    DATA_TYPE_INCONSISTENT((byte) 0x07),
     NOT_FOUND((byte) 0x0A);
 
     private static final Logger logger = LoggerFactory.getLogger(DataTransportErrorCode.class);
