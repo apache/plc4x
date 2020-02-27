@@ -34,6 +34,7 @@
   <description>A collection of tools that provide additional services to users.</description>
 
   <modules>
+    <module>capture-replay</module>
     <module>connection-pool</module>
     <module>opm</module>
     <module>scraper</module>
