@@ -204,14 +204,6 @@ public class PcapSocketChannel extends OioByteStreamChannel {
         return new RawSocketUnsafe();
     }
 
-    /**
-     * Use a busy wait loop for waiting. This should never be used in a
-     * production environment as it consumes 100% of one CPU core time to
-     * achieve, however it's the only accurate way to sleep for less than
-     * a millisecond.
-     *
-     * @param numNanos number of nano-seconds to wait.
-     */
     private void nanoSecondSleep(long numNanos) {
         try {
             TimeUnit.NANOSECONDS.sleep(numNanos);

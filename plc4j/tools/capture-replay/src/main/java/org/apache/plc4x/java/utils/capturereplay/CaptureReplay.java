@@ -52,42 +52,42 @@ public class CaptureReplay {
 
         // Start a thread that processes the callbacks from the raw socket and simply
         // forwards the bytes read to the buffer.
-        Thread loopThread = new Thread(() -> {
-            try {
-                readHandle.loop(-1, new PacketListener() {
-                    private Timestamp lastPacketTime = null;
+        try {
+            readHandle.loop(-1, new PacketListener() {
+                private Timestamp lastPacketTime = null;
 
-                    @Override
-                    public void gotPacket(Packet packet) {
-                        Timestamp curPacketTime = readHandle.getTimestamp();
+                @Override
+                public void gotPacket(Packet packet) {
+                    Timestamp curPacketTime = readHandle.getTimestamp();
 
-                        // Only enable the throttling if it is not disabled.
-                        // If last-time is not null, wait for the given number of nano-seconds.
-                        if((replaySpeed <= 0) && (lastPacketTime != null)) {
-                            int numMicrosecondsSleep = (int)
-                                ((curPacketTime.getNanos() - lastPacketTime.getNanos()) * replaySpeed);
-                            nanoSecondSleep(numMicrosecondsSleep);
-                        }
-
-                        // Send the packet to the output device ...
-                        try {
-                            sendHandle.sendPacket(packet);
-                        } catch (PcapNativeException | NotOpenException e) {
-                            LOGGER.error("Error sending packet", e);
-                        }
-
-                        // Remember the timestamp of the current packet.
-                        lastPacketTime = curPacketTime;
+                    // Only enable the throttling if it is not disabled.
+                    // If last-time is not null, wait for the given number of nano-seconds.
+                    if ((replaySpeed > 0) && (lastPacketTime != null)) {
+                        int numMicrosecondsSleep = (int)
+                            ((curPacketTime.getNanos() - lastPacketTime.getNanos()) * replaySpeed);
+                        nanoSecondSleep(numMicrosecondsSleep);
                     }
-                });
-            } catch (PcapNativeException | NotOpenException e) {
-                LOGGER.error("PCAP sending loop thread died!", e);
-            } catch (InterruptedException e) {
-                LOGGER.warn("PCAP sending loop thread was interrupted (hopefully intentionally)", e);
-                Thread.currentThread().interrupt();
-            }
-        });
-        loopThread.start();
+
+                    // Send the packet to the output device ...
+                    try {
+                        sendHandle.sendPacket(packet);
+                    } catch (PcapNativeException | NotOpenException e) {
+                        LOGGER.error("Error sending packet", e);
+                    }
+
+                    // Remember the timestamp of the current packet.
+                    lastPacketTime = curPacketTime;
+                }
+            });
+        } catch (PcapNativeException | NotOpenException e) {
+            LOGGER.error("PCAP sending loop thread died!", e);
+        } catch (InterruptedException e) {
+            LOGGER.warn("PCAP sending loop thread was interrupted (hopefully intentionally)", e);
+            Thread.currentThread().interrupt();
+        } finally {
+            readHandle.close();
+            sendHandle.close();
+        }
     }
 
     private void nanoSecondSleep(long numNanos) {
@@ -107,7 +107,9 @@ public class CaptureReplay {
         }
 
         CaptureReplay replay = new CaptureReplay(options);
-        replay.run();
+        do {
+            replay.run();
+        } while (options.isLoop());
     }
 
 }

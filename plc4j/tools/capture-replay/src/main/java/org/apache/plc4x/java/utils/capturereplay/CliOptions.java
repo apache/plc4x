@@ -28,12 +28,14 @@ public class CliOptions {
     private static final String OPTION_INPUT_FILE = "input-file";
     private static final String OPTION_OUTPUT_DEVICE = "output-device";
     private static final String OPTION_REPLAY_SPEED = "replay-speed";
+    private static final String OPTION_LOOP = "loop";
 
     private static Options options;
 
     private final File inputFile;
     private final String outputDevice;
     private final float replaySpeed;
+    private final boolean loop;
 
     public static CliOptions fromArgs(String[] args) {
         options = new Options();
@@ -56,10 +58,17 @@ public class CliOptions {
                 .build());
         options.addOption(
             Option.builder()
-                .type(String.class)
+                .type(Float.class)
                 .longOpt(OPTION_REPLAY_SPEED)
                 .hasArgs()
                 .desc("Replay speed (1 = real time, 0 = as fast as possible, 0.5 = half speed, 2 = double speed")
+                .build());
+        options.addOption(
+            Option.builder()
+                .type(Boolean.class)
+                .longOpt(OPTION_LOOP)
+                .hasArgs()
+                .desc("If set to TRUE it will start sending the packets as soon as it reaches the end")
                 .build());
 
         CommandLineParser parser = new DefaultParser();
@@ -69,10 +78,10 @@ public class CliOptions {
 
             File inputFile = new File(commandLine.getOptionValue(OPTION_INPUT_FILE));
             String outputDevice = commandLine.getOptionValue(OPTION_OUTPUT_DEVICE);
-            float replaySpeed = Float.parseFloat(
-                commandLine.hasOption(OPTION_REPLAY_SPEED) ? commandLine.getOptionValue(OPTION_REPLAY_SPEED) : "1");
+            float replaySpeed = Float.parseFloat(commandLine.getOptionValue(OPTION_REPLAY_SPEED, "1"));
+            boolean loop = Boolean.parseBoolean(commandLine.getOptionValue(OPTION_LOOP, "false"));
 
-            return new CliOptions(inputFile, outputDevice, replaySpeed);
+            return new CliOptions(inputFile, outputDevice, replaySpeed, loop);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -84,10 +93,11 @@ public class CliOptions {
         formatter.printHelp("CaptureReplay", options);
     }
 
-    public CliOptions(File inputFile, String outputDevice, float replaySpeed) {
+    public CliOptions(File inputFile, String outputDevice, float replaySpeed, boolean loop) {
         this.inputFile = inputFile;
         this.outputDevice = outputDevice;
         this.replaySpeed = replaySpeed;
+        this.loop = loop;
     }
 
     public File getInputFile() {
@@ -100,6 +110,10 @@ public class CliOptions {
 
     public float getReplaySpeed() {
         return replaySpeed;
+    }
+
+    public boolean isLoop() {
+        return loop;
     }
 
 }
