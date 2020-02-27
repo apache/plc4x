@@ -52,7 +52,10 @@ TIP: (Especially pay attention to the year in the `NOTICE` file if this is the f
 [%interactive]
 * [ ] [RM] Verify the staged source README, RELEASE_NOTE files correspond to those in the extracted source bundle.
 * [ ] [RM] Run RAT externally to ensure there are no surprises.
-** TODO: Document this.
+[subs="attributes"]
+----
+java -jar apache-rat-0.13.jar apache-plc4x-{current-full-version}-source-release.zip > rat.log
+----
 * [ ] Search for `SNAPSHOT` references:
 [subs="attributes"]
 ----
@@ -61,6 +64,23 @@ find . -type f -name 'pom.xml' -exec grep -l "SNAPSHOT" {} \;
 [%interactive]
 * [ ] Build the project according to the information in the README.md file.
 * [ ] [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appendng `-Dmaven.repo.local=../.m2`.
+
+=== Using RAT
+
+Even if we are using RAT to ensure sources have headers in place, still the project can contain exclusions that hide things from the check.
+
+The only way to avoid missing important files is by running `RAT` externally.
+
+If you haven't got it, yet please download it form https://creadur.apache.org/rat/download_rat.cgi[here].
+
+Also do I like to run RAT against the zip archive containing the source release as this way you avoid the problem of eventually scanning the binaries produced by the build (If you run RAT after building, it will complain about every jar and ever class file).
+
+[subs="attributes"]
+----
+java -jar apache-rat-0.13.jar apache-plc4x-{current-full-version}-source-release.zip > rat.log
+----
+
+By piping the result into a text file gives you the chance to investigate the content more easily.
 
 === Release Tooling
 
