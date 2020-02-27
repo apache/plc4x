@@ -61,6 +61,7 @@
         <configuration>
           <usedDependencies>
             <usedDependency>org.pcap4j:pcap4j-packetfactory-static</usedDependency>
+            <usedDependency>ch.qos.logback:logback-core</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
