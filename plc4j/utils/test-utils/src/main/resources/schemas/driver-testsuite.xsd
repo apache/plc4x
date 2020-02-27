@@ -49,10 +49,10 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-plc-message" type="messageStep"/>
-                                <xs:element name="send-plc-bytes" type="bytesStep"/>
-                                <xs:element name="receive-plc-message" type="messageStep"/>
-                                <xs:element name="receive-plc-bytes" type="bytesStep"/>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
                                 <xs:element name="api-request" type="messageStep"/>
                                 <xs:element name="api-response" type="messageStep"/>
                                 <xs:element name="delay" type="xs:integer"/>
@@ -67,10 +67,10 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-plc-message" type="messageStep"/>
-                                <xs:element name="send-plc-bytes" type="bytesStep"/>
-                                <xs:element name="receive-plc-message" type="messageStep"/>
-                                <xs:element name="receive-plc-bytes" type="bytesStep"/>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
                                 <xs:element name="api-request" type="messageStep"/>
                                 <xs:element name="api-response" type="messageStep"/>
                                 <xs:element name="delay" type="xs:integer"/>
@@ -92,10 +92,10 @@
                                 <xs:complexType>
                                     <xs:sequence minOccurs="1" maxOccurs="unbounded">
                                         <xs:choice>
-                                            <xs:element name="send-plc-message" type="messageStep"/>
-                                            <xs:element name="send-plc-bytes" type="bytesStep"/>
-                                            <xs:element name="receive-plc-message" type="messageStep"/>
-                                            <xs:element name="receive-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                            <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="incoming-plc-message" type="messageStep"/>
+                                            <xs:element name="incoming-plc-bytes" type="bytesStep"/>
                                             <xs:element name="api-request" type="messageStep"/>
                                             <xs:element name="api-response" type="messageStep"/>
                                             <xs:element name="delay" type="xs:integer"/>

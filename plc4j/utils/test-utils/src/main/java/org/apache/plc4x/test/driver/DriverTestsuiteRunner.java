@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.test.driver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.netty.buffer.ByteBuf;
@@ -29,6 +30,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
@@ -56,6 +58,7 @@ import org.xmlunit.diff.Diff;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class DriverTestsuiteRunner {
@@ -63,6 +66,8 @@ public class DriverTestsuiteRunner {
     private static final Logger LOGGER = LoggerFactory.getLogger(DriverTestsuiteRunner.class);
 
     private final String testsuiteDocument;
+
+    private CompletableFuture<? extends PlcResponse> responseFuture;
 
     public DriverTestsuiteRunner(String testsuiteDocument) {
         this.testsuiteDocument = testsuiteDocument;
@@ -196,72 +201,35 @@ public class DriverTestsuiteRunner {
     }
 
     private void executeStep(TestStep testStep, PlcConnection plcConnection, Plc4xEmbeddedChannel embeddedChannel, boolean bigEndian) throws DriverTestsuiteException {
-        LOGGER.info("  - Running step: '" + testStep.getName() + "' - " + testStep.getType());
+        LOGGER.info(String.format("  - Running step: '%s' - %s", testStep.getName(), testStep.getType()));
         final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final Element payload = testStep.getPayload();
         try {
             switch (testStep.getType()) {
-                case SEND_PLC_BYTES: {
-                    final ByteBuf byteBuf = embeddedChannel.readOutbound();
-                    if(byteBuf == null) {
-                        throw new DriverTestsuiteException("No outbound message available");
-                    }
-                    final byte[] data = new byte[byteBuf.readableBytes()];
-                    byteBuf.readBytes(data);
-
-                    // TODO: Compare the read bytes with the expected byte array.
-
+                case OUTGOING_PLC_BYTES: {
+                    // As we're in the asynchronous world, give the driver some time to respond.
+                    shortDelay();
+                    // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
+                    final byte[] data = getOutboundBytes(embeddedChannel);
+                    // Validate the data actually matches the expected message.
+                    validateBytes(payload, data, bigEndian);
                     break;
                 }
-                case SEND_PLC_MESSAGE: {
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(200);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw new DriverTestsuiteException("Interrupted during delay.");
-                    }
-
-                    final ByteBuf byteBuf = embeddedChannel.readOutbound();
-                    if(byteBuf == null) {
-                        throw new DriverTestsuiteException("No outbound message available");
-                    }
-                    final byte[] data = new byte[byteBuf.readableBytes()];
-                    byteBuf.readBytes(data);
-
-                    final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
-                    try {
-                        final String className = payload.attributeValue(new QName("className"));
-                        final MessageIO messageIO = getMessageIOType(className).newInstance();
-                        final Object parsedOutput = messageIO.parse(readBuffer);
-                        final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
-                        final String referenceXml = payload.asXML();
-                        final Diff diff = DiffBuilder.compare(referenceXml).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
-                        if (diff.hasDifferences()) {
-                            System.out.println(xmlString);
-                            throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
-                        }
-                    } catch (ParseException e) {
-                        throw new DriverTestsuiteException("Error parsing message", e);
-                    }
+                case OUTGOING_PLC_MESSAGE: {
+                    // As we're in the asynchronous world, give the driver some time to respond.
+                    shortDelay();
+                    // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
+                    final byte[] data = getOutboundBytes(embeddedChannel);
+                    // Validate the data actually matches the expected message.
+                    validateMessage(payload, data, bigEndian);
                     break;
                 }
-                case RECEIVE_PLC_BYTES: {
-                    break;
-                }
-                case RECEIVE_PLC_MESSAGE: {
-                    final String className = payload.attributeValue(new QName("className"));
-                    final MessageIO messageIO = getMessageIOType(className).newInstance();
-                    final String referenceXml = payload.asXML();
-                    final Message message = mapper.readValue(referenceXml, getMessageType(className));
-                    final WriteBuffer writeBuffer = new WriteBuffer(1024, !bigEndian);
-                    try {
-                        messageIO.serialize(writeBuffer, message);
-                        final byte[] data = new byte[writeBuffer.getPos()];
-                        System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
-                        embeddedChannel.writeInbound(Unpooled.wrappedBuffer(data));
-                    } catch (ParseException e) {
-                        throw new DriverTestsuiteException("Error serializing message", e);
-                    }
+                case INCOMING_PLC_BYTES:
+                case INCOMING_PLC_MESSAGE: {
+                    // Get a byte representation of the incoming message.
+                    final byte[] data = getBytesFromXml(payload, bigEndian);
+                    // Send the bytes to the channel.
+                    embeddedChannel.writeInbound(Unpooled.wrappedBuffer(data));
                     break;
                 }
                 case API_REQUEST: {
@@ -274,30 +242,34 @@ public class DriverTestsuiteRunner {
                             builder.addItem(testField.getName(), testField.getAddress());
                         }
                         final PlcReadRequest plc4xRequest = builder.build();
-                        // Don't block here or the test will not be able to process the rest.
-                        plc4xRequest.execute().whenComplete((result, throwable) -> {
-                            // TODO: Do something in here ...
-                            if(result != null) {
-                                System.out.println("Success");
-                            } else {
-                                System.out.println("Failure " + throwable.getMessage());
-                            }
-                        });
+                        // Currently we can only process one response at at time, throw an error if more
+                        // are submitted.
+                        if(responseFuture != null) {
+                            throw new DriverTestsuiteException("Previous response not handled.");
+                        }
+                        // Save the response for being used later on.
+                        responseFuture = plc4xRequest.execute();
                     } else if(request instanceof TestWriteRequest) {
-
+                        // TODO: Implement ...
                     }
                     break;
                 }
                 case API_RESPONSE: {
+                    if(responseFuture == null) {
+                        throw new DriverTestsuiteException("No response expected.");
+                    }
+                    try {
+                        final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
+                        // TODO: Implement ...
+                        final String serializedResponse = mapper.writeValueAsString(plcResponse);
+                        System.out.println(serializedResponse);
+                    } catch(Exception e) {
+                        throw new DriverTestsuiteException("Got no response within 1000ms.");
+                    }
                     break;
                 }
                 case DELAY: {
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        throw new DriverTestsuiteException("Interrupted during delay.");
-                    }
+                    delay(1000);
                     break;
                 }
                 case TERMINATE: {
@@ -306,8 +278,6 @@ public class DriverTestsuiteRunner {
             }
         } catch (IOException e) {
             throw new DriverTestsuiteException("Error processing the xml", e);
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new DriverTestsuiteException("Error instantiating MessageIO class", e);
         }
         LOGGER.info("    Done");
     }
@@ -335,6 +305,7 @@ public class DriverTestsuiteRunner {
         throw new PlcRuntimeException("Expecting ChannelExposingConnection");
     }
 
+    @SuppressWarnings("unchecked")
     private Class<? extends Message> getMessageType(String messageClassName) throws DriverTestsuiteException {
         try {
             final Class<?> messageClass = Class.forName(messageClassName);
@@ -359,6 +330,73 @@ public class DriverTestsuiteRunner {
             throw new DriverTestsuiteException("IO class muss implement MessageIO interface");
         } catch (ClassNotFoundException e) {
             throw new DriverTestsuiteException("Error loading io class", e);
+        }
+    }
+
+    private byte[] getOutboundBytes(Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
+        final ByteBuf byteBuf = embeddedChannel.readOutbound();
+        if(byteBuf == null) {
+            throw new DriverTestsuiteException("No outbound message available");
+        }
+        final byte[] data = new byte[byteBuf.readableBytes()];
+        byteBuf.readBytes(data);
+        return data;
+    }
+
+    private byte[] getBytesFromXml(Element referenceXml, boolean bigEndian) throws DriverTestsuiteException {
+        final String className = referenceXml.attributeValue(new QName("className"));
+        final WriteBuffer writeBuffer = new WriteBuffer(1024, !bigEndian);
+        try {
+            final MessageIO messageIO = getMessageIOType(className).newInstance();
+            final String referenceXmlString = referenceXml.asXML();
+            final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+            final Message message = mapper.readValue(referenceXmlString, getMessageType(className));
+            try {
+                messageIO.serialize(writeBuffer, message);
+                final byte[] data = new byte[message.getLengthInBytes()];
+                System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
+                return data;
+            } catch (ParseException e) {
+                throw new DriverTestsuiteException("Error serializing message", e);
+            }
+        } catch (IllegalAccessException | JsonProcessingException | InstantiationException e) {
+            throw new DriverTestsuiteException("Error parsing message", e);
+        }
+    }
+
+    private void validateBytes(Element referenceXml, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
+        // TODO: Implement this ...
+    }
+
+    private void validateMessage(Element referenceXml, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
+        final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
+        final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
+        try {
+            final String className = referenceXml.attributeValue(new QName("className"));
+            final MessageIO<?,?> messageIO = getMessageIOType(className).newInstance();
+            final Object parsedOutput = messageIO.parse(readBuffer);
+            final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
+            final String referenceXmlString = referenceXml.asXML();
+            final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
+            if (diff.hasDifferences()) {
+                LOGGER.warn(xmlString);
+                throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
+            }
+        } catch (ParseException | IllegalAccessException | JsonProcessingException | InstantiationException e) {
+            throw new DriverTestsuiteException("Error parsing message", e);
+        }
+    }
+
+    private void shortDelay() throws DriverTestsuiteException {
+        delay(23);
+    }
+
+    private void delay(int milliseconds) throws DriverTestsuiteException {
+        try {
+            TimeUnit.MILLISECONDS.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DriverTestsuiteException("Interrupted during delay.");
         }
     }
 

@@ -30,10 +30,10 @@ public enum StepType {
         API_RESPONSE:                               -------->
      */
 
-    SEND_PLC_MESSAGE,
-    SEND_PLC_BYTES,
-    RECEIVE_PLC_MESSAGE,
-    RECEIVE_PLC_BYTES,
+    OUTGOING_PLC_MESSAGE,
+    OUTGOING_PLC_BYTES,
+    INCOMING_PLC_MESSAGE,
+    INCOMING_PLC_BYTES,
     API_REQUEST,
     API_RESPONSE,
     DELAY,
