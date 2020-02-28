@@ -38,7 +38,11 @@
     <bundle>mvn:org.apache.commons/commons-configuration2/2.6</bundle>
     <bundle>mvn:org.apache.commons/commons-text/1.8</bundle>
     <bundle>mvn:commons-logging/commons-logging/1.2</bundle>
-    <bundle>mvn:org.apache.commons/commons-lang3/3.7</bundle>
+    <bundle>mvn:org.apache.commons/commons-lang3/3.9</bundle>
     <bundle>mvn:commons-io/commons-io/2.6</bundle>
+    <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/2.10.1</bundle>
+    <bundle>mvn:commons-collections/commons-collections/3.2.2</bundle>
+    <bundle>mvn:commons-beanutils/commons-beanutils/1.9.4</bundle>
+    <bundle>mvn:io.vavr/vavr/0.10.2</bundle>
   </feature>
 </features>

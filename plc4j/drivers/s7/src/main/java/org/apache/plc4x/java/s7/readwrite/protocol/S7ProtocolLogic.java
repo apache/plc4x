@@ -24,90 +24,40 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.s7.readwrite.COTPPacket;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse;
-import org.apache.plc4x.java.s7.readwrite.COTPPacketData;
-import org.apache.plc4x.java.s7.readwrite.COTPParameter;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap;
-import org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize;
-import org.apache.plc4x.java.s7.readwrite.S7Address;
-import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
-import org.apache.plc4x.java.s7.readwrite.S7Message;
-import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
-import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
-import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse;
-import org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem;
-import org.apache.plc4x.java.s7.readwrite.S7VarPayloadStatusItem;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItem;
-import org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress;
-import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
-import org.apache.plc4x.java.s7.readwrite.SzlId;
-import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
-import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
-import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
-import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
+import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
+import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements PlcSubscriber {
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
@@ -128,6 +78,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
     }
+
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
@@ -231,6 +182,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      */
     private CompletableFuture<S7MessageResponseData> readInternal(S7MessageRequest request) {
         CompletableFuture<S7MessageResponseData> future = new CompletableFuture<>();
+
+        //To stay synced, the tpudGenerator must not go over the Short.MAX_VALUE
+        //as it is cqsted to short later on to resync request and response
+        //tpudRef 0-10 is reserved and if it exceeds 65535 it will be casted to 0
+        //here we reset it to its initial value of 10
+        if(tpduGenerator.get()>= (Short.MAX_VALUE-1)){
+            tpduGenerator.set(10);
+        }
         int tpduId = tpduGenerator.getAndIncrement();
 
         // Create a new Request with correct tpuId (is not known before)
@@ -269,6 +228,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             parameterItems.add(new S7VarRequestParameterItemAddress(encodeS7Address(field)));
             payloadItems.add(serializePlcValue(field, plcValue));
         }
+        if(tpduGenerator.get()>= (Short.MAX_VALUE-1)){
+            tpduGenerator.set(10);
+        }
         final int tpduId = tpduGenerator.getAndIncrement();
         TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null,
             new S7MessageRequest(tpduId,
@@ -302,8 +264,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
-        // TODO Implement Closing on Protocol Level
+
     }
+
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {
         for (S7PayloadUserDataItem item : payloadUserData.getItems()) {
@@ -372,6 +335,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 new COTPParameterTpduSize(cotpTpduSize)
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
+
 
     private PlcResponse decodeReadResponse(S7MessageResponseData responseMessage, InternalPlcReadRequest plcReadRequest) throws PlcProtocolException {
         S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
@@ -522,4 +486,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
     }
 
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
+        return null;
+    }
+
+    @Override
+    public void unregister(PlcConsumerRegistration registration) {
+
+    }
 }

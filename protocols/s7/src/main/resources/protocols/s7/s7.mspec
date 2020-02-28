@@ -257,7 +257,7 @@
         ]
     ]
 ]
-
+//Changed this for 11,12,13,14 as it was not correctly writing into the buffer
 [dataIo 'DataItem' [uint 8 'dataProtocolId']
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
@@ -272,20 +272,20 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['11' List
-            [array bit 'value' count '8']
+        ['11' Byte
+            [simple int 8 'value']
         ]
         // 2 byte (16 bit)
-        ['12' List
-            [array bit 'value' count '16']
+        ['12' Short
+            [simple int 16 'value']
         ]
         // 4 byte (32 bit)
-        ['13' List
-            [array bit 'value' count '32']
+        ['13' Integer
+            [simple int 32 'value']
         ]
         // 8 byte (64 bit)
-        ['14' List
-            [array bit 'value' count '64']
+        ['14' Long
+            [simple int 64 'value']
         ]
 
         // -----------------------------------------

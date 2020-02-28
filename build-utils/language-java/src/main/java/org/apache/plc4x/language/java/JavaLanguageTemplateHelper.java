@@ -760,7 +760,12 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
                 }
                 else if(type instanceof SimpleTypeReference) {
                     SimpleTypeReference simpleTypeReference = (SimpleTypeReference) type;
-                    sizeInBits += simpleTypeReference.getSizeInBits();
+                    sb.append(simpleTypeReference.getSizeInBits()).append(" + ");
+                    //sizeInBits += simpleTypeReference.getSizeInBits();
+                    //Here I needed the size to be the size in BITS so adding + 0 to cancel the /8 after applying template
+                    //If I send a Buffer sized 1 Byte to the PLC for a Byte data
+                    // I get the error code 0x07 Data size Mismatch which I don't get if the Buffer is of size 8
+                    // Same for other types
                 } else {
                     // No ComplexTypeReference supported.
                 }

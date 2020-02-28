@@ -23,6 +23,8 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class S7Field implements PlcField {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcField.class);
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
@@ -189,9 +192,7 @@ public class S7Field implements PlcField {
             }
         } else if (DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches()) {
             matcher = DATA_BLOCK_SHORT_PATTERN.matcher(fieldString);
-
             assert matcher.matches();
-
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
 

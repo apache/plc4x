@@ -51,7 +51,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         this.dataType = endpoint.getDataType();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
+        this.plcConnection = endpoint.getConnection();
         this.requestBuilder = plcConnection.readRequestBuilder();
     }
 
@@ -112,17 +112,12 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     @Override
     protected void doStart() {
-        // We don't seem to need to do anything special here.
     }
 
     @Override
-    protected void doStop() {
-        try {
-            plcConnection.close();
-        } catch (Exception e) {
-            LOGGER.error("Error closing connection", e);
-        }
+    protected void doStop() throws Exception {
     }
+
 
     private PlcReadRequest createReadRequest() {
         return requestBuilder.addItem("default", endpoint.getAddress()).build();
