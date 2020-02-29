@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcBoolean;
 import org.apache.plc4x.java.api.value.PlcList;
+import org.apache.plc4x.java.api.value.PlcShort;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
 import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
@@ -280,6 +281,16 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                 }
                 return bytes;
             }
+        } else if(plcValue instanceof PlcBoolean) {
+            PlcBoolean plcBoolean = (PlcBoolean) plcValue;
+            return plcBoolean.getBoolean() ? new byte[] {0x01} : new byte[] {0x00};
+        } else if(plcValue instanceof PlcShort) {
+            PlcShort plcShort = (PlcShort) plcValue;
+            Short shortValue = plcShort.getShort();
+            byte[] bytes = new byte[2];
+            bytes[0] = (byte)((shortValue >> 8) & 0xff);
+            bytes[1] = (byte)(shortValue & 0xff);
+            return bytes;
         }
         return new byte[0];
     }
