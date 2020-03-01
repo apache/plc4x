@@ -56,8 +56,6 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
             <usedDependency>org.apache.plc4x:plc4x-protocols-knxnetip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-transport-pcap-replay</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -104,6 +102,7 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -115,6 +114,16 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.pcap4j</groupId>
+      <artifactId>pcap4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-pcap-shared</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
