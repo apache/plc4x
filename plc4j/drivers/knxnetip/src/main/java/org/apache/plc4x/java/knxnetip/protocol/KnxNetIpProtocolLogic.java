@@ -260,7 +260,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     if(ets5Model != null) {
                         final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
-                        if(groupAddress != null) {
+                        if((groupAddress != null) && (groupAddress.getType() != null)){
                             LOGGER.info("Message from: '" + toString(sourceAddress) +
                                 "' to: '" + destinationAddress + "'");
 
