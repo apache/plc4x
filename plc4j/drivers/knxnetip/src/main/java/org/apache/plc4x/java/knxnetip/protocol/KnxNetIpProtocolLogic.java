@@ -22,6 +22,7 @@ import io.netty.channel.socket.DatagramChannel;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
@@ -74,6 +75,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnxNetIpProtocolLogic.class);
 
+    private boolean passiveMode = false;
     private KNXAddress gatewayAddress;
     private String gatewayName;
     private IPAddress localIPAddress;
@@ -95,7 +97,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 ets5Model = new Ets5Parser().parse(knxprojFile);
                 groupAddressType = ets5Model.getGroupAddressType();
             } else {
-                throw new RuntimeException(String.format(
+                throw new PlcRuntimeException(String.format(
                     "File specified with 'knxproj-file-path' does not exist or is not a file: '%s'",
                     configuration.knxprojFilePath));
             }
@@ -106,103 +108,117 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
     @Override
     public void onConnect(ConversationContext<KNXNetIPMessage> context) {
-        DatagramChannel channel = (DatagramChannel) context.getChannel();
-        final InetSocketAddress localSocketAddress = channel.localAddress();
-        localIPAddress = new IPAddress(localSocketAddress.getAddress().getAddress());
-        localPort = localSocketAddress.getPort();
+        // Only the UDP transport supports login.
+        if(context.getChannel() instanceof DatagramChannel) {
+            LOGGER.info("KNX Driver running in ACTIVE mode.");
+            passiveMode = false;
 
-        // First send out a search request
-        // REMARK: This might be optional ... usually we would send a search request to ip 224.0.23.12
-        // Any KNX Gateway will respond with a search response. We're currently directly sending to the
-        // known gateway address, so it's sort of pointless, but at least only one device will respond.
-        LOGGER.info("Sending KNXnet/IP Search Request.");
-        SearchRequest searchRequest = new SearchRequest(
-            new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
-        context.sendRequest(searchRequest)
-            .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
-            .check(p -> p instanceof SearchResponse)
-            .unwrap(p -> (SearchResponse) p)
-            .handle(searchResponse -> {
-                LOGGER.info("Got KNXnet/IP Search Response.");
-                // Check if this device supports tunneling services.
-                final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
+            DatagramChannel channel = (DatagramChannel) context.getChannel();
+            final InetSocketAddress localSocketAddress = channel.localAddress();
+            localIPAddress = new IPAddress(localSocketAddress.getAddress().getAddress());
+            localPort = localSocketAddress.getPort();
 
-                // If this device supports this type of service, tell the driver, we found a suitable device.
-                if(tunnelingService != null) {
-                    // Extract the required information form the search request.
-                    gatewayAddress = searchResponse.getDibDeviceInfo().getKnxAddress();
-                    gatewayName = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
+            // First send out a search request
+            // REMARK: This might be optional ... usually we would send a search request to ip 224.0.23.12
+            // Any KNX Gateway will respond with a search response. We're currently directly sending to the
+            // known gateway address, so it's sort of pointless, but at least only one device will respond.
+            LOGGER.info("Sending KNXnet/IP Search Request.");
+            SearchRequest searchRequest = new SearchRequest(
+                new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
+            context.sendRequest(searchRequest)
+                .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                .check(p -> p instanceof SearchResponse)
+                .unwrap(p -> (SearchResponse) p)
+                .handle(searchResponse -> {
+                    LOGGER.info("Got KNXnet/IP Search Response.");
+                    // Check if this device supports tunneling services.
+                    final ServiceId tunnelingService = Arrays.stream(searchResponse.getDibSuppSvcFamilies().getServiceIds()).filter(serviceId -> serviceId instanceof KnxNetIpTunneling).findFirst().orElse(null);
 
-                    LOGGER.info(String.format("Found KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
-                        gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
+                    // If this device supports this type of service, tell the driver, we found a suitable device.
+                    if (tunnelingService != null) {
+                        // Extract the required information form the search request.
+                        gatewayAddress = searchResponse.getDibDeviceInfo().getKnxAddress();
+                        gatewayName = new String(searchResponse.getDibDeviceInfo().getDeviceFriendlyName()).trim();
 
-                    // Next send a connection request to the gateway.
-                    ConnectionRequest connectionRequest = new ConnectionRequest(
-                        new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
-                        new HPAIDataEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
-                        new ConnectionRequestInformationTunnelConnection(KnxLayer.TUNNEL_BUSMONITOR));
-                    LOGGER.info("Sending KNXnet/IP Connection Request.");
-                    context.sendRequest(connectionRequest)
-                        .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
-                        .check(p -> p instanceof ConnectionResponse)
-                        .unwrap(p -> (ConnectionResponse) p)
-                        .handle(connectionResponse -> {
-                            // Remember the communication channel id.
-                            communicationChannelId = connectionResponse.getCommunicationChannelId();
+                        LOGGER.info(String.format("Found KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
+                            gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
 
-                            LOGGER.info(String.format("Received KNXnet/IP Connection Response (Connection Id %s)",
-                                communicationChannelId));
+                        // Next send a connection request to the gateway.
+                        ConnectionRequest connectionRequest = new ConnectionRequest(
+                            new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
+                            new HPAIDataEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
+                            new ConnectionRequestInformationTunnelConnection(KnxLayer.TUNNEL_BUSMONITOR));
+                        LOGGER.info("Sending KNXnet/IP Connection Request.");
+                        context.sendRequest(connectionRequest)
+                            .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                            .check(p -> p instanceof ConnectionResponse)
+                            .unwrap(p -> (ConnectionResponse) p)
+                            .handle(connectionResponse -> {
+                                // Remember the communication channel id.
+                                communicationChannelId = connectionResponse.getCommunicationChannelId();
 
-                            // Check if everything went well.
-                            Status status = connectionResponse.getStatus();
-                            if (status == Status.NO_ERROR) {
-                                LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
-                                    gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
+                                LOGGER.info(String.format("Received KNXnet/IP Connection Response (Connection Id %s)",
+                                    communicationChannelId));
 
-                                // Send an event that connection setup is complete.
-                                context.fireConnected();
+                                // Check if everything went well.
+                                Status status = connectionResponse.getStatus();
+                                if (status == Status.NO_ERROR) {
+                                    LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
+                                        gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
 
-                                // Start a timer to check the connection state every 60 seconds.
-                                // This keeps the connection open if no data is transported.
-                                // Otherwise the gateway will terminate the connection.
-                                connectionStateTimer = new Timer();
-                                connectionStateTimer.scheduleAtFixedRate(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        ConnectionStateRequest connectionStateRequest =
-                                            new ConnectionStateRequest(communicationChannelId,
-                                                new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
-                                        context.sendRequest(connectionStateRequest)
-                                            .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
-                                            .check(p -> p instanceof ConnectionStateResponse)
-                                            .unwrap(p -> (ConnectionStateResponse) p)
-                                            .handle(connectionStateResponse -> {
-                                                if(connectionStateResponse.getStatus() != Status.NO_ERROR) {
-                                                    if(connectionStateResponse.getStatus() != null) {
-                                                        LOGGER.error(String.format("Connection state problems. Got %s",
-                                                            connectionStateResponse.getStatus().name()));
-                                                    } else {
-                                                        LOGGER.error("Connection state problems. Got no status information.");
+                                    // Send an event that connection setup is complete.
+                                    context.fireConnected();
+
+                                    // Start a timer to check the connection state every 60 seconds.
+                                    // This keeps the connection open if no data is transported.
+                                    // Otherwise the gateway will terminate the connection.
+                                    connectionStateTimer = new Timer();
+                                    connectionStateTimer.scheduleAtFixedRate(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            ConnectionStateRequest connectionStateRequest =
+                                                new ConnectionStateRequest(communicationChannelId,
+                                                    new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort));
+                                            context.sendRequest(connectionStateRequest)
+                                                .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
+                                                .check(p -> p instanceof ConnectionStateResponse)
+                                                .unwrap(p -> (ConnectionStateResponse) p)
+                                                .handle(connectionStateResponse -> {
+                                                    if (connectionStateResponse.getStatus() != Status.NO_ERROR) {
+                                                        if (connectionStateResponse.getStatus() != null) {
+                                                            LOGGER.error(String.format("Connection state problems. Got %s",
+                                                                connectionStateResponse.getStatus().name()));
+                                                        } else {
+                                                            LOGGER.error("Connection state problems. Got no status information.");
+                                                        }
                                                     }
-                                                }
-                                            });
-                                    }
-                                }, 60000, 60000);
-                            } else {
-                                // The connection request wasn't successful.
-                                LOGGER.error(String.format(
-                                    "Not connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got status: '%s'",
-                                    gatewayName, gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(),
-                                    gatewayAddress.getSubGroup(), status.toString()));
-                                // TODO: Actively disconnect
-                            }
-                        });
-                } else {
-                    // This device doesn't support tunneling ... do some error handling.
-                    LOGGER.error("Not connected to KNCnet/IP Gateway. The device doesn't support Tunneling.");
-                    // TODO: Actively disconnect
-                }
-            });
+                                                });
+                                        }
+                                    }, 60000, 60000);
+                                } else {
+                                    // The connection request wasn't successful.
+                                    LOGGER.error(String.format(
+                                        "Not connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got status: '%s'",
+                                        gatewayName, gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(),
+                                        gatewayAddress.getSubGroup(), status.toString()));
+                                    // TODO: Actively disconnect
+                                }
+                            });
+                    } else {
+                        // This device doesn't support tunneling ... do some error handling.
+                        LOGGER.error("Not connected to KNCnet/IP Gateway. The device doesn't support Tunneling.");
+                        // TODO: Actively disconnect
+                    }
+                });
+        }
+        // This usually when we're running a passive mode river.
+        else {
+            LOGGER.info("KNX Driver running in PASSIVE mode.");
+            passiveMode = true;
+
+            // No login required, just confirm that we're connected.
+            context.fireConnected();
+        }
     }
 
     @Override
@@ -236,7 +252,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 tunnelingRequest.getTunnelingRequestDataBlock().getCommunicationChannelId();
 
             // Only if the communication channel id match, do anything with the request.
-            if(curCommunicationChannelId == communicationChannelId) {
+            // In case of a passive-mode driver we'll simply accept all communication ids.
+            if(passiveMode || (curCommunicationChannelId == communicationChannelId)) {
                 if(tunnelingRequest.getCemi() instanceof CEMIBusmonInd) {
                     CEMIBusmonInd busmonInd = (CEMIBusmonInd) tunnelingRequest.getCemi();
                     if (busmonInd.getCemiFrame() instanceof CEMIFrameData) {
@@ -262,8 +279,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                             final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
 
                             if ((groupAddress != null) && (groupAddress.getType() != null)) {
-                                LOGGER.info("Message from: '" + toString(sourceAddress) +
-                                    "' to: '" + destinationAddress + "'");
+                                LOGGER.info(String.format("Message from: '%s' to: '%s'",
+                                    toString(sourceAddress), destinationAddress));
 
                                 // Parse the payload depending on the type of the group-address.
                                 ReadBuffer rawDataReader = new ReadBuffer(payload);
@@ -289,16 +306,16 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                 // Send the data-structure.
                                 publishEvent(groupAddress, dataPoint);
                             } else {
-                                LOGGER.warn("Message from: '" + toString(sourceAddress) + "'" +
-                                    " to unknown group address: '" + destinationAddress + "'" +
-                                    "\n payload: '" + Hex.encodeHexString(payload) + "'");
+                                LOGGER.warn(
+                                    String.format("Message from: '%s' to unknown group address: '%s'%n payload: '%s'",
+                                        toString(sourceAddress), destinationAddress, Hex.encodeHexString(payload)));
                             }
                         }
                         // Else just output the raw payload.
                         else {
-                            LOGGER.info("Raw Message: '" + KnxNetIpProtocolLogic.toString(sourceAddress) + "'" +
-                                " to: '" + destinationAddress + "'" +
-                                "\n payload: '" + Hex.encodeHexString(payload) + "'"
+                            LOGGER.info(String.format("Raw Message: '%s' to: '%s'%n payload: '%s'",
+                                KnxNetIpProtocolLogic.toString(sourceAddress), destinationAddress,
+                                Hex.encodeHexString(payload))
                             );
                         }
                     }
@@ -385,7 +402,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             KNXGroupAddressFreeLevel free = (KNXGroupAddressFreeLevel) groupAddress;
             return free.getSubGroup() + "";
         }
-        throw new RuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
+        throw new PlcRuntimeException("Unsupported Group Address Type " + groupAddress.getClass().getName());
     }
 
 }

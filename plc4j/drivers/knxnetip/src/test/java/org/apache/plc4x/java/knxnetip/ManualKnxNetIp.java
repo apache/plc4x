@@ -38,7 +38,8 @@ public class ManualKnxNetIp {
     // */*/101: Power Line 1
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
+        //final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
+        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Recording-01.03.2020-2.pcapng?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
         // Make sure we hang up correctly when terminating.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -52,7 +53,7 @@ public class ManualKnxNetIp {
         // The address and the name is just bogus as we're always returning everything.
         // We will probably refactor the API in the near future.
         final PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
-            .addEventField("knxData", "*/*/10")
+            .addEventField("knxData", "*/*/*")
             .build();
 
         // Register the subscription
