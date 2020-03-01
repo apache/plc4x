@@ -158,9 +158,4 @@ public class Ets5Parser {
         throw new RuntimeException("Unsupported GroupAddressStyle=" + knxprojValue);
     }
 
-    public static void main(String[] args) {
-        final Ets5Model model = new Ets5Parser().parse(new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner Str. 13/Stettiner Str.knxproj"));
-        System.out.println(model);
-    }
-
 }
