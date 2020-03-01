@@ -101,47 +101,52 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             throw new AdsProtocolOverflowException(Integer.class, dataLength.getAsLong());
         }
         ByteBuf commandBuffer = byteBuf.readBytes((int) dataLength.getAsLong());
-        AmsHeader amsHeader = AmsHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId, stateId, dataLength, errorCode, invoke);
-        final AmsPacket amsPacket;
-        switch (commandId) {
-            case INVALID:
-                amsPacket = handleInvalidCommand(commandBuffer, amsHeader);
-                break;
-            case ADS_READ_DEVICE_INFO:
-                amsPacket = handleADSReadDeviceInfoCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_READ:
-                amsPacket = handleADSReadCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_WRITE:
-                amsPacket = handleADSWriteCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_READ_STATE:
-                amsPacket = handleADSReadStateCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_WRITE_CONTROL:
-                amsPacket = handleADSWriteControlCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_ADD_DEVICE_NOTIFICATION:
-                amsPacket = handleADSAddDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_DELETE_DEVICE_NOTIFICATION:
-                amsPacket = handADSDeleteDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_DEVICE_NOTIFICATION:
-                amsPacket = handleADSDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case ADS_READ_WRITE:
-                amsPacket = handleADSReadWriteCommand(stateId, commandBuffer, amsHeader);
-                break;
-            case UNKNOWN:
-            default:
-                amsPacket = handleUnknownCommand(commandBuffer, amsHeader);
-        }
-        LOGGER.debug("Received amsPacket {}", amsPacket);
-        out.add(amsPacket);
-        if (commandBuffer.readableBytes() > 0) {
-            throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
+        try {
+            AmsHeader amsHeader = AmsHeader.of(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, commandId,
+                stateId, dataLength, errorCode, invoke);
+            final AmsPacket amsPacket;
+            switch (commandId) {
+                case INVALID:
+                    amsPacket = handleInvalidCommand(commandBuffer, amsHeader);
+                    break;
+                case ADS_READ_DEVICE_INFO:
+                    amsPacket = handleADSReadDeviceInfoCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_READ:
+                    amsPacket = handleADSReadCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_WRITE:
+                    amsPacket = handleADSWriteCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_READ_STATE:
+                    amsPacket = handleADSReadStateCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_WRITE_CONTROL:
+                    amsPacket = handleADSWriteControlCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_ADD_DEVICE_NOTIFICATION:
+                    amsPacket = handleADSAddDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_DELETE_DEVICE_NOTIFICATION:
+                    amsPacket = handADSDeleteDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_DEVICE_NOTIFICATION:
+                    amsPacket = handleADSDeviceNotificationCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case ADS_READ_WRITE:
+                    amsPacket = handleADSReadWriteCommand(stateId, commandBuffer, amsHeader);
+                    break;
+                case UNKNOWN:
+                default:
+                    amsPacket = handleUnknownCommand(commandBuffer, amsHeader);
+            }
+            LOGGER.debug("Received amsPacket {}", amsPacket);
+            out.add(amsPacket);
+            if (commandBuffer.readableBytes() > 0) {
+                throw new IllegalStateException("Unread bytes left: " + commandBuffer.readableBytes());
+            }
+        } finally {
+            commandBuffer.release();
         }
     }
 
@@ -293,15 +298,19 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
             }
             // Note: the length includes the 4 Bytes of stamps which we read already so we substract.
             ByteBuf adsDeviceNotificationBuffer = commandBuffer.readBytes((int) length.getAsLong() - Stamps.NUM_BYTES);
-            List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
-            if (stamps.getAsLong() > MAX_NUM_STAMPS) {
-                throw new AdsProtocolOverflowException("MAX_NUM_STAMPS", MAX_NUM_STAMPS, length.getAsLong());
+            try {
+                List<AdsStampHeader> adsStampHeaders = new ArrayList<>((int) stamps.getAsLong());
+                if (stamps.getAsLong() > MAX_NUM_STAMPS) {
+                    throw new AdsProtocolOverflowException("MAX_NUM_STAMPS", MAX_NUM_STAMPS, length.getAsLong());
+                }
+                for (int i = 1; i <= stamps.getAsLong(); i++) {
+                    AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
+                    adsStampHeaders.add(adsStampHeader);
+                }
+                amsPacket = AdsDeviceNotificationRequest.of(amsHeader, length, stamps, adsStampHeaders);
+            } finally {
+                adsDeviceNotificationBuffer.release();
             }
-            for (int i = 1; i <= stamps.getAsLong(); i++) {
-                AdsStampHeader adsStampHeader = handleStampHeader(adsDeviceNotificationBuffer);
-                adsStampHeaders.add(adsStampHeader);
-            }
-            amsPacket = AdsDeviceNotificationRequest.of(amsHeader, length, stamps, adsStampHeaders);
         } else {
             amsPacket = UnknownCommand.of(amsHeader, commandBuffer);
         }

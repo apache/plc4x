@@ -51,7 +51,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.apache.plc4x.java.base.util.Assert.byteArrayEqualsTo;
+import static org.apache.plc4x.java.mock.util.Assert.byteArrayEqualsTo;
 import static org.mockito.Mockito.*;
 
 /**

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-utils</artifactId>
@@ -34,10 +34,18 @@
   <description>A collection of utilities used in multiple modules.</description>
 
   <modules>
+    <!-- Base module for all types of PLC4X drivers -->
+    <module>driver-base-java</module>
+    <!-- Non-default input options -->
+    <module>raw-sockets</module>
+    <module>pcap-sockets</module>
+    <!-- Utilities for building tests -->
+    <module>test-utils</module>
+    <module>protocol-test-utils</module>
+
+    <!-- Utilities used externally by users -->
     <module>connection-pool</module>
     <module>opm</module>
-    <module>raw-sockets</module>
-    <module>test-utils</module>
     <module>scraper</module>
   </modules>
 

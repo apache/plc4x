@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-driver-modbus</artifactId>
@@ -35,28 +35,28 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-modbus</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-serial</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
@@ -86,13 +86,15 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-test</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>se.koc</groupId>
-      <artifactId>netty-transport-jserialcomm</artifactId>
-      <scope>test</scope>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.cmpn</artifactId>
+      <version>6.0.0</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

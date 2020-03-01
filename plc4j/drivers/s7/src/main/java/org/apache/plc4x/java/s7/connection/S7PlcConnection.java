@@ -32,7 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
 import org.apache.plc4x.java.base.events.ConnectEvent;
 import org.apache.plc4x.java.base.events.ConnectedEvent;
 import org.apache.plc4x.java.base.messages.*;
@@ -84,7 +84,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     // Fetch values from configuration
     private static final Configuration CONF = new SystemConfiguration();
-    private static final long CLOSE_DEVICE_TIMEOUT_MS = CONF.getLong("plc4x.s7connection.close.device,timeout", 1_000);
+    private static final long CLOSE_DEVICE_TIMEOUT_MS = CONF.getLong("plc4x.s7connection.close.device,timeout", 10_000);
 
     private static final Logger logger = LoggerFactory.getLogger(S7PlcConnection.class);
 
@@ -234,6 +234,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
 
     @Override
     public void close() throws PlcConnectionException {
+        logger.debug("S7 Connection's close method is triggered");
         if ((channel != null) && channel.isOpen()) {
             // Send the PLC a message that the connection is being closed.
             DisconnectRequestTpdu disconnectRequest = new DisconnectRequestTpdu(
@@ -247,10 +248,12 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                 (ChannelFutureListener) future -> disconnectFuture.complete(null));
 
             // Send the disconnect request.
+            logger.trace("Sending disconnect request to PLC");
             channel.writeAndFlush(disconnectRequest);
             // Wait for the configured time for the remote to close the session.
             try {
                 disconnectFuture.get(CLOSE_DEVICE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+                logger.trace("Got disconnect response from PLC, can close channel now.");
             }
             // If the remote didn't close the connection within the given time-frame, we have to take
             // care of closing the connection.
@@ -261,13 +264,13 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                 Thread.currentThread().interrupt();
             } catch (ExecutionException e) {
                 throw new PlcConnectionException(e);
-            }
-
-            // Do some additional cleanup operations ...
-            // In normal operation, the channels event loop has a parent, however when running with
-            // the embedded channel for unit tests, parent is null.
-            if (channel.eventLoop().parent() != null) {
-                channel.eventLoop().parent().shutdownGracefully();
+            } finally {
+                // Do some additional cleanup operations ...
+                // In normal operation, the channels event loop has a parent, however when running with
+                // the embedded channel for unit tests, parent is null.
+                if (channel.eventLoop().parent() != null) {
+                    channel.eventLoop().parent().shutdownGracefully();
+                }
             }
         }
         super.close();

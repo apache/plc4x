@@ -95,6 +95,6 @@ It also demonstrates two ways this information can be accessed:
 
 [source,java]
 ----
-include::../../../../examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
+include::../../../examples/hello-world-plc4x/src/main/java/org/apache/plc4x/java/examples/helloplc4x/HelloPlc4x.java[lines=19..200]
 ----
 

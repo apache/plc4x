@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-utils-raw-sockets</artifactId>
@@ -33,6 +33,14 @@
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.</description>
 
   <dependencies>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-buffer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+    </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
@@ -62,7 +70,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

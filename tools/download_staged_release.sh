@@ -114,7 +114,7 @@ fi
 
 mkdir -p ${DST_VER_DIR}
 cd ${DST_VER_DIR}
-mywget ${URL}/README
+mywget ${URL}/README.md
 mywget ${URL}/RELEASE_NOTES
 getSignedBundle ${URL}/apache-plc4x-${VER}-source-release.zip
 

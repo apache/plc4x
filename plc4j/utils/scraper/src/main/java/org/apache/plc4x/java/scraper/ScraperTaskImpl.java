@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.config.JobConfigurationClassicImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 /**
  * Plc Scraper Task that scrapes one source.
  * One {@link ScrapeJobImpl} gets split into multiple tasks.
- * One task for each source that is defined in the {@link JobConfigurationImpl}.
+ * One task for each source that is defined in the {@link JobConfigurationClassicImpl}.
  *
  * @deprecated Scraper is deprecated please use {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl} instead all functions are supplied as well see java-doc of {@link org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl}
  */
@@ -93,10 +93,13 @@ public class ScraperTaskImpl implements ScraperTask {
         this.resultHandler = resultHandler;
     }
 
+
     @Override
     public void run() {
         // Does a single fetch
-        LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
+        }
         requestCounter.incrementAndGet();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -111,15 +114,17 @@ public class ScraperTaskImpl implements ScraperTask {
                 }
             }, handlerService);
             connection = future.get(10*requestTimeoutMs, TimeUnit.MILLISECONDS);
-            LOGGER.trace("Connection to {} established: {}", connectionString, connection);
-            PlcReadResponse response;
+            LOGGER.debug("Connection to {} established: {}", connectionString, connection);
+            PlcReadResponse plcReadResponse;
             try {
-                PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                fields.forEach((alias,qry) -> {
+                //build read request
+                PlcReadRequest.Builder readRequestBuilder = connection.readRequestBuilder();
+                //add fields to be acquired to builder
+                fields.forEach((alias, qry) -> {
                     LOGGER.trace("Requesting: {} -> {}", alias, qry);
-                    builder.addItem(alias,qry);
+                    readRequestBuilder.addItem(alias, qry);
                 });
-                response = builder
+                plcReadResponse = readRequestBuilder
                     .build()
                     .execute()
                     .get(requestTimeoutMs, TimeUnit.MILLISECONDS);
@@ -128,17 +133,20 @@ public class ScraperTaskImpl implements ScraperTask {
                 handleException(e);
                 return;
             }
-            // Add statistics
+
+            LOGGER.debug("Performing statistics");
+            // Add some statistics
             stopWatch.stop();
             latencyStatistics.addValue(stopWatch.getNanoTime());
             failedStatistics.addValue(0.0);
             successCounter.incrementAndGet();
             // Validate response
-            validateResponse(response);
+            validateResponse(plcReadResponse);
+
             // Handle response (Async)
-            CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, transformResponseToMap(response)), handlerService);
+            CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, transformResponseToMap(plcReadResponse)), handlerService);
         } catch (Exception e) {
-            LOGGER.debug("Exception during scrape", e);
+            LOGGER.warn("Exception during scraping of Job {}, Connection-Alias {}: Error-message: {} - for stack-trace change logging to DEBUG", jobName,connectionAlias,e.getMessage());
             handleException(e);
         } finally {
             if (connection != null) {
@@ -151,6 +159,10 @@ public class ScraperTaskImpl implements ScraperTask {
         }
     }
 
+    /**
+     * validate read response due to failed fields
+     * @param response acquired response
+     */
     private void validateResponse(PlcReadResponse response) {
         Map<String, PlcResponseCode> failedFields = response.getFieldNames().stream()
             .filter(name -> !PlcResponseCode.OK.equals(response.getResponseCode(name)))
@@ -163,6 +175,11 @@ public class ScraperTaskImpl implements ScraperTask {
         }
     }
 
+    /**
+     * transforms the read-response to a Map of String (Key) and Object(Value)
+     * @param response response from PLC
+     * @return transformed Map
+     */
     private Map<String, Object> transformResponseToMap(PlcReadResponse response) {
         return response.getFieldNames().stream()
             .collect(Collectors.toMap(
@@ -203,7 +220,9 @@ public class ScraperTaskImpl implements ScraperTask {
 
     @Override
     public void handleException(Exception e) {
-        LOGGER.debug("Exception: ", e);
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Detailed exception occurred at scraping", e);
+        }
         failedStatistics.addValue(1.0);
     }
 

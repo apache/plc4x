@@ -19,12 +19,15 @@
 
 package org.apache.plc4x.java.scraper;
 
+import org.apache.plc4x.java.scraper.config.JobConfigurationClassicImpl;
+import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
+
 import java.util.Map;
 
 /**
  * POJO Object to transport all Job information.
- * Is generated from {@link org.apache.plc4x.java.scraper.config.ScraperConfiguration} by
- * merging the sources and the {@link org.apache.plc4x.java.scraper.config.JobConfigurationImpl}.
+ * Is generated from {@link ScraperConfigurationClassicImpl} by
+ * merging the sources and the {@link JobConfigurationClassicImpl}.
  */
 public interface ScrapeJob {
     String getJobName();
@@ -33,11 +36,13 @@ public interface ScrapeJob {
 
     /**
      * alias -&gt; connection-string
+     * @return something...
      */
     Map<String, String> getSourceConnections();
 
     /**
      * alias -&gt; field-query
+     * @return something...
      */
     Map<String, String> getFields();
 }

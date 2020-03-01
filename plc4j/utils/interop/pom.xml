@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-utils</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>interop-server</artifactId>
@@ -116,7 +116,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>3.1.1</version>
         <configuration>
           <!-- get all project dependencies -->
           <!--          <descriptorRefs>-->
@@ -130,7 +130,6 @@
               <mainClass>org.apache.plc4x.interop.impl.Server</mainClass>
             </manifest>
           </archive>
-
         </configuration>
         <executions>
           <execution>
@@ -160,12 +159,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-test</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -179,7 +178,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
 
     <!-- Make sure this is built before this module -->
@@ -202,12 +201,12 @@
       <dependency>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4x-protocols-proxy</artifactId>
-        <version>0.4.0</version>
+        <version>0.6.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4x-tools-thrift</artifactId>
-        <version>0.4.0</version>
+        <version>0.6.0</version>
         <type>zip</type>
         <classifier>compiler-${os.classifier}</classifier>
       </dependency>

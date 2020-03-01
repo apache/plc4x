@@ -19,11 +19,16 @@
 
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration;
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 
 
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +42,14 @@ public class TriggeredScraperRunner {
      * testing of TriggeredScraper vs real device
      */
     public static void main(String[] args) throws IOException, ScraperException {
-        TriggeredScraperConfiguration configuration = TriggeredScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper.yml");
-        TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m));
+
+        ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper.yml", ScraperConfigurationTriggeredImpl.class);
+
+        PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+        TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+        TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m),triggerCollector);
 
         scraper.start();
+        triggerCollector.start();
     }
 }

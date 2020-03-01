@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-apache-camel</artifactId>
@@ -33,14 +33,14 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>2.23.1</camel.version>
+    <camel.version>2.24.2</camel.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
@@ -84,21 +84,22 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
       <scope>test</scope>
     </dependency>
-    <!--dependency>
+    <dependency>
+      <!-- avoids java.lang.NoClassDefFoundError: javax/activation/DataHandler in Plc4XProducerTest on Java 11-->
       <groupId>javax.activation</groupId>
       <artifactId>javax.activation-api</artifactId>
       <version>1.2.0</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -168,6 +169,9 @@
               <ignoredDependencies combine.children="append">
                 <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
               </ignoredDependencies>
+              <usedDependencies combine.children="append">
+                <usedDependency>javax.activation:javax.activation-api</usedDependency>
+              </usedDependencies>
             </configuration>
           </execution>
         </executions>

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-dummy-driver</artifactId>
@@ -38,17 +38,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
 
     <dependency>
@@ -67,6 +67,21 @@
 
   <build>
     <plugins>
+      <!-- Disable building the uber-jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>generate-uber-jar</id>
+            <phase>none</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- This is currently a work in progress ... skip this till it reaches a slightly more mature state -->
       <plugin>
         <groupId>org.sonarsource.scanner.maven</groupId>

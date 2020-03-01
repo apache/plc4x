@@ -23,24 +23,32 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.scraper.*;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.TriggeredScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
+import org.apache.plc4x.java.spi.PlcDriver;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.*;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * replaces the old Scraper that only could do scheduled scraping jobs
@@ -54,39 +62,113 @@ import java.util.concurrent.*;
  *     right now boolean variables as well as numeric variables could be used as data-types
  *     available comparators are ==,!= for all data-types and &gt;,&gt;=,&lt;,&lt;= for numeric data-types
  */
-public class TriggeredScraperImpl implements Scraper {
+public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperImpl.class);
+    private static final String MX_DOMAIN = "org.apache.plc4x.java";
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10,
-        new BasicThreadFactory.Builder()
-            .namingPattern("triggeredscraper-scheduling-thread-%d")
-            .daemon(false)
-            .build()
-    );
-    private final ExecutorService executorService = Executors.newFixedThreadPool(4,
-        new BasicThreadFactory.Builder()
-            .namingPattern("triggeredscraper-executer-thread-%d")
-            .daemon(true)
-            .build()
-    );
+    private static final int DEFAULT_FUTURE_TIME_OUT = 2000;
+
+    private final ScheduledExecutorService scheduler;
+    private final ExecutorService executorService;
 
     private final ResultHandler resultHandler;
 
     private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
-    private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> futures = new ArrayListValuedHashMap<>();
+    private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> scraperTaskMap = new ArrayListValuedHashMap<>();
     private final PlcDriverManager driverManager;
     private final List<ScrapeJob> jobs;
+    private MBeanServer mBeanServer;
+
+    private long futureTimeOut;
+
+    private final TriggerCollector triggerCollector;
 
     /**
      * Creates a Scraper instance from a configuration.
      * By default a {@link PooledPlcDriverManager} is used.
      * @param config Configuration to use.
-     * @param resultHandler
+     * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(TriggeredScraperConfiguration config, ResultHandler resultHandler) throws ScraperException {
-        this(resultHandler, createPooledDriverManager(), config.getJobs());
+    public TriggeredScraperImpl(ScraperConfiguration config, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
+        this(resultHandler, createPooledDriverManager(), config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
     }
+
+    /**
+     * Creates a Scraper instance from a configuration.
+     * @param config Configuration to use.
+     * @param plcDriverManager external DriverManager
+     * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @throws ScraperException something went wrong
+     */
+    public TriggeredScraperImpl(ScraperConfiguration config, PlcDriverManager plcDriverManager, ResultHandler resultHandler,TriggerCollector triggerCollector) throws ScraperException {
+        this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
+    }
+
+    /**
+     * Creates a Scraper instance from a configuration.
+     * @param config Configuration to use.
+     * @param plcDriverManager external DriverManager
+     * @param resultHandler handler the defines the processing of acquired data
+     * @param triggerCollector the trigger collector
+     * @param poolSizeExecutor the pool size of the executor
+     * @param poolSizeScheduler the pool size of the scheduler
+     * @throws ScraperException something went wrong
+     */
+    public TriggeredScraperImpl(ScraperConfigurationTriggeredImpl config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
+        this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT,poolSizeScheduler,poolSizeExecutor);
+    }
+
+    /**
+     * Creates a Scraper instance from a configuration.
+     * @param plcDriverManager external DriverManager
+     * @param resultHandler handler the defines the processing of acquired data
+     * @param jobs list of jobs that scraper shall handle
+     * @param triggerCollector a collection that centralizes the trigger requests and joins them to grouped plc requests
+     * @param futureTimeOut max duration of future to return a result
+     */
+    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut) {
+        this(resultHandler,plcDriverManager,jobs,triggerCollector,futureTimeOut,20,5);
+    }
+
+    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
+        this.resultHandler = resultHandler;
+        Validate.notEmpty(jobs);
+        if (!(plcDriverManager instanceof PooledPlcDriverManager)) {
+            LOGGER.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
+        }
+        this.driverManager = plcDriverManager;
+        this.jobs = jobs;
+        this.triggerCollector = triggerCollector;
+        this.futureTimeOut = futureTimeOut;
+
+        this.scheduler = Executors.newScheduledThreadPool(poolSizeScheduler,
+            new BasicThreadFactory.Builder()
+                .namingPattern("triggeredscraper-scheduling-thread-%d")
+                .daemon(false)
+                .build()
+        );
+
+        this.executorService = Executors.newFixedThreadPool(poolSizeExecutor,
+            new BasicThreadFactory.Builder()
+                .namingPattern("triggeredscraper-executor-thread-%d")
+                .daemon(true)
+                .build()
+        );
+
+
+        // Register MBean
+        /*mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        try {
+            mBeanServer.registerMBean(this, new ObjectName(MX_DOMAIN, "scraper", "scraper"));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            LOGGER.debug("Unable to register Scraper as MBean", e);
+        }*/
+    }
+
 
     /**
      * Min Idle per Key is set to 1 for situations where the network is broken.
@@ -96,19 +178,11 @@ public class TriggeredScraperImpl implements Scraper {
     private static PooledPlcDriverManager createPooledDriverManager() {
         return new PooledPlcDriverManager(pooledPlcConnectionFactory -> {
             GenericKeyedObjectPoolConfig<PlcConnection> poolConfig = new GenericKeyedObjectPoolConfig<>();
-            poolConfig.setMinIdlePerKey(1);  // This should avoid problems with long running connect attempts??
+            poolConfig.setMinIdlePerKey(1);
             poolConfig.setTestOnBorrow(true);
             poolConfig.setTestOnReturn(true);
             return new GenericKeyedObjectPool<>(pooledPlcConnectionFactory, poolConfig);
         });
-    }
-
-
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager driverManager, List<ScrapeJob> jobs) {
-        this.resultHandler = resultHandler;
-        Validate.notEmpty(jobs);
-        this.driverManager = driverManager;
-        this.jobs = jobs;
     }
 
     /**
@@ -119,39 +193,49 @@ public class TriggeredScraperImpl implements Scraper {
     public void start() {
         // Schedule all jobs
         LOGGER.info("Starting jobs...");
-        jobs.stream()
-            .flatMap(job -> job.getSourceConnections().entrySet().stream()
-                .map(entry -> Triple.of(job, entry.getKey(), entry.getValue()))
-            )
-            .forEach(
-                tuple -> {
+        //start iterating over all available jobs
+        for(ScrapeJob job:jobs){
+            //iterate over all source the jobs shall performed on
+            for(Map.Entry<String,String> sourceEntry:job.getSourceConnections().entrySet()){
+                if(LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Register task for job {} for conn {} ({}) at rate {} ms",
-                        tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate());
-                    TriggeredScraperTask task =
-                        null;
-                    try {
-                        task = new TriggeredScraperTask(driverManager,
-                            tuple.getLeft().getJobName(),
-                            tuple.getMiddle(),
-                            tuple.getRight(),
-                            tuple.getLeft().getFields(),
-                            1_000,
-                            executorService,
-                            resultHandler,
-                            (TriggeredScrapeJobImpl) tuple.getLeft());
-                        // Add task to internal list
-                        tasks.put(tuple.getLeft(), task);
-                        ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(task,
-                            0, tuple.getLeft().getScrapeRate(), TimeUnit.MILLISECONDS);
-
-                        // Store the handle for stopping, etc.
-                        futures.put(task, future);
-                    } catch (ScraperException e) {
-                        LOGGER.warn("Error executing the job {} for conn {} ({}) at rate {} ms",tuple.getLeft().getJobName(), tuple.getMiddle(), tuple.getRight(), tuple.getLeft().getScrapeRate(),e);
-                    }
-
+                        job.getJobName(),
+                        sourceEntry.getKey(),
+                        sourceEntry.getValue(),
+                        job.getScrapeRate());
                 }
-            );
+
+                //create the regarding triggered scraper task
+                TriggeredScraperTask triggeredScraperTask;
+                try {
+                    triggeredScraperTask = new TriggeredScraperTask(
+                        driverManager,
+                        job.getJobName(),
+                        sourceEntry.getKey(),
+                        sourceEntry.getValue(),
+                        job.getFields(),
+                        futureTimeOut,
+                        executorService,
+                        resultHandler,
+                        (TriggeredScrapeJobImpl) job,
+                        triggerCollector);
+
+                    // Add task to internal list
+                    if(LOGGER.isInfoEnabled()) {
+                        LOGGER.info("Task {} added to scheduling", triggeredScraperTask);
+                    }
+                    registerTaskMBean(triggeredScraperTask);
+                    tasks.put(job, triggeredScraperTask);
+                    ScheduledFuture<?> future = scheduler.scheduleAtFixedRate(triggeredScraperTask, 0, job.getScrapeRate(), TimeUnit.MILLISECONDS);
+
+                    // Store the handle for stopping, etc.
+                    scraperTaskMap.put(triggeredScraperTask, future);
+                } catch (ScraperException e) {
+                    LOGGER.warn("Error executing the job {} for conn {} ({}) at rate {} ms",job.getJobName(), sourceEntry.getKey(), sourceEntry.getValue(), job.getScrapeRate(),e);
+                }
+            }
+
+        }
 
         // Add statistics tracker
         scheduler.scheduleAtFixedRate(() -> {
@@ -163,25 +247,124 @@ public class TriggeredScraperImpl implements Scraper {
                     entry.getValue().getPercentageFailed(),
                     statistics.apply(new PercentageAboveThreshold(entry.getKey().getScrapeRate() * 1e6)),
                     statistics.getMin() * 1e-6, statistics.getMean() * 1e-6, statistics.getPercentile(50) * 1e-6);
-                LOGGER.debug(msg);
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(msg);
+                }
             }
         }, 1_000, 1_000, TimeUnit.MILLISECONDS);
     }
 
-    @Override
-    public int getNumberOfActiveTasks() {
-        return 0;
+    /**
+     * Register a task as MBean
+     * @param task task to register
+     */
+    private void registerTaskMBean(ScraperTask task) {
+        /*try {
+            mBeanServer.registerMBean(task, new ObjectName(MX_DOMAIN + ":type=ScrapeTask,name=" + task.getJobName() + "-" + task.getConnectionAlias()));
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException | MalformedObjectNameException e) {
+            LOGGER.debug("Unable to register Task as MBean", e);
+        }*/
     }
 
     @Override
     public void stop() {
         // Stop all futures
         LOGGER.info("Stopping scraper...");
-        for (Map.Entry<ScraperTask, ScheduledFuture<?>> entry : futures.entries()) {
+        for (Map.Entry<ScraperTask, ScheduledFuture<?>> entry : scraperTaskMap.entries()) {
             LOGGER.debug("Stopping task {}...", entry.getKey());
             entry.getValue().cancel(true);
         }
         // Clear the map
-        futures.clear();
+        scraperTaskMap.clear();
+    }
+
+    /**
+     * acquires a plc connection from connection pool
+     * @param plcDriverManager  Driver manager handling connection and pools
+     * @param connectionString  Connection string as defined in the regarding implementation of {@link PlcDriver}
+     * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
+     * @param requestTimeoutMs  maximum awaiting for the the future to return a result
+     * @param info              additional info for trace reasons
+     * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
+     * @throws InterruptedException something went wrong
+     * @throws ExecutionException something went wrong
+     * @throws TimeoutException something went wrong
+     */
+    public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
+                                                 String connectionString,
+                                                 ExecutorService executorService,
+                                                 long requestTimeoutMs,
+                                                 String info) throws InterruptedException, ExecutionException, TimeoutException {
+        if(!info.isEmpty() && LOGGER.isTraceEnabled()){
+            LOGGER.trace("Additional Info from caller {}", info);
+        }
+        CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
+            try {
+                return plcDriverManager.getConnection(connectionString);
+            } catch (PlcConnectionException e) {
+                LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
+                throw new PlcRuntimeException(e);
+            }
+            catch (Exception e){
+                LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
+                throw new PlcRuntimeException(e);
+            }
+        }, executorService);
+        if(LOGGER.isTraceEnabled()){
+            LOGGER.trace("try to get a connection to {}", connectionString);
+        }
+        PlcConnection plcConnection=null;
+        try {
+            plcConnection = future.get(requestTimeoutMs, TimeUnit.MILLISECONDS);
+        }
+        catch (Exception e){
+            LOGGER.trace("Additional Info from caller {}", info,e);
+            throw e;
+        }
+        return plcConnection;
+    }
+
+    /**
+     * acquires a plc connection from connection pool
+     * @param plcDriverManager  Driver manager handling connection and pools
+     * @param connectionString  Connection string as defined in the regarding implementation of {@link PlcDriver}
+     * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
+     * @param requestTimeoutMs  maximum awaiting for the the future to return a result
+     * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
+     * @throws InterruptedException something went wrong
+     * @throws ExecutionException something went wrong
+     * @throws TimeoutException something went wrong
+     */
+    public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
+                                                 String connectionString,
+                                                 ExecutorService executorService,
+                                                 long requestTimeoutMs) throws InterruptedException, ExecutionException, TimeoutException {
+        return getPlcConnection(plcDriverManager,connectionString,executorService,requestTimeoutMs,"");
+    }
+
+    /**
+     * transforms the results from a {@link PlcReadResponse} into a map
+     * @param plcReadResponse response that shall be converted to map for further processing
+     * @return the converted map
+     */
+    public static Map<String, Object> convertPlcResponseToMap(PlcReadResponse plcReadResponse) {
+        return plcReadResponse.getFieldNames().stream()
+            .collect(Collectors.toMap(
+                name -> name,
+                plcReadResponse::getObject
+            ));
+    }
+
+
+    // MBean methods
+    @Override
+    public boolean isRunning() {
+        // TODO is this okay so?
+        return !scraperTaskMap.isEmpty();
+    }
+
+    @Override
+    public int getNumberOfActiveTasks() {
+        return (int) scraperTaskMap.entries().stream().filter(entry -> !entry.getValue().isDone()).count();
     }
 }

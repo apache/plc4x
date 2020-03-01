@@ -23,7 +23,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.base.connection.TestChannelFactory;
+import org.apache.plc4x.java.mock.connection.TestChannelFactory;
 import org.junit.jupiter.api.TestInfo;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Packet;

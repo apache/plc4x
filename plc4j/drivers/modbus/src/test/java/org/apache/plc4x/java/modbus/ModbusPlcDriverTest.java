@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
+import org.apache.plc4x.java.mock.connection.tcp.TcpHexDumper;
 import org.apache.plc4x.java.modbus.connection.ModbusConnectionFactory;
 import org.apache.plc4x.java.modbus.connection.ModbusTcpPlcConnection;
 import org.junit.Rule;
@@ -85,6 +85,15 @@ public class ModbusPlcDriverTest {
     public void getConnection() throws Exception {
         ModbusTcpPlcConnection modbusConnection = (ModbusTcpPlcConnection)
             new PlcDriverManager().getConnection("modbus:tcp://localhost:" + tcpHexDumper.getPort());
+        assertThat(modbusConnection.getSlaveId(), is((short) 0));
+        modbusConnection.close();
+    }
+
+    @Test
+    public void getConnectionWithSlaveId() throws Exception {
+        ModbusTcpPlcConnection modbusConnection = (ModbusTcpPlcConnection)
+            new PlcDriverManager().getConnection("modbus:tcp://localhost:" + tcpHexDumper.getPort() + "?slaveId=42");
+        assertThat(modbusConnection.getSlaveId(), is((short) 42));
         modbusConnection.close();
     }
 

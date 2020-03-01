@@ -23,10 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by timbo on 2019-03-05
+ * basic interface for the configuration of a scrape job
  */
 public interface JobConfiguration {
     String getName();
+
+    String getTriggerConfig();
+
+    @Deprecated
+    Integer getScrapeRate();
 
     List<String> getSources();
 

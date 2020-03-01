@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-protocols-driver-bases</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
@@ -35,23 +35,26 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.6.0</version>
     </dependency>
-
-    <!--dependency>
+    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-raw-sockets</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency-->
+      <version>0.6.0</version>
+    </dependency>
 
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
     </dependency>
 
     <dependency>

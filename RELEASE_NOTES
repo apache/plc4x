@@ -1,4 +1,65 @@
 ==============================================================
+Apache PLC4X 0.6.0
+==============================================================
+
+This is the last release of PLC4X with the "handwritten" drivers.
+This Minor release will thus receive updates and fixes until
+most users have switched to 0.7 and above (with generated drivers).
+
+If you are using the S7 Driver you should update to this Version
+as the critical (memory leak) bug PLC4X-163 is fixed.
+
+New Features
+------------
+- PLC4X-168 A shorter S7 Field Syntax is Introduced.
+This release contains no furter features and mostly stabilization.
+
+Incompatible changes
+--------------------
+- Moved the C++, C# and Python drivers into the `sandbox`
+
+Bug Fixes
+---------
+- Fixed Promise Chain for InternalPlcWriteRequest
+- PLC4X-45 Add float support to Modbus Protocol
+- PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
+- PLC4X-166 Fixed Download Page
+- PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
+- PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
+
+==============================================================
+Apache PLC4X 0.5.0
+==============================================================
+
+This is the first release containing our new generaed drivers (AB-ETH)
+
+New Features
+------------
+
+- Implemented a new Apache Kafka Connect integration module
+- Implemented a new Apache NiFi integration module
+- Implemented a new Logstash integration module
+- Implemented a driver for the AB-ETH protocol
+- Implemented Apache Karaf features for S7 OSGI drivers
+- PLC4X-121	Develop Code Generation to allow Generated Drivers in multiple Languages
+
+Sandbox (Beta-Features)
+- Implemented a new BACnet/IP passive mode driver
+- Implemented a new Serial DF1 driver
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+- PLC4X-104	S7 Driver Datatype TIME_OF_DAY causes ArrayOutOfBoundException
+- PLC4X-134	S7 is terminating the connection during handshake
+- PLC4X-139	PLC4X leaks sockets in case of connection problems
+- PLC4X-141	String with real length of greater 127 throw an exception
+- PLC4X-144	When requesting invalid addresses, the DefaultS7MessageProcessor produces errors
+
+==============================================================
 Apache PLC4X 0.4.0
 ==============================================================
 
@@ -163,7 +224,7 @@ Incompatible changes
 - NONE -
 
 Miscellaneous changes
----------------------  
+---------------------
 
 - NONE -
 
@@ -173,7 +234,7 @@ Known Issues
 - NONE -
 
 Most drivers should be treated experimental and are not near production ready.
-The S7 driver is probably the furthest implemented and tested driver and hereby can be 
+The S7 driver is probably the furthest implemented and tested driver and hereby can be
 considered to be the most mature.
 
 Bug Fixes
@@ -183,7 +244,3 @@ PLC4X-20	Jacoco doesn't seem to be working at all
 PLC4X-21	Code coverage doesn't seem to work
 PLC4X-47	S7 driver silently ignores surplus ReadRequestItems
 PLC4X-48	S7 driver failes to parse response with multiple items
-
-
-
-

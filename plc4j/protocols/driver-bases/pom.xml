@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-protocols</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-protocols-driver-bases</artifactId>
@@ -35,9 +35,11 @@
 
   <modules>
     <module>base</module>
+    <module>pcap-socket</module>
     <module>raw-socket</module>
     <module>serial</module>
     <module>tcp</module>
+    <module>udp</module>
     <module>test</module>
   </modules>
 

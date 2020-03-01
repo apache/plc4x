@@ -22,7 +22,7 @@ package org.apache.plc4x.java.scraper;
 /**
  * Main interface that orchestrates scraping.
  */
-public interface Scraper {
+public interface Scraper{
     /**
      * Start the scraping.
      */

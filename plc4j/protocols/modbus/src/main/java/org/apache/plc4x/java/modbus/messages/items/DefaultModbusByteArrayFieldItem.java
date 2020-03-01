@@ -34,6 +34,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     private static final int SHORT_BYTES = 2;
     private static final int INTEGER_BYTES = 4;
+    private static final int FLOAT_BYTES = 4;
     private static final int LONG_BYTES = 8;
     private static final ByteOrder DEFAULT_ENDIANNESS = ByteOrder.BIG_ENDIAN;
 
@@ -116,7 +117,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
      *
      * @param index     index in relation to the requested data-type (here Integer), see comment of regarding index-transformation
      * @param byteOrder byte-order used for decoding of byte-array
-     * @return resulting short value if valid data is given, null otherwise
+     * @return resulting int value if valid data is given, null otherwise
      */
     public Integer getInteger(int index, ByteOrder byteOrder) {
         if (!isValidInteger(index)) {
@@ -154,7 +155,7 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
      *
      * @param index     index in relation to the requested data-type (here Long), see comment of regarding index-transformation
      * @param byteOrder byte-order used for decoding of byte-array
-     * @return resulting short value if valid data is given, null otherwise
+     * @return resulting long value if valid data is given, null otherwise
      */
     public Long getLong(int index, ByteOrder byteOrder) {
         if (!isValidLong(index)) {
@@ -175,6 +176,44 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
      */
     private static int longIndexToByteIndex(int longIndex) {
         return longIndex * LONG_BYTES;
+    }
+
+    @Override
+    public boolean isValidFloat(int index) {
+        return this.completeByteArray.length >= floatIndexToByteIndex(index) + FLOAT_BYTES;
+    }
+
+    @Override
+    public Float getFloat(int index) {
+        return getFloat(index, this.byteOrder);
+    }
+
+    /**
+     * returns the float result for the given index with explicit chose of ByteOrder
+     *
+     * @param index     index in relation to the requested data-type (here Float), see comment of regarding index-transformation
+     * @param byteOrder byte-order used for decoding of byte-array
+     * @return resulting float value if valid data is given, null otherwise
+     */
+    public Float getFloat(int index, ByteOrder byteOrder) {
+        if (!isValidFloat(index)) {
+            return null;
+        }
+        return ByteBuffer
+            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(floatIndexToByteIndex(index))))
+            .order(byteOrder)
+            .getFloat();
+    }
+
+    /**
+     * converts the starting index of an float array to source type Byte
+     * e.g. user wants to request the 4th float value --&gt; index=3 --&gt; byteIndex=12
+     *
+     * @param floatIndex index from users view
+     * @return resulting byteArrayIndex
+     */
+    private static int floatIndexToByteIndex(int floatIndex) {
+        return floatIndex * FLOAT_BYTES;
     }
 
     /**
@@ -212,9 +251,8 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         return result;
     }
 
-    //ToDo: Implement conversion for Float and Unsigned-Datatypes
+    //ToDo: Implement conversion for Unsigned-Datatypes
 
     //ToDo: Add exceptions to avoid unwanted states --> e.g. neg indexes
 
 }
-

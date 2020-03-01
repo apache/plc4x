@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.simulated.connection.SimulatedPlcConnection;
 import org.apache.plc4x.java.simulated.connection.TestDevice;
 import org.apache.plc4x.java.spi.PlcDriver;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Test driver holding its state in the client process.
@@ -32,6 +33,7 @@ import org.apache.plc4x.java.spi.PlcDriver;
  * Every device contains a random value generator accessible by address {@code random}.
  * Any value can be stored into test devices, however the state will be gone when connection is closed.
  */
+@Component(service = PlcDriver.class, immediate = true)
 public class SimulatedPlcDriver implements PlcDriver {
 
     @Override

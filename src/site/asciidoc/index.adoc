@@ -50,7 +50,7 @@ The major benefits of PLC4X™ over OPC-UA, from our point of view are:
 - Activating OPC-UA support on existing PLCs greatly increases the load on the PLCs
 - No need to pay for licenses to activate OPC-UA support
 
-At first we will be concentrating on providing adapters for the most widely used protocol such as:
+At first we will be concentrating on providing adapters for the most widely used protocols such as:
 
 - icon:pause-circle[role=light-gray] BACnet
 - icon:check[role=green] link:protocols/ads/index.html[Beckhoff ADS (TCP)]
@@ -66,7 +66,7 @@ At first we will be concentrating on providing adapters for the most widely used
 We are planning on providing support for the following programming languages:
 
 - icon:wrench[role=yellow] C++
-- con:wrench[role=yellow] C# (.Net)
+- icon:wrench[role=yellow] C# (.Net)
 - icon:check[role=green] link:plc4j/index.html[Java]
 - icon:wrench[role=yellow] Python
 
@@ -81,7 +81,7 @@ a|image::apache_nifi_logo.svg[width=80%,link=https://nifi.apache.org] a|image::a
 |icon:wrench[role=yellow] https://nifi.apache.org[Apache Nifi™] |icon:pause-circle[role=light-gray] https://brooklyn.apache.org[Apache Brooklyn™] |icon:pause-circle[role=light-gray] https://mynewt.apache.org[Apache Mynewt™]
 |===
 
-Hereby greatly reducing the barriers and the learning curve for creating industrial IoT applications.
+This greatly reduces the barriers and the learning curve for creating industrial IoT applications.
 
 === Upcoming Conferences & Meetups
 
@@ -89,8 +89,9 @@ On this page we are listing options to attend talks and events around PLC4X.
 
 [width="100%",cols="2,^2,2,^2,^3",options="header"]
 |=========================================================
-|Date |Location |Type |Event | Title
-|18th June 2019 |Erfurt (GER) |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen] |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
+|Date           |Location        |Type   |Event                                                                 |Title
+|24th May 2019  |Frankfurt (GER) |Meetup |https://www.meetup.com/de-DE/IoT-Hessen/events/261422034/[IoT Hessen] |Industrial IoT goes Open Source: Apache PLC4X Talks & Party
+|18th June 2019 |Erfurt (GER)    |Meetup |https://www.meetup.com/de-DE/iothde/events/260140057/[IoT Thüringen]  |Industrie & IoT: Die perfekte Verbindung mit Flexibus & Apache PLC4X
 |=========================================================
 
 A full list containing also previous events can be found https://plc4x.apache.org/developers/conferences.html[here].

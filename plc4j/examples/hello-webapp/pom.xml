@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp</artifactId>
@@ -43,6 +43,23 @@
   </modules>
 
   <build>
+    <plugins>
+      <!-- Disable building the uber-jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>generate-uber-jar</id>
+            <phase>none</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -50,13 +67,6 @@
           <artifactId>jqassistant-maven-plugin</artifactId>
           <configuration>
             <skip>true</skip>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <skipAssembly>true</skipAssembly>
           </configuration>
         </plugin>
       </plugins>

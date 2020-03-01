@@ -76,7 +76,7 @@
     <name>Apache Software Foundation</name>
     <src>https://plc4x.apache.org/images/apache_logo.png</src>
     <!--src>./images/apache_logo.png</src-->
-    <href>http://www.apache.org/</href>
+    <href>https://www.apache.org/</href>
   </bannerRight>
 
   <body>
@@ -96,6 +96,7 @@
     <menu name="Users">
       <item name="Download" href="users/download.html"/>
       <item name="Getting Started" href="users/gettingstarted.html"/>
+      <item name="PLC4X without a PLC and Unit Testing" href="users/testing.html"/>
       <item name="Object PLC Mapping (OPM)" href="users/opm.html"/>
       <item name="Industry 4.0 with Apache" href="users/industry40.html"/>
       <item name="Security" href="users/security.html"/>
@@ -104,6 +105,11 @@
       <item name="Bug &amp; Issue Tracker" href="developers/issues.html"/>
       <item name="Building PLC4X" href="developers/building.html"/>
       <item name="Code Analysis" href="developers/sonar.html"/>
+      <item name="Code Generation" href="developers/code-gen/index.html">
+        <item name="Protocol: MSpec Format" href="developers/code-gen/protocol/mspec.html"/>
+        <item name="Language: Apache Freemarker" href="developers/code-gen/language/freemarker.html"/>
+        <item name="Example: DF1 MSpec" href="developers/code-gen/protocol/df1.html"/>
+      </item>
       <item name="Continuous Integration" href="developers/ci.html"/>
       <item name="Contributing" href="developers/contributing.html"/>
       <item name="Decision Making" href="developers/decisions.html"/>
@@ -111,6 +117,7 @@
       <item name="Maturity" href="developers/maturity.html"/>
       <item name="Preparing your Computer" href="developers/preparing.html"/>
       <item name="Releasing" href="developers/release.html"/>
+      <item name="Releasing Build-Tools" href="developers/release-build-tools.html"/>
       <item name="Team" href="developers/team.html"/>
       <item name="VM Access" href="developers/vm.html"/>
       <item name="VPN Access" href="developers/vpn.html"/>
@@ -119,6 +126,7 @@
     </menu>
     <menu name="Protocols">
       <item name="Features" href="protocols/features.html"/>
+      <item name="AB-Ethernet" href="protocols/ab-eth/index.html"/>
       <item name="ADS" href="protocols/ads/index.html"/>
       <item name="DeltaV" href="protocols/delta-v/index.html"/>
       <item name="EtherNet/IP" href="protocols/ethernet-ip/index.html"/>

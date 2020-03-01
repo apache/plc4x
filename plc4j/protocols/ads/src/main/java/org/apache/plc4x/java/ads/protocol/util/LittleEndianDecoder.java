@@ -157,7 +157,9 @@ public class LittleEndianDecoder {
             case FLOAT: {
                 LinkedList<Float> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    float aLong = wrappedBuffer.readFloatLE();
+                    // FIXME: Commented out till we are able to update to the latest netty version.
+                    float aLong = wrappedBuffer.readFloat();
+                    //float aLong = wrappedBuffer.readFloatLE();
                     values.offer(aLong);
                 }
                 return new DefaultFloatFieldItem(values.toArray(new Float[0]));
@@ -165,7 +167,9 @@ public class LittleEndianDecoder {
             case DOUBLE: {
                 LinkedList<Double> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    double aLong = wrappedBuffer.readDoubleLE();
+                    // FIXME: Commented out till we are able to update to the latest netty version.
+                    double aLong = wrappedBuffer.readDouble();
+                    //double aLong = wrappedBuffer.readDoubleLE();
                     values.offer(aLong);
                 }
                 return new DefaultDoubleFieldItem(values.toArray(new Double[0]));
@@ -261,7 +265,9 @@ public class LittleEndianDecoder {
             case REAL: {
                 LinkedList<Float> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    float aByte = wrappedBuffer.readFloatLE();
+                    // FIXME: Commented out till we are able to update to the latest netty version.
+                    float aByte = wrappedBuffer.readFloat();
+                    //float aByte = wrappedBuffer.readFloatLE();
                     values.offer(aByte);
                 }
                 return new DefaultFloatFieldItem(values.toArray(new Float[0]));
@@ -269,7 +275,9 @@ public class LittleEndianDecoder {
             case LREAL: {
                 LinkedList<Double> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
-                    double aByte = wrappedBuffer.readDoubleLE();
+                    // FIXME: Commented out till we are able to update to the latest netty version.
+                    double aByte = wrappedBuffer.readDouble();
+                    //double aByte = wrappedBuffer.readDoubleLE();
                     values.offer(aByte);
                 }
                 return new DefaultDoubleFieldItem(values.toArray(new Double[0]));

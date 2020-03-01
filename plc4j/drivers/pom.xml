@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j-drivers</artifactId>
@@ -34,6 +34,7 @@
   <description>Wrapper project for all PLC4J driver implementations.</description>
 
   <modules>
+    <module>ab-eth</module>
     <module>ads</module>
     <module>ethernet-ip</module>
     <module>modbus</module>

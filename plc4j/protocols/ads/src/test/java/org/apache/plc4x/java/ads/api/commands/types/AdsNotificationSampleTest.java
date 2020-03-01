@@ -20,7 +20,7 @@ package org.apache.plc4x.java.ads.api.commands.types;
 
 import org.junit.Test;
 
-import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
+import static org.apache.plc4x.java.mock.util.Assert.assertByteEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

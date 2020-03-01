@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.4.0</version>
+    <version>0.6.0</version>
   </parent>
 
   <artifactId>plc4j</artifactId>
@@ -41,6 +41,7 @@
 
     <module>examples</module>
     <module>integrations</module>
+    <module>karaf-features</module>
   </modules>
 
   <build>
@@ -179,6 +180,13 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+            <exportScr>true</exportScr>
+            <instructions>
+              <_include>-bnd.bnd</_include>
+              <_removeheaders>Bnd-LastModified,Built-By</_removeheaders>
+            </instructions>
+        </configuration>
       </plugin>
 
       <!--

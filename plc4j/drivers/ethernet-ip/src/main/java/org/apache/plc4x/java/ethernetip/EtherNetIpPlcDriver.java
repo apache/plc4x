@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.ethernetip.connection.EtherNetIpTcpPlcConnection;
 import org.apache.plc4x.java.spi.PlcDriver;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
  * Spec:
  * http://read.pudn.com/downloads166/ebook/763212/EIP-CIP-V2-1.0.pdf
  */
+@Component(service = PlcDriver.class, immediate = true)
 public class EtherNetIpPlcDriver implements PlcDriver {
 
     private static final Pattern ETHERNETIP_URI_PATTERN = Pattern.compile("^eip://(?<host>[\\w.]+)(:(?<port>\\d*))?(?<params>\\?.*)?");

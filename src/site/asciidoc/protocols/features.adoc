@@ -23,6 +23,14 @@ The following table contains a list of operations and the protocols that support
 |===
 |Protocol |Read Single Address Value |Read Multiple Address Values |Write Single Address Value |Write Multiple Address Value|Subscribe to Value changes |Subscribe to PLC Events/Alarms
 
+|AB-Ethernet
+|icon:check[role="green"]
+|icon:check[role="red"]
+|icon:check[role="red"]
+|icon:check[role="red"]
+|icon:check[role="red"]
+|icon:question[role="red"]
+
 |ADS
 |icon:check[role="green"]
 |icon:check[role="green"]

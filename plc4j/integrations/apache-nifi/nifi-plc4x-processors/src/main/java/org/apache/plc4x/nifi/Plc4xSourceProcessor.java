@@ -30,10 +30,9 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.json.simple.JSONObject;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Tags({"plc4x-source"})
@@ -53,29 +52,27 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
         }
 
         FlowFile flowFile = session.create();
-        session.append(flowFile, out -> {
-            try {
-                PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                getFields().forEach(field -> {
-                    String address = getAddress(field);
-                    if(address != null) {
-                        builder.addItem(field, address);
-                    }
-                });
-                PlcReadRequest readRequest = builder.build();
-                PlcReadResponse response = readRequest.execute().get();
-                JSONObject obj = new JSONObject();
-                for (String fieldName : response.getFieldNames()) {
-                    for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {
-                        Object value = response.getObject(fieldName, i);
-                        obj.put(fieldName, value);
-                    }
+        try {
+            PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            getFields().forEach(field -> {
+                String address = getAddress(field);
+                if(address != null) {
+                    builder.addItem(field, address);
                 }
-                obj.writeJSONString(new OutputStreamWriter(out));
-            } catch (InterruptedException | ExecutionException e) {
-                throw new IOException(e);
+            });
+            PlcReadRequest readRequest = builder.build();
+            PlcReadResponse response = readRequest.execute().get();
+            Map attributes = new HashMap<String, String>();
+            for (String fieldName : response.getFieldNames()) {
+                for(int i = 0; i < response.getNumberOfValues(fieldName); i++) {
+                    Object value = response.getObject(fieldName, i);
+                    attributes.put(fieldName, String.valueOf(value));
+                }
             }
-        });
+            flowFile = session.putAllAttributes(flowFile, attributes);
+        } catch (InterruptedException | ExecutionException e) {
+            throw new ProcessException(e);
+        }
         session.transfer(flowFile, SUCCESS);
     }
 

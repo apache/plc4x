@@ -87,6 +87,16 @@ public class IsoOnTcpProtocol extends PlcByteToMessageCodec<IsoOnTcpMessage> {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Got Data: {}", ByteBufUtil.hexDump(in));
                 }
+                // Gobble up any garbage that might be still in the buffer until the buffer is
+                // empty or we reach the potential start of the next ISO on TCP packet.
+                while ((in.readableBytes() > 0) && (in.getByte(0) != ISO_ON_TCP_MAGIC_NUMBER)) {
+                    // Read and hereby remove the invalid byte.
+                    in.readByte();
+                }
+                // If there was nothing left, just give up.
+                if(in.readableBytes() == 0) {
+                    return;
+                }
                 exceptionCaught(ctx, new PlcProtocolException(
                     String.format("Expecting ISO on TCP magic number: %02X", ISO_ON_TCP_MAGIC_NUMBER)));
                 return;

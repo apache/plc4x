@@ -133,4 +133,38 @@ public class DefaultModbusByteArrayFieldItemTest {
 
         return new DefaultModbusByteArrayFieldItem(byteArray);
     }
+
+    @Test
+    public void convertByteArrayToFloatTest() {
+        BaseDefaultFieldItem fieldItem = getFieldItemForFloatArray();
+
+        Float itemFloat = fieldItem.getFloat(1);
+        assertEquals(456.456f, itemFloat, 0);
+    }
+
+    @Test
+    public void convertByteArrayToFloatTestReturnsNull() {
+        BaseDefaultFieldItem fieldItem = getFieldItemForFloatArray();
+
+        Float itemFloat = fieldItem.getFloat(17);
+        assertNull(itemFloat);
+    }
+
+    private static BaseDefaultFieldItem getFieldItemForFloatArray() {
+        int sizeFloatByteBuffer = 12;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(sizeFloatByteBuffer);
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        byteBuffer.putFloat(0,123.123f);
+        byteBuffer.putFloat(4,456.456f);
+        byteBuffer.putFloat(8,789.789f);
+        Byte[][] byteArray = new Byte[sizeFloatByteBuffer / 2][2];
+        int cntByteBuffer = 0;
+        for (byte b : byteBuffer.array()) {
+            int shortIndex=cntByteBuffer / 2;
+            byteArray[shortIndex][cntByteBuffer % 2] = b;
+            cntByteBuffer++;
+        }
+
+        return new DefaultModbusByteArrayFieldItem(byteArray);
+    }
 }
