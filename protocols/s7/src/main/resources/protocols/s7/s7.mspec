@@ -31,7 +31,6 @@
 ////////////////////////////////////////////////////////////////
 // COTP
 ////////////////////////////////////////////////////////////////
-
 [discriminatedType 'COTPPacket' [uint 16 'cotpLen']
     [implicit      uint 8 'headerLength' 'lengthInBytes - (((payload != null) ? payload.lengthInBytes : 0) + 1)']
     [discriminator uint 8 'tpduCode']
@@ -67,7 +66,6 @@
     [array    COTPParameter 'parameters' length '(headerLength + 1) - curPos' ['(headerLength + 1) - curPos']]
     [optional S7Message     'payload'    'curPos < cotpLen']
 ]
-
 [discriminatedType 'COTPParameter' [uint 8 'rest']
     [discriminator uint 8 'parameterType']
     [implicit      uint 8 'parameterLength' 'lengthInBytes - 2']
@@ -89,11 +87,9 @@
         ]
     ]
 ]
-
 ////////////////////////////////////////////////////////////////
 // S7
 ////////////////////////////////////////////////////////////////
-
 [discriminatedType 'S7Message'
     [const         uint 8  'protocolId'      '0x32']
     [discriminator uint 8  'messageType']
@@ -118,7 +114,6 @@
     [optional S7Parameter 'parameter' 'parameterLength > 0' ['messageType']]
     [optional S7Payload   'payload'   'payloadLength > 0'   ['messageType', 'parameter']]
 ]
-
 ////////////////////////////////////////////////////////////////
 // Parameters
 
@@ -257,7 +252,7 @@
         ]
     ]
 ]
-//Changed this for 11,12,13,14 as it was not correctly writing into the buffer
+
 [dataIo 'DataItem' [uint 8 'dataProtocolId']
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
@@ -267,27 +262,25 @@
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-
         // -----------------------------------------
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['11' Byte
-            [simple int 8 'value']
+        ['11' List
+            [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['12' Short
-            [simple int 16 'value']
+        ['12' List
+            [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['13' Integer
-            [simple int 32 'value']
+        ['13' List
+            [array bit 'value' count '32']
         ]
         // 8 byte (64 bit)
-        ['14' Long
-            [simple int 64 'value']
+        ['14' List
+            [array bit 'value' count '64']
         ]
-
         // -----------------------------------------
         // Integers
         // -----------------------------------------
@@ -319,7 +312,6 @@
         ['28' BigInteger
             [simple uint 64 'value']
         ]
-
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
@@ -329,7 +321,6 @@
         ['32' Double
             [simple float 11.52 'value']
         ]
-
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
@@ -341,7 +332,6 @@
         ]
         ['44' String
         ]
-
         // -----------------------------------------
         // TIA Date-Formats
         // -----------------------------------------
@@ -486,6 +476,3 @@
     ['0xA0' DIAGNOSTIC_BUFFER]
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
-
-
-

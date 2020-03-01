@@ -256,8 +256,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     private PlcValue internalEncodeInteger(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        for(Object val : values){
-        }
         // Initialize the constraints.
         BigInteger minValue;
         BigInteger maxValue;
@@ -565,8 +563,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         if(stringValues.size() == 1) {
             return new PlcString(stringValues.get(0));
         } else {
-            for (String str : stringValues){LOGGER.trace("Returning {}",str);
-            }
             return new PlcList(stringValues);
         }
     }

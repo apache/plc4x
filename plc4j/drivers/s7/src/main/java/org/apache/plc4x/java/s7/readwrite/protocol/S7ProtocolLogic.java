@@ -25,9 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
@@ -47,17 +45,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
  * So we need to limit those.
  * Thus, each request goes to a Work Queue and this Queue ensures, that only 3 are open at the same time.
  */
-public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements PlcSubscriber {
+public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket>{
 
     private static final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
@@ -264,7 +264,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Pl
 
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
-
+        // TODO Implement Closing on Protocol Level
     }
 
 
@@ -484,15 +484,5 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Pl
         S7Field s7Field = (S7Field) field;
         return new S7AddressAny(s7Field.getDataType(), s7Field.getNumElements(), s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
-    }
-
-    @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        return null;
-    }
-
-    @Override
-    public void unregister(PlcConsumerRegistration registration) {
-
     }
 }
