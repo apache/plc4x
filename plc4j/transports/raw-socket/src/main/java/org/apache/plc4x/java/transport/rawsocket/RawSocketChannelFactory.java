@@ -20,9 +20,13 @@ package org.apache.plc4x.java.transport.rawsocket;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ThreadPerChannelEventLoop;
+import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
+import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelOption;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +52,20 @@ public class RawSocketChannelFactory extends NettyChannelFactory implements HasC
     }
 
     @Override
+    public EventLoopGroup getEventLoopGroup() {
+        return new ThreadPerChannelEventLoop(new OioEventLoopGroup());
+    }
+
+    @Override
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
+            /*bootstrap.option(RawSocketChannelOption.PORT, configuration.getDefaultPort());
+            bootstrap.option(RawSocketChannelOption.PROTOCOL_ID, configuration.getProtocolId());
+            bootstrap.option(RawSocketChannelOption.SPEED_FACTOR, configuration.getReplaySpeedFactor());*/
+            if(configuration.getPcapPacketHandler() != null) {
+                bootstrap.option(PcapChannelOption.PACKET_HANDLER, configuration.getPcapPacketHandler());
+            }
         }
     }
 

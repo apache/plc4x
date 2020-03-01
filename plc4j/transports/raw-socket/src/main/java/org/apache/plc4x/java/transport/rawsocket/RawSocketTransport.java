@@ -20,7 +20,7 @@ package org.apache.plc4x.java.transport.rawsocket;
 
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 
 public class RawSocketTransport implements Transport {
 
@@ -36,7 +36,7 @@ public class RawSocketTransport implements Transport {
 
     @Override
     public ChannelFactory createChannelFactory(String transportConfig) {
-        RawSocketAddress address = new RawSocketAddress(transportConfig, RawSocketAddress.ALL_PROTOCOLS);
+        RawSocketAddress address = new RawSocketAddress(transportConfig);
         return new RawSocketChannelFactory(address);
     }
 

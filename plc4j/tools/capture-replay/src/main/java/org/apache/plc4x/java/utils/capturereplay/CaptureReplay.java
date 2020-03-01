@@ -48,6 +48,9 @@ public class CaptureReplay {
         PcapHandle readHandle = Pcaps.openOffline(inputFile.getAbsolutePath(), PcapHandle.TimestampPrecision.NANO);
 
         PcapNetworkInterface sendDevice = Pcaps.getDevByName(outputDevice);
+        if(sendDevice == null) {
+            throw new IllegalArgumentException("Could not open output device " + outputDevice);
+        }
         PcapHandle sendHandle = sendDevice.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
 
         // Start a thread that processes the callbacks from the raw socket and simply

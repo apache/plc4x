@@ -21,12 +21,12 @@ package org.apache.plc4x.java.bacnetip.configuration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
-import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
+import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcapsockets.netty.handlers.PacketHandler;
+import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapTransportConfiguration {
+public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
@@ -91,5 +91,6 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
     public PacketHandler getPcapPacketHandler() {
         return packet -> packet.getPayload().getPayload().getPayload().getRawData();
     }
+
 
 }
