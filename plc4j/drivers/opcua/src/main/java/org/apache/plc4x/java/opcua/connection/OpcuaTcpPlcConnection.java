@@ -100,7 +100,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     }
 
     private OpcuaTcpPlcConnection(String params) {
-        super(params);
+        super(getOptionString(params) );
     }
 
     public static OpcuaTcpPlcConnection of(InetAddress address, String params, int requestTimeout) {
@@ -167,13 +167,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         EndpointDescription endpoint = null;
 
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params)).get();
+            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, getSubPathOfParams(params))).get();
             //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
             logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
 
             // try the explicit discovery endpoint as well
-            String discoveryUrl = getEndpointUrl(address, port, params);
+            String discoveryUrl = getEndpointUrl(address, port, getSubPathOfParams(params));
 
             if (!discoveryUrl.endsWith("/")) {
                 discoveryUrl += "/";
@@ -513,5 +513,31 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     private IdentityProvider getIdentityProvider() {
         return new AnonymousProvider();
+    }
+
+    private static String getSubPathOfParams(String params){
+        if(params.contains("=")){
+            if(params.contains("?")){
+                return params.split("\\?")[0];
+            }else{
+                return "";
+            }
+
+        }else {
+            return params;
+        }
+    }
+
+    private static String getOptionString(String params){
+        if(params.contains("=")){
+            if(params.contains("?")){
+                return params.split("\\?")[1];
+            }else{
+                return params;
+            }
+
+        }else {
+            return "";
+        }
     }
 }

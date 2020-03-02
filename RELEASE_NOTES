@@ -26,6 +26,7 @@ Bug Fixes
 - PLC4X-166 Fixed Download Page
 - PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
 - PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
+- Fixed wrong connection address parameter handling which connects to a wrong address if there is no sub-address to a given IP + PORT combination
 
 ==============================================================
 Apache PLC4X 0.5.0
