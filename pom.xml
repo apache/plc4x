@@ -108,7 +108,7 @@
     <antlr.version>4.7.2</antlr.version>
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
-    <bouncycastle.version>1.60</bouncycastle.version>
+    <bouncycastle.version>1.61</bouncycastle.version>
     <boost.version>1.71.0</boost.version>
     <boost.version.underline-short>1_71</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>

@@ -52,8 +52,12 @@ import org.eclipse.milo.opcua.stack.core.types.structured.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -194,6 +198,32 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             .findFirst()
             .orElseThrow(() -> new PlcConnectionException("No desired endpoints from"));
 
+        // Security
+        Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "security");
+        try {
+            Files.createDirectories(securityTempDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (!Files.exists(securityTempDir)) {
+            throw new PlcConnectionException("unable to create security dir: " + securityTempDir);
+        }
+        LoggerFactory.getLogger(getClass())
+            .info("security temp dir: {}", securityTempDir.toAbsolutePath());
+
+        KeyStoreLoader loader;
+        try {
+            loader = new KeyStoreLoader().load(securityTempDir);
+        } catch (Exception e) {
+            throw new PlcConnectionException("Unable to load Security!", e);
+        }
+
+        SecurityPolicy securityPolicy = SecurityPolicy.None;
+
+        logger.info("Using endpoint: {} [{}/{}]",
+            endpoint.getEndpointUrl(), securityPolicy, endpoint.getSecurityMode());
+        // End Security
+
         if (this.skipDiscovery) {
             //ApplicationDescription applicationDescription = new ApplicationDescription();
             //endpoint = new EndpointDescription(address.getHostAddress(),applicationDescription , null, MessageSecurityMode.None, SecurityPolicy.None.getUri(), null , TransportProfile.TCP_UASC_UABINARY.getUri(), UByte.valueOf(0));// TODO hier machen wenn fertig
@@ -242,6 +272,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         OpcUaClientConfig config = OpcUaClientConfig.builder()
             .setApplicationName(LocalizedText.english("eclipse milo opc-ua client of the apache PLC4X:PLC4J project"))
             .setApplicationUri("urn:eclipse:milo:plc4x:client")
+            .setCertificate(loader.getClientCertificate())
             .setEndpoint(endpoint)
             .setIdentityProvider(getIdentityProvider())
             .setRequestTimeout(UInteger.valueOf(requestTimeout))
