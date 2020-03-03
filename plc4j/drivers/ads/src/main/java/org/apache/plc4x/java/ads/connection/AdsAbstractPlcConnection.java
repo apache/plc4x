@@ -214,7 +214,16 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
             .map(adsWriteRequest -> new PlcRequestContainer<>(new DefaultPlcProprietaryRequest<>(adsWriteRequest), new CompletableFuture<>()))
             // We don't need a response so we just supply a throw away future.
             .forEach(channel::write);
+        // Flush Channel
         channel.flush();
+        // Close Channel
+        channel.close().syncUninterruptibly();
+        // Do some additional cleanup operations ...
+        // In normal operation, the channels event loop has a parent, however when running with
+        // the embedded channel for unit tests, parent is null.
+        if (channel.eventLoop().parent() != null) {
+            channel.eventLoop().parent().shutdownGracefully();
+        }
         super.close();
     }
 
