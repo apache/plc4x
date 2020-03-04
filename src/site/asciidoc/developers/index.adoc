@@ -33,7 +33,7 @@ Using the `Maven-Wrapper` you don't even need a `Maven` installation. The build 
 
 As part of the build we have an initial build step that will do a `prerequisite check`. Depending on the activated modules, it will check if all preconditions are met and tell you what's missing.
 
-For details please have a look at the link:preparing.html[Preparing your Computer] page.
+For details please have a look at the link:preparing/index.html[Preparing your Computer] page.
 
 === Building PLC4X
 

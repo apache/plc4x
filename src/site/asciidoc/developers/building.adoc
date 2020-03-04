@@ -72,7 +72,7 @@ The following profiles are available (*They have to be enabled additionally to t
 - `with-dotnet`: Builds all C# and .Net related modules, integrations and examples
 - `with-python`: Builds all Python related modules, integrations and examples
 
-WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing.html[Preparing your Computer] guide for a detailed description on this.
+WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
 
 Beyond that there is an additional profile `with-proxies` which will enable additional modules in each of the activated languages.
 This `proxies` module, uses `Apache Thrift` to generate modules for forwarding requests to an `interop server` which runs somewhere else or on the same machine.
