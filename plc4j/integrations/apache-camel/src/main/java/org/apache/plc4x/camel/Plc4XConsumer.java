@@ -25,11 +25,14 @@ import org.apache.camel.support.ServiceSupport;
 import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class Plc4XConsumer extends ServiceSupport implements Consumer {
@@ -39,7 +42,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
     private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private String fieldQuery;
+    private List<String> fieldQuery;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
 
@@ -75,15 +78,33 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
 
     @Override
     protected void doStart() throws InterruptedException, ExecutionException {
+        int nb=0;
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+        if (fieldQuery.size()>1){
+            int i=0;
+            for(String query : fieldQuery){
+                builder.addItem(String.valueOf(i++),query);
+            }
+        }
+        else{
+            builder.addItem("default",fieldQuery.get(0));
+        }
+        PlcReadRequest request = builder.build();
         future = executorService.schedule(() -> {
-            plcConnection.readRequestBuilder()
-                .addItem("default", fieldQuery)
-                .build()
-                .execute()
-                .thenAccept(response -> {
+            request.execute().thenAccept(response -> {
                     try {
                         Exchange exchange = endpoint.createExchange();
-                        exchange.getIn().setBody(unwrapIfSingle(response.getAllObjects("default")));
+                        if (fieldQuery.size()>1){
+                            int i=0;
+                            List<Object> values = new ArrayList<>();
+                            for(String query : fieldQuery){
+                                values.add(response.getObject(String.valueOf(i++)));
+                            }
+                            exchange.getIn().setBody(values);
+                        }
+                        else {
+                            exchange.getIn().setBody(unwrapIfSingle(response.getAllObjects("default")));
+                        }
                         processor.process(exchange);
                     } catch (Exception e) {
                         exceptionHandler.handleException(e);

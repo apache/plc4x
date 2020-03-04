@@ -31,7 +31,9 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +47,7 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private PlcConnection plcConnection;
     private PlcReadRequest.Builder requestBuilder;
     private Class dataType;
+
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
@@ -79,8 +82,16 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get();
-            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
-        } catch (InterruptedException e) {
+            if(endpoint.getAddress().size()==1) {
+                exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
+            }
+            else{
+                List<Object> values = new ArrayList<>();
+                for(String field : plcReadResponse.getFieldNames()){
+                    values.add(plcReadResponse.getObject(field));
+                }
+                exchange.getIn().setBody(values);
+            }        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             exchange.setException(e);
         } catch (ExecutionException e) {
@@ -100,7 +111,16 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
+            if(endpoint.getAddress().size()==1) {
+                exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
+            }
+            else{
+                List<Object> values = new ArrayList<>();
+                for(String field : plcReadResponse.getFieldNames()){
+                    values.add(plcReadResponse.getObject(field));
+                }
+                exchange.getIn().setBody(values);
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             exchange.setException(e);
@@ -120,7 +140,17 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
 
     private PlcReadRequest createReadRequest() {
-        return requestBuilder.addItem("default", endpoint.getAddress()).build();
+
+        if (endpoint.getAddress().size()>1){
+            int i=0;
+            for(String query : endpoint.getAddress()){
+                requestBuilder.addItem(String.valueOf(i++),query);
+            }
+        }
+        else{
+            requestBuilder.addItem("default",endpoint.getAddress().get(0));
+        }
+        return requestBuilder.build();
     }
 
     private Object unwrapIfSingle(Collection collection) {

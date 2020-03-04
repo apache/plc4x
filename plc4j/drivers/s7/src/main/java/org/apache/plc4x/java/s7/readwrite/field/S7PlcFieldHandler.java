@@ -326,7 +326,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 minValue = BigInteger.valueOf(Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Integer.MAX_VALUE);
                 fieldType = PlcInteger.class;
-                //------------------------------------------------------------------------------------
                 valueType = Integer.class;
                 castedValues = new Integer[values.length];
                 break;
@@ -414,14 +413,14 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 minValue = (double) -Float.MAX_VALUE;
                 maxValue = (double) Float.MAX_VALUE;
                 fieldType = PlcFloat.class;
-                valueType = Float[].class;
+                valueType = Float.class;
                 castedValues = new Float[values.length];
                 break;
             case LREAL:
                 minValue = -Double.MAX_VALUE;
                 maxValue = Double.MAX_VALUE;
                 fieldType = PlcDouble.class;
-                valueType = Double[].class;
+                valueType = Double.class;
                 castedValues = new Double[values.length];
                 break;
             default:
@@ -451,7 +450,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                     "Value of " + value + " exceeds allowed maximum for type "
                         + s7Field.getDataType().name() + " (max " + maxValue.toString() + ")");
             }
-            if (valueType == Float[].class) {
+            if (valueType == Float.class) {
                 castedValues[i] = value.floatValue();
             } else {
                 castedValues[i] = value;

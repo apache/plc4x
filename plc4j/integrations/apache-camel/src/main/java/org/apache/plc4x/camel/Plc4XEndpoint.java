@@ -28,6 +28,7 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
+import java.util.List;
 import java.util.Objects;
 
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
@@ -47,7 +48,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @UriParam
     @Metadata(required = "false")
     @SuppressWarnings("unused")
-    private String address;
+    private List<String> address;
 
     /**
      * TODO: document me
@@ -139,11 +140,11 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.driver = driver;
     }
 
-    public String getAddress() {
+    public List<String> getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(List<String> address) {
         this.address = address;
     }
 

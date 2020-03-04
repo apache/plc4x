@@ -42,7 +42,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
     }
 
     public String packageName(String protocolName, String languageName, String languageFlavorName) {
-        return "org.apache.plc4x." + String.join("", languageName.split("\\-")) + "." +
+        return "org.apache.plc4x." + String.join("", languageName.split("git push \\-")) + "." +
             String.join("", protocolName.split("\\-")) + "." +
             String.join("", languageFlavorName.split("\\-"));
     }
