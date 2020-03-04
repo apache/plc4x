@@ -41,9 +41,16 @@ public class OpcuaFieldTest {
     @Test
     public void testOpcuaAddressPattern() {
 
+        //standard integer based param
         assertMatching(ADDRESS_PATTERN, "ns=2;i=10846");
+        //string based address values
         assertMatching(ADDRESS_PATTERN, "ns=2;s=test.variable.name.inspect");
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=key param with some spaces");
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=\"aweired\".\"siemens\".\"param\".\"submodule\".\"param");
+        assertMatching(ADDRESS_PATTERN, "ns=2;s=Weee314Waannaaa\\somenice=ext=a234a*#+1455!§$%&/()tttraaaaSymbols-.,,");
+        // GUID address tests
         assertMatching(ADDRESS_PATTERN, "ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a");
+        // binary encoded addresses
         assertMatching(ADDRESS_PATTERN, "ns=2;b=asvaewavarahreb==");
 
     }
