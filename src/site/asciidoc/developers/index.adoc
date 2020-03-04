@@ -37,7 +37,7 @@ For details please have a look at the link:preparing.html[Preparing your Compute
 
 === Building PLC4X
 
-We have a dedicated page on link:bulding.html[Building PLC4X].
+We have a dedicated page on link:building.html[Building PLC4X].
 
 Please read this page on information about how to build Apache PLC4X.
 
