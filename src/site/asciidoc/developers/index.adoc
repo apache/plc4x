@@ -25,7 +25,7 @@ This part of the Apache PLC4X dedicated to provide information to people wanting
 
 We have tried to make the PLC4X build experience as smooth as possible and have tried to reduce the number of required third party tools to an absolute minimum.
 
-The full PLC4X build however builds not only `Java` libraries, but also `C++`, `Python` and `C#` libraries as well as builds `Docker` images on `Limux`, `Mac` and `Windows`.
+The full PLC4X build however builds not only `Java` libraries, but also `C++`, `Python` and `C#` libraries as well as builds `Docker` images on `Linux`, `Mac` and `Windows`.
 
 As a start, you will basically need a `Java VM` of at least `Java 1.8`.
 
