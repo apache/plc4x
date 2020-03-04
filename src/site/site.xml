@@ -79,7 +79,7 @@
       </item>
       <item name="Tools" href="users/tools/index.html">
         <item name="Capture Replay" href="users/tools/capture-replay.html"/>
-        <item name="Connection Pool" href="users/tools/onnection-pool.html"/>
+        <item name="Connection Pool" href="users/tools/connection-pool.html"/>
         <item name="Object PLC Mapping (OPM)" href="users/tools/opm.html"/>
         <item name="Scraper" href="users/tools/scraper.html"/>
         <item name="PLC4X without a PLC and Unit Testing" href="users/tools/testing.html"/>

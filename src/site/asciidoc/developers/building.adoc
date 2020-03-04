@@ -113,7 +113,7 @@ In order to build the website the following command should be sufficient:
 
     mvn site
 
-This is just a quick-start version of the site generation, for a fully detailed documentation please read the http://plc4x.apache.org/developers/website.html[Website] documentation page.
+This is just a quick-start version of the site generation, for a fully detailed documentation please read the https://plc4x.apache.org/developers/infrastructure/website.html[Website] documentation page.
 
 === Some special Maven profiles
 
