@@ -98,8 +98,9 @@ Then this shorter version can be used. Please inspect the `Protocol Documentatio
 {driver code}://{transport config}?{options}
 ----
 
-=== Addresses
+=== Individual Resource Addresses
 
-Addresses are extremely dependent on the used protocol, as we usually decided to stick to the address formats that are used in that particular environments.
+Addresses for individual fields on a PLC are extremely dependent on the used protocol.
+As we usually decided to stick to the address formats that are used in those particular environments.
 
 Please check the `Protocol Documentation` on details about these address formats.
