@@ -54,7 +54,7 @@ The Serial Port transport simply reads and writes data to a given serial port.
 
 The probably most special forms of transport are currently the `PCAP replay` and the `Test` transport.
 
-The `PCAP replay` transport allows recording network traffic using tools like `WreShark` and to simply replay these recorded `pcap` and `pcapng` files. This is really helpful for writing new drivers (especially passive mode drivers) without having to be connected to the real device.
+The `PCAP replay` transport allows recording network traffic using tools like `WireShark` and to simply replay these recorded `pcap` and `pcapng` files. This is really helpful for writing new drivers (especially passive mode drivers) without having to be connected to the real device.
 
 From a driver point of view there is actually no difference between a `Raw Socket` and a `PCAP replay` transport.
 
