@@ -53,6 +53,7 @@
         <item name="Java" href="users/plc4j/gettingstarted.html"/>
         <item name="Virtual Modbus" href="users/plc4j/virtual-modbus.html"/>
       </item>
+      <item name="Blogs, Videos and Slides" href="users/blogs-videos-and-slides.html"/>
       <item name="Protocols" href="users/protocols/index.html">
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
