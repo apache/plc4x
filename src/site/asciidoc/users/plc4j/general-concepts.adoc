@@ -82,6 +82,14 @@ For a full description of all transports and their options, please consult the `
 
 The last segment - `options` - can be used to fine tune some protocol or transport options to non-default values. For details on these options, please have a look at the `Protocol Documentation` and the `Transport Documentation`.
 
+The general structure of this part is always the same:
+
+----
+?{option-1-name}={option-1-value}&{option-2-name}={option-2-value}&{option-3-name}={option-3-value}
+----
+
+So in general the options are stared with a `?` and then followed by `name-value` pairs, which are separated by ampersand characters `&`.
+
 A driver for a given protocol however usually has a `default transport`, so sometimes it is possible to omit the transport code.
 
 Then this shorter version can be used. Please inspect the `Protocol Documentation` on `default transports`:
