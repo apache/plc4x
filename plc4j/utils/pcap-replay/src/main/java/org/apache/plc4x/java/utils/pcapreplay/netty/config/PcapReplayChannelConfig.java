@@ -21,7 +21,6 @@ package org.apache.plc4x.java.utils.pcapreplay.netty.config;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
-import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelOption;
 
 import java.util.Map;
 
@@ -33,6 +32,7 @@ public class PcapReplayChannelConfig extends PcapChannelConfig {
     public static float SPEED_FAST_FULL = 0f;
 
     private float speedFactor = SPEED_REALTIME;
+    private boolean loop = false;
 
     public PcapReplayChannelConfig(Channel channel) {
         super(channel);
@@ -46,9 +46,15 @@ public class PcapReplayChannelConfig extends PcapChannelConfig {
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
         if(option == PcapReplayChannelOption.SPEED_FACTOR) {
-            if(value instanceof Float) {
+            if (value instanceof Float) {
                 speedFactor = (Float) value;
                 return speedFactor > 0;
+            }
+            return false;
+        } else if(option == PcapReplayChannelOption.LOOP) {
+            if (value instanceof Boolean) {
+                loop = (Boolean) value;
+                return true;
             }
             return false;
         } else {
@@ -62,6 +68,14 @@ public class PcapReplayChannelConfig extends PcapChannelConfig {
 
     public void setSpeedFactor(float speedFactor) {
         this.speedFactor = speedFactor;
+    }
+
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
     }
 
 }

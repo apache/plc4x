@@ -26,4 +26,8 @@ public interface PcapReplayTransportConfiguration extends PcapTransportConfigura
         return 1;
     }
 
+    default boolean isLoop() {
+        return false;
+    }
+
 }

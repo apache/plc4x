@@ -30,4 +30,11 @@ public class PcapReplayChannelOption extends PcapChannelOption {
     public static final ChannelOption<Float> SPEED_FACTOR =
         ChannelOption.valueOf(Float.class, "SPEED_FACTOR");
 
+    /**
+     * Option to tell the playback to automatically restart at the
+     * beginning as soon as the end of the playback is reached.
+     */
+    public static final ChannelOption<Boolean> LOOP =
+        ChannelOption.valueOf(Boolean.class, "LOOP");
+
 }
