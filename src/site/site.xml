@@ -74,7 +74,6 @@
         <item name="Serial" href="users/transports/serial.html"/>
         <item name="Raw Socket" href="users/transports/raw-socket.html"/>
         <item name="PCAP Replay" href="users/transports/pcap-replay.html"/>
-        <item name="Test" href="users/transports/test.html"/>
       </item>
       <item name="Integrations" href="users/integrations/index.html">
         <item name="Apache Calcite" href="users/integrations/apache-calcite.html"/>

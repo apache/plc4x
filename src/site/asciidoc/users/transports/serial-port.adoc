@@ -18,3 +18,37 @@
 :icons: font
 
 == Serial Port
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`serial`
+
+|Name
+2+|UDP Socket Communication
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-serial</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Transport Syntax:
+|
+----
+{name of the serial port}
+----
+|Can differ depending on the OS:
+
+- Windows: "Com 1"
+- Mac & Linux: "/dev/ttyS0"
+
+|Options:
+2+|*none*
+|===

@@ -47,6 +47,5 @@
 |The port can be omitted, if the protocol provides a default port value.
 
 |Options:
-| `tcp`
-| *none*
+2+|*none*
 |===

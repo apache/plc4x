@@ -18,3 +18,34 @@
 :icons: font
 
 == Raw Socket
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`raw`
+
+|Name
+2+|Raw Socket Communication
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-raw-socket</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Transport Syntax:
+|
+----
+{device-name}
+----
+|Name of the network device doing the capture
+
+|Options:
+2+|*none*
+|===

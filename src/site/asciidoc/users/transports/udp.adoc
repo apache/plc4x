@@ -18,3 +18,34 @@
 :icons: font
 
 == UDP
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`udp`
+
+|Name
+2+|UDP Socket Communication
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-transport-udp</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Transport Syntax:
+|
+----
+{IP address or hostname}:{port}
+----
+|The port can be omitted, if the protocol provides a default port value.
+
+|Options:
+2+|*none*
+|===
