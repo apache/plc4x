@@ -15,7 +15,6 @@
  */
 package org.apache.plc4x.java.utils.rawsockets.attic;
 
-import org.apache.plc4x.java.utils.rawsockets.attic.RawIpSocket;
 import org.apache.plc4x.test.RequirePcap;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
 

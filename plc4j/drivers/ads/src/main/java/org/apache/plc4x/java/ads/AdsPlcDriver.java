@@ -23,9 +23,9 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsNetId;
 import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.osgi.service.component.annotations.Component;
 
 import java.net.InetAddress;
@@ -72,7 +72,7 @@ public class AdsPlcDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
+    public PlcConnection getConnection(String url) throws PlcConnectionException {
         Matcher matcher = ADS_URI_PATTERN.matcher(url);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
@@ -100,8 +100,9 @@ public class AdsPlcDriver implements PlcDriver {
         }
     }
 
+
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("Basic ADS connections don't support authentication.");
     }
 

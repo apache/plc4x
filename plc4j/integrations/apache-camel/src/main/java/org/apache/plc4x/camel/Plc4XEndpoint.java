@@ -19,11 +19,11 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
-import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
+import org.apache.camel.support.DefaultEndpoint;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -38,7 +38,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
      * The name of the PLC4X driver
      */
     @UriPath(label = "common")
-    @Metadata(required = "true")
+    @Metadata(required = true)
     @SuppressWarnings("unused")
     private String driver;
 
@@ -46,7 +46,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
      * The address for the PLC4X driver
      */
     @UriParam
-    @Metadata(required = "false")
+    @Metadata(required = false)
     @SuppressWarnings("unused")
     private List<String> address;
 
@@ -54,7 +54,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
      * TODO: document me
      */
     @UriParam
-    @Metadata(required = "false")
+    @Metadata(required = false)
     @SuppressWarnings("unused")
     private Class dataType;
 

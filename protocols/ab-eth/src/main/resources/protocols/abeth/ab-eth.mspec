@@ -19,16 +19,16 @@
 
 [discriminatedType 'CIPEncapsulationPacket'
     [discriminator uint 16 'commandType']
-    [implicit      uint 16 'len' 'lengthInBytes - 28']
+    [implicit      uint 16 'len' '1024']
     [simple        uint 32 'sessionHandle']
     [simple        uint 32 'status']
     [array         uint 8  'senderContext' count '8']
     [simple        uint 32 'options']
-    [reserved      uint 32 '0x00000000']
+    [reserved      uint 32 '0x01000000']
     [typeSwitch 'commandType'
-        ['0x0101' CIPEncapsulationConnectionRequest
+        ['0x6500' CIPEncapsulationConnectionRequest
         ]
-        ['0x0201' CIPEncapsulationConnectionResponse
+        ['0xC900' CIPEncapsulationConnectionResponse
         ]
         ['0x0107' CIPEncapsulationReadRequest
             [simple   DF1RequestMessage  'request']

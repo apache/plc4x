@@ -66,8 +66,6 @@ public class Plc4XProducerTest {
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
         SUT.process(testExchange);
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
-        SUT.process(testExchange);
         when(testExchange.getIn().getBody()).thenReturn(Arrays.asList("test","test"));
         when(testExchange.getIn().getBody(eq(List.class))).thenReturn(Arrays.asList("test","test"));
         SUT.process(testExchange);
@@ -81,9 +79,6 @@ public class Plc4XProducerTest {
         SUT.process(testExchange, doneSync -> {
         });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
-        SUT.process(testExchange, doneSync -> {
-        });
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
         SUT.process(testExchange, doneSync -> {
         });
     }

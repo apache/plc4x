@@ -33,7 +33,8 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = PlcDriver.class, immediate = true)
 public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
-    public static final int AB_ETH_PORT = 2222;
+    public static final int AB_ETH_PORT = 44818; //EtherNET/IP data transfer port
+
 
     @Override
     public String getProtocolCode() {

@@ -33,7 +33,7 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>2.24.2</camel.version>
+    <camel.version>3.0.1</camel.version>
   </properties>
 
   <dependencies>
@@ -45,8 +45,27 @@
 
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
+      <artifactId>spi-annotations</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-api</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core-engine</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mock</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-support</artifactId>
       <version>${camel.version}</version>
     </dependency>
 
@@ -77,7 +96,6 @@
     <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-test</artifactId>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
       <version>${camel.version}</version>
       <scope>test</scope>
     </dependency>

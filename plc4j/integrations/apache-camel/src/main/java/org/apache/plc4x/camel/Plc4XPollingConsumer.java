@@ -21,9 +21,10 @@ package org.apache.plc4x.camel;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.PollingConsumer;
+import org.apache.camel.Processor;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.ServiceSupport;
+import org.apache.camel.support.service.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -48,14 +49,15 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private PlcReadRequest.Builder requestBuilder;
     private Class dataType;
 
+    //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
+        LOGGER.info("New POLLING CONSUMER");
         this.endpoint = endpoint;
         this.dataType = endpoint.getDataType();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
-        this.requestBuilder = plcConnection.readRequestBuilder();
     }
 
     @Override
@@ -79,16 +81,15 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Exchange receive() {
         Exchange exchange = endpoint.createExchange();
-        CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
-            PlcReadResponse plcReadResponse = read.get();
+            PlcReadResponse read = createReadRequest().execute().get();
             if(endpoint.getAddress().size()==1) {
-                exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
+                exchange.getIn().setBody(unwrapIfSingle(read.getAllObjects("default")));
             }
             else{
                 List<Object> values = new ArrayList<>();
-                for(String field : plcReadResponse.getFieldNames()){
-                    values.add(plcReadResponse.getObject(field));
+                for(String field : read.getFieldNames()){
+                    values.add(read.getObject(field));
                 }
                 exchange.getIn().setBody(values);
             }        } catch (InterruptedException e) {
@@ -140,9 +141,9 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
 
     private PlcReadRequest createReadRequest() {
-
+        requestBuilder = plcConnection.readRequestBuilder();
+        int i=0;
         if (endpoint.getAddress().size()>1){
-            int i=0;
             for(String query : endpoint.getAddress()){
                 requestBuilder.addItem(String.valueOf(i++),query);
             }
@@ -163,4 +164,8 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         return collection;
     }
 
+    @Override
+    public Processor getProcessor() {
+        return null;
+    }
 }

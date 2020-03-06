@@ -73,7 +73,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     public void onConnect(ConversationContext<CIPEncapsulationPacket> context) {
         logger.debug("Sending COTP Connection Request");
         CIPEncapsulationConnectionRequest connectionRequest =
-            new CIPEncapsulationConnectionRequest(0L, 0L, emptySenderContext, 0L);
+           new CIPEncapsulationConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
             .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
             .check(p -> p instanceof CIPEncapsulationConnectionResponse)
