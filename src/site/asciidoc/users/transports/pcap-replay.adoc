@@ -49,7 +49,7 @@
 3+|Options:
 
 |
-|replay-speed-factor
+|`replay-speed-factor` (1)
 |Numeric value for changing the replay speed:
 
 * 1 = Normal speed (default)
@@ -58,7 +58,7 @@
 * 2 = Double speed
 
 |
-|loop
+|`loop` (false)
 |Should the replay start at the beginning of the file as soon as the end is reached?
 
 * true = Automatically start again
