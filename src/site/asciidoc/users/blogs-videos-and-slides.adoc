@@ -21,7 +21,7 @@
 
 - https://medium.com/@megachucky/apache-kafka-ksql-and-apache-plc4x-for-iiot-data-integration-and-processing-472c2de6700b[Apache Kafka, KSQL and Apache PLC4X for IIoT Data Integration and Processing]
 - https://blog.codecentric.de/2018/06/edge-computing-industrial-iot-apache-edgent-apache-plc4x/[Edge Computing und Industrial IoT mit Apache Edgent und Apache PLC4X]
-- https://riot.community/examples/http-plc4x.html [Advanced: Exposing a PLC as JSON Web Services (using PLC4X)]
+- https://riot.community/examples/http-plc4x.html[Advanced: Exposing a PLC as JSON Web Services (using PLC4X)]
 
 === Videos
 
