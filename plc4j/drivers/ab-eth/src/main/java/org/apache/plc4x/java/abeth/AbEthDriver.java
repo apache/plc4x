@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.abeth;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
 import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
@@ -29,6 +30,8 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.osgi.service.component.annotations.Component;
+
+import java.util.function.ToIntFunction;
 
 @Component(service = PlcDriver.class, immediate = true)
 public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
@@ -65,7 +68,20 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     protected ProtocolStackConfigurer<CIPEncapsulationPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(CIPEncapsulationPacket.class, CIPEncapsulationPacketIO.class)
             .withProtocol(AbEthProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 4) {
+                // In the mspec we subtract 28 from the full size ... so here we gotta add it back.
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2) + 28;
+            }
+            return -1;
+        }
     }
 
 }
