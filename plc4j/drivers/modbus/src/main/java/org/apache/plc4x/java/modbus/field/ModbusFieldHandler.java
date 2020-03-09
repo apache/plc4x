@@ -127,7 +127,12 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
         if(values.length == 1) {
-            return new PlcShort(((Number) values[0]).shortValue());
+            Number numberValue = (Number) values[0];
+            // Intentionally checking the next larger type.
+            if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
+                throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
+            }
+            return new PlcShort(numberValue.shortValue());
         } else {
             List<PlcShort> shorts = new ArrayList<>(values.length);
             for (Object value : values) {

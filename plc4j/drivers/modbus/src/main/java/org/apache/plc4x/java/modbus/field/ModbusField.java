@@ -71,4 +71,5 @@ public abstract class ModbusField implements PlcField {
             "quantity=" + quantity +
             '}';
     }
+
 }
