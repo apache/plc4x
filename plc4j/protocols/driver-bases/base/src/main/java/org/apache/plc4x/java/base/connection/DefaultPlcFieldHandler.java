@@ -93,6 +93,11 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
     public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         throw new PlcRuntimeException("Invalid encoder for type " + field);
     }
+    
+    @Override
+    public BaseDefaultFieldItem encodeDuration(PlcField field, Object[] values) {
+        throw new PlcRuntimeException("Invalid encoder for type " + field);
+    }    
 
     @Override
     public BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values) {

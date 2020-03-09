@@ -18,16 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import org.apache.plc4x.java.api.exceptions.PlcFieldRangeException;
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Objects;
+import org.apache.plc4x.java.api.exceptions.PlcFieldRangeException;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 public abstract class BaseDefaultFieldItem<T> {
 
@@ -146,6 +146,14 @@ public abstract class BaseDefaultFieldItem<T> {
     public LocalDateTime getDateTime(int index) {
         throw new PlcIncompatibleDatatypeException(LocalDateTime.class, index);
     }
+    
+    public boolean isValidDuration(int index) {
+        return false;
+    }
+
+    public Duration getDuration(int index) {
+        throw new PlcIncompatibleDatatypeException(LocalDateTime.class, index);
+    }    
 
     public boolean isValidByteArray(int index) {
         return false;

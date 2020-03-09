@@ -18,10 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 public class DefaultByteFieldItem extends BaseDefaultFieldItem<Byte> {
 

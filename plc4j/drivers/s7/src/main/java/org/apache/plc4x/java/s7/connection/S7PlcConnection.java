@@ -78,7 +78,7 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
 import org.apache.plc4x.java.s7.netty.model.types.CpuServicesParameterSubFunctionGroup;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.SubscribedEventType;
-import org.apache.plc4x.java.s7.netty.strategies.DefaultS7MessageProcessor;
+import org.apache.plc4x.java.s7.netty.strategies.LongS7MessageProcessorCodec;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldEventHandler;
 import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
@@ -263,7 +263,8 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                 pipeline.addLast(new IsoOnTcpProtocol());
                 pipeline.addLast(new IsoTPProtocol(callingTsapId, calledTsapId, TpduSize.valueForGivenSize(paramPduSize)));
                 pipeline.addLast(new S7Protocol(paramMaxAmqCaller, paramMaxAmqCallee, paramPduSize, paramControllerType,
-                    new DefaultS7MessageProcessor()));
+                    null)); //null <-> new DefaultS7MessageProcessor()
+                pipeline.addLast(new LongS7MessageProcessorCodec());
                 pipeline.addLast(new Plc4XS7Protocol(alarmsqueue));
             }
         };

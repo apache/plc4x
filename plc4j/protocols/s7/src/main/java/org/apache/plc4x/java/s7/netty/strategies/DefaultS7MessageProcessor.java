@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.strategies;
 
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -38,9 +40,6 @@ import org.apache.plc4x.java.s7.netty.model.types.ParameterType;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.java.s7.netty.util.S7RequestSizeCalculator;
 import org.apache.plc4x.java.s7.netty.util.S7ResponseSizeEstimator;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * While a SetupCommunication message is no problem, when reading or writing data,
@@ -286,21 +285,51 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
     }
 
+    //TODO: STRING: S7 native string (kmVENEZUELA) where k=254 & m=9
+    //TODO: %MB200:BYTE[250] -> %MB200..%MB299, %MB300..%MB399, %MB400..%MB449,        
     private void processNonBooleanWriteVarParameter(S7RequestMessage request, VarParameter varParameter, VarPayload varPayload,
                                             S7AnyVarParameterItem s7AnyVarParameterItem, VarPayloadItem varPayloadItem,
                                             int byteOffset, S7CompositeRequestMessage compositeRequestMessage) {
         int curByteOffset = byteOffset;
         int payloadPosition = 0;
-        for (int i = 0; i < s7AnyVarParameterItem.getNumElements(); i++) {
-            int elementSize = s7AnyVarParameterItem.getDataType().getSizeInBytes();
+        int numElements = 1;
+        
+        //Check for size
+        if (varPayloadItem.getData().length > 100){
+            numElements = s7AnyVarParameterItem.getNumElements();
+        };
+        
+        for (int i = 0; i < numElements; i++) {
 
+            int elementSize = 1;
+            elementSize = (s7AnyVarParameterItem.getDataType() == TransportSize.STRING)?
+                    varPayloadItem.getData().length:s7AnyVarParameterItem.getDataType().getSizeInBytes();
+            
+            short auxElements = 1;
+            /*
+            auxElements = (s7AnyVarParameterItem.getDataType() == TransportSize.STRING)?
+                    (short) varPayloadItem.getData().length:(short) 0x01;            
+            */
             // Create a new message with only one single value item in the var parameter.
+            //TODO: For ARRAYs, check the size, for break the message
+            int divisor = (s7AnyVarParameterItem.getDataType().getBaseType()== null)?
+                            s7AnyVarParameterItem.getDataType().getSizeInBytes():
+                            s7AnyVarParameterItem.getDataType().getSizeInBytes()*
+                            s7AnyVarParameterItem.getDataType().getBaseType().getSizeInBytes();
+            
+            auxElements = (short) (varPayloadItem.getData().length / divisor);
+ 
+            if (auxElements != 1){
+                elementSize = varPayloadItem.getData().length;
+            }
+                                    
             VarParameterItem itemParameter = new S7AnyVarParameterItem(
                 s7AnyVarParameterItem.getSpecificationType(),
                 s7AnyVarParameterItem.getMemoryArea(),
-                s7AnyVarParameterItem.getDataType(), (short) 1,
+                s7AnyVarParameterItem.getDataType(), auxElements,
                 s7AnyVarParameterItem.getDataBlockNumber(),
                 curByteOffset, (byte) 0);
+            
             S7Parameter subVarParameter = new VarParameter(varParameter.getType(),
                 Collections.singletonList(itemParameter));
 
@@ -354,6 +383,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
     }
 
+    //TODO: bad S7ResponseMessage when write ARRAYS, the payload is not the ReturnCode
     private S7ResponseMessage getMergedResponseMessage(S7RequestMessage requestMessage,
                                                        Collection<? extends S7ResponseMessage> responses) {
         MessageType messageType = null;

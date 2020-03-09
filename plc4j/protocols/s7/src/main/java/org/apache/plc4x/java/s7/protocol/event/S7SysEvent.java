@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.protocol.event;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -479,6 +480,31 @@ public class S7SysEvent implements S7Event{
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
+    @Override
+    public boolean isValidDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isValidDuration(String name, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Duration getDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Duration getDuration(String name, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<Duration> getAllDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public String toString() {
         return "S7SysEvent{" + "timeStamp=" + timeStamp + ", map=" + map + '}';

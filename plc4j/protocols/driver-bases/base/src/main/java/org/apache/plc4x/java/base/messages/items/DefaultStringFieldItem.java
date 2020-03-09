@@ -32,10 +32,21 @@ public class DefaultStringFieldItem extends BaseDefaultFieldItem<String> {
     }
 
     @Override
+    public boolean isValidByte(int index) {
+        return getValue(index) != null; 
+    }
+   
+    @Override
     public boolean isValidString(int index) {
         return getValue(index) != null;
     }
 
+    @Override
+    public Byte getByte(int index) {
+        return (byte) ((String) getValue(index)).charAt(0);
+    }
+    
+    
     @Override
     public String getString(int index) {
         if (!isValidString(index)) {

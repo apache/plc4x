@@ -20,6 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -62,6 +63,8 @@ public interface PlcWriteRequest extends PlcFieldRequest {
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
+        
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Duration... values);        
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, byte[]... values);
 

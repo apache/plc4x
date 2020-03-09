@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
 import java.lang.reflect.Field;
@@ -103,6 +104,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     private short maxAmqCaller;
     private short maxAmqCallee;
     private short pduSize;
+    private final AttributeKey<Short> pduSizeKey = AttributeKey.valueOf("pduSizeKey");    
     private S7ControllerType controllerType;
 
     // For detecting the lower layers.
@@ -113,6 +115,11 @@ public class S7Protocol extends ChannelDuplexHandler {
     private PendingWriteQueue queue;
     private Map<Short, DataTpdu> sentButUnacknowledgedTpdus;
     
+    /*
+     * All fragmentsof data send by PLC are stored here,
+     * until the PLC indicates that it is the last one,
+     * then a single message is assembled.
+    */    
     private Map<Short, Pair<LocalDateTime, Queue<ByteBuf>>> fragmentedData;
 
     public S7Protocol(short requestedMaxAmqCaller, short requestedMaxAmqCallee, short requestedPduSize,
@@ -129,6 +136,8 @@ public class S7Protocol extends ChannelDuplexHandler {
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) {
         this.queue = new PendingWriteQueue(ctx);
+        ctx.channel().attr(pduSizeKey).set(pduSize);
+        
         try {
             Field prevField = FieldUtils.getField(ctx.getClass(), "prev", true);
             if(prevField != null) {
@@ -188,6 +197,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 S7Message in = (S7Message) msg;
 
                 // Give message processors to process the incoming message.
+                //TODO: messageProcessor move to netty next layer, no a plugin code
                 Collection<? extends S7Message> messages;
                 if ((messageProcessor != null) && (in instanceof S7RequestMessage)) {
                     messages = messageProcessor.processRequest((S7RequestMessage) in, pduSize);
@@ -226,7 +236,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
         // Check if the message doesn't exceed the negotiated maximum size.
         if (buf.writerIndex() > pduSize) {
-            throw new PlcProtocolPayloadTooBigException("s7", pduSize, buf.writerIndex(), message);
+            throw new PlcProtocolPayloadTooBigException("s7:"+message.getTpduReference(), pduSize, buf.writerIndex(), message);
         } else {
             ChannelPromise subPromise = new DefaultChannelPromise(channel);
             // The tpduRef was 0x01 but had to be changed to 0x00 in order to support Siemens LOGO devices.
@@ -244,7 +254,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                 S7Payload payload = payloadIterator.next();
                 switch (payload.getType()) {
                     case WRITE_VAR:
-                        encodeWriteVarPayload((VarPayload) payload, buf, !payloadIterator.hasNext());
+                        encodeWriteVarPayload((VarPayload) payload, buf, payloadIterator.hasNext());
                         break;
                     case CPU_SERVICES: 
                         if (payload instanceof CpuServicesPayload) {
@@ -269,7 +279,10 @@ public class S7Protocol extends ChannelDuplexHandler {
     * 
     */
     private void encodeWriteVarPayload(VarPayload varPayload, ByteBuf buf, boolean lastItem) {
-        for (VarPayloadItem payloadItem : varPayload.getItems()) {
+        
+        //All payloads for the request come here
+        int i=1;
+        for (VarPayloadItem payloadItem : varPayload.getItems()) {            
             buf.writeByte(payloadItem.getReturnCode().getCode());
             buf.writeByte(payloadItem.getDataTransportSize().getCode());
             //TODO: Check if this is correct?!?! Might be problems with sizeInBits = true/false
@@ -293,14 +306,16 @@ public class S7Protocol extends ChannelDuplexHandler {
                     buf.writeShort(payloadItem.getData().length);                     
                     break;
             }           
-            buf.writeBytes(payloadItem.getData());            
+            buf.writeBytes(payloadItem.getData());  
+
             // if this is not the last item and it's payload is exactly one byte, we need to output a fill-byte.
-            if((payloadItem.getData().length == 1) && !lastItem) {
-                buf.writeByte(0x00);
-            }
+            //if((payloadItem.getData().length == 1) && (!lastItem)) {
+          
+            if((payloadItem.getData().length == 1) && (varPayload.getItems().size() > i) || (payloadItem.getData().length % 2 != 0)) {
+                buf.writeByte(0x00); 
+            }  
             
-            System.out.println("encodeWriteVarPayload ByteBuf:... \r\n" + ByteBufUtil.prettyHexDump(buf));
-            
+            i++;            
         }
     }
     
@@ -581,7 +596,9 @@ public class S7Protocol extends ChannelDuplexHandler {
         // Length of this item (excluding spec type and length)
         buf.writeByte((byte) 0x0a);
         buf.writeByte(s7AnyRequestItem.getAddressingMode().getCode());
-        buf.writeByte(s7AnyRequestItem.getDataType().getTypeCode());
+        //buf.writeByte(s7AnyRequestItem.getDataType().getTypeCode());
+        
+        buf.writeByte(s7AnyRequestItem.getDataType().getBaseType().getTypeCode());
 
         buf.writeShort(encodeNumElements(s7AnyRequestItem));
         buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
@@ -603,7 +620,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         // Length of this item (excluding spec type and length)
         buf.writeByte((byte) 0x0a);
         buf.writeByte(s7AnyRequestItem.getAddressingMode().getCode());
-        buf.writeByte(s7AnyRequestItem.getDataType().getTypeCode());
+        //buf.writeByte(s7AnyRequestItem.getDataType().getTypeCode());
+        buf.writeByte(s7AnyRequestItem.getDataType().getBaseType().getTypeCode());
 
         buf.writeShort(encodeNumElements(s7AnyRequestItem));
         buf.writeShort(s7AnyRequestItem.getDataBlockNumber());
@@ -626,7 +644,9 @@ public class S7Protocol extends ChannelDuplexHandler {
         //TODO: Refactor S7AnyVarParameterItem to S7AnyVarItem
     private short encodeNumElements(S7AnyVarParameterItem s7AnyVarParameterItem){
         switch (s7AnyVarParameterItem.getDataType()){
+            case DT:
             case DATE_AND_TIME:
+            case TOD:
             case TIME_OF_DAY:
             case DATE:
                 return (short) (s7AnyVarParameterItem.getNumElements()*s7AnyVarParameterItem.getDataType().getSizeInBytes());
@@ -644,13 +664,17 @@ public class S7Protocol extends ChannelDuplexHandler {
     private short encodeNumElements(S7AnyVarPayloadItem s7AnyVarParameterItem){
         switch (s7AnyVarParameterItem.getDataType()){
             case DATE_AND_TIME:
+            case TOD:
             case TIME_OF_DAY:
             case DATE:
-                return (short) (s7AnyVarParameterItem.getNumElements()*s7AnyVarParameterItem.getDataType().getSizeInBytes());
+            case DT:
+                return (short) (s7AnyVarParameterItem.getNumElements()*s7AnyVarParameterItem.getDataType().getSizeInBytes());               
+            case STRING:
+               break; 
             default:
                 return (short) s7AnyVarParameterItem.getNumElements();
         }
-
+        return 0;
     }  
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -671,7 +695,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         if (userData.readableBytes() == 0) {
             return;
         }
-
+                      
         if (userData.readByte() != S7_PROTOCOL_MAGIC_NUMBER) {
             logger.warn("Expecting S7 protocol magic number.");
             if (logger.isDebugEnabled()) {
@@ -679,11 +703,14 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             return;
         }
-
+                
         MessageType messageType = MessageType.valueOf(userData.readByte());
         //Some response maybe USER_DATA
         //Header: Userdata. Parameter:(Response)->(CPU functions)->(ALARM ack)
-        boolean isResponse = messageType == MessageType.ACK_DATA;
+           
+        //The driver freezes if it does not recognize 
+        //the MessageType.ACK type in response
+        boolean isResponse = (messageType == MessageType.ACK_DATA) || (messageType == MessageType.ACK);        
         userData.readShort();  // Reserved (is always constant 0x0000)
         short tpduReference = userData.readShort();
         short headerParametersLength = userData.readShort();
@@ -691,7 +718,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         byte errorClass = 0;
         byte errorCode = 0;
 
-        if (isResponse) {
+        //If the PLC response qith error then messagetype == MessageType.ACK
+        if (isResponse) {            
             errorClass = userData.readByte();
             errorCode = userData.readByte();
         }
@@ -807,6 +835,8 @@ public class S7Protocol extends ChannelDuplexHandler {
         maxAmqCaller = setupCommunicationParameter.getMaxAmqCaller();
         maxAmqCallee = setupCommunicationParameter.getMaxAmqCallee();
         pduSize = setupCommunicationParameter.getPduLength();
+        
+        ctx.channel().attr(pduSizeKey).set(pduSize);
 
         if(logger.isInfoEnabled()) {
             logger.info("S7Connection established pdu-size {}, max-amq-caller {}, " +
@@ -900,6 +930,7 @@ public class S7Protocol extends ChannelDuplexHandler {
         int i = 0;
         while (i < userDataLength) {
             DataTransportErrorCode dataTransportErrorCode = DataTransportErrorCode.valueOf(userData.readByte());
+
             // This is a response to a WRITE_VAR request (It only contains the return code for every sent item.
             if ((readWriteVarParameter.getType() == ParameterType.WRITE_VAR) && isResponse) {
                 // Initialize a rudimentary payload (This is updated in the Plc4XS7Protocol class
@@ -1702,7 +1733,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private synchronized void trySendingMessages(ChannelHandlerContext ctx) {
         //logger.info("trySendingMessages {} < {}",sentButUnacknowledgedTpdus.size(),maxAmqCaller);
-        while(sentButUnacknowledgedTpdus.size() <= maxAmqCaller) {
+        while(sentButUnacknowledgedTpdus.size() < maxAmqCaller) {
             // Get the TPDU that is up next in the queue.
             DataTpdu curTpdu = (DataTpdu) queue.current();
 

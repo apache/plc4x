@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.netty.util;
 
+import java.util.List;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.s7.netty.model.messages.S7RequestMessage;
 import org.apache.plc4x.java.s7.netty.model.params.S7Parameter;
@@ -26,8 +27,6 @@ import org.apache.plc4x.java.s7.netty.model.params.items.S7AnyVarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.params.items.VarParameterItem;
 import org.apache.plc4x.java.s7.netty.model.payloads.items.VarPayloadItem;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
-
-import java.util.List;
 
 /**
  * When sending S7 messages we have to also pay attention to the expected size
@@ -142,12 +141,21 @@ public class S7ResponseSizeEstimator {
         return length;
     }
 
+    //TODO: Use BaseType for length calculation. (Ok)
+    //TODO: For S7 STRING, maximum length is 254 -> One STRING request -> S7RequestMessage. HMI used CHAR array's 
     private static short getEstimatedResponseReadVarPayloadItemSize(VarParameterItem varParameterItem) {
         // A var payload item always has a minimum size of 4 bytes (return code, transport size, size (two bytes))
         short length = 4;
+        short base =0;
         S7AnyVarParameterItem s7AnyVarParameterItem = (S7AnyVarParameterItem) varParameterItem;
+        
+        base = (s7AnyVarParameterItem.getDataType().getBaseType() == null)?
+                (short) s7AnyVarParameterItem.getDataType().getSizeInBytes():
+                (short)(s7AnyVarParameterItem.getDataType().getSizeInBytes() *
+                s7AnyVarParameterItem.getDataType().getBaseType().getSizeInBytes());
+        
         length +=
-            s7AnyVarParameterItem.getNumElements() * s7AnyVarParameterItem.getDataType().getSizeInBytes();
+            s7AnyVarParameterItem.getNumElements() * base;
         // It seems that bit payloads need a additional separating 0x00 byte.
         if(s7AnyVarParameterItem.getDataType() == TransportSize.BOOL) {
             length += 1;

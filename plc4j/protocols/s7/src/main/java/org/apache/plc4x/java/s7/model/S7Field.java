@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,11 +34,12 @@ public class S7Field implements PlcField {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_5][S5TIME]+)(\\[(?<numElements>\\d+)])?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
+    //TODO: S5TIME non include;
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_5]+)(\\[(?<numElements>\\d+)])?");
                 
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
@@ -121,8 +123,13 @@ public class S7Field implements PlcField {
                 return LocalDateTime.class;
             case DATE:
                 return LocalDate.class;
+            case S5TIME:
+                return Duration.class;
+            case TIME:
+                return Duration.class;
+            case TOD:
             case TIME_OF_DAY:
-                return LocalTime.class;
+                return LocalTime.class;                
             default:
                 throw new NotImplementedException("The response type for datatype " + dataType + " is not yet implemented");
         }
@@ -174,7 +181,12 @@ public class S7Field implements PlcField {
                 if(matcher.group(NUM_ELEMENTS) != null) {
                     numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
                 }
+                
                 numElements = calcNumberOfElementsForIndividualTypes(numElements,dataType);
+                if(dataType.equals(TransportSize.STRING)){
+                    numElements  = 1;
+                }
+                
                 if(!transferSizeCode.isEmpty() && !dataType.getSizeCode().equals(transferSizeCode)) {
                     throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                         "' doesn't match specified data type '" + dataType.name() + "'");
@@ -219,8 +231,10 @@ public class S7Field implements PlcField {
      * @param dataType detected Transport-Size that represents the data-type
      * @return corrected numElements if nessesary
      */
+    //TODO: 
     private static int calcNumberOfElementsForIndividualTypes(int numElements, TransportSize dataType){
-
+        
+        //TODO: for this version STRING is write like CHAR
         if(dataType.equals(TransportSize.STRING)){
             //on valid String-length add two byte because of S7-representation of Strings
             if(numElements>1 && numElements<=254){

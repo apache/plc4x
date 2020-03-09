@@ -20,6 +20,7 @@ package org.apache.plc4x.java.api.messages;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -170,6 +171,16 @@ public interface PlcReadResponse extends PlcFieldResponse {
     LocalDateTime getDateTime(String name, int index);
 
     Collection<LocalDateTime> getAllDateTimes(String name);
+    
+    boolean isValidDuration(String name);
+
+    boolean isValidDuration(String name, int index);    
+    
+    Duration getDuration(String name);
+
+    Duration getDuration(String name, int index);
+
+    Collection<Duration> getAllDuration(String name);    
 
     boolean isValidByteArray(String name);
 

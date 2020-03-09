@@ -22,6 +22,7 @@ package org.apache.plc4x.java.s7.protocol;
 import io.netty.buffer.ByteBuf;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -462,6 +463,31 @@ public class S7ByteReadResponse implements InternalPlcReadResponse{
         }
         return values.get(name).getKey();
     }
+
+    @Override
+    public boolean isValidDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isValidDuration(String name, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Duration getDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Duration getDuration(String name, int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<Duration> getAllDuration(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }            
     
     protected ByteBuf getByteBufInternal(String name) {
         Objects.requireNonNull(name, "Name argument required");

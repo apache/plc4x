@@ -21,6 +21,10 @@ package org.apache.plc4x.java.s7.netty.util;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +45,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         }
         if (S7SslField.matches(fieldQuery)) {
             return S7SslField.of(fieldQuery);
-        }        
+        }  
         throw new PlcInvalidFieldException(fieldQuery);
     }
 
@@ -83,6 +87,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case WORD:
             case INT:
             case UINT:
+            case DATE: //TODO: Check for S71200/S71500
                 return internalEncodeInteger(field, values);
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -96,9 +101,10 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case DWORD:
             case DINT:
             case UDINT:
+            case TIME: //TODO: Check for S71200/S71500
                 return internalEncodeInteger(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
+                throw new PlcRuntimeException("encodeInteger: Invalid encoder for type " + s7Field.getDataType().name());
         }
     }
 
@@ -122,6 +128,8 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case LWORD:
             case LINT:
             case ULINT:
+            case DT:
+            case DATE_AND_TIME:
                 return internalEncodeInteger(field, values);
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
@@ -160,7 +168,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case WSTRING:
                 return internalEncodeString(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
+                throw new PlcRuntimeException("encodeString: Invalid encoder for type " + s7Field.getDataType().name());
         }
     }
 
@@ -169,9 +177,11 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
             case TIME:
+            case TOD:
+            case TIME_OF_DAY:                
                 return internalEncodeTemporal(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
+                throw new PlcRuntimeException("encodeTime: Invalid encoder for type " + s7Field.getDataType().name());
         }
     }
 
@@ -182,7 +192,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case DATE:
                 return internalEncodeTemporal(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
+                throw new PlcRuntimeException("encodeDate: Invalid encoder for type " + s7Field.getDataType().name());
         }
     }
 
@@ -190,12 +200,25 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
     public BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
         switch (s7Field.getDataType()) {
+            case DT:
             case DATE_AND_TIME:
                 return internalEncodeTemporal(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + s7Field.getDataType().name());
+                throw new PlcRuntimeException("encodeDateTime: Invalid encoder for type " + s7Field.getDataType().name());
         }
     }
+    
+    @Override
+    public BaseDefaultFieldItem encodeDuration(PlcField field, Object[] values) {
+        S7Field s7Field = (S7Field) field;
+        switch (s7Field.getDataType()) {
+            case TIME:          
+            case S5TIME:
+                return internalEncodeTemporal(field, values);
+            default:
+                throw new PlcRuntimeException("encodeDuration: Invalid encoder for type " + s7Field.getDataType().name());
+        }
+    }    
 
     private BaseDefaultFieldItem internalEncodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
@@ -265,6 +288,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 valueType = Byte[].class;
                 castedValues = new Byte[values.length];
                 break;
+            case DATE:
             case WORD:
                 minValue = BigInteger.valueOf((long) Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Short.MAX_VALUE);
@@ -272,6 +296,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 valueType = Short[].class;
                 castedValues = new Short[values.length];
                 break;
+            case TIME:
+            case TOD:
+            case TIME_OF_DAY:
             case DWORD:
                 minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
@@ -279,6 +306,8 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 valueType = Integer[].class;
                 castedValues = new Integer[values.length];
                 break;
+            case DT:
+            case DATE_AND_TIME:
             case LWORD:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
@@ -489,7 +518,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         List<String> stringValues = new LinkedList<>();
         for (Object value : values) {
             if (value instanceof String) {
-                String stringValue = (String) value;
+                String stringValue = (String) value;                
                 if (stringValue.length() > maxLength) {
                     throw new IllegalArgumentException(
                         "String length " + stringValue.length() + " exceeds allowed maximum for type "
@@ -506,6 +535,14 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
                 } else {
                     stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
                 }
+            } else if (value instanceof Character) {
+                Character characterValue = (Character) value;
+                byte[] stringBytes = new byte[]{(byte) characterValue.charValue()};
+                if (encoding16Bit) {
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_16));
+                } else {
+                    stringValues.add(new String(stringBytes, StandardCharsets.UTF_8));
+                }                
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
                 byte[] stringBytes = new byte[2];
@@ -557,17 +594,84 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     private BaseDefaultFieldItem internalEncodeTemporal(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
+        BigInteger minValue;
+        BigInteger maxValue;
+        Class<? extends BaseDefaultFieldItem> fieldType = null;
+        Class<?> valueType = null;
+        Object[] castedValues = null;        
         switch (s7Field.getDataType()) {
+            case S5TIME:
+                // TODO: Check new type
+                minValue = BigInteger.valueOf(0x0000);
+                maxValue = BigInteger.valueOf(0x3999);  
+                fieldType = DefaultDurationFieldItem.class;
+                valueType = Duration[].class;
+                castedValues = new Duration[values.length];
+                for (int i=0; i<values.length; i++){
+                    castedValues[i]  = (Duration) values[i];                
+                };
+                break;
             case TIME:
                 // TODO: I think I should implement this some time ...
+                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
+                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
+                fieldType = DefaultDurationFieldItem.class;
+                valueType = Duration[].class;
+                castedValues = new Duration[values.length];
+                for (int i=0; i<values.length; i++){
+                    castedValues[i]  = (Duration) values[i];
+                }
+                break;
             case DATE:
                 // TODO: I think I should implement this some time ...
+
+                minValue = BigInteger.valueOf(0x0000);
+                maxValue = BigInteger.valueOf(0xFFFF);
+                fieldType = DefaultLocalDateFieldItem.class;
+                valueType = LocalDate[].class;
+                castedValues = new LocalDate[values.length];
+                for (int i=0; i<values.length; i++){
+                    castedValues[i]  = (LocalDate) values[i];
+                }      
+                break;
+            case TOD:    
+            case TIME_OF_DAY:
+                // TODO: I think I should implement this some time ...  
+                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
+                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
+                fieldType = DefaultLocalTimeFieldItem.class;
+                valueType = LocalTime[].class;
+                castedValues = new LocalTime[values.length];
+                for (int i=0; i<values.length; i++){
+                    castedValues[i]  = (LocalTime) values[i];
+                }      
+                break; 
+            case DT:
             case DATE_AND_TIME:
-                return new DefaultLocalDateTimeFieldItem();
+                // TODO: I think I should implement this some time ...  
+                minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
+                maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
+                fieldType = DefaultLocalDateTimeFieldItem.class;
+                valueType = LocalDateTime[].class;
+                castedValues = new LocalDateTime[values.length];
+                for (int i=0; i<values.length; i++){
+                    castedValues[i]  = (LocalDateTime) values[i];
+                }      
+                break;      
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + s7Field.getDataType().name() + " fields.");
-        }
+        };
+        
+        
+        
+        
+        // Create the field item.
+        try {
+            return fieldType.getDeclaredConstructor(valueType).newInstance(new Object[]{castedValues});
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
+        }        
     }
 
 }

@@ -54,6 +54,8 @@ public interface PlcFieldHandler {
     BaseDefaultFieldItem encodeDate(PlcField field, Object[] values);
 
     BaseDefaultFieldItem encodeDateTime(PlcField field, Object[] values);
+    
+    BaseDefaultFieldItem encodeDuration(PlcField field, Object[] values);    
 
     BaseDefaultFieldItem encodeByteArray(PlcField field, Object[] values);
 

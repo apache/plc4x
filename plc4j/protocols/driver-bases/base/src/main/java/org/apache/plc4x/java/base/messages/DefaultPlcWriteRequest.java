@@ -18,6 +18,16 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -27,16 +37,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.base.connection.PlcFieldHandler;
 import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
 
@@ -126,20 +126,23 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
             fields = new TreeMap<>();
             handlerMap = new HashMap<>();
             handlerMap.put(Boolean.class, fieldHandler::encodeBoolean);
-            handlerMap.put(Byte.class, fieldHandler::encodeByte);
+            handlerMap.put(Byte.class, fieldHandler::encodeByte);            
             handlerMap.put(Short.class, fieldHandler::encodeShort);
-            handlerMap.put(Integer.class, fieldHandler::encodeInteger);
+            handlerMap.put(Integer.class, fieldHandler::encodeInteger);            
             handlerMap.put(BigInteger.class, fieldHandler::encodeBigInteger);
             handlerMap.put(Long.class, fieldHandler::encodeLong);
             handlerMap.put(Float.class, fieldHandler::encodeFloat);
             handlerMap.put(Double.class, fieldHandler::encodeDouble);
             handlerMap.put(BigDecimal.class, fieldHandler::encodeBigDecimal);
+            handlerMap.put(Character.class, fieldHandler::encodeString);
             handlerMap.put(String.class, fieldHandler::encodeString);
             handlerMap.put(LocalTime.class, fieldHandler::encodeTime);
             handlerMap.put(LocalDate.class, fieldHandler::encodeDate);
             handlerMap.put(LocalDateTime.class, fieldHandler::encodeDateTime);
-            handlerMap.put(byte[].class, fieldHandler::encodeByteArray);
-            handlerMap.put(Byte[].class, fieldHandler::encodeByteArray);
+            handlerMap.put(Duration.class, fieldHandler::encodeDuration);
+            //handlerMap.put(byte[].class, fieldHandler::encodeByteArray);
+            //handlerMap.put(Byte[].class, fieldHandler::encodeByteArray);
+            //handlerMap.put(Object[].class, fieldHandler::encodeByteArray);
         }
 
         @Override
@@ -186,7 +189,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         public Builder addItem(String name, String fieldQuery, BigDecimal... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeBigDecimal);
         }
-
+      
         @Override
         public Builder addItem(String name, String fieldQuery, String... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeString);
@@ -206,6 +209,11 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         public Builder addItem(String name, String fieldQuery, LocalDateTime... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeDateTime);
         }
+        
+        @Override
+        public Builder addItem(String name, String fieldQuery, Duration... values) {
+            return addItem(name, fieldQuery, values, fieldHandler::encodeDuration);
+        }        
 
         @Override
         public Builder addItem(String name, String fieldQuery, byte[]... values) {
@@ -216,6 +224,9 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         public Builder addItem(String name, String fieldQuery, Byte[]... values) {
             return addItem(name, fieldQuery, values, fieldHandler::encodeByteArray);
         }
+      
+        //@Override
+     
 
         @Override
         public <T> Builder addItem(String name, String fieldQuery, T... values) {

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.base.messages;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -527,6 +528,39 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse {
         List<LocalDateTime> values = new ArrayList<>(num);
         for (int i = 0; i < num; i++) {
             values.add(fieldInternal.getDateTime(i));
+        }
+        return values;
+    }
+
+    @Override
+    public boolean isValidDuration(String name) {
+        return isValidDuration(name, 0);
+    }
+
+    @Override
+    public boolean isValidDuration(String name, int index) {
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
+        return fieldInternal.isValidDateTime(index);        
+    }
+
+    @Override
+    public Duration getDuration(String name) {
+        return getDuration(name, 0);
+    }
+
+    @Override
+    public Duration getDuration(String name, int index) {
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
+        return fieldInternal.getDuration(index);
+    }
+
+    @Override
+    public Collection<Duration> getAllDuration(String name) {
+        BaseDefaultFieldItem fieldInternal = getFieldInternal(name);
+        int num = fieldInternal.getNumberOfValues();
+        List<Duration> values = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            values.add(fieldInternal.getDuration(i));
         }
         return values;
     }

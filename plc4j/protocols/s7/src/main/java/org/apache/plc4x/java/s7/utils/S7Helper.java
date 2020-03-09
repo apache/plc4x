@@ -21,7 +21,11 @@ package org.apache.plc4x.java.s7.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +107,7 @@ import java.util.Map;
  * @author cgarcia
  */
 
-public class S7SslHelper {
+public class S7Helper {
     
     /**
      * 
@@ -1123,7 +1127,7 @@ public class S7SslHelper {
         
         return LocalDateTime.of(year,month,day,hour,minute,second, nanoseconds);
     }    
-    
+  
     
    /**
      * converts incoming byte to an integer regarding used BCD format
@@ -1133,12 +1137,201 @@ public class S7SslHelper {
     private static int convertByteToBcd(byte incomingByte) {
         int dec = (incomingByte >> 4) * 10;
         return dec + (incomingByte & 0x0f);
-    }    
-
+    }  
+    
+   /**
+     * converts incoming Short to an integer regarding used BCD format
+     * @param incomingShort
+     * @return converted BCD number
+     */
+    private static short convertShortToBcd(short incomingShort) {
         
-}
+        short res =(short)  ((incomingShort >> 8) * 100 +
+                            (incomingShort >> 4) * 10 +
+                            (incomingShort & 0x0f));
+        return res;
+    }      
+        
+ }
+    
+    /*
+    *
+    */
+    public static Duration S5TimeToDuration(Short data) {
+        Duration res;
+        short t = data;
+        long tv = (short)(((t & 0x000F))+((t & 0x00F0)>>4)*10+((t & 0x0F00) >> 8)*100);       
+        long tb = (short)(10*Math.pow(10,((t & 0xF000) >> 12)));
+        long totalms = tv*tb;
+        if (totalms <= 9990000 ){
+            res = Duration.ofMillis(totalms);
+        } else {
+            res = Duration.ofMillis(9990000);
+        }            
+        return res;
+    }
+    
+    /*
+    * 
+    */
+    public static Short DurationToS5Time(Duration data) {
+        short tv = 0;
+        short tb = 0x0000_0000;
+        short s5time = 0x0000;
+        long totalms = data.toMillis();
+        
+        if ((totalms >= 0) && (totalms <= 9990000)) {
+            
+            if ((totalms>=0) && ((totalms<=9990))){
+                tb = 0x0000_0000; //10 ms
+                tv = (short)(totalms / 10);                
+            } else  if ((totalms>9990) && ((totalms<=99900))){                 
+                tb = 0x0000_0001;// 100 ms
+                tv = (short)(totalms / 100);
+            } else if ((totalms>99900) && ((totalms<=999000))){
+                tb = 0x0000_0002;//1000 ms
+                tv = (short)(totalms / 1000);                
+            } else if ((totalms>999000) && ((totalms<=9990000))){
+                tb = 0x0000_0003;//10000 ms
+                tv = (short)(totalms / 10000);                
+            }            
+           
+            short uni = (short)(tv % 10);
+            short dec = (short)((tv / 10) % 10);
+            short cen = (short)((tv / 100) % 10);
 
+            s5time = (short)(((tb)<<12) | (cen << 8) | (dec << 4) | (uni));
+        }
+        return s5time;
+    }   
 
+    public static Duration S7TimeToDuration(Integer data) {
+        Duration res = Duration.ZERO;
+        if (data>= 0){
+            res = res.plusMillis((long) data);
+        } else {
+            long ms = 0x8000_0000  - (data & 0x8000_0000);
+            res = res.minusMillis((long) data);
+        }
+        
+        return res;
+    }  
+    
+    public static Integer DurationToS7Time(Duration data) {
+        Integer res = 0x0000_0000;
+        if (data.isNegative()){
+            res = (int) data.toMillis() + 0x8000_0000;
+        } else {
+            res = (int) data.toMillis();            
+        }
+        return res;
+    } 
 
+    public static LocalTime S7TodToLocalTime(Integer data) {
+        if (data > 0x0526_5bff) data=0x0526_5bff;
+        if (data < 0) data=0x0000_0000;
+        LocalTime res = LocalTime.MIDNIGHT.plusNanos((long)data*1_000_000);
+        return res;
+    }  
 
+    public static Integer LocalTimeToS7Tod(LocalTime data) {        
+        return (int)(data.toNanoOfDay() / 1_000_000);
+    }
+    
+    public static LocalDate S7DateToLocalDate(Short data) {
+        LocalDate res = LocalDate.of(1990, 1, 1);
+        res = res.plusDays((long) data);
+        return res;
+    }
+    
+    public static Short LocalDateToS7Date(LocalDate data) {
+        LocalDate ini = LocalDate.of(1990, 1, 1);
+        long resl  = ChronoUnit.DAYS.between(ini, data);
+        short res = (short) resl;
+        return res;
+    }  
+    
+    /*
+     * Date and time of day (BCD coded).
+     *          +----------------+
+     * Byte n   | Year   0 to 99 |
+     *          +----------------+
+     * Byte n+1 | Month  1 to 12 |
+     *          +----------------+
+     * Byte n+2 | Day    1 to 31 |    
+     *          +----------------+
+     * Byte n+3 | Hour   0 to 23 |    
+     *          +----------------+  
+     * Byte n+4 | Minute 0 to 59 |  
+     *          +----------------+
+     * Byte n+5 | Second 0 to 59 |     
+     *          +----------------+
+     * Byte n+6 | ms    0 to 999 |
+     * Byte n+7 | X X X X X D O W|    
+     *          +----------------+    
+     * DOW: Day of weed (last 3 bits)
+    */
+    public static LocalDateTime S7DateTimeToLocalDateTime(ByteBuf data) {
+        //from Plc4XS7Protocol
+        int year=   byteBCDToInt(data.readByte());       
+        int month=  byteBCDToInt(data.readByte());
+        int day =   byteBCDToInt(data.readByte());
+        int hour=   byteBCDToInt(data.readByte());
+        int minute= byteBCDToInt(data.readByte());
+        int second= byteBCDToInt(data.readByte());   
+        int millih= byteBCDToInt(data.readByte()) * 10;
+        
+        int milll= (data.readByte() >> 4);
+         
+        int milliseconds = millih + milll;
+        int nanoseconds = milliseconds * 1000000;
+        //At this point a dont need the day of week
+        //data-type ranges from 1990 up to 2089
+        if(year>=90){
+            year+=1900;
+        }
+        else{
+            year+=2000;
+        }
+        
+        return LocalDateTime.of(year,month,day,hour,minute,second, nanoseconds);
+    }    
+  
+    public static byte[] LocalDateTimeToS7DateTime(LocalDateTime data) {
+        byte[] res = new byte[8];
+        
+        res[0] = convertByteToBcd((data.getYear() % 100));
+        res[1] = convertByteToBcd(data.getMonthValue());
+        res[2] = convertByteToBcd(data.getDayOfMonth());
+        res[3] = convertByteToBcd(data.getHour());
+        res[4] = convertByteToBcd(data.getMinute());
+        res[5] = convertByteToBcd(data.getSecond());
+        
+        long ms = (long)(data.getNano() / 1_000_000);
+        res[6] = (byte)((int)(((ms / 100) << 4) | ((ms / 10)%10))) ;
+        //Java:1 (Monday) to 7 (Sunday)->S7:1 (Sunday) to 7 (Saturday)        
+        byte dayofweek = (byte)((data.getDayOfWeek().getValue()<7)?
+                                data.getDayOfWeek().getValue()+1:
+                                (byte)0x01);
+        res[7] = (byte)(((ms % 10) << 4) | ((byte)(dayofweek)));
+                
+        return res;
+    }
+   
+    
+   /**
+     * converts incoming byte to an integer regarding used BCD format
+     * @param incomingByte
+     * @return converted BCD number
+     */
+    private static byte convertByteToBcd(int incomingByte) {
+        byte dec = (byte)((incomingByte / 10) % 10);
+        return (byte)((dec << 4) | (incomingByte % 10));
+    } 
+
+    private static int byteBCDToInt(byte bcd){
+        int res=(bcd>>4)*10 + (bcd & 0x0f);
+        return res;
+    }
+    
 }

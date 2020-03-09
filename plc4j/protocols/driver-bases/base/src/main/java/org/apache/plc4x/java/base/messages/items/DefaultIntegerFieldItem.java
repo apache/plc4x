@@ -18,17 +18,17 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalTime;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
 
     public DefaultIntegerFieldItem(Integer... values) {
         super(values);
     }
-
+   
     @Override
     public Object getObject(int index) {
         return getValue(index);
@@ -149,5 +149,14 @@ public class DefaultIntegerFieldItem extends BaseDefaultFieldItem<Integer> {
         return new BigDecimal(getValue(index));
     }
 
+    @Override
+    public LocalTime getTime(int index) {
+        System.out.println("DefaultIntegerFieldItem: getTime");
+        return super.getTime(index); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    
+    
 }
 

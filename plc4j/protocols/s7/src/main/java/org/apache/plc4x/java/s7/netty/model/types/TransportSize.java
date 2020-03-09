@@ -36,7 +36,7 @@ public enum TransportSize {
     // -----------------------------------------
     BYTE(0x02, "B", 1, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     WORD(0x04, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
-    DWORD(0x06, "D", 4, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    DWORD(0x06, "D", 4, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // Only got a basic TIA license (S7-1500 needed to find this out)
     // TODO: Find the code
     LWORD(0x00, "X", 8, null, null, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
@@ -53,7 +53,7 @@ public enum TransportSize {
     // Unsigned Small Int
     USINT(0x02, "B", 1, INT, DataTransportSize.INTEGER, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Double Precision Int
-    DINT(0x07, "D", 4, INT, DataTransportSize.INTEGER, S7ControllerType.ANY),
+    DINT(0x07, "D", 4, null, DataTransportSize.INTEGER, S7ControllerType.ANY),
     // Unsigned Double Precision Int
     UDINT(0x07, "D", 4, INT, DataTransportSize.INTEGER, S7ControllerType.S7_1200, S7ControllerType.S7_1500),
     // Only got a basic TIA license (S7-1500 needed to find this out)
@@ -74,7 +74,7 @@ public enum TransportSize {
     // Durations
     // -----------------------------------------
     // IEC time
-    TIME(0x0B, "D", 4, null, DataTransportSize.INTEGER, S7ControllerType.ANY),
+    TIME(0x0B, "D", 1, DWORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
     // TODO: Find the code
     LTIME(0x00, "X", 8, TIME, null, S7ControllerType.S7_1500),
 
@@ -82,18 +82,26 @@ public enum TransportSize {
     // Date
     // -----------------------------------------
     // IEC date (yyyy-m-d)
-    DATE(0x02, "W", 2, null, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    DATE(0x02, "W", 1, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Time of day
     // -----------------------------------------
     // Time (hh:mm:ss.S)
-    TIME_OF_DAY(0x02, "D", 4, null, DataTransportSize.INTEGER, S7ControllerType.ANY),
+    TOD(0x02, "D", 4, BYTE, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    TIME_OF_DAY(0x02, "D", 4, BYTE, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
+    
+    // -----------------------------------------
+    // Simatic S5 time
+    // Base time 10,100,1000,10000 mseg.
+    // -----------------------------------------
+    S5TIME(0x0C, "W", 1, WORD, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.ANY),
 
     // -----------------------------------------
     // Date and time of day
     // -----------------------------------------
-    DATE_AND_TIME(0x02, "X", 8, null, DataTransportSize.INTEGER, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
+    DT(0x02, "X", 8, BYTE, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
+    DATE_AND_TIME(0x02, "X", 8, BYTE, DataTransportSize.BYTE_WORD_DWORD, S7ControllerType.S7_1500, S7ControllerType.S7_300, S7ControllerType.S7_400),
 
     // -----------------------------------------
     // ASCII Strings
@@ -160,7 +168,7 @@ public enum TransportSize {
         return baseType == null;
     }
 
-    TransportSize getBaseType() {
+    public TransportSize getBaseType() {
         // If this is a base-type itself, the baseType is null, in all
         // other cases it is set.
         if (baseType == null) {
@@ -170,7 +178,7 @@ public enum TransportSize {
         }
     }
 
-    TransportSize getSubType(String sizeCode) {
+    public TransportSize getSubType(String sizeCode) {
         // Try to find a sub-type with this base type for which the size code matches.
         for (TransportSize value : values()) {
             if ((value.baseType == this) && (value.sizeCode != null) && (value.sizeCode.equals(sizeCode))) {

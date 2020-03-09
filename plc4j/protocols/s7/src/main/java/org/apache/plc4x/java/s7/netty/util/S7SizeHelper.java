@@ -65,8 +65,14 @@ public class S7SizeHelper {
         for (S7Payload payload : payloads) {
             if(payload instanceof VarPayload) {
                 VarPayload varPayload = (VarPayload) payload;
+                int i=1;
                 for (VarPayloadItem payloadItem : varPayload.getItems()) {
+                    //Check for "Fill Byte"
+                    if((payloadItem.getData().length == 1) && (varPayload.getItems().size() > i) || (payloadItem.getData().length % 2 != 0)) {
+                        l += 1;
+                    }
                     l += getPayloadLength(payloadItem);
+                    i++;
                 }
             } else if(payload instanceof CpuServicesPayload) {
                 CpuServicesPayload cpuServicesPayload = (CpuServicesPayload) payload;

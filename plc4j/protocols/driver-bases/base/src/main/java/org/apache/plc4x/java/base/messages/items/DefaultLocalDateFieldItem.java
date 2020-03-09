@@ -18,9 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
-
 import java.time.LocalDate;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 public class DefaultLocalDateFieldItem extends BaseDefaultFieldItem<LocalDate> {
 
@@ -38,6 +37,11 @@ public class DefaultLocalDateFieldItem extends BaseDefaultFieldItem<LocalDate> {
         return getValue(index) != null;
     }
 
+    @Override
+    public Short getShort(int index) {
+        return super.getShort(index); 
+    }
+    
     @Override
     public LocalDate getDate(int index) {
         if (!isValidDate(index)) {

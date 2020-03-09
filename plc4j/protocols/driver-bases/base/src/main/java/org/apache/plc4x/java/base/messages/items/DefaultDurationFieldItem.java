@@ -18,37 +18,37 @@ under the License.
 */
 package org.apache.plc4x.java.base.messages.items;
 
-import java.time.LocalTime;
+import java.time.Duration;
 import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
 
-public class DefaultLocalTimeFieldItem extends BaseDefaultFieldItem<LocalTime> {
+/**
+ *
+ * @author cgarcia
+ */
+public class DefaultDurationFieldItem extends BaseDefaultFieldItem<Duration> {
 
-    public DefaultLocalTimeFieldItem(LocalTime... values) {
+    public DefaultDurationFieldItem(Duration... values) {
         super(values);
     }
-
+    
     @Override
     public Object getObject(int index) {
         return getValue(index);
     }
 
     @Override
-    public boolean isValidTime(int index) {
+    public boolean isValidDuration(int index) {
         return getValue(index) != null;
-    }
-
+    }  
+        
     @Override
-    public Integer getInteger(int index) {             
-        return super.getInteger(index);
-    }
-                       
-    @Override
-    public LocalTime getTime(int index) {
-        if (!isValidTime(index)) {
-            throw new PlcIncompatibleDatatypeException(LocalTime.class, index);
+    public Duration getDuration(int index) {
+        if (!isValidDuration(index)) {
+            throw new PlcIncompatibleDatatypeException(Duration.class, index);
         }
         return getValue(index);
-    }
-
+    }    
+    
+    
 }
-
