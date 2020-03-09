@@ -99,6 +99,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                 abEthField.getByteSize(), abEthField.getFileNumber(), abEthField.getFileType().getTypeCode(),
                 abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
 
+
             final int transactionCounter = transactionCounterGenerator.incrementAndGet();
             // origin/sender: constant = 5
             DF1RequestMessage requestMessage = new DF1CommandRequestMessage(

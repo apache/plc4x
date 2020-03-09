@@ -42,8 +42,10 @@
     <module>modbus</module>
     <module>s7</module>
 	  <module>opcua</module>
+    <module>eip</module>
 
     <module>simulated</module>
+      <module>plc4j-driver-eip</module>
   </modules>
 
 </project>

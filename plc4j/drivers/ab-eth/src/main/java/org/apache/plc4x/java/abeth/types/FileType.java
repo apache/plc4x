@@ -30,6 +30,9 @@ public enum FileType {
     COUNTER((short) 0x87),
     CONTROL((short) 0x88),
     INTEGER((short) 0x89),
+
+    INT((short)0xC9),
+
     FLOAT((short) 0x8A),
     OUTPUT((short) 0x8B),
     INPUT((short) 0x8C),
@@ -39,6 +42,7 @@ public enum FileType {
     WORD((short) 0x89),  // custom 2-byte Integer
     DWORD((short) 0x89), // custom 4-byte Integer
     SINGLEBIT((short) 0x89); // custom single bit from Integer file, no official AB type
+
 
     private final short typeCode;
 

@@ -29,6 +29,7 @@ public class AbEthField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
 //        Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})/(?<bitNumber>\\d{1,7}):(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
+        //Pattern.compile("^#(?<tagName>[a-zA-Z_]+)/(?<backPlane>\\d{1,4})/(?<slot>\\d{0,10}):(?<dataType>[a-zA-Z]+)(\\[(?<size>\\d+)])?");
         Pattern.compile("^N(?<fileNumber>\\d{1,7}):(?<elementNumber>\\d{1,7})(/(?<bitNumber>\\d{1,7}))?:(?<dataType>[a-zA-Z_]+)(\\[(?<size>\\d+)])?");
 
 
@@ -39,11 +40,19 @@ public class AbEthField implements PlcField {
     private static final String DATA_TYPE = "dataType";
     private static final String SIZE = "size";
 
-    private final short byteSize;
-    private final short fileNumber;
-    private final FileType fileType;
-    private final short elementNumber;
-    private final short bitNumber;
+    private static final String TAG = "tagName";
+    private static final String BACKPANE= "backPlane";
+    private static final String SLOT= "slot";
+
+    private  short byteSize;
+    private  short fileNumber;
+    private  FileType fileType;
+    private  short elementNumber;
+    private  short bitNumber;
+
+    private String tag;
+    private short backpane;
+    private short slot;
 
     public AbEthField(short byteSize, short fileNumber, FileType fileType, short elementNumber, short bitNumber) {
         this.byteSize = byteSize;
@@ -51,6 +60,14 @@ public class AbEthField implements PlcField {
         this.fileType = fileType;
         this.elementNumber = elementNumber;
         this.bitNumber = bitNumber;
+    }
+
+    public AbEthField(short byteSize, String tag, short backpane, short slot, FileType type){
+        this.byteSize=byteSize;
+        this.tag=tag;
+        this.backpane=backpane;
+        this.slot=slot;
+        this.fileType=type;
     }
 
     public short getByteSize() {
@@ -98,6 +115,20 @@ public class AbEthField implements PlcField {
                     byteSize = Short.parseShort(matcher.group(SIZE));
             }
             return new AbEthField(byteSize, fileNumber, fileType, elementNumber, bitNumber);
+/**
+            String tag = matcher.group(TAG);
+            short backpane = Short.parseShort(matcher.group(BACKPANE));
+            short slot = Short.parseShort(matcher.group(SLOT));
+            FileType fileType = FileType.valueOf(matcher.group(DATA_TYPE).toUpperCase());
+            short byteSize;
+            switch(fileType){
+                case INT:
+                    byteSize =2;
+                    break;
+                default:
+                    byteSize = Short.parseShort(matcher.group(SIZE));
+            }
+            return new AbEthField(byteSize,tag,backpane,slot,fileType);*/
         }
         throw new PlcInvalidFieldException("Unable to parse field address: " + fieldString);
     }
