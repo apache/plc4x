@@ -76,10 +76,10 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
            new CIPEncapsulationConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
             .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p instanceof CIPEncapsulationConnectionResponse)
-            .unwrap(p -> (CIPEncapsulationConnectionResponse) p)
-            .handle(cipEncapsulationConnectionResponse -> {
-                sessionHandle = cipEncapsulationConnectionResponse.getSessionHandle();
+            .check(p -> p instanceof CIPEncapsulationConnectionRequest)
+            .unwrap(p -> (CIPEncapsulationConnectionRequest) p)
+            .handle(CIPEncapsulationConnectionRequest -> {
+                sessionHandle = CIPEncapsulationConnectionRequest.getSessionHandle();
                 // Send an event that connection setup is complete.
                 context.fireConnected();
             });

@@ -19,8 +19,6 @@
 
 package org.apache.plc4x.java.spi.connection;
 
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
@@ -36,6 +34,8 @@ import org.apache.plc4x.java.spi.generation.MessageIO;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
+
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 /**
  * Builds a Protocol Stack.
@@ -116,7 +116,8 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         private final Class<BASE_PACKET_CLASS> basePacketClass;
         private final Class<? extends MessageIO<BASE_PACKET_CLASS, BASE_PACKET_CLASS>> messageIoClass;
         private Class<? extends DriverContext> driverContextClass;
-        private boolean bigEndian = true;
+        //private boolean bigEndian = true;
+        private boolean bigEndian = false;
         private Object[] parserArgs;
         private Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol;
         private Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimator;

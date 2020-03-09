@@ -38,9 +38,9 @@ public class HelloPlc4x {
     public static void main(String[] args) throws Exception {
         try {
             int i=0;
-            PlcConnection connection = new PlcDriverManager().getConnection("ab-eth:tcp://163.243.183.250");
+            PlcConnection connection = new PlcDriverManager().getConnection("ab-eth:tcp://163.243.183.250?4");
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("0", "%C5:0");
+            builder.addItem("0", "#counter");
             PlcReadResponse response = builder.build().execute().get();
             logger.info("{} Response Code: {} for {}", i, response.getResponseCode("0"), response.getInteger("0"));
         } catch (Exception ex) {
