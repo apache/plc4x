@@ -25,7 +25,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.spi.AbstractSelectableChannel;
@@ -94,7 +93,7 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     @Override
-    public int selectNow() throws IOException {
+    public int selectNow() {
         // throw new NotImplementedException("");
         logger.debug("selectNow()");
         // check if one channel is active
@@ -102,18 +101,13 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     @Override
-    public int select(long timeout) throws IOException {
-        logger.debug("select({})", timeout);
-        if (events.size() > 0) {
+    public int select(long timeout) {
+        if (!events.isEmpty()) {
             return events.size();
         }
         this.selectPromise = new DefaultPromise<>(executor);
         try {
-            if (selectPromise.await(timeout)) {
-                logger.debug("Promise was cancelled, new Events should be there.");
-            } else {
-                logger.debug("Promise timed out, expecting no new events.");
-            }
+            selectPromise.await(timeout);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Was interrupted", e);
@@ -122,7 +116,7 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     @Override
-    public int select() throws IOException {
+    public int select() {
         throw new NotImplementedException("");
     }
 
@@ -151,7 +145,7 @@ class SerialPollingSelector extends AbstractSelector {
     }
 
     @Override
-    protected void implCloseSelector() throws IOException {
+    protected void implCloseSelector() {
         // TODO should we do something here?
     }
 

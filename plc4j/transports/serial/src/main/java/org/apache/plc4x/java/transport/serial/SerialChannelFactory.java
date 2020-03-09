@@ -54,6 +54,10 @@ public class SerialChannelFactory extends NettyChannelFactory implements HasConf
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
+            bootstrap.option(SerialChannelOptions.BAUD_RATE, configuration.getBaudRate());
+            bootstrap.option(SerialChannelOptions.DATA_BITS, configuration.getNumDataBits());
+            bootstrap.option(SerialChannelOptions.STOP_BITS, configuration.getNumStopBits());
+            bootstrap.option(SerialChannelOptions.PARITY_BITS, configuration.getParityBits());
         }
     }
 

@@ -50,7 +50,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannel.class);
-    private final ChannelConfig config;
+    private final SerialChannelConfig config;
 
     private final VoidChannelPromise unsafeVoidPromise = new VoidChannelPromise(this, false);
     private boolean readPending = false; // Did we receive an EOF?
@@ -74,7 +74,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
      */
     protected SerialChannel(Channel parent, SelectableChannel ch) {
         super(parent, ch);
-        config = new DefaultChannelConfig(this);
+        config = new SerialChannelConfig(this);
         pipeline = newChannelPipeline();
     }
 
@@ -169,7 +169,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             if (((SerialSocketAddress) remoteAddress).getIdentifier().startsWith("TEST")) {
                 comPort = SerialChannelHandler.DummyHandler.INSTANCE;
             } else {
-                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress);
+                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress, config);
             }
             logger.debug("Using Com Port {}, trying to open port", comPort.getIdentifier());
             if (comPort.open()) {
@@ -409,8 +409,8 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             SerialChannel.this.remoteAddress = remoteAddress;
             eventLoop().execute(() -> {
                 try {
-                    final boolean sucess = doConnect(remoteAddress, localAddress);
-                    if (sucess) {
+                    final boolean success = doConnect(remoteAddress, localAddress);
+                    if (success) {
                         // Send a message to the pipeline
                         pipeline().fireChannelActive();
                         // Finally, close the promise

@@ -367,6 +367,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
     protected void publishEvent(GroupAddress groupAddress, PlcValue plcValue) {
         // Create a subscription event from the input.
+        // TODO: Check this ... this is sort of not really right ...
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
             Collections.singletonMap("knxData", Pair.of(PlcResponseCode.OK, plcValue)));
 
