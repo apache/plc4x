@@ -36,7 +36,7 @@ import java.util.function.ToIntFunction;
 @Component(service = PlcDriver.class, immediate = true)
 public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
-    public static final int AB_ETH_PORT = 44818;
+    public static final int AB_ETH_PORT = 2222;
 
     @Override
     public String getProtocolCode() {

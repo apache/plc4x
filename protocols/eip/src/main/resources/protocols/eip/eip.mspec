@@ -17,66 +17,24 @@
 // under the License.
 //
 
-[type 'EipPkt'
-    [simple uint    16      'command']
-    [simple uint    16      'len']
-    [simple uint    32      'sessionHandle']
-    [simple uint    32      'status']
-    [simple uint    64      'senderContext']
-    [simple uint    32      'options']
-    [optional EipData         'commandData']
-]
-
-[discriminatedType 'EipData'
-    [simple uint    32      'interface']
-    [simple uint    16      'timeout']
-    [simple uint    16      'itemsCount']
-    [array  EipItem         'items' length  'itemsCount']
-    [switchType 'interface'
-        ['0x00000000'   CipInterface
+//////////////////////////////////////////////////////////////////
+///EthernetIP Header of size 24
+/////////////////////////////////////////////////////////////////
+[discriminatedType 'EipPacket'
+    [discriminator uint 16 'command']
+    [implicit      uint 16 'len' 'lengthInBytes - 24']
+    [simple        uint 32 'sessionHandle']
+    [simple        uint 32 'status']
+    [array         uint 8  'senderContext' count '8']
+    [simple        uint 32 'options']
+    [typeSwitch 'command'
+            ['0x0065' EipConnectionRequest
+                [const  uint    16   'protocolVersion'   '0x01']
+                [const  uint    16   'flags'             '0x00']
+            ]
+            ['0x0066' EipDisconnectRequest
+            ]
         ]
-    ]
-]
-
-[discriminatedType  'CipInterface'
-    [simple uint    8   'service']
-    [simple uint    8   'pathSize']
-    [simple RequestPath 'path']
-    [typeSwitch 'service'
-        ['0x52' CipUnconnectedRead
-            [simple ReadData    'data']
-        ]
-    ]
-]
-[discriminatedType  'ReadData'
-    [constant   uint    8       'priority'  '0x05']
-    [simple     uint    16      'timeout']
-    [simple     uint    16      'requestSize']
-    [simple     Request         'request']
-]
-
-[discriminatedType  'Request'
-    [simple uint    8   'service']
-    [simple uint    8   'pathSize']
-    [array  uint    'requestPath'   length  'pathSize']
-    [simple uint    16   'commandData']
-    [const  uint    8   'reserved'  '0x00']
-    [simple uint    16  'route']
-]
-
-
-[discriminatedType  'RequestPath'
-    [uint   8   'size']
-    [array  PathSegment length  'size']
-]
-
-[discriminatedType  'PathSegment'
-    [simple uint    8   'segment']
-]
-
-[discriminatedType  'EipItem'
-    [simple uint    16  'type']
-    [simple uint    16  'length']
 ]
 
 [enum int   16   'CIPDataTypeCode' [uint 8  'size']

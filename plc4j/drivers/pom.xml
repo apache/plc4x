@@ -35,7 +35,7 @@
 
   <modules>
     <module>ab-eth</module>
-    <module>ads</module>
+    <!--module>ads</module-->
     <module>knxnetip</module>
     <module>mock</module>
     <module>modbus</module>

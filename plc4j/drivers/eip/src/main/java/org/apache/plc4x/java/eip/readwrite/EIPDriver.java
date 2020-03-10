@@ -19,19 +19,24 @@
 package org.apache.plc4x.java.eip.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
+import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
+import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.osgi.service.component.annotations.Component;
 
+import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class EIPDriver extends GeneratedDriverBase<Message> {
+@Component(service = PlcDriver.class, immediate = true)
+public class EIPDriver extends GeneratedDriverBase<EipPacket> {
+    public static final int PORT = 44818;
     @Override
     public String getProtocolCode() {
         return "eip";
@@ -40,11 +45,6 @@ public class EIPDriver extends GeneratedDriverBase<Message> {
     @Override
     public String getProtocolName() {
         return "EthernetIP";
-    }
-
-    @Override
-    public PlcConnection getConnection(String url) throws PlcConnectionException {
-        return null;
     }
 
     @Override
@@ -73,8 +73,11 @@ public class EIPDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected ProtocolStackConfigurer<Message> getStackConfigurer() {
-        return null;
+    protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacketIO.class)
+            .withProtocol(EipProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .build();
     }
 
     /** Estimate the Length of a Packet */
@@ -82,9 +85,21 @@ public class EIPDriver extends GeneratedDriverBase<Message> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
+                //Second byte for the size and the add the header size 24
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
             }
             return -1;
+        }
+    }
+
+     /**Consumes all Bytes till another Magic Byte is found */
+    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
+        @Override
+        public void accept(ByteBuf byteBuf) {
+            while (byteBuf.getUnsignedByte(0) != 0x00) {
+                // Just consume the bytes till the next possible start position.
+                byteBuf.readByte();
+            }
         }
     }
 

@@ -20,7 +20,6 @@ package org.apache.plc4x.java.examples.helloplc4x;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
@@ -38,11 +37,10 @@ public class HelloPlc4x {
     public static void main(String[] args) throws Exception {
         try {
             int i=0;
-            PlcConnection connection = new PlcDriverManager().getConnection("ab-eth:tcp://163.243.183.250?4");
-            PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("0", "N7:0:WORD");
-            PlcReadResponse response = builder.build().execute().get();
-            logger.info("{} Response Code: {} for {}", i, response.getResponseCode("0"), response.getInteger("0"));
+            PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250?backpane=1&slot=4");
+            Thread.sleep(2000);
+            connection.close();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

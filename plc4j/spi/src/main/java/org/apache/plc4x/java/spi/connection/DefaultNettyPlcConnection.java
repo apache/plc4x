@@ -18,12 +18,7 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -128,7 +123,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection {
 
     @Override
     public void close() throws PlcConnectionException {
-        // TODO call protocols close method
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
         // Close channel
         channel.close().awaitUninterruptibly();

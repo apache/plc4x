@@ -19,21 +19,21 @@
 
 package org.apache.plc4x.java.spi.connection;
 
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
-
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
@@ -87,7 +87,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             matcher.group("transportCode") : getDefaultTransport();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
-
         // Check if the protocol code matches this driver.
         if(!protocolCode.equals(getProtocolCode())) {
             // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.
@@ -133,7 +132,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
-
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
