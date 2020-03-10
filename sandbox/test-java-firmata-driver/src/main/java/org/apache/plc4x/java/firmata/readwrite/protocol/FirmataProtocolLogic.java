@@ -53,6 +53,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -62,6 +63,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
+    private AtomicBoolean connected = new AtomicBoolean(false);
     private Map<Integer, AtomicInteger> analogValues = new HashMap<>();
     private BitSet digitalValues = new BitSet();
 
@@ -83,6 +85,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                 LOGGER.info(String.format("Connected to Firmata host running version %s.%s with name %s",
                     sysexCommandReportFirmware.getMajorVersion(), sysexCommandReportFirmware.getMinorVersion(),
                     name));
+                connected.set(true);
                 context.fireConnected();
             });
     }
@@ -119,7 +122,13 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
     }
 
     @Override
-    protected void decode(ConversationContext<FirmataMessage> context, FirmataMessage msg) throws Exception {
+    protected void decode(ConversationContext<FirmataMessage> context, FirmataMessage msg) {
+        // Especially when we restart there might already be data incoming before we actually are finished
+        // setting up. Just ignore all incoming data until we're officially connected.
+        if(!connected.get()) {
+            return;
+        }
+
         if(msg instanceof FirmataMessageAnalogIO) {
             // Analog values are single value messages (Value for one port only)
             FirmataMessageAnalogIO analogIO = (FirmataMessageAnalogIO) msg;
@@ -154,7 +163,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     @Override
     public void close(ConversationContext<FirmataMessage> context) {
-
+        connected.set(false);
     }
 
     @Override

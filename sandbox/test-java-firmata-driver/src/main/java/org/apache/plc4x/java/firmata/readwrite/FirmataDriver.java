@@ -19,9 +19,8 @@ under the License.
 package org.apache.plc4x.java.firmata.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguration;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
@@ -34,8 +33,6 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.osgi.service.component.annotations.Component;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -91,10 +88,8 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            ByteBuf tmp = Unpooled.buffer(1024);
             if (byteBuf.readableBytes() >= 1) {
                 int type = byteBuf.getByte(byteBuf.readerIndex()) & 0xF0;
-                tmp.writeByte(byteBuf.getByte(byteBuf.readerIndex()));
                 switch (type) {
                     case 0xE0:
                     case 0x90: return 3;
@@ -108,19 +103,15 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
                                     int curPos = 1;
                                     // As long as there are more bytes available and we haven't found the terminating char, continue ...
                                     while ((byteBuf.readableBytes() > curPos + 1) && (byteBuf.getByte(byteBuf.readerIndex() + curPos) != (byte) 0xF7)) {
-                                        tmp.writeByte(byteBuf.getByte(byteBuf.readerIndex() + curPos));
                                         curPos++;
                                     }
                                     if (byteBuf.getByte(byteBuf.readerIndex() + curPos) == (byte) 0xF7) {
-                                        tmp.writeByte(byteBuf.getByte(byteBuf.readerIndex() + curPos));
                                         return curPos + 1;
                                     } else {
                                         return -1;
                                     }
                                 } catch(Exception e) {
-                                    byte[] data = new byte[tmp.readableBytes()];
-                                    tmp.readBytes(data);
-                                    System.out.println("Error processing: " + Hex.encodeHexString(data));
+                                    throw new PlcRuntimeException("Invalid packet content", e);
                                 }
                             }
                             case 0x04:
@@ -129,9 +120,12 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
                                 return 3;
                             case 0x0F:
                                 return 1;
+                            default:
+                                throw new PlcRuntimeException("Invalid command type");
                         }
                     }
-                    default: return 128;
+                    default:
+                        throw new PlcRuntimeException("Invalid packet type");
                 }
             }
             return -1;
@@ -141,20 +135,24 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     /** Consumes all Bytes till one of the potential message type indicators */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
 
-        static Set<Byte> commands = new HashSet<>();
-        {
-            commands.add((byte) 0xE0);
-            commands.add((byte) 0x90);
-            commands.add((byte) 0xC0);
-            commands.add((byte) 0xD0);
-            commands.add((byte) 0xF0);
-        }
-
         @Override
         public void accept(ByteBuf byteBuf) {
-            while (!commands.contains((byte) (byteBuf.getUnsignedByte(0) & 0xF0))) {
+            while (!isPotentialStart(byteBuf.getUnsignedByte(byteBuf.readerIndex()))) {
                 // Just consume the bytes till the next possible start position.
                 byteBuf.readByte();
+            }
+        }
+
+        private boolean isPotentialStart(short value) {
+            switch (value & 0xF0) {
+                case 0xE0:
+                case 0x90:
+                case 0xC0:
+                case 0xD0:
+                case 0xF0:
+                    return true;
+                default:
+                    return false;
             }
         }
     }
