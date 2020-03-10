@@ -48,6 +48,20 @@
     <module>test-streampipes-plc4x-shared</module>
   </modules>
 
+  <dependencies>
+    <!-- JUnit 5 Support -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <!-- Build PLC4X including the CPP modules -->
     <profile>
