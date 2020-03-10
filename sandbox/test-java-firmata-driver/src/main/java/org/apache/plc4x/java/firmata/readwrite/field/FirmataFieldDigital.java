@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.firmata.readwrite.types.PinMode;
 
 import java.util.BitSet;
 import java.util.regex.Matcher;
@@ -26,24 +27,31 @@ import java.util.regex.Pattern;
 
 public class FirmataFieldDigital extends FirmataField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("digital:" + FirmataField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("digital:" + FirmataField.ADDRESS_PATTERN +
+        "(:(?<mode>PULLUP))?");
 
     protected final BitSet bitSet;
+    protected final PinMode pinMode;
 
-    public FirmataFieldDigital(int address, Integer quantity) {
+    public FirmataFieldDigital(int address, Integer quantity, PinMode pinMode) {
         super(address, quantity);
         // Translate the address into a bit-set.
         bitSet = new BitSet();
         for(int i = getAddress(); i < getAddress() + getQuantity(); i++) {
             bitSet.set(i, true);
         }
+        this.pinMode = pinMode;
     }
 
     public BitSet getBitSet() {
         return bitSet;
     }
 
-    public static FirmataFieldDigital of(String addressString) throws PlcInvalidFieldException {
+    public PinMode getPinMode() {
+        return pinMode;
+    }
+
+    public static FirmataFieldDigital of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {
             throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
@@ -52,7 +60,10 @@ public class FirmataFieldDigital extends FirmataField {
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new FirmataFieldDigital(address, quantity);
+
+        PinMode pinMode = ("PULLUP".equals(matcher.group("mode"))) ? PinMode.PinModePullup : null;
+
+        return new FirmataFieldDigital(address, quantity, pinMode);
     }
 
 }

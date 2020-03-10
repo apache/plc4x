@@ -31,8 +31,10 @@
         ]
         // Bitmask containing the first 7 bits in the least significant
         // bits of the first byte and bit 8 in the second byte
+        // The 'pinBlock' refers to the block of bytes (0 refers to the
+        // first 8 pins, 1 to the second and so on.
         ['0x9' FirmataMessageDigitalIO
-            [simple uint 4 'pin']
+            [simple uint 4 'pinBlock']
             [array int 8 'data' count '2']
         ]
 

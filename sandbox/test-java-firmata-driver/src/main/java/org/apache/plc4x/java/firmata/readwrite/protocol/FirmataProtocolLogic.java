@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.firmata.readwrite.protocol;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -42,6 +43,7 @@ import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
@@ -136,20 +138,20 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             } else if(msg instanceof FirmataMessageDigitalIO) {
                 // Digital values come 8 pins together (ignoring the pin value, which is always 0).
                 FirmataMessageDigitalIO digitalIO = (FirmataMessageDigitalIO) msg;
-                BitSet newDigitalValues = getDigitalValues(digitalIO.getData());
+                BitSet newDigitalValues = getDigitalValues(digitalIO.getPinBlock(), digitalIO.getData());
+
                 // Compare the currently set bits with the ones from the last time to see what's changed.
-                int numBits = Math.max(newDigitalValues.length(), digitalValues.length());
                 BitSet changedBits = new BitSet();
-                for (int i = 0; i < numBits; i++) {
-                    if (digitalValues.get(i) != newDigitalValues.get(i)) {
-                        changedBits.set(i, true);
+                for (int i = 0; i < 8; i++) {
+                    int bitPos = i + (8 * digitalIO.getPinBlock());
+                    if (digitalValues.get(bitPos) != newDigitalValues.get(bitPos)) {
+                        changedBits.set(bitPos, true);
+                        digitalValues.set(bitPos, newDigitalValues.get(bitPos));
                     }
                 }
-                // Save the new values for next time.
-                digitalValues = newDigitalValues;
 
                 // Send out update events.
-                publishDigitalEvents(changedBits, newDigitalValues);
+                publishDigitalEvents(changedBits, digitalValues);
             } else {
                 LOGGER.debug(String.format("Unexpected message %s", msg.toString()));
             }
@@ -196,7 +198,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                         // send out an update event with all of its current values.
                         if(digitalField.getBitSet().intersects(changedBits)) {
                             List<PlcBoolean> values = new ArrayList<>(digitalField.getBitSet().cardinality());
-                            for(int i = digitalField.getBitSet().nextSetBit(0); i < digitalField.getBitSet().length(); i++) {
+                            for(int i = 0; i < digitalField.getBitSet().length(); i++) {
                                 values.add(new PlcBoolean(bitValues.get(i)));
                             }
                             // If it's just one element, return this as a direct PlcValue
@@ -224,15 +226,20 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         return 0;
     }
 
-    protected BitSet getDigitalValues(byte[] data) {
-        BitSet bitSet = BitSet.valueOf(data);
-        // Shift 8 and above right one bit ...
-        if(bitSet.length() > 8) {
-            for(int i = 8; i < bitSet.length(); i++) {
-                bitSet.set(i - 1, bitSet.get(i));
-            }
-            bitSet.set(bitSet.length() - 1, false);
+    protected int convertToSingleByteRepresentation(byte[] data) {
+        byte result = data[0];
+        result = (byte) (result | (((data[1] & 0x01) == 0x01) ? 0x80 : 0x00));
+        return result & 0xFF;
+    }
+
+    protected BitSet getDigitalValues(int byteBlock, byte[] data) {
+        int singleByte = convertToSingleByteRepresentation(data);
+        if(byteBlock > 0) {
+            singleByte = singleByte * (256 * byteBlock);
         }
+        byte[] bitSetData = BigInteger.valueOf(singleByte).toByteArray();
+        ArrayUtils.reverse(bitSetData);
+        BitSet bitSet = BitSet.valueOf(bitSetData);
         return bitSet;
     }
 
