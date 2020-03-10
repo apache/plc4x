@@ -25,6 +25,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.spi.PlcDriver;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -41,6 +43,7 @@ import java.util.regex.Pattern;
 @Component(service = PlcDriver.class, immediate = true)
 public class OpcuaPlcDriver implements PlcDriver {
 
+    private static final Logger logger = LoggerFactory.getLogger(OpcuaPlcDriver.class);
 
     public static final Pattern INET_ADDRESS_PATTERN = Pattern.compile("tcp://(?<host>[\\w.-]+)(:(?<port>\\d*))?");
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
@@ -79,6 +82,8 @@ public class OpcuaPlcDriver implements PlcDriver {
         String portString = matcher.group("port");
         Integer port = StringUtils.isNotBlank(portString) ? Integer.parseInt(portString) : null;
         String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
+
+        logger.info("Path parameters given {}", params);
 
         try {
             return opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(host), port, params, requestTimeout);
