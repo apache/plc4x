@@ -26,6 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
 import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,15 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
     protected boolean skipDiscovery = false;
     protected String username = null;
     protected String password = null;
-    protected String certFile;
+    protected String certFile = null;
+    protected SecurityPolicy securityPolicy = null;
+    protected String keyStoreFile = null;
+//    protected String keyStorePassword;
 
     /**
      * @param params
      */
     BaseOpcuaPlcConnection(String params) {
-
         if (!StringUtils.isEmpty(params)) {
             for (String param : params.split("&")) {
                 String[] paramElements = param.split("=");
@@ -53,16 +56,38 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                     String paramValue = paramElements[1];
                     switch (paramName) {
                         case "discovery":
-                            skipDiscovery = !Boolean.valueOf(paramValue);
+                            skipDiscovery = !Boolean.parseBoolean(paramValue);
+                            logger.debug("Found Parameter 'skipDiscovery' with value {}", this.skipDiscovery);
                             break;
                         case "username":
                             username = paramValue;
+                            logger.debug("Found Parameter 'username' with value {}", username);
                             break;
                         case "password":
                             password = paramValue;
+                            logger.debug("Found Parameter 'password' with value {}", password);
                             break;
                         case "certFile":
                             certFile = paramValue;
+                            logger.debug("Found Parameter 'certFile' with value {}", certFile);
+                            break;
+                        case "securityPolicy":
+                            logger.debug("Got value for security policy: '{}', trying to parse", paramValue);
+                            try {
+                                securityPolicy = SecurityPolicy.valueOf(paramValue);
+                                logger.debug("Using Security Policy {}", securityPolicy);
+                            } catch (IllegalArgumentException e) {
+                                logger.warn("Unable to parse policy {}", paramValue);
+                            }
+                            break;
+                        case "keyStoreFile":
+                            keyStoreFile = paramValue;
+                            logger.debug("Found Parameter 'keyStoreFile' with value {}", keyStoreFile);
+                            break;
+//                        case "keyStorePassword":
+//                            keyStorePassword = paramValue;
+//                            logger.debug("Found Parameter 'keyStorePassword' with value {}", keyStorePassword);
+//                            break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }

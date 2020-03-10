@@ -198,11 +198,14 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             }
 
         }
+
         endpoint = endpoints.stream()
             .filter(e -> e.getSecurityPolicyUri().equals(getSecurityPolicy().getUri()))
             .filter(endpointFilter())
             .findFirst()
-            .orElseThrow(() -> new PlcConnectionException("No desired endpoints from"));
+            .orElseThrow(() -> new PlcConnectionException("No desired endpoints found (with right policy)"));
+
+        logger.debug("Using Endpoint {}", endpoint);
 
         // Security
         Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "security");
@@ -219,15 +222,20 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
         KeyStoreLoader loader;
         try {
-            loader = new KeyStoreLoader().load(securityTempDir);
+            if (this.keyStoreFile == null) {
+                logger.debug("No KeyStoreFile given, generating...");
+                loader = new KeyStoreLoader().load(securityTempDir.resolve("client-cert.pfx"));
+            } else {
+                logger.debug("KeyStoreFile {} given, loading or generating there...", this.keyStoreFile);
+                loader = new KeyStoreLoader().load(Paths.get(keyStoreFile));
+            }
         } catch (Exception e) {
             throw new PlcConnectionException("Unable to load Security!", e);
         }
 
-        SecurityPolicy securityPolicy = SecurityPolicy.None;
-
+        // Make Security Configurable
         logger.info("Using endpoint: {} [{}/{}]",
-            endpoint.getEndpointUrl(), securityPolicy, endpoint.getSecurityMode());
+            endpoint.getEndpointUrl(), getSecurityPolicy(), endpoint.getSecurityMode());
         // End Security
 
         if (this.skipDiscovery) {
@@ -277,8 +285,9 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
         OpcUaClientConfig config = OpcUaClientConfig.builder()
             .setApplicationName(LocalizedText.english("eclipse milo opc-ua client of the apache PLC4X:PLC4J project"))
-            .setApplicationUri("urn:eclipse:milo:plc4x:client")
+            .setApplicationUri("urn:plc4x-client")
             .setCertificate(loader.getClientCertificate())
+            .setKeyPair(loader.getClientKeyPair())
             .setEndpoint(endpoint)
             .setIdentityProvider(getIdentityProvider())
             .setRequestTimeout(UInteger.valueOf(requestTimeout))
@@ -297,6 +306,22 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage(), e);
         }
     }
+
+//    private X509Certificate getClientCertificate(KeyStoreLoader loader) {
+//        if (this.certFile != null) {
+//            Path path = null;
+//            try {
+//                path = Paths.get(this.certFile);
+//                final X509Certificate x509Certificate = CertificateUtil.decodeCertificate(Files.readAllBytes(path));
+//                logger.info("Using Certificate given by certFile as Client Certificate");
+//                return x509Certificate;
+//            } catch (UaException | IOException e) {
+//                logger.warn("Unable to load given Certificate File {}", path != null ? path.toAbsolutePath().toString() : this.certFile, e);
+//            }
+//        }
+//        logger.info("Using self signed generated Client Certificate");
+//        return loader.getClientCertificate();
+//    }
 
     @Override
     public boolean isConnected() {
@@ -545,7 +570,13 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     }
 
     private SecurityPolicy getSecurityPolicy() {
-        return SecurityPolicy.None;
+        if (this.securityPolicy == null) {
+            logger.debug("No Security Policy given, using default NONE");
+            return SecurityPolicy.None;
+        } else {
+            logger.debug("Using given SecurityPolicy {}", this.securityPolicy);
+            return this.securityPolicy;
+        }
     }
 
     private IdentityProvider getIdentityProvider() {
@@ -553,18 +584,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             if (this.password == null) {
                 throw new PlcRuntimeException("Username given, but no password. Please Add password by providing &password=");
             }
-            logger.info("Username {} is given and password {}, using Basic Auth now", this.username, this.password);
+            logger.debug("Username {} is given and password {}, using Basic Auth now", this.username, this.password);
             return new UsernameProvider(this.username, this.password);
-//        } else if (this.certFile != null) {
-//            logger.info("Using Certificate Path {}", this.certFile);
-//            try {
-//                final X509Certificate x509Certificate = CertificateUtil.decodeCertificate(Files.readAllBytes(new File(this.certFile).toPath()));
-//                return new X509IdentityProvider(x509Certificate);
-//            } catch (UaException | IOException e) {
-//                throw new PlcRuntimeException("Unable to load or decode Cert with path " + this.certFile);
-//            }
         } else {
-            logger.info("No username / password is given, using anonymous access");
+            logger.debug("No username / password is given, using anonymous access");
             return new AnonymousProvider();
         }
     }
