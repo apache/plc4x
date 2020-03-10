@@ -272,11 +272,10 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             final RecvByteBufAllocator.Handle allocHandle = recvBufAllocHandle();
             allocHandle.reset(config);
 
-            ByteBuf byteBuf = null;
             boolean close = false;
             try {
                 do {
-                    byteBuf = allocHandle.allocate(allocator);
+                    ByteBuf byteBuf = allocHandle.allocate(allocator);
                     allocHandle.lastBytesRead(doReadBytes(byteBuf));
                     if (allocHandle.lastBytesRead() <= 0) {
                         // nothing was read. release the buffer.
@@ -293,7 +292,6 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                     allocHandle.incMessagesRead(1);
                     readPending = false;
                     pipeline.fireChannelRead(byteBuf);
-                    byteBuf = null;
                 } while (allocHandle.continueReading());
 
                 allocHandle.readComplete();
@@ -306,6 +304,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             } catch (Throwable t) {
                 // TODO
                 // handleReadException(pipeline, byteBuf, t, close, allocHandle);
+                t.printStackTrace();
             } finally {
                 // Check if there is a readPending which was not processed yet.
                 // This could be for two reasons:

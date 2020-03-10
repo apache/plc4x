@@ -85,6 +85,7 @@
     [discriminator uint 8 'commandType']
     [typeSwitch 'commandType'
         ['0x00' SysexCommandExendedId
+            [array int 8 'id' count '2']
         ]
         ['0x69' SysexCommandAnalogMappingQuery
             [simple uint 8 'pin']
