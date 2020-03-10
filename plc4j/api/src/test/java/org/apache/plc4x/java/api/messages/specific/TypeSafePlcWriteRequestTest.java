@@ -20,13 +20,10 @@ package org.apache.plc4x.java.api.messages.specific;
 
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Collections;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

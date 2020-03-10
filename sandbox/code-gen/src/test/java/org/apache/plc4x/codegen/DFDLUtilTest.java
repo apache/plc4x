@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.codegen;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 

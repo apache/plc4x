@@ -21,8 +21,6 @@ package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
-import org.apache.plc4x.test.FastTests;
-import org.junit.experimental.categories.Category;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,10 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * testing valid and invalid triggerConfigStrings
@@ -89,7 +87,6 @@ class TriggerConfigurationTest {
     }
 
     @ParameterizedTest
-    @Category(FastTests.class)
     @MethodSource("validTriggerPattern")
     void testValidFieldQueryParsing(String triggerConfig,
                                     TriggerConfiguration.TriggerType triggerType,

@@ -19,9 +19,9 @@
 package org.apache.plc4x.camel;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.main.BaseMainSupport;
 import org.apache.camel.main.Main;
 import org.apache.camel.main.MainListenerSupport;
-import org.apache.camel.main.MainSupport;
 
 import java.util.Date;
 
@@ -69,13 +69,14 @@ public class ManualTest {
     public static class Events extends MainListenerSupport {
 
         @Override
-        public void afterStart(MainSupport main) {
+        public void afterStart(BaseMainSupport main) {
             System.out.println("MainExample with Camel is now started!");
         }
 
         @Override
-        public void beforeStop(MainSupport main) {
+        public void beforeStop(BaseMainSupport main) {
             System.out.println("MainExample with Camel is now being stopped!");
         }
+
     }
 }

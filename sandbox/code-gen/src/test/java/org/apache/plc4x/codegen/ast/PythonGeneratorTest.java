@@ -18,20 +18,21 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PythonGeneratorTest {
 
     public Generator generator;
     public CodeWriter writer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         this.writer = new CodeWriter(4);
         this.generator = new PythonGenerator(writer);

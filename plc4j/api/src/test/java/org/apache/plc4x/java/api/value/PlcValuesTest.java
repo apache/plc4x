@@ -19,14 +19,13 @@
 
 package org.apache.plc4x.java.api.value;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
 
 class PlcValuesTest {
 
@@ -36,7 +35,7 @@ class PlcValuesTest {
         Method declaredMethod = PlcValues.class.getDeclaredMethod("of", clazz);
         for (Object value : values) {
             Object invoke = declaredMethod.invoke(null, value);
-            assertNotNull(invoke);
+            Assertions.assertNotNull(invoke);
         }
     }
 

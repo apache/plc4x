@@ -29,7 +29,7 @@ import java.io.IOException;
 
 import static java.lang.Integer.toHexString;
 import static org.apache.commons.lang3.StringUtils.leftPad;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Assert {
 

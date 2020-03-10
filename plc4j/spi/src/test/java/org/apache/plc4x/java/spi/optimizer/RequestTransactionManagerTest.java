@@ -20,17 +20,16 @@
 package org.apache.plc4x.java.spi.optimizer;
 
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RequestTransactionManagerTest {
 
@@ -126,7 +125,6 @@ public class RequestTransactionManagerTest {
     }
 
     @Test
-    @Ignore("This test is randomly failing on Jenkins")
     @Disabled("This test is randomly failing on Jenkins")
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();

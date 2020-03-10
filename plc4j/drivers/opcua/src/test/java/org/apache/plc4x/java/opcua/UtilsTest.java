@@ -18,9 +18,10 @@
 */
 package org.apache.plc4x.java.opcua;
 
+
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  */

@@ -37,7 +37,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class Plc4XSupportedDataTypes {
 

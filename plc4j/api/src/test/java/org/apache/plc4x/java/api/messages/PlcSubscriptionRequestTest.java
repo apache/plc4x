@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.junit.Test;
-
 public class PlcSubscriptionRequestTest {
 
 /*    @Test

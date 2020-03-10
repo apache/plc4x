@@ -26,12 +26,13 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * TODO write comment
@@ -74,7 +75,7 @@ public class RawSocketChannelTest {
             // Start the client.
             PcapNetworkInterface loopbackDevice = Pcaps.findAllDevs().stream().filter(
                 PcapNetworkInterface::isLoopBack).findFirst().orElse(null);
-            Assert.assertNotNull("Couldn't find loopback device", loopbackDevice);
+            assertNotNull(loopbackDevice);
             final ChannelFuture f = bootstrap.connect(new RawSocketAddress(loopbackDevice.getName()));
             // Wait for sync
             f.sync();
