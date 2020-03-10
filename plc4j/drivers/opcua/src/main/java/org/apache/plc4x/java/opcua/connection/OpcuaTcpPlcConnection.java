@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opcua.connection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -36,6 +37,8 @@ import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
 import org.eclipse.milo.opcua.sdk.client.api.identity.IdentityProvider;
+import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
+import org.eclipse.milo.opcua.sdk.client.api.identity.X509IdentityProvider;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
@@ -49,15 +52,18 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.*;
+import org.eclipse.milo.opcua.stack.core.util.CertificateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -171,7 +177,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         EndpointDescription endpoint = null;
 
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, getSubPathOfParams(params))).get();
+            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, getSubPathOfParams(params) == null ? "" : getSubPathOfParams(params))).get();
             //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
             logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
@@ -288,7 +294,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             throw new PlcConnectionException("The given input values are a not valid OPC UA connection configuration [CONFIG]: " + message);
         } catch (InterruptedException | ExecutionException e) {
             isConnected = false;
-            throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
+            throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage(), e);
         }
     }
 
@@ -543,7 +549,24 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     }
 
     private IdentityProvider getIdentityProvider() {
-        return new AnonymousProvider();
+        if (this.username != null) {
+            if (this.password == null) {
+                throw new PlcRuntimeException("Username given, but no password. Please Add password by providing &password=");
+            }
+            logger.info("Username {} is given and password {}, using Basic Auth now", this.username, this.password);
+            return new UsernameProvider(this.username, this.password);
+//        } else if (this.certFile != null) {
+//            logger.info("Using Certificate Path {}", this.certFile);
+//            try {
+//                final X509Certificate x509Certificate = CertificateUtil.decodeCertificate(Files.readAllBytes(new File(this.certFile).toPath()));
+//                return new X509IdentityProvider(x509Certificate);
+//            } catch (UaException | IOException e) {
+//                throw new PlcRuntimeException("Unable to load or decode Cert with path " + this.certFile);
+//            }
+        } else {
+            logger.info("No username / password is given, using anonymous access");
+            return new AnonymousProvider();
+        }
     }
 
     private static String getSubPathOfParams(String params){

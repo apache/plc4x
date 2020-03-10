@@ -36,6 +36,9 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
 
     private static final Logger logger = LoggerFactory.getLogger(BaseOpcuaPlcConnection.class);
     protected boolean skipDiscovery = false;
+    protected String username = null;
+    protected String password = null;
+    protected String certFile;
 
     /**
      * @param params
@@ -52,6 +55,14 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                         case "discovery":
                             skipDiscovery = !Boolean.valueOf(paramValue);
                             break;
+                        case "username":
+                            username = paramValue;
+                            break;
+                        case "password":
+                            password = paramValue;
+                            break;
+                        case "certFile":
+                            certFile = paramValue;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
