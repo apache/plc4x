@@ -34,7 +34,7 @@ public class S7Field implements PlcField {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_5][S5TIME]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_5]+)(\\[(?<numElements>\\d+)])?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     //TODO: S5TIME non include;
