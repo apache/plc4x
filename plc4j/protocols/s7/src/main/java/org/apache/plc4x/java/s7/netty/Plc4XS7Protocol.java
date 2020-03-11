@@ -1280,7 +1280,7 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         // Characters & Strings
                         // -----------------------------------------
                         case CHAR: // 1 byte (8 bit)
-                            fieldItem = decodeReadResponseFixedLengthStringField(1, false, data);
+                            fieldItem = decodeReadResponseFixedLengthStringField(field.getNumElements(), false, data);
                             break;
                         case WCHAR: // 2 byte
                             fieldItem = decodeReadResponseFixedLengthStringField(1, true, data);
