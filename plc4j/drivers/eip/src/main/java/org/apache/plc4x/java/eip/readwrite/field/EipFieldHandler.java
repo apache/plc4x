@@ -26,7 +26,10 @@ import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 public class EipFieldHandler implements PlcFieldHandler {
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        return null;
+       if(EipField.matches(fieldQuery)){
+           return EipField.of(fieldQuery);
+       }
+       else throw new PlcInvalidFieldException("Invalid field "+fieldQuery);
     }
 
     @Override

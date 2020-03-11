@@ -20,10 +20,13 @@ package org.apache.plc4x.java.examples.helloplc4x;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public class HelloPlc4x {
 
@@ -38,6 +41,9 @@ public class HelloPlc4x {
         try {
             int i=0;
             PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250?backpane=1&slot=4");
+            PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addItem("0","%counter");
+            PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
             Thread.sleep(2000);
             connection.close();
 

@@ -37,6 +37,7 @@ import java.util.function.ToIntFunction;
 @Component(service = PlcDriver.class, immediate = true)
 public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     public static final int PORT = 44818;
+    private static final int CONNECTION_PKT=4;
     @Override
     public String getProtocolCode() {
         return "eip";
@@ -86,7 +87,9 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second byte for the size and the add the header size 24
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
+
+                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
+                return size;
             }
             return -1;
         }

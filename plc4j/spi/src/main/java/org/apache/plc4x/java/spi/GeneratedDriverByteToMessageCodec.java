@@ -68,7 +68,6 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
             // Read the packet data into a new ReadBuffer
             byte[] bytes = new byte[packetSize];
             byteBuf.readBytes(bytes);
-            System.out.println();
             ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
 
             try {

@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,24 +26,19 @@ import java.util.regex.Pattern;
 public class EipField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_]+):(?<dataType>[a-zA-Z_]+)/(?<backplane>[1-9])/(?<slot>[1-6])");
+        Pattern.compile("^%(?<tag>[a-zA-Z_]+)");
 
     private static final String TAG="tag";
-    private static final String DATATYPE="dataType";
-    private static final String BACKPLANE="backplane";
-    private static final String SLOT="slot";
 
 
     private final String tag;
-    private final CIPDataTypeCode dataType;
-    private final short backplane;
-    private final short slot;
 
-    public EipField(String tag, CIPDataTypeCode dataType, short backplane, short slot) {
+    public String getTag() {
+        return tag;
+    }
+
+    public EipField(String tag) {
         this.tag = tag;
-        this.dataType = dataType;
-        this.backplane = backplane;
-        this.slot = slot;
     }
 
     public static boolean matches(String fieldQuery){
@@ -55,11 +49,7 @@ public class EipField implements PlcField {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()){
             String tag = matcher.group(TAG);
-            CIPDataTypeCode type = CIPDataTypeCode.valueOf(matcher.group(DATATYPE));
-            short backplane = Short.parseShort(matcher.group(BACKPLANE));
-            short slot = Short.parseShort(matcher.group(SLOT));
-
-            return new EipField(tag, type,backplane,slot);
+            return new EipField(tag);
         }
         return null;
     }
