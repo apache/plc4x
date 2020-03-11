@@ -37,10 +37,7 @@ import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldDigital;
 import org.apache.plc4x.java.firmata.readwrite.model.FirmataSubscriptionHandle;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
@@ -92,7 +89,23 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
-        return null;
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        try {
+            final List<FirmataMessage> firmataMessages =
+                ((FirmataDriverContext) getDriverContext()).processWriteRequest(writeRequest);
+            for (FirmataMessage firmataMessage : firmataMessages) {
+                context.sendToWire(firmataMessage);
+            }
+            // There's unfortunately no ack response :-(
+            Map<String, PlcResponseCode> result = new HashMap<>();
+            for (String fieldName : writeRequest.getFieldNames()) {
+                result.put(fieldName, PlcResponseCode.OK);
+            }
+            future.complete(new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, result));
+        } catch (PlcRuntimeException e) {
+            future.completeExceptionally(e);
+        }
+        return future;
     }
 
     @Override
