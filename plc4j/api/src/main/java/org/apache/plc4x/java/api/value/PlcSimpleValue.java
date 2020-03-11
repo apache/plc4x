@@ -54,4 +54,17 @@ public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
         return isNullable && value == null;
     }
 
+    /**
+     * Convenience method to simplify accessing items with a list syntax.
+     * @param i item number
+     * @return if i == 0 returns itself, otherwise throws an exception.
+     */
+    @Override
+    public PlcValue getIndex(int i) {
+        if(i == 0) {
+            return this;
+        }
+        return super.getIndex(i);
+    }
+
 }
