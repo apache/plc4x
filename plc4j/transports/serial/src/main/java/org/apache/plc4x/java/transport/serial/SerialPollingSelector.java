@@ -117,7 +117,7 @@ class SerialPollingSelector extends AbstractSelector {
 
     @Override
     public int select() {
-        throw new NotImplementedException("");
+        return select(0);
     }
 
     @Override
@@ -132,7 +132,7 @@ class SerialPollingSelector extends AbstractSelector {
         this.events.add(event);
         // Add the OP to the SelectionKey
         ((SerialSelectionKey) event.key).addReadyOp(event.event);
-        // Close the future so that the select is fired imediatly
+        // Close the future so that the select is fired immediately
         if (!selectPromise.isDone()) {
             selectPromise.setSuccess(null);
         } else {

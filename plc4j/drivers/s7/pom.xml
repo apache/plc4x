@@ -51,6 +51,36 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+        <version>4.2.8</version>
+        <executions>
+          <execution>
+            <id>generate-feature-xml</id>
+            <phase>compile</phase>
+            <goals>
+              <!-- Generate the feature.xml -->
+              <goal>features-generate-descriptor</goal>
+              <!-- Check the feature.xml -->
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+            </configuration>
+          </execution>
+          <execution>
+            <id>build-kar</id>
+            <phase>package</phase>
+            <goals>
+              <!--
+                Build a kar archive (Jar containing the feature.xml
+                as well as the module content and it's dependencies.
+              -->
+              <goal>kar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
