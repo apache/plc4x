@@ -52,9 +52,8 @@
        ['0xCC' CipReadResponse
             [reserved   uint            16   '0x0000']
             [simple     uint            8   'status']
-            [simple     uint            8   'extStatus']
-            [simple     uint            16   'dataType']
-            [array      int             8   'data'  length  'dataType']
+            [enum     CIPDataTypeCode   'dataType']
+            [array      int             8   'data'  length  'dataType.size']
         ]
         ['0x0052'   CipUnconnectedRequest
             [reserved   uint    8   '0x02']
@@ -89,7 +88,7 @@
     [simple uint    16  'size']
 ]
 
-[enum int   16   'CIPDataTypeCode' [uint 8  'size']
+[enum uint   16   'CIPDataTypeCode' [uint 8  'size']
     ['0X00C1'   BOOL            ['1']]
     ['0X00CA'   REAL            ['4']]
     ['0X00C4'   DINT            ['4']]

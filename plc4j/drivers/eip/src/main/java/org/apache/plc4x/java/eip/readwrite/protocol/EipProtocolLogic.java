@@ -33,6 +33,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
+import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -206,19 +207,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             code = PlcResponseCode.INTERNAL_ERROR;
         }
         PlcValue plcValue = null;
+        CIPDataTypeCode type = p.getDataType();
         ByteBuf data = Unpooled.wrappedBuffer(p.getData());
         if (code == PlcResponseCode.OK) {
-            plcValue = parsePlcValue(field, data);
+            plcValue = parsePlcValue(field, data, type);
         }
         Pair<PlcResponseCode,PlcValue> result = new ImmutablePair<>(code,plcValue);
         values.put(fieldName,result);
         return new DefaultPlcReadResponse(readRequest,values);
     }
 
-    private PlcValue parsePlcValue(EipField field, ByteBuf data) {
-        int dataType = data.getShort(0);
-        switch( dataType){
-            case 0xC4: return new PlcInteger(data.getInt(0));
+    private PlcValue parsePlcValue(EipField field, ByteBuf data, CIPDataTypeCode type) {
+        switch( type){
+            case DINT: return new PlcInteger(Integer.reverseBytes(data.getInt(0)));
             default:
                 return null;
         }
