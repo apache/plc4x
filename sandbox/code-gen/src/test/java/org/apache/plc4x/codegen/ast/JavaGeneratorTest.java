@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public class JavaGeneratorTest {
     private JavaGenerator generator;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         writer = new CodeWriter(4);
         generator = new JavaGenerator(writer);
     }

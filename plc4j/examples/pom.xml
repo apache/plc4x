@@ -94,6 +94,7 @@
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
             <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -155,6 +156,12 @@
       <version>0.7.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency-->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-firmata</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>

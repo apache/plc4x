@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.codegen.ast;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public class PythonGeneratorTest {
     public CodeWriter writer;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         this.writer = new CodeWriter(4);
         this.generator = new PythonGenerator(writer);
     }

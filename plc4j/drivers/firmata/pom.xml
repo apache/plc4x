@@ -21,14 +21,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.sandbox</groupId>
-    <artifactId>plc4x-sandbox</artifactId>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-drivers</artifactId>
     <version>0.7.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-java-firmata-driver</artifactId>
-
-  <name>Sandbox: Test Generated Firmata Driver</name>
+  <artifactId>plc4j-driver-firmata</artifactId>
+  <name>PLC4J: Driver: Firmata</name>
 
   <build>
     <plugins>
@@ -49,6 +48,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>com.github.purejavacomm:purejavacomm</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-protocols-firmata</usedDependency>
+          </usedDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -84,30 +94,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.github.purejavacomm</groupId>
       <artifactId>purejavacomm</artifactId>
       <version>1.0.2.RELEASE</version>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <version>1.7.25</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
     </dependency>
 
     <dependency>
@@ -121,11 +112,6 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
       <version>0.7.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
       <scope>test</scope>
     </dependency>
 

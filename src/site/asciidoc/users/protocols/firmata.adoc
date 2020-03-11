@@ -57,11 +57,11 @@ This driver is built to be compatible with the `StandardFirmata Arduino Sketch` 
 
 |
 | `write`
-|
+| Writing is only supported to digital addresses.
 
 |
 | `subscribe`
-|
+| Reading is supported for both digital and analog addresses. See `note` after this table however.
 
 3+|Options
 
@@ -84,11 +84,11 @@ digital:{start-address}[{array-size}]:{special-config}
 ----
 
 The `start-address` and `array-size` are simple integer values.
-`special-config` can be used to fonfigure the digital input pin to something else than `INPUT`.
+`special-config` can be used to configure the digital input pin to something else than `INPUT`.
 
 Currently the only supported option is `PULLUP` which configured the Arduino's digital input pin to use it's built in pullup-resistor.
 
-Both the `array-size` as well as the `special-config` parts are optional. So the fillowing addresses would also be valid:
+Both the `array-size` as well as the `special-config` parts are optional. So the following example addresses are valid:
 
 ----
 digital:4
@@ -102,3 +102,19 @@ WARNING: However in case of using the serial port (which will always be the case
 
 ==== Analog Addresses
 
+The full format for an analog address is as follows:
+
+----
+analog:{start-address}[{array-size}]
+----
+
+The `start-address` and `array-size` are simple integer values.
+
+Both the `array-size` is optional. So the following example addresses are valid:
+
+----
+analog:1
+analog:2[3]
+----
+
+A normal `Arduino Uno` is equipped with 6 analog inputs: 0-5

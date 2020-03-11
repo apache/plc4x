@@ -62,6 +62,7 @@
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
         <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
+        <item name="Firmata" href="users/protocols/firmata.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Modbus (TCP/Serial)" href="users/protocols/modbus.html"/>
         <item name="OPC UA" href="users/protocols/opc-ua.html"/>
