@@ -117,7 +117,7 @@ class SerialPollingSelector extends AbstractSelector {
 
     @Override
     public int select() {
-        return select(0);
+        return select(10);
     }
 
     @Override
