@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.slf4j.LoggerFactory;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -91,7 +92,12 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         final String transportCode = (matcher.group("transportCode") != null) ?
             matcher.group("transportCode") : getDefaultTransport();
         final String transportConfig = matcher.group("transportConfig");
-        final String paramString = matcher.group("paramString");
+        LoggerFactory.getLogger(GeneratedDriverBase.class).info("Transport config {}",transportConfig);
+        String paramString = matcher.group("paramString");
+        if(paramString.contains("?")){
+            paramString=paramString.split("\\?")[0];
+        }
+        LoggerFactory.getLogger(GeneratedDriverBase.class).info("Param String {}",paramString);
         // Check if the protocol code matches this driver.
         if(!protocolCode.equals(getProtocolCode())) {
             // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.

@@ -130,10 +130,10 @@ public class StaticHelper {
         final double v = toFloat(io, true, 8, 23);
         System.out.println(v);*/
 
-        final byte[] bytes = Hex.decodeHex("0C65");
-        ReadBuffer io = new ReadBuffer(bytes);
-        final double v = toFloat(io, true, 4, 11);
-        System.out.println(v);
+        final byte[] bytes = Hex.decodeHex("0002");
+        ReadBuffer io = new ReadBuffer(bytes,false);
+
+        System.out.println(io.readShort(16));
     }
 
 }

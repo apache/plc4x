@@ -54,7 +54,7 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
     public ChannelFactory createChannelFactory(String transportConfig) {
         final Matcher matcher = TRANSPORT_TCP_PATTERN.matcher(transportConfig);
         if(!matcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for TCP transport");
+            throw new PlcRuntimeException("Invalid url for TCP transport "+transportConfig);
         }
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");

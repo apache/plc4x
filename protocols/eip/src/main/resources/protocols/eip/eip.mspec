@@ -42,50 +42,60 @@
             ]
         ]
 ]
-[discriminatedType  'CipExchange'
+[type  'CipExchange'
     [const          uint        16      'itemCount'           '0x0002']     //2 items
     [const          uint        32      'nullPtr'             '0x0']          //NullPointerAddress
     [const          uint        16      'UnconnectedData'     '0x00B2']   //Connection Manager
     [implicit       uint        16      'size'                'lengthInBytes - 8 - 2'] //remove fields above and routing
-    [discriminator  uint        8       'CipServiceCode']
-    [typeSwitch 'CipServiceCode'
-       ['0xCC' CipReadResponse
-            [reserved   uint            16   '0x0000']
-            [simple     uint            8   'status']
-            [enum     CIPDataTypeCode   'dataType']
-            [array      int             8   'data'  length  'dataType.size']
+    [simple         CipService          'service']
+]
+
+[discriminatedType  'CipService'
+    [discriminator  uint    8   'service']
+    [typeSwitch 'service'
+        ['0x4C' CipReadRequest
+            [simple     int     8   'RequestPathSize']
+            [array      int     8   'tag'   length  '(RequestPathSize*2)']
+            [simple     uint    16  'elementNb']
+        ]
+        ['0xCC' CipReadResponse
+              [reserved   uint            8   '0x00']
+              [simple     uint            8   'status']
+              [simple     uint            8   'extStatus']
+              [enum     CIPDataTypeCode   'dataType']
+              [array      int             8   'data'  length  'dataType.size']
+        ]
+        ['0x0A' MultipleServiceRequest
+               [const  int     8   'RequestPathSize'   '0x02']
+               [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
+               [simple Services  'data']
+        ]
+        ['0x8A' MultipleServiceResponse
+               [reserved   uint    8   '0x0']
+               [simple     uint    8   'status']
+               [simple     uint    8   'extStatus']
+               [simple     Services    'data']
         ]
         ['0x0052'   CipUnconnectedRequest
-            [reserved   uint    8   '0x02']
-            [reserved   uint    8   '0x20']   // setRequestPathLogicalClassSegment
-            [reserved   uint    8   '0x06']   // set request class path
-            [reserved   uint    8   '0x24']   // setRequestPathLogicalInstanceSegment
-            [reserved   uint    8   '0x01']   // setRequestPathInstance
-            [reserved   uint    16  '0x9D05']   //Timeout 5s
-            [simple     CipService  'service']
+               [reserved   uint    8   '0x02']
+               [reserved   uint    8   '0x20']   // setRequestPathLogicalClassSegment
+               [reserved   uint    8   '0x06']   // set request class path
+               [reserved   uint    8   '0x24']   // setRequestPathLogicalInstanceSegment
+               [reserved   uint    8   '0x01']   // setRequestPathInstance
+               [reserved   uint    16  '0x9D05']   //Timeout 5s
+               [implicit   uint    16   'messageSize'   'lengthInBytes - 10 - 4']   //substract above and routing
+               [simple     CipService  'service']
+               [const      uint    16  'route' '0x0001']
+               [simple     int     8   'backPlane']
+               [simple     int     8   'slot']
         ]
     ]
 ]
 
-[discriminatedType  'CipService'
-    [implicit       uint    16   'messageSize'   'lengthInBytes - 4 - 2']   //substract messageSize and routing
-    [discriminator  uint    8   'service']
-    [typeSwitch 'service'
-            ['0x4C' CipReadRequest
-                [simple     int     8   'RequestPathSize']
-                [array      int     8   'tag'   length  '(RequestPathSize*2)']
-                [simple     uint    16  'elementNb']
-                [const      uint    16  'route' '0x0001']
-                [simple     int     8   'backPlane']
-                [simple     int     8   'slot']
-            ]
-        ]
-]
-
-
-[type 'CipItem'
-    [simple uint    16  'typeID']
-    [simple uint    16  'size']
+[type   'Services'
+    [simple uint    16  'serviceNb']
+    [array  uint    16  'offsets'       count  'serviceNb']
+    [array  CipService  'services'      count  'serviceNb']
 ]
 
 [enum uint   16   'CIPDataTypeCode' [uint 8  'size']

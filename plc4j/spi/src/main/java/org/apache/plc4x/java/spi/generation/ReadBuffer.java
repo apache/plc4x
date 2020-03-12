@@ -33,7 +33,7 @@ public class ReadBuffer {
     private final long totalBytes;
 
     public ReadBuffer(byte[] input) {
-        this(input, false);
+        this(input, true);
     }
 
     public ReadBuffer(byte[] input, boolean littleEndian) {

@@ -46,9 +46,11 @@ public class HelloPlc4x {
             while (true) {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addItem("0", "%counter");
+                builder.addItem("1", "%test_dint");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
                 logger.info("Got value {} with code {} ",response.getInteger("0"),response.getResponseCode("0"));
-                Thread.sleep(100);
+                logger.info("Got value {} with code {} ",response.getInteger("1"),response.getResponseCode("1"));
+                Thread.sleep(1000);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

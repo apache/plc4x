@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcInteger;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -48,8 +49,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -105,19 +105,18 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-        String field = readRequest.getFieldNames().iterator().next();
-        //TODO adapt mpec to everything is generated in CipReadRequest
-        // and does not have to be created seperately
-        //  Handle multiple fields
-        EipField plcField = (EipField) readRequest.getField(field);
-        String tag = plcField.getTag();
+        List<CipReadRequest> requests = new ArrayList<>(request.getNumberOfFields());
+        for(PlcField field : request.getFields()) {
+            EipField plcField = (EipField) field;
+            String tag = plcField.getTag();
 
-        //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
-        // Taking half to get word size
-        byte requestPathSize = (byte)((tag.length()+2+(tag.length()%2)) / 2);
-        CipReadRequest req = new CipReadRequest(requestPathSize,toAnsi(tag),1,(byte)1,(byte)4);
-
-        return toPlcReadResponse((InternalPlcReadRequest)readRequest, readInternal(req));
+            //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
+            // Taking half to get word size
+            byte requestPathSize = (byte) ((tag.length() + 2 + (tag.length() % 2)) / 2);
+            CipReadRequest req = new CipReadRequest(requestPathSize, toAnsi(tag), 1);
+            requests.add(req);
+        }
+        return toPlcReadResponse((InternalPlcReadRequest)readRequest, readInternal(requests));
     }
 
     private byte[] toAnsi(String tag){
@@ -160,60 +159,129 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         return buffer.array();
     }
 
-    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<CipReadResponse> response) {
+    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<CipService> response) {
         return response
             .thenApply(p -> {
                 try {
-                    return ((PlcReadResponse) decodeReadResponse(p, readRequest));
+                        return ((PlcReadResponse) decodeReadResponse(p, readRequest));
+
                 } catch (PlcProtocolException e) {
                     throw new PlcRuntimeException("Unable to decode Response", e);
                 }
             });
     }
-    private CompletableFuture<CipReadResponse> readInternal(CipReadRequest request) {
+    private CompletableFuture<CipService> readInternal(List<CipReadRequest> request) {
         //TODO check if this is right
-        CompletableFuture<CipReadResponse> future = new CompletableFuture<>();
+        CompletableFuture<CipService> future = new CompletableFuture<>();
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        CipUnconnectedRequest exchange = new CipUnconnectedRequest(request);
-        CipRRData rrData = new CipRRData(sessionHandle,0L,emptySenderContext,0L,exchange);
-        transaction.submit(() -> context.sendRequest(rrData)
-            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
-            .check( p -> p  instanceof CipRRData)
-            .check( p -> p.getSessionHandle()==sessionHandle)
-            .unwrap(p ->(CipRRData) p)
-            .unwrap(p -> p.getExchange()).check(p -> p instanceof CipReadResponse)
-            .unwrap(p -> (CipReadResponse) p)
-            .handle(p -> {
-                future.complete(p);
-                // Finish the request-transaction.
-                transaction.endRequest();
-            }));
-        return future;
+        if(request.size()>1){
 
+            short nb =(short) request.size();
+            int[] offsets = new int[nb];
+            int offset = 2 + nb*2;
+            for(int i = 0; i < nb ; i++){
+                offsets[i]=offset;
+                offset+=request.get(i).getLengthInBytes();
+            }
+
+            CipService[] serviceArr = new CipService[nb];
+            for(int i = 0; i < nb ; i++){
+                serviceArr[i]=request.get(i);
+            }
+            Services data = new Services(nb,offsets,serviceArr);
+            //Encapsulate the data
+            CipRRData rrData = new CipRRData(sessionHandle,0L,emptySenderContext,0L,
+                new CipExchange(
+                    new CipUnconnectedRequest(
+                        new MultipleServiceRequest(data),(byte)configuration.getBackplane(),(byte)configuration.getSlot())));
+
+            transaction.submit(() -> context.sendRequest(rrData)
+                .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getSessionHandle() == sessionHandle)
+                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof MultipleServiceResponse)
+                .unwrap(p -> (MultipleServiceResponse) p)
+                .check(p -> p.getData().getServiceNb() == nb)
+                .handle(p -> {
+                    future.complete(p);
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+                }));
+        }
+        else if(request.size()==1) {
+            CipExchange exchange = new CipExchange(new CipUnconnectedRequest(request.get(0),(byte)configuration.getBackplane(),(byte)configuration.getSlot()));
+            CipRRData rrData = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L, exchange);
+            transaction.submit(() -> context.sendRequest(rrData)
+                .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getSessionHandle() == sessionHandle)
+                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof CipReadResponse)
+                .unwrap(p -> (CipReadResponse) p)
+                .handle(p -> {
+                    future.complete(p);
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+                }));
+        }
+        return future;
     }
-    private PlcResponse decodeReadResponse(CipReadResponse p, InternalPlcReadRequest readRequest) throws PlcProtocolException {
+    private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) throws PlcProtocolException {
         //TODO Check if this is right
         Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
         // only 1 field
-        String fieldName = readRequest.getFieldNames().iterator().next();
-        EipField field  = (EipField)readRequest.getField(fieldName);
-        PlcResponseCode code;
-        if(p.getStatus()==0){
-            code = PlcResponseCode.OK;
+        if(p instanceof CipReadResponse) {
+            CipReadResponse resp = (CipReadResponse)p;
+            String fieldName = readRequest.getFieldNames().iterator().next();
+            EipField field = (EipField) readRequest.getField(fieldName);
+            PlcResponseCode code;
+            if (resp.getStatus() == 0) {
+                code = PlcResponseCode.OK;
+            } else {
+                code = PlcResponseCode.INTERNAL_ERROR;
+            }
+            PlcValue plcValue = null;
+            CIPDataTypeCode type = resp.getDataType();
+            ByteBuf data = Unpooled.wrappedBuffer(resp.getData());
+            if (code == PlcResponseCode.OK) {
+                plcValue = parsePlcValue(field, data, type);
+            }
+            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(code, plcValue);
+            values.put(fieldName, result);
         }
-        else{
-            code = PlcResponseCode.INTERNAL_ERROR;
+        //Multiple response
+        else if(p instanceof MultipleServiceResponse && ((MultipleServiceResponse) p).getStatus()==0){
+            MultipleServiceResponse responses = (MultipleServiceResponse)p;
+            Services services = responses.getData();
+            int nb = services.getServiceNb();
+            Iterator<String> it = readRequest.getFieldNames().iterator();
+            for(int i = 0; i<nb && it.hasNext() ; i++){
+                String fieldName = it.next();
+                EipField field = (EipField) readRequest.getField(fieldName);
+                PlcValue plcValue = null;
+                if(services.getServices()[i] instanceof CipReadResponse){
+                    CipReadResponse readResponse = (CipReadResponse)services.getServices()[i];
+                    PlcResponseCode code;
+                    if (readResponse.getStatus() == 0) {
+                        code = PlcResponseCode.OK;
+                    } else {
+                        code = PlcResponseCode.INTERNAL_ERROR;
+                    }
+                    CIPDataTypeCode type = readResponse.getDataType();
+                    ByteBuf data = Unpooled.wrappedBuffer(readResponse.getData());
+                    if (code == PlcResponseCode.OK) {
+                        plcValue = parsePlcValue(field, data, type);
+                    }
+                    Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(code, plcValue);
+                    values.put(fieldName, result);
+                }
+            }
         }
-        PlcValue plcValue = null;
-        CIPDataTypeCode type = p.getDataType();
-        ByteBuf data = Unpooled.wrappedBuffer(p.getData());
-        if (code == PlcResponseCode.OK) {
-            plcValue = parsePlcValue(field, data, type);
-        }
-        Pair<PlcResponseCode,PlcValue> result = new ImmutablePair<>(code,plcValue);
-        values.put(fieldName,result);
         return new DefaultPlcReadResponse(readRequest,values);
     }
 

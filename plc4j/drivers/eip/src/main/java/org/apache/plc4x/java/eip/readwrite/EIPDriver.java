@@ -78,6 +78,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacketIO.class)
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .littleEndian()
             .build();
     }
 
@@ -86,8 +87,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
-                //Second byte for the size and the add the header size 24
-
+                //Second byte for the size and then add the header size 24
                 int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+1)+24;
                 return size;
             }
