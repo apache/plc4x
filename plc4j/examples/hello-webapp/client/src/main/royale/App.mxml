@@ -53,7 +53,6 @@
         import mx.messaging.ChannelSet;
         import mx.messaging.channels.AMFChannel;
         import org.apache.royale.events.Event;
-        import utils.DynamicChannelSet;
 
         private var consumer:Consumer;
         private var channelSet:ChannelSet;
@@ -94,15 +93,6 @@
             var appurl:String = window.location.href;
             appurl = appurl.substring(0, appurl.lastIndexOf("/"));
             return appurl;
-        }
-
-        public static function createChannelSet():ChannelSet{
-            const channelSet:DynamicChannelSet =  new DynamicChannelSet();
-            channelSet.endPointName = "messagebroker/short-polling-amf";
-            channelSet.channelId= "shortPollingAmf";
-            channelSet.useSmallMessages = true;
-            channelSet.initialize();
-            return channelSet;
         }
 
         private function handleSubscriptionResult(event:MessageAckEvent):void {
