@@ -17,12 +17,12 @@
 
 == Download
 
-Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://www.apache.org/dist/plc4x/KEYS[KEYS] for any Apache release.
+Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://downloads.apache.org/plc4x/KEYS[KEYS] for any Apache release.
 
 === Current Releases
 
 [#release-0.6.0]
-==== 0.6.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip[source release] [ https://www.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.asc[ASC] ]
+==== 0.6.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.asc[ASC] ]
 
 This is the last release of PLC4X with the "handwritten" drivers.
 This Minor release will thus receive updates and fixes until
@@ -34,7 +34,7 @@ as the critical (memory leak) bug PLC4X-163 is fixed.
 ===== New Features
 
 - PLC4X-168 A shorter S7 Field Syntax is Introduced.
-This release contains no furter features and mostly stabilization.
+This release contains no further features and mostly stabilization.
 
 ===== Incompatible changes
 
