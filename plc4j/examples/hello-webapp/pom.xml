@@ -32,13 +32,12 @@
   <packaging>pom</packaging>
 
   <properties>
-    <royale.version>0.9.4</royale.version>
-    <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+    <royale.version>0.9.7-SNAPSHOT</royale.version>
+    <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
   </properties>
 
   <modules>
     <module>client</module>
-    <module>service</module>
     <module>webapp</module>
   </modules>
 

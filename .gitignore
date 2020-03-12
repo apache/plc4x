@@ -172,3 +172,6 @@ build-iPhoneSimulator/
 
 # When running the cpp module in clion, it adds another ".idea" directory.
 /sandbox/plc4cpp/.idea/
+
+# Exclude VSCode project settings.
+.vscode/
