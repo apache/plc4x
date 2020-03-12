@@ -119,7 +119,7 @@
     <commons-cli.version>1.4</commons-cli.version>
     <commons-codec.version>1.12</commons-codec.version>
     <commons-collections4.version>4.1</commons-collections4.version>
-    <commons-configuration2.version>2.6</commons-configuration2.version>
+    <commons-configuration2.version>2.7</commons-configuration2.version>
     <commons-io.version>2.6</commons-io.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-lang3.version>3.9</commons-lang3.version>
