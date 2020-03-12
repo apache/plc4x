@@ -42,6 +42,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
+    private static final Pattern URI_PATTERN_BIS = Pattern.compile(
+        "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?/]*)(\\/(?<paramString>.*))?");
+
+
     protected abstract Class<? extends Configuration> getConfigurationType();
 
     protected boolean canRead() {
@@ -77,10 +81,11 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
         // Split up the connection string into it's individual segments.
-        Matcher matcher = URI_PATTERN.matcher(connectionString);
+        //Matcher matcher = URI_PATTERN.matcher(connectionString);
+        Matcher matcher = URI_PATTERN_BIS.matcher(connectionString);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(?{parameter-string)?'");
+                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(/{parameter-string)?'");
         }
         final String protocolCode = matcher.group("protocolCode");
         final String transportCode = (matcher.group("transportCode") != null) ?

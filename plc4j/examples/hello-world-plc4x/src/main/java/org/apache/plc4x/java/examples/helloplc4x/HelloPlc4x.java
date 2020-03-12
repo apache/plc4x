@@ -42,13 +42,13 @@ public class HelloPlc4x {
             int i=0;
             long t= System.currentTimeMillis();
             long end = t+30000;
-            PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250?backpane=1&slot=4");
+            PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250/backplane=1&slot=4");
             while (true) {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addItem("0", "%counter");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
                 logger.info("Got value {} with code {} ",response.getInteger("0"),response.getResponseCode("0"));
-                //Thread.sleep(100);
+                Thread.sleep(100);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

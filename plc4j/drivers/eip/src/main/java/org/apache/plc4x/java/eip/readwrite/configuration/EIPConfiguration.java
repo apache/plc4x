@@ -26,17 +26,17 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter
-    private int backpane;
+    private int backplane;
 
     @ConfigurationParameter
     private int slot;
 
-    public int getBackpane() {
-        return backpane;
+    public int getBackplane() {
+        return backplane;
     }
 
-    public void setBackpane(int backpane) {
-        this.backpane = backpane;
+    public void setBackplane(int backpane) {
+        this.backplane = backpane;
     }
 
     public int getSlot() {

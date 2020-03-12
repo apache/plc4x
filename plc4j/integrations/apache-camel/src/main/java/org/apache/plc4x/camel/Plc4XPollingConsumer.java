@@ -52,7 +52,6 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
-        LOGGER.info("New POLLING CONSUMER");
         this.endpoint = endpoint;
         this.dataType = endpoint.getDataType();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());

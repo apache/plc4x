@@ -56,7 +56,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @UriParam
     @Metadata(required = false)
     @SuppressWarnings("unused")
-    private Class dataType;
+    private Class dataType ;
 
     private final PlcDriverManager plcDriverManager;
     private  PlcConnection connection;
