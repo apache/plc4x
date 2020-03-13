@@ -26,12 +26,22 @@ import java.util.regex.Pattern;
 public class EipField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_]+)");
+        Pattern.compile("^%(?<tag>[a-zA-Z_]+\\[?[0-9]*\\]?):?(?<elementNb>[0-9]*)");
 
     private static final String TAG="tag";
+    private static final String ELEMENTS="elementNb";
 
 
     private final String tag;
+    private int  elementNb;
+
+    public int getElementNb() {
+        return elementNb;
+    }
+
+    public void setElementNb(int elementNb) {
+        this.elementNb = elementNb;
+    }
 
     public String getTag() {
         return tag;
@@ -39,6 +49,11 @@ public class EipField implements PlcField {
 
     public EipField(String tag) {
         this.tag = tag;
+    }
+
+    public EipField(String tag, int elementNb) {
+        this.tag = tag;
+        this.elementNb = elementNb;
     }
 
     public static boolean matches(String fieldQuery){
@@ -49,7 +64,16 @@ public class EipField implements PlcField {
         Matcher matcher = ADDRESS_PATTERN.matcher(fieldString);
         if(matcher.matches()){
             String tag = matcher.group(TAG);
-            return new EipField(tag);
+            int nb=0;
+            if(!matcher.group(ELEMENTS).isEmpty()) {
+                nb = Integer.parseInt(matcher.group(ELEMENTS));
+            }
+            if(nb!=0){
+                return new EipField(tag, nb);
+            }
+            else{
+                return new EipField(tag);
+            }
         }
         return null;
     }

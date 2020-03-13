@@ -111,22 +111,23 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            if(endpoint.getAddress().size()==1) {
-                exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
-            }
-            else{
-                List<Object> values = new ArrayList<>();
-                for(String field : plcReadResponse.getFieldNames()){
-                    values.add(plcReadResponse.getObject(field));
+            if (read.isDone()) {
+                if (endpoint.getAddress().size() == 1) {
+                    exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
+                } else {
+                    List<Object> values = new ArrayList<>();
+                    for (String field : plcReadResponse.getFieldNames()) {
+                        values.add(plcReadResponse.getObject(field));
+                    }
+                    exchange.getIn().setBody(values);
                 }
-                exchange.getIn().setBody(values);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            exchange.setException(e);
-        } catch (ExecutionException | TimeoutException e) {
-            exchange.setException(e);
-        }
+            } catch(InterruptedException e){
+                Thread.currentThread().interrupt();
+                exchange.setException(e);
+            } catch(ExecutionException | TimeoutException e){
+                exchange.setException(e);
+            }
         return exchange;
     }
 

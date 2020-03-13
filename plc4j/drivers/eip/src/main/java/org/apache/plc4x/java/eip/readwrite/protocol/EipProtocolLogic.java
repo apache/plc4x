@@ -29,8 +29,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcInteger;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
@@ -109,11 +108,22 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         for(PlcField field : request.getFields()) {
             EipField plcField = (EipField) field;
             String tag = plcField.getTag();
+            int elements = 1 ;
+            if(plcField.getElementNb()>1){
+                elements = plcField.getElementNb();
+            }
 
             //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
             // Taking half to get word size
-            byte requestPathSize = (byte) ((tag.length() + 2 + (tag.length() % 2)) / 2);
-            CipReadRequest req = new CipReadRequest(requestPathSize, toAnsi(tag), 1);
+            boolean isArray = false;
+            String tagIsolated=tag;
+            if(tag.contains("[")){
+                 isArray = true;
+                 tagIsolated = tag.substring(0, tag.indexOf("["));
+            }
+            int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2)+(isArray? 2:0));
+            byte requestPathSize = (byte) (dataLength/ 2);
+            CipReadRequest req = new CipReadRequest(requestPathSize, toAnsi(tag), elements);
             requests.add(req);
         }
         return toPlcReadResponse((InternalPlcReadRequest)readRequest, readInternal(requests));
@@ -286,11 +296,51 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     }
 
     private PlcValue parsePlcValue(EipField field, ByteBuf data, CIPDataTypeCode type) {
-        switch( type){
-            case DINT: return new PlcInteger(Integer.reverseBytes(data.getInt(0)));
-            default:
-                return null;
+        int nb = field.getElementNb();
+        if(nb>1){
+            int index =0;
+            List<PlcValue> list = new ArrayList<>();
+            for(int i=0 ; i < nb ; i++){
+                switch(type){
+                    case DINT:
+                    case INT:
+                    case SINT:
+                        list.add(new PlcInteger(Integer.reverseBytes(data.getInt(index))));
+                        index+= type.getSize();
+                        break;
+                    case REAL:
+                        list.add(new PlcFloat(data.getFloat(index)));
+                        index+= type.getSize();
+                        break;
+                    default:
+                        return null;
+                }
+            }
+            return new PlcList(list);
         }
+        else {
+            switch (type) {
+                case SINT:
+                    return new PlcByte(data.getByte(0));
+                case INT:
+                    return new PlcInteger(Short.reverseBytes(data.getShort(0)));
+                case DINT:
+                    return new PlcInteger(Integer.reverseBytes(data.getInt(0)));
+                case REAL:
+                    return new PlcDouble(swap(data.getFloat(0)));
+                default:
+                    return null;
+            }
+        }
+    }
+
+    public float swap(float value){
+        int bytes = Float.floatToIntBits(value);
+        int b1 = (bytes >>  0) & 0xff;
+        int b2 = (bytes >>  8) & 0xff;
+        int b3 = (bytes >> 16) & 0xff;
+        int b4 = (bytes >> 24) & 0xff;
+        return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0);
     }
 
 

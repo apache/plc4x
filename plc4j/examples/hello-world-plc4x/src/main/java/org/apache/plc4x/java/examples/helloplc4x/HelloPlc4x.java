@@ -39,17 +39,18 @@ public class HelloPlc4x {
      */
     public static void main(String[] args) throws Exception {
         try {
-            int i=0;
             long t= System.currentTimeMillis();
             long end = t+30000;
             PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250/backplane=1&slot=4");
             while (true) {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                builder.addItem("0", "%counter");
-                builder.addItem("1", "%test_dint");
+                for(int i = 0 ; i<1; i++){
+                    builder.addItem("Array["+i+"]", "%testLargeRealArray["+i+"]");
+                }
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
-                logger.info("Got value {} with code {} ",response.getInteger("0"),response.getResponseCode("0"));
-                logger.info("Got value {} with code {} ",response.getInteger("1"),response.getResponseCode("1"));
+                for(String field : response.getFieldNames()){
+                    logger.info("{} : {}",field,response.getObject(field));
+                }
                 Thread.sleep(1000);
             }
         } catch (Exception ex) {

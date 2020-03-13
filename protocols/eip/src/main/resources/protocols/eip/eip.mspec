@@ -62,7 +62,7 @@
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
-              [enum     CIPDataTypeCode   'dataType']
+              [enum       CIPDataTypeCode   'dataType']
               [array      int             8   'data'  length  'dataType.size']
         ]
         ['0x0A' MultipleServiceRequest
@@ -94,7 +94,7 @@
 
 [type   'Services'
     [simple uint    16  'serviceNb']
-    [array  uint    16  'offsets'       count  'serviceNb']
+    [array  uint        16  'offsets'       count  'serviceNb']
     [array  CipService  'services'      count  'serviceNb']
 ]
 
