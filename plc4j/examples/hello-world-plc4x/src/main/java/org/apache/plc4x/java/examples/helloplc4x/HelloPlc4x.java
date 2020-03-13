@@ -44,9 +44,7 @@ public class HelloPlc4x {
             PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250/backplane=1&slot=4");
             while (true) {
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                for(int i = 0 ; i<1; i++){
-                    builder.addItem("Array["+i+"]", "%testLargeRealArray["+i+"]");
-                }
+                    builder.addItem("Array", "%testLargeRealArray[20]:50");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
                 for(String field : response.getFieldNames()){
                     logger.info("{} : {}",field,response.getObject(field));

@@ -309,7 +309,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
                         index+= type.getSize();
                         break;
                     case REAL:
-                        list.add(new PlcFloat(data.getFloat(index)));
+                        list.add(new PlcDouble(swap(data.getFloat(index))));
                         index+= type.getSize();
                         break;
                     default:

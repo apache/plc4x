@@ -40,7 +40,7 @@ public class ReadBuffer {
         ArrayByteInput abi = new ArrayByteInput(input);
         this.bi = new MyDefaultBitInput(abi);
         this.littleEndian = littleEndian;
-        this.totalBytes = (long) input.length * 8;
+        this.totalBytes = (long) input.length ;
     }
 
     public int getPos() {
@@ -56,6 +56,11 @@ public class ReadBuffer {
 
     public boolean hasMore(int numBits) {
         return (numBits / 8) < (totalBytes - getPos());
+    }
+
+
+    public int getRemaining() {
+        return ((int)totalBytes-getPos()-1);
     }
 
     public byte peekByte(int offset) throws ParseException {
