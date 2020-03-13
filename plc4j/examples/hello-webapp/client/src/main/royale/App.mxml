@@ -53,12 +53,21 @@
         import mx.messaging.ChannelSet;
         import mx.messaging.channels.AMFChannel;
         import org.apache.royale.events.Event;
+        import mx.logging.ILoggingTarget;
+        import mx.logging.targets.TraceTarget;
+        import mx.logging.LogEventLevel;
+        import mx.logging.Log;
 
         private var consumer:Consumer;
         private var channelSet:ChannelSet;
 
         private function init(event:Event):void {
-			var appurl:String = getApplicationBaseUrl();
+            var traceLogger:ILoggingTarget = new TraceTarget();
+            traceLogger.filters = [ "mx.rpc.*", "mx.messaging.*" ];
+            traceLogger.level = LogEventLevel.ALL;
+            Log.addTarget(traceLogger);
+
+            var appurl:String = getApplicationBaseUrl();
             trace("Application url " + appurl);
 
             channelSet = new ChannelSet();

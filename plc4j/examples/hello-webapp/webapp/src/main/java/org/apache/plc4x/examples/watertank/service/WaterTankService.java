@@ -24,6 +24,7 @@ import flex.messaging.config.NetworkSettings;
 import flex.messaging.messages.AsyncMessage;
 import flex.messaging.services.MessageService;
 import flex.messaging.util.UUIDUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -31,6 +32,10 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcShort;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -38,8 +43,13 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.time.Instant;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Service("waterTankService")
@@ -63,7 +73,7 @@ public class WaterTankService {
         createDestinations();
 
         // Connect to the remote and subscribe to the values.
-        connectToDevice();
+        connectToFakeDevice();
     }
 
     @PreDestroy
@@ -108,6 +118,27 @@ public class WaterTankService {
         } catch (ExecutionException e) {
             throw new RuntimeException("Error subscribing for data", e);
         }
+    }
+
+    protected void connectToFakeDevice() {
+        WaterLevelHandler handler = new WaterLevelHandler();
+        Thread thread = new Thread(() -> {
+            try {
+                while(true) {
+                    TimeUnit.MILLISECONDS.sleep(100);
+
+                    short value = (short) new Random().nextInt(1024);
+                    Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
+                    values.put("waterLevel", Pair.of(PlcResponseCode.OK, new PlcShort(value)));
+                    DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), values);
+
+                    handler.accept(event);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+        thread.start();
     }
 
     protected void createDestinations() {
