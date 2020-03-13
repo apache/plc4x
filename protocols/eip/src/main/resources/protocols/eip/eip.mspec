@@ -21,14 +21,17 @@
  ///EthernetIP Header of size 24
  /////////////////////////////////////////////////////////////////
 
-[discriminatedType 'EipPacket'
-    [discriminator uint 16 'command']
-    [implicit      uint 16 'len' 'lengthInBytes - 24']
+[type 'EipPacket'
+    [simple        uint 16 'command']
+    [implicit      uint 16 'len'    'lengthInBytes - 24']
     [simple        uint 32 'sessionHandle']
     [simple        uint 32 'status']
     [array         uint 8  'senderContext' count '8']
     [simple        uint 32 'options']
-    [typeSwitch 'command'
+    [simple        CipHeader    'header'    ['len','command']]
+]
+[discriminatedType 'CipHeader' [uint  16  'length', uint    16  'cipCommand']
+    [typeSwitch 'cipCommand'
             ['0x0065' EipConnectionRequest
                 [const  uint    16   'protocolVersion'   '0x01']
                 [const  uint    16   'flags'             '0x00']
@@ -38,19 +41,19 @@
             ['0x006F' CipRRData
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple CipExchange 'exchange']
+                [simple CipExchange 'exchange' ['length-6'] ]
             ]
         ]
 ]
-[type  'CipExchange'
-    [const          uint        16      'itemCount'           '0x0002']     //2 items
-    [const          uint        32      'nullPtr'             '0x0']          //NullPointerAddress
-    [const          uint        16      'UnconnectedData'     '0x00B2']   //Connection Manager
-    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2'] //remove fields above and routing
-    [simple         CipService          'service']
+[type  'CipExchange' [uint 16 'exchangeLen']
+    [const          uint        16      'itemCount'           '0x0002']
+    [const          uint        32      'nullPtr'             '0x0']
+    [const          uint        16      'UnconnectedData'     '0x00B2']
+    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2']
+    [simple         CipService          'service' ['exchangeLen - 10'] ]
 ]
 
-[discriminatedType  'CipService'
+[discriminatedType  'CipService' [uint 16 'serviceLen']
     [discriminator  uint    8   'service']
     [typeSwitch 'service'
         ['0x4C' CipReadRequest
@@ -63,18 +66,18 @@
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
               [enum       CIPDataTypeCode   'dataType']
-              [array      int             8   'data'  length  'dataType.size']
+              [array      int             8   'data'  length  'serviceLen-6']
         ]
         ['0x0A' MultipleServiceRequest
                [const  int     8   'RequestPathSize'   '0x02']
                [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
-               [simple Services  'data']
+               [simple Services  'data'['serviceLen - 6 ']]
         ]
         ['0x8A' MultipleServiceResponse
                [reserved   uint    8   '0x0']
                [simple     uint    8   'status']
                [simple     uint    8   'extStatus']
-               [simple     Services    'data']
+               [simple Services  'data'['serviceLen - 4']]
         ]
         ['0x0052'   CipUnconnectedRequest
                [reserved   uint    8   '0x02']
@@ -84,7 +87,7 @@
                [reserved   uint    8   '0x01']   // setRequestPathInstance
                [reserved   uint    16  '0x9D05']   //Timeout 5s
                [implicit   uint    16   'messageSize'   'lengthInBytes - 10 - 4']   //substract above and routing
-               [simple     CipService  'service']
+               [simple     CipService  'service' ['messageSize'] ]
                [const      uint    16  'route' '0x0001']
                [simple     int     8   'backPlane']
                [simple     int     8   'slot']
@@ -92,10 +95,10 @@
     ]
 ]
 
-[type   'Services'
+[type   'Services'  [uint   16   'servicesLen']
     [simple uint    16  'serviceNb']
     [array  uint        16  'offsets'       count  'serviceNb']
-    [array  CipService  'services'      count  'serviceNb']
+    [array  CipService   'services'      count  'serviceNb' ['servicesLen/serviceNb'] ]
 ]
 
 [enum uint   16   'CIPDataTypeCode' [uint 8  'size']
@@ -108,4 +111,10 @@
     ['0X02A0'   STRING          ['88']]
     ['0X02A0'   STRING36        ['40']]
     ['-1'       UNKNOWN         ['-1']]
+]
+
+[enum   uint    16  'EiPCommand'
+    ['0x0065'   RegisterSession ]
+    ['0x0066'   UnregisterSession ]
+    ['0x006F'   SendRRData ]
 ]

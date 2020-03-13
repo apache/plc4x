@@ -34,6 +34,7 @@ import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
+import org.apache.plc4x.java.eip.readwrite.types.EiPCommand;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -81,21 +82,20 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
          * and save the assigned Session Handle
          * PS: Check Status for Success : 0x00000000*/
         logger.info("Sending RegisterSession EIP Package");
-        EipConnectionRequest connectionRequest =
-            new EipConnectionRequest(0L, 0L, emptySenderContext, 0L);
+        EipPacket connectionRequest =
+            new EipPacket((short)EiPCommand.RegisterSession.getValue(),0L, 0L, emptySenderContext, 0L,new EipConnectionRequest());
         context.sendRequest(connectionRequest)
-            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p instanceof EipConnectionRequest)
-            .unwrap(p -> (EipConnectionRequest) p)
-            .handle(EipConnectionRequest -> {
-                if(EipConnectionRequest.getStatus()==0L){
-                    sessionHandle = EipConnectionRequest.getSessionHandle();
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap( p -> (EipPacket) p)
+            .check(p -> p.getHeader() instanceof EipConnectionRequest)
+            .handle(p -> {
+                if(p.getStatus()==0L){
+                    sessionHandle = p.getSessionHandle();
                     logger.trace("Got assigned with Session {}", sessionHandle);
                     // Send an event that connection setup is complete.
                     context.fireConnected();
                 }
                 else{
-                    logger.warn("Got status code [{}]", EipConnectionRequest.getStatus());
+                    logger.warn("Got status code [{}]", p.getStatus());
                 }
 
             });
@@ -200,18 +200,23 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             }
             Services data = new Services(nb,offsets,serviceArr);
             //Encapsulate the data
-            CipRRData rrData = new CipRRData(sessionHandle,0L,emptySenderContext,0L,
-                new CipExchange(
-                    new CipUnconnectedRequest(
-                        new MultipleServiceRequest(data),(byte)configuration.getBackplane(),(byte)configuration.getSlot())));
 
-            transaction.submit(() -> context.sendRequest(rrData)
+            EipPacket pkt = new EipPacket((short)EiPCommand.SendRRData.getValue(),sessionHandle,0L,emptySenderContext,0L,
+                new CipRRData(
+                    new CipExchange(
+                        new CipUnconnectedRequest(
+                            new MultipleServiceRequest(data),
+                            (byte) configuration.getBackplane(),
+                            (byte)configuration.getSlot()))));
+
+
+            transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getHeader() instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
-                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> (CipRRData) p.getHeader())
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof MultipleServiceResponse)
                 .unwrap(p -> (MultipleServiceResponse) p)
                 .check(p -> p.getData().getServiceNb() == nb)
@@ -223,14 +228,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         }
         else if(request.size()==1) {
             CipExchange exchange = new CipExchange(new CipUnconnectedRequest(request.get(0),(byte)configuration.getBackplane(),(byte)configuration.getSlot()));
-            CipRRData rrData = new CipRRData(sessionHandle, 0L, emptySenderContext, 0L, exchange);
-            transaction.submit(() -> context.sendRequest(rrData)
+            EipPacket pkt = new EipPacket(
+                (short)EiPCommand.SendRRData.getValue(),sessionHandle, 0L, emptySenderContext, 0L,
+                new CipRRData(exchange));
+            transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getHeader() instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
-                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> (CipRRData) p.getHeader())
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof CipReadResponse)
                 .unwrap(p -> (CipReadResponse) p)
                 .handle(p -> {
@@ -348,8 +355,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     public void close(ConversationContext<EipPacket> context) {
         /**Send a ENIP Message with Unregister Session Code '0x0066' */
         logger.info("Sending UnregisterSession EIP Pakcet");
-        EipDisconnectRequest disconnectRequest =
-            new EipDisconnectRequest(sessionHandle,0L,emptySenderContext,0L);
+        EipPacket disconnectRequest = new EipPacket((short)EiPCommand.UnregisterSession.getValue(),sessionHandle,0L,emptySenderContext,0L,
+            new EipDisconnectRequest());
         context.sendRequest(disconnectRequest); //Unregister gets no response
         logger.trace("Unregistred Session {}", sessionHandle);
     }
