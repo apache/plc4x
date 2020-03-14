@@ -110,6 +110,13 @@
               <propertyName>failsafeArgLine</propertyName>
             </configuration>
           </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
           <!--
               Check if the unit-test-coverage is at least a certain minimum.
           -->

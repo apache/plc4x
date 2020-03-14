@@ -98,8 +98,6 @@
     <!-- Timestamp for the reproducible builds -->
     <project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp>
 
-    <!-- URL of the ASF SonarQube server -->
-    <sonar.host.url>https://builds.apache.org/analysis</sonar.host.url>
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
