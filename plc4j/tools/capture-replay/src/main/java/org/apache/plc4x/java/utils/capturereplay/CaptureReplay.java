@@ -45,51 +45,47 @@ public class CaptureReplay {
     }
 
     public void run() throws PcapNativeException {
-        PcapHandle readHandle = Pcaps.openOffline(inputFile.getAbsolutePath(), PcapHandle.TimestampPrecision.NANO);
+        try (PcapHandle readHandle = Pcaps.openOffline(inputFile.getAbsolutePath(), PcapHandle.TimestampPrecision.NANO)) {
 
-        PcapNetworkInterface sendDevice = Pcaps.getDevByName(outputDevice);
-        if(sendDevice == null) {
-            throw new IllegalArgumentException("Could not open output device " + outputDevice);
-        }
-        PcapHandle sendHandle = sendDevice.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100);
+            PcapNetworkInterface sendDevice = Pcaps.getDevByName(outputDevice);
+            if (sendDevice == null) {
+                throw new IllegalArgumentException("Could not open output device " + outputDevice);
+            }
+            try (PcapHandle sendHandle = sendDevice.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 100)) {
+                // Start a thread that processes the callbacks from the raw socket and simply
+                // forwards the bytes read to the buffer.
+                readHandle.loop(-1, new PacketListener() {
+                    private Timestamp lastPacketTime = null;
 
-        // Start a thread that processes the callbacks from the raw socket and simply
-        // forwards the bytes read to the buffer.
-        try {
-            readHandle.loop(-1, new PacketListener() {
-                private Timestamp lastPacketTime = null;
+                    @Override
+                    public void gotPacket(Packet packet) {
+                        Timestamp curPacketTime = readHandle.getTimestamp();
 
-                @Override
-                public void gotPacket(Packet packet) {
-                    Timestamp curPacketTime = readHandle.getTimestamp();
+                        // Only enable the throttling if it is not disabled.
+                        // If last-time is not null, wait for the given number of nano-seconds.
+                        if ((replaySpeed > 0) && (lastPacketTime != null)) {
+                            int numMicrosecondsSleep = (int)
+                                ((curPacketTime.getNanos() - lastPacketTime.getNanos()) * replaySpeed);
+                            nanoSecondSleep(numMicrosecondsSleep);
+                        }
 
-                    // Only enable the throttling if it is not disabled.
-                    // If last-time is not null, wait for the given number of nano-seconds.
-                    if ((replaySpeed > 0) && (lastPacketTime != null)) {
-                        int numMicrosecondsSleep = (int)
-                            ((curPacketTime.getNanos() - lastPacketTime.getNanos()) * replaySpeed);
-                        nanoSecondSleep(numMicrosecondsSleep);
+                        // Send the packet to the output device ...
+                        try {
+                            sendHandle.sendPacket(packet);
+                        } catch (PcapNativeException | NotOpenException e) {
+                            LOGGER.error("Error sending packet", e);
+                        }
+
+                        // Remember the timestamp of the current packet.
+                        lastPacketTime = curPacketTime;
                     }
-
-                    // Send the packet to the output device ...
-                    try {
-                        sendHandle.sendPacket(packet);
-                    } catch (PcapNativeException | NotOpenException e) {
-                        LOGGER.error("Error sending packet", e);
-                    }
-
-                    // Remember the timestamp of the current packet.
-                    lastPacketTime = curPacketTime;
-                }
-            });
-        } catch (PcapNativeException | NotOpenException e) {
-            LOGGER.error("PCAP sending loop thread died!", e);
-        } catch (InterruptedException e) {
-            LOGGER.warn("PCAP sending loop thread was interrupted (hopefully intentionally)", e);
-            Thread.currentThread().interrupt();
-        } finally {
-            readHandle.close();
-            sendHandle.close();
+                });
+            } catch (PcapNativeException | NotOpenException e) {
+                LOGGER.error("PCAP sending loop thread died!", e);
+            } catch (InterruptedException e) {
+                LOGGER.warn("PCAP sending loop thread was interrupted (hopefully intentionally)", e);
+                Thread.currentThread().interrupt();
+            }
         }
     }
 

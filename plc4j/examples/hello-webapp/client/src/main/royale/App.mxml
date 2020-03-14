@@ -99,9 +99,9 @@
         }
 
         public static function getApplicationBaseUrl():String {
-            var appurl:String = window.location.href;
-            appurl = appurl.substring(0, appurl.lastIndexOf("/"));
-            return appurl;
+            var appUrl:String = window.location.href;
+            appUrl = appUrl.substring(0, appUrl.lastIndexOf("/"));
+            return appUrl;
         }
 
         private function handleSubscriptionResult(event:MessageAckEvent):void {
