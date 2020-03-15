@@ -163,6 +163,9 @@ public class WaterTankService {
     private class WaterLevelHandler implements Consumer<PlcSubscriptionEvent> {
         @Override
         public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
+            if(!messageBroker.isStarted()) {
+                return;
+            }
             // Get the data from the event.
             final Short waterLevel = plcSubscriptionEvent.getShort("waterLevel");
             if(waterLevel == null) {
