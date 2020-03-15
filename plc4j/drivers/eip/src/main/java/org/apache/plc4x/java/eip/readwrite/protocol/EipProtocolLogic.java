@@ -82,11 +82,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
          * and save the assigned Session Handle
          * PS: Check Status for Success : 0x00000000*/
         logger.info("Sending RegisterSession EIP Package");
-        EipPacket connectionRequest =
-            new EipPacket((short)EiPCommand.RegisterSession.getValue(),0L, 0L, emptySenderContext, 0L,new EipConnectionRequest());
+        EipConnectionRequest connectionRequest =
+          new EipConnectionRequest(0L,0L,emptySenderContext,0L);
         context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap( p -> (EipPacket) p)
-            .check(p -> p.getHeader() instanceof EipConnectionRequest)
+            .check(p -> p instanceof EipConnectionRequest)
             .handle(p -> {
                 if(p.getStatus()==0L){
                     sessionHandle = p.getSessionHandle();
@@ -181,7 +181,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             });
     }
     private CompletableFuture<CipService> readInternal(List<CipReadRequest> request) {
-        //TODO check if this is right
         CompletableFuture<CipService> future = new CompletableFuture<>();
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         if(request.size()>1){
@@ -201,22 +200,21 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             Services data = new Services(nb,offsets,serviceArr);
             //Encapsulate the data
 
-            EipPacket pkt = new EipPacket((short)EiPCommand.SendRRData.getValue(),sessionHandle,0L,emptySenderContext,0L,
-                new CipRRData(
+            CipRRData pkt = new CipRRData(sessionHandle,0L, emptySenderContext, 0L,
                     new CipExchange(
                         new CipUnconnectedRequest(
                             new MultipleServiceRequest(data),
                             (byte) configuration.getBackplane(),
-                            (byte)configuration.getSlot()))));
+                            (byte)configuration.getSlot())));
 
 
             transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p.getHeader() instanceof CipRRData)
+                .check(p -> p instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
-                .unwrap(p -> (CipRRData) p.getHeader())
+                .unwrap(p -> (CipRRData) p)
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof MultipleServiceResponse)
                 .unwrap(p -> (MultipleServiceResponse) p)
                 .check(p -> p.getData().getServiceNb() == nb)
@@ -228,16 +226,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         }
         else if(request.size()==1) {
             CipExchange exchange = new CipExchange(new CipUnconnectedRequest(request.get(0),(byte)configuration.getBackplane(),(byte)configuration.getSlot()));
-            EipPacket pkt = new EipPacket(
-                (short)EiPCommand.SendRRData.getValue(),sessionHandle, 0L, emptySenderContext, 0L,
-                new CipRRData(exchange));
+            CipRRData pkt = new CipRRData(sessionHandle,0L, emptySenderContext, 0L, exchange);
             transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p.getHeader() instanceof CipRRData)
+                .check(p -> p instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
-                .unwrap(p -> (CipRRData) p.getHeader())
+                .unwrap(p -> (CipRRData) p)
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof CipReadResponse)
                 .unwrap(p -> (CipReadResponse) p)
                 .handle(p -> {
@@ -355,9 +351,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     public void close(ConversationContext<EipPacket> context) {
         /**Send a ENIP Message with Unregister Session Code '0x0066' */
         logger.info("Sending UnregisterSession EIP Pakcet");
-        EipPacket disconnectRequest = new EipPacket((short)EiPCommand.UnregisterSession.getValue(),sessionHandle,0L,emptySenderContext,0L,
-            new EipDisconnectRequest());
-        context.sendRequest(disconnectRequest); //Unregister gets no response
+        context.sendRequest(new EipDisconnectRequest(sessionHandle, 0L, emptySenderContext, 0L)); //Unregister gets no response
         logger.trace("Unregistred Session {}", sessionHandle);
     }
 }

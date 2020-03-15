@@ -1,4 +1,4 @@
-//
+ //
  // Licensed to the Apache Software Foundation (ASF) under one
  // or more contributor license agreements.  See the NOTICE file
  // distributed with this work for additional information
@@ -21,35 +21,32 @@
  ///EthernetIP Header of size 24
  /////////////////////////////////////////////////////////////////
 
-[type 'EipPacket'
-    [simple        uint 16 'command']
-    [implicit      uint 16 'len'    'lengthInBytes - 24']
+[discriminatedType 'EipPacket'
+    [discriminator uint 16 'command']
+    [implicit      uint 16 'len' 'lengthInBytes - 24']
     [simple        uint 32 'sessionHandle']
     [simple        uint 32 'status']
     [array         uint 8  'senderContext' count '8']
     [simple        uint 32 'options']
-    [simple        CipHeader    'header'    ['len','command']]
-]
-[discriminatedType 'CipHeader' [uint  16  'length', uint    16  'cipCommand']
-    [typeSwitch 'cipCommand'
+    [typeSwitch 'command'
             ['0x0065' EipConnectionRequest
                 [const  uint    16   'protocolVersion'   '0x01']
                 [const  uint    16   'flags'             '0x00']
             ]
             ['0x0066' EipDisconnectRequest
             ]
-            ['0x006F' CipRRData
+            ['0x006F' CipRRData [uint  16  'len']
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple CipExchange 'exchange' ['length-6'] ]
+                [simple CipExchange 'exchange' ['len-6']]
             ]
         ]
 ]
 [type  'CipExchange' [uint 16 'exchangeLen']
-    [const          uint        16      'itemCount'           '0x0002']
-    [const          uint        32      'nullPtr'             '0x0']
-    [const          uint        16      'UnconnectedData'     '0x00B2']
-    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2']
+    [const          uint        16      'itemCount'           '0x0002']     //2 items
+    [const          uint        32      'nullPtr'             '0x0']          //NullPointerAddress
+    [const          uint        16      'UnconnectedData'     '0x00B2']   //Connection Manager
+    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2'] //remove fields above and routing
     [simple         CipService          'service' ['exchangeLen - 10'] ]
 ]
 
@@ -65,13 +62,13 @@
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
-              [enum       CIPDataTypeCode   'dataType']
+              [enum       CIPDataTypeCode     'dataType']
               [array      int             8   'data'  length  'serviceLen-6']
         ]
         ['0x0A' MultipleServiceRequest
                [const  int     8   'RequestPathSize'   '0x02']
                [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
-               [simple Services  'data'['serviceLen - 6 ']]
+               [simple Services  'data'         ['serviceLen - 6 '] ]
         ]
         ['0x8A' MultipleServiceResponse
                [reserved   uint    8   '0x0']
