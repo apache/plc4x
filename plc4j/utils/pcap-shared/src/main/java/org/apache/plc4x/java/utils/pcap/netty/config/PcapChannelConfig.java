@@ -99,7 +99,6 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
 
     public String getFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
         StringBuilder sb = new StringBuilder();
-        sb.append("(ether proto \\ip)");
         if(getProtocolId() != ALL_PROTOCOLS) {
             sb.append(" and (ether proto ").append(getProtocolId()).append(")");
         }
@@ -115,7 +114,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         if(remoteAddress != null) {
             sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
         }*/
-        return sb.toString();
+        return sb.toString().substring(" and ".length());
     }
 
 }
