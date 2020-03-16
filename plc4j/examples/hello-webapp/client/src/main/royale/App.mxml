@@ -75,14 +75,14 @@
             // Define the long-polling-channel.
             /*var longPollingChannel:AMFChannel = new AMFChannel("longPollingAmf", appurl + "/messagebroker/long-polling-amf");
             longPollingChannel.pollingEnabled = true;
-            //longPollingChannel.pollingInterval = 10000;
+            longPollingChannel.pollingInterval = 5000;
             longPollingChannel.useSmallMessages = true;
             channelSet.addChannel(longPollingChannel);*/
 
             // Define a short-polling-channel
             var shortPollingChannel:AMFChannel = new AMFChannel("shortPollingAmf", appurl + "/messagebroker/short-polling-amf");
             shortPollingChannel.pollingEnabled = true;
-            shortPollingChannel.pollingInterval = 1000;
+            shortPollingChannel.pollingInterval = 500;
             shortPollingChannel.useSmallMessages = true;
             channelSet.addChannel(shortPollingChannel);
 
