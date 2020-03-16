@@ -252,7 +252,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket>{
             .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
             .handle(p -> {
                 try {
-                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
+                    future.complete((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest)));
                 } catch (PlcProtocolException e) {
                     logger.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
                 }

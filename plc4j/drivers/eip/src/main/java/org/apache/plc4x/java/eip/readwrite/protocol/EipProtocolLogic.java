@@ -32,14 +32,10 @@ import org.apache.plc4x.java.eip.readwrite.*;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
-import org.apache.plc4x.java.eip.readwrite.types.EiPCommand;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,6 +212,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(p -> p instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
+                //.check(p -> p.getSenderContext() == senderContext)
                 .unwrap(p -> (CipRRData) p)
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof MultipleServiceResponse)
                 .unwrap(p -> (MultipleServiceResponse) p)
@@ -235,6 +232,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(p -> p instanceof CipRRData)
                 .check(p -> p.getSessionHandle() == sessionHandle)
+                //.check(p -> p.getSenderContext() == senderContext)
                 .unwrap(p -> (CipRRData) p)
                 .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof CipReadResponse)
                 .unwrap(p -> (CipReadResponse) p)
@@ -255,12 +253,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             CipReadResponse resp = (CipReadResponse)p;
             String fieldName = readRequest.getFieldNames().iterator().next();
             EipField field = (EipField) readRequest.getField(fieldName);
-            PlcResponseCode code;
-            if (resp.getStatus() == 0) {
-                code = PlcResponseCode.OK;
-            } else {
-                code = PlcResponseCode.INTERNAL_ERROR;
-            }
+            PlcResponseCode code = decodeResponseCode(resp.getStatus());
             PlcValue plcValue = null;
             CIPDataTypeCode type = resp.getDataType();
             ByteBuf data = Unpooled.wrappedBuffer(resp.getData());
@@ -377,12 +370,99 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             items.add(writeReq);
         }
 
-        if(writeRequest.getNumberOfFields()==1){
-
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        if(items.size()==1){
+            tm.startRequest();
+            CipRRData rrdata = new CipRRData(sessionHandle,0L,senderContext,0L,
+                new CipExchange(items.get(0)));
+            transaction.submit(()-> context.sendRequest(rrdata)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(future::completeExceptionally)
+            .onError((p,e) -> future.completeExceptionally(e))
+                .check( p -> p instanceof CipRRData).unwrap(p -> (CipRRData)p)
+                .check(p -> p.getSessionHandle() == sessionHandle)
+              //.check(p -> p.getSenderContext() == senderContext)
+                .check(p -> p.getExchange().getService() instanceof CipWriteResponse)
+                .unwrap(p -> (CipWriteResponse)p.getExchange().getService())
+                .handle(p ->{
+                    future.complete((PlcWriteResponse)decodeWriteResponse(p,((InternalPlcWriteRequest)writeRequest)));
+                    transaction.endRequest();
+                })
+            );
         }
         else {
+            tm.startRequest();
+            short nb =(short) items.size();
+            int[] offsets = new int[nb];
+            int offset = 2 + nb*2;
+            for(int i = 0; i < nb ; i++){
+                offsets[i]=offset;
+                offset+=items.get(i).getLengthInBytes();
+            }
 
+            CipService[] serviceArr = new CipService[nb];
+            for(int i = 0; i < nb ; i++){
+                serviceArr[i]=items.get(i);
+            }
+            Services data = new Services(nb,offsets,serviceArr);
+            //Encapsulate the data
+
+            CipRRData pkt = new CipRRData(sessionHandle,0L, emptySenderContext, 0L,
+                new CipExchange(
+                    new CipUnconnectedRequest(
+                        new MultipleServiceRequest(data),
+                        (byte) configuration.getBackplane(),
+                        (byte)configuration.getSlot())));
+
+
+            transaction.submit(() -> context.sendRequest(pkt)
+                .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
+                .onTimeout(future::completeExceptionally)
+                .onError((p, e) -> future.completeExceptionally(e))
+                .check(p -> p instanceof CipRRData)
+                .check(p -> p.getSessionHandle() == sessionHandle)
+                //.check(p -> p.getSenderContext() == senderContext)
+                .unwrap(p -> (CipRRData) p)
+                .unwrap(p -> p.getExchange().getService()).check(p -> p instanceof MultipleServiceResponse)
+                .unwrap(p -> (MultipleServiceResponse) p)
+                .check(p -> p.getData().getServiceNb() == nb)
+                .handle(p -> {
+                    future.complete((PlcWriteResponse)decodeWriteResponse(p,((InternalPlcWriteRequest)writeRequest)));
+                    // Finish the request-transaction.
+                    transaction.endRequest();
+                }));
         }
+        return future;
+    }
+
+    private PlcResponse decodeWriteResponse(CipService p, InternalPlcWriteRequest writeRequest) {
+        Map<String, PlcResponseCode> responses = new HashMap<>();
+
+        if(p instanceof CipWriteResponse){
+            CipWriteResponse resp = (CipWriteResponse)p;
+            String fieldName = writeRequest.getFieldNames().iterator().next();
+            EipField field =(EipField) writeRequest.getField(fieldName);
+            responses.put(fieldName, decodeResponseCode(resp.getStatus()));
+            return new DefaultPlcWriteResponse(writeRequest,responses);
+        }
+        else if(p instanceof MultipleServiceResponse){
+            MultipleServiceResponse multResponses = (MultipleServiceResponse)p;
+            Services services = multResponses.getData();
+            int nb = services.getServiceNb();
+            Iterator<String> it = writeRequest.getFieldNames().iterator();
+            for(int i = 0; i<nb && it.hasNext() ; i++){
+                String fieldName = it.next();
+                EipField field = (EipField) writeRequest.getField(fieldName);
+                PlcValue plcValue = null;
+                if(services.getServices()[i] instanceof CipWriteResponse){
+                    CipWriteResponse writeResponse = (CipWriteResponse)services.getServices()[i];
+                    PlcResponseCode code = decodeResponseCode(writeResponse.getStatus());
+                    responses.put(fieldName, code);
+                }
+            }
+            return new DefaultPlcWriteResponse(writeRequest, responses);
+        }
+        return null;
     }
 
     private byte[] encodeValue(PlcValue value, CIPDataTypeCode type, short elements) {
@@ -404,6 +484,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         }
         return buffer.array();
 
+    }
+
+    private PlcResponseCode decodeResponseCode(int status){
+        switch (status){
+            case 0 : return PlcResponseCode.OK;
+            default: return PlcResponseCode.INTERNAL_ERROR;
+        }
     }
 
     @Override
