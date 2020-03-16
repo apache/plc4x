@@ -100,6 +100,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
     public String getFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
         StringBuilder sb = new StringBuilder();
         if(getProtocolId() != ALL_PROTOCOLS) {
+
             sb.append(" and (ether proto ").append(getProtocolId()).append(")");
         }
         // Add a filter for TCP or UDP port.
