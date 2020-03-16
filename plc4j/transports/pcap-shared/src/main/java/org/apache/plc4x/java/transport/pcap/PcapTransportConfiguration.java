@@ -24,6 +24,10 @@ import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 public interface PcapTransportConfiguration extends TransportConfiguration {
 
+    default boolean getSupportVlans() {
+        return false;
+    }
+
     default int getDefaultPort() {
         return PcapChannelConfig.ALL_PORTS;
     }

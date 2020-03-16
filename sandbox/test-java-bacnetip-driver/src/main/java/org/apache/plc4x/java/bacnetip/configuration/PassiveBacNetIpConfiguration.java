@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip.configuration;
 
+import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
@@ -25,6 +26,7 @@ import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfigurati
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.pcap4j.packet.Dot1qVlanTagPacket;
 
 public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
 
@@ -71,8 +73,13 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
     }
 
     @Override
+    public boolean getSupportVlans() {
+        return true;
+    }
+
+    @Override
     public int getDefaultPort() {
-        return 47808;
+        return PassiveBacNetIpDriver.BACNET_IP_PORT;
     }
 
     @Override
@@ -89,8 +96,16 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
      */
     @Override
     public PacketHandler getPcapPacketHandler() {
-        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
+        return packet -> {
+            // If it's a VLan packet, we need to go one level deeper.
+            if(packet.getPayload() instanceof Dot1qVlanTagPacket) {
+                return packet.getPayload().getPayload().getPayload().getPayload().getRawData();
+            }
+            // This is a normal udp packet.
+            else {
+                return packet.getPayload().getPayload().getPayload().getRawData();
+            }
+        };
     }
-
 
 }
