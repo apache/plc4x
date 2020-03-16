@@ -22,6 +22,7 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ public class HelloPlc4x {
             long end = t+30000;
             PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250/backplane=1&slot=4");
             while (true) {
+                PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
                     builder.addItem("Array", "%testLargeRealArray[20]:50");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);

@@ -24,9 +24,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
@@ -40,6 +38,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
@@ -61,6 +60,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
 
     private static final short[] emptySenderContext = new short[] {(short) 0x00 ,(short) 0x00 ,(short) 0x00,
         (short) 0x00,(short) 0x00,(short) 0x00, (short) 0x00,(short) 0x00};
+    private short[] senderContext;
     private EIPConfiguration configuration;
 
     private final AtomicInteger transactionCounterGenerator = new AtomicInteger(10);
@@ -90,6 +90,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
             .handle(p -> {
                 if(p.getStatus()==0L){
                     sessionHandle = p.getSessionHandle();
+                    senderContext= p.getSenderContext();
                     logger.trace("Got assigned with Session {}", sessionHandle);
                     // Send an event that connection setup is complete.
                     context.fireConnected();
@@ -180,6 +181,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
                 }
             });
     }
+
     private CompletableFuture<CipService> readInternal(List<CipReadRequest> request) {
         CompletableFuture<CipService> future = new CompletableFuture<>();
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -244,6 +246,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         }
         return future;
     }
+
     private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) throws PlcProtocolException {
         //TODO Check if this is right
         Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
@@ -346,6 +349,62 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0);
     }
 
+    public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+        List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfFields());
+        for(String fieldName : request.getFieldNames()){
+            final EipField field = (EipField) request.getField(fieldName);
+            final PlcValue value = request.getPlcValue(fieldName);
+            String tag = field.getTag();
+            int elements = 1 ;
+            if(field.getElementNb()>1){
+                elements = field.getElementNb();
+            }
+
+            //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
+            // Taking half to get word size
+            boolean isArray = false;
+            String tagIsolated=tag;
+            if(tag.contains("[")){
+                isArray = true;
+                tagIsolated = tag.substring(0, tag.indexOf("["));
+            }
+            int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2)+(isArray? 2:0));
+            byte requestPathSize = (byte) (dataLength/ 2);
+            byte[]data = encodeValue(value,field.getType(),(short)elements);
+            CipWriteRequest writeReq = new CipWriteRequest(requestPathSize,toAnsi(tag),field.getType(),elements,data);
+            items.add(writeReq);
+        }
+
+        if(writeRequest.getNumberOfFields()==1){
+
+        }
+        else {
+
+        }
+    }
+
+    private byte[] encodeValue(PlcValue value, CIPDataTypeCode type, short elements) {
+        ByteBuffer buffer = ByteBuffer.allocate(4+type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
+        switch(type){
+            case SINT:
+                buffer.put(value.getByte());
+                break;
+            case INT:
+                buffer.putShort(value.getShort());
+                break;
+            case DINT:
+                buffer.putInt(value.getInteger());
+                break;
+            case REAL:
+                buffer.putDouble(value.getDouble());
+                break;
+            default:break;
+        }
+        return buffer.array();
+
+    }
 
     @Override
     public void close(ConversationContext<EipPacket> context) {

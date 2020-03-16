@@ -38,15 +38,15 @@
             ['0x006F' CipRRData [uint  16  'len']
                 [reserved  uint    32    '0x00000000']
                 [reserved  uint    16    '0x0000']
-                [simple CipExchange 'exchange' ['len-6']]
+                [simple    CipExchange   'exchange' ['len-6']]
             ]
         ]
 ]
 [type  'CipExchange' [uint 16 'exchangeLen']
-    [const          uint        16      'itemCount'           '0x0002']     //2 items
-    [const          uint        32      'nullPtr'             '0x0']          //NullPointerAddress
-    [const          uint        16      'UnconnectedData'     '0x00B2']   //Connection Manager
-    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2'] //remove fields above and routing
+    [const          uint        16      'itemCount'           '0x0002']                 //2 items
+    [const          uint        32      'nullPtr'             '0x0']                    //NullPointerAddress
+    [const          uint        16      'UnconnectedData'     '0x00B2']                 //Connection Manager
+    [implicit       uint        16      'size'                'lengthInBytes - 8 - 2']  //remove fields above and routing
     [simple         CipService          'service' ['exchangeLen - 10'] ]
 ]
 
@@ -64,6 +64,18 @@
               [simple     uint            8   'extStatus']
               [enum       CIPDataTypeCode     'dataType']
               [array      int             8   'data'  length  'serviceLen-6']
+        ]
+        ['0x4D' CipWriteRequest
+            [simple     int     8           'RequestPathSize']
+            [array      int     8           'tag'   length  '(RequestPathSize*2)']
+            [enum       CIPDataTypeCode     'dataType']
+            [simple     uint    16          'elementNb']
+            [array      int    8            'data'  length  'dataType.size*elementNb']
+        ]
+        ['0xCD' CipWriteResponse
+            [reserved   uint        8   '0x00']
+            [simple     uint        8   'status']
+            [simple     uint        8   'extStatus']
         ]
         ['0x0A' MultipleServiceRequest
                [const  int     8   'RequestPathSize'   '0x02']

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.eip.readwrite.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.eip.readwrite.types.CIPDataTypeCode;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,14 +27,24 @@ import java.util.regex.Pattern;
 public class EipField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_]+\\[?[0-9]*\\]?):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^%(?<tag>[a-zA-Z_]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String TAG="tag";
     private static final String ELEMENTS="elementNb";
+    private static final String TYPE="dataType";
 
 
     private final String tag;
+    private CIPDataTypeCode type;
     private int  elementNb;
+
+    public CIPDataTypeCode getType() {
+        return type;
+    }
+
+    public void setType(CIPDataTypeCode type) {
+        this.type = type;
+    }
 
     public int getElementNb() {
         return elementNb;
@@ -56,6 +67,17 @@ public class EipField implements PlcField {
         this.elementNb = elementNb;
     }
 
+    public EipField(String tag, CIPDataTypeCode type, int elementNb) {
+        this.tag = tag;
+        this.type = type;
+        this.elementNb = elementNb;
+    }
+
+    public EipField(String tag, CIPDataTypeCode type) {
+        this.tag = tag;
+        this.type = type;
+    }
+
     public static boolean matches(String fieldQuery){
         return ADDRESS_PATTERN.matcher(fieldQuery).matches();
     }
@@ -65,13 +87,23 @@ public class EipField implements PlcField {
         if(matcher.matches()){
             String tag = matcher.group(TAG);
             int nb=0;
+            CIPDataTypeCode type=null;
             if(!matcher.group(ELEMENTS).isEmpty()) {
                 nb = Integer.parseInt(matcher.group(ELEMENTS));
             }
+            if(!matcher.group(TYPE).isEmpty()) {
+                type = CIPDataTypeCode.valueOf(Integer.parseInt(matcher.group(ELEMENTS)));
+            }
             if(nb!=0){
+                if(type!=null){
+                    return  new EipField(tag,type,nb);
+                }
                 return new EipField(tag, nb);
             }
             else{
+                if(type!=null){
+                    return  new EipField(tag,type);
+                }
                 return new EipField(tag);
             }
         }
