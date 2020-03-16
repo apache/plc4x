@@ -388,33 +388,42 @@
     ['0x03' OTHERS  ]
 ]
 
-[enum int 8 'TransportSize'  [uint 8 'sizeCode', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', uint 8 'dataProtocolId']
-    ['0x01' BOOL             ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BIT'              , '01']]
-    ['0x02' BYTE             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '11']]
-    ['0x04' WORD             ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '12']]
-    ['0x06' DWORD            ['D'              , '4'                 , 'WORD'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '13']]
-    ['0x00' LWORD            ['X'              , '8'                 , 'null'                  , 'null'                               , '14']]
+[enum int 8 'TransportSize'  [uint 8 'sizeCode', uint 8 'sizeInBytes', TransportSize 'baseType', DataTransportSize 'dataTransportSize', uint 8 'dataProtocolId', bit 'supported_S7_300', bit 'supported_S7_400', bit 'supported_S7_1200', bit 'supported_S7_1500', bit 'supported_LOGO']
+    // Bit Strings
+    ['0x01' BOOL             ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BIT'              , '01'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x02' BYTE             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '11'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x04' WORD             ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '12'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x06' DWORD            ['D'              , '4'                 , 'WORD'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '13'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' LWORD            ['X'              , '8'                 , 'null'                  , 'null'                               , '14'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+
+    // Integer values
     // INT and UINT moved out of order as the enum constant INT needs to be generated before it's used in java
-    ['0x05' INT              ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '23']]
-    ['0x05' UINT             ['W'              , '2'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '24']]
+    ['0x05' INT              ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '23'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x05' UINT             ['W'              , '2'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '24'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     // ...
-    ['0x02' SINT             ['B'              , '1'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '21']]
-    ['0x02' USINT            ['B'              , '1'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '22']]
-    ['0x07' DINT             ['D'              , '4'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '25']]
-    ['0x07' UDINT            ['D'              , '4'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '26']]
-    ['0x00' LINT             ['X'              , '8'                 , 'INT'                   , 'null'                               , '27']]
-    ['0x00' ULINT            ['X'              , '16'                , 'INT'                   , 'null'                               , '28']]
-    ['0x08' REAL             ['D'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '31']]
-    ['0x00' LREAL            ['X'              , '8'                 , 'REAL'                  , 'null'                               , '32']]
-    ['0x03' CHAR             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '41']]
-    ['0x13' WCHAR            ['X'              , '2'                 , 'null'                  , 'null'                               , '42']]
-    ['0x03' STRING           ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '43']]
-    ['0x00' WSTRING          ['X'              , '1'                 , 'null'                  , 'null'                               , '44']]
-    ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , '51']]
-    ['0x00' LTIME            ['X'              , '8'                 , 'TIME'                  , 'null'                               , '52']]
-    ['0x02' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '53']]
-    ['0x02' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '54']]
-    ['0x02' DATE_AND_TIME    ['X'              , '8'                 , 'null'                  , 'null'                               , '55']]
+    ['0x02' SINT             ['B'              , '1'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '21'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x02' USINT            ['B'              , '1'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '22'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x07' DINT             ['D'              , '4'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '25'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x07' UDINT            ['D'              , '4'                 , 'INT'                   , 'DataTransportSize.BYTE_WORD_DWORD'  , '26'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' LINT             ['X'              , '8'                 , 'INT'                   , 'null'                               , '27'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+    ['0x00' ULINT            ['X'              , '16'                , 'INT'                   , 'null'                               , '28'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+
+    // Floating point values
+    ['0x08' REAL             ['D'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '31'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' LREAL            ['X'              , '8'                 , 'REAL'                  , 'null'                               , '32'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'false'             ]]
+
+    // Characters and Strings
+    ['0x03' CHAR             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '41'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x13' WCHAR            ['X'              , '2'                 , 'null'                  , 'null'                               , '42'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x03' STRING           ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '43'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' WSTRING          ['X'              , '1'                 , 'null'                  , 'null'                               , '44'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+
+    // Dates and time values
+    ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , '51'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' LTIME            ['X'              , '8'                 , 'TIME'                  , 'null'                               , '52'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+    ['0x02' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '53'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x02' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '54'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x02' DATE_AND_TIME    ['X'              , '8'                 , 'null'                  , 'null'                               , '55'                   , 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
 [enum int 8 'MemoryArea'             [string 24 'utf8' 'shortName']

@@ -124,7 +124,13 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     @Override
     @JsonIgnore
     public int getLengthInBytes() {
-        int lengthInBits = <#if type.parentType??>super.getLengthInBytes() * 8<#else>0</#if>;
+        return getLengthInBits() / 8;
+    }
+
+    @Override
+    @JsonIgnore
+    public int getLengthInBits() {
+        int lengthInBits = <#if type.parentType??>super.getLengthInBits()<#else>0</#if>;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
@@ -135,7 +141,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         <#else>
         if(${field.name} != null) {
             for(Message element : ${field.name}) {
-                lengthInBits += element.getLengthInBytes() * 8;
+                lengthInBits += element.getLengthInBits();
             }
         }
         </#if>
@@ -182,7 +188,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         <#if helper.isSimpleType(field.type)>
             lengthInBits += ${field.type.sizeInBits};
         <#else>
-            lengthInBits += ${field.name}.getLengthInBytes() * 8;
+            lengthInBits += ${field.name}.getLengthInBits();
         </#if>
         }
         <#break>
@@ -205,7 +211,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
         <#if helper.isSimpleType(field.type)>
         lengthInBits += ${field.type.sizeInBits};
         <#else>
-        lengthInBits += ${field.name}.getLengthInBytes() * 8;
+        lengthInBits += ${field.name}.getLengthInBits();
         </#if>
         <#break>
     <#case "switch">
@@ -219,7 +225,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
 </#switch>
 </#list>
 
-        return lengthInBits / 8;
+        return lengthInBits;
     }
 
     public PlcValue toPlcValue() {

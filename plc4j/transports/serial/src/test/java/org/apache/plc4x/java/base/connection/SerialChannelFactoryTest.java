@@ -30,7 +30,7 @@ import org.apache.plc4x.java.transport.serial.SerialChannel;
 import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
 import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
 import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -42,4 +42,5 @@ public class ModbusFieldCoil extends ModbusField {
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
         return new ModbusFieldCoil(address, quantity);
     }
+
 }

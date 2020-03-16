@@ -22,7 +22,7 @@ package org.apache.plc4x.java.opm;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OpmUtilsTest implements WithAssertions {
 

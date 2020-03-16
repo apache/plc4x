@@ -18,10 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.transport.rawsocket;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
 
-public interface RawSocketTransportConfiguration extends TransportConfiguration {
-
-    Integer getProtocolId();
+public interface RawSocketTransportConfiguration extends PcapTransportConfiguration {
 
 }

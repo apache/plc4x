@@ -51,8 +51,10 @@
       <item name="Download" href="users/download.html"/>
       <item name="Getting Started" href="users/gettingstarted.html">
         <item name="Java" href="users/plc4j/gettingstarted.html"/>
+        <item name="General Concepts" href="users/plc4j/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/plc4j/virtual-modbus.html"/>
       </item>
+      <item name="Blogs, Videos and Slides" href="users/blogs-videos-and-slides.html"/>
       <item name="Protocols" href="users/protocols/index.html">
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
@@ -60,11 +62,19 @@
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
         <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
+        <item name="Firmata" href="users/protocols/firmata.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Modbus (TCP/Serial)" href="users/protocols/modbus.html"/>
         <item name="OPC UA" href="users/protocols/opc-ua.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>
         <item name="Simulated" href="users/protocols/simulated.html"/>
+      </item>
+      <item name="Transports" href="users/transports/index.html">
+        <item name="TCP" href="users/transports/tcp.html"/>
+        <item name="UDP" href="users/transports/udp.html"/>
+        <item name="Serial" href="users/transports/serial.html"/>
+        <item name="Raw Socket" href="users/transports/raw-socket.html"/>
+        <item name="PCAP Replay" href="users/transports/pcap-replay.html"/>
       </item>
       <item name="Integrations" href="users/integrations/index.html">
         <item name="Apache Calcite" href="users/integrations/apache-calcite.html"/>
@@ -79,7 +89,7 @@
       </item>
       <item name="Tools" href="users/tools/index.html">
         <item name="Capture Replay" href="users/tools/capture-replay.html"/>
-        <item name="Connection Pool" href="users/tools/onnection-pool.html"/>
+        <item name="Connection Pool" href="users/tools/connection-pool.html"/>
         <item name="Object PLC Mapping (OPM)" href="users/tools/opm.html"/>
         <item name="Scraper" href="users/tools/scraper.html"/>
         <item name="PLC4X without a PLC and Unit Testing" href="users/tools/testing.html"/>

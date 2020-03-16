@@ -44,12 +44,6 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <!-- This is a compile dependency for this test artifact -->
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <!-- This is a compile dependency for this test artifact -->

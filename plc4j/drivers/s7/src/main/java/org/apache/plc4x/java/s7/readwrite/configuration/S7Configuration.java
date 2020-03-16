@@ -43,19 +43,19 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @IntDefaultValue(0)
     public int remoteSlot = 0;
 
-    @ConfigurationParameter
+    @ConfigurationParameter("pdu-size")
     @IntDefaultValue(1024)
     public int pduSize = 1024;
 
-    @ConfigurationParameter
+    @ConfigurationParameter("max-amq-caller")
     @IntDefaultValue(8)
     public int maxAmqCaller = 8;
 
-    @ConfigurationParameter
+    @ConfigurationParameter("max-amq-callee")
     @IntDefaultValue(8)
     public int maxAmqCallee = 8;
 
-    @ConfigurationParameter
+    @ConfigurationParameter("controller-type")
     public String controllerType;
 
     public int getLocalRack() {

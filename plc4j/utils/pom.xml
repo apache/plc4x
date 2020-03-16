@@ -35,8 +35,9 @@
 
   <modules>
     <!-- Non-default input options -->
+    <module>pcap-replay</module>
+    <module>pcap-shared</module>
     <module>raw-sockets</module>
-    <module>pcap-sockets</module>
 
     <!-- Utilities for building tests -->
     <module>test-utils</module>

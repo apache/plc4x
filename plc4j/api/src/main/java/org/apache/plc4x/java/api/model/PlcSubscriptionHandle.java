@@ -34,4 +34,5 @@ import java.util.function.Consumer;
 public interface PlcSubscriptionHandle {
 
     PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer);
+
 }

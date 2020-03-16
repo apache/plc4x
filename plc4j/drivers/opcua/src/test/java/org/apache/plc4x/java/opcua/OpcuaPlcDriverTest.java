@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.eclipse.milo.examples.server.ExampleServer;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
 import static org.apache.plc4x.java.opcua.UtilsTest.assertMatching;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  */
@@ -136,10 +136,8 @@ public class OpcuaPlcDriverTest {
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
-
-
         } catch (Exception e) {
-            Assert.fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
         }
     }
 

@@ -19,11 +19,8 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.hamcrest.core.IsEqual;
-import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class PlcProprietaryResponseTest {

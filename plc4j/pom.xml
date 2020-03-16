@@ -110,6 +110,13 @@
               <propertyName>failsafeArgLine</propertyName>
             </configuration>
           </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
           <!--
               Check if the unit-test-coverage is at least a certain minimum.
           -->
@@ -247,11 +254,10 @@
               <failOnWarning>true</failOnWarning>
               <ignoredDependencies>
                 <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
-                <ignoredDependency>junit:junit</ignoredDependency>
+                <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-api</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter-params</ignoredDependency>
-                <ignoredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredDependency>
-                <ignoredDependency>org.junit.vintage:junit-vintage-engine</ignoredDependency>
+                <ignoredDependency>org.hamcrest:hamcrest</ignoredDependency>
                 <ignoredDependency>org.hamcrest:hamcrest-core</ignoredDependency>
                 <ignoredDependency>org.hamcrest:hamcrest-library</ignoredDependency>
                 <ignoredDependency>org.mockito:mockito-core</ignoredDependency>
@@ -274,6 +280,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -281,13 +288,12 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- JUnit 4 Support -->
+    <!-- JUnit 5 Support -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JUnit 5 Support -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -298,23 +304,17 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
 
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>

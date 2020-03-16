@@ -48,15 +48,6 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
         return "Allen Bradley ETH";
     }
 
-    @Override
-    protected boolean canRead() {
-        return true;
-    }
-
-    @Override
-    protected boolean canWrite() {
-        return true;
-    }
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
@@ -87,7 +78,7 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 // In the mspec we subtract 28 from the full size ... so here we gotta add it back.
-                return byteBuf.getUnsignedShort(byteBuf.readerIndex() +1)+24;
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2) + 28;
             }
             return -1;
         }

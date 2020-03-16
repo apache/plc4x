@@ -50,7 +50,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class SerialChannel extends AbstractNioByteChannel implements DuplexChannel {
 
     private static final Logger logger = LoggerFactory.getLogger(SerialChannel.class);
-    private final ChannelConfig config;
+    private final SerialChannelConfig config;
 
     private final VoidChannelPromise unsafeVoidPromise = new VoidChannelPromise(this, false);
     private boolean readPending = false; // Did we receive an EOF?
@@ -74,7 +74,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
      */
     protected SerialChannel(Channel parent, SelectableChannel ch) {
         super(parent, ch);
-        config = new DefaultChannelConfig(this);
+        config = new SerialChannelConfig(this);
         pipeline = newChannelPipeline();
     }
 
@@ -169,7 +169,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             if (((SerialSocketAddress) remoteAddress).getIdentifier().startsWith("TEST")) {
                 comPort = SerialChannelHandler.DummyHandler.INSTANCE;
             } else {
-                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress);
+                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress, config);
             }
             logger.debug("Using Com Port {}, trying to open port", comPort.getIdentifier());
             if (comPort.open()) {
@@ -272,11 +272,10 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             final RecvByteBufAllocator.Handle allocHandle = recvBufAllocHandle();
             allocHandle.reset(config);
 
-            ByteBuf byteBuf = null;
             boolean close = false;
             try {
                 do {
-                    byteBuf = allocHandle.allocate(allocator);
+                    ByteBuf byteBuf = allocHandle.allocate(allocator);
                     allocHandle.lastBytesRead(doReadBytes(byteBuf));
                     if (allocHandle.lastBytesRead() <= 0) {
                         // nothing was read. release the buffer.
@@ -293,7 +292,6 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                     allocHandle.incMessagesRead(1);
                     readPending = false;
                     pipeline.fireChannelRead(byteBuf);
-                    byteBuf = null;
                 } while (allocHandle.continueReading());
 
                 allocHandle.readComplete();
@@ -306,6 +304,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             } catch (Throwable t) {
                 // TODO
                 // handleReadException(pipeline, byteBuf, t, close, allocHandle);
+                t.printStackTrace();
             } finally {
                 // Check if there is a readPending which was not processed yet.
                 // This could be for two reasons:
@@ -409,8 +408,8 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             SerialChannel.this.remoteAddress = remoteAddress;
             eventLoop().execute(() -> {
                 try {
-                    final boolean sucess = doConnect(remoteAddress, localAddress);
-                    if (sucess) {
+                    final boolean success = doConnect(remoteAddress, localAddress);
+                    if (success) {
                         // Send a message to the pipeline
                         pipeline().fireChannelActive();
                         // Finally, close the promise

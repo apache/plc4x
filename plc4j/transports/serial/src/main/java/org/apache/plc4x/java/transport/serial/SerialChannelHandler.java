@@ -116,17 +116,21 @@ public abstract class SerialChannelHandler {
 
     public static class SerialPortHandler extends SerialChannelHandler {
 
+        private SerialChannelConfig config;
         private SerialPort comPort;
 
-        public SerialPortHandler(SocketAddress address) {
+        public SerialPortHandler(SocketAddress address, SerialChannelConfig config) {
             super(address);
+            this.config = config;
+            // Get the serial port described by the path/name in the address.
             comPort = SerialPort.getCommPort(((SerialSocketAddress) address).getIdentifier());
         }
 
         @Override
         public boolean open() {
             if (comPort.openPort()) {
-                comPort.setComPortParameters(19200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+                comPort.setComPortParameters(config.getBaudRate(), config.getDataBits(),
+                    config.getStopBits(), config.getParityBits());
                 return true;
             }
             return false;

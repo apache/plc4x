@@ -33,7 +33,8 @@
   <name>PLC4J: Examples: Hello-Webapp: Spring-Boot WAR</name>
 
   <properties>
-    <start.class>org.apache.plc4x.examples.robot.Application</start.class>
+    <start.class>org.apache.plc4x.examples.watertank.Application</start.class>
+    <blazeds.version>4.7.3</blazeds.version>
   </properties>
 
   <build>
@@ -75,8 +76,10 @@
         <configuration>
           <usedDependencies>
             <usedDependency>org.springframework.boot:spring-boot-starter-web</usedDependency>
-            <usedDependency>org.apache.plc4x.examples:plc4j-hello-webapp-service</usedDependency>
+            <usedDependency>org.apache.flex.blazeds:blazeds-spring-boot-starter</usedDependency>
+            <usedDependency>org.apache.flex.blazeds:flex-messaging-remoting</usedDependency>
             <usedDependency>org.apache.plc4x.examples:plc4j-hello-webapp-client</usedDependency>
+            <usedDependency>jakarta.jms:jakarta.jms-api</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -97,8 +100,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.plc4x.examples</groupId>
-      <artifactId>plc4j-hello-webapp-service</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
       <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
@@ -116,8 +124,76 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.flex.blazeds</groupId>
+      <artifactId>blazeds-spring-boot-starter</artifactId>
+      <version>${blazeds.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.blazeds</groupId>
+      <artifactId>flex-messaging-core</artifactId>
+      <version>${blazeds.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.blazeds</groupId>
+      <artifactId>flex-messaging-common</artifactId>
+      <version>${blazeds.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.flex.blazeds</groupId>
+      <artifactId>flex-messaging-remoting</artifactId>
+      <version>${blazeds.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.flex</groupId>
+      <artifactId>spring-flex-core</artifactId>
+      <version>1.5.2.RELEASE</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.adobe.blazeds</groupId>
+          <artifactId>blazeds-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.adobe.blazeds</groupId>
+          <artifactId>blazeds-common</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.adobe.blazeds</groupId>
+          <artifactId>blazeds-proxy</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.adobe.blazeds</groupId>
+          <artifactId>blazeds-remoting</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>2.0.3</version>
     </dependency>
 
     <dependency>

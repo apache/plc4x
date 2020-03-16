@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.camel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 //TODO: implement me
 public class Plc4XPollingConsumerTest {
