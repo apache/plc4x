@@ -63,7 +63,7 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     public static final Object[] DISCRIMINATOR_VALUES = new Object[] {
     <#list type.discriminatorValues as discriminatorValue>
         <#-- There are rare occasions where the discriminator is defined by a parser argument, in this case we currently can't detect the type -->
-        <#if type.discriminatorField??>(${helper.getLanguageTypeNameForField(type.discriminatorField)}) </#if>${discriminatorValue}<#sep>, </#sep>
+        (${helper.getDiscriminatorConstantType(type, discriminatorValue?index)}) ${discriminatorValue}<#sep>, </#sep>
     </#list>
     };
 </#if>
