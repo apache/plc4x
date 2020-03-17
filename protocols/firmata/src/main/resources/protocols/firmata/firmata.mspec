@@ -17,7 +17,7 @@
 // under the License.
 //
 
-[discriminatedType 'FirmataMessage'
+[discriminatedType 'FirmataMessage' [bit 'response']
     [discriminator uint 4 'messageType']
     [typeSwitch 'messageType'
         // Reading operations
@@ -51,16 +51,16 @@
 
         // Command
         ['0xF' FirmataMessageCommand
-            [simple FirmataCommand 'command']
+            [simple FirmataCommand 'command' ['response']]
         ]
     ]
 ]
 
-[discriminatedType 'FirmataCommand'
+[discriminatedType 'FirmataCommand' [bit 'response']
     [discriminator uint 4 'command']
     [typeSwitch 'command'
         ['0x0' FirmataCommandSysex
-            [simple SysexCommand 'command']
+            [simple SysexCommand 'command' ['response']]
             [reserved uint 8 '0xF7']
         ]
         ['0x4' FirmataCommandSetPinMode
@@ -81,13 +81,15 @@
     ]
 ]
 
-[discriminatedType 'SysexCommand'
+[discriminatedType 'SysexCommand' [bit 'response']
     [discriminator uint 8 'commandType']
-    [typeSwitch 'commandType'
+    [typeSwitch 'commandType','response'
         ['0x00' SysexCommandExendedId
             [array int 8 'id' count '2']
         ]
-        ['0x69' SysexCommandAnalogMappingQuery
+        ['0x69','false' SysexCommandAnalogMappingQueryRequest
+        ]
+        ['0x69','true' SysexCommandAnalogMappingQueryResponse
             [simple uint 8 'pin']
         ]
         ['0x6A' SysexCommandAnalogMappingResponse
@@ -108,7 +110,9 @@
         ]
         ['0x71' SysexCommandStringData
         ]
-        ['0x79' SysexCommandReportFirmware
+        ['0x79','false' SysexCommandReportFirmwareRequest
+        ]
+        ['0x79','true' SysexCommandReportFirmwareResponse
             [simple uint 8 'majorVersion']
             [simple uint 8 'minorVersion']
             [manualArray int 8 'fileName' terminated 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.isSysexEnd", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.parseSysexString", io)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.serializeSysexString", io, element)' 'STATIC_CALL("org.apache.plc4x.java.firmata.readwrite.utils.FirmataUtils.lengthSysexString", fileName)']
