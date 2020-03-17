@@ -31,6 +31,7 @@ public class EipFieldHandler implements PlcFieldHandler {
        }
        else throw new PlcInvalidFieldException("Invalid field "+fieldQuery);
     }
+    //TODO implement the encoding for the write requests
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
@@ -96,4 +97,5 @@ public class EipFieldHandler implements PlcFieldHandler {
     public PlcValue encodeDateTime(PlcField field, Object[] values) {
         return null;
     }
+
 }
