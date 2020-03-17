@@ -26,6 +26,12 @@ public class PcapChannelOption {
     /**
      * Option to restrict the captures based on packet port.
      */
+    public static final ChannelOption<Boolean> SUPPORT_VLANS =
+        ChannelOption.valueOf(Boolean.class, "SUPPORT_VLANS");
+
+    /**
+     * Option to restrict the captures based on packet port.
+     */
     public static final ChannelOption<Integer> PORT =
         ChannelOption.valueOf(Integer.class, "PORT");
 

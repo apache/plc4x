@@ -33,6 +33,7 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
     public static final int ALL_PROTOCOLS = -1;
     public static final int ALL_PORTS = -1;
 
+    private boolean supportVlans = false;
     private int protocolId = ALL_PROTOCOLS;
     private int port = ALL_PORTS;
     private PacketHandler packetHandler = Packet::getRawData;
@@ -41,16 +42,31 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         super(channel);
     }
 
+    public PcapChannelConfig clone() {
+        PcapChannelConfig clone = new PcapChannelConfig(channel);
+        clone.supportVlans = this.supportVlans;
+        clone.protocolId = this.protocolId;
+        clone.port = this.port;
+        clone.packetHandler = this.packetHandler;
+        return clone;
+    }
+
     @Override
     public Map<ChannelOption<?>, Object> getOptions() {
         return getOptions(super.getOptions(),
-            PcapChannelOption.PORT, PcapChannelOption.PROTOCOL_ID,
+            PcapChannelOption.SUPPORT_VLANS, PcapChannelOption.PORT, PcapChannelOption.PROTOCOL_ID,
             PcapChannelOption.PACKET_HANDLER);
     }
 
     @Override
     public <T> boolean setOption(ChannelOption<T> option, T value) {
-        if(option == PcapChannelOption.PORT) {
+        if(option == PcapChannelOption.SUPPORT_VLANS) {
+            if(value instanceof Boolean) {
+                supportVlans = (Boolean) value;
+                return true;
+            }
+            return false;
+        } else if(option == PcapChannelOption.PORT) {
             if(value instanceof Integer) {
                 port = (Integer) value;
                 return true;
@@ -71,6 +87,10 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
         } else {
             return super.setOption(option, value);
         }
+    }
+
+    public boolean isSupportVlans() {
+        return supportVlans;
     }
 
     public int getPort() {
@@ -99,23 +119,34 @@ public class PcapChannelConfig extends DefaultChannelConfig implements ChannelCo
 
     public String getFilterString(SocketAddress localAddress, SocketAddress remoteAddress) {
         StringBuilder sb = new StringBuilder();
-        if(getProtocolId() != ALL_PROTOCOLS) {
-
-            sb.append(" and (ether proto ").append(getProtocolId()).append(")");
+        if(isSupportVlans()) {
+            final PcapChannelConfig clone = (PcapChannelConfig) this.clone();
+            clone.supportVlans = false;
+            String subFilterString = clone.getFilterString(localAddress, remoteAddress);
+            if(subFilterString.isEmpty()) {
+                sb.append(" and (vlan)");
+            } else {
+                sb.append(" and ((vlan and ").append(subFilterString).append(") " +
+                    "or (").append(subFilterString).append("))");
+            }
+        } else {
+            if (getProtocolId() != ALL_PROTOCOLS) {
+                sb.append(" and (ether proto ").append(getProtocolId()).append(")");
+            }
+            // Add a filter for TCP or UDP port.
+            if(getPort() != ALL_PORTS) {
+                sb.append(" and (port ").append(getPort()).append(")");
+            }
+            // Add a filter for source or target address.
+            /*if(localAddress != null) {
+                sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
+            }
+            // Add a filter for source or target address.
+            if(remoteAddress != null) {
+                sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
+            }*/
         }
-        // Add a filter for TCP or UDP port.
-        if(getPort() != ALL_PORTS) {
-            sb.append(" and (port ").append(getPort()).append(")");
-        }
-        // Add a filter for source or target address.
-        /*if(localAddress != null) {
-            sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
-        }
-        // Add a filter for source or target address.
-        if(remoteAddress != null) {
-            sb.append(" and (host ").append(localAddress.getHostAddress()).append(")");
-        }*/
-        return sb.toString().substring(" and ".length());
+        return (sb.length() > 0) ? sb.toString().substring(" and ".length()) : "";
     }
 
 }

@@ -54,6 +54,7 @@ public class PcapReplayChannelFactory extends NettyChannelFactory implements Has
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
+            bootstrap.option(PcapChannelOption.SUPPORT_VLANS, configuration.getSupportVlans());
             bootstrap.option(PcapChannelOption.PORT, configuration.getDefaultPort());
             bootstrap.option(PcapChannelOption.PROTOCOL_ID, configuration.getProtocolId());
             if(configuration.getPcapPacketHandler() != null) {
