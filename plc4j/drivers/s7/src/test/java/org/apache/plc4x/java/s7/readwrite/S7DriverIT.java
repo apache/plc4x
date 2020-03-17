@@ -20,10 +20,10 @@ package org.apache.plc4x.java.s7.readwrite;
 
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-public class S7DriverTestsuite extends DriverTestsuiteRunner {
+public class S7DriverIT extends DriverTestsuiteRunner {
 
-    public S7DriverTestsuite() {
-        super("/testsuite/S7DriverTestsuite.xml");
+    public S7DriverIT() {
+        super("/testsuite/S7DriverIT.xml");
     }
 
 }
