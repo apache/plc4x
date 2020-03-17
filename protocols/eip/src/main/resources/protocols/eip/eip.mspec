@@ -43,7 +43,7 @@
         ]
 ]
 [type  'CipExchange' [uint 16 'exchangeLen']
-    [const          uint        16      'itemCount'           '0x0002']                 //2 items
+    [const          uint        16      'itemCount'           '0x02']                 //2 items
     [const          uint        32      'nullPtr'             '0x0']                    //NullPointerAddress
     [const          uint        16      'UnconnectedData'     '0x00B2']                 //Connection Manager
     [implicit       uint        16      'size'                'lengthInBytes - 8 - 2']  //remove fields above and routing
@@ -63,7 +63,7 @@
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
               [enum       CIPDataTypeCode     'dataType']
-              [array      int             8   'data'  length  'serviceLen-6']
+              [array      int             8   'data'  count  'serviceLen-6']
         ]
         ['0x4D' CipWriteRequest
             [simple     int     8           'RequestPathSize']
@@ -88,7 +88,7 @@
                [simple     uint    8   'extStatus']
                [simple Services  'data'['serviceLen - 4']]
         ]
-        ['0x0052'   CipUnconnectedRequest
+        ['0x52'   CipUnconnectedRequest
                [reserved   uint    8   '0x02']
                [reserved   uint    8   '0x20']   // setRequestPathLogicalClassSegment
                [reserved   uint    8   '0x06']   // set request class path

@@ -28,12 +28,10 @@
     <!-- First the driver is expected to send a RegisterSession connection request -->
     <send-plc-message>
       <EipConnectionRequest className="org.apache.plc4x.java.eip.readwrite.EipConnectionRequest">
-        <parameters>
           <sessionHandle>0</sessionHandle>
           <status>0</status>
           <senderContext>0x0000000000000000</senderContext>
           <options>0</options>
-        </parameters>
       </EipConnectionRequest>
     </send-plc-message>
     <!-- The PLC will send the connection response with a sender context and session handle-->
@@ -45,9 +43,48 @@
         <options>0</options>
       </EipConnectionRequest>
     </receive-plc-message>
-
+  </setup>
   <testcase>
     <name>Single element read request</name>
+    <steps>
+      <send-plc-message>
+      <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+          <sessionHandle>1</sessionHandle>
+          <status>0</status>
+          <senderContext>0x0000000000000002</senderContext>
+          <options>0</options>
+          <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+            <service className="org.apache.plc4x.java.eip.readwrite.CipUnconnectedRequest">
+              <service className="org.apache.plc4x.java.eip.readwrite.CipReadRequest">
+                <RequestPathSize>0x03</RequestPathSize>
+                <tag>0x657461720491</tag>
+                <elementNb>0x0001</elementNb>
+              </service>
+              <backPlane>1</backPlane>
+              <slot>4</slot>
+            </service>
+          </exchange>
+      </CipRRData>
+      </send-plc-message>
+      <receive-plc-message>
+        <CipRRData className="org.apache.plc4x.java.eip.readwrite.CipRRData">
+          <sessionHandle>1</sessionHandle>
+          <status>0</status>
+          <senderContext>0x0000000000000002</senderContext>
+          <options>0</options>
+          <exchange className="org.apache.plc4x.java.eip.readwrite.CipExchange">
+            <service className="org.apache.plc4x.java.eip.readwrite.CipReadResponse">
+              <status>0x0</status>
+              <extStatus>0x0</extStatus>
+              <extStatus>0x0</extStatus>
+              <dataType>0x00C4</dataType>
+              <dataType>0x00C4</dataType>
+              <data>0x00000216</data>
+            </service>
+          </exchange>
+        </CipRRData>
+      </receive-plc-message>
+    </steps>
   </testcase>
 
 </test:driver-testsuite>
