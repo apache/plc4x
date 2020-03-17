@@ -25,6 +25,9 @@
     <name>Firmata Reset</name>
     <raw>FF</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSystemReset"/>
@@ -36,6 +39,9 @@
     <name>Firmata Report Version</name>
     <raw>F90205</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandProtocolVersion">
@@ -50,10 +56,13 @@
     <name>Firmata Report Version And Name</name>
     <raw>F07902055300740061006E0064006100720064004600690072006D006100740061002E0069006E006F00F7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmware">
+          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
             <majorVersion>2</majorVersion>
             <minorVersion>5</minorVersion>
             <fileName>U3RhbmRhcmRGaXJtYXRhLmlubw==</fileName>
@@ -63,25 +72,33 @@
     </xml>
   </testcase>
 
-  <!-- TODO: Fix this -->
-  <!--testcase>
+  <testcase>
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandReportFirmware (Request)</name>
     <raw>f079f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
+        <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
+          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareRequest"/>
+        </command>
       </FirmataMessageCommand>
     </xml>
-  </testcase-->
+  </testcase>
 
   <testcase>
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandReportFirmware (Response)</name>
     <raw>f07902055300740061006e0064006100720064004600690072006d006100740061002e0069006e006f00f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmware">
+          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandReportFirmwareResponse">
             <majorVersion>2</majorVersion>
             <minorVersion>5</minorVersion>
             <fileName>U3RhbmRhcmRGaXJtYXRhLmlubw==</fileName>
@@ -95,10 +112,13 @@
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandAnalogMappingQuery (Request)</name>
     <raw>f069f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
-          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandAnalogMappingQuery"/>
+          <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandAnalogMappingQueryRequest"/>
         </command>
       </FirmataMessageCommand>
     </xml>
@@ -108,6 +128,9 @@
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandCapabilityQuery (Request)</name>
     <raw>f06bf7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
@@ -121,6 +144,9 @@
     <name>FirmataMessageSubscribeAnalogPinValue (Pin 0)</name>
     <raw>c001</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageSubscribeAnalogPinValue className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageSubscribeAnalogPinValue">
         <pin>0</pin>
@@ -133,6 +159,9 @@
     <name>FirmataMessageSubscribeDigitalPinValue (Pin 0)</name>
     <raw>d001</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageSubscribeDigitalPinValue className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageSubscribeDigitalPinValue">
         <pin>0</pin>
@@ -142,38 +171,44 @@
   </testcase>
 
   <!-- TODO: Fix this -->
-  <testcase>
+  <!--testcase>
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandAnalogMappingResponse</name>
-    <raw></raw>
+    <raw>F069</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
       </FirmataMessageCommand>
     </xml>
-  </testcase>
+  </testcase-->
 
   <!-- TODO: Fix this -->
-  <testcase>
+  <!--testcase>
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandCapabilityResponse</name>
     <raw></raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
       </FirmataMessageCommand>
     </xml>
-  </testcase>
+  </testcase-->
 
   <testcase>
     <name>FirmataMessageAnalogIO (Pin 0)</name>
     <raw>e05403</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageAnalogIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageAnalogIO">
         <pin>0</pin>
-        <data>
-          <data>84</data>
-          <data>3</data>
-        </data>
+        <data>VAM=</data>
       </FirmataMessageAnalogIO>
     </xml>
   </testcase>
@@ -182,10 +217,13 @@
     <name>FirmataMessageDigitalIO (Pin 0)</name>
     <raw>900000</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageDigitalIO className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageDigitalIO">
-        <pin>0</pin>
-        <data>0</data>
+        <pinBlock>0</pinBlock>
+        <data>AAA=</data>
       </FirmataMessageDigitalIO>
     </xml>
   </testcase>
@@ -194,6 +232,9 @@
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandPinStateQuery (Pin 2)</name>
     <raw>f06d02f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
@@ -209,22 +250,28 @@
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandPinStateResponse</name>
     <raw>f06e020100f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
           <command className="org.apache.plc4x.java.firmata.readwrite.SysexCommandPinStateResponse">
             <pin>2</pin>
-            <state>256</state>
+            <pinMode>1</pinMode>
+            <pinState>0</pinState>
           </command>
         </command>
-      </FirmataMessageCommand>
-    </xml>
+      </FirmataMessageCommand>    </xml>
   </testcase>
 
-  <testcase>
+  <!--testcase>
     <name>FirmataMessageCommand->FirmataCommandSysex->SysexCommandPinStateResponse (short)</name>
     <raw>f06e14f7</raw>
     <root-type>FirmataMessage</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
     <xml>
       <FirmataMessageCommand className="org.apache.plc4x.java.firmata.readwrite.FirmataMessageCommand">
         <command className="org.apache.plc4x.java.firmata.readwrite.FirmataCommandSysex">
@@ -234,6 +281,6 @@
         </command>
       </FirmataMessageCommand>
    </xml>
-  </testcase>
+  </testcase-->
 
 </test:testsuite>

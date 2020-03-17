@@ -76,7 +76,7 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             .unwrap(FirmataMessageCommand::getCommand)
             .only(FirmataCommandSysex.class)
             .unwrap(FirmataCommandSysex::getCommand)
-            .only(SysexCommandReportFirmware.class)
+            .only(SysexCommandReportFirmwareResponse.class)
             .handle(sysexCommandReportFirmware -> {
                 String name = new String(sysexCommandReportFirmware.getFileName(), StandardCharsets.UTF_8);
                 LOGGER.info(String.format("Connected to Firmata host running version %s.%s with name %s",

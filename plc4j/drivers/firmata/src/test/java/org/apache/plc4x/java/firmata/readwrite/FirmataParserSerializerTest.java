@@ -20,10 +20,10 @@ package org.apache.plc4x.java.firmata.readwrite;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class FirmataParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
+public class FirmataParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
-    public FirmataParserSerializerTestsuite() {
-        super("/testsuite/FirmataParserSerializerTestsuite.xml");
+    public FirmataParserSerializerTest() {
+        super("/testsuite/FirmataParserSerializerTest.xml");
     }
 
 }
