@@ -97,7 +97,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         if(paramString.contains("?")){
             paramString=paramString.split("\\?")[0];
         }
-        LoggerFactory.getLogger(GeneratedDriverBase.class).info("Param String {}",paramString);
         // Check if the protocol code matches this driver.
         if(!protocolCode.equals(getProtocolCode())) {
             // Actually this shouldn't happen as the DriverManager should have not used this driver in the first place.

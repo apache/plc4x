@@ -69,11 +69,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
 
     @Override
     public void onConnect(ConversationContext<EipPacket> context) {
-        /**Send a ENIP Message with Register Session Code '0x0065',
-         * empty Session Handle and Sender Context
-         * Then we need to accept the response with the same Code
-         * and save the assigned Session Handle
-         * PS: Check Status for Success : 0x00000000*/
         logger.info("Sending RegisterSession EIP Package");
         EipConnectionRequest connectionRequest =
           new EipConnectionRequest(0L,0L,emptySenderContext,0L);
@@ -234,7 +229,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     }
 
     private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) {
-        //TODO Check if this is right
         Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
         // only 1 field
         if(p instanceof CipReadResponse) {
@@ -330,6 +324,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         return Float.intBitsToFloat(b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0);
     }
 
+    @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;

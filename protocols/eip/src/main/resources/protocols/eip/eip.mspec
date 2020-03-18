@@ -42,7 +42,7 @@
             ]
         ]
 ]
-[type  'CipExchange' [uint 16 'exchangeLen']
+[type  'CipExchange' [uint 16 'exchangeLen']  //We pass then length down to evey sub-type to be able to provide the remaining data size
     [const          uint        16      'itemCount'           '0x02']                 //2 items
     [const          uint        32      'nullPtr'             '0x0']                    //NullPointerAddress
     [const          uint        16      'UnconnectedData'     '0x00B2']                 //Connection Manager
