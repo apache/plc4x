@@ -81,6 +81,8 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
             .withDriverContext(FirmataDriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
+            // Every incoming message is to be treated as a response.
+            .withParserArgs(true)
             .build();
     }
 

@@ -20,10 +20,10 @@ package org.apache.plc4x.java.s7.readwrite;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class S7ParserSerializerTestsuite extends ParserSerializerTestsuiteRunner {
+public class S7ParserSerializerTest extends ParserSerializerTestsuiteRunner {
 
-    public S7ParserSerializerTestsuite() {
-        super("/testsuite/S7ParserSerializerTestsuite.xml");
+    public S7ParserSerializerTest() {
+        super("/testsuite/S7ParserSerializerTest.xml");
     }
 
 }
