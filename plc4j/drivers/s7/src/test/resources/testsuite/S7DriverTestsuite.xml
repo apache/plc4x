@@ -220,7 +220,6 @@
     <name>Single element read request</name>
     <steps>
       <!--api-request-message>
-
       </api-request-message-->
       <send-plc-message>
         <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
@@ -277,7 +276,6 @@
         </TPKTPacket>
       </receive-plc-message>
       <!--api-response-message>
-
       </api-response-message-->
     </steps>
   </testcase>

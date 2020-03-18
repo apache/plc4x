@@ -22,8 +22,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -40,14 +38,13 @@ import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
 public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements HasConfiguration<EIPConfiguration> {
 
@@ -81,7 +78,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         EipConnectionRequest connectionRequest =
           new EipConnectionRequest(0L,0L,emptySenderContext,0L);
         context.sendRequest(connectionRequest)
-            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap( p -> (EipPacket) p)
+            .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap( p -> p)
             .check(p -> p instanceof EipConnectionRequest)
             .handle(p -> {
                 if(p.getStatus()==0L){
@@ -137,18 +134,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         }
 
         boolean isPadded = tag.length() % 2 != 0;
-        int dataSegLength = 2 + tag.length() + (isPadded==true? 1 : 0) + (isArray==true? 2 : 0);
+        int dataSegLength = 2 + tag.length() + (isPadded ? 1 : 0) + (isArray ? 2 : 0);
 
         ByteBuffer buffer = ByteBuffer.allocate(dataSegLength).order(ByteOrder.LITTLE_ENDIAN);
 
         buffer.put((byte)0x91);
         buffer.put((byte)tag.length());
         byte[] tagBytes = null;
-        try {
-            tagBytes = tag.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException ex) {
-            java.util.logging.Logger.getLogger(EipProtocolLogic.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        tagBytes = tag.getBytes(StandardCharsets.US_ASCII);
 
         buffer.put(tagBytes);
         buffer.position(2 +tagBytes.length);
@@ -169,12 +162,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<CipService> response) {
         return response
             .thenApply(p -> {
-                try {
                         return ((PlcReadResponse) decodeReadResponse(p, readRequest));
-
-                } catch (PlcProtocolException e) {
-                    throw new PlcRuntimeException("Unable to decode Response", e);
-                }
             });
     }
 
@@ -245,7 +233,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
         return future;
     }
 
-    private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) throws PlcProtocolException {
+    private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) {
         //TODO Check if this is right
         Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
         // only 1 field
@@ -466,7 +454,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     }
 
     private byte[] encodeValue(PlcValue value, CIPDataTypeCode type, short elements) {
-        ByteBuffer buffer = ByteBuffer.allocate(4+type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
+        //ByteBuffer buffer = ByteBuffer.allocate(4+type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer buffer = ByteBuffer.allocate(type.getSize()).order(ByteOrder.LITTLE_ENDIAN);
         switch(type){
             case SINT:
                 buffer.put(value.getByte());
@@ -487,6 +476,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
     }
 
     private PlcResponseCode decodeResponseCode(int status){
+        //TODO other status
         switch (status){
             case 0 : return PlcResponseCode.OK;
             default: return PlcResponseCode.INTERNAL_ERROR;
@@ -495,7 +485,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket>implements Has
 
     @Override
     public void close(ConversationContext<EipPacket> context) {
-        /**Send a ENIP Message with Unregister Session Code '0x0066' */
         logger.info("Sending UnregisterSession EIP Pakcet");
         context.sendRequest(new EipDisconnectRequest(sessionHandle, 0L, emptySenderContext, 0L)); //Unregister gets no response
         logger.trace("Unregistred Session {}", sessionHandle);

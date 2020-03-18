@@ -276,7 +276,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             case WORD:
                 minValue = BigInteger.valueOf(Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Short.MAX_VALUE);
-                fieldType = PlcInteger.class;
+                fieldType = PlcShort.class;
                 valueType = Short.class;
                 castedValues = new Short[values.length];
                 break;
