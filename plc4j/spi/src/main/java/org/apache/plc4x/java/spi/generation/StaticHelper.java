@@ -97,6 +97,7 @@ public class StaticHelper {
 
     public static double toFloat(ReadBuffer io, boolean signed, int bitsExponent, int bitsMantissa) {
         try {
+
             boolean negative = (signed) && io.readBit();
             long exponent = io.readUnsignedLong(bitsExponent);
             exponent = exponent - (((long) Math.pow(2, bitsExponent) / 2) - 1);
@@ -130,10 +131,10 @@ public class StaticHelper {
         final double v = toFloat(io, true, 8, 23);
         System.out.println(v);*/
 
-        final byte[] bytes = Hex.decodeHex("0002");
-        ReadBuffer io = new ReadBuffer(bytes,false);
-
-        System.out.println(io.readShort(16));
+        final byte[] bytes = Hex.decodeHex("4185999A");
+        ReadBuffer io = new ReadBuffer(bytes,true);
+        ReadBuffer io2 = new ReadBuffer(bytes,false);
+        System.out.println(toFloat(io2,true,8,23));
     }
 
 }

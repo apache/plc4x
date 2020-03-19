@@ -42,11 +42,11 @@ public class HelloPlc4x {
         try {
             long t= System.currentTimeMillis();
             long end = t+30000;
-            PlcConnection connection = new PlcDriverManager().getConnection("eip:tcp://163.243.183.250/backplane=1&slot=4");
+            PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.178.10/");
             while (true) {
                 PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                    builder.addItem("Array", "%testLargeRealArray[20]:50");
+                    builder.addItem("String", "%DB1.DBD0:REAL");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
                 for(String field : response.getFieldNames()){
                     logger.info("{} : {}",field,response.getObject(field));

@@ -33,7 +33,7 @@ public class ReadBuffer {
     private final long totalBytes;
 
     public ReadBuffer(byte[] input) {
-        this(input, true);
+        this(input, false);
     }
 
     public ReadBuffer(byte[] input, boolean littleEndian) {
@@ -59,9 +59,6 @@ public class ReadBuffer {
     }
 
 
-    public int getRemaining() {
-        return ((int)totalBytes-getPos()-1);
-    }
 
     public byte peekByte(int offset) throws ParseException {
         // Remember the old index.
