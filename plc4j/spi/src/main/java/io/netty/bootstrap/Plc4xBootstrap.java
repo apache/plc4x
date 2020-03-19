@@ -39,7 +39,7 @@ public class Plc4xBootstrap extends Bootstrap {
     }
 
     @Override
-    void init(Channel channel) throws Exception {
+    void init(Channel channel) {
         if((group == null) && (channel instanceof EventLoopProvider)) {
             group = ((EventLoopProvider) channel).getEventLoop();
         }
