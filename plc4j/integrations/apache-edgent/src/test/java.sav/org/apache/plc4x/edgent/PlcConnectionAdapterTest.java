@@ -34,8 +34,6 @@ import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.field.MockField;
 import org.apache.plc4x.test.FastTests;
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -45,7 +43,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
 
 public class PlcConnectionAdapterTest {
 

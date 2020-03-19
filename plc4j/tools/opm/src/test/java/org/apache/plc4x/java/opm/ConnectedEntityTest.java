@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcString;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

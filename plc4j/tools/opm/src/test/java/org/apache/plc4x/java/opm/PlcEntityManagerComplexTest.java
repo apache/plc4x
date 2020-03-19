@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.assertj.core.api.WithAssertions;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -57,9 +57,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 
@@ -104,7 +102,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
 
         ConnectedEntity connect = manager.read(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
-        Assert.assertNotNull(connect);
+        assertNotNull(connect);
 
         // Call different method
         String s = connect.toString();
@@ -119,7 +117,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
-        Assert.assertNotNull(connect);
+        assertNotNull(connect);
 
         // Call different method
         String s = connect.toString();
@@ -160,7 +158,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
 
         ConnectedEntity connect = manager.connect(ConnectedEntity.class, "s7://localhost:5555/0/0");
 
-        Assert.assertNotNull(connect);
+        assertNotNull(connect);
 
         // Call getter
         assertEquals(1, connect.getIntVar());

@@ -31,8 +31,7 @@ import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -42,9 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Random;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -59,7 +56,7 @@ public class TriggeredScraperImplTest {
     private MockDevice mockDevice1;
     private MockDevice mockDevice2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         driverManager = new PlcDriverManager();
         MockConnection mock1Connection = ((MockConnection) driverManager.getConnection("mock:1"));

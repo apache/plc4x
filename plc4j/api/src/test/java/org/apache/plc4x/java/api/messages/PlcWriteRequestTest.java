@@ -19,12 +19,9 @@
 package org.apache.plc4x.java.api.messages;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Collections;
 
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcWriteRequestTest {

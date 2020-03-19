@@ -39,6 +39,8 @@ public interface PlcReadResponse extends PlcFieldResponse {
     @Experimental
     PlcValue getAsPlcValue();
 
+    PlcValue getPlcValue(String name);
+
     int getNumberOfValues(String name);
 
     Object getObject(String name);

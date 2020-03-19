@@ -18,6 +18,7 @@
 import subprocess
 import time
 import warnings
+from contextlib import contextmanager
 
 from generated.org.apache.plc4x.interop.InteropServer import Client, PlcException
 from thrift.protocol import TBinaryProtocol
@@ -28,47 +29,72 @@ from org.apache.plc4x.PlcConnection import PlcConnection
 
 
 class PlcDriverManager:
-
     """
-    constructor, initialize the server
+    Constructor, initialize the server
     """
     def __init__(self, embedded_server=True):
         self.embedded_server = embedded_server
+        self.interop_proc = None
         # Start the Server in the background
         if embedded_server:
-            self.interop_proc = subprocess.Popen(
-                ["java", "-Dlog4j.configurationFile=../lib/log4j2.xml",
-                 "-jar", "../lib/interop-server.jar"])
-            try:
-                print("Started server under pid " + str(self.interop_proc.pid))
-            except:
-                print("Encountered an Exception while starting Interop Server")
-                raise PlcException("Unable to start the Interop Server!")
+            self.start_server()
 
-            time.sleep(2)
-            poll = self.interop_proc.poll()
-            if poll is None:
-                print("Sucesfully started the Interop Server...")
-            else:
-                warnings.warn("Interop Server died after starting up...")
-                raise PlcException(
-                    "Unable to start the Interop Server. Is another Server still running under the same port?")
-
-        self.transport = TSocket.TSocket('localhost', 9090)
-        self.transport = TTransport.TBufferedTransport(self.transport)
-
+        transport = TSocket.TSocket('localhost', 9090)
+        self.transport = TTransport.TBufferedTransport(transport)
         self.protocol = TBinaryProtocol.TBinaryProtocol(self.transport)
 
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+    def start_server(self):
+        self.interop_proc = subprocess.Popen(
+            ["java", "-Dlog4j.configurationFile=../lib/log4j2.xml", "-jar", "../lib/interop-server.jar"]
+        )
         try:
-            self.transport.open()
-        except TTransportException:
-            raise PlcException("Unable to connect to the Interop Server, is the Server really running???")
+            print("Started server under pid " + str(self.interop_proc.pid))
+        except:
+            print("Encountered an Exception while starting Interop Server")
+            raise PlcException("Unable to start the Interop Server!")
+        time.sleep(2)
+        poll = self.interop_proc.poll()
+        if poll is None:
+            print("Sucesfully started the Interop Server...")
+        else:
+            warnings.warn("Interop Server died after starting up...")
+            raise PlcException(
+                "Unable to start the Interop Server. Is another Server still running under the same port?")
 
     def _get_client(self):
         return Client(self.protocol)
 
     def get_connection(self, url):
         return PlcConnection(self._get_client(), url)
+
+    @contextmanager
+    def connection(self, url):
+        """
+        Context manager to handle connection.
+        """
+        conn = None
+        try:
+            conn = self.get_connection(url)
+            yield conn
+        except PlcException as e:
+            raise Exception(str(e.url))
+        finally:
+            if conn is not None:
+                conn.close()
+
+    def open(self):
+        try:
+            self.transport.open()
+        except TTransportException:
+            self.close()  # Handle failure on enter
+            raise PlcException("Unable to connect to the Interop Server, is the Server really running?")
 
     def close(self):
         print("Closing the Interop Server")

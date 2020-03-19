@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  */
 public class OpcuaField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[\\w(.)-=]+))?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>.+))?");
 
     private final OpcuaIdentifierType identifierType;
 

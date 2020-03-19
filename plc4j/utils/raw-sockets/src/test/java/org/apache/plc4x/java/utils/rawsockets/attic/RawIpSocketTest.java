@@ -15,10 +15,9 @@
  */
 package org.apache.plc4x.java.utils.rawsockets.attic;
 
-import org.apache.plc4x.java.utils.rawsockets.attic.RawIpSocket;
 import org.apache.plc4x.test.RequirePcap;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapAddress;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
@@ -29,14 +28,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class RawIpSocketTest {
 
     @Test
-    @Ignore("Need to make tests run in Docker container first as this test requires libpcap or the entrie application to be run as 'root'")
+    @Disabled("Need to make tests run in Docker container first as this test requires libpcap or the entrie application to be run as 'root'")
     @RequirePcap
     public void testPingPacket() throws Exception {
         // Protocol number 1 = ICMP (Ping)
@@ -70,7 +68,7 @@ public class RawIpSocketTest {
             }
         }
         // On travis we won't have any interface at all so we don't need to run there
-        assumeThat(rawIpSocket, notNullValue());
+        assertNotNull(rawIpSocket);
 
         // Simple ICMP (Ping packet)
         byte[] rawData = new byte[]{

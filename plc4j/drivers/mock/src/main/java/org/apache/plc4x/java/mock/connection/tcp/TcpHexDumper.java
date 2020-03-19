@@ -21,7 +21,6 @@ package org.apache.plc4x.java.mock.connection.tcp;
 import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +34,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class TcpHexDumper extends ExternalResource implements Closeable {
+public class TcpHexDumper implements Closeable {
 
     private static final Logger logger = LoggerFactory.getLogger(TcpHexDumper.class);
 
@@ -109,7 +108,6 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
         logger.info("Stopped");
     }
 
-    @Override
     public void after() {
         try {
             stop(true);
@@ -121,7 +119,6 @@ public class TcpHexDumper extends ExternalResource implements Closeable {
         }
     }
 
-    @Override
     public void before() throws Throwable {
         init(portToUse);
     }

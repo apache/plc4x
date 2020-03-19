@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.junit.Test;
-
 import java.util.List;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 public class PlcSubscriptionEventTest {

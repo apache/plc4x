@@ -25,6 +25,8 @@ public interface Message {
 
     int getLengthInBytes();
 
+    int getLengthInBits();
+
     PlcValue toPlcValue();
 
     MessageIO<? extends Message, ? extends Message> getMessageIO();

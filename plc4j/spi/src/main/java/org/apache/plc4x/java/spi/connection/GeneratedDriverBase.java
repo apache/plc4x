@@ -124,6 +124,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         if(channelFactory == null) {
             throw new PlcConnectionException("Unable to get channel factory from url " + transportConfig);
         }
+        configure(configuration, channelFactory);
 
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);

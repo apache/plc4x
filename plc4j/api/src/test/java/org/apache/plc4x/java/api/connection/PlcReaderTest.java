@@ -21,7 +21,6 @@ package org.apache.plc4x.java.api.connection;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.junit.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,8 +29,6 @@ import java.util.concurrent.ExecutionException;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class PlcReaderTest {

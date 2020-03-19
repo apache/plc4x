@@ -18,8 +18,23 @@ under the License.
 */
 package org.apache.plc4x.java.transport.serial;
 
+import com.fazecast.jSerialComm.SerialPort;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
 public interface SerialTransportConfiguration extends TransportConfiguration {
+
+    int getBaudRate();
+
+    default int getNumDataBits() {
+        return 8;
+    }
+
+    default int getNumStopBits() {
+        return SerialPort.ONE_STOP_BIT;
+    }
+
+    default int getParityBits() {
+        return SerialPort.NO_PARITY;
+    }
 
 }

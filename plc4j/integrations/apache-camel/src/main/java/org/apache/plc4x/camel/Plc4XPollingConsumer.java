@@ -21,9 +21,10 @@ package org.apache.plc4x.camel;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.PollingConsumer;
+import org.apache.camel.Processor;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.ServiceSupport;
+import org.apache.camel.support.service.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -136,6 +137,12 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
             return collection.iterator().next();
         }
         return collection;
+    }
+
+    @Override
+    public Processor getProcessor() {
+        // TODO: No idea what to do here ...
+        return null;
     }
 
 }

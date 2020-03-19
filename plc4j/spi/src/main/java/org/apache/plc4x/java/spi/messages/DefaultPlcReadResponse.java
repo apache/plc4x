@@ -59,6 +59,11 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    public PlcValue getPlcValue(String name) {
+        return values.getOrDefault(name, Pair.of(null, null)).getRight();
+    }
+
+    @Override
     public int getNumberOfValues(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {

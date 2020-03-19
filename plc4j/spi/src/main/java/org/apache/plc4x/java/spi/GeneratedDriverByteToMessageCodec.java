@@ -59,18 +59,19 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
         logger.trace("Receiving bytes, trying to decode Message...");
         // As long as there is data available, continue checking the content.
         while(byteBuf.readableBytes() > 0) {
-            // Check if enough data is present to process the entire package.
-            int packetSize = getPacketSize(byteBuf);
-            if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
-                return;
-            }
-
-            // Read the packet data into a new ReadBuffer
-            byte[] bytes = new byte[packetSize];
-            byteBuf.readBytes(bytes);
-            ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
-
+            byte[] bytes = null;
             try {
+                // Check if enough data is present to process the entire package.
+                int packetSize = getPacketSize(byteBuf);
+                if(packetSize == -1 || packetSize > byteBuf.readableBytes()) {
+                    return;
+                }
+
+                // Read the packet data into a new ReadBuffer
+                bytes = new byte[packetSize];
+                byteBuf.readBytes(bytes);
+                ReadBuffer readBuffer = new ReadBuffer(bytes, !bigEndian);
+
                 // Parse the packet.
                 T packet = io.parse(readBuffer, parserArgs);
 
@@ -83,8 +84,10 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                     return;
                 }
             } catch (Exception e) {
-                logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "
-                    + e.getMessage(), e);
+                if(bytes != null) {
+                    logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "
+                        + e.getMessage(), e);
+                }
                 // Just remove any trailing junk ... if there is any.
                 removeRestOfCorruptPackage(byteBuf);
             }

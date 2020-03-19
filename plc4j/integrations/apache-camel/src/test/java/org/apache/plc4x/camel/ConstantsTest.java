@@ -18,20 +18,25 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class ConstantsTest {
 
-    @Test(expected = IllegalStateException.class)
-    public void testConstantsNotInstanceable() throws Throwable {
-        try {
-            Constructor<Constants> constructor = Constants.class.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            constructor.newInstance();
-        } catch (Exception e) {
-            throw e.getCause();
-        }
+    @Test
+    public void testConstantsNotInstanceable() {
+        assertThrows(IllegalStateException.class, () -> {
+            try {
+                Constructor<Constants> constructor = Constants.class.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                constructor.newInstance();
+            } catch (Exception e) {
+                throw e.getCause();
+            }
+        });
     }
+
 }

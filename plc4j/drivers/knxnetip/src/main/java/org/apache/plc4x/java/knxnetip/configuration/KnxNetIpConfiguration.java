@@ -22,9 +22,13 @@ import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
+import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
+import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
+import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration {
+public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
@@ -52,6 +56,16 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @Override
     public int getDefaultPort() {
         return KnxNetIpDriver.KNXNET_IP_PORT;
+    }
+
+    @Override
+    public Integer getProtocolId() {
+        return PcapChannelConfig.ALL_PROTOCOLS;
+    }
+
+    @Override
+    public PacketHandler getPcapPacketHandler() {
+        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
     }
 
     @Override

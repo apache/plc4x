@@ -22,7 +22,7 @@ package org.apache.plc4x.java.api.types;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 class PlcSubscriptionTypeTest {
 
