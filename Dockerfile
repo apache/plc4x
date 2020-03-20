@@ -20,44 +20,16 @@
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
 # Fixed version of this in order to have a fixed JDK version
-FROM azul/zulu-openjdk:8 as build
+FROM openjdk:8 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
 
 # Install general purpose tools
-RUN apt install -y make libpcap-dev libc-dev
-
-# Requied for "with-boost" profile
-RUN apt install -y bison flex gcc g++
-
-# Required for "with-cpp" profile
-RUN apt install -y gcc g++
-
-# Required for "with-proxies" and "with-cpp"
-RUN apt install -y clang
-
-# Required for "with-proxies" and "with-cpp"
-RUN apt install -y cmake
-
-# Required for "with-dotnet" profile
-RUN apt install -y wget
-RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-RUN dpkg -i packages-microsoft-prod.deb
-RUN apt install -y software-properties-common
-RUN add-apt-repository universe -y
-RUN apt install -y apt-transport-https
-RUN apt update -y
-RUN apt install -y dotnet-sdk-2.2
+RUN apt-get install libpcap-dev -y
 
 # Required for the general build
 RUN apt install -y git
-
-# Required for "with-proxies"
-RUN apt install -y bison flex gcc g++
-
-# Required for "with-python" profile
-RUN apt install -y python-setuptools python
 
 # Copy the project into the docker container
 COPY . /ws/
@@ -73,7 +45,7 @@ RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-
 
 # Build everything with all tests
 #RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
-RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
+RUN ./mvnw install -DskipTests
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version

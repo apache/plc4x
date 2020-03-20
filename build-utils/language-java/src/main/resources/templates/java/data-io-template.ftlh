@@ -164,7 +164,7 @@ public class ${typeName}IO {
                             <#break>
                             <#-- Disable this for now -->
                             <#case "String">
-            //return new PlcStruct(${field.name});
+            return new PlcString(${field.name});
                             <#break>
                             <#default>
             return new Plc${case.name}(${field.name});

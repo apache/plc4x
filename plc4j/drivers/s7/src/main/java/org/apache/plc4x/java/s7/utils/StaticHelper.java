@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.api.value.PlcTime;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -40,6 +39,25 @@ public class StaticHelper {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static String parseS7String(ReadBuffer io){
+        try {
+            byte total = io.readByte(8);
+            short stringLength = io.readShort(8);
+            byte[] string = new byte[stringLength];
+            for(int i = 0; i< stringLength ; i++){
+                string[i]=io.readByte(8);
+            }
+            return new String(string);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void serializeS7String(WriteBuffer io, PlcValue value) {
+
     }
 
     public static void serializeTiaTime(WriteBuffer io, PlcValue value) {

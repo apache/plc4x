@@ -329,8 +329,10 @@
         ['42' String
         ]
         ['43' String
+            [manual string 256 'ansi' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value)' '256']
         ]
         ['44' String
+            [manual string 256 'ansi' 'value''STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value)' '256']
         ]
         // -----------------------------------------
         // TIA Date-Formats
