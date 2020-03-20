@@ -46,7 +46,7 @@ public class HelloPlc4x {
             while (true) {
                 PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                    builder.addItem("String", "%DB1.DBX0:STRING");
+                    builder.addItem("String", "%DB1.DBX0:STRING[8]");
                 PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
                 for(String field : response.getFieldNames()){
                     logger.info("{} : {}",field,response.getObject(field));

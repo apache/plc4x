@@ -55,7 +55,7 @@ public class ReadBuffer {
     }
 
     public boolean hasMore(int numBits) {
-        return (numBits / 8) < (totalBytes - getPos());
+        return (numBits / 8) <= (totalBytes - getPos());
     }
 
 
@@ -267,8 +267,18 @@ public class ReadBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public String readString(int bitLength, String encoding) {
-        throw new UnsupportedOperationException("not implemented yet");
+    public String readString(int bitLength, String encoding) throws ParseException {
+       String str= null;
+       switch (encoding){
+           case "ANSI":
+                byte[] strBytes = new byte[bitLength/8];
+                for(int i= 0; i<bitLength/8 && hasMore(8); i++){
+                    strBytes[i]=readByte(8);
+                }
+                str= new String(strBytes);
+               break;
+       }
+       return str;
     }
 
 }

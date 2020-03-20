@@ -43,13 +43,9 @@ public class StaticHelper {
 
     public static String parseS7String(ReadBuffer io){
         try {
-            byte total = io.readByte(8);
+            short total = io.readUnsignedShort(8);
             short stringLength = io.readShort(8);
-            byte[] string = new byte[stringLength];
-            for(int i = 0; i< stringLength ; i++){
-                string[i]=io.readByte(8);
-            }
-            return new String(string);
+            return  io.readString(8*stringLength,"ANSI");
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
