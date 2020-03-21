@@ -38,7 +38,8 @@ public class ModuleNode extends Node {
         this.body = body;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visit(this);
     }
 }

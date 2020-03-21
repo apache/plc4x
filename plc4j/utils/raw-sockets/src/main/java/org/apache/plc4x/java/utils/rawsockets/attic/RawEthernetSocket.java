@@ -15,7 +15,7 @@
  */
 package org.apache.plc4x.java.utils.rawsockets.attic;
 
-import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
+import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;
@@ -57,7 +57,7 @@ public class RawEthernetSocket {
         this.etherType = etherType;
     }
 
-    public void connect(String localMacAddress, String remoteMacAddress) throws RawSocketException {
+    public void connect(String localMacAddress, String remoteMacAddress) throws PcapException {
         try {
             pool = Executors.newScheduledThreadPool(2);
 
@@ -75,7 +75,7 @@ public class RawEthernetSocket {
                 }
             }
             if(nif == null) {
-                throw new RawSocketException(
+                throw new PcapException(
                     "Unable to find local network device with mac address " + remoteMacAddress);
             }
 
@@ -98,21 +98,25 @@ public class RawEthernetSocket {
             pool.execute(() -> {
                 try {
                     receiveHandle.loop(-1, packetListener);
-                } catch (PcapNativeException | InterruptedException | NotOpenException e) {
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Error receiving packet for protocol {} from MAC address {}",
+                        etherType.valueAsString(), remoteMacAddress, e);
+                } catch (PcapNativeException | NotOpenException e) {
                     logger.error("Error receiving packet for protocol {} from MAC address {}",
                         etherType.valueAsString(), remoteMacAddress, e);
                 }
             });
         } catch (PcapNativeException | NotOpenException e) {
-            throw new RawSocketException("Error setting up RawSocket", e);
+            throw new PcapException("Error setting up RawSocket", e);
         }
     }
 
-    public void disconnect() throws RawSocketException {
+    public void disconnect() throws PcapException {
         // TODO: Terminate all the listeners and the thread pool.
     }
 
-    public void write(byte[] rawData) throws RawSocketException {
+    public void write(byte[] rawData) throws PcapException {
         try (PcapHandle sendHandle =
                  nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)) {
             UnknownPacket.Builder packetBuilder = new UnknownPacket.Builder();
@@ -135,7 +139,7 @@ public class RawEthernetSocket {
             Packet p = etherBuilder.build();
             sendHandle.sendPacket(p);
         } catch (PcapNativeException | NotOpenException e) {
-            throw new RawSocketException("Error sending packet.", e);
+            throw new PcapException("Error sending packet.", e);
         }
     }
 

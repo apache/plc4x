@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-drivers</artifactId>
@@ -35,12 +35,16 @@
 
   <modules>
     <module>ab-eth</module>
-    <module>ads</module>
-    <module>ethernet-ip</module>
+    <!--module>ads</module>
+    <module>ethernet-ip</module-->
+    <module>firmata</module>
+    <module>knxnetip</module>
+    <module>mock</module>
     <module>modbus</module>
     <module>s7</module>
+	  <module>opcua</module>
+
     <module>simulated</module>
-	<module>opcua</module>
   </modules>
 
 </project>

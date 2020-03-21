@@ -21,16 +21,16 @@ package org.apache.plc4x.java.amsads.connection;
 import io.netty.channel.ChannelFuture;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
-import org.apache.plc4x.java.amsads.model.AdsPlcFieldHandler;
-import org.apache.plc4x.java.amsads.model.DirectAdsField;
-import org.apache.plc4x.java.amsads.model.SymbolicAdsField;
+import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
+import org.apache.plc4x.java.amsads.field.DirectAdsField;
+import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.concurrent.*;
 
-public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
+@Deprecated
+public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection implements PlcReader, PlcWriter, PlcProprietarySender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsAbstractPlcConnection.class);
 
@@ -60,7 +61,7 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
     }
 
     protected AdsAbstractPlcConnection(ChannelFactory channelFactory, AmsNetId targetAmsNetId, int targetAmsPort, AmsNetId sourceAmsNetId, int sourceAmsPort) {
-        super(channelFactory);
+        super(true, true, true, new AdsFieldHandler(), null, channelFactory, false, null, null);
         this.targetAmsNetId = targetAmsNetId;
         this.targetAmsPort = targetAmsPort;
         this.sourceAmsNetId = sourceAmsNetId;
@@ -94,12 +95,12 @@ public abstract class AdsAbstractPlcConnection extends NettyPlcConnection implem
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        return new DefaultPlcReadRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcReadRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        return new DefaultPlcWriteRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
-import org.apache.plc4x.java.spi.PlcDriver;
+import org.apache.plc4x.java.api.PlcDriver;
 import org.osgi.service.component.annotations.Component;
 
 import java.net.InetAddress;
@@ -46,15 +46,8 @@ public class OpcuaPlcDriver implements PlcDriver {
     public static final Pattern OPCUA_URI_PARAM_PATTERN = Pattern.compile("(?<param>[(\\?|\\&)([^=]+)\\=([^&]+)]+)?"); //later used for regex filtering of the params
     public static final Pattern OPCUA_URI_PATTERN = Pattern.compile("^opcua:(" + INET_ADDRESS_PATTERN + ")?" + "(?<params>[\\w/=?&]+)?");
     private static final int requestTimeout = 10000;
-    private OpcuaConnectionFactory opcuaConnectionFactory;
+    private OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
 
-    public OpcuaPlcDriver() {
-        this.opcuaConnectionFactory = new OpcuaConnectionFactory();
-    }
-
-    public OpcuaPlcDriver(OpcuaConnectionFactory opcuaConnectionFactory) {
-        this.opcuaConnectionFactory = opcuaConnectionFactory;
-    }
 
     @Override
     public String getProtocolCode() {
@@ -67,7 +60,7 @@ public class OpcuaPlcDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
+    public PlcConnection getConnection(String url) throws PlcConnectionException {
         Matcher matcher = OPCUA_URI_PATTERN.matcher(url);
 
         if (!matcher.matches()) {
@@ -88,7 +81,7 @@ public class OpcuaPlcDriver implements PlcDriver {
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("opcua does not support Auth at this state");
     }
 

@@ -18,17 +18,15 @@
  */
 package org.apache.plc4x.java.amsads.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
+import org.apache.plc4x.java.amsads.field.DirectAdsField;
+import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.model.*;
-import org.apache.plc4x.java.amsads.protocol.Ads2PayloadProtocol;
-import org.apache.plc4x.java.amsads.protocol.Payload2TcpProtocol;
 import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.amsads.readwrite.*;
+import org.apache.plc4x.java.amsads.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -36,21 +34,18 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
-import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
-import org.apache.plc4x.java.base.model.SubscriptionPlcField;
-import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.transport.tcp.TcpChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -63,6 +58,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsTcpPlcConnection.class);
@@ -89,7 +85,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
     }
 
     private AdsTcpPlcConnection(InetAddress address, Integer port, AmsNetId targetAmsNetId, int targetint, AmsNetId sourceAmsNetId, int sourceint) {
-        super(new TcpSocketChannelFactory(address, port != null ? port : TCP_PORT), targetAmsNetId, targetint, sourceAmsNetId, sourceint);
+        super(new TcpChannelFactory(new InetSocketAddress(address, port)), targetAmsNetId, targetint, sourceAmsNetId, sourceint);
     }
 
     public static AdsTcpPlcConnection of(InetAddress address, AmsNetId targetAmsNetId, int targetint) {
@@ -108,24 +104,21 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         return new AdsTcpPlcConnection(address, port, targetAmsNetId, targetint, sourceAmsNetId, sourceint);
     }
 
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the ads protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new Payload2TcpProtocol());
-                pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer, SingleItemToSingleRequestProtocol.SplitConfig.builder().dontSplitSubscribe().dontSplitUnsubscribe().build(), false));
-            }
-        };
-    }
-
-    public InetAddress getRemoteAddress() {
-        return ((TcpSocketChannelFactory) channelFactory).getAddress();
-    }
+    // TODO fix that
+//    @Override
+//    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+//        return new ChannelInitializer<Channel>() {
+//            @Override
+//            protected void initChannel(Channel channel) {
+//                // Build the protocol stack for communicating with the ads protocol.
+//                ChannelPipeline pipeline = channel.pipeline();
+//                pipeline.addLast(new Payload2TcpProtocol());
+//                pipeline.addLast(new Ads2PayloadProtocol());
+//                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
+//                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, AdsTcpPlcConnection.this, timer, SingleItemToSingleRequestProtocol.SplitConfig.builder().dontSplitSubscribe().dontSplitUnsubscribe().build(), false));
+//            }
+//        };
+//    }
 
     protected static AmsNetId generateAmsNetId() {
         try {
@@ -284,7 +277,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 BigInteger subtract = timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
                 Instant timeStamp = new Date(subtract.longValue()).toInstant();
 
-                Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+                Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
                 Arrays.asList(adsStampHeader.getAdsNotificationSamples())
                     .forEach(adsNotificationSample -> {
                         Long notificationHandle = adsNotificationSample.getNotificationHandle();
@@ -299,8 +292,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            BaseDefaultFieldItem baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data);
-                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
+                            PlcValue baseDefaultPlcValue = LittleEndianDecoder.decodeData(adsDataType, data);
+                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultPlcValue));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
@@ -339,7 +332,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsPlcFieldHandler());
+        return new DefaultPlcSubscriptionRequest.Builder(this, new AdsFieldHandler());
     }
 
     @Override

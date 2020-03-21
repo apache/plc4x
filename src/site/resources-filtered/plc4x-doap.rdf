@@ -83,8 +83,29 @@
 
         <release>
             <Version>
+                <name>Latest 0.6.0 release</name>
+                <created>2020-03-01</created>
+                <revision>0.6.0</revision>
+            </Version>
+        </release>
+        <release>
+            <Version>
+                <name>Latest 0.5.0 release</name>
+                <created>2019-11-25</created>
+                <revision>0.5.0</revision>
+            </Version>
+        </release>
+        <release>
+            <Version>
+                <name>Latest 0.4.0 release</name>
+                <created>2019-05-27</created>
+                <revision>0.4.0</revision>
+            </Version>
+        </release>
+        <release>
+            <Version>
                 <name>Latest 0.3.1 release</name>
-                <created>2017-03-13</created>
+                <created>2019-03-13</created>
                 <revision>0.3.1</revision>
             </Version>
         </release>
@@ -110,4 +131,5 @@
             </Version>
         </release>
     </Project>
+
 </rdf:RDF>

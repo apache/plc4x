@@ -19,8 +19,7 @@ under the License.
 package org.apache.plc4x.codegen.util;
 
 import org.apache.plc4x.codegen.ast.*;
-import org.apache.plc4x.codegen.util.EnumFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 

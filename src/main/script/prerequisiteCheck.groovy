@@ -52,7 +52,12 @@ def checkVersionAtLeast(String current, String minimum) {
 
 def checkBison() {
     print "Detecting Bison version:   "
-    def output = "bison --version".execute().text
+    def output
+    try {
+        output = "bison --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -68,7 +73,12 @@ def checkBison() {
 
 def checkDotnet() {
     print "Detecting Dotnet version:  "
-    def output = "dotnet --version".execute().text
+    def output
+    try {
+        output = "dotnet --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -84,7 +94,12 @@ def checkDotnet() {
 
 def checkFlex() {
     print "Detecting Flex version:    "
-    def output = "flex --version".execute().text
+    def output
+    try {
+        output = "flex --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -100,7 +115,12 @@ def checkFlex() {
 
 def checkGcc() {
     print "Detecting Gcc version:     "
-    def output = "gcc --version".execute().text
+    def output
+    try {
+        output = "gcc --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -116,7 +136,12 @@ def checkGcc() {
 
 def checkGit() {
     print "Detecting Git version:     "
-    def output = "git --version".execute().text
+    def output
+    try {
+        output = "git --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -132,7 +157,12 @@ def checkGit() {
 
 def checkGpp() {
     print "Detecting G++ version:     "
-    def output = "g++ --version".execute().text
+    def output
+    try {
+        output = "g++ --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -148,7 +178,12 @@ def checkGpp() {
 
 def checkClang() {
     print "Detecting clang version:   "
-    def output = "clang --version".execute().text
+    def output
+    try {
+        output = "clang --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -162,37 +197,68 @@ def checkClang() {
     }
 }
 
-def checkPython() {
-    print "Detecting Python version:  "
-    def process = ("python --version").execute()
-    def stdOut = new StringBuilder()
-    def stdErr = new StringBuilder()
-    process.consumeProcessOutput(stdOut, stdErr)
-    process.waitForOrKill(500)
-    Matcher matcher = extractVersion(stdErr)
+def checkCmake() {
+    print "Detecting cmake version:   "
+    def output
+    try {
+        output = "cmake --version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
+    Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
-        def result = checkVersionAtLeast(curVersion, "2.7.0")
+        def result = checkVersionAtLeast(curVersion, "3.0.0")
         if(!result) {
             allConditionsMet = false
+            
+            
+            
+            
         }
     } else {
         println "missing"
-        // For debugging regular build failures on our build vm
-        println "StdOut: " + stdOut
-        println "StrErr: " + stdErr
-        println "matcher size: " + matcher.size()
-        for(int i = 0; i < matcher.size(); i++) {
-            println "matcher[" + i + "]=" + matcher[i]
+        allConditionsMet = false
+    }
+}
+
+
+def checkPython() {
+    print "Detecting Python version:  "
+    try {
+        def process = ("python --version").execute()
+        def stdOut = new StringBuilder()
+        def stdErr = new StringBuilder()
+        process.consumeProcessOutput(stdOut, stdErr)
+        process.waitForOrKill(500)
+        Matcher matcher = extractVersion(stdErr)
+        if (matcher.size() > 0) {
+            def curVersion = matcher[0][1]
+            def result = checkVersionAtLeast(curVersion, "2.7.0")
+            if (!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "missing"
+            // For debugging regular build failures on our build vm
+            println "StdOut: " + stdOut
+            println "StrErr: " + stdErr
+            println "matcher size: " + matcher.size()
+            for (int i = 0; i < matcher.size(); i++) {
+                println "matcher[" + i + "]=" + matcher[i]
+            }
+            // Example for a failed python detection:
+            //
+            //Detecting Python version: missing
+            //StdOut:
+            //StrErr: Python 2.7.12
+            // Example of a successful detection
+            //StrErr:
+            //2.7.15        OK
+            allConditionsMet = false
         }
-        // Example for a failed python detection:
-        //
-        //Detecting Python version: missing
-        //StdOut:
-        //StrErr: Python 2.7.12
-        // Example of a successful detection
-        //StrErr:
-        //2.7.15        OK
+    } catch(Exception e) {
+        println "missing"
         allConditionsMet = false
     }
 }
@@ -233,6 +299,33 @@ def checkOpenSSL() {
     }
 }
 
+// When building the StreamPipes modules we need Docker.
+// Not only should the docker executable be available, but also should the docker daemon be running.
+def checkDocker() {
+    print "Detecting Docker version:  "
+    def output = "docker info".execute().text
+    // Check if Docker is installed at all
+    def matcher1 = output =~ /Server:/
+    if(matcher1.size() > 0) {
+        // If it is check if the daemon is running and if the version is ok
+        def matcher2 = output =~ /Server Version: (\d+\.\d+(\.\d+)?).*/
+        if(matcher2.size() > 0) {
+            def curVersion = matcher2[0][1]
+            def result = checkVersionAtLeast(curVersion, "1.0.0")
+            if(!result) {
+                allConditionsMet = false
+            }
+        } else {
+            println "Docker daemon probably not running"
+            allConditionsMet = false
+        }
+    } else {
+        println "missing"
+        allConditionsMet = false
+    }
+        // TODO: Implement the actual check ...
+}
+
 /**
  * Version extraction function/macro. It looks for occurrence of x.y or x.y.z
  * in passed input text (likely output from `program --version` command if found).
@@ -266,6 +359,7 @@ println "Detected Arch: " + arch
 println "Enabled profiles:"
 def boostEnabled = false
 def cppEnabled = false
+def dockerEnabled = false;
 def dotnetEnabled = false
 def javaEnabled = true
 def pythonEnabled = false
@@ -279,6 +373,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
+    } else if(activeProfile == "with-docker") {
+        dockerEnabled = true
+        println "docker"
     } else if(activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
@@ -319,6 +416,9 @@ if(pythonEnabled && !proxiesEnabled) {
 
 if(proxiesEnabled) {
     checkBison()
+    if(!boostEnabled) {
+        checkBoost()
+    }
 }
 
 if(dotnetEnabled) {
@@ -332,6 +432,7 @@ if(proxiesEnabled) {
 
 if(proxiesEnabled || cppEnabled) {
     checkClang()
+    checkCmake()
     checkGcc()
 }
 
@@ -350,6 +451,10 @@ if(pythonEnabled) {
 // We only need this check, if boost is not enabled but we're enabling cpp.
 if(!boostEnabled && cppEnabled) {
     checkBoost()
+}
+
+if(sandboxEnabled && dockerEnabled) {
+    checkDocker()
 }
 
 if(!allConditionsMet) {

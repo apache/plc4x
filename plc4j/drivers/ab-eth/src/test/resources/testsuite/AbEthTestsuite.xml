@@ -17,8 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/testsuite.xsd"
-                bigEndian="false">
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                bigEndian="true">
 
   <name>Allen-Bradley ETH</name>
 

@@ -20,9 +20,8 @@ package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.data.Schema;
-import org.apache.kafka.connect.data.SchemaBuilder;
-import org.apache.kafka.connect.data.Struct;
+import org.apache.kafka.connect.data.*;
+import org.apache.kafka.connect.data.Date;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
@@ -171,6 +170,9 @@ public class Plc4xSourceTask extends SourceTask {
                     // Add the schema description for the current field.
                     recordSchemaBuilder.field(fieldName, valueSchema);
                 }
+                // Add a timestamp
+                Schema valueSchema = Schema.STRING_SCHEMA;
+                recordSchemaBuilder.field("timestamp", valueSchema);
                 Schema recordSchema = recordSchemaBuilder.build();
 
                 // Build the struct itself.
@@ -181,6 +183,7 @@ public class Plc4xSourceTask extends SourceTask {
                     Object fieldValue = result.getValue();
                     recordStruct.put(fieldName, fieldValue);
                 }
+                recordStruct.put("timestamp", LocalDateTime.now().toString());
 
                 // Prepare the source-record element.
                 SourceRecord record = new SourceRecord(
@@ -236,9 +239,6 @@ public class Plc4xSourceTask extends SourceTask {
         if (value instanceof BigDecimal) {
 
         }
-        if (value instanceof BigDecimal) {
-
-        }
         if (value instanceof Boolean) {
             return Schema.BOOLEAN_SCHEMA;
         }
@@ -258,13 +258,13 @@ public class Plc4xSourceTask extends SourceTask {
             return Schema.INT32_SCHEMA;
         }
         if (value instanceof LocalDate) {
-
+            return Date.SCHEMA;
         }
         if (value instanceof LocalDateTime) {
-
+            return Timestamp.SCHEMA;
         }
         if (value instanceof LocalTime) {
-
+            return Time.SCHEMA;
         }
         if (value instanceof Long) {
             return Schema.INT64_SCHEMA;

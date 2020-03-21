@@ -16,7 +16,7 @@
 package org.apache.plc4x.java.utils.rawsockets.attic;
 
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
+import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.*;
@@ -63,7 +63,7 @@ public class RawIpSocket {
         this.protocolNumber = protocolNumber;
     }
 
-    public void connect(String remoteAddress) throws RawSocketException {
+    public void connect(String remoteAddress) throws PcapException {
         try {
             pool = Executors.newScheduledThreadPool(2);
 
@@ -94,17 +94,17 @@ public class RawIpSocket {
                         // If this didn't work, we simply can't reach the
                         // destination and give up with an exception. Not
                         // much we can do here.
-                        throw new RawSocketException("Unable to connect to " + remoteAddress);
+                        throw new PcapException("Unable to connect to " + remoteAddress);
                     }
                 } else {
-                    throw new RawSocketException("Unable to connect to " + remoteAddress + " no default gateway");
+                    throw new PcapException("Unable to connect to " + remoteAddress + " no default gateway");
                 }
             }
 
             nif = firstHop.networkInterface;
 
             if (nif.isLoopBack()) {
-                throw new RawSocketException("Can't use RawSocket on loopback devices");
+                throw new PcapException("Can't use RawSocket on loopback devices");
             }
 
             localMacAddress = MacAddress.getByAddress(firstHop.localMacAddress.getAddress());
@@ -133,21 +133,25 @@ public class RawIpSocket {
             pool.execute(() -> {
                 try {
                     receiveHandle.loop(-1, packetListener);
-                } catch (PcapNativeException | InterruptedException | NotOpenException e) {
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.error("Error receiving packet for protocol {} from MAC address {}",
+                        protocolNumber, firstHopMacAddress, e);
+                } catch (PcapNativeException | NotOpenException e) {
                     logger.error("Error receiving packet for protocol {} from MAC address {}",
                         protocolNumber, firstHopMacAddress, e);
                 }
             });
         } catch (PcapNativeException | NotOpenException | UnknownHostException e) {
-            throw new RawSocketException("Error setting up RawSocket", e);
+            throw new PcapException("Error setting up RawSocket", e);
         }
     }
 
-    public void disconnect() throws RawSocketException {
+    public void disconnect() throws PcapException {
         // TODO: Terminate all the listeners and the thread pool.
     }
 
-    public void write(byte[] rawData) throws RawSocketException {
+    public void write(byte[] rawData) throws PcapException {
         try (PcapHandle sendHandle =
                  nif.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)) {
             UnknownPacket.Builder packetBuilder = new UnknownPacket.Builder();
@@ -183,7 +187,7 @@ public class RawIpSocket {
             Packet p = etherBuilder.build();
             sendHandle.sendPacket(p);
         } catch (PcapNativeException | NotOpenException e) {
-            throw new RawSocketException("Error sending packet.", e);
+            throw new PcapException("Error sending packet.", e);
         }
     }
 
@@ -195,7 +199,7 @@ public class RawIpSocket {
         listeners.remove(listener);
     }
 
-    private MacAddress getMacAddress(PcapNetworkInterface dev, InetAddress localIpAddress, InetAddress remoteIpAddress) throws RawSocketException {
+    private MacAddress getMacAddress(PcapNetworkInterface dev, InetAddress localIpAddress, InetAddress remoteIpAddress) throws PcapException {
         if (!arpCache.containsKey(remoteIpAddress)) {
             MacAddress macAddress = lookupMacAddress(dev, localIpAddress, remoteIpAddress);
             arpCache.put(remoteIpAddress, macAddress);
@@ -204,12 +208,12 @@ public class RawIpSocket {
         return arpCache.get(remoteIpAddress);
     }
 
-    private MacAddress lookupMacAddress(PcapNetworkInterface dev, InetAddress localIpAddress, InetAddress remoteIpAddress) throws RawSocketException {
-        try {
-            PcapHandle receiveHandle =
-                dev.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
-            PcapHandle sendHandle =
-                dev.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+    private MacAddress lookupMacAddress(PcapNetworkInterface dev, InetAddress localIpAddress, InetAddress remoteIpAddress) throws PcapException {
+        try (PcapHandle receiveHandle =
+                 dev.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT);
+             PcapHandle sendHandle =
+                 dev.openLive(SNAPLEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, READ_TIMEOUT)){
+
             try {
                 // Setup the filter to accept only the arp packets sent back to the current
                 // host from the address of the remote host we wanted to get the mac address
@@ -281,8 +285,12 @@ public class RawIpSocket {
                     receiveHandle.close();
                 }
             }
-        } catch (PcapNativeException | InterruptedException | ExecutionException | NotOpenException e) {
-            throw new RawSocketException("Error looking up MAC address for ip address " +
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new PcapException("Error looking up MAC address for ip address " +
+                remoteIpAddress.getHostAddress() + " on device " + dev.getName(), e);
+        } catch (PcapNativeException | ExecutionException | NotOpenException e) {
+            throw new PcapException("Error looking up MAC address for ip address " +
                 remoteIpAddress.getHostAddress() + " on device " + dev.getName(), e);
         }
     }
@@ -293,9 +301,9 @@ public class RawIpSocket {
      *
      * @param remoteAddress address we want to connect to.
      * @return PcapNetworkInterface interface that should be able to connect to the given address.
-     * @throws RawSocketException something went wrong.
+     * @throws PcapException something went wrong.
      */
-    private FirstHop getFirstHop(InetAddress remoteAddress) throws RawSocketException {
+    private FirstHop getFirstHop(InetAddress remoteAddress) throws PcapException {
         byte[] remoteIp = remoteAddress.getAddress();
 
         // Iterate over all network interfaces.
@@ -338,7 +346,7 @@ public class RawIpSocket {
             }
             return null;
         } catch (PcapNativeException e) {
-            throw new RawSocketException("Error finding a device to communicate with remote address.", e);
+            throw new PcapException("Error finding a device to communicate with remote address.", e);
         }
     }
 

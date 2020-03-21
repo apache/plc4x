@@ -19,12 +19,6 @@
 
 package org.apache.plc4x.protocol.amsads;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.junit.jupiter.api.Test;
-
 public class IOTest {
 
 /*    @Test

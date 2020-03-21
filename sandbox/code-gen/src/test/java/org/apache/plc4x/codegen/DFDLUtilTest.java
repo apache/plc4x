@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.codegen;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -29,7 +29,7 @@ public class DFDLUtilTest {
         final File schema = new File("src/test/resources/protocol.dfdl.xsd");
         final File outDir = new File("/tmp/");
 
-        System.out.println(schema.getAbsolutePath().toString());
+        System.out.println(schema.getAbsolutePath());
 
         final DFDLUtil util = new DFDLUtil();
 

@@ -27,13 +27,13 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.df1.*;
+import org.apache.plc4x.java.api.value.PlcInteger;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.df1.field.Df1Field;
+import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.df1.readwrite.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +44,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+// TODO: Refactor this code to be included in Df1ProtocolLogic.
+@Deprecated
 public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcRequestContainer> {
 
     private static final Logger logger = LoggerFactory.getLogger(Plc4XDf1Protocol.class);
@@ -95,7 +97,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                 entry.getValue().getResponseFuture().complete(
                     new DefaultPlcReadResponse(
                         ((InternalPlcReadRequest) entry.getValue().getRequest()),
-                        Collections.singletonMap("erster", Pair.of(PlcResponseCode.INTERNAL_ERROR, new DefaultIntegerFieldItem(-1)))
+                        Collections.singletonMap("erster", Pair.of(PlcResponseCode.INTERNAL_ERROR, new PlcInteger(-1)))
                     ));
             }
             return;
@@ -134,14 +136,14 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             // TODO maybe check for different status bytes
             final Df1Field field = (Df1Field) ((PlcReadRequest) request).getField(fieldName);
             // Cast byte and create response item
-            BaseDefaultFieldItem responseItem = null;
+            PlcValue responseItem = null;
             short[] data = ((DF1UnprotectedReadResponse)command).getData();
             switch (field.getDataType()) {
                 case BIT:
                     break;
                 case INTEGER:
                     // TODO: type conversion is untested
-                    responseItem = new DefaultIntegerFieldItem((int)data[0] + ((int) data[1] << 8));
+                    responseItem = new PlcInteger((int)data[0] + ((int) data[1] << 8));
                     break;
                 case FLOAT:
                     break;
@@ -167,6 +169,5 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             requestContainer.getResponseFuture().complete(response);
         }
     }
-
 
 }

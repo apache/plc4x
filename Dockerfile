@@ -20,7 +20,7 @@
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
 # Fixed version of this in order to have a fixed JDK version
-FROM azul/zulu-openjdk:8.42.0.21 as build
+FROM azul/zulu-openjdk:8 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y
@@ -33,6 +33,12 @@ RUN apt install -y bison flex gcc g++
 
 # Required for "with-cpp" profile
 RUN apt install -y gcc g++
+
+# Required for "with-proxies" and "with-cpp"
+RUN apt install -y clang
+
+# Required for "with-proxies" and "with-cpp"
+RUN apt install -y cmake
 
 # Required for "with-dotnet" profile
 RUN apt install -y wget
@@ -62,9 +68,12 @@ WORKDIR /ws
 # Tell Maven to fetch all needed dependencies first, so they can get cached
 # (Tried a patched version of the plugin to allow exclusion of inner artifacts.
 # See https://issues.apache.org/jira/browse/MDEP-568 for details)
-RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+#RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-logstash com.offbytwo.maven.plugins:maven-dependency-plugin:3.1.1.MDEP568:go-offline -DexcludeGroupIds=org.apache.plc4x,org.apache.plc4x.examples,org.apache.plc4x.sandbox
+
 # Build everything with all tests
-RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
+#RUN ./mvnw -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
+RUN ./mvnw -P with-sandbox,with-boost,with-dotnet,with-python,with-proxies,with-logstash install
 
 # Get the version of the project and save it in a local file on the container
 RUN ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -pl . > project_version

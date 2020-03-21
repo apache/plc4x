@@ -254,8 +254,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
         return new ObjectConsumer<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
-    <T> Consumer<JsonObject> newJsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> fieldValueFn) {
-        return new JsonConsumer<>(clientDatatype, fieldQueryFn, fieldValueFn);
+    <T> Consumer<JsonObject> newJsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> valueFn) {
+        return new JsonConsumer<>(clientDatatype, fieldQueryFn, valueFn);
     }
 
     private abstract class BaseConsumer<T> implements Consumer<T> {

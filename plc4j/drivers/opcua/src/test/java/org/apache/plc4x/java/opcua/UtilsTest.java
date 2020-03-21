@@ -18,12 +18,12 @@
 */
 package org.apache.plc4x.java.opcua;
 
+
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class UtilsTest {
     public static void assertMatching(Pattern pattern, String match) {

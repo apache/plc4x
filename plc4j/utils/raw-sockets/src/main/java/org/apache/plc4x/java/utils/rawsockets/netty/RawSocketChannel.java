@@ -26,7 +26,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.utils.rawsockets.RawSocketException;
+import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.java.utils.rawsockets.netty.config.RawSocketChannelConfig;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Packet;
 import org.slf4j.Logger;
@@ -75,7 +77,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         if(!(remoteAddress instanceof RawSocketAddress)) {
             logger.error("Expecting remote address of type RawSocketAddress");
             pipeline().fireExceptionCaught(
-                new RawSocketException("Expecting remote address of type RawSocketAddress"));
+                new PcapException("Expecting remote address of type RawSocketAddress"));
             return;
         }
         this.localAddress = localAddress;
@@ -84,9 +86,9 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // Try to get the device name of the network interface that we want to open.
         String deviceName = getDeviceName(remoteRawSocketAddress);
         if(deviceName == null) {
-            logger.error("Network device not specified and coudln't detect it automatically");
+            logger.error("Network device not specified and couldn't detect it automatically");
             pipeline().fireExceptionCaught(
-                new RawSocketException("Network device not specified and coudln't detect it automatically"));
+                new PcapException("Network device not specified and couldn't detect it automatically"));
             return;
         }
 
@@ -98,7 +100,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         }
 
         // If the address allows fine tuning which packets to process, set a filter to reduce the load.
-        String filter = getFilter(remoteRawSocketAddress);
+        String filter = config.getFilterString(localAddress, remoteAddress);
         if(filter.length() > 0) {
             handle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
@@ -159,7 +161,8 @@ public class RawSocketChannel extends OioByteStreamChannel {
         }
     }
 
-    @Override protected int doReadBytes(ByteBuf buf) throws Exception {
+    @Override
+    protected int doReadBytes(ByteBuf buf) throws Exception {
         if (handle == null || !handle.isOpen()) {
             return -1;
         }
@@ -193,25 +196,6 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
         // TODO: Implement this ...
         return null;
-    }
-
-    private String getFilter(RawSocketAddress rawSocketAddress) {
-        StringBuilder sb = new StringBuilder();
-        if(rawSocketAddress instanceof RawSocketIpAddress) {
-            sb.append("(ether proto \\ip)");
-            RawSocketIpAddress rawSocketIpAddress = (RawSocketIpAddress) rawSocketAddress;
-            // Add a filter for source or target address.
-            if(rawSocketIpAddress.getAddress() != null) {
-                sb.append(" and (host ").append(rawSocketIpAddress.getAddress().getHostAddress()).append(")");
-            }
-            // Add a filter for TCP or UDP port.
-            if(rawSocketIpAddress.getPort() != RawSocketIpAddress.ALL_PORTS) {
-                sb.append(" and (port ").append(rawSocketIpAddress.getPort()).append(")");
-            }
-        } else if(rawSocketAddress.getProtocolId() != RawSocketAddress.ALL_PROTOCOLS) {
-            sb.append("(ether proto ").append(rawSocketAddress.getProtocolId()).append(")");
-        }
-        return sb.toString();
     }
 
     /**

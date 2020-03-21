@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.6.0-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>test-streampipes-plc4x-adapters</artifactId>
@@ -54,43 +54,48 @@
   </build>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <artifactId>plc4j-transport-tcp</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-tcp</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <artifactId>plc4j-transport-udp</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-raw-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <artifactId>plc4j-transport-raw-socket</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base-pcap-socket</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
-      <!--scope>test</scope-->
+      <artifactId>plc4j-transport-pcap-replay</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-serial</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
       <artifactId>test-streampipes-plc4x-shared</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-bacnetip-driver</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-knxnetip</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-knxnetip-driver</artifactId>
-      <version>0.6.0-SNAPSHOT</version>
+      <artifactId>test-java-bacnetip-driver</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

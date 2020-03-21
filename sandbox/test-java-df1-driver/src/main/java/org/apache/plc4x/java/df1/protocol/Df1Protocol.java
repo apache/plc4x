@@ -21,20 +21,22 @@ package org.apache.plc4x.java.df1.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
-import org.apache.plc4x.java.base.PlcByteToMessageCodec;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
 import org.apache.plc4x.java.df1.readwrite.DF1Symbol;
 import org.apache.plc4x.java.df1.readwrite.DF1SymbolMessageFrame;
 import org.apache.plc4x.java.df1.readwrite.io.DF1SymbolIO;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
+// TODO: Refactor this code to be included in Df1ProtocolLogic.
+@Deprecated
+public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
 
     private static final Logger logger = LoggerFactory.getLogger(Df1Protocol.class);
 
@@ -59,7 +61,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
 
         // Serialize the message
         WriteBuffer writeBuffer = new WriteBuffer(frame.getLengthInBytes(), false);
-        df1SymbolIO.serialize(writeBuffer, frame);
+        DF1SymbolIO.staticSerialize(writeBuffer, frame);
         byte[] data = writeBuffer.getData();
 
         // Send the serialized data
@@ -138,7 +140,7 @@ public class Df1Protocol extends PlcByteToMessageCodec<DF1Command> {
             in.readBytes(data);
             ReadBuffer readBuffer = new ReadBuffer(data, false);
 
-            resp = df1SymbolIO.parse(readBuffer);
+        resp = DF1SymbolIO.staticParse(readBuffer);
 
 //        } while (readWasSucessfull);
 //        // TODO if unableto read

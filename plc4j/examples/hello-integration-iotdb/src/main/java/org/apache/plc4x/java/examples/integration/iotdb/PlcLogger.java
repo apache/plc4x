@@ -20,7 +20,6 @@ package org.apache.plc4x.java.examples.integration.iotdb;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import org.apache.edgent.function.Supplier;
@@ -30,6 +29,8 @@ import org.apache.edgent.topology.Topology;
 import org.apache.iotdb.jdbc.IoTDBSQLException;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,11 +40,13 @@ import java.util.concurrent.TimeUnit;
  * modified according to hello-integration-edgent
  *
  * arguments example:
- * --connection-string test://127.0.0.1 --field-address RANDOM/foo:BYTE  --polling-interval 1000
+ * --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:BYTE  --polling-interval 1000
  * --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi
  * --iotdb-device d1 --iotdb-datatype INT32
  */
 public class PlcLogger {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcLogger.class);
 
     //IoTDB JDBC connection
     static Connection connection;
@@ -84,16 +87,7 @@ public class PlcLogger {
             statement.execute("SET STORAGE GROUP TO root." + options.getStorageGroup());
         } catch (IoTDBSQLException e) {
             //from v0.9.0, you can use the error code to check whether the sg exists.
-            System.err.println(e.getMessage());
-        }
-
-        //before IoTDB v0.9, we have to create timeseries manually
-        try {
-            statement.execute(String.format("CREATE TIMESERIES %s WITH DATATYPE=%s, ENCODING=RLE",
-                timeSeries, options.getDatatype()));
-        } catch (IoTDBSQLException e) {
-            //from v0.9.0, you can use the error code to check whether the time series exists.
-            System.err.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
 
         // Get a plc connection.
@@ -110,29 +104,27 @@ public class PlcLogger {
             TStream<Byte> source = top.poll(plcSupplier, options.getPollingInterval(),
                 TimeUnit.MILLISECONDS);
             // 3) Output the events in the stream to IoTDB.
-            source.peek(x->storeData(x));
+            source.peek(PlcLogger::storeData);
 
             // Submit the topology and hereby start the event streams.
             dp.submit(top);
         }
         //close IoTDB client.
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.error("Error shutting down.", e);
             }
-        });
+        }));
     }
 
     private static void storeData(Byte x) {
         try {
             statement.execute(String.format("insert into %s  (timestamp, %s) values (%d, %s)",
-                deviceId, sensor, System.currentTimeMillis(), x.byteValue()+""));
+                deviceId, sensor, System.currentTimeMillis(), x + ""));
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Error storing data.", e);
         }
     }
 

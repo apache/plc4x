@@ -20,8 +20,12 @@
 package org.apache.plc4x.java.examples.integration.iotdb;
 
 import org.apache.commons.cli.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CliOptions {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CliOptions.class);
 
     private static Options options;
 
@@ -128,7 +132,7 @@ public class CliOptions {
 
             return new CliOptions(connectionString, fieldAddress, pollingInterval, iotdbIpPort, user, password, storageGroup, device, datatype);
         } catch (ParseException e) {
-            System.err.println(e.getMessage());
+            LOGGER.error(e.getMessage());
             return null;
         }
     }
@@ -185,4 +189,5 @@ public class CliOptions {
     public String getDatatype() {
         return datatype;
     }
+
 }

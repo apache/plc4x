@@ -27,18 +27,23 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
  | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
-
 
 fieldDefinition
  : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
  ;
 
+dataIoDefinition
+ : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ ;
+
 field
- : arrayField
+ : abstractField
+ | arrayField
  | checksumField
  | constField
  | discriminatorField
@@ -52,6 +57,10 @@ field
  | simpleField
  | typeSwitchField
  | virtualField
+ ;
+
+abstractField
+ : 'abstract' type=typeReference name=idExpression
  ;
 
 arrayField
@@ -75,15 +84,15 @@ enumField
  ;
 
 implicitField
- : 'implicit' type=dataType name=idExpression serializationExpression=expression
+ : 'implicit' type=dataType name=idExpression serializeExpression=expression
  ;
 
 manualArrayField
- : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manualArray' type=typeReference name=idExpression loopType=arrayType loopExpression=expression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 manualField
- : 'manual' type=typeReference name=idExpression deserializationExpression=expression serializationExpression=expression lengthExpression=expression
+ : 'manual' type=typeReference name=idExpression parseExpression=expression serializeExpression=expression lengthExpression=expression
  ;
 
 optionalField
@@ -124,7 +133,7 @@ typeReference
  ;
 
 caseStatement
- : LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
+ : (COMMENT.*?)? LBRACKET (discriminatorValues=multipleExpressions)? name=IDENTIFIER (LBRACKET params=argumentList RBRACKET)? fieldDefinition* RBRACKET
  ;
 
 dataType
@@ -133,7 +142,11 @@ dataType
  | base='uint' size=INTEGER_LITERAL
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
- | base='string'
+/* For the following types the parsing/serialization has to be handled manually */
+ | base='string' size=INTEGER_LITERAL encoding=idExpression
+ | base='time'
+ | base='date'
+ | base='dateTime'
  ;
 
 argument
