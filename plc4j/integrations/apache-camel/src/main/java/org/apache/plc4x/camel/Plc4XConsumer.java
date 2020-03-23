@@ -20,9 +20,9 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
 import org.apache.camel.spi.ExceptionHandler;
+import org.apache.camel.support.AsyncProcessorConverterHelper;
 import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.ServiceSupport;
-import org.apache.camel.util.AsyncProcessorConverterHelper;
+import org.apache.camel.support.service.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
@@ -122,4 +122,9 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
         return collection;
     }
 
+    @Override
+    public Processor getProcessor() {
+        // TODO: No idea what to do here ...
+        return null;
+    }
 }

@@ -23,20 +23,22 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseOpcuaPlcConnection.class);
+    protected boolean skipDiscovery = false;
 
+    /**
+     * @param params
+     */
     BaseOpcuaPlcConnection(String params) {
 
         if (!StringUtils.isEmpty(params)) {
@@ -46,6 +48,9 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                 if (paramElements.length == 2) {
                     String paramValue = paramElements[1];
                     switch (paramName) {
+                        case "discovery":
+                            skipDiscovery = !Boolean.valueOf(paramValue);
+                            break;
                         default:
                             logger.debug("Unknown parameter {} with value {}", paramName, paramValue);
                     }
@@ -91,5 +96,7 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
         return new DefaultPlcUnsubscriptionRequest.Builder(this);
     }
 
-
+    public boolean isSkipDiscovery() {
+        return skipDiscovery;
+    }
 }

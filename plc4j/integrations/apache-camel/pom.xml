@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.4.0</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-camel</artifactId>
@@ -33,20 +33,34 @@
   <description>Integration module for integrating PLC4X into Apache Camel.</description>
 
   <properties>
-    <camel.version>2.23.1</camel.version>
+    <camel.version>3.1.0</camel.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.4.0</version>
+      <version>0.7.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-core</artifactId>
-      <!-- TODO: version temporary defined due to PLC4X-22-->
+      <artifactId>camel-api</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core-engine</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mock</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-support</artifactId>
       <version>${camel.version}</version>
     </dependency>
 
@@ -76,29 +90,37 @@
     <!-- Testing -->
     <dependency>
       <groupId>org.apache.camel</groupId>
-      <artifactId>camel-test</artifactId>
+      <artifactId>camel-test-junit5</artifactId>
+      <!-- TODO: version temporary defined due to PLC4X-22-->
+      <version>${camel.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-main</artifactId>
       <!-- TODO: version temporary defined due to PLC4X-22-->
       <version>${camel.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
-      <version>0.4.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.4.0</version>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <!--dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ads</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency-->
+    <dependency>
+      <!-- avoids java.lang.NoClassDefFoundError: javax/activation/DataHandler in Plc4XProducerTest on Java 11-->
       <groupId>javax.activation</groupId>
       <artifactId>javax.activation-api</artifactId>
       <version>1.2.0</version>
       <scope>test</scope>
-    </dependency-->
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -139,8 +161,7 @@
         </executions>
       </plugin>
       <!-- to generate the MANIFEST-FILE of the bundle -->
-      <!-- TODO: Seems this plugin is messing up the jqassistant execution. Also it doesn't seem to have any effect on the output as it is not executed at all and there is no MANIFEST.MF in the output -->
-      <!--plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>3.5.0</version>
@@ -151,7 +172,7 @@
             <Export-Service>org.apache.camel.spi.ComponentResolver;component=s7</Export-Service>
           </instructions>
         </configuration>
-      </plugin-->
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -168,6 +189,9 @@
               <ignoredDependencies combine.children="append">
                 <ignoredDependency>org.apache.plc4x:plc4j-driver-ads</ignoredDependency>
               </ignoredDependencies>
+              <usedDependencies combine.children="append">
+                <usedDependency>javax.activation:javax.activation-api</usedDependency>
+              </usedDependencies>
             </configuration>
           </execution>
         </executions>

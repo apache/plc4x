@@ -21,6 +21,7 @@ package org.apache.plc4x;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.jdbc.Driver;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class DriverManagerTest implements WithAssertions {
         Connection connection = driver.connect("jdbc:calcite:asdf;lex=MYSQL_ANSI", new Properties());
 
         CalciteConnection calciteConnection = connection.unwrap(CalciteConnection.class);
-        calciteConnection.getRootSchema().add("plc4x", new Plc4xSchema(ScraperConfiguration.fromFile("src/test/resources/example.yml"), 100));
+        calciteConnection.getRootSchema().add("plc4x", new Plc4xSchema(ScraperConfiguration.fromFile("src/test/resources/example.yml", ScraperConfigurationClassicImpl.class), 100));
 
         ResultSet rs = connection.prepareStatement("SELECT * FROM \"plc4x\".\"job1\"").executeQuery();
         validateResult(rs);

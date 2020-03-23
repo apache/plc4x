@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionEvent;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
@@ -38,44 +38,54 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+ * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
-    Set< Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
-    String fieldName;
+    private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
+    private String fieldName;
+    private UInteger clientHandle;
+
+    /**
+     * @param fieldName    corresponding map key in the PLC4X request/reply map
+     * @param clientHandle
+     */
+    public OpcuaSubsriptionHandle(String fieldName, UInteger clientHandle) {
+        this.fieldName = fieldName;
+        this.clientHandle = clientHandle;
+    }
+
     public UInteger getClientHandle() {
         return clientHandle;
     }
 
-    UInteger clientHandle;
-
-    public  OpcuaSubsriptionHandle(String fieldName, UInteger clientHandle){
-        this.clientHandle = clientHandle;
-    }
-    @Override
-    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
-        consumers.add(consumer);
-        return () -> {consumers.remove(consumer);};
-    }
-
+    /**
+     * @param item
+     * @param value
+     */
     public void onSubscriptionValue(UaMonitoredItem item, DataValue value) {
         consumers.forEach(plcSubscriptionEventConsumer -> {
             PlcResponseCode resultCode = PlcResponseCode.OK;
-            BaseDefaultFieldItem stringItem = null;
-            if(value.getStatusCode() != StatusCode.GOOD){
+            PlcValue stringItem = null;
+            if (value.getStatusCode() != StatusCode.GOOD) {
                 resultCode = PlcResponseCode.NOT_FOUND;
-            }else{
-                stringItem = OpcuaTcpPlcConnection.encodeFieldItem(value);
+            } else {
+                stringItem = OpcuaTcpPlcConnection.encodePlcValue(value);
 
             }
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
-            Pair<PlcResponseCode, BaseDefaultFieldItem> newPair = new ImmutablePair<>(resultCode, stringItem);
+            Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+            Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
             fields.put(fieldName, newPair);
             PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
             plcSubscriptionEventConsumer.accept(event);
         });
+    }
+
+    @Override
+    public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer) {
+        consumers.add(consumer);
+        return () -> consumers.remove(consumer);
     }
 
 }

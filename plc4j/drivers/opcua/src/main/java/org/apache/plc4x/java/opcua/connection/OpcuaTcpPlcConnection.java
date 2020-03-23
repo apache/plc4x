@@ -15,8 +15,7 @@
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
  under the License.
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
+
  */
 package org.apache.plc4x.java.opcua.connection;
 
@@ -28,11 +27,11 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.*;
-import org.apache.plc4x.java.base.model.SubscriptionPlcField;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
@@ -49,10 +48,7 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
-import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
-import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateRequest;
-import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
-import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
+import org.eclipse.milo.opcua.stack.core.types.structured.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,26 +65,32 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
 
+/**
+ * Corresponding implementaion for a TCP-based connection for an OPC UA server.
+ * TODO: At the moment are just connections without any security mechanism possible
+ * <p>
+ */
 public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     private static final int OPCUA_DEFAULT_TCP_PORT = 4840;
 
     private static final Logger logger = LoggerFactory.getLogger(OpcuaTcpPlcConnection.class);
+    private final AtomicLong clientHandles = new AtomicLong(1L);
     private InetAddress address;
     private int requestTimeout = 5000;
     private int port;
     private String params;
     private OpcUaClient client;
     private boolean isConnected = false;
-    private  final AtomicLong clientHandles = new AtomicLong(1L);
 
     private OpcuaTcpPlcConnection(InetAddress address, String params, int requestTimeout) {
-        this( address, OPCUA_DEFAULT_TCP_PORT,  params, requestTimeout);
+        this(address, OPCUA_DEFAULT_TCP_PORT, params, requestTimeout);
         logger.info("Configured OpcuaTcpPlcConnection with: host-name {}", address.getHostAddress());
     }
 
-    public OpcuaTcpPlcConnection(InetAddress address, int port, String params, int requestTimeout) {
+    private OpcuaTcpPlcConnection(InetAddress address, int port, String params, int requestTimeout) {
         this(params);
         logger.info("Configured OpcuaTcpPlcConnection with: host-name {}", address.getHostAddress());
         this.address = address;
@@ -97,8 +99,8 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         this.requestTimeout = requestTimeout;
     }
 
-    public OpcuaTcpPlcConnection(String params) {
-        super(params);
+    private OpcuaTcpPlcConnection(String params) {
+        super(getOptionString(params));
     }
 
     public static OpcuaTcpPlcConnection of(InetAddress address, String params, int requestTimeout) {
@@ -109,48 +111,48 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         return new OpcuaTcpPlcConnection(address, port, params, requestTimeout);
     }
 
-    public static BaseDefaultFieldItem encodeFieldItem(DataValue value){
+    public static PlcValue encodePlcValue(DataValue value) {
         NodeId typeNode = value.getValue().getDataType().get();
         Object objValue = value.getValue().getValue();
 
-        if(typeNode.equals(Identifiers.Boolean)){
-            return new DefaultBooleanFieldItem((Boolean)objValue);
-        }else if (typeNode.equals(Identifiers.ByteString)){
-            byte[] array = ((ByteString)objValue).bytes();
+        if (typeNode.equals(Identifiers.Boolean)) {
+            return new PlcBoolean((Boolean) objValue);
+        /*} else if (typeNode.equals(Identifiers.ByteString)) {
+            byte[] array = ((ByteString) objValue).bytes();
             Byte[] byteArry = new Byte[array.length];
             int counter = 0;
-            for (byte bytie: array
+            for (byte bytie : array
             ) {
                 byteArry[counter] = bytie;
                 counter++;
             }
-            return new DefaultByteArrayFieldItem(byteArry);
-        }else if (typeNode.equals(Identifiers.Integer)){
-            return new DefaultIntegerFieldItem((Integer)objValue);
-        }else if (typeNode.equals(Identifiers.Int16)){
-            return new DefaultShortFieldItem((Short)objValue);
-        }else if (typeNode.equals(Identifiers.Int32)){
-            return new DefaultIntegerFieldItem((Integer)objValue);
-        }else if (typeNode.equals(Identifiers.Int64)){
-            return new DefaultLongFieldItem((Long)objValue);
-        }else if (typeNode.equals(Identifiers.UInteger)){
-            return new DefaultLongFieldItem((Long)objValue);
-        }else if (typeNode.equals(Identifiers.UInt16)){
-            return new DefaultIntegerFieldItem(((UShort)objValue).intValue());
-        }else if (typeNode.equals(Identifiers.UInt32)){
-            return new DefaultLongFieldItem(((UInteger)objValue).longValue());
-        }else if (typeNode.equals(Identifiers.UInt64)){
-            return new DefaultBigIntegerFieldItem(new BigInteger(objValue.toString()));
-        }else if (typeNode.equals(Identifiers.Byte)){
-            return new DefaultShortFieldItem(Short.valueOf(objValue.toString()));
-        }else if (typeNode.equals(Identifiers.Float)){
-            return new DefaultFloatFieldItem((Float)objValue);
-        }else if (typeNode.equals(Identifiers.Double)){
-            return new DefaultDoubleFieldItem((Double)objValue);
-        }else if (typeNode.equals(Identifiers.SByte)){
-            return new DefaultByteFieldItem((Byte)objValue);
-        }else {
-            return new DefaultStringFieldItem(objValue.toString());
+            return new DefaultByteArrayPlcValue(byteArry);*/
+        } else if (typeNode.equals(Identifiers.Integer)) {
+            return new PlcInteger((Integer) objValue);
+        } else if (typeNode.equals(Identifiers.Int16)) {
+            return new PlcInteger((Short) objValue);
+        } else if (typeNode.equals(Identifiers.Int32)) {
+            return new PlcInteger((Integer) objValue);
+        } else if (typeNode.equals(Identifiers.Int64)) {
+            return new PlcLong((Long) objValue);
+        } else if (typeNode.equals(Identifiers.UInteger)) {
+            return new PlcLong((Long) objValue);
+        } else if (typeNode.equals(Identifiers.UInt16)) {
+            return new PlcInteger(((UShort) objValue).intValue());
+        } else if (typeNode.equals(Identifiers.UInt32)) {
+            return new PlcLong(((UInteger) objValue).longValue());
+        } else if (typeNode.equals(Identifiers.UInt64)) {
+            return new PlcBigInteger(new BigInteger(objValue.toString()));
+        } else if (typeNode.equals(Identifiers.Byte)) {
+            return new PlcInteger(Short.valueOf(objValue.toString()));
+        } else if (typeNode.equals(Identifiers.Float)) {
+            return new PlcFloat((Float) objValue);
+        } else if (typeNode.equals(Identifiers.Double)) {
+            return new PlcDouble((Double) objValue);
+        } else if (typeNode.equals(Identifiers.SByte)) {
+            return new PlcInteger((Byte) objValue);
+        } else {
+            return new PlcString(objValue.toString());
         }
 
     }
@@ -161,14 +163,17 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     @Override
     public void connect() throws PlcConnectionException {
-        List<EndpointDescription> endpoints =  null;
+        List<EndpointDescription> endpoints = null;
+        EndpointDescription endpoint = null;
 
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, params)).get();
-        //TODO Exception should be handeled better when the Discovery-API of Milo is stable
+            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, getSubPathOfParams(params))).get();
+            //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
+            logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
+
             // try the explicit discovery endpoint as well
-            String discoveryUrl = getEndpointUrl(address, port, params);
+            String discoveryUrl = getEndpointUrl(address, port, getSubPathOfParams(params));
 
             if (!discoveryUrl.endsWith("/")) {
                 discoveryUrl += "/";
@@ -178,16 +183,64 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             logger.info("Trying explicit discovery URL: {}", discoveryUrl);
             try {
                 endpoints = DiscoveryClient.getEndpoints(discoveryUrl).get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
+            } catch (ExecutionException e) {
                 throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
             }
+
+        }
+        endpoint = endpoints.stream()
+            .filter(e -> e.getSecurityPolicyUri().equals(getSecurityPolicy().getUri()))
+            .filter(endpointFilter())
+            .findFirst()
+            .orElseThrow(() -> new PlcConnectionException("No desired endpoints from"));
+
+        if (this.skipDiscovery) {
+            //ApplicationDescription applicationDescription = new ApplicationDescription();
+            //endpoint = new EndpointDescription(address.getHostAddress(),applicationDescription , null, MessageSecurityMode.None, SecurityPolicy.None.getUri(), null , TransportProfile.TCP_UASC_UABINARY.getUri(), UByte.valueOf(0));// TODO hier machen wenn fertig
+            ApplicationDescription currentAD = endpoint.getServer();
+            ApplicationDescription withoutDiscoveryAD = new ApplicationDescription(
+                currentAD.getApplicationUri(),
+                currentAD.getProductUri(),
+                currentAD.getApplicationName(),
+                currentAD.getApplicationType(),
+                currentAD.getGatewayServerUri(),
+                currentAD.getDiscoveryProfileUri(),
+                new String[0]);
+            //try to replace the overhanded address
+            //any error will result in the overhanded address of the client
+            String newEndpointUrl = endpoint.getEndpointUrl(), prefix = "", suffix = "";
+            String splitterPrefix = "://";
+            String splitterSuffix = ":";
+            String[] prefixSplit = newEndpointUrl.split(splitterPrefix);
+            if (prefixSplit.length > 1) {
+                String[] suffixSplit = prefixSplit[1].split(splitterSuffix);
+                //reconstruct the uri
+                newEndpointUrl = "";
+                newEndpointUrl += prefixSplit[0] + splitterPrefix + address.getHostAddress();
+                for (int suffixCounter = 1; suffixCounter < suffixSplit.length; suffixCounter++) {
+                    newEndpointUrl += splitterSuffix + suffixSplit[suffixCounter];
+                }
+                // attach surounding prefix match
+                for (int prefixCounter = 2; prefixCounter < prefixSplit.length; prefixCounter++) {
+                    newEndpointUrl += splitterPrefix + prefixSplit[prefixCounter];
+                }
+            }
+
+            EndpointDescription noDiscoverEndpoint = new EndpointDescription(
+                newEndpointUrl,
+                withoutDiscoveryAD,
+                endpoint.getServerCertificate(),
+                endpoint.getSecurityMode(),
+                endpoint.getSecurityPolicyUri(),
+                endpoint.getUserIdentityTokens(),
+                endpoint.getTransportProfileUri(),
+                endpoint.getSecurityLevel());
+            endpoint = noDiscoverEndpoint;
         }
 
-        EndpointDescription endpoint = endpoints.stream()
-                .filter(e -> e.getSecurityPolicyUri().equals(getSecurityPolicy().getUri()))
-                .filter(endpointFilter())
-                .findFirst()
-                .orElseThrow(() -> new PlcConnectionException("No desired endpoints from"));
 
         OpcUaClientConfig config = OpcUaClientConfig.builder()
             .setApplicationName(LocalizedText.english("eclipse milo opc-ua client of the apache PLC4X:PLC4J project"))
@@ -198,16 +251,20 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             .build();
 
         try {
-            this.client =  OpcUaClient.create(config);
+            this.client = OpcUaClient.create(config);
             this.client.connect().get();
             isConnected = true;
         } catch (UaException e) {
             isConnected = false;
             String message = (config == null) ? "NULL" : config.toString();
-            throw  new PlcConnectionException("The given input values are a not valid OPC UA connection configuration [CONFIG]: " + message);
-        } catch (InterruptedException | ExecutionException e) {
+            throw new PlcConnectionException("The given input values are a not valid OPC UA connection configuration [CONFIG]: " + message);
+        } catch (InterruptedException e) {
             isConnected = false;
-            throw  new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
+            Thread.currentThread().interrupt();
+            throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
+        } catch (ExecutionException e) {
+            isConnected = false;
+            throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage());
         }
     }
 
@@ -218,7 +275,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     @Override
     public void close() throws Exception {
-        if(client != null){
+        if (client != null) {
             client.disconnect().get();
             isConnected = false;
         }
@@ -227,70 +284,74 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
-        CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() ->{
+        CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() -> {
             Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
-            .map(subscriptionPlcFieldEntry -> {
-                final String plcFieldName = subscriptionPlcFieldEntry.getKey();
-                final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
-                final OpcuaField field = (OpcuaField)Objects.requireNonNull(subscriptionPlcField.getPlcField());
-                long cycleTime = subscriptionPlcField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
-                NodeId idNode = generateNodeId(field);
-                ReadValueId readValueId = new ReadValueId(
-                    idNode,
-                    AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
-                UInteger clientHandle = uint(clientHandles.getAndIncrement());
+                .map(subscriptionPlcFieldEntry -> {
+                    final String plcFieldName = subscriptionPlcFieldEntry.getKey();
+                    final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
+                    final OpcuaField field = (OpcuaField) Objects.requireNonNull(subscriptionPlcField.getPlcField());
+                    long cycleTime = subscriptionPlcField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
+                    NodeId idNode = generateNodeId(field);
+                    ReadValueId readValueId = new ReadValueId(
+                        idNode,
+                        AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
+                    UInteger clientHandle = uint(clientHandles.getAndIncrement());
 
-                MonitoringParameters parameters = new MonitoringParameters(
-                    clientHandle,
-                    (double) cycleTime,     // sampling interval
-                    null,       // filter, null means use default
-                    uint(1),   // queue size
-                    true        // discard oldest
-                );
-                MonitoringMode monitoringMode;
-                switch (subscriptionPlcField.getPlcSubscriptionType()) {
-                    case CYCLIC:
-                        monitoringMode = MonitoringMode.Sampling;
-                        break;
-                    case CHANGE_OF_STATE:
-                        monitoringMode = MonitoringMode.Reporting;
-                        break;
-                    case EVENT:
-                        monitoringMode = MonitoringMode.Reporting;
-                        break;
-                    default: monitoringMode = MonitoringMode.Reporting;
-                }
+                    MonitoringParameters parameters = new MonitoringParameters(
+                        clientHandle,
+                        (double) cycleTime,     // sampling interval
+                        null,       // filter, null means use default
+                        uint(1),   // queue size
+                        true        // discard oldest
+                    );
+                    MonitoringMode monitoringMode;
+                    switch (subscriptionPlcField.getPlcSubscriptionType()) {
+                        case CYCLIC:
+                            monitoringMode = MonitoringMode.Sampling;
+                            break;
+                        case CHANGE_OF_STATE:
+                            monitoringMode = MonitoringMode.Reporting;
+                            break;
+                        case EVENT:
+                            monitoringMode = MonitoringMode.Reporting;
+                            break;
+                        default:
+                            monitoringMode = MonitoringMode.Reporting;
+                    }
 
-                PlcSubscriptionHandle subHandle = null;
-                PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
-                try {
-                    UaSubscription subscription = client.getSubscriptionManager().createSubscription(1000.0).get();
+                    PlcSubscriptionHandle subHandle = null;
+                    PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
+                    try {
+                        UaSubscription subscription = client.getSubscriptionManager().createSubscription(cycleTime).get();
 
-                    MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                        readValueId, monitoringMode, parameters);
-                    List<MonitoredItemCreateRequest> requestList = new LinkedList<>();
-                    requestList.add(request);
-                    OpcuaSubsriptionHandle subsriptionHandle = new OpcuaSubsriptionHandle(plcFieldName, clientHandle);
-                    BiConsumer<UaMonitoredItem, Integer> onItemCreated =
-                        (item, id) -> item.setValueConsumer(subsriptionHandle::onSubscriptionValue);
+                        MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
+                            readValueId, monitoringMode, parameters);
+                        List<MonitoredItemCreateRequest> requestList = new LinkedList<>();
+                        requestList.add(request);
+                        OpcuaSubsriptionHandle subsriptionHandle = new OpcuaSubsriptionHandle(plcFieldName, clientHandle);
+                        BiConsumer<UaMonitoredItem, Integer> onItemCreated =
+                            (item, id) -> item.setValueConsumer(subsriptionHandle::onSubscriptionValue);
 
-                    List<UaMonitoredItem> items = subscription.createMonitoredItems(
-                        TimestampsToReturn.Both,
-                        requestList,
-                        onItemCreated
-                    ).get();
+                        List<UaMonitoredItem> items = subscription.createMonitoredItems(
+                            TimestampsToReturn.Both,
+                            requestList,
+                            onItemCreated
+                        ).get();
 
-                    subHandle = subsriptionHandle;
-                    responseCode = PlcResponseCode.OK;
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
-                }
+                        subHandle = subsriptionHandle;
+                        responseCode = PlcResponseCode.OK;
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
+                    } catch (ExecutionException e) {
+                        logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
+                    }
 
 
-                return Pair.of(plcFieldName, Pair.of(responseCode, subHandle));
-            })
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-            return (PlcSubscriptionResponse) new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems);
+                    return Pair.of(plcFieldName, Pair.of(responseCode, subHandle));
+                })
+                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
+            return new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems);
         });
 
         return future;
@@ -303,7 +364,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             OpcuaSubsriptionHandle opcSubHandle = (OpcuaSubsriptionHandle) o;
             try {
                 client.getSubscriptionManager().deleteSubscription(opcSubHandle.getClientHandle()).get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
+            } catch (ExecutionException e) {
                 logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
             }
         });
@@ -328,10 +392,10 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = CompletableFuture.supplyAsync(() -> {
             readRequest.getFields();
-            Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+            Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
             List<NodeId> readValueIds = new LinkedList<>();
             List<PlcField> readPLCValues = readRequest.getFields();
-            for (PlcField field: readPLCValues) {
+            for (PlcField field : readPLCValues) {
                 NodeId idNode = generateNodeId((OpcuaField) field);
                 readValueIds.add(idNode);
             }
@@ -340,25 +404,29 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             List<DataValue> readValues = null;
             try {
                 readValues = dataValueCompletableFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.warn("Unable to read Elements because of: {}", e.getMessage());
+            } catch (ExecutionException e) {
                 logger.warn("Unable to read Elements because of: {}", e.getMessage());
             }
-            for(int counter = 0; counter < readValueIds.size(); counter++){
+            for (int counter = 0; counter < readValueIds.size(); counter++) {
                 PlcResponseCode resultCode = PlcResponseCode.OK;
-                BaseDefaultFieldItem stringItem = null;
-                if(readValues == null || readValues.size() <= counter || readValues.get(counter).getStatusCode() != StatusCode.GOOD){
+                PlcValue stringItem = null;
+                if (readValues == null || readValues.size() <= counter ||
+                    !readValues.get(counter).getStatusCode().equals(StatusCode.GOOD)) {
                     resultCode = PlcResponseCode.NOT_FOUND;
-                }else{
-                    stringItem = encodeFieldItem(readValues.get(counter));
+                } else {
+                    stringItem = encodePlcValue(readValues.get(counter));
 
                 }
-                Pair<PlcResponseCode, BaseDefaultFieldItem> newPair = new ImmutablePair<>(resultCode, stringItem);
+                Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
                 fields.put((String) readRequest.getFieldNames().toArray()[counter], newPair);
 
 
             }
             InternalPlcReadRequest internalPlcReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-            return (PlcReadResponse) new DefaultPlcReadResponse(internalPlcReadRequest, fields );
+            return (PlcReadResponse) new DefaultPlcReadResponse(internalPlcReadRequest, fields);
         });
 
 
@@ -378,11 +446,14 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             LinkedList<NodeId> ids = new LinkedList<>();
             LinkedList<String> names = new LinkedList<>();
             Map<String, PlcResponseCode> fieldResponse = new HashMap<>();
-            for (String fieldName: writeRequest.getFieldNames()) {
+            for (String fieldName : writeRequest.getFieldNames()) {
                 OpcuaField uaField = (OpcuaField) writeRequest.getField(fieldName);
                 NodeId idNode = generateNodeId(uaField);
-                Variant var = new Variant(internalPlcWriteRequest.getFieldItem(fieldName).getObject(0));
-                DataValue value = new DataValue(var, null, null);
+                Object valueObject = internalPlcWriteRequest.getPlcValue(fieldName).getObject();
+                // Added small work around for handling BigIntegers as input type for UInt64
+                if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
+                Variant var = new Variant(valueObject);
+                DataValue value = new DataValue(var, null, null, null);
                 ids.add(idNode);
                 names.add(fieldName);
                 values.add(value);
@@ -392,24 +463,32 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             List<StatusCode> statusCodes = null;
             try {
                 statusCodes = opcRequest.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 statusCodes = new LinkedList<>();
-                for(int counter = 0; counter < ids.size(); counter++){
+                for (int counter = 0; counter < ids.size(); counter++) {
+                    ((LinkedList<StatusCode>) statusCodes).push(StatusCode.BAD);
+                }
+            } catch (ExecutionException e) {
+                statusCodes = new LinkedList<>();
+                for (int counter = 0; counter < ids.size(); counter++) {
                     ((LinkedList<StatusCode>) statusCodes).push(StatusCode.BAD);
                 }
             }
 
-            for(int counter = 0; counter < names.size(); counter++){
+            for (int counter = 0; counter < names.size(); counter++) {
                 PlcResponseCode resultCode;
-                if(statusCodes != null && statusCodes.size() > counter){
-                    if(statusCodes.get(counter).isGood()){
+                if (statusCodes != null && statusCodes.size() > counter) {
+                    if (statusCodes.get(counter).isGood()) {
                         resultCode = PlcResponseCode.OK;
-                    }else if(statusCodes.get(counter).isUncertain()){
+                    } else if (statusCodes.get(counter).isUncertain()) {
                         resultCode = PlcResponseCode.NOT_FOUND;
-                    }else {
+                    } else if (statusCodes.get(counter).isBad() && statusCodes.get(counter).getValue() == 2155085824L) {
+                        resultCode = PlcResponseCode.INVALID_DATATYPE;
+                    } else {
                         resultCode = PlcResponseCode.ACCESS_DENIED;
                     }
-                }else{
+                } else {
                     resultCode = PlcResponseCode.ACCESS_DENIED;
                 }
                 fieldResponse.put(names.get(counter), resultCode);
@@ -424,7 +503,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     }
 
 
-    private NodeId generateNodeId(OpcuaField uaField){
+    private NodeId generateNodeId(OpcuaField uaField) {
         NodeId idNode = null;
         switch (uaField.getIdentifierType()) {
             case STRING_IDENTIFIER:
@@ -440,14 +519,15 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 idNode = new NodeId(uaField.getNamespace(), new ByteString(uaField.getIdentifier().getBytes()));
                 break;
 
-            default: idNode = new NodeId(uaField.getNamespace(), uaField.getIdentifier());
+            default:
+                idNode = new NodeId(uaField.getNamespace(), uaField.getIdentifier());
         }
 
-        return  idNode;
+        return idNode;
     }
 
     private String getEndpointUrl(InetAddress address, Integer port, String params) {
-        return "opc.tcp://" + address.getHostAddress() +":" + port + "/" + params;
+        return "opc.tcp://" + address.getHostAddress() + ":" + port + "/" + params;
     }
 
     private Predicate<EndpointDescription> endpointFilter() {
@@ -460,5 +540,31 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     private IdentityProvider getIdentityProvider() {
         return new AnonymousProvider();
+    }
+
+    private static String getSubPathOfParams(String params){
+        if(params.contains("=")){
+            if(params.contains("?")){
+                return params.split("\\?")[0];
+            }else{
+                return "";
+            }
+
+        }else {
+            return params;
+        }
+    }
+
+    private static String getOptionString(String params){
+        if(params.contains("=")){
+            if(params.contains("?")){
+                return params.split("\\?")[1];
+            }else{
+                return params;
+            }
+
+        }else {
+            return "";
+        }
     }
 }

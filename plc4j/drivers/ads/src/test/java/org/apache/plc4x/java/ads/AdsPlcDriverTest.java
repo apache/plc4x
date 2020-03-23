@@ -27,9 +27,12 @@ import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthenticatio
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
+import org.apache.plc4x.java.mock.connection.tcp.TcpHexDumper;
 import org.apache.plc4x.test.RequireInternetConnection;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.net.ConnectException;
 import java.util.regex.Pattern;

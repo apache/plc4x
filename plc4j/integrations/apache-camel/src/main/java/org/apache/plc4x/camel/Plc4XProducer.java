@@ -21,17 +21,22 @@ package org.apache.plc4x.camel;
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.apache.camel.impl.DefaultAsyncProducer;
+import org.apache.camel.support.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XProducer extends DefaultAsyncProducer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Plc4XProducer.class);
+
     private PlcConnection plcConnection;
     private AtomicInteger openRequests;
 
@@ -63,7 +68,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
-            log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
+            LOG.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
             Object plcWriteResponse = completableFuture.get();
             if (exchange.getPattern().isOutCapable()) {
                 Message out = exchange.getOut();
@@ -74,7 +79,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
             }
         } finally {
             int openRequestsAfterFinish = openRequests.decrementAndGet();
-            log.trace("Open Requests after {}:{}", exchange, openRequestsAfterFinish);
+            LOG.trace("Open Requests after {}:{}", exchange, openRequestsAfterFinish);
         }
     }
 
@@ -95,14 +100,14 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     protected void doStop() throws Exception {
         int openRequestsAtStop = openRequests.get();
-        log.debug("Stopping with {} open requests", openRequestsAtStop);
+        LOG.debug("Stopping with {} open requests", openRequestsAtStop);
         if (openRequestsAtStop > 0) {
-            log.warn("There are still {} open requests", openRequestsAtStop);
+            LOG.warn("There are still {} open requests", openRequestsAtStop);
         }
         try {
             plcConnection.close();
         } catch (Exception e) {
-            log.warn("Could not close {}", plcConnection, e);
+            LOG.warn("Could not close {}", plcConnection, e);
         }
         super.doStop();
     }

@@ -166,42 +166,7 @@ public class PlcConnectionAdapter implements AutoCloseable {
                 connection = getConnection();
                 PlcReadRequest readRequest = connection.readRequestBuilder().addItem(FIELD_NAME, fieldQuery).build();
                 PlcReadResponse readResponse = readRequest.execute().get();
-                Object value = null;
-                switch (clientDatatype) {
-                    case BOOLEAN:
-                        value = readResponse.getBoolean(FIELD_NAME);
-                        break;
-                    case BYTE:
-                        value = readResponse.getByte(FIELD_NAME);
-                        break;
-                    case SHORT:
-                        value = readResponse.getShort(FIELD_NAME);
-                        break;
-                    case INTEGER:
-                        value = readResponse.getInteger(FIELD_NAME);
-                        break;
-                    case LONG:
-                        value = readResponse.getLong(FIELD_NAME);
-                        break;
-                    case FLOAT:
-                        value = readResponse.getFloat(FIELD_NAME);
-                        break;
-                    case DOUBLE:
-                        value = readResponse.getDouble(FIELD_NAME);
-                        break;
-                    case STRING:
-                        value = readResponse.getString(FIELD_NAME);
-                        break;
-                    case TIME:
-                        value = readResponse.getTime(FIELD_NAME);
-                        break;
-                    case DATE:
-                        value = readResponse.getDate(FIELD_NAME);
-                        break;
-                    case DATE_TIME:
-                        value = readResponse.getDateTime(FIELD_NAME);
-                        break;
-                }
+                Object value = readResponse.getObject(FIELD_NAME);
                 if (value != null) {
                     if (genericDatatype.isAssignableFrom(value.getClass())) {
                         return (T) value;
@@ -289,8 +254,8 @@ public class PlcConnectionAdapter implements AutoCloseable {
         return new ObjectConsumer<>(genericDatatype, clientDatatype, fieldQuery);
     }
 
-    <T> Consumer<JsonObject> newJsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> fieldValueFn) {
-        return new JsonConsumer<>(clientDatatype, fieldQueryFn, fieldValueFn);
+    <T> Consumer<JsonObject> newJsonConsumer(PlcClientDatatype clientDatatype, Function<JsonObject, String> fieldQueryFn, Function<JsonObject, T> valueFn) {
+        return new JsonConsumer<>(clientDatatype, fieldQueryFn, valueFn);
     }
 
     private abstract class BaseConsumer<T> implements Consumer<T> {

@@ -23,8 +23,8 @@ import org.apache.camel.ExchangePattern;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class Plc4XProducerTest {
 
     private Exchange testExchange;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Plc4XEndpoint endpointMock = mock(Plc4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
@@ -53,21 +53,20 @@ public class Plc4XProducerTest {
         when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
-        // TODO: Commented out as it was causing problems with Java 11
-/*        when(testExchange.getIn().getHeader(eq(Constants.FIELD_NAME_HEADER), eq(String.class)))
+
+        when(testExchange.getIn().getHeader(eq(Constants.FIELD_NAME_HEADER), eq(String.class)))
             .thenReturn("Hurz");
         when(testExchange.getIn().getHeader(eq(Constants.FIELD_QUERY_HEADER), eq(String.class)))
-            .thenReturn("PlcField.class");*/
+            .thenReturn("PlcField.class");
     }
 
-    // TODO: Commented out as it was causing problems with Java 11
-    //@Test
+    @Test
     public void process() throws Exception {
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
         SUT.process(testExchange);
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
+        when(testExchange.getPattern()).thenReturn(ExchangePattern.InOptionalOut);
         SUT.process(testExchange);
         when(testExchange.getIn().getBody()).thenReturn(Arrays.asList("test","test"));
         when(testExchange.getIn().getBody(eq(List.class))).thenReturn(Arrays.asList("test","test"));
@@ -84,7 +83,7 @@ public class Plc4XProducerTest {
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
         SUT.process(testExchange, doneSync -> {
         });
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
+        when(testExchange.getPattern()).thenReturn(ExchangePattern.InOptionalOut);
         SUT.process(testExchange, doneSync -> {
         });
     }

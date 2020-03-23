@@ -30,12 +30,27 @@
 
   <fileSets>
     <fileSet>
+      <directory>${project.build.directory}/thrift-${thrift.version}/lib/cpp/src</directory>
+      <includes>
+        <include>**/*.h</include>
+        <include>**/*.tcc</include>
+      </includes>
+      <outputDirectory>include</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}/build/thrift</directory>
+      <includes>
+        <include>**/*.h</include>
+      </includes>
+      <outputDirectory>include/thrift</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>${project.build.directory}/build/lib</directory>
       <includes>
         <include>*.a</include>
         <include>*.dylib</include>
       </includes>
-      <outputDirectory/>
+      <outputDirectory>lib</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>

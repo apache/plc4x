@@ -22,11 +22,12 @@ import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class HelloPlc4x {
 
@@ -38,51 +39,22 @@ public class HelloPlc4x {
      * @param args ignored.
      */
     public static void main(String[] args) throws Exception {
-        CliOptions options = CliOptions.fromArgs(args);
-        if (options == null) {
-            CliOptions.printHelp();
-            // Could not parse.
-            System.exit(1);
-        }
-
-        // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
-
-            // Check if this connection support reading of data.
-            if (!plcConnection.getMetadata().canRead()) {
-                logger.error("This connection doesn't support reading.");
-                return;
-            }
-
-            // Create a new read request:
-            // - Give the single item requested the alias name "value"
-            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + i, options.getFieldAddress()[i]);
-            }
-            PlcReadRequest readRequest = builder.build();
-
-            //////////////////////////////////////////////////////////
-            // Read synchronously ...
-            // NOTICE: the ".get()" immediately lets this thread pause until
-            // the response is processed and available.
-            logger.info("Synchronous request ...");
-            PlcReadResponse syncResponse = readRequest.execute().get();
-            // Simply iterating over the field names returned in the response.
-            printResponse(syncResponse);
-
-            //////////////////////////////////////////////////////////
-            // Read asynchronously ...
-            // Register a callback executed as soon as a response arrives.
-            logger.info("Asynchronous request ...");
-            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-            asyncResponse.whenComplete((readResponse, throwable) -> {
-                if (readResponse != null) {
-                    printResponse(readResponse);
-                } else {
-                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+        try {
+            long t= System.currentTimeMillis();
+            long end = t+30000;
+            PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.178.10");
+            while (true) {
+                PlcWriteRequest.Builder writeBuilder = connection.writeRequestBuilder();
+                PlcReadRequest.Builder builder = connection.readRequestBuilder();
+                builder.addItem("String", "%DB1.DBX0:STRING[6]");
+                PlcReadResponse response = builder.build().execute().get(2, TimeUnit.SECONDS);
+                for(String field : response.getFieldNames()){
+                    logger.info("{} : {}",field,response.getObject(field));
                 }
-            });
+                Thread.sleep(1000);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

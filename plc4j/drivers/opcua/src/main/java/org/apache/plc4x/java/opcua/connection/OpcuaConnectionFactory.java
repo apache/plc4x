@@ -20,9 +20,8 @@ package org.apache.plc4x.java.opcua.connection;
 
 import java.net.InetAddress;
 import java.util.Objects;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 public class OpcuaConnectionFactory {
 

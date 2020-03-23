@@ -94,6 +94,26 @@ public class Payload2TcpProtocolTest extends AbstractProtocolTest {
     }
 
     @Test
+    public void fragmentedDecode() throws Exception {
+        ArrayList<Object> out = new ArrayList<>();
+        ByteBuf byteBuf = amsTCPPacket.getByteBuf();
+        SUT.decode(channelHandlerContextMock, byteBuf.readBytes(byteBuf.readableBytes() - 2), out);
+        assertThat(out, hasSize(0));
+        SUT.decode(channelHandlerContextMock, byteBuf, out);
+        assertThat(out, hasSize(1));
+        byteBuf.release();
+    }
+
+    @Test
+    public void multipleMessagesDecode() throws Exception {
+        ArrayList<Object> out = new ArrayList<>();
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(amsTCPPacket.getByteBuf(), amsTCPPacket.getByteBuf());
+        SUT.decode(channelHandlerContextMock, byteBuf, out);
+        assertThat(out, hasSize(2));
+        byteBuf.release();
+    }
+
+    @Test
     public void roundTrip() throws Exception {
         ArrayList<Object> outbound = new ArrayList<>();
         SUT.encode(channelHandlerContextMock, Unpooled.wrappedBuffer(amsPacketBytes), outbound);

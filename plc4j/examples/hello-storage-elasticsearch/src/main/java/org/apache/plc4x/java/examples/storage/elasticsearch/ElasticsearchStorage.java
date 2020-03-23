@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ElasticsearchStorage {
+    private static CliOptions options;
 
     public enum ConveyorState {
         STOPPED,
@@ -82,6 +83,7 @@ public class ElasticsearchStorage {
                 .put("http.type", "netty4")
                 .put("http.cors.enabled", "true")
                 .put("path.home", "elasticsearch-data")
+                .put("network.host", "0.0.0.0")
                 .build(), Collections.singletonList(Netty4Plugin.class));
             node.start();
             return node;
@@ -145,7 +147,10 @@ public class ElasticsearchStorage {
             try {
                 esNode.close();
                 mainThread.join();
-            } catch (IOException | InterruptedException e) {
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new PlcRuntimeException("Error closing ES Node", e);
+            } catch (IOException e) {
                 throw new PlcRuntimeException("Error closing ES Node", e);
             }
         }));
@@ -155,14 +160,15 @@ public class ElasticsearchStorage {
         prepareIndexes(esClient);
 
         // Get a plc connection.
-        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter("s7://10.10.64.20/1/1")) {
+        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(options.getPlc4xConnectionString())) {
             // Initialize the Edgent core.
             DirectProvider dp = new DirectProvider();
             Topology top = dp.newTopology();
 
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
-            Supplier<List<Boolean>> plcSupplier = PlcFunctions.booleanListSupplier(plcAdapter, "%Q0:BYTE");
+            Supplier<List<Boolean>> plcSupplier = PlcFunctions.booleanListSupplier(plcAdapter,
+                options.getPlc4xFieldAddress());
             // 2) Use polling to get an item from the byte-stream in regular intervals.
             TStream<List<Boolean>> plcOutputStates = top.poll(plcSupplier, 100, TimeUnit.MILLISECONDS);
 
@@ -247,6 +253,16 @@ public class ElasticsearchStorage {
     }
 
     public static void main(String[] args) {
+        options = CliOptions.fromArgs(args);
+        if (options == null) {
+            CliOptions.printHelp();
+            // Could not parse.
+            System.exit(1);
+        }
+
+        System.out.println("Connecting to " + options.getPlc4xConnectionString()+ " with field address " +
+            options.getPlc4xFieldAddress());
+
         ElasticsearchStorage factory = new ElasticsearchStorage();
         factory.runFactory();
     }

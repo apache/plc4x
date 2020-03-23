@@ -1,4 +1,88 @@
 ==============================================================
+(Unreleased) Apache PLC4X 0.7.0-SNAPSHOT
+==============================================================
+
+This version is the first after a major refactoring of the driver
+core. All previous driver versions are now considered deprecated
+and are currently being replaced by versions using the new driver
+structure and generated driver codebase.
+
+New Features
+------------
+
+- Drivers now support structured types using PlcValues
+
+Incompatible changes
+--------------------
+
+- Due to the refactoring of the driver core there might be issues
+  running drivers built against older core versions.
+
+Bug Fixes
+---------
+
+==============================================================
+(Unreleased) Apache PLC4X 0.6.0-SNAPSHOT
+==============================================================
+
+This is the last release of PLC4X with the "handwritten" drivers.
+This Minor release will thus receive updates and fixes until
+most users have switched to 0.7 and above (with generated drivers).
+
+If you are using the S7 Driver you should update to this Version
+as the critical (memory leak) bug PLC4X-163 is fixed.
+
+New Features
+------------
+- PLC4X-168 A shorter S7 Field Syntax is Introduced.
+This release contains no further features and mostly stabilization.
+
+Incompatible changes
+--------------------
+- Moved the C++, C# and Python drivers into the `sandbox`
+
+Bug Fixes
+---------
+- Fixed Promise Chain for InternalPlcWriteRequest
+- PLC4X-45 Add float support to Modbus Protocol
+- PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
+- PLC4X-166 Fixed Download Page
+- PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
+- PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
+
+==============================================================
+Apache PLC4X 0.5.0
+==============================================================
+
+This is the first release containing our new generated drivers (AB-ETH)
+
+New Features
+------------
+
+- Implemented a new Apache Kafka Connect integration module
+- Implemented a new Apache NiFi integration module
+- Implemented a new Logstash integration module
+- Implemented a driver for the AB-ETH protocol
+- Implemented Apache Karaf features for S7 OSGI drivers
+- PLC4X-121	Develop Code Generation to allow Generated Drivers in multiple Languages
+
+Sandbox (Beta-Features)
+- Implemented a new BACnet/IP passive mode driver
+- Implemented a new Serial DF1 driver
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+- PLC4X-104	S7 Driver Datatype TIME_OF_DAY causes ArrayOutOfBoundException
+- PLC4X-134	S7 is terminating the connection during handshake
+- PLC4X-139	PLC4X leaks sockets in case of connection problems
+- PLC4X-141	String with real length of greater 127 throw an exception
+- PLC4X-144	When requesting invalid addresses, the DefaultS7MessageProcessor produces errors
+
+==============================================================
 Apache PLC4X 0.4.0
 ==============================================================
 

@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.apache.plc4x.java.base.util.Assert.assertByteEquals;
 import static org.junit.Assert.assertEquals;
 
 public class DigestUtilTest {
@@ -97,9 +96,9 @@ public class DigestUtilTest {
             .mapToObj(value -> (byte) value)
             .toArray(Byte[]::new));
         int crcField1Index = exampleResponse.length - 2;
-        assertByteEquals((byte) 0x04, exampleResponse[crcField1Index]);
+        assertEquals((byte) 0x04, exampleResponse[crcField1Index]);
         int crcField2Index = exampleResponse.length - 1;
-        assertByteEquals((byte) 0xA9, exampleResponse[crcField2Index]);
+        assertEquals((byte) 0xA9, exampleResponse[crcField2Index]);
 
         IntStream.range(0, 0xFFFF).forEach(polynomial -> {
                 //int polynomial = 0x8005;

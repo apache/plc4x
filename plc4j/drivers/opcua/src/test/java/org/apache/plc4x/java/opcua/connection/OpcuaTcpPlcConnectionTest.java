@@ -20,17 +20,67 @@ package org.apache.plc4x.java.opcua.connection;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 /**
- * @author Matthias Milan Stlrljic
- * Created by Matthias Milan Stlrljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnectionTest {
+
+    private final String[] validTCPOPC = {
+        "localhost",
+        "www.google.de",
+        "127.0.0.1",
+        "254.254.254.254"
+    };
+    private final int[] validPorts = {
+        1337,
+        42,
+        1,
+        24152
+    };
+    private final String[] nDiscoveryParams = {
+        "discovery=false"
+    };
+
     @BeforeEach
     public void before() {
     }
 
     @AfterEach
     public void after() {
+
+    }
+
+    @Test
+    public void discoveryParamTest() {
+        for (String address :
+            validTCPOPC) {
+            for (int port :
+                validPorts) {
+                for (String discoveryParam :
+                    nDiscoveryParams) {
+                    String param = "";
+                    param += discoveryParam;
+
+                    OpcuaConnectionFactory opcuaConnectionFactory = new OpcuaConnectionFactory();
+
+                    try {
+                        OpcuaTcpPlcConnection tcpPlcConnection = opcuaConnectionFactory.opcuaTcpPlcConnectionOf(InetAddress.getByName(address), port, param, 5000);
+                        assertTrue(tcpPlcConnection.isSkipDiscovery());
+                    } catch (UnknownHostException e) {
+                        fail("Testadress is no valid InetAddress: " + e);
+                    }
+                }
+            }
+
+
+        }
 
     }
 }

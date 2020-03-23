@@ -19,34 +19,9 @@
 
 package org.apache.plc4x.java.ads.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.base.messages.items.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.TestInfo;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
 class AdsPlcFieldHandlerTest {
 
-    private static AdsPlcFieldHandler SUT = new AdsPlcFieldHandler();
+/*    private static AdsPlcFieldHandler SUT = new AdsPlcFieldHandler();
 
     private TestInfo testInfo;
 
@@ -587,5 +562,5 @@ class AdsPlcFieldHandlerTest {
             }
         }
     }
-
+*/
 }

@@ -17,12 +17,91 @@
 
 == Download
 
-Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://www.apache.org/dist/plc4x/KEYS[KEYS] for any Apache release.
+Be sure to verify your downloads by these https://www.apache.org/info/verification[procedures] using these https://downloads.apache.org/plc4x/KEYS[KEYS] for any Apache release.
 
 === Current Releases
 
-[#release-0.3.1]
-==== 0.3.1 (incubating) Official https://www.apache.org/dyn/closer.lua/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip[source release] [ https://www.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.asc[ASC] ]
+[#release-0.6.0]
+==== 0.6.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.6.0/apache-plc4x-0.6.0-source-release.zip.asc[ASC] ]
+
+This is the last release of PLC4X with the "handwritten" drivers.
+This Minor release will thus receive updates and fixes until
+most users have switched to 0.7 and above (with generated drivers).
+
+If you are using the S7 Driver you should update to this Version
+as the critical (memory leak) bug PLC4X-163 is fixed.
+
+===== New Features
+
+- PLC4X-168 A shorter S7 Field Syntax is Introduced.
+This release contains no further features and mostly stabilization.
+
+===== Incompatible changes
+
+- Moved the C++, C# and Python drivers into the `sandbox`
+
+===== Bug Fixes
+
+- Fixed Promise Chain for InternalPlcWriteRequest
+- PLC4X-45 Add float support to Modbus Protocol
+- PLC4X-164 Fix wrong NOT FOUND exception in OPC UA Driver
+- PLC4X-166 Fixed Download Page
+- PLC4X-163 Fixed Netty ByteBuf Leaks for S7 Driver
+- PLC4X-158 Added Warning if no Pooled Driver is used for Scraper
+
+=== Previous Releases
+
+[#release-0.5.0]
+==== 0.5.0 Official https://archive.apache.org/dist/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.5.0/apache-plc4x-0.5.0-source-release.zip.asc[ASC] ]
+
+This is the first release containing our new generated drivers (AB-ETH)
+
+===== New Features
+
+- Implemented a new Apache Kafka Connect integration module
+- Implemented a new Apache NiFi integration module
+- Implemented a new Logstash integration module
+- Implemented a driver for the AB-ETH protocol
+- Implemented Apache Karaf features for S7 OSGI drivers
+- PLC4X-121	Develop Code Generation to allow Generated Drivers in multiple Languages
+
+Sandbox (Beta-Features)
+- Implemented a new BACnet/IP passive mode driver
+- Implemented a new Serial DF1 driver
+
+===== Incompatible changes
+
+===== Bug Fixes
+
+- PLC4X-104	S7 Driver Datatype TIME_OF_DAY causes ArrayOutOfBoundException
+- PLC4X-134	S7 is terminating the connection during handshake
+- PLC4X-139	PLC4X leaks sockets in case of connection problems
+- PLC4X-141	String with real length of greater 127 throw an exception
+- PLC4X-144	When requesting invalid addresses, the DefaultS7MessageProcessor produces errors
+
+[#release-0.4.0]
+==== 0.4.0 Official https://archive.apache.org/dist/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.4.0/apache-plc4x-0.4.0-source-release.zip.asc[ASC] ]
+
+This is the first release of Apache PLC4X as top-level project.
+
+===== New Features
+
+- The PlcConnection now supports a `ping` method to allow checking if an existing connection is still alive.
+- Support of the OPC-UA protocol with the `opc-ua-driver`.
+- Other Languages Support:
+-- Added first versions of a C# .Net PLC4X API (`plc4net`)
+-- Added first versions of a Python PLC4X API (`plc4py`)
+- Added an Interop server which allows to relay requests from other languages to a Java Server
+
+===== Incompatible changes
+
+- ElasticSearch example was updated to use ElasticSearch 7.0.1, this might cause problems with older Kibana versions.
+
+===== Bug Fixes
+
+=== Incubating Releases
+
+==== 0.3.1 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.3.1-incubating/apache-plc4x-incubating-0.3.1-source-release.zip.asc[ASC] ]
 
 ===== New Features
 
@@ -39,10 +118,8 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 - Renamed flags "F" to Siemens Standard "M" (Marker)
 - Fixed a bug in the DefaultS7MessageProcessor which didn't correctly merge together split up items
 
-=== Previous Releases
-
 [#release-0.3.0]
-==== 0.3.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
+==== 0.3.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.3.0-incubating/apache-plc4x-incubating-0.3.0-source-release.zip.asc[ASC] ]
 
 ===== New Features
 
@@ -71,7 +148,7 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 - Fixed a Bug where S7 was not able to read arrays.
 
 [#release-0.2.0]
-==== 0.2.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ http://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
+==== 0.2.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.2.0-incubating/apache-plc4x-incubating-0.2.0-source-release.zip.asc[ASC] ]
 
 ===== Changes:
 
@@ -81,7 +158,4 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 * Bug fixes
 
 [#release-0.1.0]
-==== 0.1.0 (incubating) Official http://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ http://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://www.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]
-
-// Disabled as this is the first release ...
-//https://github.com/apache/incubator-plc4x/tree/rel/0.1.0/CHANGELOG.md[CHANGELOG]
+==== 0.1.0 (incubating) Official https://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip[source release] [ https://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/incubator/plc4x/0.1.0-incubating/apache-plc4x-incubating-0.1.0-source-release.zip.asc[ASC] ]

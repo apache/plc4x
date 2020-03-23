@@ -35,8 +35,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.messages.*;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -51,13 +51,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -273,11 +269,12 @@ class AdsAbstractPlcConnectionTest implements WithAssertions {
             assertNotNull(amsPort);
         }
 
-        // TODO: Commented out as it was causing problems with Java 11
-        /*@Test
+
+        @Test
         void getFromFuture() throws Exception {
             runInThread(() -> {
                 CompletableFuture completableFuture = mock(CompletableFuture.class, RETURNS_DEEP_STUBS);
+                when(completableFuture.get(any(long.class), any(TimeUnit.class))).thenReturn(new Object());
                 Object fromFuture = SUT.getFromFuture(completableFuture, 1);
                 assertNotNull(fromFuture);
             });
@@ -297,7 +294,7 @@ class AdsAbstractPlcConnectionTest implements WithAssertions {
                 assertThrows(PlcRuntimeException.class, () -> SUT.getFromFuture(completableFuture, 1));
             });
             assertFalse("The current Thread should not be interrupted", Thread.currentThread().isInterrupted());
-        }*/
+        }
 
         /**
          * Runs tests steps in a dedicated {@link Thread} so a possible {@link InterruptedException} doesn't lead to a

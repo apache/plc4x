@@ -20,23 +20,30 @@ package org.apache.plc4x.kafka;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-import org.apache.kafka.connect.data.Schema;
-import org.apache.kafka.connect.data.SchemaBuilder;
-import org.apache.kafka.connect.data.Struct;
+import org.apache.kafka.connect.data.Date;
+import org.apache.kafka.connect.data.*;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTask;
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.JobConfigurationTriggeredImplBuilder;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImplBuilder;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.kafka.util.VersionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Source Connector Task polling the data source at a given rate.
@@ -45,46 +52,41 @@ import java.util.concurrent.*;
  * If the flag does not become true, the method returns null, otherwise a fetch is performed.
  */
 public class Plc4xSourceTask extends SourceTask {
-    static final String TOPIC_CONFIG = "topic";
-    private static final String TOPIC_DOC = "Kafka topic to publish to";
 
-    static final String URL_CONFIG = "url";
-    private static final String URL_DOC = "PLC URL";
+    private static final Logger log = LoggerFactory.getLogger(Plc4xSourceTask.class);
 
+    /*
+     * Config of the task.
+     */
+    static final String CONNECTION_NAME_CONFIG = "connection-name";
+    private static final String CONNECTION_NAME_STRING_DOC = "Connection Name";
+
+    static final String PLC4X_CONNECTION_STRING_CONFIG = "plc4x-connection-string";
+    private static final String PLC4X_CONNECTION_STRING_DOC = "PLC4X Connection String";
+
+    // Syntax for the queries: {job-name}:{topic}:{rate}:{field-alias}#{field-address}:{field-alias}#{field-address}...,{topic}:{rate}:....
     static final String QUERIES_CONFIG = "queries";
     private static final String QUERIES_DOC = "Field queries to be sent to the PLC";
 
-    static final String RATE_CONFIG = "rate";
-    private static final Integer RATE_DEFAULT = 1000;
-    private static final String RATE_DOC = "Polling rate";
-
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(TOPIC_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
-        .define(URL_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, URL_DOC)
-        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC)
-        .define(RATE_CONFIG, ConfigDef.Type.INT, RATE_DEFAULT, ConfigDef.Importance.MEDIUM, RATE_DOC);
+        .define(CONNECTION_NAME_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, CONNECTION_NAME_STRING_DOC)
+        .define(PLC4X_CONNECTION_STRING_CONFIG, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, PLC4X_CONNECTION_STRING_DOC)
+        .define(QUERIES_CONFIG, ConfigDef.Type.LIST, ConfigDef.Importance.HIGH, QUERIES_DOC);
 
-    private static final long WAIT_LIMIT_MILLIS = 100;
-    private static final long TIMEOUT_LIMIT_MILLIS = 5000;
-
-    private static final String URL_FIELD = "url";
-    private static final String QUERY_FIELD = "query";
+    /*
+     * Configuration of the output.
+     */
+    private static final String SOURCE_NAME_FIELD = "source-name";
+    private static final String JOB_NAME_FIELD = "job-name";
 
     private static final Schema KEY_SCHEMA =
         new SchemaBuilder(Schema.Type.STRUCT)
-            .field(URL_FIELD, Schema.STRING_SCHEMA)
-            .field(QUERY_FIELD, Schema.STRING_SCHEMA)
+            .field(SOURCE_NAME_FIELD, Schema.STRING_SCHEMA)
+            .field(JOB_NAME_FIELD, Schema.STRING_SCHEMA)
             .build();
 
-    private String topic;
-    private String url;
-    private List<String> queries;
-
-    private PlcConnection plcConnection;
-
-    // TODO: should we use shared (static) thread pool for this?
-    private ScheduledExecutorService scheduler;
-    private boolean fetch = true;
+    // Internal buffer into which all incoming scraper responses are written to.
+    private ArrayBlockingQueue<SourceRecord> buffer;
 
     @Override
     public String version() {
@@ -94,166 +96,185 @@ public class Plc4xSourceTask extends SourceTask {
     @Override
     public void start(Map<String, String> props) {
         AbstractConfig config = new AbstractConfig(CONFIG_DEF, props);
-        topic = config.getString(TOPIC_CONFIG);
-        url = config.getString(URL_CONFIG);
-        queries = config.getList(QUERIES_CONFIG);
+        String connectionName = config.getString(CONNECTION_NAME_CONFIG);
+        String plc4xConnectionString = config.getString(PLC4X_CONNECTION_STRING_CONFIG);
+        Map<String, String> topics = new HashMap<>();
+        // Create a buffer with a capacity of 1000 elements which schedules access in a fair way.
+        buffer = new ArrayBlockingQueue<>(1000, true);
 
-        openConnection();
+        ScraperConfigurationTriggeredImplBuilder builder = new ScraperConfigurationTriggeredImplBuilder();
+        builder.addSource(connectionName, plc4xConnectionString);
 
-        if (!plcConnection.getMetadata().canRead()) {
-            throw new ConnectException("Reading not supported on this connection");
+        List<String> jobConfigs = config.getList(QUERIES_CONFIG);
+        for (String jobConfig : jobConfigs) {
+            String[] jobConfigSegments = jobConfig.split("\\|");
+            if(jobConfigSegments.length < 4) {
+                log.warn(String.format("Error in job configuration '%s'. " +
+                    "The configuration expects at least 4 segments: " +
+                    "{job-name}|{topic}|{rate}(|{field-alias}#{field-address})+", jobConfig));
+                continue;
+            }
+
+            String jobName = jobConfigSegments[0];
+            String topic = jobConfigSegments[1];
+            Integer rate = Integer.valueOf(jobConfigSegments[2]);
+            JobConfigurationTriggeredImplBuilder jobBuilder = builder.job(
+                jobName, String.format("(SCHEDULED,%s)", rate)).source(connectionName);
+            for(int i = 3; i < jobConfigSegments.length; i++) {
+                String[] fieldSegments = jobConfigSegments[i].split("#");
+                if(fieldSegments.length != 2) {
+                    log.warn(String.format("Error in job configuration '%s'. " +
+                            "The field segment expects a format {field-alias}#{field-address}, but got '%s'",
+                        jobName, jobConfigSegments[i]));
+                    continue;
+                }
+                String fieldAlias = fieldSegments[0];
+                String fieldAddress = fieldSegments[1];
+                jobBuilder.field(fieldAlias, fieldAddress);
+                topics.put(jobName, topic);
+            }
+            jobBuilder.build();
         }
 
-        int rate = Integer.parseInt(props.get(RATE_CONFIG));
-        scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(Plc4xSourceTask.this::scheduleFetch, rate, rate, TimeUnit.MILLISECONDS);
+        ScraperConfigurationTriggeredImpl scraperConfig = builder.build();
+
+        try {
+            PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
+            TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+            TriggeredScraperImpl scraper = new TriggeredScraperImpl(scraperConfig, (jobName, sourceName, results) -> {
+                Long timestamp = System.currentTimeMillis();
+
+                Map<String, String> sourcePartition = new HashMap<>();
+                sourcePartition.put("sourceName", sourceName);
+                sourcePartition.put("jobName", jobName);
+
+                Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
+
+                String topic = topics.get(jobName);
+
+                // Prepare the key structure.
+                Struct key = new Struct(KEY_SCHEMA)
+                    .put(SOURCE_NAME_FIELD, sourceName)
+                    .put(JOB_NAME_FIELD, jobName);
+
+                // Build the Schema for the result struct.
+                SchemaBuilder recordSchemaBuilder = SchemaBuilder.struct().name("org.apache.plc4x.kafka.JobResult");
+                for (Map.Entry<String, Object> result : results.entrySet()) {
+                    // Get field-name and -value from the results.
+                    String fieldName = result.getKey();
+                    Object fieldValue = result.getValue();
+
+                    // Get the schema for the given value type.
+                    Schema valueSchema = getSchema(fieldValue);
+
+                    // Add the schema description for the current field.
+                    recordSchemaBuilder.field(fieldName, valueSchema);
+                }
+                // Add a timestamp
+                Schema valueSchema = Schema.STRING_SCHEMA;
+                recordSchemaBuilder.field("timestamp", valueSchema);
+                Schema recordSchema = recordSchemaBuilder.build();
+
+                // Build the struct itself.
+                Struct recordStruct = new Struct(recordSchema);
+                for (Map.Entry<String, Object> result : results.entrySet()) {
+                    // Get field-name and -value from the results.
+                    String fieldName = result.getKey();
+                    Object fieldValue = result.getValue();
+                    recordStruct.put(fieldName, fieldValue);
+                }
+                recordStruct.put("timestamp", LocalDateTime.now().toString());
+
+                // Prepare the source-record element.
+                SourceRecord record = new SourceRecord(
+                    sourcePartition, sourceOffset,
+                    topic,
+                    KEY_SCHEMA, key,
+                    recordSchema, recordStruct
+                    );
+
+                // Add the new source-record to the buffer.
+                buffer.add(record);
+            }, triggerCollector);
+            scraper.start();
+            triggerCollector.start();
+        } catch (ScraperException e) {
+            log.error("Error starting the scraper", e);
+        }
     }
 
     @Override
     public void stop() {
-        scheduler.shutdown();
-        closeConnection();
         synchronized (this) {
-            notify(); // wake up thread waiting in awaitFetch
+            // TODO: Correctly shutdown the scraper.
+            notifyAll(); // wake up thread waiting in awaitFetch
         }
     }
 
     @Override
-    public List<SourceRecord> poll() throws InterruptedException {
-        return awaitFetch(WAIT_LIMIT_MILLIS) ? doFetch() : null;
-    }
-
-    private void openConnection() {
-        try {
-            plcConnection = new PlcDriverManager().getConnection(url);
-            plcConnection.connect();
-        } catch (PlcConnectionException e) {
-            throw new ConnectException("Could not establish a PLC connection", e);
+    public List<SourceRecord> poll() {
+        if(!buffer.isEmpty()) {
+            int numElements = buffer.size();
+            List<SourceRecord> result = new ArrayList<>(numElements);
+            buffer.drainTo(result, numElements);
+            return result;
+        } else {
+            return Collections.emptyList();
         }
-    }
-
-    private void closeConnection() {
-        if (plcConnection != null) {
-            try {
-                plcConnection.close();
-            } catch (Exception e) {
-                throw new PlcRuntimeException("Caught exception while closing connection to PLC", e);
-            }
-        }
-    }
-
-    /**
-     * Schedule next fetch operation.
-     */
-    private synchronized void scheduleFetch() {
-        fetch = true;
-        notify();
-    }
-
-    /**
-     * Wait for next scheduled fetch operation or till the source is closed.
-     * @param milliseconds maximum time to wait
-     * @throws InterruptedException if the thread is interrupted
-     * @return true if a fetch should be performed, false otherwise
-     */
-    private synchronized boolean awaitFetch(long milliseconds) throws InterruptedException {
-        if (!fetch) {
-            wait(milliseconds);
-        }
-        try {
-            return fetch;
-        } finally {
-            fetch = false;
-        }
-    }
-
-    private List<SourceRecord> doFetch() throws InterruptedException {
-        final CompletableFuture<? extends PlcReadResponse> response = createReadRequest().execute();
-        try {
-            final PlcReadResponse received = response.get(TIMEOUT_LIMIT_MILLIS, TimeUnit.MILLISECONDS);
-            return extractValues(received);
-        } catch (ExecutionException e) {
-            throw new ConnectException("Could not fetch data from source", e);
-        } catch (TimeoutException e) {
-            throw new ConnectException("Timed out waiting for data from source", e);
-        }
-    }
-
-    private PlcReadRequest createReadRequest() {
-        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-        for (String query : queries) {
-            builder.addItem(query, query);
-        }
-        return builder.build();
-    }
-
-    private List<SourceRecord> extractValues(PlcReadResponse response) {
-        final List<SourceRecord> result = new LinkedList<>();
-        for (String query : queries) {
-            final PlcResponseCode rc = response.getResponseCode(query);
-            if (!rc.equals(PlcResponseCode.OK))  {
-                continue;
-            }
-
-            Struct key = new Struct(KEY_SCHEMA)
-                .put(URL_FIELD, url)
-                .put(QUERY_FIELD, query);
-
-            Object value = response.getObject(query);
-            Schema valueSchema = getSchema(value);
-            Long timestamp = System.currentTimeMillis();
-            Map<String, String> sourcePartition = new HashMap<>();
-            sourcePartition.put("url", url);
-            sourcePartition.put("query", query);
-            Map<String, Long> sourceOffset = Collections.singletonMap("offset", timestamp);
-
-            SourceRecord record =
-                new SourceRecord(
-                    sourcePartition,
-                    sourceOffset,
-                    topic,
-                    KEY_SCHEMA,
-                    key,
-                    valueSchema,
-                    value
-                );
-
-            result.add(record);
-        }
-
-        return result;
     }
 
     private Schema getSchema(Object value) {
         Objects.requireNonNull(value);
 
-        if (value instanceof Byte)
-            return Schema.INT8_SCHEMA;
+        if(value instanceof List) {
+            List list = (List) value;
+            if(list.isEmpty()) {
+                throw new ConnectException("Unsupported empty lists.");
+            }
+            // In PLC4X list elements all contain the same type.
+            Object firstElement = list.get(0);
+            Schema elementSchema = getSchema(firstElement);
+            return SchemaBuilder.array(elementSchema).build();
+        }
+        if (value instanceof BigDecimal) {
 
-        if (value instanceof Short)
-            return Schema.INT16_SCHEMA;
-
-        if (value instanceof Integer)
-            return Schema.INT32_SCHEMA;
-
-        if (value instanceof Long)
-            return Schema.INT64_SCHEMA;
-
-        if (value instanceof Float)
-            return Schema.FLOAT32_SCHEMA;
-
-        if (value instanceof Double)
-            return Schema.FLOAT64_SCHEMA;
-
-        if (value instanceof Boolean)
+        }
+        if (value instanceof Boolean) {
             return Schema.BOOLEAN_SCHEMA;
-
-        if (value instanceof String)
-            return Schema.STRING_SCHEMA;
-
-        if (value instanceof byte[])
+        }
+        if (value instanceof byte[]) {
             return Schema.BYTES_SCHEMA;
-
+        }
+        if (value instanceof Byte) {
+            return Schema.INT8_SCHEMA;
+        }
+        if (value instanceof Double) {
+            return Schema.FLOAT64_SCHEMA;
+        }
+        if (value instanceof Float) {
+            return Schema.FLOAT32_SCHEMA;
+        }
+        if (value instanceof Integer) {
+            return Schema.INT32_SCHEMA;
+        }
+        if (value instanceof LocalDate) {
+            return Date.SCHEMA;
+        }
+        if (value instanceof LocalDateTime) {
+            return Timestamp.SCHEMA;
+        }
+        if (value instanceof LocalTime) {
+            return Time.SCHEMA;
+        }
+        if (value instanceof Long) {
+            return Schema.INT64_SCHEMA;
+        }
+        if (value instanceof Short) {
+            return Schema.INT16_SCHEMA;
+        }
+        if (value instanceof String) {
+            return Schema.STRING_SCHEMA;
+        }
         // TODO: add support for collective and complex types
         throw new ConnectException(String.format("Unsupported data type %s", value.getClass().getName()));
     }

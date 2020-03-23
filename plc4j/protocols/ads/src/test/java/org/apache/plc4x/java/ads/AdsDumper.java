@@ -28,7 +28,7 @@ import org.apache.plc4x.java.ads.api.generic.types.AmsPort;
 import org.apache.plc4x.java.ads.api.generic.types.Invoke;
 import org.apache.plc4x.java.ads.api.tcp.AmsTCPPacket;
 import org.apache.plc4x.java.ads.api.tcp.types.UserData;
-import org.apache.plc4x.java.base.connection.tcp.TcpHexDumper;
+import org.apache.plc4x.java.mock.connection.tcp.TcpHexDumper;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.Pcaps;
