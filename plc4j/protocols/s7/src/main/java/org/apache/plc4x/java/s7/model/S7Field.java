@@ -102,6 +102,9 @@ public class S7Field implements PlcField {
     @Override
     public Class<?> getDefaultJavaType() {
         switch (dataType){
+            case BYTE:
+                return Byte.class;
+            case CHAR:
             case STRING:
                 return String.class;
             case USINT:

@@ -174,8 +174,7 @@ public class S7AlarmEvent implements S7Event {
                         map.put(Fields.SIG_1_DATA_COMING.name(), datos);                        
                         break;
                         
-                    case ALARM_8:
-                        
+                    case ALARM_8:                        
                         map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM8);
                         break;
                     case SCAN:
@@ -189,6 +188,13 @@ public class S7AlarmEvent implements S7Event {
             }
             break;
             case ALARM_ACK_IND:;
+                map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM_S_IND.getCode()); 
+                map.put(Fields.TIMESTAMP.name(), msgItem.getTimestamp().toInstant(ZoneOffset.UTC));
+                map.put(Fields.EVENT_ID.name(), message.getEventID()); 
+                map.put(Fields.EVENT_STATE.name(), message.getEventState());
+                map.put(Fields.STATE.name(), message.getState());
+                map.put(Fields.ACKSTATE_GOING.name(), message.getAckStateGoing());
+                map.put(Fields.ACKSTATE_COMING.name(), message.getAckStateComming());                 
             break;
             case ALARM_SQ_IND:             
             case ALARM_S_IND:{

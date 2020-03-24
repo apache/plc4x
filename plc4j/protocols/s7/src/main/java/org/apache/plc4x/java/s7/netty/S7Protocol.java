@@ -964,6 +964,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     private S7Payload decodeCpuServicesPayload(CpuServicesParameter parameter, ByteBuf userData) {
         
         if (parameter.getFunctionGroup() == CpuServicesParameterFunctionGroup.CPU_FUNCTIONS) {
+            logger.info("decodeCpuServicesPayload: " + parameter.getSubFunctionGroup());
             switch(parameter.getSubFunctionGroup()){
                 case READ_SSL: {
                     CpuServicesPayload payload = decodeReadSslPayload(parameter, userData);
@@ -1327,21 +1328,23 @@ public class S7Protocol extends ChannelDuplexHandler {
     }    
     
     private AlarmMessagePayload decodeMessageServicePayload(CpuServicesParameter parameter, ByteBuf userData){
-
+        //logger.info(ByteBufUtil.prettyHexDump(userData));
+        AlarmType alarmtype = null;
         DataTransportErrorCode returnCode = DataTransportErrorCode.valueOf(userData.readByte());
         DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
         int length = userData.readShort();
-        byte result = userData.readByte();
-        byte unknown = userData.readByte();
-        AlarmType alarmtype = null;
-        
-        if (length>2) {
-            alarmtype = AlarmType.valueOf(userData.readByte());
-            unknown = userData.readByte();
-            unknown = userData.readByte();                        
-        } else {
-            //Free dummy byte
+        if (length != 0){
+            byte result = userData.readByte();
+            byte unknown = userData.readByte();
 
+            if (length>2) {
+                alarmtype = AlarmType.valueOf(userData.readByte());
+                unknown = userData.readByte();
+                unknown = userData.readByte();                        
+            } else {
+                //Free dummy byte
+
+            }
         }
         
        return new AlarmMessagePayload(returnCode,
@@ -1484,7 +1487,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     };
 
     private AlarmMessagePayload decodeMessageServiceQueryPayload(CpuServicesParameter parameter, ByteBuf userData){
-  
+      
         List<Object> MessageObjects = new LinkedList<>();
         CpuServicesResponseParameter thisparameter = null;
         int length;
@@ -1507,9 +1510,33 @@ public class S7Protocol extends ChannelDuplexHandler {
             lastdataunit = thisparameter.isLastDataUnit();
         }
         
+        //Response to query
+        if ((length == 6) && 
+            lastdataunit && 
+            (thisparameter.getSubFunctionGroup() == CpuServicesParameterSubFunctionGroup.ALARM_QUERY)){
+            //Alarm message information
+            FunctionID = userData.readByte();
+            NumberOfMessageObjects = userData.readByte();
+            AlarmReturnCode = DataTransportErrorCode.valueOf(userData.readByte());
+            AlarmTransportSize = DataTransportSize.valueOf(userData.readByte());
+            CompleteDataLength = userData.readShort();    
+            
+            return new AlarmMessagePayload(returnCode,
+                    dataTransportSize,
+                    CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
+                    length,
+                    new AlarmMessageItem(FunctionID,
+                            NumberOfMessageObjects,
+                            AlarmReturnCode,
+                            AlarmTransportSize,
+                            CompleteDataLength,
+                            MessageObjects));              
+            
+        }        
+        
         //Fragmente code
         //The next Level query again.
-
+                
         if ((length > 2) && (!lastdataunit)){
             
             //Is alway a CpuServicesResponseParameter instance?

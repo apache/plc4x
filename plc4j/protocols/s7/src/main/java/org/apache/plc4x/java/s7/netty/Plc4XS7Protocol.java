@@ -1669,7 +1669,13 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                                 if (!alarmsqueue.offer((S7PushMessage) payload)){
                                     logger.info("decodeSubscriptionResponse: Alarm queue buffer is full.");
                                 };
-                            };
+                            }
+                            PlcResponseCode responseCode = decodeResponseCode(((AlarmMessagePayload) payload).getReturnCode());
+                            LinkedHashSet<String> fieldnames = subsRequest.getFieldNames();                                  
+                            fieldnames.forEach((fieldname)->{
+                                values.put(fieldname, new ImmutablePair(responseCode, null));                                    
+                            });                              
+                            
                         } else {
                             logger.debug("Check for ALARM_QUERY not attended: " + payloadItem);   
                         }                    

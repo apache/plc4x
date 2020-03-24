@@ -39,7 +39,6 @@
     <module>ethernet-ip</module>
     <module>modbus</module>
     <module>s7</module>
-    <module>simulated</module>
 	<module>opcua</module>
   </modules>
 
