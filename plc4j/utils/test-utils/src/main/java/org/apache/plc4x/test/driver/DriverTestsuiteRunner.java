@@ -334,9 +334,16 @@ public class DriverTestsuiteRunner {
     }
 
     private byte[] getOutboundBytes(Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
-        final ByteBuf byteBuf = embeddedChannel.readOutbound();
+        ByteBuf byteBuf = null;
+        for(int i = 0; i < 10; i++) {
+            byteBuf = embeddedChannel.readOutbound();
+            if(byteBuf != null) {
+                break;
+            }
+            delay(10);
+        }
         if(byteBuf == null) {
-            throw new DriverTestsuiteException("No outbound message available");
+            throw new DriverTestsuiteException("No outbound message available within 100ms");
         }
         final byte[] data = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(data);
