@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.java.opm;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -27,8 +26,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.assertj.core.api.WithAssertions;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -118,7 +117,8 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     @Test
     public void getTyped_notOkResponse_throws() {
-        DefaultPlcReadResponse response = new DefaultPlcReadResponse(null, Collections.singletonMap("field", Pair.of(PlcResponseCode.NOT_FOUND, null)));
+        DefaultPlcReadResponse response = new DefaultPlcReadResponse(null,
+            Collections.singletonMap("field", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
         assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "field"))
             .isInstanceOf(PlcRuntimeException.class)
             .hasMessage("Unable to read specified field 'field', response code was 'NOT_FOUND'");

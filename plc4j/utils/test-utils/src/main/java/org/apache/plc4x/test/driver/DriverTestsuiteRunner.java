@@ -260,7 +260,7 @@ public class DriverTestsuiteRunner {
                     }
                     try {
                         final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
-                        // TODO: Implement ...
+                        // TODO: Make the API modules Serializable
                         final String serializedResponse = mapper.writeValueAsString(plcResponse);
                         System.out.println(serializedResponse);
                     } catch(Exception e) {

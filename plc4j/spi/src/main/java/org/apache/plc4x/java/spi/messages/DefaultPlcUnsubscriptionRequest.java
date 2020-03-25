@@ -18,6 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -30,20 +34,28 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptionRequest, InternalPlcRequest {
 
     private final PlcSubscriber subscriber;
 
     private final Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles;
 
-    public DefaultPlcUnsubscriptionRequest(PlcSubscriber subscriber, Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcUnsubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
+                                           @JsonProperty("internalPlcSubscriptionHandles") Collection<? extends InternalPlcSubscriptionHandle> internalPlcSubscriptionHandles) {
         this.subscriber = subscriber;
         this.internalPlcSubscriptionHandles = internalPlcSubscriptionHandles;
     }
 
     @Override
+    @JsonIgnore
     public CompletableFuture<PlcUnsubscriptionResponse> execute() {
         return subscriber.unsubscribe(this);
+    }
+
+    public PlcSubscriber getSubscriber() {
+        return subscriber;
     }
 
     @Override
@@ -83,7 +95,6 @@ public class DefaultPlcUnsubscriptionRequest implements InternalPlcUnsubscriptio
         public PlcUnsubscriptionRequest build() {
             return new DefaultPlcUnsubscriptionRequest(subscriber, plcSubscriptionHandles);
         }
-
 
     }
 

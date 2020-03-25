@@ -18,13 +18,20 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcProprietaryResponse<RESPONSE> implements InternalPlcProprietaryResponse<RESPONSE> {
 
     private final InternalPlcProprietaryRequest plcProprietaryRequest;
 
     private final RESPONSE proprietaryResponse;
 
-    public DefaultPlcProprietaryResponse(InternalPlcProprietaryRequest plcProprietaryRequest, RESPONSE proprietaryResponse) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcProprietaryResponse(@JsonProperty("plcProprietaryRequest") InternalPlcProprietaryRequest plcProprietaryRequest,
+                                         @JsonProperty("proprietaryResponse") RESPONSE proprietaryResponse) {
         this.plcProprietaryRequest = plcProprietaryRequest;
         this.proprietaryResponse = proprietaryResponse;
     }

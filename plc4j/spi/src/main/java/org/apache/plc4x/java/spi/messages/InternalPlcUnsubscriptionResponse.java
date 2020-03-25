@@ -18,8 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcUnsubscriptionResponse extends PlcUnsubscriptionResponse, InternalPlcResponse {
 
 }

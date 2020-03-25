@@ -18,8 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.abeth.protocol;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
 import org.apache.plc4x.java.abeth.field.AbEthField;
 import org.apache.plc4x.java.abeth.readwrite.*;
@@ -37,6 +35,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +140,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 
     private PlcResponse decodeReadResponse(
         CIPEncapsulationReadResponse plcReadResponse, PlcReadRequest plcReadRequest) {
-        Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         for (String fieldName : plcReadRequest.getFieldNames()) {
             AbEthField field = (AbEthField) plcReadRequest.getField(fieldName);
             PlcResponseCode responseCode = decodeResponseCode(plcReadResponse.getResponse().getStatus());
@@ -203,7 +202,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                     logger.warn("Some other error occurred casting field {}, FieldInformation: {}",fieldName, field,e);
                 }
             }
-            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, plcValue);
+            ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
             values.put(fieldName, result);
         }
 

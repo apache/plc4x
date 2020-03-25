@@ -284,14 +284,25 @@
         </TPKTPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
-          <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
-              <name>hurz</name>
-              <address>%Q0.0:BOOL</address>
-            </field>
-          </fields>
-        </TestReadRequest>
+        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
+          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
+            <hurz className="org.apache.plc4x.java.s7.readwrite.field.S7Field">
+              <dataType>BOOL</dataType>
+              <memoryArea>OUTPUTS</memoryArea>
+              <blockNumber>0</blockNumber>
+              <byteOffset>0</byteOffset>
+              <bitOffset>0</bitOffset>
+              <numElements>1</numElements>
+              <defaultJavaType>java.lang.Boolean</defaultJavaType>
+            </hurz>
+          </request>
+          <hurz>
+            <code>OK</code>
+            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+              <object>true</object>
+            </value>
+          </hurz>
+        </DefaultPlcReadResponse>
       </api-response>
       <delay>1000</delay>
     </steps>

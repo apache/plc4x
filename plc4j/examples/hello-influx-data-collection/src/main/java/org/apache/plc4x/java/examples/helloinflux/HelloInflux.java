@@ -26,7 +26,6 @@ import com.influxdb.client.write.Point;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -36,6 +35,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,10 +73,10 @@ public class HelloInflux {
                 DefaultPlcSubscriptionEvent internalEvent = (DefaultPlcSubscriptionEvent) plcSubscriptionEvent;
                 final Point point = Point.measurement(configuration.getString("influx.measurement"))
                     .time(plcSubscriptionEvent.getTimestamp().toEpochMilli(), WritePrecision.MS);
-                final Map<String, Pair<PlcResponseCode, PlcValue>> values = internalEvent.getValues();
+                final Map<String, ResponseItem<PlcValue>> values = internalEvent.getValues();
                 values.forEach((fieldName, fieldResponsePair) -> {
-                    final PlcResponseCode responseCode = fieldResponsePair.getLeft();
-                    final PlcValue plcValue = fieldResponsePair.getRight();
+                    final PlcResponseCode responseCode = fieldResponsePair.getCode();
+                    final PlcValue plcValue = fieldResponsePair.getValue();
                     if(responseCode == PlcResponseCode.OK) {
                         PlcStruct structValue = (PlcStruct) plcValue;
                         for (String key : structValue.getKeys()) {

@@ -40,6 +40,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -306,11 +307,11 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         PlcValue plcValue = decodeData(field.getAdsDataType(), bytes);
 
         // TODO: does every item has the same ads response or is this whole aggregation broken?
-        Map<String, Pair<PlcResponseCode, PlcValue>> responseItems = plcReadRequest.getFieldNames()
+        Map<String, ResponseItem<PlcValue>> responseItems = plcReadRequest.getFieldNames()
             .stream()
             .collect(Collectors.toMap(
                 fieldName -> fieldName,
-                ignore -> Pair.of(responseCode, plcValue)
+                ignore -> new ResponseItem(responseCode, plcValue)
             ));
 
         return new DefaultPlcReadResponse(plcReadRequest, responseItems);

@@ -19,7 +19,6 @@
  */
 package org.apache.plc4x.java.opcua.connection;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
@@ -31,6 +30,7 @@ import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
@@ -285,7 +285,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
         CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() -> {
-            Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
+            Map<String, ResponseItem<PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
                 .map(subscriptionPlcFieldEntry -> {
                     final String plcFieldName = subscriptionPlcFieldEntry.getKey();
                     final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
@@ -348,7 +348,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     }
 
 
-                    return Pair.of(plcFieldName, Pair.of(responseCode, subHandle));
+                    return Pair.of(plcFieldName, new ResponseItem(responseCode, subHandle));
                 })
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
             return new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems);
@@ -392,7 +392,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         CompletableFuture<PlcReadResponse> future = CompletableFuture.supplyAsync(() -> {
             readRequest.getFields();
-            Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+            Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
             List<NodeId> readValueIds = new LinkedList<>();
             List<PlcField> readPLCValues = readRequest.getFields();
             for (PlcField field : readPLCValues) {
@@ -420,15 +420,14 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                     stringItem = encodePlcValue(readValues.get(counter));
 
                 }
-                Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
+                ResponseItem<PlcValue> newPair = new ResponseItem<>(resultCode, stringItem);
                 fields.put((String) readRequest.getFieldNames().toArray()[counter], newPair);
 
 
             }
             InternalPlcReadRequest internalPlcReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-            return (PlcReadResponse) new DefaultPlcReadResponse(internalPlcReadRequest, fields);
+            return new DefaultPlcReadResponse(internalPlcReadRequest, fields);
         });
-
 
         return future;
     }

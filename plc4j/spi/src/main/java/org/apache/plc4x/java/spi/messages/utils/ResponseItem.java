@@ -16,24 +16,26 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen;
+package org.apache.plc4x.java.spi.messages.utils;
 
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-import java.io.File;
+public class ResponseItem<T> {
 
-public class DFDLUtilTest {
+    private final PlcResponseCode code;
+    private final T value;
 
-    @Test
-    public void loadDFDL() {
-        final File schema = new File("src/test/resources/protocol.dfdl.xsd");
-        final File outDir = new File("/tmp/");
+    public ResponseItem(PlcResponseCode code, T value) {
+        this.code = code;
+        this.value = value;
+    }
 
-        System.out.println(schema.getAbsolutePath());
+    public PlcResponseCode getCode() {
+        return code;
+    }
 
-        final DFDLUtil util = new DFDLUtil();
-
-        util.transform(schema, outDir);
+    public T getValue() {
+        return value;
     }
 
 }

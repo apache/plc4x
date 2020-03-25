@@ -29,7 +29,6 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 class ModuleNodeTest {
 
     private ObjectMapper mapper;

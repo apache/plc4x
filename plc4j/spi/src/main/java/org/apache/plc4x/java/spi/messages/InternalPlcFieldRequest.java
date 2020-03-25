@@ -18,12 +18,14 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcFieldRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.List;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcFieldRequest extends PlcFieldRequest, InternalPlcRequest {
 
     List<Pair<String, PlcField>> getNamedFields();

@@ -18,8 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcReadRequest extends PlcReadRequest, InternalPlcFieldRequest, InternalPlcRequest {
 
 }

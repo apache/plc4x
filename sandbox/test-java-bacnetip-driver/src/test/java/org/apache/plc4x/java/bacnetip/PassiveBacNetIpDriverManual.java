@@ -27,11 +27,14 @@ public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {
         final PassiveBacNetIpDriver driver = new PassiveBacNetIpDriver();
-        final PlcConnection connection = driver.getConnection("bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
+        final PlcConnection connection = driver.getConnection(
+            "bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
         connection.connect();
-        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField("Hurz", "*/*/*").build().execute().get();
+        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+            "Hurz", "*/*/*").build().execute().get();
         subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
-            PlcStruct plcStruct = (PlcStruct) ((DefaultPlcSubscriptionEvent) plcSubscriptionEvent).getValues().get("event").getRight();
+            PlcStruct plcStruct = (PlcStruct)
+                ((DefaultPlcSubscriptionEvent) plcSubscriptionEvent).getValues().get("event").getValue();
             System.out.println(plcStruct);
         });
     }

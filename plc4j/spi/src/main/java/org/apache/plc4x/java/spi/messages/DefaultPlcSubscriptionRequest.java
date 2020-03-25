@@ -18,6 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -28,42 +32,44 @@ import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionRequest, InternalPlcFieldRequest {
 
     private final PlcSubscriber subscriber;
 
     private LinkedHashMap<String, SubscriptionPlcField> fields;
 
-    public DefaultPlcSubscriptionRequest(PlcSubscriber subscriber, LinkedHashMap<String, SubscriptionPlcField> fields) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcSubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
+                                         @JsonProperty("fields") LinkedHashMap<String, SubscriptionPlcField> fields) {
         this.subscriber = subscriber;
         this.fields = fields;
     }
 
     @Override
+    @JsonIgnore
     public CompletableFuture<PlcSubscriptionResponse> execute() {
         return subscriber.subscribe(this);
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfFields() {
         return fields.size();
     }
 
     @Override
+    @JsonIgnore
     public LinkedHashSet<String> getFieldNames() {
         return new LinkedHashSet<>(fields.keySet());
     }
 
     @Override
+    @JsonIgnore
     public PlcField getField(String name) {
         SubscriptionPlcField subscriptionPlcField = fields.get(name);
         if (subscriptionPlcField == null) {
@@ -73,21 +79,24 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
+    @JsonIgnore
     public List<PlcField> getFields() {
         return fields.values().stream().map(SubscriptionPlcField::getPlcField).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
+    @JsonIgnore
     public List<SubscriptionPlcField> getSubscriptionFields() {
         return new LinkedList<>(fields.values());
     }
 
     @Override
-    public LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap() {
+    public Map<String, SubscriptionPlcField> getSubscriptionPlcFieldMap() {
         return fields;
     }
 
     @Override
+    @JsonIgnore
     public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
@@ -96,6 +105,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
     }
 
     @Override
+    @JsonIgnore
     public List<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields() {
         return fields.entrySet()
             .stream()
@@ -103,7 +113,7 @@ public class DefaultPlcSubscriptionRequest implements InternalPlcSubscriptionReq
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
-    protected PlcSubscriber getSubscriber() {
+    public PlcSubscriber getSubscriber() {
         return subscriber;
     }
 

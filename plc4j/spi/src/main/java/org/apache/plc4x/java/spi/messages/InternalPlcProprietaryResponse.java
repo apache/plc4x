@@ -18,5 +18,8 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcProprietaryResponse<RESPONSE> extends PlcProprietaryResponse<RESPONSE>, InternalPlcResponse {
 }

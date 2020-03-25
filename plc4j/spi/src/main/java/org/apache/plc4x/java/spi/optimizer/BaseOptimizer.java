@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.spi.optimizer;
 
 import io.vavr.control.Either;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -29,6 +28,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +42,7 @@ public abstract class BaseOptimizer {
     }
 
     protected PlcReadResponse processReadResponses(PlcReadRequest readRequest, Map<PlcRequest, Either<PlcResponse, Exception>> readResponses) {
-        Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
         for (Map.Entry<PlcRequest, Either<PlcResponse, Exception>> requestsEntries : readResponses.entrySet()) {
             PlcReadRequest curRequest = (PlcReadRequest) requestsEntries.getKey();
             Either<PlcResponse, Exception> readResponse = requestsEntries.getValue();
@@ -50,10 +50,10 @@ public abstract class BaseOptimizer {
                 if (readResponse.isLeft()) {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
                     fields.put(fieldName,
-                        Pair.of(subReadResponse.getResponseCode(fieldName),
+                        new ResponseItem<>(subReadResponse.getResponseCode(fieldName),
                             subReadResponse.getAsPlcValue().getValue(fieldName)));
                 } else {
-                    fields.put(fieldName, Pair.of(PlcResponseCode.INTERNAL_ERROR, null));
+                    fields.put(fieldName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
             }
         }

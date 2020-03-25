@@ -18,7 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -28,6 +31,7 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -46,81 +50,95 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, InternalPlcFieldRequest {
 
     private final PlcWriter writer;
-    private final LinkedHashMap<String, Pair<PlcField, PlcValue>> fields;
+    private final LinkedHashMap<String, FieldValueItem> fields;
 
-    public DefaultPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcWriteRequest(@JsonProperty("writer") PlcWriter writer,
+                                  @JsonProperty("fields") LinkedHashMap<String, FieldValueItem> fields) {
         this.writer = writer;
         this.fields = fields;
     }
 
     @Override
+    @JsonIgnore
     public CompletableFuture<PlcWriteResponse> execute() {
         return writer.write(this);
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfFields() {
         return fields.size();
     }
 
     @Override
+    @JsonIgnore
     public LinkedHashSet<String> getFieldNames() {
         // TODO: Check if this already is a LinkedHashSet.
         return new LinkedHashSet<>(fields.keySet());
     }
 
     @Override
+    @JsonIgnore
     public PlcField getField(String name) {
-        return fields.get(name).getKey();
+        return fields.get(name).getField();
     }
 
     @Override
+    @JsonIgnore
     public List<PlcField> getFields() {
-        return fields.values().stream().map(Pair::getKey).collect(Collectors.toCollection(LinkedList::new));
+        return fields.values().stream().map(FieldValueItem::getField).collect(Collectors.toCollection(LinkedList::new));
     }
 
+    @JsonIgnore
     public PlcValue getPlcValue(String name) {
         return fields.get(name).getValue();
     }
 
     @Override
+    @JsonIgnore
     public List<PlcValue> getPlcValues() {
-        return fields.values().stream().map(Pair::getValue).collect(Collectors.toCollection(LinkedList::new));
+        return fields.values().stream().map(FieldValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
+    @JsonIgnore
     public List<Pair<String, PlcField>> getNamedFields() {
         return fields.entrySet()
             .stream()
             .map(stringPairEntry ->
                 Pair.of(
                     stringPairEntry.getKey(),
-                    stringPairEntry.getValue().getKey()
+                    stringPairEntry.getValue().getField()
                 )
             ).collect(Collectors.toCollection(LinkedList::new));
     }
+
 
     public PlcWriter getWriter() {
         return writer;
     }
 
     @Override
+    @JsonIgnore
     public List<Triple<String, PlcField, PlcValue>> getNamedFieldTriples() {
         return fields.entrySet()
             .stream()
             .map(stringPairEntry ->
                 Triple.of(
                     stringPairEntry.getKey(),
-                    stringPairEntry.getValue().getKey(),
+                    stringPairEntry.getValue().getField(),
                     stringPairEntry.getValue().getValue()
                 )
             ).collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfValues(String name) {
         final PlcValue value = fields.get(name).getValue();
         if(value instanceof PlcList) {
@@ -243,14 +261,14 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
 
         @Override
         public PlcWriteRequest build() {
-            LinkedHashMap<String, Pair<PlcField, PlcValue>> parsedFields = new LinkedHashMap<>();
+            LinkedHashMap<String, FieldValueItem> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, builderItem) -> {
                 // Compile the query string.
                 PlcField parsedField = fieldHandler.createField(builderItem.fieldQuery);
                 // Encode the payload.
                 // TODO: Depending on the field type, handle the PlcValue creation differently.
                 PlcValue value = builderItem.encoder.apply(parsedField, builderItem.values);
-                parsedFields.put(name, new ImmutablePair<>(parsedField, value));
+                parsedFields.put(name, new FieldValueItem(parsedField, value));
             });
             return new DefaultPlcWriteRequest(writer, parsedFields);
         }

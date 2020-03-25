@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.opm;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -37,8 +36,8 @@ import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.assertj.core.api.WithAssertions;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -221,10 +220,10 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         });
 
         PlcReader reader = readRequest -> {
-            Map<String, Pair<PlcResponseCode, PlcValue>> map = readRequest.getFieldNames().stream()
+            Map<String, ResponseItem<PlcValue>> map = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
-                    s -> Pair.of(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
+                    s -> new ResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, map));
         };

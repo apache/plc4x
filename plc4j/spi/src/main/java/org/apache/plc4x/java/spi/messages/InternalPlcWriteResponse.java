@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Map;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcWriteResponse extends PlcWriteResponse, InternalPlcResponse {
     Map<String, PlcResponseCode> getValues();
 }

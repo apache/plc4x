@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -25,6 +26,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.util.List;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcWriteRequest extends PlcWriteRequest, InternalPlcRequest {
 
     PlcValue getPlcValue(String name);

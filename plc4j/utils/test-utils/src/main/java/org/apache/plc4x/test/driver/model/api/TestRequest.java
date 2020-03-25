@@ -20,6 +20,6 @@ package org.apache.plc4x.test.driver.model.api;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface TestRequest {
 }

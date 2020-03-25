@@ -16,24 +16,27 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package org.apache.plc4x.codegen;
+package org.apache.plc4x.java.spi.messages.utils;
 
-import org.junit.jupiter.api.Test;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.PlcValue;
 
-import java.io.File;
+public class FieldValueItem {
 
-public class DFDLUtilTest {
+    private final PlcField field;
+    private final PlcValue value;
 
-    @Test
-    public void loadDFDL() {
-        final File schema = new File("src/test/resources/protocol.dfdl.xsd");
-        final File outDir = new File("/tmp/");
+    public FieldValueItem(PlcField field, PlcValue value) {
+        this.field = field;
+        this.value = value;
+    }
 
-        System.out.println(schema.getAbsolutePath());
+    public PlcField getField() {
+        return field;
+    }
 
-        final DFDLUtil util = new DFDLUtil();
-
-        util.transform(schema, outDir);
+    public PlcValue getValue() {
+        return value;
     }
 
 }

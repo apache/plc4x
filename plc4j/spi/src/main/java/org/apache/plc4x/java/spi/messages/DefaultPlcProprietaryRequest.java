@@ -18,21 +18,28 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 
 import java.util.concurrent.CompletableFuture;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcProprietaryRequest<REQUEST> implements InternalPlcProprietaryRequest<REQUEST> {
 
     @Override
+    @JsonIgnore
     public CompletableFuture<PlcResponse> execute() {
         throw new PlcRuntimeException("not supported"); // TODO: figure out what to do with this
     }
 
     private REQUEST proprietaryRequest;
 
-    public DefaultPlcProprietaryRequest(REQUEST proprietaryRequest) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcProprietaryRequest(@JsonProperty("proprietaryRequest") REQUEST proprietaryRequest) {
         this.proprietaryRequest = proprietaryRequest;
     }
 

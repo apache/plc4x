@@ -24,7 +24,6 @@ import flex.messaging.config.NetworkSettings;
 import flex.messaging.messages.AsyncMessage;
 import flex.messaging.services.MessageService;
 import flex.messaging.util.UUIDUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -36,6 +35,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcShort;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -128,8 +128,8 @@ public class WaterTankService {
                     TimeUnit.MILLISECONDS.sleep(100);
 
                     short value = (short) new Random().nextInt(1024);
-                    Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
-                    values.put("waterLevel", Pair.of(PlcResponseCode.OK, new PlcShort(value)));
+                    Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+                    values.put("waterLevel", new ResponseItem<>(PlcResponseCode.OK, new PlcShort(value)));
                     DefaultPlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), values);
 
                     handler.accept(event);

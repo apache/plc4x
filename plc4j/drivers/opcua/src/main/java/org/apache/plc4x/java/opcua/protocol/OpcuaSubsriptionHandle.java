@@ -18,8 +18,6 @@
 */
 package org.apache.plc4x.java.opcua.protocol;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -27,6 +25,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
@@ -74,8 +73,8 @@ public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
                 stringItem = OpcuaTcpPlcConnection.encodePlcValue(value);
 
             }
-            Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
-            Pair<PlcResponseCode, PlcValue> newPair = new ImmutablePair<>(resultCode, stringItem);
+            Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
+            ResponseItem<PlcValue> newPair = new ResponseItem<>(resultCode, stringItem);
             fields.put(fieldName, newPair);
             PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
             plcSubscriptionEventConsumer.accept(event);

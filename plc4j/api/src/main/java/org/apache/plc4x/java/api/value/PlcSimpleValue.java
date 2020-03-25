@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.java.api.value;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
 
     final T value;
@@ -35,21 +37,25 @@ public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfValues() {
         return 1;
     }
 
     @Override
+    @JsonIgnore
     public boolean isSimple() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isNullable() {
         return isNullable;
     }
 
     @Override
+    @JsonIgnore
     public boolean isNull() {
         return isNullable && value == null;
     }
@@ -60,6 +66,7 @@ public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
      * @return if i == 0 returns itself, otherwise throws an exception.
      */
     @Override
+    @JsonIgnore
     public PlcValue getIndex(int i) {
         if(i == 0) {
             return this;

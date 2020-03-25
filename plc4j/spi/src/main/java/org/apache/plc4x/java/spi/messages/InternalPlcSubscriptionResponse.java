@@ -18,13 +18,14 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.Map;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcSubscriptionResponse extends PlcSubscriptionResponse, InternalPlcResponse {
-    Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> getValues();
+    Map<String, ResponseItem<PlcSubscriptionHandle>> getValues();
 }

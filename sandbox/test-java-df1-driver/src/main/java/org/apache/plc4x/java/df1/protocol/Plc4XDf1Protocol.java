@@ -20,7 +20,6 @@ package org.apache.plc4x.java.df1.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcResponse;
@@ -35,6 +34,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.df1.readwrite.*;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +97,8 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                 entry.getValue().getResponseFuture().complete(
                     new DefaultPlcReadResponse(
                         ((InternalPlcReadRequest) entry.getValue().getRequest()),
-                        Collections.singletonMap("erster", Pair.of(PlcResponseCode.INTERNAL_ERROR, new PlcInteger(-1)))
+                        Collections.singletonMap("erster",
+                            new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcInteger(-1)))
                     ));
             }
             return;
@@ -157,7 +158,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             }
             response = new DefaultPlcReadResponse(((InternalPlcReadRequest) request),
                 Collections.singletonMap(fieldName,
-                    Pair.of(responseCode, responseItem)));
+                    new ResponseItem<>(responseCode, responseItem)));
         } else if (request instanceof PlcWriteRequest) {
             logger.warn("Writing is currently not implemented but received a write response?!");
             ctx.close();
