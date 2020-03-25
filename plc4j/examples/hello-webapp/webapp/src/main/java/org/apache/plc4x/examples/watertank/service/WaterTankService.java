@@ -67,13 +67,20 @@ public class WaterTankService {
     @Value("${plc4x.watertank.address-string.waterlevel}")
     private String addressStringWaterLevel;
 
+    @Value("${plc4x.watertank.simulation}")
+    private boolean simulation;
+
     @PostConstruct
     protected void connectAndSubscribe() {
         // Create the BlazeDS destinations the clients can subscribe to.
         createDestinations();
 
         // Connect to the remote and subscribe to the values.
-        connectToFakeDevice();
+        if(simulation) {
+            connectToFakeDevice();
+        } else {
+            connectToDevice();
+        }
     }
 
     @PreDestroy
