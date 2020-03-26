@@ -24,6 +24,7 @@ import org.apache.camel.Message;
 import org.apache.camel.support.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.slf4j.Logger;
@@ -34,16 +35,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XProducer extends DefaultAsyncProducer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Plc4XProducer.class);
-
+    private final Logger log = LoggerFactory.getLogger(Plc4XProducer.class);
     private PlcConnection plcConnection;
     private AtomicInteger openRequests;
 
     public Plc4XProducer(Plc4XEndpoint endpoint) throws PlcException {
         super(endpoint);
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
+        this.plcConnection = endpoint.getConnection();
         if (!plcConnection.getMetadata().canWrite()) {
             throw new PlcException("This connection (" + plc4xURI + ") doesn't support writing.");
         }
@@ -53,22 +52,26 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
-        String fieldName = in.getHeader(Constants.FIELD_NAME_HEADER, String.class);
-        String fieldQuery = in.getHeader(Constants.FIELD_QUERY_HEADER, String.class);
         Object body = in.getBody();
-        if (body instanceof List) {
-            List<?> bodyList = in.getBody(List.class);
-            Object[] values = bodyList.toArray();
-//            builder.addItem(fieldName, fieldQuery, values);
-        } else {
-            Object value = in.getBody(Object.class);
-//            builder.addItem(fieldName, fieldQuery, value);
-        }
         PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
+        if (body instanceof List) { //Check if we have a List
+            if(((List) body).get(0) instanceof TagData){    //Check if this List contains TagData
+                List<TagData> tags =(List<TagData>) body;
+                for(TagData tag : tags){
+                    builder.addItem(tag.getTagName(),tag.getQuery(),tag.getValue());
+                }
+            }
+            else {
+                throw new PlcInvalidFieldException("Parameter 'tags' has to be a List of TagData");
+            }
+        }
+        else {
+            throw new PlcInvalidFieldException("Parameter 'tags' has to be a List");
+        }
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
-            LOG.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
+            log.debug("Currently open requests including {}:{}", exchange, currentlyOpenRequests);
             Object plcWriteResponse = completableFuture.get();
             if (exchange.getPattern().isOutCapable()) {
                 Message out = exchange.getOut();
@@ -79,7 +82,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
             }
         } finally {
             int openRequestsAfterFinish = openRequests.decrementAndGet();
-            LOG.trace("Open Requests after {}:{}", exchange, openRequestsAfterFinish);
+            log.trace("Open Requests after {}:{}", exchange, openRequestsAfterFinish);
         }
     }
 
@@ -100,16 +103,10 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     protected void doStop() throws Exception {
         int openRequestsAtStop = openRequests.get();
-        LOG.debug("Stopping with {} open requests", openRequestsAtStop);
+        log.debug("Stopping with {} open requests", openRequestsAtStop);
         if (openRequestsAtStop > 0) {
-            LOG.warn("There are still {} open requests", openRequestsAtStop);
+            log.warn("There are still {} open requests", openRequestsAtStop);
         }
-        try {
-            plcConnection.close();
-        } catch (Exception e) {
-            LOG.warn("Could not close {}", plcConnection, e);
-        }
-        super.doStop();
     }
 
 }
