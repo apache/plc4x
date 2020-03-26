@@ -124,7 +124,7 @@ public interface PlcValue {
 
     boolean isList();
 
-    int getNumberOfValues();
+    int getLength();
 
     PlcValue getIndex(int i);
 

@@ -38,7 +38,7 @@ public abstract class PlcSimpleValue<T> extends PlcValueAdapter {
 
     @Override
     @JsonIgnore
-    public int getNumberOfValues() {
+    public int getLength() {
         return 1;
     }
 

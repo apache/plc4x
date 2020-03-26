@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -121,6 +122,23 @@ public class StaticHelper {
 
     public static void serializeTiaDateTime(WriteBuffer io, PlcValue value) {
 
+    }
+
+    public static String parseS7String(ReadBuffer io, String encoding) {
+        try {
+            // This is the maximum number of bytes a string can be long.
+            short maxLength = io.readUnsignedShort(8);
+            // This is the total length of the string on the PLC (Not necessarily the number of characters read)
+            short totalStringLength = io.readShort(8);
+            return io.readString(8 * totalStringLength, encoding);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static void serializeS7String(WriteBuffer io, PlcValue value, String encoding) {
+        // TODO: Need to implement the serialization or we can't write strings
+        throw new PlcRuntimeException("Not implemented yet");
     }
 
     /**

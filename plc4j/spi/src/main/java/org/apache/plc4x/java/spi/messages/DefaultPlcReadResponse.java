@@ -75,7 +75,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            return plcList.getNumberOfValues();
+            return plcList.getLength();
         } else {
             return 1;
         }
@@ -127,7 +127,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Object> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Object> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getObject());
             }
@@ -168,7 +168,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Boolean> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Boolean> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBoolean());
             }
@@ -209,7 +209,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Byte> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Byte> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getByte());
             }
@@ -250,7 +250,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Short> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Short> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getShort());
             }
@@ -291,7 +291,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Integer> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Integer> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getInteger());
             }
@@ -332,7 +332,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<BigInteger> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<BigInteger> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigInteger());
             }
@@ -373,7 +373,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Long> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Long> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getLong());
             }
@@ -414,7 +414,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Float> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Float> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getFloat());
             }
@@ -455,7 +455,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Double> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Double> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDouble());
             }
@@ -496,7 +496,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<BigDecimal> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<BigDecimal> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigDecimal());
             }
@@ -537,7 +537,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<String> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<String> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getString());
             }
@@ -578,7 +578,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getTime());
             }
@@ -619,7 +619,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalDate> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalDate> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDate());
             }
@@ -660,7 +660,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalDateTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalDateTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDateTime());
             }
@@ -697,7 +697,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         final PlcValue field = getFieldInternal(name);
         if(field instanceof PlcList) {
             PlcList plcList = (PlcList) field;
-            if(index > (plcList.getNumberOfValues() - 1)) {
+            if(index > (plcList.getLength() - 1)) {
                 return null;
             }
             return plcList.getIndex(index);

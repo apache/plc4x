@@ -243,7 +243,7 @@ public class PlcValueAdapter implements PlcValue {
 
     @Override
     @JsonIgnore
-    public int getNumberOfValues() {
+    public int getLength() {
         throw new PlcIncompatibleDatatypeException("");
     }
 

@@ -143,7 +143,7 @@ public class DefaultPlcWriteRequest implements InternalPlcWriteRequest, Internal
         final PlcValue value = fields.get(name).getValue();
         if(value instanceof PlcList) {
             PlcList list = (PlcList) value;
-            return list.getNumberOfValues();
+            return list.getLength();
         }
         return 1;
     }

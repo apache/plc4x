@@ -76,6 +76,12 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    public int getLength() {
+        return value.length();
+    }
+
+    @Override
+    @JsonIgnore
     public String toString() {
         return "\"" + value + "\"";
     }

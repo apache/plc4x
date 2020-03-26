@@ -260,9 +260,8 @@ public class DriverTestsuiteRunner {
                     }
                     try {
                         final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
-                        // TODO: Make the API modules Serializable
                         final String serializedResponse = mapper.writeValueAsString(plcResponse);
-                        System.out.println(serializedResponse);
+                        // TODO: Implement ...
                     } catch(Exception e) {
                         throw new DriverTestsuiteException("Got no response within 1000ms.");
                     }

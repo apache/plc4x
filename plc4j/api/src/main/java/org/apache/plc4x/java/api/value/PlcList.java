@@ -59,7 +59,7 @@ public class PlcList extends PlcValueAdapter {
 
     @Override
     @JsonIgnore
-    public int getNumberOfValues() {
+    public int getLength() {
         return listItems.size();
     }
 

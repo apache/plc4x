@@ -147,7 +147,7 @@ public class ${typeName}IO {
                     <#case "manual">
 
             // Manual Field (${field.name})
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)?no_esc});
                         <#-- If a manual field is detected, the value returned by this is instantly treated as the value -->
                         <#switch case.name>
                             <#case "Time">
@@ -162,9 +162,8 @@ public class ${typeName}IO {
                             <#case "Struct">
             return new PlcStruct(${field.name});
                             <#break>
-                            <#-- Disable this for now -->
                             <#case "String">
-            //return new PlcStruct(${field.name});
+            return new PlcString(${field.name});
                             <#break>
                             <#default>
             return new Plc${case.name}(${field.name});
@@ -212,9 +211,9 @@ public class ${typeName}IO {
                     <#case "List">
             return new PlcList(Arrays.asList(value));
                     <#break>
-            <#-- Disable this for now -->
+            <#-- Disable this for now as Strings will only be parsed as manual fields -->
                     <#case "String">
-            //return new PlcStruct(_map);
+            //return new PlcString(_map);
                     <#break>
                     <#default>
             return new Plc${case.name}(value);
@@ -227,7 +226,7 @@ public class ${typeName}IO {
 <#if outputFlavor != "passive">
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(type.switchField.discriminatorNames[discriminatorValue?index])}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
-            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case)} / 8 );
+            WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case, type.parserArguments)} / 8 );
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
@@ -243,7 +242,7 @@ public class ${typeName}IO {
                     <#break>
                     <#case "manual">
             // Manual Field (${field.name})
-            ${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)};
+            ${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)?no_esc};
                     <#break>
                     <#case "reserved">
             // Reserved Field
