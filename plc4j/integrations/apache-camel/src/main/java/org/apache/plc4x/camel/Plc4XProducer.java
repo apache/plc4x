@@ -48,6 +48,7 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         openRequests = new AtomicInteger();
     }
 
+    //TODO Implement List<Map<Tag,Value>> for sending multiple write requests
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();

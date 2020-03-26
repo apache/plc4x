@@ -42,6 +42,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
     private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
+    //TODO Change this to List<Map<String,String>>
     private List<String> fieldQuery;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
@@ -96,6 +97,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
                         Exchange exchange = endpoint.createExchange();
                         if (fieldQuery.size()>1){
                             int i=0;
+                            //TODO Create a List<Map<Tag,Value>>
                             List<Object> values = new ArrayList<>();
                             for(String query : fieldQuery){
                                 values.add(response.getObject(String.valueOf(i++)));

@@ -82,10 +82,12 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         Exchange exchange = endpoint.createExchange();
         try {
             PlcReadResponse read = createReadRequest().execute().get();
+            //TODO rename address
             if(endpoint.getAddress().size()==1) {
                 exchange.getIn().setBody(unwrapIfSingle(read.getAllObjects("default")));
             }
             else{
+                //TODO List<Map<Tag,Value>>
                 List<Object> values = new ArrayList<>();
                 for(String field : read.getFieldNames()){
                     values.add(read.getObject(field));
