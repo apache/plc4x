@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -34,11 +35,11 @@ import java.util.function.Consumer;
  */
 public interface MockDevice {
 
-    Pair<PlcResponseCode, PlcValue> read(String fieldQuery);
+    ResponseItem<PlcValue> read(String fieldQuery);
 
     PlcResponseCode write(String fieldQuery, Object value);
 
-    Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery);
+    ResponseItem<PlcSubscriptionHandle> subscribe(String fieldQuery);
 
     void unsubscribe();
 

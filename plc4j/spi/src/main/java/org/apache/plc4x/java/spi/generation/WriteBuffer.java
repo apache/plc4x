@@ -36,7 +36,7 @@ public class WriteBuffer {
     private final boolean littleEndian;
 
     public WriteBuffer(int size) {
-        this(size, true);
+        this(size, false);
     }
 
     public WriteBuffer(int size, boolean littleEndian) {

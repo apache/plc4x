@@ -18,18 +18,20 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcSubscriptionRequest extends PlcSubscriptionRequest, InternalPlcFieldRequest {
 
     List<SubscriptionPlcField> getSubscriptionFields();
 
-    LinkedHashMap<String, SubscriptionPlcField> getSubscriptionPlcFieldMap();
+    Map<String, SubscriptionPlcField> getSubscriptionPlcFieldMap();
 
     List<Pair<String, SubscriptionPlcField>> getNamedSubscriptionFields();
 

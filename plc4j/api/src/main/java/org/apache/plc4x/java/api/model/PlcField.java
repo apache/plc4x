@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.api.model;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
  * Base type for all field types.
  * Typically every driver provides an implementation of this interface in order
@@ -30,6 +32,7 @@ package org.apache.plc4x.java.api.model;
  * a resource into it's individual field type. Manually constructing PlcField objects
  * manually makes the solution less independent from the protocol, but might be faster.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcField {
 
     /**

@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
 import java.util.Collection;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface InternalPlcUnsubscriptionRequest extends PlcUnsubscriptionRequest, InternalPlcRequest {
 
     Collection<? extends InternalPlcSubscriptionHandle> getInternalPlcSubscriptionHandles();

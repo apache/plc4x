@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.mock.connection;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.messages.*;
@@ -41,6 +40,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +124,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending read request to MockDevice");
-            Map<String, Pair<PlcResponseCode, PlcValue>> response = readRequest.getFieldNames().stream()
+            Map<String, ResponseItem<PlcValue>> response = readRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     name -> device.read(((MockField) readRequest.getField(name)).getAddress())
@@ -155,7 +155,7 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
         return CompletableFuture.supplyAsync(() -> {
             Validate.notNull(device, "No device is set in the mock connection!");
             LOGGER.debug("Sending subsribe request to MockDevice");
-            Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> response = subscriptionRequest.getFieldNames().stream()
+            Map<String, ResponseItem<PlcSubscriptionHandle>> response = subscriptionRequest.getFieldNames().stream()
                 .collect(Collectors.toMap(
                     Function.identity(),
                     name -> device.subscribe(((MockField) subscriptionRequest.getField(name)).getAddress())

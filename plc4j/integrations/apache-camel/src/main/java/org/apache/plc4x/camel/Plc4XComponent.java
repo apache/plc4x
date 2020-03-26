@@ -20,10 +20,13 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class Plc4XComponent extends DefaultComponent {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XComponent.class);
 
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
@@ -37,5 +40,4 @@ public class Plc4XComponent extends DefaultComponent {
         Plc4XEndpoint plc4XEndpoint = (Plc4XEndpoint) endpoint;
         plc4XEndpoint.setDriver(remaining.split(":")[0]);
     }
-
 }

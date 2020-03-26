@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.firmata.readwrite.protocol;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -38,6 +37,7 @@ import org.apache.plc4x.java.firmata.readwrite.model.FirmataSubscriptionHandle;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.slf4j.Logger;
@@ -117,10 +117,11 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             for (FirmataMessage firmataMessage : firmataMessages) {
                 context.sendToWire(firmataMessage);
             }
-            Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> result = new HashMap<>();
+            Map<String, ResponseItem<PlcSubscriptionHandle>> result = new HashMap<>();
             for (String fieldName : subscriptionRequest.getFieldNames()) {
                 FirmataField field = (FirmataField) subscriptionRequest.getField(fieldName);
-                result.put(fieldName, Pair.of(PlcResponseCode.OK, new FirmataSubscriptionHandle(this, fieldName, field)));
+                result.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
+                    new FirmataSubscriptionHandle(this, fieldName, field)));
             }
             future.complete(new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, result));
         } catch (PlcRuntimeException e) {
@@ -264,13 +265,13 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         // If it's just one element, return this as a direct PlcValue
         if(values.size() == 1) {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(fieldName, Pair.of(PlcResponseCode.OK, values.get(0))));
+                Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, values.get(0))));
             consumer.accept(event);
         }
         // If it's more, return a PlcList instead.
         else {
             final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-                Collections.singletonMap(fieldName, Pair.of(PlcResponseCode.OK, new PlcList(values))));
+                Collections.singletonMap(fieldName, new ResponseItem<>(PlcResponseCode.OK, new PlcList(values))));
             consumer.accept(event);
         }
     }

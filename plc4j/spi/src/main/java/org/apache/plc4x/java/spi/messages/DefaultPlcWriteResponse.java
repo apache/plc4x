@@ -18,18 +18,25 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
 import java.util.Map;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcWriteResponse implements InternalPlcWriteResponse {
 
     private final InternalPlcWriteRequest request;
     private final Map<String, PlcResponseCode> values;
 
-    public DefaultPlcWriteResponse(InternalPlcWriteRequest request, Map<String, PlcResponseCode> values) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcWriteResponse(@JsonProperty("request") InternalPlcWriteRequest request,
+                                   @JsonProperty("values") Map<String, PlcResponseCode> values) {
         this.request = request;
         this.values = values;
     }
@@ -45,16 +52,19 @@ public class DefaultPlcWriteResponse implements InternalPlcWriteResponse {
     }
 
     @Override
+    @JsonIgnore
     public Collection<String> getFieldNames() {
         return request.getFieldNames();
     }
 
     @Override
+    @JsonIgnore
     public PlcField getField(String name) {
         return request.getField(name);
     }
 
     @Override
+    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
         return values.get(name);
     }

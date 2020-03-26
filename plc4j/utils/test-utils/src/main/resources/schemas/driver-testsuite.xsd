@@ -49,10 +49,14 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-bytes" type="xs:anyType"/>
-                                <xs:element name="receive-bytes" type="xs:anyType"/>
-                                <xs:element name="plc4x-request" type="xs:anyType"/>
-                                <xs:element name="plc4x-response" type="xs:anyType"/>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                <xs:element name="api-request" type="messageStep"/>
+                                <xs:element name="api-response" type="messageStep"/>
+                                <xs:element name="delay" type="xs:integer"/>
+                                <xs:element name="terminate"/>
                             </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
@@ -63,11 +67,15 @@
                     <xs:complexType>
                         <xs:sequence minOccurs="1" maxOccurs="unbounded">
                             <xs:choice>
-                                <xs:element name="send-bytes" type="xs:anyType"/>
-                                <xs:element name="receive-bytes" type="xs:anyType"/>
-                                <xs:element name="plc4x-request" type="xs:anyType"/>
-                                <xs:element name="plc4x-response" type="xs:anyType"/>
-                            </xs:choice>
+                                <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                <xs:element name="incoming-plc-message" type="messageStep"/>
+                                <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                <xs:element name="api-request" type="messageStep"/>
+                                <xs:element name="api-response" type="messageStep"/>
+                                <xs:element name="delay" type="xs:integer"/>
+                                <xs:element name="terminate"/>
+                           </xs:choice>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -84,10 +92,14 @@
                                 <xs:complexType>
                                     <xs:sequence minOccurs="1" maxOccurs="unbounded">
                                         <xs:choice>
-                                            <xs:element name="send-bytes" type="xs:anyType"/>
-                                            <xs:element name="receive-bytes" type="xs:anyType"/>
-                                            <xs:element name="plc4x-request" type="xs:anyType"/>
-                                            <xs:element name="plc4x-response" type="xs:anyType"/>
+                                            <xs:element name="outgoing-plc-message" type="messageStep"/>
+                                            <xs:element name="outgoing-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="incoming-plc-message" type="messageStep"/>
+                                            <xs:element name="incoming-plc-bytes" type="bytesStep"/>
+                                            <xs:element name="api-request" type="messageStep"/>
+                                            <xs:element name="api-response" type="messageStep"/>
+                                            <xs:element name="delay" type="xs:integer"/>
+                                            <xs:element name="terminate"/>
                                         </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
@@ -100,5 +112,21 @@
             <xs:attribute name="bigEndian" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="messageStep">
+        <xs:simpleContent>
+            <xs:extension base="xs:anyType">
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="bytesStep">
+        <xs:simpleContent>
+            <xs:extension base="xs:hexBinary">
+                <xs:attribute name="name" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
 
 </xs:schema>

@@ -19,15 +19,22 @@
 
 package org.apache.plc4x.java.api.value;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcList extends PlcValueAdapter {
 
     private final List<PlcValue> listItems;
 
-    public PlcList(List<?> listItems) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcList(@JsonProperty("listItems") List<?> listItems) {
         List<PlcValue> safelist = listItems.stream().map(plcValue -> {
             // to avoid unwrapped list cause of type erasure
             if (plcValue instanceof PlcValue) {
@@ -45,26 +52,31 @@ public class PlcList extends PlcValueAdapter {
     }
 
     @Override
+    @JsonIgnore
     public boolean isList() {
         return true;
     }
 
     @Override
-    public int getNumberOfValues() {
+    @JsonIgnore
+    public int getLength() {
         return listItems.size();
     }
 
     @Override
+    @JsonIgnore
     public PlcValue getIndex(int i) {
         return listItems.get(i);
     }
 
     @Override
+    @JsonIgnore
     public List<? extends PlcValue> getList() {
         return listItems;
     }
 
     @Override
+    @JsonIgnore
     public String toString() {
         return "[" + listItems.stream().map(PlcValue::toString).collect(Collectors.joining(",")) + "]";
     }

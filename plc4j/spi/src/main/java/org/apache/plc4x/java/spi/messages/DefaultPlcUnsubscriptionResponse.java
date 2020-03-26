@@ -18,13 +18,18 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcUnsubscriptionResponse implements InternalPlcUnsubscriptionResponse {
 
     private final InternalPlcUnsubscriptionRequest request;
 
-    public DefaultPlcUnsubscriptionResponse(InternalPlcUnsubscriptionRequest request) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcUnsubscriptionResponse(@JsonProperty("request") InternalPlcUnsubscriptionRequest request) {
         this.request = request;
     }
 

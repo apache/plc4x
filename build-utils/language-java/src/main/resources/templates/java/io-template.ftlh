@@ -56,7 +56,7 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if></#if> {
+public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
@@ -95,6 +95,19 @@ public class ${typeName}IO <#if !helper.isDiscriminatedType(type)>implements <#i
     }
 
     </#if>
+<#else>
+    @Override
+    public ${typeName} parse(ReadBuffer io, Object... args) throws ParseException {
+        return (${typeName}) new ${type.parentType.name}IO().parse(io, args);
+    }
+
+<#if outputFlavor != "passive">
+    @Override
+    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+        new ${type.parentType.name}IO().serialize(io, value, args);
+    }
+
+</#if>
 </#if>
     public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();

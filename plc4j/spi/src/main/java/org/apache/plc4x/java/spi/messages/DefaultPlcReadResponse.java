@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,14 +38,17 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadResponse {
 
     private final InternalPlcReadRequest request;
-    private final Map<String, Pair<PlcResponseCode, PlcValue>> values;
+    private final Map<String, ResponseItem<PlcValue>> values;
 
-    public DefaultPlcReadResponse(InternalPlcReadRequest request, Map<String, Pair<PlcResponseCode, PlcValue>> fields) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcReadResponse(@JsonProperty("request") InternalPlcReadRequest request,
+                                  @JsonProperty("values") Map<String, ResponseItem<PlcValue>> values) {
         this.request = request;
-        this.values = fields;
+        this.values = values;
     }
 
     @Override
@@ -53,67 +57,77 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public PlcValue getAsPlcValue() {
         return PlcValues.of(request.getFieldNames().stream()
             .collect(Collectors.toMap(Function.identity(), name -> PlcValues.of(getObject(name)))));
     }
 
     @Override
+    @JsonIgnore
     public PlcValue getPlcValue(String name) {
-        return values.getOrDefault(name, Pair.of(null, null)).getRight();
+        return values.getOrDefault(name, new ResponseItem<>(null, null)).getValue();
     }
 
     @Override
+    @JsonIgnore
     public int getNumberOfValues(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            return plcList.getNumberOfValues();
+            return plcList.getLength();
         } else {
             return 1;
         }
     }
 
     @Override
+    @JsonIgnore
     public Collection<String> getFieldNames() {
         return request.getFieldNames();
     }
 
     @Override
+    @JsonIgnore
     public PlcField getField(String name) {
         return request.getField(name);
     }
 
     @Override
+    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
         if (values.get(name) == null) {
             throw new PlcInvalidFieldException(name);
         }
-        return values.get(name).getKey();
+        return values.get(name).getCode();
     }
 
     @Override
-    public Map<String, Pair<PlcResponseCode, PlcValue>> getValues() {
+    @JsonIgnore
+    public Map<String, ResponseItem<PlcValue>> getValues() {
         return values;
     }
 
     @Override
+    @JsonIgnore
     public Object getObject(String name) {
         return getFieldInternal(name).getObject();
     }
 
     @Override
+    @JsonIgnore
     public Object getObject(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getObject();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Object> getAllObjects(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Object> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Object> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getObject());
             }
@@ -123,33 +137,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBoolean(String name) {
         return isValidBoolean(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBoolean(String name, int index) {
         PlcValue fieldInternal = getFieldInternal(name);
         return fieldInternal.isBoolean();
     }
 
     @Override
+    @JsonIgnore
     public Boolean getBoolean(String name) {
         return getBoolean(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Boolean getBoolean(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getBoolean();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Boolean> getAllBooleans(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Boolean> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Boolean> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBoolean());
             }
@@ -159,33 +178,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidByte(String name) {
         return isValidByte(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidByte(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isByte();
     }
 
     @Override
+    @JsonIgnore
     public Byte getByte(String name) {
         return getByte(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Byte getByte(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getByte();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Byte> getAllBytes(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Byte> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Byte> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getByte());
             }
@@ -195,33 +219,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidShort(String name) {
         return isValidShort(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidShort(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isShort();
     }
 
     @Override
+    @JsonIgnore
     public Short getShort(String name) {
         return getShort(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Short getShort(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getShort();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Short> getAllShorts(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Short> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Short> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getShort());
             }
@@ -231,33 +260,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidInteger(String name) {
         return isValidInteger(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidInteger(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isInteger();
     }
 
     @Override
+    @JsonIgnore
     public Integer getInteger(String name) {
         return getInteger(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Integer getInteger(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getInteger();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Integer> getAllIntegers(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Integer> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Integer> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getInteger());
             }
@@ -267,33 +301,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBigInteger(String name) {
         return isValidBigInteger(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBigInteger(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isBigInteger();
     }
 
     @Override
+    @JsonIgnore
     public BigInteger getBigInteger(String name) {
         return getBigInteger(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public BigInteger getBigInteger(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getBigInteger();
     }
 
     @Override
+    @JsonIgnore
     public Collection<BigInteger> getAllBigIntegers(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<BigInteger> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<BigInteger> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigInteger());
             }
@@ -303,33 +342,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidLong(String name) {
         return isValidLong(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidLong(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isLong();
     }
 
     @Override
+    @JsonIgnore
     public Long getLong(String name) {
         return getLong(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Long getLong(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getLong();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Long> getAllLongs(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Long> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Long> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getLong());
             }
@@ -339,33 +383,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidFloat(String name) {
         return isValidFloat(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidFloat(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isFloat();
     }
 
     @Override
+    @JsonIgnore
     public Float getFloat(String name) {
         return getFloat(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Float getFloat(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getFloat();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Float> getAllFloats(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Float> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Float> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getFloat());
             }
@@ -375,33 +424,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDouble(String name) {
         return isValidDouble(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDouble(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isDouble();
     }
 
     @Override
+    @JsonIgnore
     public Double getDouble(String name) {
         return getDouble(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public Double getDouble(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getDouble();
     }
 
     @Override
+    @JsonIgnore
     public Collection<Double> getAllDoubles(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<Double> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<Double> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDouble());
             }
@@ -411,33 +465,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBigDecimal(String name) {
         return isValidBigDecimal(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidBigDecimal(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isBigDecimal();
     }
 
     @Override
+    @JsonIgnore
     public BigDecimal getBigDecimal(String name) {
         return getBigDecimal(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public BigDecimal getBigDecimal(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getBigDecimal();
     }
 
     @Override
+    @JsonIgnore
     public Collection<BigDecimal> getAllBigDecimals(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<BigDecimal> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<BigDecimal> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getBigDecimal());
             }
@@ -447,33 +506,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidString(String name) {
         return isValidString(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidString(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isString();
     }
 
     @Override
+    @JsonIgnore
     public String getString(String name) {
         return getString(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public String getString(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getString();
     }
 
     @Override
+    @JsonIgnore
     public Collection<String> getAllStrings(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<String> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<String> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getString());
             }
@@ -483,33 +547,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidTime(String name) {
         return isValidTime(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidTime(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isTime();
     }
 
     @Override
+    @JsonIgnore
     public LocalTime getTime(String name) {
         return getTime(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public LocalTime getTime(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getTime();
     }
 
     @Override
+    @JsonIgnore
     public Collection<LocalTime> getAllTimes(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getTime());
             }
@@ -519,33 +588,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDate(String name) {
         return isValidDate(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDate(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isDate();
     }
 
     @Override
+    @JsonIgnore
     public LocalDate getDate(String name) {
         return getDate(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public LocalDate getDate(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getDate();
     }
 
     @Override
+    @JsonIgnore
     public Collection<LocalDate> getAllDates(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalDate> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalDate> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDate());
             }
@@ -555,33 +629,38 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDateTime(String name) {
         return isValidDateTime(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public boolean isValidDateTime(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.isDateTime();
     }
 
     @Override
+    @JsonIgnore
     public LocalDateTime getDateTime(String name) {
         return getDateTime(name, 0);
     }
 
     @Override
+    @JsonIgnore
     public LocalDateTime getDateTime(String name, int index) {
         PlcValue fieldInternal = getFieldIndexInternal(name, index);
         return fieldInternal.getDateTime();
     }
 
     @Override
+    @JsonIgnore
     public Collection<LocalDateTime> getAllDateTimes(String name) {
         PlcValue fieldInternal = getFieldInternal(name);
         if(fieldInternal instanceof PlcList) {
             PlcList plcList = (PlcList) fieldInternal;
-            List<LocalDateTime> items = new ArrayList<>(plcList.getNumberOfValues());
+            List<LocalDateTime> items = new ArrayList<>(plcList.getLength());
             for (PlcValue plcValue : plcList.getList()) {
                 items.add(plcValue.getDateTime());
             }
@@ -590,14 +669,25 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         return Collections.singletonList(fieldInternal.getDateTime());
     }
 
+    @JsonAnySetter
+    public void add(String key, ResponseItem<PlcValue> value) {
+        values.put(key, value);
+    }
+
+    @JsonAnyGetter
+    public Map<String, ResponseItem<PlcValue>> getMap() {
+        return values;
+    }
+
     protected PlcValue getFieldInternal(String name) {
         Objects.requireNonNull(name, "Name argument required");
         // If this field doesn't exist, ignore it.
         if (values.get(name) == null) {
             throw new PlcInvalidFieldException(name);
         }
-        if (values.get(name).getKey() != PlcResponseCode.OK) {
-            throw new PlcRuntimeException("Field '" + name + "' could not be fetched, response was " + values.get(name).getKey());
+        if (values.get(name).getCode() != PlcResponseCode.OK) {
+            throw new PlcRuntimeException(
+                "Field '" + name + "' could not be fetched, response was " + values.get(name).getCode());
         }
         // No need to check for "null" as this is already captured by the constructors.
         return values.get(name).getValue();
@@ -607,7 +697,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
         final PlcValue field = getFieldInternal(name);
         if(field instanceof PlcList) {
             PlcList plcList = (PlcList) field;
-            if(index > (plcList.getNumberOfValues() - 1)) {
+            if(index > (plcList.getLength() - 1)) {
                 return null;
             }
             return plcList.getIndex(index);

@@ -18,58 +18,69 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionResponse {
 
     private final InternalPlcSubscriptionRequest request;
 
-    private final Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values;
+    private final Map<String, ResponseItem<PlcSubscriptionHandle>> values;
 
-    public DefaultPlcSubscriptionResponse(InternalPlcSubscriptionRequest request, Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public DefaultPlcSubscriptionResponse(@JsonProperty("request") InternalPlcSubscriptionRequest request,
+                                          @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
     }
 
     @Override
+    @JsonIgnore
     public PlcSubscriptionHandle getSubscriptionHandle(String name) {
-        Pair<PlcResponseCode, PlcSubscriptionHandle> response = values.get(name);
+        ResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
             return null;
         }
-        if (response.getKey() != PlcResponseCode.OK) {
-            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getKey());
+        if (response.getCode() != PlcResponseCode.OK) {
+            throw new PlcRuntimeException("Item " + name + " failed to subscribe: " + response.getCode());
         }
         return response.getValue();
     }
 
     @Override
+    @JsonIgnore
     public Collection<String> getFieldNames() {
         return values.keySet();
     }
 
     @Override
+    @JsonIgnore
     public PlcField getField(String name) {
         throw new PlcNotImplementedException("field access not possible as these come async");
     }
 
     @Override
+    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
-        Pair<PlcResponseCode, PlcSubscriptionHandle> response = values.get(name);
+        ResponseItem<PlcSubscriptionHandle> response = values.get(name);
         if (response == null) {
             return null;
         }
-        return response.getKey();
+        return response.getCode();
     }
 
     @Override
@@ -78,12 +89,13 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
     }
 
     @Override
+    @JsonIgnore
     public Collection<PlcSubscriptionHandle> getSubscriptionHandles() {
-        return values.values().stream().map(Pair::getValue).collect(Collectors.toList());
+        return values.values().stream().map(ResponseItem<PlcSubscriptionHandle>::getValue).collect(Collectors.toList());
     }
 
     @Override
-    public Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> getValues() {
+    public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
         return values;
     }
 

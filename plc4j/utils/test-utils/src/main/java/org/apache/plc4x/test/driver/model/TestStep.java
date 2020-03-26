@@ -22,10 +22,22 @@ import org.dom4j.Element;
 
 public class TestStep {
 
+    private final StepType type;
+    private final String name;
     private final Element payload;
 
-    public TestStep(Element payload) {
+    public TestStep(StepType type, String name, Element payload) {
+        this.type = type;
+        this.name = name;
         this.payload = payload;
+    }
+
+    public StepType getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Element getPayload() {

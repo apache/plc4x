@@ -18,8 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.netty.buffer.ByteBuf;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcRawMessage implements PlcProtocolMessage {
 
     private final ByteBuf userData;

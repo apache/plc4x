@@ -19,35 +19,47 @@
 
 package org.apache.plc4x.java.api.value;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.time.LocalTime;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTime extends PlcSimpleValue<LocalTime> {
 
-    public PlcTime(LocalTime value) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcTime(@JsonProperty("value") LocalTime value) {
         super(value, true);
     }
 
     @Override
+    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
+    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public LocalTime getTime() {
         return value;
     }
 
     @Override
+    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

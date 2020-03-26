@@ -20,8 +20,6 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -90,6 +88,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -384,7 +383,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, Pair<PlcResponseCode, PlcValue>> values = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         S7VarPayloadDataItem[] payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -397,7 +396,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             if (responseCode == PlcResponseCode.OK) {
                 plcValue = parsePlcValue(field, data);
             }
-            Pair<PlcResponseCode, PlcValue> result = new ImmutablePair<>(responseCode, plcValue);
+            ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
             values.put(fieldName, result);
             index++;
         }

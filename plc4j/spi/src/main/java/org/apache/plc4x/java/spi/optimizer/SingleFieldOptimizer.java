@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.spi.optimizer;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -27,6 +26,7 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class SingleFieldOptimizer extends BaseOptimizer {
             PlcValue value = ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName);
             PlcWriteRequest subRequest = new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(),
-                new LinkedHashMap<>(Collections.singletonMap(fieldName, Pair.of(field, value))));
+                new LinkedHashMap<>(Collections.singletonMap(fieldName, new FieldValueItem(field, value))));
             subRequests.add(subRequest);
         }
         return subRequests;

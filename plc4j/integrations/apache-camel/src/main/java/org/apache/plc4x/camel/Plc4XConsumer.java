@@ -1,5 +1,5 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
+Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
  distributed with this work for additional information
  regarding copyright ownership.  The ASF licenses this file
@@ -25,36 +25,36 @@ import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.camel.support.service.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.List;
+import java.util.concurrent.*;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcSubscriptionEvent> {
+public class Plc4XConsumer extends ServiceSupport implements Consumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
     private Plc4XEndpoint endpoint;
     private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private String fieldQuery;
+    private List<String> fieldQuery;
     private Class<?> dataType;
     private PlcSubscriptionResponse subscriptionResponse;
+
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> future;
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
         this.endpoint = endpoint;
         this.dataType = endpoint.getDataType();
         this.processor = AsyncProcessorConverterHelper.convert(processor);
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
-        String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
+        this.plcConnection = endpoint.getConnection();
         this.fieldQuery = endpoint.getAddress();
     }
 
@@ -78,37 +78,46 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
 
     @Override
     protected void doStart() throws InterruptedException, ExecutionException {
-        // TODO: Is it correct to only support one field?
-        PlcSubscriptionRequest request = plcConnection.subscriptionRequestBuilder()
-            .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
-        subscriptionResponse = request.execute().get();
-        // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
-        // TODO: figure out what to do with this
-        // plcSubscriber.register(this, plcSubscriptionResponse.getSubscriptionHandles());
+        int nb=0;
+        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+        if (fieldQuery.size()>1){
+            int i=0;
+            for(String query : fieldQuery){
+                builder.addItem(String.valueOf(i++),query);
+            }
+        }
+        else{
+            builder.addItem("default",fieldQuery.get(0));
+        }
+        PlcReadRequest request = builder.build();
+        future = executorService.schedule(() -> {
+            request.execute().thenAccept(response -> {
+                    try {
+                        Exchange exchange = endpoint.createExchange();
+                        if (fieldQuery.size()>1){
+                            int i=0;
+                            List<Object> values = new ArrayList<>();
+                            for(String query : fieldQuery){
+                                values.add(response.getObject(String.valueOf(i++)));
+                            }
+                            exchange.getIn().setBody(values);
+                        }
+                        else {
+                            exchange.getIn().setBody(unwrapIfSingle(response.getAllObjects("default")));
+                        }
+                        processor.process(exchange);
+                    } catch (Exception e) {
+                        exceptionHandler.handleException(e);
+                    }
+                });
+        }, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException {
-        PlcUnsubscriptionRequest request = plcConnection.unsubscriptionRequestBuilder().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
-        CompletableFuture<? extends PlcUnsubscriptionResponse> unsubscriptionFuture = request.execute();
-        /*PlcUnsubscriptionResponse unsubscriptionResponse =*/ unsubscriptionFuture.get(5, TimeUnit.SECONDS);
-        // TODO: Handle the response ...
-        try {
-            plcConnection.close();
-        } catch (Exception e) {
-            LOGGER.error("Error closing connection", e);
-        }
-    }
-
-    @Override
-    public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
-        LOGGER.debug("Received {}", plcSubscriptionEvent);
-        try {
-            Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(unwrapIfSingle(plcSubscriptionEvent.getAllObjects("default")));
-            processor.process(exchange);
-        } catch (Exception e) {
-            exceptionHandler.handleException(e);
+        // First stop the polling process
+        if (future != null) {
+            future.cancel(true);
         }
     }
 
@@ -124,7 +133,6 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
 
     @Override
     public Processor getProcessor() {
-        // TODO: No idea what to do here ...
-        return null;
+        return this.processor;
     }
 }

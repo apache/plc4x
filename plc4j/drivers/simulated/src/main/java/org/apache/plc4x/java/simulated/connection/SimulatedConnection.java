@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.simulated.connection;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -52,6 +50,7 @@ import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
@@ -141,15 +140,15 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         InternalPlcReadRequest request = checkInternal(readRequest, InternalPlcReadRequest.class);
-        Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+        Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
         for (String fieldName : request.getFieldNames()) {
             SimulatedField field = (SimulatedField) request.getField(fieldName);
             Optional<PlcValue> valueOptional = device.get(field);
-            ImmutablePair<PlcResponseCode, PlcValue> fieldPair;
+            ResponseItem<PlcValue> fieldPair;
             boolean present = valueOptional.isPresent();
             fieldPair = present
-                ? new ImmutablePair<>(PlcResponseCode.OK, valueOptional.get())
-                : new ImmutablePair<>(PlcResponseCode.NOT_FOUND, null);
+                ? new ResponseItem<>(PlcResponseCode.OK, valueOptional.get())
+                : new ResponseItem<>(PlcResponseCode.NOT_FOUND, null);
             fields.put(fieldName, fieldPair);
         }
         PlcReadResponse response = new DefaultPlcReadResponse(request, fields);
@@ -178,9 +177,9 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         InternalPlcSubscriptionRequest request = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
-        LinkedHashMap<String, SubscriptionPlcField> subscriptionPlcFieldMap = request.getSubscriptionPlcFieldMap();
+        Map<String, SubscriptionPlcField> subscriptionPlcFieldMap = request.getSubscriptionPlcFieldMap();
 
-        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> values = new HashMap<>();
+        Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
         subscriptionPlcFieldMap.forEach((name, subscriptionPlcField) -> {
             InternalPlcSubscriptionHandle handle = new DefaultPlcSubscriptionHandle(this);
             switch (subscriptionPlcField.getPlcSubscriptionType()) {
@@ -194,7 +193,7 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
                     device.addEventSubscription(dispatchSubscriptionEvent(name, handle), handle, (SimulatedField) subscriptionPlcField.getPlcField());
                     break;
             }
-            values.put(name, Pair.of(PlcResponseCode.OK, handle));
+            values.put(name, new ResponseItem<>(PlcResponseCode.OK, handle));
         });
 
         PlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(request, values);
@@ -212,7 +211,8 @@ public class SimulatedConnection extends AbstractPlcConnection implements PlcRea
             if (consumer == null) {
                 return;
             }
-            consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(), Collections.singletonMap(name, Pair.of(PlcResponseCode.OK, plcValue))));
+            consumer.accept(new DefaultPlcSubscriptionEvent(Instant.now(),
+                Collections.singletonMap(name, new ResponseItem<>(PlcResponseCode.OK, plcValue))));
         };
     }
 

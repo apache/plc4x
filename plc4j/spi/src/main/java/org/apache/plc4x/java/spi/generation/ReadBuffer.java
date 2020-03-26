@@ -20,11 +20,13 @@
 package org.apache.plc4x.java.spi.generation;
 
 import com.github.jinahya.bit.io.ArrayByteInput;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitInput;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 
 public class ReadBuffer {
 
@@ -266,7 +268,16 @@ public class ReadBuffer {
     }
 
     public String readString(int bitLength, String encoding) {
-        throw new UnsupportedOperationException("not implemented yet");
+        byte[] strBytes = new byte[bitLength/8];
+        for(int i= 0; i<bitLength/8 && hasMore(8); i++){
+            try {
+                strBytes[i] = readByte(8);
+            }
+            catch (Exception e){
+                throw new PlcRuntimeException(e);
+            }
+        }
+        return new String(strBytes, Charset.forName(encoding));
     }
 
 }

@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -31,6 +30,7 @@ import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
+import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
 import java.util.*;
@@ -120,7 +120,7 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
         // List of all items in the current request.
-        LinkedHashMap<String, Pair<PlcField, PlcValue>> curFields = new LinkedHashMap<>();
+        LinkedHashMap<String, FieldValueItem> curFields = new LinkedHashMap<>();
 
         for (String fieldName : writeRequest.getFieldNames()) {
             S7Field field = (S7Field) writeRequest.getField(fieldName);
@@ -159,7 +159,7 @@ public class S7Optimizer extends BaseOptimizer {
                     throw new PlcRuntimeException("Field size exceeds maximum payload for one item.");
                 }
             }
-            curFields.put(fieldName, Pair.of(field, value));
+            curFields.put(fieldName, new FieldValueItem(field, value));
         }
 
         // Create a new PlcWriteRequest from the remaining field items.

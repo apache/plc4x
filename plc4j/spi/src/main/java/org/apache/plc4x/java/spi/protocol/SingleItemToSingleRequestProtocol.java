@@ -53,6 +53,8 @@ import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
+import org.apache.plc4x.java.spi.messages.utils.FieldValueItem;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
 import org.slf4j.Logger;
@@ -222,7 +224,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
             InternalPlcResponse plcResponse;
             if (originalPlcRequestContainer.getRequest() instanceof InternalPlcReadRequest) {
                 InternalPlcReadRequest internalPlcReadRequest = (InternalPlcReadRequest) originalPlcRequestContainer.getRequest();
-                HashMap<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+                HashMap<String, ResponseItem<PlcValue>> fields = new HashMap<>();
 
                 correlatedResponseItems.stream()
                     .map(InternalPlcReadResponse.class::cast)
@@ -242,7 +244,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                 plcResponse = new DefaultPlcWriteResponse(internalPlcWriteRequest, values);
             } else if (originalPlcRequestContainer.getRequest() instanceof InternalPlcSubscriptionRequest) {
                 InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = (InternalPlcSubscriptionRequest) originalPlcRequestContainer.getRequest();
-                HashMap<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> fields = new HashMap<>();
+                HashMap<String, ResponseItem<PlcSubscriptionHandle>> fields = new HashMap<>();
 
                 correlatedResponseItems.stream()
                     .map(InternalPlcSubscriptionResponse.class::cast)
@@ -515,14 +517,14 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
 
         private final int tdpu;
 
-        public CorrelatedPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, Pair<PlcField, PlcValue>> fields, int tdpu) {
+        public CorrelatedPlcWriteRequest(PlcWriter writer, LinkedHashMap<String, FieldValueItem> fields, int tdpu) {
             super(writer, fields);
             this.tdpu = tdpu;
         }
 
         public static CorrelatedPlcWriteRequest of(PlcWriter writer, Triple<String, PlcField, PlcValue> plcValueTriple, int tdpu) {
-            LinkedHashMap<String, Pair<PlcField, PlcValue>> fields = new LinkedHashMap<>();
-            fields.put(plcValueTriple.getLeft(), Pair.of(plcValueTriple.getMiddle(), plcValueTriple.getRight()));
+            LinkedHashMap<String, FieldValueItem> fields = new LinkedHashMap<>();
+            fields.put(plcValueTriple.getLeft(), new FieldValueItem(plcValueTriple.getMiddle(), plcValueTriple.getRight()));
             return new CorrelatedPlcWriteRequest(writer, fields, tdpu);
         }
 

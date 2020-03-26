@@ -35,4 +35,5 @@ public class DFDLUtilTest {
 
         util.transform(schema, outDir);
     }
+
 }

@@ -36,6 +36,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
@@ -146,7 +147,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
         InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(plcSubscriptionRequest, InternalPlcSubscriptionRequest.class);
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
 
-        Map<String, Pair<PlcResponseCode, PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
+        Map responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
             .map(subscriptionPlcFieldEntry -> {
                 final String plcFieldName = subscriptionPlcFieldEntry.getKey();
                 final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
@@ -217,7 +218,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                     throw new PlcRuntimeException("Error code received " + response.getResult());
                 }
                 PlcSubscriptionHandle adsSubscriptionHandle = new AdsSubscriptionHandle(this, plcFieldName, adsDataType, response.getNotificationHandle());
-                return Pair.of(plcFieldName, Pair.of(PlcResponseCode.OK, adsSubscriptionHandle));
+                return Pair.of(plcFieldName, new ResponseItem(PlcResponseCode.OK, adsSubscriptionHandle));
             })
             .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
 
@@ -277,7 +278,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 BigInteger subtract = timeMillisSince16010101.subtract(EPOCH_DIFF_IN_MILLIS);
                 Instant timeStamp = new Date(subtract.longValue()).toInstant();
 
-                Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
+                Map<String, ResponseItem<PlcValue>> fields = new HashMap<>();
                 Arrays.asList(adsStampHeader.getAdsNotificationSamples())
                     .forEach(adsNotificationSample -> {
                         Long notificationHandle = adsNotificationSample.getNotificationHandle();
@@ -293,7 +294,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
                             PlcValue baseDefaultPlcValue = LittleEndianDecoder.decodeData(adsDataType, data);
-                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultPlcValue));
+                            fields.put(plcFieldName, new ResponseItem<>(PlcResponseCode.OK, baseDefaultPlcValue));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }
