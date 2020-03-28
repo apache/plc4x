@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.spi.request;
+package org.apache.plc4x.java.spi.messages;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PlcRequestTest {
-    // Test something here
+class DefaultPlcProprietaryRequestTest {
+
 }
