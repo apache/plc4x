@@ -28,6 +28,8 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.s7.netty.model.types.DataTransportErrorCode;
 
 /**
  *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -1333,5 +1335,25 @@ public class S7Helper {
         int res=(bcd>>4)*10 + (bcd & 0x0f);
         return res;
     }
+    
+    public static PlcResponseCode decodeResponseCode(DataTransportErrorCode dataTransportErrorCode) {
+        if (dataTransportErrorCode == null) {
+            return PlcResponseCode.INTERNAL_ERROR;
+        }
+        switch (dataTransportErrorCode) {
+            case OK:
+                return PlcResponseCode.OK;
+            case NOT_FOUND:
+                return PlcResponseCode.NOT_FOUND;
+            case INVALID_ADDRESS:
+                return PlcResponseCode.INVALID_ADDRESS;
+            case DATA_TYPE_NOT_SUPPORTED:
+                return PlcResponseCode.INVALID_DATATYPE;
+            case ACCESS_DENIED:
+                return PlcResponseCode.ACCESS_DENIED;
+            default:
+                return PlcResponseCode.INTERNAL_ERROR;
+        }
+    }    
     
 }

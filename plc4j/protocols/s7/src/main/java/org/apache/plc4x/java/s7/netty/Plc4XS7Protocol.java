@@ -1696,22 +1696,24 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                         if (parameter.getError().getCode() == 0x0000){                    
                             for (String fieldname:subsRequest.getFieldNames()){
                                 items.put(fieldname, valueitems.get(i));
+                                S7CyclicServicesSubscriptionHandle handler = new S7CyclicServicesSubscriptionHandle(fieldname, 
+                                                                            parameter.getSequenceNumber(),
+                                                                            parameter.getError().getCode(),
+                                                                            valueitems.get(i));  
+                                values.put(fieldname, 
+                                        new ImmutablePair(decodeResponseCode(valueitems.get(i).getReturnCode()), 
+                                                handler));                                 
                                 i++;                        
                             };
                         };
-
-                        S7CyclicServicesSubscriptionHandle handler = new S7CyclicServicesSubscriptionHandle("UNO", 
-                                                                            parameter.getSequenceNumber(),
-                                                                            parameter.getError().getCode(),
-                                                                            items);
-                        // Return quality code for alarm 
-                        for (String fieldname:subsRequest.getFieldNames()){
-                            values.put(fieldname, new ImmutablePair(decodeResponseCode(items.get(fieldname).getReturnCode()), handler));                    
-                        }
-
                     
                     } else {
-                        logger.info("Must return values...?");
+                        logger.info("At least one wrong address was requested.");
+                        // Return quality code for alarm 
+                        for (String fieldname:subsRequest.getFieldNames()){
+                            values.put(fieldname, new ImmutablePair(PlcResponseCode.INVALID_ADDRESS, null));                    
+                        }
+                        
                     } 
                     
                 } else {

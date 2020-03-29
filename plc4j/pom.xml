@@ -40,7 +40,6 @@
     <module>utils</module>
 
     <module>examples</module>
-    <module>integrations</module>
     <module>karaf-features</module>
   </modules>
 

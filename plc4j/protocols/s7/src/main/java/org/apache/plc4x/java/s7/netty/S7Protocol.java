@@ -419,7 +419,7 @@ public class S7Protocol extends ChannelDuplexHandler {
                  logger.debug("encodeAlarmMessagePayload: ALARM_LOCKFREE no supportesd");                
                 break;                        
                 case ALARM_IND:;
-                 logger.debug("encodeAlarmMessagePayload: ALARM_IND no supportesd");                
+                 logger.debug("encodeAlarmMessagePayload: ALARM no supportesd");                
                 break;                        
                 case ALARM_ACK:{
                    logger.debug("encodeAlarmMessagePayload: ALARM_ACK");
@@ -924,6 +924,7 @@ public class S7Protocol extends ChannelDuplexHandler {
 
     private VarPayload decodeVarPayload(ByteBuf userData, boolean isResponse, short userDataLength,
                                         VarParameter readWriteVarParameter) {
+        //System.out.println("decodeVarPayload:\r\n" + ByteBufUtil.prettyHexDump(userData));
         List<VarPayloadItem> payloadItems = new LinkedList<>();
 
         // Just keep on reading payloads until the provided length is read.
@@ -962,9 +963,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     }
 
     private S7Payload decodeCpuServicesPayload(CpuServicesParameter parameter, ByteBuf userData) {
-        
         if (parameter.getFunctionGroup() == CpuServicesParameterFunctionGroup.CPU_FUNCTIONS) {
-            logger.info("decodeCpuServicesPayload: " + parameter.getSubFunctionGroup());
             switch(parameter.getSubFunctionGroup()){
                 case READ_SSL: {
                     CpuServicesPayload payload = decodeReadSslPayload(parameter, userData);
@@ -1024,6 +1023,10 @@ public class S7Protocol extends ChannelDuplexHandler {
                     AlarmMessagePayload payload = decodeMessageServicePushPayload(parameter, userData);
                     return payload;
                 }
+                case ALARM: {
+                    AlarmMessagePayload payload = decodeMessageServicePushPayload(parameter, userData);
+                    return payload;
+                }                
                 default:;
                     break;
             } 
@@ -1135,9 +1138,8 @@ public class S7Protocol extends ChannelDuplexHandler {
                byte dataUnitReferenceNumber = in.readByte();
                boolean lastDataUnit = in.readByte() == 0x00;
                ParameterError error = ParameterError.valueOf(in.readShort());
-               logger.info("decodeParameter.: " + error);
-
-                return new CpuCyclicServicesResponseParameter(functionGroup, subCycFunctionGroup, sequenceNumber,
+               
+               return new CpuCyclicServicesResponseParameter(functionGroup, subCycFunctionGroup, sequenceNumber,
                             dataUnitReferenceNumber, lastDataUnit, error);               
             } else {
                 return new CpuServicesPushParameter(functionGroup, subFunctionGroup, sequenceNumber);            
@@ -1386,6 +1388,7 @@ public class S7Protocol extends ChannelDuplexHandler {
     }    
     
     private AlarmMessagePayload decodeMessageServicePushPayload(CpuServicesParameter parameter, ByteBuf userData){
+
         List<Object> MessageObjects = new LinkedList<>();
         List<ByteBuf> values = new LinkedList<>();
         int length;
@@ -1491,11 +1494,11 @@ public class S7Protocol extends ChannelDuplexHandler {
         List<Object> MessageObjects = new LinkedList<>();
         CpuServicesResponseParameter thisparameter = null;
         int length;
-        byte FunctionID;
-        byte NumberOfMessageObjects; //Say 1, but I have 2 messages? Why?
-        DataTransportErrorCode AlarmReturnCode;
-        DataTransportSize AlarmTransportSize;
-        int CompleteDataLength;
+        byte FunctionID = 0x00;
+        byte NumberOfMessageObjects = 0x00; //Say 1, but I have 2 messages? Why?
+        DataTransportErrorCode AlarmReturnCode = DataTransportErrorCode.RESERVED;
+        DataTransportSize AlarmTransportSize = DataTransportSize.NULL;
+        int CompleteDataLength = 0x0000;
         short dataUnitReferenceNumber = 0x0000;
         boolean lastdataunit = true;
         
@@ -1509,6 +1512,22 @@ public class S7Protocol extends ChannelDuplexHandler {
             dataUnitReferenceNumber = (short) thisparameter.getDataUnitReferenceNumber();
             lastdataunit = thisparameter.isLastDataUnit();
         }
+        
+        //Response to query from S7-1500
+        if ((length == 0) && 
+            lastdataunit && 
+            (thisparameter.getSubFunctionGroup() == CpuServicesParameterSubFunctionGroup.ALARM_QUERY)){
+            return new AlarmMessagePayload(returnCode,
+                    dataTransportSize,
+                    CpuServicesParameterSubFunctionGroup.ALARM_QUERY,
+                    length,
+                    new AlarmMessageItem(FunctionID,
+                            NumberOfMessageObjects,
+                            AlarmReturnCode,
+                            AlarmTransportSize,
+                            CompleteDataLength,
+                            MessageObjects));              
+        }        
         
         //Response to query
         if ((length == 6) && 

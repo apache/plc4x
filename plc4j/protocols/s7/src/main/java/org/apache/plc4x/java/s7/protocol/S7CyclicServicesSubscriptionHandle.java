@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.s7.protocol;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -32,22 +31,23 @@ import org.apache.plc4x.java.s7.netty.model.payloads.items.AssociatedValueItem;
  * @author cgarcia
  */
 public class S7CyclicServicesSubscriptionHandle implements InternalPlcSubscriptionHandle {
+    
     Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();
         
     //CyClic Services information hanler
     private final String fieldName; //Subscription id from the request
     private final byte jobId; //Job-Id from cyclic subscriotion
     private final short error; //Register the error from the suscription.
-    private Map<String,AssociatedValueItem> items;
+    private final AssociatedValueItem item;
 
     public S7CyclicServicesSubscriptionHandle(String fieldName, 
             byte jobId, 
             short error, 
-            Map<String,AssociatedValueItem> items) {
+            AssociatedValueItem item) {
         this.fieldName = fieldName;
         this.jobId = jobId;
         this.error = error;
-        this.items = items;
+        this.item = item;
     }
 
     public Set<Consumer<PlcSubscriptionEvent>> getConsumers() {
@@ -66,12 +66,8 @@ public class S7CyclicServicesSubscriptionHandle implements InternalPlcSubscripti
         return error;
     }
     
-    public AssociatedValueItem getValueItem(String index){
-        return items.get(index);
-    }
-
-    public Map<String, AssociatedValueItem> getItems() {
-        return items;
+    public AssociatedValueItem getValueItem(){
+        return item;
     }
                            
     @Override

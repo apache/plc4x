@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.s7.connection;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import java.net.InetAddress;
@@ -38,7 +37,6 @@ import java.util.function.Consumer;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.SystemConfiguration;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -53,7 +51,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.base.connection.ChannelFactory;
 import org.apache.plc4x.java.base.connection.NettyPlcConnection;
 import org.apache.plc4x.java.base.events.ConnectEvent;
@@ -84,6 +81,7 @@ import org.apache.plc4x.java.s7.netty.util.S7PlcFieldHandler;
 import org.apache.plc4x.java.s7.protocol.S7CyclicServicesSubscriptionHandle;
 import org.apache.plc4x.java.s7.protocol.S7DiagnosticSubscriptionHandle;
 import org.apache.plc4x.java.s7.protocol.event.S7AlarmEvent;
+import org.apache.plc4x.java.s7.protocol.event.S7CyclicValueEvent;
 import org.apache.plc4x.java.s7.protocol.event.S7Event;
 import org.apache.plc4x.java.s7.protocol.event.S7ModeEvent;
 import org.apache.plc4x.java.s7.protocol.event.S7SysEvent;
@@ -134,7 +132,7 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions = new HashMap();
     
     Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles = new HashMap();    
-    Map<Short, PlcSubscriptionHandle> cyclicServicesHandles = new HashMap();
+    Map<Short, Collection<PlcSubscriptionHandle>> cyclicServicesHandles = new HashMap();
     
     private EventLoop alarmsloopthread;
 
@@ -445,14 +443,21 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
         //Add any handler to 
-        handles.forEach(handle ->{
-            if (handle instanceof S7CyclicServicesSubscriptionHandle) {
-                S7CyclicServicesSubscriptionHandle s7handle = (S7CyclicServicesSubscriptionHandle) handle;
-                if (!cyclicServicesHandles.containsKey(s7handle.getJobId())){
-                    cyclicServicesHandles.put((short) s7handle.getJobId(), s7handle);
-                }
-            }
+        Object objHandle = handles.toArray()[0];
+
+        if (objHandle instanceof S7CyclicServicesSubscriptionHandle) {
+            S7CyclicServicesSubscriptionHandle firtsHandle = (S7CyclicServicesSubscriptionHandle) objHandle;
+            handles.forEach(handle ->{            
+                S7CyclicServicesSubscriptionHandle s7handle = (S7CyclicServicesSubscriptionHandle) handle; 
+                s7handle.getConsumers().add(consumer);                           
+            });
             
+            if (!cyclicServicesHandles.containsKey(firtsHandle.getJobId())){
+                cyclicServicesHandles.put((short) firtsHandle.getJobId(), handles);
+            }
+        }
+            
+        handles.forEach(handle ->{            
             if (handle instanceof S7DiagnosticSubscriptionHandle) {
                 S7DiagnosticSubscriptionHandle s7handle = (S7DiagnosticSubscriptionHandle) handle; 
                 s7handle.getConsumers().add(consumer);
@@ -482,14 +487,14 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
         private int delay;
         private final Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions; 
         private final Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles;        
-        private final Map<Short, PlcSubscriptionHandle> cyclicServicesHandles;
+        private final Map<Short, Collection<PlcSubscriptionHandle>> cyclicServicesHandles;
         private final BlockingQueue<S7PushMessage> alarmsqueue;
         
         EventLoop(Channel channel, 
                 BlockingQueue<S7PushMessage> alarmsqueue, 
                 Map<Consumer, Collection<PlcSubscriptionHandle>> cyclicServicesSubscriptions,
                 Map<SubscribedEventType, Map<Short, PlcSubscriptionHandle>> pushEventHandles,
-                Map<Short, PlcSubscriptionHandle> cyclicServicesHandles) {
+                Map<Short, Collection<PlcSubscriptionHandle>> cyclicServicesHandles) {
             this.channel = channel;
             this.alarmsqueue = alarmsqueue;
             this.cyclicServicesSubscriptions = cyclicServicesSubscriptions;
@@ -528,16 +533,45 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
                             
                         } else if (msg instanceof CpuServicesPushParameter) {
                             CpuServicesPushParameter themsg = (CpuServicesPushParameter) msg;
-                            logger.info("CpuServicesPushParameter: " + themsg);
+                            logger.debug("CpuServicesPushParameter: " + themsg);
                             
                         } else if (msg instanceof CpuCyclicServicesResponsePayload) {
                             CpuCyclicServicesResponsePayload themsg = (CpuCyclicServicesResponsePayload) msg;
                             logger.debug("CpuCyclicServicesResponsePayload: " + themsg + " JobId:" + themsg.getJobId());
                             
-                            S7CyclicServicesSubscriptionHandle handle = 
-                                    (S7CyclicServicesSubscriptionHandle) cyclicServicesHandles.get(themsg.getJobId());
-                            if (handle != null) {
-                                UpdateCyclicServicesData(handle, themsg);                            
+                            Collection<PlcSubscriptionHandle> handles =  cyclicServicesHandles.get((short)themsg.getJobId());
+                            if (handles != null) {
+                                int i=0;
+                                for(PlcSubscriptionHandle handle:handles) {
+                                    AssociatedValueItem itemValue = ((S7CyclicServicesSubscriptionHandle) handle).getValueItem();
+                                    AssociatedValueItem newValue = themsg.getItems().get(i);
+                                    synchronized(newValue) {
+                                        itemValue.getData().setBytes(0, newValue.getData());
+                                    }                                    
+                                    i++;
+                                }; 
+                                
+                                if (cyclicServicesSubscriptions.containsValue(handles)){
+                                    Map<String, AssociatedValueItem> eventData = new HashMap();
+                                    synchronized(handles){
+                                        for (PlcSubscriptionHandle  handle:handles){
+                                            S7CyclicServicesSubscriptionHandle s7Handle = (S7CyclicServicesSubscriptionHandle) handle;
+                                            AssociatedValueItem newItem = new AssociatedValueItem(s7Handle.getValueItem().getReturnCode(),
+                                                                                    s7Handle.getValueItem().getDataTransportSize(),
+                                                                                    s7Handle.getValueItem().getLength(),
+                                                                                    s7Handle.getValueItem().getData().copy());
+                                            eventData.put(s7Handle.getFieldName(), newItem);                                        
+                                        }
+                                    };
+                                    
+                                    S7CyclicServicesSubscriptionHandle s7Handle = 
+                                            (S7CyclicServicesSubscriptionHandle) handles.toArray()[0];
+                                    Consumer<PlcSubscriptionEvent> consumer = 
+                                            (Consumer<PlcSubscriptionEvent> )s7Handle.getConsumers().toArray()[0];
+                                    S7CyclicValueEvent event = new S7CyclicValueEvent(eventData);
+                                    consumer.accept(event);
+                                }; 
+                                
                             };
                             
                         } else {
@@ -603,38 +637,20 @@ public class S7PlcConnection extends NettyPlcConnection implements PlcReader, Pl
             });              
         }              
         
-        private void UpdateCyclicServicesData(S7CyclicServicesSubscriptionHandle handle,CpuCyclicServicesResponsePayload themsg){
-            
-            Map<String, AssociatedValueItem> items = handle.getItems();
-            Collection<AssociatedValueItem> values = items.values();
-            List<AssociatedValueItem> newvalues = themsg.getItems();
-            int i = 0;
-            synchronized(values) {
-                for (AssociatedValueItem value:values){
-                    AssociatedValueItem newvalue = newvalues.get(i);
-                    value.getData().setBytes(0, newvalue.getData());
-                    i++;                
-                }
+        private void UpdateCyclicServicesData(S7CyclicServicesSubscriptionHandle handle, AssociatedValueItem newValue){
+            AssociatedValueItem itemValue = handle.getValueItem();
+
+            synchronized(newValue) {
+                itemValue.getData().setBytes(0, newValue.getData());
             }
             
             cyclicServicesSubscriptions.forEach((consumer,handles)->{
                 if (handles.contains(handle)){
-                    handles.forEach((exehandle)->{
-                        Map<String, Pair<PlcResponseCode, ByteBuf>> fields = new HashMap<>();
-                        S7CyclicServicesSubscriptionHandle exe2handle = (S7CyclicServicesSubscriptionHandle) exehandle;
-                        Map<String, AssociatedValueItem> values2consumer = exe2handle.getItems();
-                        
-                        //PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), fields);
-                        
-                        values2consumer.forEach((index, itemvalue)->{
-                            if (consumer != null) {
-                                consumer.accept(null);
-                            };
-                            //logger.info("Procesando valores : " + index + "\r\n" + ByteBufUtil.prettyHexDump(itemvalue.getData()));
-                        });
-                        //Pair<PlcResponseCode, ByteBuf> newPair = new ImmutablePair<>(PlcResponseCode, stringItem);
-                        //exehandle
-                    });
+                   
+                    if (consumer != null) {
+                        consumer.accept(null);
+                    };                    
+                    
                 }
             });
             

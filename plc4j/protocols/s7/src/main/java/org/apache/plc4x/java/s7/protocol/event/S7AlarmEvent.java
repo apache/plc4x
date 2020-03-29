@@ -144,12 +144,11 @@ public class S7AlarmEvent implements S7Event {
         Map<String, Object> map = new HashMap();
         AssociatedValueItem itemValue;
         byte[] datos;
-        
-        switch(subFunction){
+        switch(subFunction){    
             case ALARM_QUERY:{
                 switch(message.getAlarmtype()){
                     case ALARM_S:
-                        map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM_S.getCode()); 
+                        map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM_S_IND.getCode()); 
                         map.put(Fields.EVENT_ID.name(), message.getEventID());
                         map.put(Fields.EVENT_STATE.name(), message.getEventState());
                         map.put(Fields.ACKSTATE_GOING.name(), message.getAckStateGoing());
@@ -188,7 +187,7 @@ public class S7AlarmEvent implements S7Event {
             }
             break;
             case ALARM_ACK_IND:;
-                map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM_S_IND.getCode()); 
+                map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM_ACK_IND.getCode()); 
                 map.put(Fields.TIMESTAMP.name(), msgItem.getTimestamp().toInstant(ZoneOffset.UTC));
                 map.put(Fields.EVENT_ID.name(), message.getEventID()); 
                 map.put(Fields.EVENT_STATE.name(), message.getEventState());
@@ -233,6 +232,28 @@ public class S7AlarmEvent implements S7Event {
                 }                  
             }
             break;
+            case ALARM: {   
+                map.put(Fields.TYPE.toString(), CpuServicesParameterSubFunctionGroup.ALARM.getCode());
+                map.put(Fields.TIMESTAMP.name(), msgItem.getTimestamp().toInstant(ZoneOffset.UTC));
+                map.put(Fields.EVENT_ID.name(), message.getEventID());
+                map.put(Fields.EVENT_STATE.name(), message.getEventState());
+                map.put(Fields.STATE.name(), message.getState());
+                map.put(Fields.ACKSTATE_GOING.name(), message.getAckStateGoing());
+                map.put(Fields.ACKSTATE_COMING.name(), message.getAckStateComming()); 
+                for(int i = 0; i < message.getNumberOfValues(); i++){                
+                    itemValue = message.getComingValues().get(i);
+                    datos = new byte[itemValue.getLength()];
+                    map.put("SIG_"+ (i+1) +"_STATE", itemValue.getReturnCode().getCode());
+                    itemValue.getData().getBytes(0, datos);
+                    map.put("SIG_"+ (i+1) +"_DATA", datos);
+                }                  
+            }
+            break;
+            case ALARM8: {
+                System.out.println("PROCESANDO ALARM 8");
+            }
+            break;
+                
         }
                 
         return new S7AlarmEvent(map);
