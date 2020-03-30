@@ -18,19 +18,22 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
+import org.apache.camel.Expression;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Plc4XComponentTest extends CamelTestSupport {
 
-    //@Test
+    @Test
     public void testSimpleRouting() throws Exception {
         MockEndpoint mock = getMockEndpoint("mock:result");
         mock.expectedMinimumMessageCount(1);
@@ -46,19 +49,20 @@ public class Plc4XComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
             public void configure() {
+                List<TagData> tags = new ArrayList<>();
+                tags.add(new TagData("testTagName","testTagAddress"));
+                tags.add(new TagData("testTagName2","testTagAddress2"));
+                Plc4XEndpoint producer = getContext().getEndpoint("plc4x:mock:10.10.10.1/1/1", Plc4XEndpoint.class);
+                producer.setTags(tags);
                 from("direct:plc4x")
-                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
-                    }))
-                    .setBody(constant((byte) 0x0))
+                    .setBody(constant(Arrays.asList(new TagData("test","testAddress",false))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setHeader(Constants.FIELD_QUERY_HEADER, constant(new PlcField() {
-                    }))
-                    .setBody(constant(Arrays.asList((byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3)))
+                    .setBody(constant(Arrays.asList(new TagData("test2","testAddress2",0x05))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
-                from("plc4x:mock:10.10.10.1/1/1?address=Main.by0&dataType=java.lang.String")
+                from(producer)
                     .log("Got ${body}");
             }
         };

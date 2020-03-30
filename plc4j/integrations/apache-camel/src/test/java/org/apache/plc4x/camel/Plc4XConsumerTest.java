@@ -23,21 +23,6 @@ import org.junit.jupiter.api.Test;
 // TODO: implement me
 public class Plc4XConsumerTest {
 
-    @Test
-    public void toStringTest() {
-    }
-
-    @Test
-    public void getEndpoint() {
-    }
-
-    @Test
-    public void getExceptionHandler() {
-    }
-
-    @Test
-    public void setExceptionHandler() {
-    }
 
     @Test
     public void doStart() {
@@ -47,7 +32,4 @@ public class Plc4XConsumerTest {
     public void doStop() {
     }
 
-    @Test
-    public void accept() {
-    }
 }

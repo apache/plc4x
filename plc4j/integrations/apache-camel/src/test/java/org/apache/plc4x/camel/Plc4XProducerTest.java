@@ -20,7 +20,6 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
@@ -39,39 +37,38 @@ public class Plc4XProducerTest {
 
     private Exchange testExchange;
 
-    //@BeforeEach
+    @BeforeEach
     public void setUp() throws Exception {
         Plc4XEndpoint endpointMock = mock(Plc4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
-        PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
+        PlcConnection mockConnection = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
 
-        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canRead()).thenReturn(true);
-        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canWrite()).thenReturn(true);
-        when(plcDriverManagerMock.getConnection(anyString()).writeRequestBuilder())
+        when(mockConnection.getMetadata().canRead()).thenReturn(true);
+        when(mockConnection.getMetadata().canWrite()).thenReturn(true);
+        when(mockConnection.writeRequestBuilder())
             .thenReturn(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS));
 
-        when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
+        when(endpointMock.getConnection()).thenReturn(mockConnection);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
 
-        when(testExchange.getIn().getHeader(eq(Constants.FIELD_NAME_HEADER), eq(String.class)))
-            .thenReturn("Hurz");
-        when(testExchange.getIn().getHeader(eq(Constants.FIELD_QUERY_HEADER), eq(String.class)))
-            .thenReturn("PlcField.class");
+        when(testExchange.getIn().getBody())
+            .thenReturn(Arrays.asList(new TagData("testName","testAddress",0),
+                new TagData("testName2","testAddress2",true),
+                new TagData("testName3","testAddress3","testVal")));
     }
 
-    //@Test
+    @Test
     public void process() throws Exception {
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOnly);
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
         SUT.process(testExchange);
-        when(testExchange.getIn().getBody()).thenReturn(Arrays.asList("test","test"));
-        when(testExchange.getIn().getBody(eq(List.class))).thenReturn(Arrays.asList("test","test"));
-        SUT.process(testExchange);
+        when(testExchange.getIn().getBody()).thenReturn(2);
+
     }
 
-    //@Test
+    @Test
     public void process_Async() {
         SUT.process(testExchange, doneSync -> {
         });
@@ -83,12 +80,12 @@ public class Plc4XProducerTest {
         });
     }
 
-    //@Test
+    @Test
     public void doStop() throws Exception {
         SUT.doStop();
     }
 
-    //@Test
+    @Test
     public void doStopOpenRequest() throws Exception {
         Field openRequests = SUT.getClass().getDeclaredField("openRequests");
         openRequests.setAccessible(true);
@@ -97,7 +94,7 @@ public class Plc4XProducerTest {
         SUT.doStop();
     }
 
-    //@Test
+    @Test
     public void doStopBadConnection() throws Exception {
         Field openRequests = SUT.getClass().getDeclaredField("plcConnection");
         openRequests.setAccessible(true);
