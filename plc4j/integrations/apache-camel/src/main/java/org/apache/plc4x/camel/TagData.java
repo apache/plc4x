@@ -18,12 +18,44 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
-public class Constants {
+public class TagData {
+    private String tagName;
+    private String query;
+    private Object value;
 
-    public static final String FIELD_NAME_HEADER = "fieldName";
-    public static final String FIELD_QUERY_HEADER = "fieldQuery";
-
-    private Constants() {
-      throw new IllegalStateException("Utility class!");
+    public TagData(String alias, String query, Object value) {
+        this.tagName = alias;
+        this.query = query;
+        this.value = value;
     }
+
+    public TagData(String tagName, String query) {
+        this.tagName = tagName;
+        this.query = query;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
 }
