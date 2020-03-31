@@ -95,6 +95,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
                         if (tags.size()>1){
                             List<TagData> values = new ArrayList<>();
                             for(TagData tag : tags){
+                                tag.setValue(response.getObject(tag.getTagName()));
                                 values.add(tag);
                             }
                             exchange.getIn().setBody(values);
