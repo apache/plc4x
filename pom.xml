@@ -47,14 +47,23 @@
     <tag>HEAD</tag>
   </scm>
 
-  <!-- Only configure the site distribution as the rest is handled by the apache parent -->
+  <!-- Only configure the site distribution as the rest is handled by the apache parent
   <distributionManagement>
     <site>
       <id>apache.website</id>
       <url>scm:git:https://gitbox.apache.org/repos/asf/plc4x-website.git</url>
     </site>
+  </distributionManagement-->
+  <distributionManagement>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <url>http://lugsrv1.gis.goodyear.com:8081/repository/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>releases</id>
+      <url>http://lugsrv1.gis.goodyear.com:8081/repository/releases/</url>
+    </repository>
   </distributionManagement>
-
   <issueManagement>
     <system>Jira</system>
     <url>https://issues.apache.org/jira/browse/PLC4X</url>
