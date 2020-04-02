@@ -53,7 +53,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -89,7 +88,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -120,8 +118,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
             <executions>
               <execution>
                 <id>package-thrift-cpp</id>
@@ -150,8 +148,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
             <executions>
               <execution>
                 <id>package-thrift-python</id>
@@ -240,7 +238,6 @@
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
-        <version>3.7.2-b1</version>
         <executions>
           <!-- Uses a CMake generator to generate the build using the build tool of choice -->
           <execution>
@@ -308,8 +305,8 @@
 
       <!-- Add the thrift compiler executable to the build -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.1.1</version>
         <executions>
           <execution>
             <id>source-release-assembly</id>

@@ -112,6 +112,7 @@
     <boost.version.underline-short>1_71</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
+    <!-- CMake 3.17.0 is already released, but we should keep it in sync with the cmake-maven-plugn -->
     <cmake-version>3.16.0</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.4</commons-cli.version>
@@ -1334,6 +1335,30 @@
           <artifactId>dependency-check-maven</artifactId>
           <version>${owasp-dependency-check.version}</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.thrift.tools</groupId>
+          <artifactId>maven-thrift-plugin</artifactId>
+          <version>0.1.11</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.googlecode.cmake-maven-project</groupId>
+          <artifactId>cmake-maven-plugin</artifactId>
+          <version>3.16.3-b2</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1514,8 +1539,7 @@
         <os.suffix>linux</os.suffix>
         <os.classifier>linux-x86_64</os.classifier>
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Linux-x86_64.tar.gz</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64</cmake.root-dir>
-        <cmake.child-dir>bin/cmake</cmake.child-dir>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-Linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1539,8 +1563,7 @@
         <os.suffix>mac</os.suffix>
         <os.classifier>mac-x86_64</os.classifier>
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-Darwin-x86_64.tar.gz</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64</cmake.root-dir>
-        <cmake.child-dir>CMake.app/Contents/BIN/cmake</cmake.child-dir>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-Darwin-x86_64/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.tar.gz</boost.url>
         <boost.bootstrap.executable>./bootstrap.sh</boost.bootstrap.executable>
@@ -1564,8 +1587,7 @@
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
         <cmake.url>https://github.com/Kitware/CMake/releases/download/v${cmake-version}/cmake-${cmake-version}-win64-x64.zip</cmake.url>
-        <cmake.root-dir>${project.build.directory}/cmake-${cmake-version}-win64-x64</cmake.root-dir>
-        <cmake.child-dir>bin/cmake.exe</cmake.child-dir>
+        <cmake.root>${project.build.directory}/cmake-${cmake-version}-win64-x64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <boost.url>https://dl.bintray.com/boostorg/release/${boost.version}/source/boost_${boost.version.underline}.zip</boost.url>
         <boost.bootstrap.executable>bootstrap.bat</boost.bootstrap.executable>
