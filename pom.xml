@@ -110,7 +110,7 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
-    <plc4x-code-generation.version>1.2.0-SNAPSHOT</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.2.0</plc4x-code-generation.version>
 
     <antlr.version>4.7.2</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
