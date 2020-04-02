@@ -41,7 +41,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private  List<TagData> tags;
-    private Class<?> dataType;
+    private Map parameters;
     private PlcSubscriptionResponse subscriptionResponse;
 
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -49,7 +49,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
         this.endpoint = endpoint;
-        this.dataType = endpoint.getDataType();
+        this.parameters = endpoint.getParameters();
         this.processor = AsyncProcessorConverterHelper.convert(processor);
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         this.plcConnection = endpoint.getConnection();

@@ -57,7 +57,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @UriParam
     @Metadata(required = false)
     @SuppressWarnings("unused")
-    private Class dataType ;
+    private Map parameters ;
 
     private final PlcDriverManager plcDriverManager;
     private  PlcConnection connection;
@@ -67,11 +67,13 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         super(endpointUri, component);
         plcDriverManager= new PlcDriverManager();
         uri = endpointUri;
+
         //Here I established the connection in the endpoint, as it is created once during the context
         // to avoid disconnecting and reconnecting for every request
         try {
             String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
             connection = plcDriverManager.getConnection(plc4xURI);
+
         } catch (PlcConnectionException e) {
             e.printStackTrace();
         }
@@ -81,6 +83,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         return connection;
     }
 
+    @Override
+    public void setProperties(Object bean, Map<String, Object> parameters) {
+
+    }
 
     @Override
     public Producer createProducer() throws Exception {
@@ -149,12 +155,12 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.tags = tags;
     }
 
-    public Class getDataType() {
-        return dataType;
+    public Map getParameters() {
+        return parameters;
     }
 
-    public void setDataType(Class dataType) {
-        this.dataType = dataType;
+    public void setParameters(Map parameters) {
+        this.parameters = parameters;
     }
 
     @Override
@@ -171,13 +177,13 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         Plc4XEndpoint that = (Plc4XEndpoint) o;
         return Objects.equals(getDriver(), that.getDriver()) &&
             Objects.equals(getTags(), that.getTags()) &&
-            Objects.equals(getDataType(), that.getDataType()) &&
+            Objects.equals(getParameters(), that.getParameters()) &&
             Objects.equals(getPlcDriverManager(), that.getPlcDriverManager());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDriver(), getTags(), getDataType(), getPlcDriverManager());
+        return Objects.hash(super.hashCode(), getDriver(), getTags(), getParameters(), getPlcDriverManager());
     }
 
     @Override

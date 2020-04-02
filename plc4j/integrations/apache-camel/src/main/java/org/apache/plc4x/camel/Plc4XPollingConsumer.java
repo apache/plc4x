@@ -45,13 +45,13 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private PlcReadRequest.Builder requestBuilder;
-    private Class dataType;
+    private Map parameters;
 
     //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
-        this.dataType = endpoint.getDataType();
+        this.parameters = endpoint.getParameters();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
