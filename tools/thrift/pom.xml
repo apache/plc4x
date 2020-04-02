@@ -178,7 +178,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <!-- Download the CMake binary distribution for this platform. -->
           <execution>

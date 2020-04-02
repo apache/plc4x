@@ -38,7 +38,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <execution>
             <id>get-logstash</id>
