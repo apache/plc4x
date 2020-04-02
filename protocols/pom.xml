@@ -163,6 +163,11 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <instructions>
+            <_removeheaders>Bnd-LastModified</_removeheaders>
+          </instructions>
+        </configuration>
       </plugin>
 
       <!--
