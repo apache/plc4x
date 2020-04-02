@@ -63,7 +63,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -76,7 +75,7 @@
                   <executable>chmod</executable>
                   <arguments>
                     <argument>+x</argument>
-                    <argument>${cmake.child-dir}</argument>
+                    <argument>cmake</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -99,7 +98,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -108,11 +106,11 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <basedir>${cmake.root-dir}</basedir>
+                  <basedir>${cmake.root}</basedir>
                   <executable>chmod</executable>
                   <arguments>
                     <argument>+x</argument>
-                    <argument>${cmake.child-dir}</argument>
+                    <argument>cmake</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -237,7 +235,6 @@
       <plugin>
         <groupId>org.apache.thrift.tools</groupId>
         <artifactId>maven-thrift-plugin</artifactId>
-        <version>0.1.11</version>
         <configuration>
           <thriftExecutable>${project.build.directory}/thrift-compiler/${thrift.compiler.executable}</thriftExecutable>
           <thriftSourceRoot>${project.build.directory}/protocol-spec</thriftSourceRoot>
@@ -263,7 +260,7 @@
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
-        <version>3.7.2-b1</version>
+        <version>3.16.3-b2</version>
         <executions>
           <!-- Uses a CMake generator to generate the build using the build tool of choice -->
           <execution>
@@ -278,8 +275,7 @@
                 and tell the plugin where to find that version.
               -->
               <downloadBinaries>false</downloadBinaries>
-              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
-              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+              <cmakeDir>${cmake.root}</cmakeDir>
               <!--
                 Actually the path to the CMakeList.txt file which then again
                 tells to tool where to find the sources.
@@ -294,12 +290,6 @@
                 Name of the generator the compile step will be executing.
               -->
               <generator>${cmake.generator}</generator>
-              <!--
-                The classifier of the current platform. One of
-                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
-                It defines the version and type of the cmake installation to download.
-              -->
-              <classifier>${os.classifier}</classifier>
               <options>
                 <option>-DWITH_PROXIES:BOOL=${option.with-proxies}</option>
               </options>
@@ -318,11 +308,9 @@
                 and tell the plugin where to find that version.
               -->
               <downloadBinaries>false</downloadBinaries>
-              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
-              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+              <cmakeDir>${cmake.root}</cmakeDir>
               <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/build</projectDirectory>
-              <classifier>${os.classifier}</classifier>
             </configuration>
           </execution>
         </executions>
