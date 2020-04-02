@@ -134,14 +134,14 @@
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
               <execution>
-                <id>get-boost</id>
+                <id>get-thrift</id>
                 <phase>generate-sources</phase>
                 <goals>
                   <goal>unpack</goal>
                 </goals>
                 <configuration>
                   <artifactItems combine.children="append">
-                    <!-- Get the pre-packaged boost library -->
+                    <!-- Get the pre-packaged thrift library -->
                     <artifactItem>
                       <groupId>org.apache.plc4x</groupId>
                       <artifactId>plc4x-tools-thrift</artifactId>
@@ -166,7 +166,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <execution>
             <id>get-cmake</id>
@@ -208,14 +207,14 @@
                   <outputDirectory>${project.build.directory}/lib/boost</outputDirectory>
                 </artifactItem>
                 <!-- Unpack the protocol spec for the proxy driver -->
-                <artifactItem>
+                <!--artifactItem>
                   <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-proxy</artifactId>
                   <version>${project.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/protocol-spec</outputDirectory>
-                </artifactItem>
+                </artifactItem-->
                 <!-- Unpack the thrift compiler -->
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
