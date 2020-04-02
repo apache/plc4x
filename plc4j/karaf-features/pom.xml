@@ -37,7 +37,9 @@
 
   <modules>
     <module>s7</module>
-    <module>karaf-itest</module>
+    <module>eip</module>
+    <module>camel</module>
+    <!--module>karaf-itest</module-->
   </modules>
 
   <dependencies>
@@ -75,17 +77,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <!-- No checking needed here -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
 </project>
