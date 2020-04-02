@@ -23,8 +23,10 @@
 - https://blog.codecentric.de/2018/06/edge-computing-industrial-iot-apache-edgent-apache-plc4x/[Edge Computing und Industrial IoT mit Apache Edgent und Apache PLC4X]
 - https://riot.community/examples/http-plc4x.html[Advanced: Exposing a PLC as JSON Web Services (using PLC4X)]
 
-=== Videos
+=== Videos & Webinars
 
+- https://youtu.be/jHoJ8YB_OCQ["Hands On": Siemens S7 auslesen mit PLC4X (GERMAN)]
+- https://youtu.be/fkfc3tAe4AM[Mittelstand meets Open Source - Einführung in das Industrial IoT (IIoT) (GERMAN)]
 - https://www.youtube.com/watch?v=RWKggid25ds[Apache Kafka, KSQL and Apache PLC4X for IIoT Data Integration and Processing]
 - https://www.youtube.com/watch?v=pjBYtJJmWq0[Episode IV - A New Hope: Industry 4.0 done our way]
 - https://aceu19.apachecon.com/session/idea-apache-tlp[From an idea to an Apache TLP]
