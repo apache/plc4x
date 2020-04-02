@@ -62,7 +62,15 @@
   </dependencies>
 
   <profiles>
-    <!-- Build PLC4X including the CPP modules -->
+    <!-- Build PLC4X including the C modules -->
+    <profile>
+      <id>with-c</id>
+      <modules>
+        <module>plc4c</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the C++ modules -->
     <profile>
       <id>with-cpp</id>
       <modules>
