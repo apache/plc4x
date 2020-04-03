@@ -63,7 +63,7 @@
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
               [enum       CIPDataTypeCode     'dataType']
-              [array      int             8   'data'  count  'serviceLen-6']
+              [array      int             8   'data'  count  'dataType.size']
         ]
         ['0x4D' CipWriteRequest
             [simple     int     8           'RequestPathSize']

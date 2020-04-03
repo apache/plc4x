@@ -19,7 +19,9 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
+import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.support.DefaultComponent;
+import org.apache.camel.util.PropertiesHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,4 +42,20 @@ public class Plc4XComponent extends DefaultComponent {
         Plc4XEndpoint plc4XEndpoint = (Plc4XEndpoint) endpoint;
         plc4XEndpoint.setDriver(remaining.split(":")[0]);
     }
+
+    @Override
+    protected void validateParameters(String uri, Map<String, Object> parameters, String optionPrefix) {
+        if (parameters == null || parameters.isEmpty()) {
+            return;
+        }
+        Map<String, Object> param = parameters;
+        if (optionPrefix != null) {
+            param = PropertiesHelper.extractProperties(parameters, optionPrefix);
+        }
+
+        if (param.size() > 0) {
+           return;
+        }
+    }
+
 }

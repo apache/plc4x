@@ -19,7 +19,6 @@
 
 package org.apache.plc4x.interop.impl;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.interop.InteropServer;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -31,6 +30,7 @@ import org.apache.plc4x.java.api.value.PlcLong;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
@@ -65,8 +65,8 @@ public class Server {
 
     private static class MyMockDevice implements MockDevice {
         @Override
-        public Pair<PlcResponseCode, PlcValue> read(String fieldQuery) {
-            return Pair.of(PlcResponseCode.OK, new PlcLong(100L));
+        public ResponseItem<PlcValue> read(String fieldQuery) {
+            return new ResponseItem<>(PlcResponseCode.OK, new PlcLong(100L));
         }
 
         @Override
@@ -75,7 +75,7 @@ public class Server {
         }
 
         @Override
-        public Pair<PlcResponseCode, PlcSubscriptionHandle> subscribe(String fieldQuery) {
+        public ResponseItem<PlcSubscriptionHandle> subscribe(String fieldQuery) {
             return null;
         }
 

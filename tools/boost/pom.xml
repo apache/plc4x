@@ -44,7 +44,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <execution>
             <id>get-boost</id>
@@ -70,7 +69,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <executions>
           <execution>
             <id>bootstrap-boost</id>
@@ -119,8 +117,8 @@
 
       <!-- Build a zip artifact containing the boost library -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.1.1</version>
         <executions>
           <execution>
             <id>package-boost-library</id>

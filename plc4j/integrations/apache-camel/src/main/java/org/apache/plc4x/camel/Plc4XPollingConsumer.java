@@ -32,9 +32,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -47,13 +45,13 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private PlcReadRequest.Builder requestBuilder;
-    private Class dataType;
+    private Map parameters;
 
     //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
-        this.dataType = endpoint.getDataType();
+        this.parameters = endpoint.getParameters();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
@@ -82,16 +80,20 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         Exchange exchange = endpoint.createExchange();
         try {
             PlcReadResponse read = createReadRequest().execute().get();
-            if(endpoint.getAddress().size()==1) {
-                exchange.getIn().setBody(unwrapIfSingle(read.getAllObjects("default")));
+            if(endpoint.getTags().size()==1) {
+                TagData tag = endpoint.getTags().get(0);
+                tag.setValue(read.getAllObjects(tag.getTagName()));
+                exchange.getIn().setBody(tag);
             }
             else{
-                List<Object> values = new ArrayList<>();
-                for(String field : read.getFieldNames()){
-                    values.add(read.getObject(field));
+                List<TagData> values = new ArrayList<>();
+                for(TagData tag : endpoint.getTags()){
+                    tag.setValue(read.getObject(tag.getTagName()));
+                    values.add(tag);
                 }
                 exchange.getIn().setBody(values);
-            }        } catch (InterruptedException e) {
+            }
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             exchange.setException(e);
         } catch (ExecutionException e) {
@@ -111,16 +113,18 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            if (read.isDone()) {
-                if (endpoint.getAddress().size() == 1) {
-                    exchange.getIn().setBody(unwrapIfSingle(plcReadResponse.getAllObjects("default")));
-                } else {
-                    List<Object> values = new ArrayList<>();
-                    for (String field : plcReadResponse.getFieldNames()) {
-                        values.add(plcReadResponse.getObject(field));
-                    }
-                    exchange.getIn().setBody(values);
+            if(endpoint.getTags().size()==1) {
+                TagData tag = endpoint.getTags().get(0);
+                tag.setValue(plcReadResponse.getAllObjects(tag.getTagName()));
+                exchange.getIn().setBody(tag);
+            }
+            else{
+                List<TagData> values = new ArrayList<>();
+                for(TagData tag : endpoint.getTags()){
+                    tag.setValue(plcReadResponse.getObject(tag.getTagName()));
+                    values.add(tag);
                 }
+                exchange.getIn().setBody(values);
             }
             } catch(InterruptedException e){
                 Thread.currentThread().interrupt();
@@ -142,14 +146,14 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     private PlcReadRequest createReadRequest() {
         requestBuilder = plcConnection.readRequestBuilder();
-        int i=0;
-        if (endpoint.getAddress().size()>1){
-            for(String query : endpoint.getAddress()){
-                requestBuilder.addItem(String.valueOf(i++),query);
+        if (endpoint.getTags().size()>1){
+            for(TagData tag : endpoint.getTags()){
+                requestBuilder.addItem(tag.getTagName(),tag.getQuery());
             }
         }
         else{
-            requestBuilder.addItem("default",endpoint.getAddress().get(0));
+            TagData tag = endpoint.getTags().get(0);
+            requestBuilder.addItem(tag.getTagName(),tag.getQuery());
         }
         return requestBuilder.build();
     }

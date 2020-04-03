@@ -147,6 +147,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>jsr250-api</artifactId>
       <version>1.0</version>
@@ -154,22 +164,13 @@
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>0.12.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-    </dependency>
-    <!--dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-test</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-    </dependency-->
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>20030203.000129</version>
+      <version>${thrift.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>javax.annotation-api</artifactId>
+          <groupId>javax.annotation</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

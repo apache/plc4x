@@ -22,7 +22,7 @@ public class Constants {
 
     public static final String FIELD_NAME_HEADER = "fieldName";
     public static final String FIELD_QUERY_HEADER = "fieldQuery";
-    
+
     private Constants() {
       throw new IllegalStateException("Utility class!");
     }

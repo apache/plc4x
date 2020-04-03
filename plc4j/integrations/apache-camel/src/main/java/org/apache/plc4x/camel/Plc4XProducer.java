@@ -24,6 +24,7 @@ import org.apache.camel.Message;
 import org.apache.camel.support.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.slf4j.Logger;
@@ -51,18 +52,21 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
-        String fieldName = in.getHeader(Constants.FIELD_NAME_HEADER, String.class);
-        String fieldQuery = in.getHeader(Constants.FIELD_QUERY_HEADER, String.class);
         Object body = in.getBody();
         PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-        if (body instanceof List) {
-            List<?> bodyList = in.getBody(List.class);
-            Object[] values = bodyList.toArray();
-
-            builder.addItem(fieldName, fieldQuery, values);
-        } else {
-            Object value = in.getBody(Object.class);
-            builder.addItem(fieldName, fieldQuery, value);
+        if (body instanceof List) { //Check if we have a List
+            if(((List) body).get(0) instanceof TagData){    //Check if this List contains TagData
+                List<TagData> tags =(List<TagData>) body;
+                for(TagData tag : tags){
+                    builder.addItem(tag.getTagName(),tag.getQuery(),tag.getValue());
+                }
+            }
+            else {
+                throw new PlcInvalidFieldException("Parameter 'tags' has to be a List of TagData");
+            }
+        }
+        else {
+            throw new PlcInvalidFieldException("Parameter 'tags' has to be a List");
         }
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
