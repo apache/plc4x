@@ -19,8 +19,8 @@
 
 package org.apache.plc4x.interop.impl;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.plc4x.interop.*;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
