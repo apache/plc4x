@@ -66,6 +66,13 @@
             </goals>
             <configuration>
               <executable>${gradlew.executable}</executable>
+              <!--
+                Make sure Gradle is using the same Java version the current build is using.
+                Without this setting it would use the java executable located in the Path.
+              -->
+              <environmentVariables>
+                <JAVA_HOME>${java.home}</JAVA_HOME>
+              </environmentVariables>
               <arguments>
                 <argument>:logstash-core:jar</argument>
               </arguments>

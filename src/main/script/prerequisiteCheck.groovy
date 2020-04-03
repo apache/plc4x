@@ -34,7 +34,7 @@ def checkVersionAtLeast(String current, String minimum) {
         def currentSegment = currentSegments[i].toInteger()
         def minimumSegment = minimumSegments[i].toInteger()
         if(currentSegment < minimumSegment) {
-            println current.padRight(14) + "FAILED (required " + minimum + ")"
+            println current.padRight(14) + "FAILED (required min " + minimum + " but got " + current + ")"
             return false
         } else if(currentSegment > minimumSegment) {
             println current.padRight(14) + "OK"
@@ -45,7 +45,31 @@ def checkVersionAtLeast(String current, String minimum) {
     if(curNotShorter) {
         println current.padRight(14) + " OK"
     } else {
-        println current.padRight(14) + " (required " + minimum + ")"
+        println current.padRight(14) + " (required min " + minimum + " but got " + current + ")"
+    }
+    curNotShorter
+}
+
+def checkVersionAtMost(String current, String maximum) {
+    def currentSegments = current.tokenize('.')
+    def maximumSegments = maximum.tokenize('.')
+    def numSegments = Math.min(currentSegments.size(), maximumSegments.size())
+    for (int i = 0; i < numSegments; ++i) {
+        def currentSegment = currentSegments[i].toInteger()
+        def maximumSegment = maximumSegments[i].toInteger()
+        if(currentSegment > maximumSegment) {
+            println current.padRight(14) + "FAILED (required max " + maximum + " but got " + current + ")"
+            return false
+        } else if(currentSegment < maximumSegment) {
+            println current.padRight(14) + "OK"
+            return true
+        }
+    }
+    def curNotShorter = currentSegments.size() >= maximumSegments.size()
+    if(curNotShorter) {
+        println current.padRight(14) + " OK"
+    } else {
+        println current.padRight(14) + " (required max " + maximum + " but got " + current + ")"
     }
     curNotShorter
 }
@@ -89,6 +113,27 @@ def checkDotnet() {
     } else {
         println "missing"
         allConditionsMet = false
+    }
+}
+
+
+def checkJavaVersion(String minVersion, String maxVersion) {
+    print "Detecting Java version:    "
+    def curVersion = System.properties['java.version']
+    def result
+    if(minVersion != null) {
+        result = checkVersionAtLeast(curVersion, minVersion)
+        if(!result) {
+            allConditionsMet = false
+            return
+        }
+    }
+    if(maxVersion != null) {
+        result = checkVersionAtMost(curVersion, maxVersion)
+        if(!result) {
+            allConditionsMet = false
+            return
+        }
     }
 }
 
@@ -359,9 +404,10 @@ println "Detected Arch: " + arch
 println "Enabled profiles:"
 def boostEnabled = false
 def cppEnabled = false
-def dockerEnabled = false;
+def dockerEnabled = false
 def dotnetEnabled = false
 def javaEnabled = true
+def logstashEnabled = false
 def pythonEnabled = false
 def proxiesEnabled = false
 def sandboxEnabled = false
@@ -379,6 +425,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
+    } else if(activeProfile == "with-logstash") {
+        logstashEnabled = true
+        println "logstash"
     } else if(activeProfile == "with-python") {
         pythonEnabled = true
         println "python"
@@ -423,6 +472,11 @@ if(proxiesEnabled) {
 
 if(dotnetEnabled) {
     checkDotnet()
+}
+
+if(logstashEnabled) {
+    // Logstash doesn't compile with java versions above 11 (currently)
+    checkJavaVersion(null, "11")
 }
 
 if(proxiesEnabled) {
