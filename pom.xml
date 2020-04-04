@@ -1359,6 +1359,15 @@
           <artifactId>cmake-maven-plugin</artifactId>
           <version>3.16.3-b2</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
+            <arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
