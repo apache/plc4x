@@ -86,7 +86,7 @@ pipeline {
             steps {
                 echo 'Building'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash,with-c ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
