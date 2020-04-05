@@ -37,6 +37,7 @@
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
 
+    <module>language-c</module>
     <module>language-java</module>
     <module>protocol-test</module>
   </modules>

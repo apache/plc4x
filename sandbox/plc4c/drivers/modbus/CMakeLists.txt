@@ -17,7 +17,15 @@
   under the License.
 ]]
 
-add_library(plc4c-drivers-modbus
-        )
+include_directories("src/main/include"
+                    "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/main/include")
+
+# Add the sources
+file(GLOB sources "src/main/c/*.c")
+
+# Add the generated sources
+file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/main/c/*.c")
+
+add_library(plc4c-drivers-modbus ${sources} ${generatedSources})
 
 target_link_libraries (plc4c-drivers-modbus ${CMAKE_DL_LIBS})
