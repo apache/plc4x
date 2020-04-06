@@ -105,42 +105,62 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             if (plcField.getElementNb() > 1) {
                 elements = plcField.getElementNb();
             }
-
-            //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
-            // Taking half to get word size
-            boolean isArray = false;
-            String tagIsolated = tag;
-            if (tag.contains("[")) {
-                isArray = true;
-                tagIsolated = tag.substring(0, tag.indexOf("["));
-            }
-            int dataLength = (tagIsolated.length() + 2 + (tagIsolated.length() % 2) + (isArray ? 2 : 0));
-            byte requestPathSize = (byte) (dataLength / 2);
-            CipReadRequest req = new CipReadRequest(requestPathSize, toAnsi(tag), elements);
+            CipReadRequest req = new CipReadRequest(getRequestSize(tag), toAnsi(tag), elements);
             requests.add(req);
         }
         return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(requests));
     }
 
+    private byte getRequestSize(String tag){
+        //We need the size of the request in words (0x91, tagLength, ... tag + possible pad)
+        // Taking half to get word size
+        boolean isArray = false;
+        boolean isStruct=false;
+        String tagIsolated = tag;
+        if (tag.contains("[")) {
+            isArray = true;
+            tagIsolated = tag.substring(0, tag.indexOf("["));
+        }
+
+        if(tag.contains(".")){
+            isStruct=true;
+            tagIsolated= tagIsolated.replace(".","");
+        }
+        int dataLength = (tagIsolated.length() + 2)
+            + (tagIsolated.length() % 2)
+            + (isArray ? 2 : 0)
+            + (isStruct? 2:0);
+        byte requestPathSize = (byte) (dataLength / 2);
+        return requestPathSize;
+    }
+
     private byte[] toAnsi(String tag) {
         int arrayIndex = 0;
         boolean isArray = false;
+        boolean isStruct = false;
+        String tagFinal=tag;
         if (tag.contains("[")) {
             isArray = true;
             String index = tag.substring(tag.indexOf("[") + 1, tag.indexOf("]"));
             arrayIndex = Integer.parseInt(index);
-            tag = tag.substring(0, tag.indexOf("["));
+            tagFinal = tag.substring(0, tag.indexOf("["));
         }
-
-        boolean isPadded = tag.length() % 2 != 0;
-        int dataSegLength = 2 + tag.length() + (isPadded ? 1 : 0) + (isArray ? 2 : 0);
+        if(tag.contains(".")){
+            tagFinal = tag.substring(0, tag.indexOf("."));
+            isStruct=true;
+        }
+        boolean isPadded = tagFinal.length() % 2 != 0;
+        int dataSegLength = 2 + tagFinal.length()
+            + (isPadded ? 1 : 0)
+            + (isArray ? 2 : 0 )
+            + (isStruct ? tag.substring(tag.indexOf(".")+1,tag.length()).length()+2 + tag.substring(tag.indexOf(".")+1,tag.length()).length()%2:0);
 
         ByteBuffer buffer = ByteBuffer.allocate(dataSegLength).order(ByteOrder.LITTLE_ENDIAN);
 
         buffer.put((byte) 0x91);
-        buffer.put((byte) tag.length());
+        buffer.put((byte) tagFinal.length());
         byte[] tagBytes = null;
-        tagBytes = tag.getBytes(StandardCharsets.US_ASCII);
+        tagBytes = tagFinal.getBytes(StandardCharsets.US_ASCII);
 
         buffer.put(tagBytes);
         buffer.position(2 + tagBytes.length);
@@ -153,6 +173,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         if (isArray) {
             buffer.put((byte) 0x28);
             buffer.put((byte) arrayIndex);
+        }
+        if(isStruct){
+            buffer.put(toAnsi(tag.substring(tag.indexOf(".")+1,tag.length())));
         }
         return buffer.array();
     }
