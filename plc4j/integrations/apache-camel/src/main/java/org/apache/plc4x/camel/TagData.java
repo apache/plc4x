@@ -65,8 +65,12 @@ public class TagData {
 
     @Override
     public boolean equals(Object tag){
-        return ((TagData)tag).getValue()== value
-            && ((TagData)tag).getTagName()==tagName
-            && ((TagData)tag).getQuery()==query;
+        return value!= null?((TagData)tag).getValue().equals(value)
+            && ((TagData)tag).getTagName().equals(tagName)
+            && ((TagData)tag).getQuery().equals(query) :
+             ((TagData)tag).getTagName().equals(tagName)
+            && ((TagData)tag).getQuery().equals(query);
+
+
     }
 }
