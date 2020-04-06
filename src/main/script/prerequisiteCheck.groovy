@@ -494,9 +494,9 @@ if(proxiesEnabled) {
 
 if(proxiesEnabled || cppEnabled) {
     checkClang()
+    // The cmake-maven-plugin requires at least java 11
+    checkJavaVersion("11", null)
     checkGcc()
-    // We should now be using our own version ...
-    //checkCmake()
 }
 
 if(javaEnabled) {
@@ -504,6 +504,8 @@ if(javaEnabled) {
 }
 
 if(cEnabled) {
+    // The cmake-maven-plugin requires at least java 11
+    checkJavaVersion("11", null)
     checkGcc()
 }
 

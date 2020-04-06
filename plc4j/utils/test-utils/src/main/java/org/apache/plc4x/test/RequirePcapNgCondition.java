@@ -51,7 +51,7 @@ public class RequirePcapNgCondition implements ExecutionCondition {
                 if (curVersion.compareTo(minVersion) >= 0) {
                     return ConditionEvaluationResult.enabled("Found libpcap version " + versionString);
                 } else if (SystemUtils.IS_OS_WINDOWS) {
-                    return ConditionEvaluationResult.disabled("Test disabled due to too old WinPcap version. Please install at least version 1.1.0 to support all features. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed freatures.");
+                    return ConditionEvaluationResult.disabled("Test disabled due to too old WinPcap version. Please install at least version 1.1.0 to support all features. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed features.");
                 } else {
                     return ConditionEvaluationResult.disabled("Test disabled due to too old libpcap version. Please install at least version 1.1.0 to support all features.");
                 }
