@@ -62,4 +62,11 @@ public class TagData {
     public  String toString(){
         return "("+tagName+") : "+value;
     }
+
+    @Override
+    public boolean equals(Object tag){
+        return ((TagData)tag).getValue()== value
+            && ((TagData)tag).getTagName()==tagName
+            && ((TagData)tag).getQuery()==query;
+    }
 }
