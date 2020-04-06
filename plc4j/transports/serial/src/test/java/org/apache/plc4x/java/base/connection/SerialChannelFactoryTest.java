@@ -30,6 +30,7 @@ import org.apache.plc4x.java.transport.serial.SerialChannel;
 import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
 import org.apache.plc4x.java.transport.serial.SerialChannelHandler;
 import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +78,7 @@ public class SerialChannelFactoryTest {
     }
 
     @Test
+    @Disabled("Seems to cause problems on Windows, but as it generally only woks on devices with a 'JBLFlip3-SPPDev' it's not much use anyway")
     public void createChannelToSBL() throws PlcConnectionException, InterruptedException, UnknownHostException {
         SerialChannelFactory asdf = new SerialChannelFactory(new SerialSocketAddress("JBLFlip3-SPPDev"));
         Channel channel = null;
