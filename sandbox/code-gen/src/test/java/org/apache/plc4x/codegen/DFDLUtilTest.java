@@ -21,13 +21,17 @@ package org.apache.plc4x.codegen;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class DFDLUtilTest {
 
     @Test
-    public void loadDFDL() {
+    public void loadDFDL() throws IOException {
         final File schema = new File("src/test/resources/protocol.dfdl.xsd");
-        final File outDir = new File("/tmp/");
+        Path tempDirWithPrefix = Files.createTempDirectory("plc4x-code-gen");
+        final File outDir = tempDirWithPrefix.toFile();
 
         System.out.println(schema.getAbsolutePath());
 
