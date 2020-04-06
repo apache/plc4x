@@ -403,6 +403,7 @@ println "Detected Arch: " + arch
 
 println "Enabled profiles:"
 def boostEnabled = false
+def cEnabled = false
 def cppEnabled = false
 def dockerEnabled = false
 def dotnetEnabled = false
@@ -411,11 +412,15 @@ def logstashEnabled = false
 def pythonEnabled = false
 def proxiesEnabled = false
 def sandboxEnabled = false
+def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
     if(activeProfile == "with-boost") {
         boostEnabled = true
         println "boost"
+    } else if(activeProfile == "with-c") {
+        cEnabled = true
+        println "c"
     } else if(activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
@@ -437,6 +442,9 @@ for (def activeProfile : activeProfiles) {
     } else if(activeProfile == "with-sandbox") {
         sandboxEnabled = true
         println "sandbox"
+    } else if(activeProfile == "apache-release") {
+        apacheReleaseEnabled = true
+        println "apache-release"
     }
 }
 println ""
@@ -486,12 +494,17 @@ if(proxiesEnabled) {
 
 if(proxiesEnabled || cppEnabled) {
     checkClang()
-    checkCmake()
     checkGcc()
+    // We should now be using our own version ...
+    //checkCmake()
 }
 
 if(javaEnabled) {
     checkGit()
+}
+
+if(cEnabled) {
+    checkGcc()
 }
 
 if(proxiesEnabled || cppEnabled) {
@@ -509,6 +522,10 @@ if(!boostEnabled && cppEnabled) {
 
 if(sandboxEnabled && dockerEnabled) {
     checkDocker()
+}
+
+if(apacheReleaseEnabled) {
+    // TODO: Check libpcap is installed
 }
 
 if(!allConditionsMet) {

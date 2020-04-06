@@ -126,6 +126,10 @@ He have tested WinBuilds with the bundle found http://win-builds.org/doku.php/do
 
 WARNING: Please use the installer. When using the zip distribution and manually adding that to the `PATH` the build will fail without a log output as some binaries can't find some of the DLL files.
 
+WARNING: When installing in virtual machines. Make sure to run the installer from a path referring to a local hard-disk `C:`, `D:` ... when using Paralells the location of the `Downloads` or `Desktop` is a shared directory on your Mac.
+
+WARNING: When installing in virtual machines. Please *don't* install to any of Windows' `Program Files` directories. Strange things will happen.
+
 When running the installer, make sure to select the options:
 - Native Windows
 - x86_64
