@@ -63,7 +63,7 @@
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
               [enum       CIPDataTypeCode     'dataType']
-              [array      int             8   'data'  count  'dataType.size']
+              [array      int             8   'data'  count  'serviceLen-6']
         ]
         ['0x4D' CipWriteRequest
             [simple     int     8           'RequestPathSize']
@@ -86,7 +86,9 @@
                [reserved   uint    8   '0x0']
                [simple     uint    8   'status']
                [simple     uint    8   'extStatus']
-               [simple Services  'data'['serviceLen - 4']]
+               [simple     uint    16  'serviceNb']
+               [array      uint    16  'offsets'       count  'serviceNb']
+               [array      int     8   'servicesData' count 'serviceLen-6-(2*serviceNb)']
         ]
         ['0x52'   CipUnconnectedRequest
                [reserved   uint    8   '0x02']
@@ -105,7 +107,7 @@
 ]
 
 [type   'Services'  [uint   16   'servicesLen']
-    [simple uint    16  'serviceNb']
+    [simple uint        16  'serviceNb']
     [array  uint        16  'offsets'       count  'serviceNb']
     [array  CipService   'services'      count  'serviceNb' ['servicesLen/serviceNb'] ]
 ]
