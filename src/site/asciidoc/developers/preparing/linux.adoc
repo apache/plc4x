@@ -43,6 +43,10 @@ Yum based systems:
 
  sudo yum install libpcap-devel
 
+Using libpcap usually requires root privileges, however the java process can be granted permission to do so by executing the following command.
+
+ setcap cap_net_raw,cap_net_admin=eip /path/to/java
+
 === gcc
 
 Checking:

@@ -72,7 +72,7 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <basedir>${cmake.root-dir}</basedir>
+                  <basedir>${cmake.root}</basedir>
                   <executable>chmod</executable>
                   <arguments>
                     <argument>+x</argument>

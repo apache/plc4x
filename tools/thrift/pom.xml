@@ -140,7 +140,7 @@
         </plugins>
       </build>
     </profile>
-    <!-- If C++ is enabled, we need to add another assembly to the build to package the libraries -->
+    <!-- If C# is enabled, we need to add another assembly to the build to package the libraries -->
     <profile>
       <id>with-dotnet</id>
       <properties>
