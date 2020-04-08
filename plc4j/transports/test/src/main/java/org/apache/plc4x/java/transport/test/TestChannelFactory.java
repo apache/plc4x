@@ -19,10 +19,9 @@ under the License.
 package org.apache.plc4x.java.transport.test;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.EmbeddedBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.DefaultEventLoop;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.NettyChannelFactory;
@@ -49,6 +48,11 @@ public class TestChannelFactory extends NettyChannelFactory implements HasConfig
     @Override
     public Class<? extends Channel> getChannel() {
         return Plc4xEmbeddedChannel.class;
+    }
+
+    @Override
+    protected Bootstrap createBootstrap() {
+        return new EmbeddedBootstrap();
     }
 
     @Override

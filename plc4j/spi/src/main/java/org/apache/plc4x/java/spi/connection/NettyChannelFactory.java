@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.Plc4xBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
@@ -60,6 +59,14 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     public abstract Class<? extends Channel> getChannel();
 
     /**
+     * We need to be able to override this in the TestChanelFactory
+     * @return the Bootstrap instance we will be using to initialize the channel.
+     */
+    protected Bootstrap createBootstrap() {
+        return new Bootstrap();
+    }
+
+    /**
      * This Method is used to modify the Bootstrap Element of Netty, if one wishes to do so.
      * E.g. for Protocol Specific extension.
      * For TCP e.g.
@@ -85,7 +92,7 @@ public abstract class NettyChannelFactory implements ChannelFactory {
     @Override
     public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
         try {
-            Bootstrap bootstrap = new Plc4xBootstrap();
+            Bootstrap bootstrap = createBootstrap();
 
             final EventLoopGroup workerGroup = getEventLoopGroup();
             if(workerGroup != null) {

@@ -20,18 +20,14 @@ package io.netty.bootstrap;
 
 import io.netty.channel.Channel;
 
-public class Plc4xBootstrap extends Bootstrap {
+public class EmbeddedBootstrap extends Bootstrap {
 
     @Override
     public Bootstrap validate() {
         if(channelFactory() != null) {
-             if(channelFactory().toString().contains("EmbeddedChannel")) {
-                 if (config().handler() == null) {
-                     throw new IllegalStateException("handler not set");
-                 }
-             } else {
-                 return super.validate();
-             }
+            if (config().handler() == null) {
+                throw new IllegalStateException("handler not set");
+            }
         } else {
             return super.validate();
         }
