@@ -24,7 +24,7 @@ import org.apache.camel.PollingConsumer;
 import org.apache.camel.Processor;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.service.ServiceSupport;
+import org.apache.camel.support.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -47,11 +47,9 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     private PlcReadRequest.Builder requestBuilder;
     private Map parameters;
 
-    //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         this.endpoint = endpoint;
-        this.parameters = endpoint.getParameters();
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
@@ -168,8 +166,4 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         return collection;
     }
 
-    @Override
-    public Processor getProcessor() {
-        return null;
-    }
 }

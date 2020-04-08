@@ -19,7 +19,6 @@
 package org.apache.plc4x.java.eip.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
@@ -29,12 +28,10 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     public static final int PORT = 44818;
     @Override

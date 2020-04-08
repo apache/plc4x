@@ -19,14 +19,15 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
+import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
-import org.apache.camel.support.DefaultEndpoint;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -35,29 +36,13 @@ import java.util.Objects;
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
-    /**
-     * The name of the PLC4X driver
-     */
-    @UriPath(label = "common")
-    @Metadata(required = true)
+    @UriPath @Metadata(required = "true")
     @SuppressWarnings("unused")
     private String driver;
 
-    /**
-     * The address for the PLC4X driver
-     */
     @UriParam
-    @Metadata(required = false)
-    @SuppressWarnings("unused")
     private List<TagData> tags;
 
-    /**
-     * TODO: document me
-     */
-    @UriParam
-    @Metadata(required = false)
-    @SuppressWarnings("unused")
-    private Map parameters ;
 
     private final PlcDriverManager plcDriverManager;
     private  PlcConnection connection;
@@ -72,6 +57,7 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         // to avoid disconnecting and reconnecting for every request
         try {
             String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+            LoggerFactory.getLogger(Plc4XEndpoint.class).info("Connection URI {} from {}",plc4xURI, uri);
             connection = plcDriverManager.getConnection(plc4xURI);
 
         } catch (PlcConnectionException e) {
@@ -155,14 +141,6 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.tags = tags;
     }
 
-    public Map getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Map parameters) {
-        this.parameters = parameters;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -177,13 +155,12 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         Plc4XEndpoint that = (Plc4XEndpoint) o;
         return Objects.equals(getDriver(), that.getDriver()) &&
             Objects.equals(getTags(), that.getTags()) &&
-            Objects.equals(getParameters(), that.getParameters()) &&
             Objects.equals(getPlcDriverManager(), that.getPlcDriverManager());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDriver(), getTags(), getParameters(), getPlcDriverManager());
+        return Objects.hash(super.hashCode(), getDriver(), getTags(),getPlcDriverManager());
     }
 
     @Override

@@ -74,7 +74,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     @Override
     public void onConnect(ConversationContext<EipPacket> context) {
-        logger.info("Sending RegisterSession EIP Package");
+        logger.debug("Sending RegisterSession EIP Package");
         EipConnectionRequest connectionRequest =
             new EipConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
@@ -84,7 +84,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 if (p.getStatus() == 0L) {
                     sessionHandle = p.getSessionHandle();
                     senderContext = p.getSenderContext();
-                    logger.trace("Got assigned with Session {}", sessionHandle);
+                    logger.debug("Got assigned with Session {}", sessionHandle);
                     // Send an event that connection setup is complete.
                     context.fireConnected();
                 } else {
@@ -545,8 +545,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
     @Override
     public void close(ConversationContext<EipPacket> context) {
-        logger.info("Sending UnregisterSession EIP Pakcet");
+        logger.debug("Sending UnregisterSession EIP Pakcet");
         context.sendRequest(new EipDisconnectRequest(sessionHandle, 0L, emptySenderContext, 0L)); //Unregister gets no response
-        logger.trace("Unregistred Session {}", sessionHandle);
+        logger.debug("Unregistred Session {}", sessionHandle);
     }
 }
