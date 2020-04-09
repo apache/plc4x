@@ -401,7 +401,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         if (items.size() == 1) {
             tm.startRequest();
             CipRRData rrdata = new CipRRData(sessionHandle, 0L, senderContext, 0L,
-                new CipExchange(items.get(0)));
+                new CipExchange(
+                new CipUnconnectedRequest(items.get(0),(byte)configuration.getBackplane(),(byte)configuration.getSlot())));
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
