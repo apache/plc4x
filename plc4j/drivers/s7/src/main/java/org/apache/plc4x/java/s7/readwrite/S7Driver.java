@@ -30,7 +30,6 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
