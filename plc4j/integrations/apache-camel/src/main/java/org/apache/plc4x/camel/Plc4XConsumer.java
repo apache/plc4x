@@ -18,11 +18,11 @@ Licensed to the Apache Software Foundation (ASF) under one
  */
 package org.apache.plc4x.camel;
 
-import org.apache.camel.*;
+import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.support.DefaultConsumer;
 import org.apache.camel.spi.ExceptionHandler;
-import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.ServiceSupport;
-import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -30,39 +30,40 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer {
+public class Plc4XConsumer extends DefaultConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
-    private Plc4XEndpoint endpoint;
-    private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private  List<TagData> tags;
     private Map parameters;
     private PlcSubscriptionResponse subscriptionResponse;
+    private Plc4XEndpoint plc4XEndpoint;
 
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
-        this.endpoint = endpoint;
-        this.processor = AsyncProcessorConverterHelper.convert(processor);
-        this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
+        super(endpoint, processor);
+        plc4XEndpoint =endpoint;
         this.plcConnection = endpoint.getConnection();
         this.tags = endpoint.getTags();
     }
 
     @Override
     public String toString() {
-        return "Plc4XConsumer[" + endpoint + "]";
+        return "Plc4XConsumer[" + plc4XEndpoint + "]";
     }
 
     @Override
     public Endpoint getEndpoint() {
-        return endpoint;
+        return plc4XEndpoint;
     }
 
     public ExceptionHandler getExceptionHandler() {
@@ -90,7 +91,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
         future = executorService.schedule(() -> {
             request.execute().thenAccept(response -> {
                     try {
-                        Exchange exchange = endpoint.createExchange();
+                        Exchange exchange = plc4XEndpoint.createExchange();
                         if (tags.size()>1){
                             List<TagData> values = new ArrayList<>();
                             for(TagData tag : tags){
@@ -104,7 +105,7 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer {
                             tag.setValue(response.getAllObjects(tag.getTagName()));
                             exchange.getIn().setBody(tag);
                         }
-                        processor.process(exchange);
+                        getProcessor().process(exchange);
                     } catch (Exception e) {
                         exceptionHandler.handleException(e);
                     }

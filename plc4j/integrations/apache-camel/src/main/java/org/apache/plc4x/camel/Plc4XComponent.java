@@ -19,12 +19,13 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
-import org.apache.camel.ResolveEndpointFailedException;
-import org.apache.camel.impl.DefaultComponent;
+import org.apache.camel.support.DefaultComponent;
 import org.apache.camel.util.IntrospectionSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Plc4XComponent extends DefaultComponent {
@@ -33,8 +34,9 @@ public class Plc4XComponent extends DefaultComponent {
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
         Endpoint endpoint = new Plc4XEndpoint(uri, this);
-        for(String entry : parameters.keySet()){
-            LOGGER.info("Parameter {} with type {}",entry,parameters.get(entry).getClass());
+        List<TagData>tags = getAndRemoveOrResolveReferenceParameter(parameters,"tags", List.class);
+        if(tags!=null){
+            ((Plc4XEndpoint)endpoint).setTags(tags);
         }
         setProperties(endpoint,parameters);
         return endpoint;
@@ -54,7 +56,7 @@ public class Plc4XComponent extends DefaultComponent {
                 param = IntrospectionSupport.extractProperties(parameters, optionPrefix);
             }
 
-            if (param.size() > 0) {
+            if (parameters.size() > 0) {
                 LOGGER.info("{} parameters will be passed to the PLC Driver",param);
             }
         }

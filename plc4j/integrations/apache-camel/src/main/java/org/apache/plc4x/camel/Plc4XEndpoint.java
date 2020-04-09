@@ -19,7 +19,7 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
-import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.support.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
@@ -36,8 +36,7 @@ import java.util.Objects;
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
-    @UriPath @Metadata(required = "true")
-    @SuppressWarnings("unused")
+    @UriPath @Metadata(required = true)
     private String driver;
 
     @UriParam
@@ -53,11 +52,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         plcDriverManager= new PlcDriverManager();
         uri = endpointUri;
 
-        //Here I established the connection in the endpoint, as it is created once during the context
+        //Here we establish the connection in the endpoint, as it is created once during the context
         // to avoid disconnecting and reconnecting for every request
         try {
             String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
-            LoggerFactory.getLogger(Plc4XEndpoint.class).info("Connection URI {} from {}",plc4xURI, uri);
             connection = plcDriverManager.getConnection(plc4xURI);
 
         } catch (PlcConnectionException e) {
