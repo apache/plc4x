@@ -26,6 +26,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.test.RequirePcap;
 import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
@@ -45,6 +46,7 @@ public class RawSocketChannelTest {
     private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelTest.class);
 
     @Test
+    @RequirePcap
     public void doConnect() throws Exception {
         Channel channel = null;
         final EventLoopGroup workerGroup = new OioEventLoopGroup();
