@@ -170,10 +170,25 @@ public class ConfigurationFactory {
      * @return parsed value of the field in the type the field requires
      */
     private static Object toFieldValue(Field field, String valueString) {
-        if(field == null) {
+        if (field == null) {
             throw new IllegalArgumentException("Field not defined");
         }
-        if(field.getType() == String.class) {
+
+        if (field.getAnnotation(ParameterConverter.class) != null) {
+            Class<? extends ConfigurationParameterConverter<?>> converterClass = field.getAnnotation(ParameterConverter.class).value();
+
+            try {
+                ConfigurationParameterConverter<?> converter = converterClass.getDeclaredConstructor().newInstance();
+                if (converter.getType().isAssignableFrom(field.getType())) {
+                    return converter.convert(valueString);
+                }
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new IllegalArgumentException("Could not initialize parameter converter", e);
+            }
+            throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
+        }
+
+        if (field.getType() == String.class) {
             return valueString;
         }
         if ((field.getType() == boolean.class) || (field.getType() == Boolean.class)) {
