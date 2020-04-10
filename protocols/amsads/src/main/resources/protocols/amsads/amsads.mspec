@@ -126,17 +126,17 @@
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AmsNetId        'targetAmsNetId'                            ]
     // This is the AmsPort of the station, for which the packet is intended.
-    [simple     uint        16  'targetAmsPort'                             ]
+    [simple     uint        16  little endian 'targetAmsPort'               ]
     // This contains the AmsNetId of the station, from which the packet was sent.
     [simple     AmsNetId        'sourceAmsNetId'                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
-    [simple     uint        16  'sourceAmsPort'                             ]
+    [simple     uint        16  little endian 'sourceAmsPort'               ]
     // 2 bytes.
     [enum       CommandId       'commandId'                                 ]
     // 2 bytes.
     [simple     State           'state'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    [simple     uint        32  'length'                                ]
+    [simple     uint        32  little endian 'length'                      ]
     // 4 bytes	AMS error number. See ADS Return Codes.
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
@@ -144,7 +144,7 @@
     [simple      uint        32  'invokeId'                                 ]
 ]
 
-[enum uint 16 'CommandId'
+[enum uint 16 little endian 'CommandId'
     ['0x00' INVALID]
     ['0x01' ADS_READ_DEVICE_INFO]
     ['0x02' ADS_READ]

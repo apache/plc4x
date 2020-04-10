@@ -242,33 +242,35 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                String endianness = integerTypeReference.isLittleEndian() ? ", true" : "";
                 if (integerTypeReference.getSizeInBits() <= 4) {
                     return "io.readUnsignedByte(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readUnsignedShort(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readUnsignedShort(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readUnsignedInt(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readUnsignedInt(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readUnsignedLong(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readUnsignedLong(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 return "io.readUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                String endianness = integerTypeReference.isLittleEndian() ? ", true" : "";
                 if (integerTypeReference.getSizeInBits() <= 8) {
                     return "io.readByte(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readShort(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readShort(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readInt(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readInt(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.readLong(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.readLong(" + integerTypeReference.getSizeInBits() + endianness + ")";
                 }
                 return "io.readBigInteger(" + integerTypeReference.getSizeInBits() + ")";
             }
@@ -301,33 +303,35 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                String endianness = integerTypeReference.isLittleEndian() ? ", true" : "";
                 if (integerTypeReference.getSizeInBits() <= 4) {
                     return "io.writeUnsignedByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
                 }
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeUnsignedShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.writeUnsignedShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeUnsignedInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.writeUnsignedInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeUnsignedLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.writeUnsignedLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + endianness + ")";
                 }
                 return "io.writeUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + ")";
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                String endianness = integerTypeReference.isLittleEndian() ? ", true" : "";
                 if (integerTypeReference.getSizeInBits() <= 8) {
                     return "io.writeByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.writeShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.writeInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + endianness + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.writeLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.writeLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue() " + endianness + ")";
                 }
                 return "io.writeBigInteger(" + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
             }
@@ -359,6 +363,8 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         languageTypeName = languageTypeName.substring(0, 1).toUpperCase() + languageTypeName.substring(1);
         if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
             return "readUnsigned" + languageTypeName;
+        } else if(simpleTypeReference.getBaseType().equals(SimpleTypeReference.SimpleBaseType.UINT)) {
+            return "readUnsigned" + languageTypeName + "LE";
         } else {
             return "read" + languageTypeName;
         }

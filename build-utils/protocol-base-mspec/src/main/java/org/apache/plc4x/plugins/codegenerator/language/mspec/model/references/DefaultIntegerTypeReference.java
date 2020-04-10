@@ -23,8 +23,16 @@ import org.apache.plc4x.plugins.codegenerator.types.references.IntegerTypeRefere
 
 public class DefaultIntegerTypeReference extends DefaultSimpleTypeReference implements IntegerTypeReference {
 
-    public DefaultIntegerTypeReference(SimpleBaseType baseType, int sizeInBits) {
+    private final boolean littleEndian;
+
+    public DefaultIntegerTypeReference(SimpleBaseType baseType, int sizeInBits, boolean littleEndian) {
         super(baseType, sizeInBits);
+        this.littleEndian = littleEndian;
+    }
+
+    @Override
+    public boolean isLittleEndian() {
+        return littleEndian;
     }
 
 }

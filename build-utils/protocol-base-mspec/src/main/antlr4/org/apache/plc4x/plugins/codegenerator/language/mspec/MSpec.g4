@@ -138,8 +138,8 @@ caseStatement
 
 dataType
  : base='bit'
- | base='int' size=INTEGER_LITERAL
- | base='uint' size=INTEGER_LITERAL
+ | base='int' size=INTEGER_LITERAL (endianness=ENDIANNESS_LITERAL)?
+ | base='uint' size=INTEGER_LITERAL (endianness=ENDIANNESS_LITERAL)?
  | base='float' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
  | base='ufloat' exponent=INTEGER_LITERAL '.' mantissa=INTEGER_LITERAL
 /* For the following types the parsing/serialization has to be handled manually */
@@ -150,6 +150,10 @@ dataType
  | base='time'
  | base='date'
  | base='dateTime'
+ ;
+
+ENDIANNESS_LITERAL
+ : 'big endian' | 'little endian'
  ;
 
 argument

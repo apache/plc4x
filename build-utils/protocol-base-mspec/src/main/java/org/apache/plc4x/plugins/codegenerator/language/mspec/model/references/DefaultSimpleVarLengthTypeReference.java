@@ -24,7 +24,7 @@ import org.apache.plc4x.plugins.codegenerator.types.references.SimpleVarLengthTy
 public class DefaultSimpleVarLengthTypeReference extends DefaultIntegerTypeReference implements SimpleVarLengthTypeReference {
 
     public DefaultSimpleVarLengthTypeReference(SimpleBaseType baseType) {
-        super(baseType, -1);
+        super(baseType, -1, false);
     }
 
 }

@@ -19,11 +19,12 @@
 
 package org.apache.plc4x.protocol.amsads;
 
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class AmsAdsSerializerParserTest /*extends ProtocolTestsuiteRunner*/ {
+public class AmsNetIdSerializerParserTest extends ParserSerializerTestsuiteRunner {
 
-    public AmsAdsSerializerParserTest() {
-        //super("/testsuite/Df1Testsuite.xml");
+    public AmsNetIdSerializerParserTest() {
+        super("/testsuite/AmsNetIdParserSerializerTest.xml");
     }
 
 }

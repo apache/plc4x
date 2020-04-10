@@ -58,7 +58,9 @@ import java.util.function.Supplier;
 
 public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
+    // io template  ${type} little endian ${type.littleEndian?c}
+
+private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
 <#if !helper.isDiscriminatedType(type)>
     @Override

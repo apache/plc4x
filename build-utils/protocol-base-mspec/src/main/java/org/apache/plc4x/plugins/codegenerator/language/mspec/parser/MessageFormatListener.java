@@ -447,7 +447,8 @@ public class MessageFormatListener extends MSpecBaseListener {
         // If a size it specified its a simple integer length based type.
         if (ctx.size != null) {
             int size = Integer.parseInt(ctx.size.getText());
-            return new DefaultIntegerTypeReference(simpleBaseType, size);
+            boolean littleEndian = isLittleEndian(() -> ctx.endianness);
+            return new DefaultIntegerTypeReference(simpleBaseType, size, littleEndian);
         }
         // If exponent and mantissa are present, it's a floating point representation.
         else if((ctx.exponent != null) && (ctx.mantissa != null)) {
@@ -462,7 +463,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         }
         // In all other cases (bit) it's just assume it's length it 1.
         else {
-            return new DefaultIntegerTypeReference(simpleBaseType, 1);
+            return new DefaultIntegerTypeReference(simpleBaseType, 1, false);
         }
     }
 
@@ -515,6 +516,11 @@ public class MessageFormatListener extends MSpecBaseListener {
             return quotedString.substring(1, quotedString.length() - 1);
         }
         return quotedString;
+    }
+
+    private boolean isLittleEndian(Supplier<Token> endianness) {
+        Token token = endianness.get();
+        return token != null && token.getText().equalsIgnoreCase("little endian");
     }
 
 }

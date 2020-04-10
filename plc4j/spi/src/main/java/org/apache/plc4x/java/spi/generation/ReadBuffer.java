@@ -118,6 +118,10 @@ public class ReadBuffer {
     }
 
     public int readUnsignedInt(int bitLength) throws ParseException {
+        return readUnsignedInt(bitLength, littleEndian);
+    }
+
+    public int readUnsignedInt(int bitLength, boolean littleEndian) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
@@ -135,6 +139,10 @@ public class ReadBuffer {
     }
 
     public long readUnsignedLong(int bitLength) throws ParseException {
+        return readUnsignedLong(bitLength, littleEndian);
+    }
+
+    public long readUnsignedLong(int bitLength, boolean littleEndian) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
@@ -170,6 +178,10 @@ public class ReadBuffer {
     }
 
     public short readShort(int bitLength) throws ParseException {
+        return readShort(bitLength, littleEndian);
+    }
+
+    public short readShort(int bitLength, boolean littleEndian) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
@@ -187,6 +199,10 @@ public class ReadBuffer {
     }
 
     public int readInt(int bitLength) throws ParseException {
+        return readInt(bitLength, littleEndian);
+    }
+
+    public int readInt(int bitLength, boolean littleEndian) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -204,6 +220,10 @@ public class ReadBuffer {
     }
 
     public long readLong(int bitLength) throws ParseException {
+        return readLong(bitLength, littleEndian);
+    }
+
+    public long readLong(int bitLength, boolean littleEndian) throws ParseException {
         if (bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }

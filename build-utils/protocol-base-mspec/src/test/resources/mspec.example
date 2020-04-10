@@ -132,11 +132,11 @@
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AmsNetId        'targetAmsNetId'                            ]
     // This is the AmsPort of the station, for which the packet is intended.
-    [simple     uint        16  'targetAmsPort'                             ]
+    [simple     uint        16  little endian 'targetAmsPort'               ]
     // This contains the AmsNetId of the station, from which the packet was sent.
     [simple     AmsNetId        'sourceAmsNetId'                            ]
     // This contains the AmsPort of the station, from which the packet was sent.
-    [simple     uint        16  'sourceAmsPort'                             ]
+    [simple     uint        16  little endian 'sourceAmsPort'               ]
     // 2 bytes.
     [enum       CommandId       'commandId'                                 ]
     // 2 bytes.

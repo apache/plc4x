@@ -84,6 +84,10 @@ public class WriteBuffer {
     }
 
     public void writeUnsignedShort(int bitLength, short value) throws ParseException {
+        writeUnsignedShort(bitLength, value, littleEndian);
+    }
+
+    public void writeUnsignedShort(int bitLength, short value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
@@ -91,6 +95,9 @@ public class WriteBuffer {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
+            if (littleEndian) {
+                value = Short.reverseBytes(value);
+            }
             bo.writeShort(true, bitLength, value);
         } catch (IOException e) {
             throw new ParseException("Error reading", e);
@@ -98,6 +105,10 @@ public class WriteBuffer {
     }
 
     public void writeUnsignedInt(int bitLength, int value) throws ParseException {
+        writeUnsignedInt(bitLength, value, littleEndian);
+    }
+
+    public void writeUnsignedInt(int bitLength, int value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
@@ -105,7 +116,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            if(littleEndian) {
+            if (littleEndian) {
                 value = Integer.reverseBytes(value) >> 16;
             }
             bo.writeInt(true, bitLength, value);
@@ -115,6 +126,10 @@ public class WriteBuffer {
     }
 
     public void writeUnsignedLong(int bitLength, long value) throws ParseException {
+        writeUnsignedLong(bitLength, value, littleEndian);
+    }
+
+    public void writeUnsignedLong(int bitLength, long value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
@@ -122,7 +137,7 @@ public class WriteBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            if(littleEndian) {
+            if (littleEndian) {
                 value = Long.reverseBytes(value) >> 32;
             }
             bo.writeLong(true, bitLength, value);
@@ -150,6 +165,10 @@ public class WriteBuffer {
     }
 
     public void writeShort(int bitLength, short value) throws ParseException {
+        writeShort(bitLength, value, littleEndian);
+    }
+
+    public void writeShort(int bitLength, short value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("short must contain at least 1 bit");
         }
@@ -157,7 +176,7 @@ public class WriteBuffer {
             throw new ParseException("short can only contain max 16 bits");
         }
         try {
-            if(littleEndian) {
+            if (littleEndian) {
                 value = Short.reverseBytes(value);
             }
             bo.writeShort(false, bitLength, value);
@@ -167,6 +186,10 @@ public class WriteBuffer {
     }
 
     public void writeInt(int bitLength, int value) throws ParseException {
+        writeInt(bitLength, value, littleEndian);
+    }
+
+    public void writeInt(int bitLength, int value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("int must contain at least 1 bit");
         }
@@ -184,6 +207,10 @@ public class WriteBuffer {
     }
 
     public void writeLong(int bitLength, long value) throws ParseException {
+        writeLong(bitLength, value, littleEndian);
+    }
+
+    public void writeLong(int bitLength, long value, boolean littleEndian) throws ParseException {
         if(bitLength <= 0) {
             throw new ParseException("long must contain at least 1 bit");
         }
@@ -191,7 +218,7 @@ public class WriteBuffer {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if(littleEndian) {
+            if (littleEndian) {
                 value = Long.reverseBytes(value);
             }
             bo.writeLong(false, bitLength, value);

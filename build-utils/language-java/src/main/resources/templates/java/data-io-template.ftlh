@@ -60,6 +60,8 @@ import java.util.function.Supplier;
 
 public class ${typeName}IO {
 
+    // data-io
+
     private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
     public static PlcValue staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
