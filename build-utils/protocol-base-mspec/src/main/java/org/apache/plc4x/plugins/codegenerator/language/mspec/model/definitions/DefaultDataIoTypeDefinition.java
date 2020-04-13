@@ -26,8 +26,8 @@ public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implement
 
     private final SwitchField switchField;
 
-    public DefaultDataIoTypeDefinition(String name, Argument[] parserArguments, String[] tags, SwitchField switchField) {
-        super(name, parserArguments, tags);
+    public DefaultDataIoTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean littleEndian, SwitchField switchField) {
+        super(name, parserArguments, tags, littleEndian);
         this.switchField = switchField;
     }
 

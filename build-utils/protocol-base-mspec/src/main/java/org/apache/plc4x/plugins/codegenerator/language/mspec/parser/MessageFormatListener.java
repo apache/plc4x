@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.antlr.v4.runtime.Token;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
@@ -42,6 +43,7 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class MessageFormatListener extends MSpecBaseListener {
 
@@ -94,7 +96,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             TypeReference type = getTypeReference(ctx.type);
             EnumValue[] enumValues = getEnumValues();
             DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, enumValues,
-                parserArguments, null);
+                parserArguments, null, isLittleEndian(() -> ctx.endianness));
             types.put(typeName, enumType);
             enumContexts.pop();
         }
@@ -103,7 +105,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         else if (ctx.dataIoTypeSwitch != null) {
             SwitchField switchField = getSwitchField();
             DefaultDataIoTypeDefinition type = new DefaultDataIoTypeDefinition(
-                typeName, parserArguments, null, switchField);
+                typeName, parserArguments, null, isLittleEndian(() -> ctx.endianness), switchField);
             types.put(typeName, type);
 
             // Set the parent type for all sub-types.
@@ -123,7 +125,7 @@ public class MessageFormatListener extends MSpecBaseListener {
             SwitchField switchField = getSwitchField();
             boolean abstractType = switchField != null;
             DefaultComplexTypeDefinition type = new DefaultComplexTypeDefinition(typeName, parserArguments, null,
-                abstractType, parserContexts.peek());
+                isLittleEndian(() -> ctx.endianness), abstractType, parserContexts.peek());
             types.put(typeName, type);
 
             // Set the parent type for all sub-types.
@@ -343,19 +345,22 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
+        Supplier<Token> endianness = null;
         // Add all the arguments from the parent type.
         if(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext) {
-            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
-                parserArguments.addAll(Arrays.asList(getParserArguments(
-                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
+            MSpecParser.ComplexTypeContext parentTypeContext = (MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent;
+            if (parentTypeContext.params != null) {
+                parserArguments.addAll(Arrays.asList(getParserArguments(parentTypeContext.params.argument())));
             }
+            endianness = () -> parentTypeContext.endianness;
         }
         // For dataIo there is one level less to navigate.
         else {
-            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
-                parserArguments.addAll(Arrays.asList(getParserArguments(
-                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
+            MSpecParser.ComplexTypeContext parentTypeContext = (MSpecParser.ComplexTypeContext) ctx.parent.parent.parent;
+            if (parentTypeContext.params != null) {
+                parserArguments.addAll(Arrays.asList(getParserArguments(parentTypeContext.params.argument())));
             }
+            endianness = () -> parentTypeContext.endianness;
         }
         // Add all eventually existing local arguments.
         if (ctx.argumentList() != null) {
@@ -374,7 +379,7 @@ public class MessageFormatListener extends MSpecBaseListener {
         }
         DefaultDiscriminatedComplexTypeDefinition type =
             new DefaultDiscriminatedComplexTypeDefinition(typeName, parserArguments.toArray(new Argument[0]), null,
-                discriminatorValues, parserContexts.pop());
+                isLittleEndian(endianness), discriminatorValues, parserContexts.pop());
 
         // Add the type to the switch field definition.
         DefaultSwitchField switchField = getSwitchField();

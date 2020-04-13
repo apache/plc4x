@@ -141,7 +141,7 @@
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
-    [simple      uint        32  'invokeId'                                 ]
+    [simple      uint        32  little endian 'invokeId'                   ]
 ]
 
 [enum uint 16 little endian 'CommandId'
@@ -157,7 +157,7 @@
     ['0x09' ADS_READ_WRITE]
 ]
 
-[type 'State'
+[type little endian 'State'
     [simple     bit 'broadcast'             ]
     [reserved   int 7 '0x0'                 ]
     [simple     bit 'initCommand'           ]
@@ -225,11 +225,11 @@
         ]
         ['CommandId.ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
-            [simple uint 32 'indexGroup']
+            [simple uint 32 little endian 'indexGroup']
             // 4 bytes	Index Offset of the data which should be read.
-            [simple uint 32 'indexOffset']
+            [simple uint 32 little endian 'indexOffset']
             // 4 bytes	Length of the data (in bytes) which should be read.
-            [simple uint 32 'length']
+            [simple uint 32 little endian 'length']
         ]
         ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
             // 4 bytes	ADS error number

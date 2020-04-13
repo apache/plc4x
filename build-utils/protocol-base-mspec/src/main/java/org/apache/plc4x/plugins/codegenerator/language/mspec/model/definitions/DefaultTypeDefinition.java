@@ -28,12 +28,14 @@ public abstract class DefaultTypeDefinition {
     private final String name;
     private final Argument[] parserArguments;
     private final String[] tags;
+    private final boolean littleEndian;
     private TypeDefinition parentType;
 
-    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags) {
+    public DefaultTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean littleEndian) {
         this.name = name;
         this.parserArguments = parserArguments;
         this.tags = tags;
+        this.littleEndian = littleEndian;
         this.parentType = null;
     }
 
@@ -51,6 +53,10 @@ public abstract class DefaultTypeDefinition {
 
     public TypeDefinition getParentType() {
         return parentType;
+    }
+
+    public boolean isLittleEndian() {
+        return littleEndian;
     }
 
     public void setParentType(TypeDefinition parentType) {

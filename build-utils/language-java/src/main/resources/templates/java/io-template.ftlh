@@ -58,9 +58,7 @@ import java.util.function.Supplier;
 
 public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if> {
 
-    // io template  ${type} little endian ${type.littleEndian?c}
-
-private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
 
 <#if !helper.isDiscriminatedType(type)>
     @Override
@@ -114,7 +112,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class
     public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
         int curPos;
-<#list type.fields as field>
+
+        <#if type.littleEndian>// this type is declared as little endian, field order have been changed to match full bytes in big endian order.</#if>
+
+<#list type.fieldsInOrder as field>
 <#switch field.typeName>
     <#case "array">
 
@@ -352,7 +353,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class
     public static void staticSerialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
 
-<#list type.fields as field>
+    <#if type.littleEndian>// this type is declared as little endian, field order have been changed to match full bytes in big endian order.</#if>
+
+<#list type.fieldsInOrder as field>
 <#switch field.typeName>
     <#case "array">
 

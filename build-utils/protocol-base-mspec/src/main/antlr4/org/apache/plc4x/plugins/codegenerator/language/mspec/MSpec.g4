@@ -27,10 +27,10 @@ complexTypeDefinition
  ;
 
 complexType
- : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
- | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
- | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
- | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
+ : 'type' (endianness=ENDIANNESS_LITERAL)? name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
+ | 'discriminatedType' (endianness=ENDIANNESS_LITERAL)? name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
+ | 'enum' (endianness=ENDIANNESS_LITERAL)? type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'dataIo' (endianness=ENDIANNESS_LITERAL)? name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition

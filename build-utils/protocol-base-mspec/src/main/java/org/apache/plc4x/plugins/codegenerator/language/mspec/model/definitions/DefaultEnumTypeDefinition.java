@@ -34,8 +34,8 @@ public class DefaultEnumTypeDefinition extends DefaultTypeDefinition implements 
     private final Map<String, TypeReference> constants;
 
     public DefaultEnumTypeDefinition(String name, TypeReference type, EnumValue[] enumValues,
-                                     Argument[] constants, String[] tags) {
-        super(name, constants, tags);
+                                     Argument[] constants, String[] tags, boolean littleEndian) {
+        super(name, constants, tags, littleEndian);
         this.type = type;
         this.enumValues = enumValues;
         this.constants = new HashMap<>();

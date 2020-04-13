@@ -22,10 +22,13 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
+import org.apache.plc4x.plugins.codegenerator.types.references.IntegerTypeReference;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implements ComplexTypeDefinition {
@@ -33,8 +36,8 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
     private final boolean isAbstract;
     private final List<Field> fields;
 
-    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean isAbstract, List<Field> fields) {
-        super(name, parserArguments, tags);
+    public DefaultComplexTypeDefinition(String name, Argument[] parserArguments, String[] tags, boolean littleEndian, boolean isAbstract, List<Field> fields) {
+        super(name, parserArguments, tags, littleEndian);
         this.isAbstract = isAbstract;
         this.fields = fields;
     }
@@ -89,4 +92,40 @@ public class DefaultComplexTypeDefinition extends DefaultTypeDefinition implemen
         return Collections.emptyList();
     }
 
+    public List<Field> getFieldsInOrder() {
+        if (!isLittleEndian()) {
+            return getFields();
+        }
+
+        List<Field> ordered = new ArrayList<>();
+        List<Field> group = new ArrayList<>();
+        int groupSize = 0;
+        int length = this.fields.size();
+        for (int index = length; index > 0; index--) {
+            Field field = fields.get(index - 1);
+
+            if (field instanceof TypedField) {
+                TypedField typed = (TypedField) field;
+                if (typed.getType() instanceof IntegerTypeReference) {
+                    IntegerTypeReference size = (IntegerTypeReference) typed.getType();
+                    group.add(field);
+                    groupSize += size.getSizeInBits();
+
+                    // we can have odd sizes then its best to
+                    if ((groupSize % 8) == 0) {
+                        Collections.reverse(group);
+                        ordered.addAll(group);
+                        group.clear();
+                        groupSize = 0;
+                    }
+                } else {
+                    ordered.add(field);
+                }
+            } else {
+                ordered.add(field);
+            }
+        }
+
+        return ordered;
+    }
 }
