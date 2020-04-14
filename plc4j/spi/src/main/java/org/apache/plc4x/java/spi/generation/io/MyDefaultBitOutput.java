@@ -23,15 +23,14 @@ import com.github.jinahya.bit.io.DefaultBitOutput;
 
 import java.nio.ByteBuffer;
 
-public class MyDefaultBitOutput extends DefaultBitOutput<BufferByteOutput> {
+public class MyDefaultBitOutput extends DefaultBitOutput<BufferByteOutput<ByteBuffer>> {
 
     public MyDefaultBitOutput(BufferByteOutput delegate) {
         super(delegate);
     }
 
-    @SuppressWarnings("unchecked")
     public long getPos() {
-        return ((BufferByteOutput<ByteBuffer>) getDelegate()).getTarget().position();
+        return getDelegate().getTarget().position();
     }
 
 }

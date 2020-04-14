@@ -58,7 +58,7 @@ public interface ConversationContext<T> {
         <R> SendRequestContext<R> only(Class<R> clazz);
     }
 
-    ExpectRequestContext expectRequest(Class<T> clazz, Duration timeout);
+    ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout);
 
     interface ExpectRequestContext<T> {
 
