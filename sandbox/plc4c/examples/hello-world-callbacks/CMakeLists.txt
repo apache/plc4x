@@ -20,6 +20,6 @@
 include_directories("src/main/include")
 file(GLOB sources "src/main/c/*.c")
 
-add_executable(plc4c-examples-hello-world ${sources} src/main/c/HelloWorld.c)
+add_executable(plc4c-examples-hello-world-callbacks ${sources} src/main/c/HelloWorldCallbackErrors.c)
 
-target_link_libraries (plc4c-examples-hello-world ${CMAKE_DL_LIBS})
+target_link_libraries (plc4c-examples-hello-world-callbacks ${CMAKE_DL_LIBS})

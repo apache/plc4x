@@ -15,5 +15,16 @@
 //  limitations under the License.
 //
 
+http://www.apibook.com/blog/archives/186
+
 - All PLC4C API related functions should use the prefix `plc4c_`
 - Only public API related symbols should be exported
+- Establish an object model
+- Supply a plc4c_init() function to initialize the DriverManager
+- Supply a plc4c_shutdown() function for cleaning up open connections
+- Provide a free()/unref() function for each kind of allocated object
+
+- Error handling
+    - Every function returns an error state (ideally an enum)
+    - Function for converting enum error code to something human-readable
+    - "Return" structures or real return values by double-pointer arguments
