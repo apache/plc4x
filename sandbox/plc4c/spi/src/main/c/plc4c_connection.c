@@ -17,24 +17,14 @@
  * under the License.
  */
 
-#include "plc4c.h"
+#include "plc4c_connection.h"
+#include "plc4c_types.h"
 
-/* private!! */
+error_code plc4c_connection_disconnect(plc4c_connection *connection) {
+    return OK;
+}
 
-struct plc4c_system_t {
-   /* drivers */
+char* plc4c_connection_get_connection_string(plc4c_connection *connection) {
+    return connection->connection_string;
+}
 
-   /* connections */
-
-   /* callbacks */
-};
-
-struct plc4c_driver_t {
-  /* name */
-
-  /* ??? */
-};
-
-struct plc4c_connection_t {
- /* ???? */
-};

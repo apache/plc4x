@@ -19,6 +19,14 @@
 #include <stdio.h>
 #include "../../../../../api/src/main/include/plc4c.h"
 
+void onConnectionSuccess(plc4c_connection *connection) {
+    printf("Connected to %s", plc4c_connection_get_connection_string(connection));
+}
+
+void onConnectionError(const char *connection_string, error_code error) {
+    printf("Error connecting to %s. Got error %s", connection_string, plc4c_error_code_to_error_message(error));
+}
+
 void onConnection2Success(plc4c_connection *connection) {
 
 }
@@ -33,15 +41,21 @@ int main() {
   plc4c_connection *connection1 = NULL;
   plc4c_connection *connection2 = NULL;
 
+  // Create a new uninitialized plc4c_system
   error_code error = plc4c_system_create(&system);
   if (error != OK) {
     return -1;
   }
 
-  error = plc4c_init(system);
+  // Initialize the plc4c_system (loading of drivers, setting up other stuff, ...)
+  error = plc4c_system_init(system);
   if (error != OK) {
     return -1;
   }
+
+  // Register the global callbacks.
+  plc4c_system_set_on_connection(system, &onConnectionSuccess);
+  plc4c_system_set_on_connection_error(system, &onConnectionError);
 
   // Establish connections to remote devices
   // you may or may not care about the connection handle
@@ -50,8 +64,7 @@ int main() {
     return -1;
   }
 
-  error = plc4c_system_connect_callback(system, "s7://192.168.42.22", &connection2,
-          &onConnection2Success, &onConnection2Error);
+  error = plc4c_system_connect(system, "s7://192.168.42.22", &connection2);
   if (error != OK) {
     return -1;
   }
@@ -65,6 +78,8 @@ int main() {
 
   // Make sure everything is cleaned up correctly.
   plc4c_system_shutdown(system);
+
+  // Finally destroy the plc4c_system, freeing up all memory allocated by plc4c.
   plc4c_system_destroy(system);
 
   return 0;

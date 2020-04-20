@@ -16,19 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_H_
-#define PLC4C_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* Convenience header file that just imports all the different parts of the API */
 
 #include "plc4c_types.h"
-#include "plc4c_system.h"
-#include "plc4c_connection.h"
 
-#ifdef __cplusplus
-}
-#endif
-#endif //PLC4C_H_
+struct plc4c_system_t {
+   /* drivers */
+
+   /* connections */
+
+   /* callbacks */
+};
+
+struct plc4c_driver_t {
+  /* name */
+
+  /* ??? */
+};
+
+struct plc4c_connection_t {
+    char* connection_string;
+ /* ???? */
+};
+
