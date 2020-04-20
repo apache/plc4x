@@ -16,15 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include<stdio.h>
 
-#include "HelloWorld.h"
+#include "plc4c.h"
 
-int add(int a, int b) {
-    return a + b;
-}
+/* private!! */
 
-int main() {
-	printf("Hello World\n");
-	return 0;
-}
+struct plc4c_system_t {
+   /* drivers */
+
+   /* connections */
+
+   /* callbacks */
+};
+
+struct plc4c_driver_t {
+  /* name */
+
+  /* ??? */
+};
+
+struct plc4c_connection_t {
+ /* ???? */
+};

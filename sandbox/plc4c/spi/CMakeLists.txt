@@ -17,7 +17,8 @@
   under the License.
 ]]
 
-add_library(plc4c-spi
-        )
+include_directories("src/main/include"
+        "../api/src/main/include")
+file(GLOB sources "src/main/c/*.c")
 
-target_link_libraries (plc4c-spi ${CMAKE_DL_LIBS})
+add_library(plc4c-spi SHARED ${sources})

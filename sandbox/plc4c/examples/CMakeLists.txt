@@ -18,5 +18,3 @@
 ]]
 
 add_subdirectory(hello-world)
-add_subdirectory(hello-world-callbacks)
-add_subdirectory(hello-world-return-codes)
