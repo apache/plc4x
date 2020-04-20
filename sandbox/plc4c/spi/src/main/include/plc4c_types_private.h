@@ -16,15 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-#include "plc4c_types.h"
+#ifndef PLC4C_SPI_SRC_MAIN_INCLUDE_PLC4C_TYPES_PRIVATE_H_
+#define PLC4C_SPI_SRC_MAIN_INCLUDE_PLC4C_TYPES_PRIVATE_H_
 
 struct plc4c_system_t {
-   /* drivers */
+  /* drivers */
 
-   /* connections */
+  /* connections */
 
-   /* callbacks */
+  /* callbacks */
 };
 
 struct plc4c_driver_t {
@@ -34,7 +34,8 @@ struct plc4c_driver_t {
 };
 
 struct plc4c_connection_t {
-    char* connection_string;
- /* ???? */
+  char* connection_string;
+  /* ???? */
 };
 
+#endif //PLC4C_SPI_SRC_MAIN_INCLUDE_PLC4C_TYPES_PRIVATE_H_

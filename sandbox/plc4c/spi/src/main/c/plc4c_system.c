@@ -18,6 +18,7 @@
  */
 
 #include "plc4c_system.h"
+#include "plc4c_types_private.h"
 
 error_code plc4c_system_create(plc4c_system **system) {
     return OK;

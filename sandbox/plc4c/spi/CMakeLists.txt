@@ -21,4 +21,4 @@ include_directories("src/main/include"
         "../api/src/main/include")
 file(GLOB sources "src/main/c/*.c")
 
-add_library(plc4c-spi SHARED ${sources})
+add_library(plc4c-spi SHARED ${sources} src/main/include/plc4c_types_private.h)
