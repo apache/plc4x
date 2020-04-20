@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsField implements AdsField {
 
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d)])?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+):(?<adsDataType>\\w+)(\\[(?<numberOfElements>\\d+)])?");
 
     private final String symbolicAddress;
 
