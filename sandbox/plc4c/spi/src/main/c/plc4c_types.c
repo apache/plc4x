@@ -16,26 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_SPI_TYPES_PRIVATE_H_
-#define PLC4C_SPI_TYPES_PRIVATE_H_
 
-struct plc4c_system_t {
-  /* drivers */
+#include "plc4c_types.h"
+#include "plc4c_types_private.h"
 
-  /* connections */
+char *plc4c_error_code_to_error_message(error_code err) {
+    return "hurz";
+}
 
-  /* callbacks */
-};
-
-struct plc4c_driver_t {
-  /* name */
-
-  /* ??? */
-};
-
-struct plc4c_connection_t {
-  char* connection_string;
-  /* ???? */
-};
-
-#endif //PLC4C_SPI_TYPES_PRIVATE_H_
