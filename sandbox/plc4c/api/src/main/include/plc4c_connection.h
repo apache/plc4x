@@ -43,7 +43,7 @@ extern "C" {
  * @param connection
  * @param plc4c_connection
  */
-error_code plc4c_connection_disconnect(plc4c_connection *connection);
+return_code plc4c_connection_disconnect(plc4c_connection *connection);
 
 /**
  * Get the connection string from a given connection.

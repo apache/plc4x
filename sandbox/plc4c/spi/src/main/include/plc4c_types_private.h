@@ -38,4 +38,10 @@ struct plc4c_connection_t {
   /* ???? */
 };
 
+struct plc4c_promise_t {
+    return_code returnCode;
+    plc4c_success_callback successCallback;
+    plc4c_failure_callback failureCallback;
+};
+
 #endif //PLC4C_SPI_TYPES_PRIVATE_H_

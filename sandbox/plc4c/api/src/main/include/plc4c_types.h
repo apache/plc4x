@@ -18,6 +18,9 @@
  */
 #ifndef PLC4C_TYPES_H_
 #define PLC4C_TYPES_H_
+
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,7 +29,8 @@ extern "C" {
  *
  * PLC4C error codes
 */
-typedef enum error_code {
+typedef enum return_code {
+    UNFINISHED,
     OK,
     UNKNOWN_ERROR,
     NO_MEMORY,
@@ -34,15 +38,15 @@ typedef enum error_code {
     NOT_REACHABLE,
     PERMISSION_DENIED,
     INTERNAL_ERROR
-} error_code;
+} return_code;
 
 /**
- * Helper that translates from an error_code enum value to something a human can work with.
+ * Helper that translates from an return_code enum value to something a human can work with.
  *
- * @param err error code.
- * @return A human readable error description.
+ * @param err return code.
+ * @return A human readable description.
  */
-char *plc4c_error_code_to_error_message(error_code err);
+char *plc4c_return_code_to_message(return_code err);
 
 /**
  * the plc4c system
@@ -58,6 +62,57 @@ typedef struct plc4c_driver_t plc4c_driver;
  * the plc4c_connection
  */
 typedef struct plc4c_connection_t plc4c_connection;
+
+/**
+ * Return type for any form of async operation.
+ */
+typedef struct plc4c_promise_t plc4c_promise;
+
+/**
+ * Callback for any form of successful async operation.
+ */
+typedef void (*plc4c_success_callback)(plc4c_promise *promise);
+
+/**
+ * Callback for any form of failed async operation.
+ */
+typedef void (*plc4c_failure_callback)(plc4c_promise *promise);
+
+/**
+ * Function to register a success callback on a given plc4c_promise.
+ * @param promise the promise to set the callback on
+ * @param successCallback the callback
+ */
+void plc4c_types_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback);
+
+/**
+ * Function to register a failure callback on a given plc4c_promise.
+ * @param promise the promise to set the callback on
+ * @param successCallback the callback
+ */
+void plc4c_types_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback);
+
+/**
+ * Check if a promise is completed
+ * @param promise the promise
+ * @return true if the promise is in a final state
+ */
+bool plc4c_types_promise_completed(plc4c_promise* promise);
+
+/**
+ * Check if a promise is completed successfully
+ * @param promise the promise
+ * @return true if the promise is the state OK
+ */
+bool plc4c_types_promise_completed_successfully(plc4c_promise* promise);
+
+/**
+ * Check if a promise is completed unsuccessfully
+ * @param promise the promise
+ * @return true if the promise is in a final state other than OK
+ */
+bool plc4c_types_promise_completed_unsuccessfully(plc4c_promise* promise);
+
 
 #ifdef __cplusplus
 }

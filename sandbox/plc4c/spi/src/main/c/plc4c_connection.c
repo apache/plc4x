@@ -20,7 +20,7 @@
 #include "plc4c_connection.h"
 #include "plc4c_types_private.h"
 
-error_code plc4c_connection_disconnect(plc4c_connection *connection) {
+return_code plc4c_connection_disconnect(plc4c_connection *connection) {
     return OK;
 }
 

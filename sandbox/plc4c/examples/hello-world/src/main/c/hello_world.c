@@ -19,68 +19,66 @@
 #include <stdio.h>
 #include "../../../../../api/src/main/include/plc4c.h"
 
-void onConnectionSuccess(plc4c_connection *connection) {
+void onGlobalConnectionSuccess(plc4c_connection *connection) {
     printf("Connected to %s", plc4c_connection_get_connection_string(connection));
 }
 
-void onConnectionError(const char *connection_string, error_code error) {
-    printf("Error connecting to %s. Got error %s", connection_string, plc4c_error_code_to_error_message(error));
+void onGlobalConnectionError(const char *connection_string, return_code error) {
+    printf("Error connecting to %s. Got error %s", connection_string, plc4c_return_code_to_message(error));
 }
 
-void onConnection2Success(plc4c_connection *connection) {
+void onLocalConnectionSuccess(plc4c_promise* promise) {
 
 }
 
-void onConnection2Error(const char *connection_string, error_code error) {
+void onLocalConnectionFailure(plc4c_promise* promise) {
 
 }
 
 int main() {
-  bool loop = true;
-  plc4c_system *system = NULL;
-  plc4c_connection *connection1 = NULL;
-  plc4c_connection *connection2 = NULL;
+    bool loop = true;
+    plc4c_system *system = NULL;
+    plc4c_connection *connection = NULL;
 
-  // Create a new uninitialized plc4c_system
-  error_code error = plc4c_system_create(&system);
-  if (error != OK) {
-    return -1;
-  }
-
-  // Initialize the plc4c_system (loading of drivers, setting up other stuff, ...)
-  error = plc4c_system_init(system);
-  if (error != OK) {
-    return -1;
-  }
-
-  // Register the global callbacks.
-  plc4c_system_set_on_connection(system, &onConnectionSuccess);
-  plc4c_system_set_on_connection_error(system, &onConnectionError);
-
-  // Establish connections to remote devices
-  // you may or may not care about the connection handle
-  error = plc4c_system_connect(system, "s7://192.168.42.20", &connection1);
-  if (error != OK) {
-    return -1;
-  }
-
-  error = plc4c_system_connect(system, "s7://192.168.42.22", &connection2);
-  if (error != OK) {
-    return -1;
-  }
-
-  // Central program loop ...
-  while (loop) {
-    if (plc4c_system_loop(system) != OK) {
-      break;
+    // Create a new uninitialized plc4c_system
+    return_code result = plc4c_system_create(&system);
+    if (result != OK) {
+        return -1;
     }
-  }
 
-  // Make sure everything is cleaned up correctly.
-  plc4c_system_shutdown(system);
+    // Initialize the plc4c_system (loading of drivers, setting up other stuff, ...)
+    result = plc4c_system_init(system);
+    if (result != OK) {
+        return -1;
+    }
 
-  // Finally destroy the plc4c_system, freeing up all memory allocated by plc4c.
-  plc4c_system_destroy(system);
+    // Register the global callbacks.
+    plc4c_system_set_on_connection(system, &onGlobalConnectionSuccess);
+    plc4c_system_set_on_connection_error(system, &onGlobalConnectionError);
 
-  return 0;
+    // Establish connections to remote devices
+    // you may or may not care about the connection handle
+    plc4c_promise* connect_promise = plc4c_system_connect(system, "s7://192.168.42.20", &connection);
+    plc4c_types_promise_set_success_callback(connect_promise, &onLocalConnectionSuccess);
+    plc4c_types_promise_set_failure_callback(connect_promise, &onLocalConnectionFailure);
+    if (plc4c_types_promise_completed_unsuccessfully(connect_promise)) {
+        return -1;
+    }
+
+    // Central program loop ...
+    while (loop) {
+        if (plc4c_system_loop(system) != OK) {
+            break;
+        }
+
+
+    }
+
+    // Make sure everything is cleaned up correctly.
+    plc4c_system_shutdown(system);
+
+    // Finally destroy the plc4c_system, freeing up all memory allocated by plc4c.
+    plc4c_system_destroy(system);
+
+    return 0;
 }

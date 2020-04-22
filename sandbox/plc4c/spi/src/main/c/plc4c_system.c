@@ -17,10 +17,11 @@
  * under the License.
  */
 
+#include <stdlib.h>
 #include "plc4c_system.h"
 #include "plc4c_types_private.h"
 
-error_code plc4c_system_create(plc4c_system **system) {
+return_code plc4c_system_create(plc4c_system **system) {
     return OK;
 }
 
@@ -63,7 +64,7 @@ void plc4c_system_set_on_loop_error(plc4c_system *system,
 
 }
 
-error_code plc4c_system_init(plc4c_system *system) {
+return_code plc4c_system_init(plc4c_system *system) {
     return OK;
 }
 
@@ -71,13 +72,15 @@ void plc4c_system_shutdown(plc4c_system *system) {
 
 }
 
-error_code plc4c_system_connect(plc4c_system *system,
-                                const char *connectionString,
-                                plc4c_connection **connection) {
-    return OK;
+plc4c_promise* plc4c_system_connect(plc4c_system *system,
+                                   const char *connectionString,
+                                   plc4c_connection **connection) {
+    plc4c_promise* result = (plc4c_promise*) malloc(sizeof(plc4c_promise));
+    result->returnCode = UNFINISHED;
+    return result;
 }
 
-error_code plc4c_system_loop() {
+return_code plc4c_system_loop() {
     return OK;
 }
 
