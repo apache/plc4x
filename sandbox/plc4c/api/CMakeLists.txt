@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-#include_directories("src/main/include")
+include_directories("include")
 
 file(GLOB sources "src/*.c")
 

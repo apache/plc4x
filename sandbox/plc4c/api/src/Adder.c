@@ -17,7 +17,7 @@
  * under the License.
  */
 #include<stdio.h>
-#include <Adder.h>
+#include "../include/Adder.h"
 
 int add(int a, int b) {
     return a + b;

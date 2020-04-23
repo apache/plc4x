@@ -18,8 +18,8 @@
  */
 
 #include <stdlib.h>
-#include <plc4c/api/system.h>
-#include <plc4c/spi/types_private.h>
+#include "../../api/include/plc4c/system.h"
+#include "../include/plc4c/types_private.h"
 
 return_code plc4c_system_create(plc4c_system **system) {
     return OK;

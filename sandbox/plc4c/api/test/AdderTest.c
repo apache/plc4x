@@ -17,7 +17,7 @@
  * under the License.
  */
 #include <unity.h>
-#include <Adder.h>
+#include "../include/Adder.h"
 
 void setUp(void) {
 }
