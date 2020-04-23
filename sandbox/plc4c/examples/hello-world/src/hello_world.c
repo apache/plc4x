@@ -17,7 +17,8 @@
  * under the License.
  */
 #include <stdio.h>
-#include "../../../api/include/plc4c.h"
+#include <plc4c.h>
+#include <plc4c/driver/simulated.h>
 
 void onGlobalConnectionSuccess(plc4c_connection *connection) {
     printf("Connected to %s", plc4c_connection_get_connection_string(connection));
@@ -42,6 +43,13 @@ int main() {
 
     // Create a new uninitialized plc4c_system
     return_code result = plc4c_system_create(&system);
+    if (result != OK) {
+        return -1;
+    }
+
+    // Manually register the "simulated" driver with the system.
+    plc4c_driver *simulatedDriver = plc4c_driver_simulated_create();
+    result = plc4c_system_add_driver(simulatedDriver);
     if (result != OK) {
         return -1;
     }

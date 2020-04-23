@@ -16,31 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#ifndef PLC4C_SPI_TYPES_PRIVATE_H_
+#define PLC4C_SPI_TYPES_PRIVATE_H_
 
 #include <plc4c/types.h>
-#include "plc4c/spi/types_private.h"
 
-char *plc4c_return_code_to_message(return_code err) {
-    return "hurz";
-}
+struct plc4c_system_t {
+  /* drivers */
 
-void plc4c_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback) {
-    promise->successCallback = successCallback;
-}
+  /* connections */
 
-void plc4c_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback) {
-    promise->failureCallback = failureCallback;
-}
+  /* callbacks */
+};
 
-bool plc4c_promise_completed(plc4c_promise* promise) {
-    return promise->returnCode != UNFINISHED;
-}
+struct plc4c_driver_t {
+  /* name */
 
-bool plc4c_promise_completed_successfully(plc4c_promise* promise) {
-    return promise->returnCode == OK;
-}
+  /* ??? */
+};
 
-bool plc4c_promise_completed_unsuccessfully(plc4c_promise* promise) {
-    return plc4c_promise_completed(promise) && !plc4c_promise_completed_successfully(promise);
-}
+struct plc4c_connection_t {
+  char* connection_string;
+  /* ???? */
+};
 
+struct plc4c_promise_t {
+    return_code returnCode;
+    plc4c_success_callback successCallback;
+    plc4c_failure_callback failureCallback;
+};
+
+#endif //PLC4C_SPI_TYPES_PRIVATE_H_

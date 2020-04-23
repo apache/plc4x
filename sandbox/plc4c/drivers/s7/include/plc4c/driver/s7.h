@@ -16,31 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#ifndef PLC4C_DRIVER_S7_H_
+#define PLC4C_DRIVER_S7_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <plc4c/types.h>
-#include "plc4c/spi/types_private.h"
 
-char *plc4c_return_code_to_message(return_code err) {
-    return "hurz";
+plc4c_driver *plc4c_driver_s7_create();
+
+#ifdef __cplusplus
 }
-
-void plc4c_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback) {
-    promise->successCallback = successCallback;
-}
-
-void plc4c_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback) {
-    promise->failureCallback = failureCallback;
-}
-
-bool plc4c_promise_completed(plc4c_promise* promise) {
-    return promise->returnCode != UNFINISHED;
-}
-
-bool plc4c_promise_completed_successfully(plc4c_promise* promise) {
-    return promise->returnCode == OK;
-}
-
-bool plc4c_promise_completed_unsuccessfully(plc4c_promise* promise) {
-    return plc4c_promise_completed(promise) && !plc4c_promise_completed_successfully(promise);
-}
-
+#endif
+#endif //PLC4C_DRIVER_S7_H_

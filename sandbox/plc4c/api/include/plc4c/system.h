@@ -164,6 +164,8 @@ void plc4c_system_set_on_disconnection_error(plc4c_system *system,
 void plc4c_system_set_on_loop_error(plc4c_system *system,
                                     plc4c_system_callback_loop_error callback);
 
+return_code plc4c_system_add_driver(plc4c_driver *driver);
+
 /**
  * Function to initialize the PLC4C system (Initialize the driver manager and the list of enabled drivers)
  * @param system

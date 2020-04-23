@@ -1,4 +1,4 @@
-/*
+#[[
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,5 +15,13 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-*/
+]]
 
+include_directories("include" "../../api/include" "../../spi/include")
+
+# Add the sources
+file(GLOB sources "src/*.c")
+
+add_library(plc4c-driver-simulated ${sources})
+
+target_link_libraries (plc4c-driver-simulated ${CMAKE_DL_LIBS})

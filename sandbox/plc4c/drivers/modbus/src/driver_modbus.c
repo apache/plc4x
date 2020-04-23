@@ -17,3 +17,12 @@
   under the License.
 */
 
+#include <stdlib.h>
+#include <plc4c/spi/types_private.h>
+#include "plc4c/driver/modbus.h"
+
+plc4c_driver *plc4c_driver_modbus_create() {
+    plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));
+    return driver;
+}
+

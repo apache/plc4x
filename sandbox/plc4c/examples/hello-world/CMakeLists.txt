@@ -17,11 +17,11 @@
   under the License.
 ]]
 
-#include_directories("../../includes")
+include_directories("../../api/include" "../../drivers/simulated/include")
 
 file(GLOB sources "src/*.c")
 
 add_executable(plc4c-examples-hello-world ${sources} src/hello_world.c)
 
 target_link_libraries (plc4c-examples-hello-world
-        plc4c-spi)
+        plc4c-spi plc4c-driver-simulated)

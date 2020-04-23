@@ -18,8 +18,8 @@
  */
 
 #include <stdlib.h>
-#include "../../api/include/plc4c/system.h"
-#include "../include/plc4c/types_private.h"
+#include <plc4c/system.h>
+#include "plc4c/spi/types_private.h"
 
 return_code plc4c_system_create(plc4c_system **system) {
     return OK;
@@ -62,6 +62,10 @@ void plc4c_system_set_on_disconnection_error(plc4c_system *system,
 void plc4c_system_set_on_loop_error(plc4c_system *system,
                                     plc4c_system_callback_loop_error callback) {
 
+}
+
+return_code plc4c_system_add_driver(plc4c_driver *driver) {
+    return OK;
 }
 
 return_code plc4c_system_init(plc4c_system *system) {

@@ -17,7 +17,7 @@
   under the License.
 ]]
 
-include_directories("include")
+include_directories("include" "../api/include")
 
 file(GLOB sources "src/*.c")
 

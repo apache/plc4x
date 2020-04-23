@@ -16,32 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_SPI_TYPES_PRIVATE_H_
-#define PLC4C_SPI_TYPES_PRIVATE_H_
+#ifndef PLC4C_DRIVER_S7_H_
+#define PLC4C_DRIVER_S7_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-struct plc4c_system_t {
-  /* drivers */
+#include <plc4c/types.h>
 
-  /* connections */
+plc4c_driver *plc4c_driver_modbus_create();
 
-  /* callbacks */
-};
-
-struct plc4c_driver_t {
-  /* name */
-
-  /* ??? */
-};
-
-struct plc4c_connection_t {
-  char* connection_string;
-  /* ???? */
-};
-
-struct plc4c_promise_t {
-    return_code returnCode;
-    plc4c_success_callback successCallback;
-    plc4c_failure_callback failureCallback;
-};
-
-#endif //PLC4C_SPI_TYPES_PRIVATE_H_
+#ifdef __cplusplus
+}
+#endif
+#endif //PLC4C_DRIVER_S7_H_

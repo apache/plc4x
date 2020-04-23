@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,16 +15,14 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
 
-include_directories("include" "../../api/include" "../../spi/include")
+#include <stdlib.h>
+#include <plc4c/spi/types_private.h>
+#include "plc4c/driver/simulated.h"
 
-# Add the sources
-file(GLOB sources "src/*.c")
+plc4c_driver *plc4c_driver_simulated_create() {
+    plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));
+    return driver;
+}
 
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/main/c/*.c")
-
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
-
-target_link_libraries (plc4c-driver-modbus ${CMAKE_DL_LIBS})
