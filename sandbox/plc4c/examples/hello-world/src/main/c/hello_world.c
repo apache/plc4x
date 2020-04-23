@@ -59,6 +59,7 @@ int main() {
     // Establish connections to remote devices
     // you may or may not care about the connection handle
     plc4c_promise* connect_promise = plc4c_system_connect(system, "s7://192.168.42.20", &connection);
+    // Register some callbacks to be called as soon as the connection is established or fails.
     plc4c_promise_set_success_callback(connect_promise, &onLocalConnectionSuccess);
     plc4c_promise_set_failure_callback(connect_promise, &onLocalConnectionFailure);
     if (plc4c_promise_completed_unsuccessfully(connect_promise)) {
