@@ -18,7 +18,7 @@
  */
 
 #include <plc4c/connection.h>
-#include "plc4c/spi/types_private.h"
+#include <plc4c/spi/types_private.h>
 
 return_code plc4c_connection_disconnect(plc4c_connection *connection) {
     return OK;

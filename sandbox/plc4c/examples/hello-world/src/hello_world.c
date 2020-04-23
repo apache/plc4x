@@ -17,8 +17,8 @@
  * under the License.
  */
 #include <stdio.h>
-#include <plc4c.h>
-#include <plc4c/driver/simulated.h>
+#include <plc4c/plc4c.h>
+#include <plc4c/driver_simulated.h>
 
 void onGlobalConnectionSuccess(plc4c_connection *connection) {
     printf("Connected to %s", plc4c_connection_get_connection_string(connection));
