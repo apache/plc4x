@@ -17,8 +17,8 @@
   under the License.
 ]]
 
-include_directories("src/main/include"
-        "../api/src/main/include")
-file(GLOB sources "src/main/c/*.c")
+#include_directories("../includes")
+
+file(GLOB sources "src/*.c")
 
 add_library(plc4c-spi SHARED ${sources})

@@ -17,11 +17,8 @@
   under the License.
 ]]
 
-include_directories("src/main/include"
-                    "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/src/main/include")
-
 # Add the sources
-file(GLOB sources "src/main/c/*.c")
+file(GLOB sources "src/*.c")
 
 # Add the generated sources
 file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/src/main/c/*.c")

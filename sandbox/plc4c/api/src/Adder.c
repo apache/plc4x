@@ -16,25 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include <unity.h>
-#include "Adder.h"
+#include<stdio.h>
+#include <Adder.h>
 
-void setUp(void) {
-}
-
-void tearDown(void) {
-}
-
-void test_add(void)
-{
-    TEST_ASSERT_EQUAL_HEX8(2, add(1, 1));
-}
-
-int main(void)
-{
-    UNITY_BEGIN();
-
-    RUN_TEST(test_add);
-
-    return UNITY_END();
+int add(int a, int b) {
+    return a + b;
 }
