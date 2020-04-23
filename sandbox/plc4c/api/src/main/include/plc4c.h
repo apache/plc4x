@@ -24,9 +24,9 @@ extern "C" {
 
 /* Convenience header file that just imports all the different parts of the API */
 
-#include "plc4c_types.h"
-#include "plc4c_system.h"
-#include "plc4c_connection.h"
+#include "plc4c/types.h"
+#include "plc4c/system.h"
+#include "plc4c/connection.h"
 
 #ifdef __cplusplus
 }

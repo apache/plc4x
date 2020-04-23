@@ -23,7 +23,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-#include "plc4c_types.h"
+#include "types.h"
 
 /**
  * SYSTEM CALLBACKS

@@ -16,15 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#ifndef PLC4C_CONNECTION_H_
+#define PLC4C_CONNECTION_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "plc4c_connection.h"
-#include "plc4c_types_private.h"
+#include <stdbool.h>
+#include "types.h"
 
-return_code plc4c_connection_disconnect(plc4c_connection *connection) {
-    return OK;
+/**
+ * CONNECTION CALLBACKS
+ */
+
+/**
+ * OTHER FUNCTION DEFS FOR CONNECTION
+ */
+
+/**
+ * CONNECTION FUNCTIONS
+ */
+
+/**
+ * Function to terminate a connection to a PLC.
+ *
+ * @param connection
+ * @param plc4c_connection
+ */
+return_code plc4c_connection_disconnect(plc4c_connection *connection);
+
+/**
+ * Get the connection string from a given connection.
+ */
+char* plc4c_connection_get_connection_string(plc4c_connection *connection);
+
+#ifdef __cplusplus
 }
-
-char* plc4c_connection_get_connection_string(plc4c_connection *connection) {
-    return connection->connection_string;
-}
-
+#endif
+#endif //PLC4C_CONNECTION_H_

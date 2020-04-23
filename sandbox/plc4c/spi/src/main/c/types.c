@@ -17,8 +17,8 @@
  * under the License.
  */
 
-#include "plc4c_types.h"
-#include "plc4c_types_private.h"
+#include <plc4c/types.h>
+#include <plc4c/types_private.h>
 
 char *plc4c_return_code_to_message(return_code err) {
     return "hurz";
