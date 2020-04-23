@@ -83,35 +83,35 @@ typedef void (*plc4c_failure_callback)(plc4c_promise *promise);
  * @param promise the promise to set the callback on
  * @param successCallback the callback
  */
-void plc4c_types_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback);
+void plc4c_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback);
 
 /**
  * Function to register a failure callback on a given plc4c_promise.
  * @param promise the promise to set the callback on
  * @param successCallback the callback
  */
-void plc4c_types_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback);
+void plc4c_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback);
 
 /**
  * Check if a promise is completed
  * @param promise the promise
  * @return true if the promise is in a final state
  */
-bool plc4c_types_promise_completed(plc4c_promise* promise);
+bool plc4c_promise_completed(plc4c_promise* promise);
 
 /**
  * Check if a promise is completed successfully
  * @param promise the promise
  * @return true if the promise is the state OK
  */
-bool plc4c_types_promise_completed_successfully(plc4c_promise* promise);
+bool plc4c_promise_completed_successfully(plc4c_promise* promise);
 
 /**
  * Check if a promise is completed unsuccessfully
  * @param promise the promise
  * @return true if the promise is in a final state other than OK
  */
-bool plc4c_types_promise_completed_unsuccessfully(plc4c_promise* promise);
+bool plc4c_promise_completed_unsuccessfully(plc4c_promise* promise);
 
 
 #ifdef __cplusplus
