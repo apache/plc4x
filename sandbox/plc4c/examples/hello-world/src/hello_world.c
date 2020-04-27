@@ -20,27 +20,57 @@
 #include <plc4c/plc4c.h>
 #include <plc4c/driver_simulated.h>
 
-void onGlobalConnectionSuccess(plc4c_connection *connection) {
-    printf("Connected to %s", plc4c_connection_get_connection_string(connection));
+bool loop = true;
+plc4c_system *system = NULL;
+plc4c_connection *connection = NULL;
+
+int numOpenConnections = 0;
+
+/**
+ * Here we could implement something that keeps track of all open connections.
+ * For example on embedded devices using the W5100 SPI Network device, this can
+ * only handle 4 simultaneous connections.
+ *
+ * @param connection the connection that was just established
+ */
+void onGlobalConnect(plc4c_connection *cur_connection) {
+    printf("Connected to %s", plc4c_connection_get_connection_string(cur_connection));
+    numOpenConnections++;
 }
 
-void onGlobalConnectionError(const char *connection_string, return_code error) {
-    printf("Error connecting to %s. Got error %s", connection_string, plc4c_return_code_to_message(error));
+void onGlobalDisconnect(plc4c_connection *cur_connection) {
+    printf("Disconnected from %s", plc4c_connection_get_connection_string(cur_connection));
+    numOpenConnections--;
+}
+
+void onDisconnectSuccess(plc4c_promise *promise) {
+    // Terminate the execution loop.
+    loop = false;
+}
+
+void onReadSuccess(plc4c_promise *promise) {
+    // TODO: Do something with the result.
+
+    plc4c_promise* disconnect_promise = plc4c_connection_disconnect(connection);
+    plc4c_promise_set_success_callback(disconnect_promise, &onDisconnectSuccess);
 }
 
 void onLocalConnectionSuccess(plc4c_promise* promise) {
-
+    if(plc4c_connection_supports_reading(connection)) {
+        char* addresses[] = {"RANDOM/foo:INTEGER"};
+        plc4c_read_request* read_request = plc4c_connection_create_read_request(connection, 1, addresses);
+        plc4c_promise* read_promise = plc4c_read_request_execute(connection, read_request);
+        // As the read_request is actually executed the next time the plc4c_system_loop
+        // is executed, we can now register some callbacks.
+        plc4c_promise_set_success_callback(read_promise, &onReadSuccess);
+    }
 }
 
 void onLocalConnectionFailure(plc4c_promise* promise) {
-
+    // TODO: Do something with the error.
 }
 
 int main() {
-    bool loop = true;
-    plc4c_system *system = NULL;
-    plc4c_connection *connection = NULL;
-
     // Create a new uninitialized plc4c_system
     return_code result = plc4c_system_create(&system);
     if (result != OK) {
@@ -61,8 +91,8 @@ int main() {
     }
 
     // Register the global callbacks.
-    plc4c_system_set_on_connection(system, &onGlobalConnectionSuccess);
-    plc4c_system_set_on_connection_error(system, &onGlobalConnectionError);
+    plc4c_system_set_on_connection(system, &onGlobalConnect);
+    plc4c_system_set_on_disconnection(system, &onGlobalDisconnect);
 
     // Establish connections to remote devices
     // you may or may not care about the connection handle

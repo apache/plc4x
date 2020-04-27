@@ -17,14 +17,34 @@
  * under the License.
  */
 
+#include <stdlib.h>
 #include <plc4c/connection.h>
 #include <plc4c/spi/types_private.h>
 
-return_code plc4c_connection_disconnect(plc4c_connection *connection) {
-    return OK;
+plc4c_promise* plc4c_connection_disconnect(plc4c_connection *connection) {
+    plc4c_promise* result = (plc4c_promise*) malloc(sizeof(plc4c_promise));
+    result->returnCode = UNFINISHED;
+    return result;
 }
 
 char* plc4c_connection_get_connection_string(plc4c_connection *connection) {
     return connection->connection_string;
 }
 
+bool plc4c_connection_supports_reading(plc4c_connection *connection) {
+    return connection->supports_reading;
+}
+
+plc4c_read_request* plc4c_connection_create_read_request(plc4c_connection *connection, int num_items, char* addresses[]) {
+    plc4c_read_request* read_request = (plc4c_read_request*) malloc(sizeof(plc4c_read_request));
+    return read_request;
+}
+
+bool plc4c_connection_supports_writing(plc4c_connection *connection) {
+    return connection->supports_writing;
+}
+
+plc4c_write_request* plc4c_connection_create_write_request(plc4c_connection *connection, int num_items, char* addresses[], void* values[]) {
+    plc4c_write_request* write_request = (plc4c_write_request*) malloc(sizeof(plc4c_write_request));
+    return write_request;
+}

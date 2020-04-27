@@ -16,21 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_H_
-#define PLC4C_H_
+#ifndef PLC4C_WRITE_H_
+#define PLC4C_WRITE_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* Convenience header file that just imports all the different parts of the API */
-
 #include "plc4c/types.h"
-#include "plc4c/system.h"
-#include "plc4c/connection.h"
-#include "plc4c/read.h"
-#include "plc4c/write.h"
+
+/**
+ * Actually executes the write-request.
+ * @param connection connection this write-request will be executed on.
+ * @param write_request the write-request object.
+ * @return a plc4c_promise which allows asynchronously handling the request execution.
+ */
+plc4c_promise* plc4c_write_request_execute(plc4c_connection *connection,
+                                           plc4c_write_request *write_request);
 
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_H_
+#endif //PLC4C_WRITE_H_

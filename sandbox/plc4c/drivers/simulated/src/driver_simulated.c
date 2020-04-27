@@ -21,8 +21,24 @@
 #include <plc4c/spi/types_private.h>
 #include <plc4c/driver_simulated.h>
 
+struct plc4c_driver_simulated_item_t {
+    // Sort of senseless, but for keeping track of the fact that it's an plc4c_item.
+    plc4c_item super;
+
+    // Actual properties goes here ...
+};
+typedef struct plc4c_driver_simulated_item_t plc4c_driver_simulated_item ;
+
+plc4c_item *plc4c_driver_simulated_parse_address(const char* address_string) {
+    plc4c_driver_simulated_item* item = (plc4c_driver_simulated_item*) malloc(sizeof(plc4c_driver_simulated_item));
+    return (plc4c_item*) item;
+}
+
 plc4c_driver *plc4c_driver_simulated_create() {
     plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));
+    driver->protocol_code = "simulated";
+    driver->protocol_name = "Simulated PLC4X Datasource";
+    driver->parse_address_function = &plc4c_driver_simulated_parse_address;
     return driver;
 }
 

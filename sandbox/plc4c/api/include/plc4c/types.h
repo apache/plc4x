@@ -64,6 +64,16 @@ typedef struct plc4c_driver_t plc4c_driver;
 typedef struct plc4c_connection_t plc4c_connection;
 
 /**
+ * a plc4c read-request
+ */
+typedef struct plc4c_read_request_t plc4c_read_request;
+
+/**
+ * a plc4c write-request
+ */
+typedef struct plc4c_write_request_t plc4c_write_request;
+
+/**
  * Return type for any form of async operation.
  */
 typedef struct plc4c_promise_t plc4c_promise;

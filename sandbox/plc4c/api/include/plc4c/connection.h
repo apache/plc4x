@@ -41,14 +41,54 @@ extern "C" {
  * Function to terminate a connection to a PLC.
  *
  * @param connection
- * @param plc4c_connection
+ * @param plc4c_promise
  */
-return_code plc4c_connection_disconnect(plc4c_connection *connection);
+plc4c_promise* plc4c_connection_disconnect(plc4c_connection *connection);
 
 /**
  * Get the connection string from a given connection.
  */
 char* plc4c_connection_get_connection_string(plc4c_connection *connection);
+
+/**
+ * Check if the current connection supports read operations.
+ * @param connection reference to the connection
+ * @return true if the connection supports reading, false otherwise
+ */
+bool plc4c_connection_supports_reading(plc4c_connection *connection);
+
+/**
+ * Initializes an empty read-request
+ * @param connection connection that this read-request will be executed on.
+ * @param num_items number of items we want to read.
+ * @param addresses array of address strings.
+ * @return pointer to new read-request.
+ */
+plc4c_read_request* plc4c_connection_create_read_request(plc4c_connection *connection, int num_items, char* addresses[]);
+
+/**
+ * Check if the current connection supports write operations.
+ * @param connection reference to the connection
+ * @return true if the connection supports writing, false otherwise
+ */
+bool plc4c_connection_supports_writing(plc4c_connection *connection);
+
+/**
+ * Initializes an empty write-request
+ * @param connection connection that this write-request will be executed on.
+ * @param num_items number of items we want to write.
+ * @param addresses array of address strings.
+ * @param values array of pointers to values.
+ * @return pointer to new write_request
+ */
+plc4c_write_request* plc4c_connection_create_write_request(plc4c_connection *connection, int num_items, char* addresses[], void* values[]);
+
+/**
+ * Check if the current connection supports subscriptions.
+ * @param connection reference to the connection
+ * @return true if the connection supports subscriptions, false otherwise
+ */
+bool plc4c_connection_supports_subscriptions(plc4c_connection *connection);
 
 #ifdef __cplusplus
 }

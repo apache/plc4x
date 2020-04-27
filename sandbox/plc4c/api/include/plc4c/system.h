@@ -184,7 +184,8 @@ void plc4c_system_shutdown(plc4c_system *system);
  * and setting the passed connection system
  *
  * @param system
- * @param connectionString
+ * @param connection_string
+ * @param ponter to where the connection object will be created.
  * @return return_code INVALID_CONNECTION_STRING, NO_MEMORY
  */
 plc4c_promise* plc4c_system_connect(plc4c_system *system,
