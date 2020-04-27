@@ -26,19 +26,19 @@ extern "C" {
 #include "types.h"
 
 /**
- * CONNECTION CALLBACKS
+ * Check if the connection is established successfully.
+ *
+ * @param connection the connection.
+ * @return true if the connection is established.
  */
-
-/**
- * OTHER FUNCTION DEFS FOR CONNECTION
- */
-
-/**
- * CONNECTION FUNCTIONS
- */
-
 bool plc4c_connection_is_connected(plc4c_connection *connection);
 
+/**
+ * Check if an error occurred while connecting.
+ *
+ * @param connection the connection.
+ * @return true if an error occurred while connecting.
+ */
 bool plc4c_connection_has_error(plc4c_connection *connection);
 
 /**
@@ -49,6 +49,11 @@ bool plc4c_connection_has_error(plc4c_connection *connection);
  */
 return_code plc4c_connection_disconnect(plc4c_connection *connection);
 
+/**
+ * Destrop a previously created connection.
+ *
+ * @param connection
+ */
 void plc4c_connection_destroy(plc4c_connection *connection);
 
 /**
@@ -58,13 +63,15 @@ char *plc4c_connection_get_connection_string(plc4c_connection *connection);
 
 /**
  * Check if the current connection supports read operations.
+ *
  * @param connection reference to the connection
  * @return true if the connection supports reading, false otherwise
  */
 bool plc4c_connection_supports_reading(plc4c_connection *connection);
 
 /**
- * Initializes an empty read-request
+ * Initializes an empty read-request.
+ *
  * @param connection connection that this read-request will be executed on.
  * @param num_items number of items we want to read.
  * @param addresses array of address strings.
@@ -78,13 +85,15 @@ return_code plc4c_connection_create_read_request(plc4c_connection *connection,
 
 /**
  * Check if the current connection supports write operations.
+ *
  * @param connection reference to the connection
  * @return true if the connection supports writing, false otherwise
  */
 bool plc4c_connection_supports_writing(plc4c_connection *connection);
 
 /**
- * Initializes an empty write-request
+ * Initializes an empty write-request.
+ *
  * @param connection connection that this write-request will be executed on.
  * @param num_items number of items we want to write.
  * @param addresses array of address strings.
@@ -92,15 +101,15 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection);
  * @param write_request pointer to the write-request
  * @param return_code
  */
-return_code
-plc4c_connection_create_write_request(plc4c_connection *connection,
-                                      int num_items,
-                                      char *addresses[],
-                                      void *values[],
-                                      plc4c_write_request **write_request);
+return_code plc4c_connection_create_write_request(plc4c_connection *connection,
+                                                  int num_items,
+                                                  char *addresses[],
+                                                  void *values[],
+                                                  plc4c_write_request **write_request);
 
 /**
  * Check if the current connection supports subscriptions.
+ *
  * @param connection reference to the connection
  * @return true if the connection supports subscriptions, false otherwise
  */

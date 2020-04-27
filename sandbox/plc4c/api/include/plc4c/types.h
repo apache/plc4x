@@ -26,7 +26,6 @@ extern "C" {
 #endif
 
 /**
- *
  * PLC4C error codes
 */
 typedef enum return_code {
@@ -49,41 +48,49 @@ typedef enum return_code {
 char *plc4c_return_code_to_message(return_code err);
 
 /**
- * the plc4c system
+ * The plc4c system.
  */
 typedef struct plc4c_system_t plc4c_system;
 
 /**
- * the plc4c_driver
+ * The plc4c_driver.
  */
 typedef struct plc4c_driver_t plc4c_driver;
 
 /**
- * the plc4c_connection
+ * The plc4c_connection.
  */
 typedef struct plc4c_connection_t plc4c_connection;
 
 /**
- * a plc4c read-request
+ * A plc4c read-request.
  */
 typedef struct plc4c_read_request_t plc4c_read_request;
 
 /**
- * a plc4c read-request-execution
+ * A plc4c read-request-execution.
  */
 typedef struct plc4c_read_request_execution_t plc4c_read_request_execution;
 
+/**
+ * A plc4c read-request response.
+ */
 typedef struct plc4c_read_response_t plc4c_read_response;
 
 /**
- * a plc4c write-request
+ * A plc4c write-request.
  */
 typedef struct plc4c_write_request_t plc4c_write_request;
 
 /**
- * a plc4c write-request-execution
+ * A plc4c write-request-execution.
  */
 typedef struct plc4c_write_request_execution_t plc4c_write_request_execution;
+
+/**
+ * A plc4c write-request response.
+ */
+typedef struct plc4c_write_response_t plc4c_write_response;
 
 #ifdef __cplusplus
 }

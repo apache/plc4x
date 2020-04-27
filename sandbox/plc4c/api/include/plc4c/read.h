@@ -35,14 +35,42 @@ return_code plc4c_read_request_execute(plc4c_connection *connection,
                                        plc4c_read_request *read_request,
                                        plc4c_read_request_execution **read_request_execution);
 
+/**
+ * Check if the read-request is completed successfully.
+ *
+ * @param read_request_execution the read-request execution.
+ * @return true if the read-request is completed successfully.
+ */
 bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read_request_execution);
 
+/**
+ * Check if the read-request is completed unsuccessfully.
+ *
+ * @param read_request_execution the read-request execution.
+ * @return true if the read-request is completed with an error.
+ */
 bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_execution);
 
+/**
+ * Retrieve the read-response from a given read-request execution.
+ *
+ * @param read_request_execution the read-request execution.
+ * @return the read-response.
+ */
 plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_execution *read_request_execution);
 
+/**
+ * Destroys a given read-request.
+ *
+ * @param read_request the read-request.
+ */
 void plc4c_read_request_destroy(plc4c_read_request *read_request);
 
+/**
+ * Destroys a given read-request execution.
+ *
+ * @param read_request_execution the read-request execution.
+ */
 void plc4c_read_request_execution_destroy(plc4c_read_request_execution *read_request_execution);
 
 #ifdef __cplusplus

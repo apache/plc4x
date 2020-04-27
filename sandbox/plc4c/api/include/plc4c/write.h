@@ -26,6 +26,7 @@ extern "C" {
 
 /**
  * Actually executes the write-request.
+ *
  * @param connection connection this write-request will be executed on.
  * @param write_request the write-request object.
  * @param write_request_execution pointer to a data-structure handling one execution of the write-request.
@@ -34,6 +35,44 @@ extern "C" {
 return_code plc4c_write_request_execute(plc4c_connection *connection,
                                         plc4c_write_request *write_reques,
                                         plc4c_write_request_execution **write_request_execution);
+
+/**
+ * Check if the write-request is completed successfully.
+ *
+ * @param write_request_execution the write-request execution.
+ * @return true if the write-request is completed successfully.
+ */
+bool plc4c_write_request_finished_successfully(plc4c_write_request_execution *write_request_execution);
+
+/**
+ * Check if the write-request is completed unsuccessfully.
+ *
+ * @param write_request_execution the write-request execution.
+ * @return true if the write-request is completed with an error.
+ */
+bool plc4c_write_request_has_error(plc4c_write_request_execution *write_request_execution);
+
+/**
+ * Retrieve the write-response from a given write-request execution.
+ *
+ * @param write_request_execution the write-request execution.
+ * @return the write-response.
+ */
+plc4c_write_response *plc4c_write_request_get_response(plc4c_write_request_execution *write_request_execution);
+
+/**
+ * Destroys a given write-request.
+ *
+ * @param write_request the write-request.
+ */
+void plc4c_write_request_destroy(plc4c_write_request *write_request);
+
+/**
+ * Destroys a given write-request execution.
+ *
+ * @param write_request_execution the write-request execution.
+ */
+void plc4c_write_request_execution_destroy(plc4c_write_request_execution *write_request_execution);
 
 #ifdef __cplusplus
 }
