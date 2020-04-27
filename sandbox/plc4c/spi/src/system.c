@@ -76,12 +76,10 @@ void plc4c_system_shutdown(plc4c_system *system) {
 
 }
 
-plc4c_promise* plc4c_system_connect(plc4c_system *system,
+return_code plc4c_system_connect(plc4c_system *system,
                                    const char *connectionString,
                                    plc4c_connection **connection) {
-    plc4c_promise* result = (plc4c_promise*) malloc(sizeof(plc4c_promise));
-    result->returnCode = UNFINISHED;
-    return result;
+    return OK;
 }
 
 return_code plc4c_system_loop() {

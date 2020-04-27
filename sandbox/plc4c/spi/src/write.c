@@ -21,9 +21,8 @@
 #include <plc4c/read.h>
 #include <plc4c/spi/types_private.h>
 
-plc4c_promise* plc4c_write_request_execute(plc4c_connection *connection,
-                                          plc4c_write_request *write_request) {
-    plc4c_promise* result = (plc4c_promise*) malloc(sizeof(plc4c_promise));
-    result->returnCode = UNFINISHED;
-    return result;
+return_code plc4c_write_request_execute(plc4c_connection *connection,
+                                           plc4c_write_request *write_request,
+                                           plc4c_write_request_execution **write_request_execution) {
+    return OK;
 }

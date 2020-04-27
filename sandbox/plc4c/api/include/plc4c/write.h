@@ -28,10 +28,12 @@ extern "C" {
  * Actually executes the write-request.
  * @param connection connection this write-request will be executed on.
  * @param write_request the write-request object.
- * @return a plc4c_promise which allows asynchronously handling the request execution.
+ * @param write_request_execution pointer to a data-structure handling one execution of the write-request.
+ * @return return_code
  */
-plc4c_promise* plc4c_write_request_execute(plc4c_connection *connection,
-                                           plc4c_write_request *write_request);
+return_code plc4c_write_request_execute(plc4c_connection *connection,
+                                        plc4c_write_request *write_reques,
+                                        plc4c_write_request_execution **write_request_execution);
 
 #ifdef __cplusplus
 }

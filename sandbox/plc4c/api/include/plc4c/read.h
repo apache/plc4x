@@ -28,10 +28,22 @@ extern "C" {
  * Actually executes the read-request.
  * @param connection connection this read-request will be executed on.
  * @param read_request the read-request object.
- * @return a plc4c_promise which allows asynchronously handling the request execution.
+ * @param read_request_execution pointer to a data-structure handling one execution of the read-request.
+ * @return return_code
  */
-plc4c_promise* plc4c_read_request_execute(plc4c_connection *connection,
-                                          plc4c_read_request *read_request);
+return_code plc4c_read_request_execute(plc4c_connection *connection,
+                                       plc4c_read_request *read_request,
+                                       plc4c_read_request_execution **read_request_execution);
+
+bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read_request_execution);
+
+bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_execution);
+
+plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_execution *read_request_execution);
+
+void plc4c_read_request_destroy(plc4c_read_request *read_request);
+
+void plc4c_read_request_execution_destroy(plc4c_read_request_execution *read_request_execution);
 
 #ifdef __cplusplus
 }

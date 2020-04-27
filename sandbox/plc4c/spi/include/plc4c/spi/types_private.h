@@ -49,28 +49,22 @@ struct plc4c_connection_t {
     bool supports_subscriptions;
 };
 
-struct plc4c_promise_t {
-    return_code returnCode;
-    plc4c_success_callback successCallback;
-    plc4c_failure_callback failureCallback;
-};
-
 struct plc4c_read_request_t {
     plc4c_connection* connection;
     int num_items;
     plc4c_item items[];
 };
 
-struct plc_write_item_t {
-    plc4c_item item;
+struct plc4c_write_item_t {
+    plc4c_item *item;
     void* value;
 };
-typedef struct plc_write_item_t plc_write_item;
+typedef struct plc4c_write_item_t plc4c_write_item;
 
 struct plc4c_write_request_t {
     plc4c_connection* connection;
     int num_items;
-    plc_write_item items[];
+    plc4c_write_item* items;
 };
 
 #endif //PLC4C_SPI_TYPES_PRIVATE_H_

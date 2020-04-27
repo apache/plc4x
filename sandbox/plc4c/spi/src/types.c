@@ -24,23 +24,3 @@ char *plc4c_return_code_to_message(return_code err) {
     return "hurz";
 }
 
-void plc4c_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback) {
-    promise->successCallback = successCallback;
-}
-
-void plc4c_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback) {
-    promise->failureCallback = failureCallback;
-}
-
-bool plc4c_promise_completed(plc4c_promise* promise) {
-    return promise->returnCode != UNFINISHED;
-}
-
-bool plc4c_promise_completed_successfully(plc4c_promise* promise) {
-    return promise->returnCode == OK;
-}
-
-bool plc4c_promise_completed_unsuccessfully(plc4c_promise* promise) {
-    return plc4c_promise_completed(promise) && !plc4c_promise_completed_successfully(promise);
-}
-

@@ -69,60 +69,21 @@ typedef struct plc4c_connection_t plc4c_connection;
 typedef struct plc4c_read_request_t plc4c_read_request;
 
 /**
+ * a plc4c read-request-execution
+ */
+typedef struct plc4c_read_request_execution_t plc4c_read_request_execution;
+
+typedef struct plc4c_read_response_t plc4c_read_response;
+
+/**
  * a plc4c write-request
  */
 typedef struct plc4c_write_request_t plc4c_write_request;
 
 /**
- * Return type for any form of async operation.
+ * a plc4c write-request-execution
  */
-typedef struct plc4c_promise_t plc4c_promise;
-
-/**
- * Callback for any form of successful async operation.
- */
-typedef void (*plc4c_success_callback)(plc4c_promise *promise);
-
-/**
- * Callback for any form of failed async operation.
- */
-typedef void (*plc4c_failure_callback)(plc4c_promise *promise);
-
-/**
- * Function to register a success callback on a given plc4c_promise.
- * @param promise the promise to set the callback on
- * @param successCallback the callback
- */
-void plc4c_promise_set_success_callback(plc4c_promise* promise, plc4c_success_callback successCallback);
-
-/**
- * Function to register a failure callback on a given plc4c_promise.
- * @param promise the promise to set the callback on
- * @param successCallback the callback
- */
-void plc4c_promise_set_failure_callback(plc4c_promise* promise, plc4c_failure_callback failureCallback);
-
-/**
- * Check if a promise is completed
- * @param promise the promise
- * @return true if the promise is in a final state
- */
-bool plc4c_promise_completed(plc4c_promise* promise);
-
-/**
- * Check if a promise is completed successfully
- * @param promise the promise
- * @return true if the promise is the state OK
- */
-bool plc4c_promise_completed_successfully(plc4c_promise* promise);
-
-/**
- * Check if a promise is completed unsuccessfully
- * @param promise the promise
- * @return true if the promise is in a final state other than OK
- */
-bool plc4c_promise_completed_unsuccessfully(plc4c_promise* promise);
-
+typedef struct plc4c_write_request_execution_t plc4c_write_request_execution;
 
 #ifdef __cplusplus
 }

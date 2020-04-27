@@ -21,9 +21,29 @@
 #include <plc4c/read.h>
 #include <plc4c/spi/types_private.h>
 
-plc4c_promise* plc4c_read_request_execute(plc4c_connection *connection,
-                                          plc4c_read_request *read_request) {
-    plc4c_promise* result = (plc4c_promise*) malloc(sizeof(plc4c_promise));
-    result->returnCode = UNFINISHED;
-    return result;
+return_code plc4c_read_request_execute(plc4c_connection *connection,
+        plc4c_read_request *read_request,
+        plc4c_read_request_execution **read_request_execution) {
+    return OK;
 }
+
+bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read_request_execution) {
+    return true;
+}
+
+bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_execution) {
+    return false;
+}
+
+plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_execution *read_request_execution) {
+    return NULL;
+}
+
+void plc4c_read_request_destroy(plc4c_read_request *read_request) {
+    free(read_request);
+}
+
+void plc4c_read_request_execution_destroy(plc4c_read_request_execution *read_request_execution) {
+    free(read_request_execution);
+}
+

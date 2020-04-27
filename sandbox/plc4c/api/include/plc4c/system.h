@@ -164,6 +164,11 @@ void plc4c_system_set_on_disconnection_error(plc4c_system *system,
 void plc4c_system_set_on_loop_error(plc4c_system *system,
                                     plc4c_system_callback_loop_error callback);
 
+/**
+ * Function to manually add a driver to the system.
+ * @param driver instance of the driver
+ * @return return_code
+ */
 return_code plc4c_system_add_driver(plc4c_driver *driver);
 
 /**
@@ -188,9 +193,9 @@ void plc4c_system_shutdown(plc4c_system *system);
  * @param ponter to where the connection object will be created.
  * @return return_code INVALID_CONNECTION_STRING, NO_MEMORY
  */
-plc4c_promise* plc4c_system_connect(plc4c_system *system,
-                                   const char *connectionString,
-                                   plc4c_connection **connection);
+return_code plc4c_system_connect(plc4c_system *system,
+                                 const char *connectionString,
+                                 plc4c_connection **connection);
 
 /**
  * Function to give any drivers the chance to do their work.

@@ -20,10 +20,6 @@
 #include <plc4c/plc4c.h>
 #include <plc4c/driver_simulated.h>
 
-bool loop = true;
-plc4c_system *system = NULL;
-plc4c_connection *connection = NULL;
-
 int numOpenConnections = 0;
 
 /**
@@ -43,34 +39,23 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
     numOpenConnections--;
 }
 
-void onDisconnectSuccess(plc4c_promise *promise) {
-    // Terminate the execution loop.
-    loop = false;
-}
-
-void onReadSuccess(plc4c_promise *promise) {
-    // TODO: Do something with the result.
-
-    plc4c_promise* disconnect_promise = plc4c_connection_disconnect(connection);
-    plc4c_promise_set_success_callback(disconnect_promise, &onDisconnectSuccess);
-}
-
-void onLocalConnectionSuccess(plc4c_promise* promise) {
-    if(plc4c_connection_supports_reading(connection)) {
-        char* addresses[] = {"RANDOM/foo:INTEGER"};
-        plc4c_read_request* read_request = plc4c_connection_create_read_request(connection, 1, addresses);
-        plc4c_promise* read_promise = plc4c_read_request_execute(connection, read_request);
-        // As the read_request is actually executed the next time the plc4c_system_loop
-        // is executed, we can now register some callbacks.
-        plc4c_promise_set_success_callback(read_promise, &onReadSuccess);
-    }
-}
-
-void onLocalConnectionFailure(plc4c_promise* promise) {
-    // TODO: Do something with the error.
-}
+enum plc4c_connection_state_t {
+    PRE_CONNECTION,
+    CONNECTED,
+    READ_REQUEST_SENT,
+    READ_RESPONSE_RECEIVED,
+    DISCONNECTING,
+    DISCONNECTED
+};
+typedef enum plc4c_connection_state_t plc4c_connection_state ;
 
 int main() {
+    bool loop = true;
+    plc4c_system *system = NULL;
+    plc4c_connection *connection = NULL;
+    plc4c_read_request *read_request = NULL;
+    plc4c_read_request_execution *read_request_execution = NULL;
+
     // Create a new uninitialized plc4c_system
     return_code result = plc4c_system_create(&system);
     if (result != OK) {
@@ -96,18 +81,83 @@ int main() {
 
     // Establish connections to remote devices
     // you may or may not care about the connection handle
-    plc4c_promise* connect_promise = plc4c_system_connect(system, "s7://192.168.42.20", &connection);
-    // Register some callbacks to be called as soon as the connection is established or fails.
-    plc4c_promise_set_success_callback(connect_promise, &onLocalConnectionSuccess);
-    plc4c_promise_set_failure_callback(connect_promise, &onLocalConnectionFailure);
-    if (plc4c_promise_completed_unsuccessfully(connect_promise)) {
+    result = plc4c_system_connect(system, "s7://192.168.42.20", &connection);
+    if (result != OK) {
         return -1;
     }
 
     // Central program loop ...
+    plc4c_connection_state state = PRE_CONNECTION;
     while (loop) {
         if (plc4c_system_loop(system) != OK) {
             break;
+        }
+        switch (state) {
+            case PRE_CONNECTION: {
+                // Check if the connection is established:
+                if (plc4c_connection_is_connected(connection)) {
+                    state = CONNECTED;
+                } else if (plc4c_connection_has_error(connection)) {
+                    return -1;
+                }
+                break;
+            }
+            case CONNECTED: {
+                // Create a new read-request.
+                char *addresses[] = {"RANDOM/foo:INTEGER"};
+                result = plc4c_connection_create_read_request(connection, 1, addresses, &read_request);
+                if(result != OK) {
+                    return -1;
+                }
+
+                // Execute the read-request.
+                result = plc4c_read_request_execute(connection, read_request, &read_request_execution);
+                if(result != OK) {
+                    return -1;
+                } else {
+                    state = READ_REQUEST_SENT;
+                }
+                break;
+            }
+            // Wait until the read-request execution is finished.
+            case READ_REQUEST_SENT: {
+                if(plc4c_read_request_finished_successfully(read_request_execution)) {
+                    state = READ_RESPONSE_RECEIVED;
+                } else if(plc4c_read_request_has_error(read_request_execution)) {
+                    return -1;
+                }
+                break;
+            }
+            case READ_RESPONSE_RECEIVED: {
+                // Get the response for the given read-request.
+                plc4c_read_response *response = plc4c_read_request_get_response(read_request_execution);
+
+                // TODO: Do something sensible ...
+
+                // Clean up.
+                plc4c_read_request_execution_destroy(read_request_execution);
+                plc4c_read_request_destroy(read_request);
+
+                // Disconnect.
+                result = plc4c_connection_disconnect(connection);
+                if(result != OK) {
+                    return -1;
+                }
+                state = DISCONNECTING;
+                break;
+            }
+            // Wait until the connection is disconnected
+            case DISCONNECTING: {
+                if(!plc4c_connection_is_connected(connection)) {
+                    plc4c_connection_destroy(connection);
+                    state = DISCONNECTED;
+                }
+                break;
+            }
+            case DISCONNECTED: {
+                // End the loop.
+                loop = false;
+            }
         }
     }
 
