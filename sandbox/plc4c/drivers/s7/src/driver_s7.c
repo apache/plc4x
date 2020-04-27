@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 #include <plc4c/spi/types_private.h>
-#include "plc4c/driver/s7.h"
+#include <plc4c/driver_s7.h>
 
 plc4c_driver *plc4c_driver_s7_create() {
     plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));

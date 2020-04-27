@@ -19,6 +19,7 @@
 
 include_directories("include")
 
+#[[
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-api SHARED ${sources})
@@ -32,3 +33,4 @@ if(BUILD_PHASE STREQUAL test-compile)
     )
     add_test(NAME plc4c-api-test COMMAND plc4c-api-test)
 endif()
+]]
