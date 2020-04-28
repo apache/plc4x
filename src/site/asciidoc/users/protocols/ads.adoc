@@ -52,4 +52,5 @@
 
 === More details on
 For details about the protocol look here: http://www.beckhoff.com/
-https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm[Structure AMS/TCP Packet]
+
+Source: https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm[Structure AMS/TCP Packet]
