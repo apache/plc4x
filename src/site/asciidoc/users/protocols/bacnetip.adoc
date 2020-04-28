@@ -18,3 +18,47 @@
 :icons: font
 
 == BACnet/IP
+=== BACnet (Building Automation and Control Networks)
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`bacnet`
+
+|Name
+2+|BACNET/IP
+
+|Maven Dependency
+2+|
+----
+to be updated (tbu)
+----
+
+|Default Transport:
+2+| `tcp`
+
+|Compatible Transports:
+2+| - `tcp`
+
+
+3+|Supported Operations
+
+|
+| `tbu`
+| 
+
+
+3+|Options
+
+| tbu
+
+|===
+
+=== More details on 
+
+http://www.bacnet.org/[BACnet - A Data Communication Protocol for Building Automation and Control Networks]
+
+
+|===
