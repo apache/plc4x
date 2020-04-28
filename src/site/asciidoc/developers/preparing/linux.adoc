@@ -27,7 +27,7 @@ If you get any successful output, you probably don't need to do anything.
 
 Apt-based systems:
 
- sudo apt-get install git
+ sudo apt install git
 
 Yum based systems:
 
