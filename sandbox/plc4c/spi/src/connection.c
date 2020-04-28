@@ -59,7 +59,7 @@ return_code plc4c_connection_create_write_request(plc4c_connection *connection, 
     new_write_request->items = malloc(num_items * sizeof(plc4c_write_item*));
     for(int i = 0; i < num_items; i++) {
         char* address = addresses[i];
-        plc4c_item* addressItem = connection->driver.parse_address_function(address);
+        plc4c_item* addressItem = connection->driver->parse_address_function(address);
 
         plc4c_write_item* write_item = malloc(sizeof(plc4c_write_item));
         write_item->item = addressItem;

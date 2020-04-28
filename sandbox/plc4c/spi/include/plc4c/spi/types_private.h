@@ -20,51 +20,81 @@
 #define PLC4C_SPI_TYPES_PRIVATE_H_
 
 #include <plc4c/types.h>
+#include <plc4c/system.h>
+
+typedef struct plc4c_item_t plc4c_item;
+typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
+typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
+typedef struct plc4c_write_item_t plc4c_write_item;
+
+typedef plc4c_item *(*plc4c_connection_parse_address_item)(const char *address_string);
 
 struct plc4c_system_t {
-  /* drivers */
+    /* drivers */
+    plc4c_driver_list_item *driver_list_head;
 
-  /* connections */
+    /* connections */
+    plc4c_connection_list_item *connection_list_head;
 
-  /* callbacks */
+    /* callbacks */
+    plc4c_system_on_driver_load_success_callback on_driver_load_success_callback;
+    plc4c_system_on_driver_load_failure_callback on_driver_load_failure_callback;
+    plc4c_system_on_connect_success_callback on_connect_success_callback;
+    plc4c_system_on_connect_failure_callback on_connect_failure_callback;
+    plc4c_system_on_disconnect_success_callback on_disconnect_success_callback;
+    plc4c_system_on_disconnect_failure_callback on_disconnect_failure_callback;
+    plc4c_system_on_loop_failure_callback on_loop_failure_callback;
 };
 
 struct plc4c_item_t {
 };
-typedef struct plc4c_item_t plc4c_item;
-
-typedef plc4c_item* (*plc4c_connection_parse_address_item)(const char *address_string);
 
 struct plc4c_driver_t {
-    char* protocol_code;
-    char* protocol_name;
+    char *protocol_code;
+    char *protocol_name;
+    char *default_transport_code;
     plc4c_connection_parse_address_item parse_address_function;
 };
 
+struct plc4c_driver_list_item_t {
+    plc4c_driver *driver;
+    plc4c_driver_list_item *next;
+};
+
+
 struct plc4c_connection_t {
-    plc4c_driver driver;
-    char* connection_string;
+    const char *connection_string;
+    char *protocol_code;
+    char *transport_code;
+    char *transport_connect_information;
+    char *parameters;
+
+    plc4c_driver* driver;
     bool supports_reading;
     bool supports_writing;
     bool supports_subscriptions;
 };
 
+struct plc4c_connection_list_item_t {
+    plc4c_connection connection;
+    plc4c_connection_list_item *next;
+};
+
 struct plc4c_read_request_t {
-    plc4c_connection* connection;
+    plc4c_connection *connection;
     int num_items;
     plc4c_item items[];
 };
 
 struct plc4c_write_item_t {
     plc4c_item *item;
-    void* value;
+    void *value;
 };
-typedef struct plc4c_write_item_t plc4c_write_item;
 
 struct plc4c_write_request_t {
-    plc4c_connection* connection;
+    plc4c_connection *connection;
     int num_items;
-    plc4c_write_item* items;
+    plc4c_write_item *items;
 };
 
 #endif //PLC4C_SPI_TYPES_PRIVATE_H_

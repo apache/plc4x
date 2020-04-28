@@ -38,6 +38,7 @@ plc4c_driver *plc4c_driver_simulated_create() {
     plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));
     driver->protocol_code = "simulated";
     driver->protocol_name = "Simulated PLC4X Datasource";
+    driver->default_transport_code = "dummy";
     driver->parse_address_function = &plc4c_driver_simulated_parse_address;
     return driver;
 }

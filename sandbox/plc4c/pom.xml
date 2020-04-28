@@ -281,7 +281,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>    </plugins>
+      </plugin>
+    </plugins>
   </build>
 
   <!-- This dependency is just to ensure thrift is built first -->

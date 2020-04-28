@@ -40,7 +40,7 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
 }
 
 enum plc4c_connection_state_t {
-    PRE_CONNECTION,
+    CONNECTING,
     CONNECTED,
     READ_REQUEST_SENT,
     READ_RESPONSE_RECEIVED,
@@ -64,7 +64,7 @@ int main() {
 
     // Manually register the "simulated" driver with the system.
     plc4c_driver *simulatedDriver = plc4c_driver_simulated_create();
-    result = plc4c_system_add_driver(simulatedDriver);
+    result = plc4c_system_add_driver(system, simulatedDriver);
     if (result != OK) {
         return -1;
     }
@@ -76,24 +76,28 @@ int main() {
     }
 
     // Register the global callbacks.
-    plc4c_system_set_on_connection(system, &onGlobalConnect);
-    plc4c_system_set_on_disconnection(system, &onGlobalDisconnect);
+    plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
+    plc4c_system_set_on_disconnect_success_callback(system, &onGlobalDisconnect);
 
     // Establish connections to remote devices
     // you may or may not care about the connection handle
-    result = plc4c_system_connect(system, "s7://192.168.42.20", &connection);
+    result = plc4c_system_connect(system, "simulated://foo", &connection);
     if (result != OK) {
         return -1;
     }
 
     // Central program loop ...
-    plc4c_connection_state state = PRE_CONNECTION;
+    plc4c_connection_state state = CONNECTING;
     while (loop) {
+        // Give plc4c a chance to do something.
+        // This is where all I/O is being done.
         if (plc4c_system_loop(system) != OK) {
             break;
         }
+
+        // Depending on the current state, implement some logic.
         switch (state) {
-            case PRE_CONNECTION: {
+            case CONNECTING: {
                 // Check if the connection is established:
                 if (plc4c_connection_is_connected(connection)) {
                     state = CONNECTED;
@@ -157,6 +161,7 @@ int main() {
             case DISCONNECTED: {
                 // End the loop.
                 loop = false;
+                break;
             }
         }
     }

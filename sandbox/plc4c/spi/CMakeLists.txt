@@ -22,3 +22,13 @@ include_directories("include" "../api/include")
 file(GLOB sources "src/*.c")
 
 add_library(plc4c-spi SHARED ${sources})
+
+if(BUILD_PHASE STREQUAL test-compile)
+    file(GLOB testSources "test/*.c")
+    add_executable(plc4c-spi-test ${testSources} test/system_test.c)
+    target_link_libraries (plc4c-spi-test
+            plc4c-spi
+            unity
+            )
+    add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
+endif()

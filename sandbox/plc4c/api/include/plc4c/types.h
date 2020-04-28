@@ -31,11 +31,16 @@ extern "C" {
 typedef enum return_code {
     UNFINISHED,
     OK,
-    UNKNOWN_ERROR,
     NO_MEMORY,
     INVALID_CONNECTION_STRING,
     NOT_REACHABLE,
     PERMISSION_DENIED,
+
+    NO_DRIVER_AVAILABLE,
+    UNKNOWN_DRIVER,
+    UNSPECIFIED_TRANSPORT,
+
+    UNKNOWN_ERROR,
     INTERNAL_ERROR
 } return_code;
 
