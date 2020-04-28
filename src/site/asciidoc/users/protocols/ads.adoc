@@ -18,5 +18,38 @@
 :icons: font
 
 == ADS/AMS
+=== Structure AMS/TCP Packet
 
+[cols=1*]
+|===
+| AMS/TCP Header
+
+| AMS Header
+
+| ADS Data
+
+|===
+
+[%header, cols=3*]
+|===
+| Data array
+| Size
+| Description
+
+| AMS/TCP Header
+| 6 bytes
+| contains the length of the data packet.
+
+| AMS Header
+| 32 bytes
+| The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
+
+| ADS Data
+| n bytes
+| The ADS data range contains the parameter of the single ADS commands. The structure of the data array depends on the ADS command. Some ADS commands require no additional data.
+
+|===
+
+=== More details on
 For details about the protocol look here: http://www.beckhoff.com/
+https://infosys.beckhoff.com/english.php?content=../content/1033/tcadsamsspec/html/tcadsamsspec_intro.htm[Structure AMS/TCP Packet]
