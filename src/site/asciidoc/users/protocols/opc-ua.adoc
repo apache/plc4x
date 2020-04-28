@@ -18,3 +18,57 @@
 :icons: font
 
 == OPC UA
+=== Connection String Options
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`opcua`
+
+|Name
+2+|OPC UA
+
+|Maven Dependency
+2+|
+----
+to be updated (tbu)
+----
+
+|Default Transport:
+2+| `tcp`
+
+|Compatible Transports:
+2+| - `tcp`
+
+
+3+|Supported Operations
+
+|
+| `tbu`
+| 
+
+
+3+|Options
+
+| tbu
+
+|===
+
+=== More details on OPC UA
+
+https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
+The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
+
+This multi-layered approach accomplishes the original design specification goals of:
+
+* Functional equivalence: all COM OPC Classic specifications are mapped to UA
+* Platform independence: from an embedded micro-controller to cloud-based infrastructure
+* Secure: encryption, authentication, and auditing
+* Extensible: ability to add new features without affecting existing applications
+* Comprehensive information modeling: for defining complex information
+=== More details
+https://projects.eclipse.org/projects/iot.milo[Eclipse Milo - Project]
+
+|===
