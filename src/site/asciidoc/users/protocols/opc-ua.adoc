@@ -68,6 +68,7 @@ This multi-layered approach accomplishes the original design specification goals
 * Secure: encryption, authentication, and auditing
 * Extensible: ability to add new features without affecting existing applications
 * Comprehensive information modeling: for defining complex information
+
 === More details
 https://projects.eclipse.org/projects/iot.milo[Eclipse Milo - Project]
 
