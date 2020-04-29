@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,13 +15,15 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
 
-include_directories("../../api/include" "../../drivers/simulated/include" "../../transports/dummy/include")
+#include <stdlib.h>
+#include <plc4c/spi/types_private.h>
+#include <plc4c/transport_dummy.h>
 
-file(GLOB sources "src/*.c")
+plc4c_transport *plc4c_transport_dummy_create() {
+    plc4c_transport* transport = (plc4c_transport*) malloc(sizeof(plc4c_transport));
+    transport->transport_code = "dummy";
+    return transport;
+}
 
-add_executable(plc4c-examples-hello-world ${sources} src/hello_world.c)
-
-target_link_libraries (plc4c-examples-hello-world
-        plc4c-spi plc4c-driver-simulated plc4c-transport-dummy)

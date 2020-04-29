@@ -19,6 +19,8 @@
 #include <stdio.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/driver_simulated.h>
+#include <plc4c/transport_dummy.h>
+
 
 int numOpenConnections = 0;
 
@@ -63,8 +65,14 @@ int main() {
     }
 
     // Manually register the "simulated" driver with the system.
-    plc4c_driver *simulatedDriver = plc4c_driver_simulated_create();
-    result = plc4c_system_add_driver(system, simulatedDriver);
+    plc4c_driver *simulated_driver = plc4c_driver_simulated_create();
+    result = plc4c_system_add_driver(system, simulated_driver);
+    if (result != OK) {
+        return -1;
+    }
+
+    plc4c_transport *dummy_transport = plc4c_transport_dummy_create();
+    result = plc4c_system_add_transport(system, dummy_transport);
     if (result != OK) {
         return -1;
     }

@@ -17,11 +17,11 @@
   under the License.
 ]]
 
-include_directories("../../api/include" "../../drivers/simulated/include" "../../transports/dummy/include")
+include_directories("include" "../../api/include" "../../spi/include")
 
+# Add the sources
 file(GLOB sources "src/*.c")
 
-add_executable(plc4c-examples-hello-world ${sources} src/hello_world.c)
+add_library(plc4c-transport-dummy ${sources})
 
-target_link_libraries (plc4c-examples-hello-world
-        plc4c-spi plc4c-driver-simulated plc4c-transport-dummy)
+target_link_libraries (plc4c-transport-dummy ${CMAKE_DL_LIBS})

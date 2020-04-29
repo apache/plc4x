@@ -17,7 +17,6 @@
  * under the License.
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <plc4c/system.h>
@@ -89,7 +88,7 @@ return_code plc4c_system_add_driver(plc4c_system *system,
         system->driver_list_head->driver = driver;
         system->driver_list_head->next = NULL;
     }
-        // Drivers are already listed, add the currentdriver to the end of the list.
+    // Drivers are already listed, add the current driver to the end of the list.
     else {
         // Go to the last driver in the list.
         while (cur_driver->next != NULL) {
@@ -104,6 +103,71 @@ return_code plc4c_system_add_driver(plc4c_system *system,
     return OK;
 }
 
+return_code plc4c_system_add_transport(plc4c_system *system,
+                                       plc4c_transport *transport) {
+    // If the system is not initialized, return an error.
+    // There is nothing we can do here.
+    if (system == NULL) {
+        return INTERNAL_ERROR;
+    }
+
+    // Get the first element of the transport list.
+    plc4c_transport_list_item *cur_transport = system->transport_list_head;
+
+    // If the transport list is empty. Start a new list of transports.
+    if (cur_transport == NULL) {
+        system->transport_list_head = malloc(sizeof(plc4c_transport_list_item));
+        system->transport_list_head->transport = transport;
+        system->transport_list_head->next = NULL;
+    }
+        // Transports are already listed, add the current transport to the end of the list.
+    else {
+        // Go to the last transport in the list.
+        while (cur_transport->next != NULL) {
+            cur_transport = cur_transport->next;
+        }
+
+        // Add a new transport item to the end of the list.
+        cur_transport->next = malloc(sizeof(plc4c_driver_list_item));
+        cur_transport->next->transport = transport;
+        cur_transport->next->next = NULL;
+    }
+    return OK;
+}
+
+return_code plc4c_system_add_connection(plc4c_system *system, plc4c_connection *connection) {
+    // If the system is not initialized, return an error.
+    // There is nothing we can do here.
+    if (system == NULL) {
+        return INTERNAL_ERROR;
+    }
+
+    // Get the first element of the connection list.
+    plc4c_connection_list_item *cur_connection = system->connection_list_head;
+
+    // If the connection list is empty. Start a new list of connections.
+    if (cur_connection == NULL) {
+        system->connection_list_head = malloc(sizeof(plc4c_transport_list_item));
+        system->connection_list_head->connection = connection;
+        system->connection_list_head->next = NULL;
+        system->connection_list_head->prev = NULL;
+    }
+        // Connections are already listed, add the current connection to the end of the list.
+    else {
+        // Go to the last connection in the list.
+        while (cur_connection->next != NULL) {
+            cur_connection = cur_connection->next;
+        }
+
+        // Add a new connection item to the end of the list.
+        cur_connection->next = malloc(sizeof(plc4c_driver_list_item));
+        cur_connection->next->connection = connection;
+        cur_connection->next->next = NULL;
+        cur_connection->next->prev = cur_connection->next;
+    }
+    return OK;
+}
+
 return_code plc4c_system_init(plc4c_system *system) {
     // Nothing to really do at the moment.
 
@@ -114,34 +178,26 @@ void plc4c_system_shutdown(plc4c_system *system) {
 
 }
 
-enum connection_string_parser_state {
-    PROTOCOL_CODE,
-    TRANSPORT_CODE,
-    TRANSPORT_CONNECTION_INFORMATION,
-    PARAMETERS,
-    FINISHED
-};
-
-return_code plc4c_system_create_connection(char *connection_string, plc4c_connection** connection) {
+return_code plc4c_system_create_connection(char *connection_string, plc4c_connection **connection) {
     // Count the number of colons and question-marks so we know which pattern to use for
     // matching and how large the arrays for containing the different segments should be.
     int num_colons = 0;
     int num_question_marks = 0;
-    char* protocol_code = NULL;
-    char* transport_code = NULL;
-    char* transport_connect_information = NULL;
-    char* parameters = NULL;
+    char *protocol_code = NULL;
+    char *transport_code = NULL;
+    char *transport_connect_information = NULL;
+    char *parameters = NULL;
     int start_segment_index = 0;
-    char* start_segment = connection_string;
+    char *start_segment = connection_string;
     // The connection string has two parts ... the first, where colons are the delimiters
     // and the second where a question mark is the delimiter.
     enum mode {
         SEARCHING_FOR_COLONS,
         SEARCHING_FOR_QUESTION_MARKS
     } mode = SEARCHING_FOR_COLONS;
-    for(int i = 0; i <= strlen(connection_string); i++) {
+    for (int i = 0; i <= strlen(connection_string); i++) {
         // If we're in the first part of the connection string ... watch out for colons.
-        if(mode == SEARCHING_FOR_COLONS) {
+        if (mode == SEARCHING_FOR_COLONS) {
             // If we encounter a colon, depending on the number of colons already found, save the information in
             // either the protocol code or transport code variable.
             if (*(connection_string + i) == ':') {
@@ -160,8 +216,8 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
                     // If the following character would be a slash, we're probably finished and no transport code is
                     // provided. If this is the case, ensure it's actually a double-slash and if this is the case
                     // switch to the question-mark searching mode.
-                    if(*start_segment == '/') {
-                        if(*(start_segment + 1) == '/') {
+                    if (*start_segment == '/') {
+                        if (*(start_segment + 1) == '/') {
                             mode = SEARCHING_FOR_QUESTION_MARKS;
                             start_segment_index += 2;
                             start_segment += 2;
@@ -170,7 +226,7 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
                         }
                     }
                 }
-                // If we encountered a second colon, this is the transport code.
+                    // If we encountered a second colon, this is the transport code.
                 else if (num_colons == 2) {
                     // Allocate enough memory to hold the sub-string.
                     transport_code = malloc(sizeof(char) * ((i - start_segment_index) + 1));
@@ -183,7 +239,7 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
 
                     // The transport code is always followed by "://". So check if this is the case.
                     // If it is, switch to question-mark searching mode.
-                    if((*start_segment != '/') || (*(start_segment + 1) != '/')) {
+                    if ((*start_segment != '/') || (*(start_segment + 1) != '/')) {
                         return INVALID_CONNECTION_STRING;
                     }
                     mode = SEARCHING_FOR_QUESTION_MARKS;
@@ -196,7 +252,7 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
                 }
             }
         }
-        // If we're in the second part, look for question marks.
+            // If we're in the second part, look for question marks.
         else {
             // The question-mark separates the transport connect information from the parameters.
             if (*(connection_string + i) == '?') {
@@ -223,7 +279,7 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
                     transport_connect_information = malloc(sizeof(char) * ((i - start_segment_index) + 1));
                     strlcpy(transport_connect_information, start_segment, (i - start_segment_index) + 1);
                 }
-                // I a question-mark was found, this is the paramters section.
+                    // I a question-mark was found, this is the paramters section.
                 else {
                     parameters = malloc(sizeof(char) * (i - start_segment_index));
                     strlcpy(parameters, start_segment, (i - start_segment_index) + 1);
@@ -231,12 +287,12 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
             }
         }
     }
-    if(num_colons == 0) {
+    if (num_colons == 0) {
         return INVALID_CONNECTION_STRING;
     }
 
     // Initialize a new connection data-structure with the parsed information.
-    plc4c_connection* new_connection = malloc(sizeof(plc4c_connection));
+    plc4c_connection *new_connection = malloc(sizeof(plc4c_connection));
     new_connection->connection_string = connection_string;
     new_connection->protocol_code = protocol_code;
     new_connection->transport_code = transport_code;
@@ -252,17 +308,17 @@ return_code plc4c_system_connect(plc4c_system *system,
                                  plc4c_connection **connection) {
 
     // Parse the connection string and initialize some of the connection field variables from this.
-    plc4c_connection* new_connection = NULL;
+    plc4c_connection *new_connection = NULL;
     return_code result = plc4c_system_create_connection(connection_string, &new_connection);
-    if(result != OK) {
+    if (result != OK) {
         return result;
     }
 
     // Find a matching driver from the driver-list
-    plc4c_driver_list_item* cur_driver_list_item = system->driver_list_head;
-    // If no driver is available at all this is devinitely a developer error,
+    plc4c_driver_list_item *cur_driver_list_item = system->driver_list_head;
+    // If no driver is available at all this is definitely a developer error,
     // so we output a special error code for this case
-    if(cur_driver_list_item == NULL) {
+    if (cur_driver_list_item == NULL) {
         return NO_DRIVER_AVAILABLE;
     }
     do {
@@ -270,8 +326,8 @@ return_code plc4c_system_connect(plc4c_system *system,
             // Set the driver reference in the new connection.
             new_connection->driver = cur_driver_list_item->driver;
             // If no transport was selected, use the drivers default transport (if it exists).
-            if(new_connection->transport_code == NULL) {
-                if(cur_driver_list_item->driver->default_transport_code != NULL) {
+            if (new_connection->transport_code == NULL) {
+                if (cur_driver_list_item->driver->default_transport_code != NULL) {
                     new_connection->transport_code = cur_driver_list_item->driver->default_transport_code;
                 }
             }
@@ -281,13 +337,40 @@ return_code plc4c_system_connect(plc4c_system *system,
     } while (cur_driver_list_item != NULL);
 
     // If the driver property is still NULL, the desired driver was not found.
-    if(new_connection->driver == NULL) {
+    if (new_connection->driver == NULL) {
         return UNKNOWN_DRIVER;
     }
 
     // Return an error if the user didn't specify a transport and the driver doesn't have a default one.
-    if(new_connection->transport_code == NULL) {
+    if (new_connection->transport_code == NULL) {
         return UNSPECIFIED_TRANSPORT;
+    }
+
+    // Find a matching transports from the transport-list
+    plc4c_transport_list_item *cur_transport_list_item = system->transport_list_head;
+    // If no transport is available at all this is definitely a developer error,
+    // so we output a special error code for this case
+    if (cur_transport_list_item == NULL) {
+        return NO_TRANSPORT_AVAILABLE;
+    }
+    do {
+        if (strcmp(cur_transport_list_item->transport->transport_code, new_connection->transport_code) == 0) {
+            // Set the transport reference in the new connection.
+            new_connection->transport = cur_transport_list_item->transport;
+            break;
+        }
+        cur_transport_list_item = cur_transport_list_item->next;
+    } while (cur_transport_list_item != NULL);
+
+    // If the transport property is still NULL, the desired transport was not found.
+    if (new_connection->transport == NULL) {
+        return UNKNOWN_TRANSPORT;
+    }
+
+    // Add the new connection to the systems connection-list.
+    result = plc4c_system_add_connection(system, new_connection);
+    if (result != OK) {
+        return result;
     }
 
     // Pass the new connection back.

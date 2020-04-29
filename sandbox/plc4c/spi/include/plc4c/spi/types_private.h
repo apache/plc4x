@@ -73,7 +73,7 @@ struct plc4c_transport_t {
 };
 
 struct plc4c_transport_list_item_t {
-    plc4c_transport *driver;
+    plc4c_transport *transport;
     plc4c_transport_list_item *next;
 };
 
@@ -86,13 +86,14 @@ struct plc4c_connection_t {
     char *parameters;
 
     plc4c_driver* driver;
+    plc4c_transport* transport;
     bool supports_reading;
     bool supports_writing;
     bool supports_subscriptions;
 };
 
 struct plc4c_connection_list_item_t {
-    plc4c_connection connection;
+    plc4c_connection *connection;
     plc4c_connection_list_item *prev;
     plc4c_connection_list_item *next;
 };

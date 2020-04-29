@@ -192,6 +192,16 @@ return_code plc4c_system_add_driver(plc4c_system *system,
                                     plc4c_driver *driver);
 
 /**
+ * Function to manually add a transport to the system.
+ *
+ * @param system the system the transport should be added to.
+ * @param transport instance of the transport
+ * @return return_code
+ */
+return_code plc4c_system_add_transport(plc4c_system *system,
+                                       plc4c_transport *transport);
+
+/**
  * Function to initialize the PLC4C system (Initialize the driver manager and the list of enabled drivers)
  *
  * @param system
