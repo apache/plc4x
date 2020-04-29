@@ -51,6 +51,8 @@ enum plc4c_connection_state_t {
 };
 typedef enum plc4c_connection_state_t plc4c_connection_state ;
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
 int main() {
     bool loop = true;
     plc4c_system *system = NULL;
@@ -182,3 +184,4 @@ int main() {
 
     return 0;
 }
+#pragma clang diagnostic pop

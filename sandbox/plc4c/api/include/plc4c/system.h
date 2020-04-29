@@ -234,9 +234,10 @@ return_code plc4c_system_connect(plc4c_system *system,
  * In single-threaded environments we can't operate with event
  * handler loops as they would block the rest of the application.
  *
+ * @param system the system instance
  * @return return_code
  */
-return_code plc4c_system_loop();
+return_code plc4c_system_loop(plc4c_system *system);
 
 #ifdef __cplusplus
 }

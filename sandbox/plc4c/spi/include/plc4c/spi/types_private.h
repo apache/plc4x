@@ -21,6 +21,8 @@
 
 #include <plc4c/types.h>
 #include <plc4c/system.h>
+#include <plc4c/utils/list.h>
+#include <plc4c/utils/queue.h>
 
 typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
@@ -30,15 +32,24 @@ typedef struct plc4c_write_item_t plc4c_write_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(const char *address_string);
 
+typedef struct plc4c_system_task_t plc4c_system_task;
+typedef plc4c_item (*plc4c_system_task_state_machine_function)(plc4c_system_task* task);
+typedef return_code (*plc4c_connection_connect_function)(plc4c_system *system, plc4c_connection *connection, plc4c_system_task** task);
+typedef return_code (*plc4c_connection_read_function)(plc4c_system *system, plc4c_connection *connection, plc4c_read_request *read_request, plc4c_system_task** task);
+typedef return_code (*plc4c_connection_write_function)(plc4c_system *system, plc4c_connection *connection, plc4c_write_request *write_request, plc4c_system_task** task);
+
 struct plc4c_system_t {
     /* drivers */
-    plc4c_driver_list_item *driver_list_head;
+    plc4c_list *driver_list;
 
     /* transports */
-    plc4c_transport_list_item *transport_list_head;
+    plc4c_list *transport_list;
 
     /* connections */
-    plc4c_connection_list_item *connection_list_head;
+    plc4c_list *connection_list;
+
+    /* tasks */
+    plc4c_list *task_list;
 
     /* callbacks */
     plc4c_system_on_driver_load_success_callback on_driver_load_success_callback;
@@ -58,6 +69,9 @@ struct plc4c_driver_t {
     char *protocol_name;
     char *default_transport_code;
     plc4c_connection_parse_address_item parse_address_function;
+    plc4c_connection_connect_function connect_function;
+    plc4c_connection_read_function read_function;
+    plc4c_connection_write_function write_function;
 };
 
 struct plc4c_driver_list_item_t {
@@ -114,6 +128,13 @@ struct plc4c_write_request_t {
     plc4c_connection *connection;
     int num_items;
     plc4c_write_item *items;
+};
+
+struct plc4c_system_task_t {
+    int state_id;
+    plc4c_system_task_state_machine_function state_machine_function;
+    void* context;
+    bool completed;
 };
 
 #endif //PLC4C_SPI_TYPES_PRIVATE_H_

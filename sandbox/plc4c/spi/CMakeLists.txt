@@ -19,9 +19,9 @@
 
 include_directories("include" "../api/include")
 
-file(GLOB sources "src/*.c")
+file(GLOB_RECURSE sources "src/*.c")
 
-add_library(plc4c-spi SHARED ${sources})
+add_library(plc4c-spi SHARED ${sources} "src/utils/list.c" "src/utils/queue.c")
 
 if(BUILD_PHASE STREQUAL test-compile)
     file(GLOB testSources "test/*.c")

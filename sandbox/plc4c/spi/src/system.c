@@ -25,8 +25,25 @@
 
 return_code plc4c_system_create(plc4c_system **system) {
     plc4c_system *new_system = malloc(sizeof(plc4c_system));
-    new_system->driver_list_head = NULL;
-    new_system->connection_list_head = NULL;
+
+    plc4c_list *new_list = NULL;
+    plc4c_utils_list_create(&new_list);
+    new_system->driver_list = new_list;
+    plc4c_utils_list_create(&new_list);
+    new_system->transport_list = new_list;
+    plc4c_utils_list_create(&new_list);
+    new_system->connection_list = new_list;
+    plc4c_utils_list_create(&new_list);
+    new_system->task_list = new_list;
+
+    new_system->on_driver_load_success_callback = NULL;
+    new_system->on_driver_load_failure_callback = NULL;
+    new_system->on_connect_success_callback = NULL;
+    new_system->on_connect_failure_callback = NULL;
+    new_system->on_disconnect_success_callback = NULL;
+    new_system->on_disconnect_failure_callback = NULL;
+    new_system->on_loop_failure_callback = NULL;
+
     *system = new_system;
     return OK;
 }
@@ -79,27 +96,8 @@ return_code plc4c_system_add_driver(plc4c_system *system,
         return INTERNAL_ERROR;
     }
 
-    // Get the first element of the driver list.
-    plc4c_driver_list_item *cur_driver = system->driver_list_head;
+    plc4c_utils_list_insert_tail_value(system->driver_list, driver);
 
-    // If the driver list is empty. Start a new list of drivers.
-    if (cur_driver == NULL) {
-        system->driver_list_head = malloc(sizeof(plc4c_driver_list_item));
-        system->driver_list_head->driver = driver;
-        system->driver_list_head->next = NULL;
-    }
-    // Drivers are already listed, add the current driver to the end of the list.
-    else {
-        // Go to the last driver in the list.
-        while (cur_driver->next != NULL) {
-            cur_driver = cur_driver->next;
-        }
-
-        // Add a new driver item to the end of the list.
-        cur_driver->next = malloc(sizeof(plc4c_driver_list_item));
-        cur_driver->next->driver = driver;
-        cur_driver->next->next = NULL;
-    }
     return OK;
 }
 
@@ -111,27 +109,8 @@ return_code plc4c_system_add_transport(plc4c_system *system,
         return INTERNAL_ERROR;
     }
 
-    // Get the first element of the transport list.
-    plc4c_transport_list_item *cur_transport = system->transport_list_head;
+    plc4c_utils_list_insert_tail_value(system->transport_list, transport);
 
-    // If the transport list is empty. Start a new list of transports.
-    if (cur_transport == NULL) {
-        system->transport_list_head = malloc(sizeof(plc4c_transport_list_item));
-        system->transport_list_head->transport = transport;
-        system->transport_list_head->next = NULL;
-    }
-        // Transports are already listed, add the current transport to the end of the list.
-    else {
-        // Go to the last transport in the list.
-        while (cur_transport->next != NULL) {
-            cur_transport = cur_transport->next;
-        }
-
-        // Add a new transport item to the end of the list.
-        cur_transport->next = malloc(sizeof(plc4c_driver_list_item));
-        cur_transport->next->transport = transport;
-        cur_transport->next->next = NULL;
-    }
     return OK;
 }
 
@@ -142,29 +121,8 @@ return_code plc4c_system_add_connection(plc4c_system *system, plc4c_connection *
         return INTERNAL_ERROR;
     }
 
-    // Get the first element of the connection list.
-    plc4c_connection_list_item *cur_connection = system->connection_list_head;
+    plc4c_utils_list_insert_tail_value(system->connection_list, connection);
 
-    // If the connection list is empty. Start a new list of connections.
-    if (cur_connection == NULL) {
-        system->connection_list_head = malloc(sizeof(plc4c_transport_list_item));
-        system->connection_list_head->connection = connection;
-        system->connection_list_head->next = NULL;
-        system->connection_list_head->prev = NULL;
-    }
-        // Connections are already listed, add the current connection to the end of the list.
-    else {
-        // Go to the last connection in the list.
-        while (cur_connection->next != NULL) {
-            cur_connection = cur_connection->next;
-        }
-
-        // Add a new connection item to the end of the list.
-        cur_connection->next = malloc(sizeof(plc4c_driver_list_item));
-        cur_connection->next->connection = connection;
-        cur_connection->next->next = NULL;
-        cur_connection->next->prev = cur_connection->next;
-    }
     return OK;
 }
 
@@ -314,27 +272,31 @@ return_code plc4c_system_connect(plc4c_system *system,
         return result;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Find a matching driver from the driver-list
-    plc4c_driver_list_item *cur_driver_list_item = system->driver_list_head;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // If no driver is available at all this is definitely a developer error,
     // so we output a special error code for this case
-    if (cur_driver_list_item == NULL) {
+    if (plc4c_utils_list_empty(system->driver_list)) {
         return NO_DRIVER_AVAILABLE;
     }
+    plc4c_list_element *cur_driver_list_element = system->driver_list->head;
     do {
-        if (strcmp(cur_driver_list_item->driver->protocol_code, new_connection->protocol_code) == 0) {
+        plc4c_driver *cur_driver = (plc4c_driver*) cur_driver_list_element->value;
+        if (strcmp(cur_driver->protocol_code, new_connection->protocol_code) == 0) {
             // Set the driver reference in the new connection.
-            new_connection->driver = cur_driver_list_item->driver;
+            new_connection->driver = cur_driver;
             // If no transport was selected, use the drivers default transport (if it exists).
             if (new_connection->transport_code == NULL) {
-                if (cur_driver_list_item->driver->default_transport_code != NULL) {
-                    new_connection->transport_code = cur_driver_list_item->driver->default_transport_code;
+                if (cur_driver->default_transport_code != NULL) {
+                    new_connection->transport_code = cur_driver->default_transport_code;
                 }
             }
             break;
         }
-        cur_driver_list_item = cur_driver_list_item->next;
-    } while (cur_driver_list_item != NULL);
+        cur_driver_list_element = cur_driver_list_element->next;
+    } while (cur_driver_list_element != NULL);
 
     // If the driver property is still NULL, the desired driver was not found.
     if (new_connection->driver == NULL) {
@@ -346,28 +308,46 @@ return_code plc4c_system_connect(plc4c_system *system,
         return UNSPECIFIED_TRANSPORT;
     }
 
-    // Find a matching transports from the transport-list
-    plc4c_transport_list_item *cur_transport_list_item = system->transport_list_head;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Find a matching transport from the transport-list
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // If no transport is available at all this is definitely a developer error,
     // so we output a special error code for this case
-    if (cur_transport_list_item == NULL) {
+    if (plc4c_utils_list_empty(system->transport_list)) {
         return NO_TRANSPORT_AVAILABLE;
     }
+    plc4c_list_element *cur_transport_list_element = system->transport_list->head;
     do {
-        if (strcmp(cur_transport_list_item->transport->transport_code, new_connection->transport_code) == 0) {
+        plc4c_transport *cur_transport = (plc4c_transport*) cur_transport_list_element->value;
+        if (strcmp(cur_transport->transport_code, new_connection->transport_code) == 0) {
             // Set the transport reference in the new connection.
-            new_connection->transport = cur_transport_list_item->transport;
+            new_connection->transport = cur_transport;
             break;
         }
-        cur_transport_list_item = cur_transport_list_item->next;
-    } while (cur_transport_list_item != NULL);
+        cur_transport_list_element = cur_transport_list_element->next;
+    } while (cur_transport_list_element != NULL);
 
     // If the transport property is still NULL, the desired transport was not found.
     if (new_connection->transport == NULL) {
         return UNKNOWN_TRANSPORT;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Initialize a new connection task and schedule that.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    plc4c_system_task *new_connection_task = NULL;
+    result = new_connection->driver->connect_function(system, new_connection, &new_connection_task);
+    if(result != OK) {
+        return -1;
+    }
+    plc4c_utils_list_insert_tail_value(system->task_list, new_connection_task);
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Add the new connection to the systems connection-list.
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     result = plc4c_system_add_connection(system, new_connection);
     if (result != OK) {
         return result;
@@ -379,7 +359,33 @@ return_code plc4c_system_connect(plc4c_system *system,
     return OK;
 }
 
-return_code plc4c_system_loop() {
+return_code plc4c_system_loop(plc4c_system *system) {
+    // If the task-queue is empty, just return.
+    if(plc4c_utils_list_empty(system->task_list)) {
+        return OK;
+    }
+
+    plc4c_list_element *cur_task_element = plc4c_utils_list_head(system->task_list);
+    do {
+        // Get the current element's system task.
+        plc4c_system_task *cur_task = cur_task_element->value;
+
+        // If the task is already completed, no need to do anything.
+        if((!cur_task->completed) && (cur_task->state_machine_function != NULL)) {
+            // Pass the task itself to the state-machine function of this task.
+            cur_task->state_machine_function(cur_task);
+        }
+
+        // If the current task is completed at the end, remove it from the task_queue.
+        if(cur_task->completed) {
+            plc4c_utils_list_remove(system->task_list, cur_task_element);
+
+            // TODO: clean up the memory of the cur_task_element and cur_task
+        }
+
+        cur_task_element = cur_task_element->next;
+    } while (cur_task_element != NULL);
+
     return OK;
 }
 

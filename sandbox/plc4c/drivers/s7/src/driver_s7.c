@@ -27,6 +27,8 @@ plc4c_driver *plc4c_driver_s7_create() {
     driver->protocol_name = "Siemens S7 (Basic)";
     driver->default_transport_code = "tcp";
     driver->parse_address_function = NULL;
+    driver->read_function = NULL;
+    driver->write_function = NULL;
     return driver;
 }
 
