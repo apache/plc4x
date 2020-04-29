@@ -27,13 +27,13 @@ void setUp(void) {
 void tearDown(void) {
 }
 
-void test_system_plc4c_system_create_connection_args(const char *connection_string,
+void test_system_plc4c_system_create_connection_args(char *connection_string,
                                                      return_code expected_return_code,
-                                                     const char *expected_connection_string,
-                                                     const char *expected_protocol_code,
-                                                     const char *expected_transport_code,
-                                                     const char *expected_transport_connect_information,
-                                                     const char *expected_parameters) {
+                                                     char *expected_connection_string,
+                                                     char *expected_protocol_code,
+                                                     char *expected_transport_code,
+                                                     char *expected_transport_connect_information,
+                                                     char *expected_parameters) {
     plc4c_connection *connection = NULL;
     return_code result = plc4c_system_create_connection(connection_string, &connection);
     TEST_ASSERT_EQUAL(expected_return_code, result);

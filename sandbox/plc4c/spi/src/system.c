@@ -122,7 +122,7 @@ enum connection_string_parser_state {
     FINISHED
 };
 
-return_code plc4c_system_create_connection(const char *connection_string, plc4c_connection** connection) {
+return_code plc4c_system_create_connection(char *connection_string, plc4c_connection** connection) {
     // Count the number of colons and question-marks so we know which pattern to use for
     // matching and how large the arrays for containing the different segments should be.
     int num_colons = 0;
@@ -132,7 +132,7 @@ return_code plc4c_system_create_connection(const char *connection_string, plc4c_
     char* transport_connect_information = NULL;
     char* parameters = NULL;
     int start_segment_index = 0;
-    const char* start_segment = connection_string;
+    char* start_segment = connection_string;
     // The connection string has two parts ... the first, where colons are the delimiters
     // and the second where a question mark is the delimiter.
     enum mode {
@@ -181,7 +181,7 @@ return_code plc4c_system_create_connection(const char *connection_string, plc4c_
                     start_segment_index = i + 1;
                     start_segment = connection_string + start_segment_index;
 
-                    // The transport code is allways followed by "://". So check if this is the case.
+                    // The transport code is always followed by "://". So check if this is the case.
                     // If it is, switch to question-mark searching mode.
                     if((*start_segment != '/') || (*(start_segment + 1) != '/')) {
                         return INVALID_CONNECTION_STRING;
@@ -248,7 +248,7 @@ return_code plc4c_system_create_connection(const char *connection_string, plc4c_
 }
 
 return_code plc4c_system_connect(plc4c_system *system,
-                                 const char *connection_string,
+                                 char *connection_string,
                                  plc4c_connection **connection) {
 
     // Parse the connection string and initialize some of the connection field variables from this.

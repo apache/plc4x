@@ -24,6 +24,7 @@
 
 typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
+typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
 typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
 typedef struct plc4c_write_item_t plc4c_write_item;
 
@@ -32,6 +33,9 @@ typedef plc4c_item *(*plc4c_connection_parse_address_item)(const char *address_s
 struct plc4c_system_t {
     /* drivers */
     plc4c_driver_list_item *driver_list_head;
+
+    /* transports */
+    plc4c_transport_list_item *transport_list_head;
 
     /* connections */
     plc4c_connection_list_item *connection_list_head;
@@ -62,8 +66,20 @@ struct plc4c_driver_list_item_t {
 };
 
 
+struct plc4c_transport_t {
+    char *transport_code;
+
+    // TODO: add the send and receive function references here ...
+};
+
+struct plc4c_transport_list_item_t {
+    plc4c_transport *driver;
+    plc4c_transport_list_item *next;
+};
+
+
 struct plc4c_connection_t {
-    const char *connection_string;
+    char *connection_string;
     char *protocol_code;
     char *transport_code;
     char *transport_connect_information;
@@ -77,8 +93,10 @@ struct plc4c_connection_t {
 
 struct plc4c_connection_list_item_t {
     plc4c_connection connection;
+    plc4c_connection_list_item *prev;
     plc4c_connection_list_item *next;
 };
+
 
 struct plc4c_read_request_t {
     plc4c_connection *connection;

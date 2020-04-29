@@ -63,6 +63,11 @@ typedef struct plc4c_system_t plc4c_system;
 typedef struct plc4c_driver_t plc4c_driver;
 
 /**
+ * The plc4c_transport.
+ */
+typedef struct plc4c_transport_t plc4c_transport;
+
+/**
  * The plc4c_connection.
  */
 typedef struct plc4c_connection_t plc4c_connection;

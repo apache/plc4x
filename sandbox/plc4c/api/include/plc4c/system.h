@@ -45,7 +45,7 @@ typedef void (*plc4c_system_on_driver_load_success_callback)(plc4c_driver *drive
  * @param driver_name
  * @param error_code
  */
-typedef void (*plc4c_system_on_driver_load_failure_callback)(const char *driver_name, return_code error);
+typedef void (*plc4c_system_on_driver_load_failure_callback)(char *driver_name, return_code error);
 
 /**
  * Function pointer for a callback called when is successfully made
@@ -62,7 +62,7 @@ typedef void (*plc4c_system_on_connect_success_callback)(plc4c_connection *conne
  * @param connection_string
  * @param error_code
  */
-typedef void (*plc4c_system_on_connect_failure_callback)(const char *connection_string, return_code error);
+typedef void (*plc4c_system_on_connect_failure_callback)(char *connection_string, return_code error);
 
 /**
  * Function pointer for a callback called when is successfully made
@@ -216,7 +216,7 @@ void plc4c_system_shutdown(plc4c_system *system);
  * @return return_code INVALID_CONNECTION_STRING, NO_MEMORY
  */
 return_code plc4c_system_connect(plc4c_system *system,
-                                 const char *connectionString,
+                                 char *connectionString,
                                  plc4c_connection **connection);
 
 /**

@@ -16,13 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_SPI_SYSTEM_PRIVATE_H_
-#define PLC4C_SPI_SYSTEM_PRIVATE_H_
+#ifndef PLC4C_TRANSPORT_SERIAL_H_
+#define PLC4C_TRANSPORT_SERIAL_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <plc4c/types.h>
-#include <plc4c/system.h>
 
-return_code plc4c_system_create_connection(char *connection_string,
-                                           plc4c_connection **connection);
+plc4c_transport *plc4c_transport_serial_create();
 
-#endif //PLC4C_SPI_SYSTEM_PRIVATE_H_
+#ifdef __cplusplus
+}
+#endif
+#endif //PLC4C_TRANSPORT_SERIAL_H_

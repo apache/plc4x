@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,13 +15,15 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
 
-include_directories("include" "../../api/include" "../../spi/include")
+#include <stdlib.h>
+#include <plc4c/spi/types_private.h>
+#include <plc4c/transport_tcp.h>
 
-# Add the sources
-file(GLOB sources "src/*.c")
+plc4c_transport *plc4c_transport_tcp_create() {
+    plc4c_transport* transport = (plc4c_transport*) malloc(sizeof(plc4c_transport));
+    transport->transport_code = "tcp";
+    return transport;
+}
 
-add_library(plc4c-transports-tcp ${sources})
-
-target_link_libraries (plc4c-transports-tcp ${CMAKE_DL_LIBS})
