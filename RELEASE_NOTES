@@ -19,6 +19,7 @@ New Features
   request (The API allowed this from the beginning now not
   every item is wrapped in a single request. It should bring
   significant performance gains when writing multiple vlaues)
+- S7 Driver now supports String datatypes.
 
 Incompatible changes
 --------------------
