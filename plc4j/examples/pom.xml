@@ -48,7 +48,7 @@
     <module>hello-integration-edgent</module>
     <module>hello-opm</module>
     <module>hello-storage-elasticsearch</module>
-    <module>hello-webapp</module>
+    <!--module>hello-webapp</module-->
     <module>hello-world-plc4x</module>
     <module>hello-integration-iotdb</module>
   </modules>
