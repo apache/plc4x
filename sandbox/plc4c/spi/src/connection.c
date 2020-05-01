@@ -46,6 +46,14 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection) {
 }
 
 return_code plc4c_connection_create_read_request(plc4c_connection *connection, int num_items, char* addresses[], plc4c_read_request** read_request) {
+    plc4c_read_request *new_read_request = malloc(sizeof(plc4c_read_request));
+    new_read_request->connection = connection;
+    plc4c_utils_list_create(&(new_read_request->items));
+    for(int i = 0; i < num_items; i++) {
+        plc4c_item *item = connection->driver->parse_address_function(addresses[i]);
+        plc4c_utils_list_insert_tail_value(new_read_request->items, item);
+    }
+    *read_request = new_read_request;
     return OK;
 }
 

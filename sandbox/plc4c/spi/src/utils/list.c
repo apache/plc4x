@@ -67,6 +67,7 @@ void plc4c_utils_list_insert_head_value(plc4c_list* list, void* value) {
     plc4c_list_element *new_element = malloc(sizeof(plc4c_list_element));
     new_element->value = value;
     new_element->next = NULL;
+    new_element->previous = NULL;
     plc4c_utils_list_insert_head(list, new_element);
 }
 
@@ -84,6 +85,7 @@ void plc4c_utils_list_insert_tail_value(plc4c_list* list, void* value) {
     plc4c_list_element *new_element = malloc(sizeof(plc4c_list_element));
     new_element->value = value;
     new_element->next = NULL;
+    new_element->previous = NULL;
     plc4c_utils_list_insert_tail(list, new_element);
 }
 

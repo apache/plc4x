@@ -125,7 +125,7 @@ int main() {
                 }
 
                 // Execute the read-request.
-                result = plc4c_read_request_execute(connection, read_request, &read_request_execution);
+                result = plc4c_read_request_execute(read_request, &read_request_execution);
                 if(result != OK) {
                     return -1;
                 } else {

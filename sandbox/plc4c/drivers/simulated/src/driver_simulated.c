@@ -38,13 +38,34 @@ struct plc4c_driver_simulated_item_t {
 };
 typedef struct plc4c_driver_simulated_item_t plc4c_driver_simulated_item;
 
+return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task *task) {
+    if(task->context == NULL) {
+        return INTERNAL_ERROR;
+    }
+
+    plc4c_read_request_execution *read_request_execution = task->context;
+    plc4c_system_task *system_task = read_request_execution->system_task;
+    switch (system_task->state_id) {
+        case READ_INIT: {
+            plc4c_read_response *read_response = malloc(sizeof(plc4c_read_response));
+            read_request_execution->read_response = read_response;
+            system_task->completed = true;
+            break;
+        }
+        default: {
+            return INTERNAL_ERROR;
+        }
+    }
+    return OK;
+}
+
 plc4c_item *plc4c_driver_simulated_parse_address(const char *address_string) {
     plc4c_driver_simulated_item *item = (plc4c_driver_simulated_item *) malloc(sizeof(plc4c_driver_simulated_item));
     // TODO: Actually to the parsing of the address ...
     return (plc4c_item *) item;
 }
 
-return_code plc4c_driver_simulated_connect_function(plc4c_system *system, plc4c_connection *connection,
+return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection,
                                                     plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->context = connection;
@@ -57,18 +78,17 @@ return_code plc4c_driver_simulated_connect_function(plc4c_system *system, plc4c_
     return OK;
 }
 
-return_code plc4c_driver_simulated_read_function(plc4c_system *system, plc4c_connection *connection,
-                                                 plc4c_read_request *read_request, plc4c_system_task **task) {
+return_code plc4c_driver_simulated_read_function(plc4c_read_request *read_request, plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = READ_INIT;
-    new_task->state_machine_function = NULL;
+    new_task->state_machine_function = &plc4c_driver_simulated_read_machine_function;
     new_task->context = read_request;
+    new_task->completed = false;
     *task = new_task;
     return OK;
 }
 
-return_code plc4c_driver_simulated_write_function(plc4c_system *system, plc4c_connection *connection,
-                                                  plc4c_write_request *write_request, plc4c_system_task **task) {
+return_code plc4c_driver_simulated_write_function(plc4c_write_request *write_request, plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = WRITE_INIT;
     new_task->state_machine_function = NULL;

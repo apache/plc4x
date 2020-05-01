@@ -33,10 +33,14 @@ typedef struct plc4c_write_item_t plc4c_write_item;
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(const char *address_string);
 
 typedef struct plc4c_system_task_t plc4c_system_task;
-typedef plc4c_item (*plc4c_system_task_state_machine_function)(plc4c_system_task* task);
-typedef return_code (*plc4c_connection_connect_function)(plc4c_system *system, plc4c_connection *connection, plc4c_system_task** task);
-typedef return_code (*plc4c_connection_read_function)(plc4c_system *system, plc4c_connection *connection, plc4c_read_request *read_request, plc4c_system_task** task);
-typedef return_code (*plc4c_connection_write_function)(plc4c_system *system, plc4c_connection *connection, plc4c_write_request *write_request, plc4c_system_task** task);
+
+typedef return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
+
+typedef return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
+
+typedef return_code (*plc4c_connection_read_function)(plc4c_read_request *read_request, plc4c_system_task **task);
+
+typedef return_code (*plc4c_connection_write_function)(plc4c_write_request *write_request, plc4c_system_task **task);
 
 struct plc4c_system_t {
     /* drivers */
@@ -99,8 +103,9 @@ struct plc4c_connection_t {
     char *transport_connect_information;
     char *parameters;
 
-    plc4c_driver* driver;
-    plc4c_transport* transport;
+    plc4c_system *system;
+    plc4c_driver *driver;
+    plc4c_transport *transport;
     bool supports_reading;
     bool supports_writing;
     bool supports_subscriptions;
@@ -115,8 +120,7 @@ struct plc4c_connection_list_item_t {
 
 struct plc4c_read_request_t {
     plc4c_connection *connection;
-    int num_items;
-    plc4c_item items[];
+    plc4c_list *items;
 };
 
 struct plc4c_write_item_t {
@@ -130,10 +134,20 @@ struct plc4c_write_request_t {
     plc4c_write_item *items;
 };
 
+struct plc4c_read_request_execution_t {
+    plc4c_read_request *read_request;
+    plc4c_read_response *read_response;
+    plc4c_system_task *system_task;
+};
+
+struct plc4c_read_response_t {
+    // TODO: Implement
+};
+
 struct plc4c_system_task_t {
     int state_id;
     plc4c_system_task_state_machine_function state_machine_function;
-    void* context;
+    void *context;
     bool completed;
 };
 

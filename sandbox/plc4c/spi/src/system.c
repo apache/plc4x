@@ -272,6 +272,8 @@ return_code plc4c_system_connect(plc4c_system *system,
         return result;
     }
 
+    new_connection->system = system;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Find a matching driver from the driver-list
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -338,7 +340,7 @@ return_code plc4c_system_connect(plc4c_system *system,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     plc4c_system_task *new_connection_task = NULL;
-    result = new_connection->driver->connect_function(system, new_connection, &new_connection_task);
+    result = new_connection->driver->connect_function(new_connection, &new_connection_task);
     if(result != OK) {
         return -1;
     }

@@ -31,8 +31,7 @@ extern "C" {
  * @param read_request_execution pointer to a data-structure handling one execution of the read-request.
  * @return return_code
  */
-return_code plc4c_read_request_execute(plc4c_connection *connection,
-                                       plc4c_read_request *read_request,
+return_code plc4c_read_request_execute(plc4c_read_request *read_request,
                                        plc4c_read_request_execution **read_request_execution);
 
 /**
