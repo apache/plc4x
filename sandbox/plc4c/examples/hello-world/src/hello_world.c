@@ -182,6 +182,8 @@ int main() {
                 while (cur_element != NULL) {
                     plc4c_value_item *value_item = cur_element->value;
 
+                    // Just cast the value to int for now ...
+                    // TODO: We need to introduce a fully operational plc_value system later on.
                     printf("Value %d\n", (int) value_item->value);
 
                     cur_element = cur_element->next;
