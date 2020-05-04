@@ -33,6 +33,8 @@ typedef enum return_code {
     OK,
     NO_MEMORY,
     INVALID_CONNECTION_STRING,
+    NON_MATCHING_LISTS,
+    INVALID_LIST_SIZE,
     NOT_REACHABLE,
     PERMISSION_DENIED,
 

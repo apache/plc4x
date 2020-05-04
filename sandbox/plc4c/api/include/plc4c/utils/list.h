@@ -27,6 +27,7 @@ extern "C" {
 
 typedef struct plc4c_list plc4c_list;
 typedef struct plc4c_list_element plc4c_list_element;
+typedef void (*plc4c_list_delete_element_callback)(plc4c_list_element *element);
 
 struct plc4c_list {
     plc4c_list_element *head;
@@ -64,6 +65,9 @@ plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list* list);
 plc4c_list_element *plc4c_utils_list_head(plc4c_list *list);
 
 plc4c_list_element *plc4c_utils_list_tail(plc4c_list *list);
+
+void plc4c_utils_list_delete_elements(plc4c_list *list, plc4c_list_delete_element_callback);
+
 
 #ifdef __cplusplus
 }

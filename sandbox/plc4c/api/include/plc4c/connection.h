@@ -24,6 +24,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include "types.h"
+#include "utils/list.h"
 
 /**
  * Check if the connection is established successfully.
@@ -74,13 +75,12 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection);
  *
  * @param connection connection that this read-request will be executed on.
  * @param num_items number of items we want to read.
- * @param addresses array of address strings.
+ * @param addresses list of address strings.
  * @param read_request pointer to the read-request
  * @param return_code
  */
 return_code plc4c_connection_create_read_request(plc4c_connection *connection,
-                                                 int num_items,
-                                                 char *addresses[],
+                                                 plc4c_list *addresses,
                                                  plc4c_read_request **read_request);
 
 /**
@@ -96,15 +96,14 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection);
  *
  * @param connection connection that this write-request will be executed on.
  * @param num_items number of items we want to write.
- * @param addresses array of address strings.
- * @param values array of pointers to values.
+ * @param addresses list of address strings.
+ * @param values list of pointers to values.
  * @param write_request pointer to the write-request
  * @param return_code
  */
 return_code plc4c_connection_create_write_request(plc4c_connection *connection,
-                                                  int num_items,
-                                                  char *addresses[],
-                                                  void *values[],
+                                                  plc4c_list *addresses,
+                                                  plc4c_list *values,
                                                   plc4c_write_request **write_request);
 
 /**

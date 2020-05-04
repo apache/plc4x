@@ -43,6 +43,11 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
     numOpenConnections--;
 }
 
+void delete_address(plc4c_list_element *address_data) {
+  // these are not malloc'd, no need to free
+  address_data->value = NULL;
+}
+
 enum plc4c_connection_state_t {
     CONNECTING,
     CONNECTED,
@@ -141,8 +146,11 @@ int main() {
             case CONNECTED: {
                 // Create a new read-request.
                 printf("Preparing a read-request for 'RANDOM/foo:INTEGER' ... ");
-                char *addresses[] = {"RANDOM/foo:INTEGER"};
-                result = plc4c_connection_create_read_request(connection, 1, addresses, &read_request);
+
+                plc4c_list *address_list = NULL;
+                plc4c_utils_list_create(&address_list);
+                plc4c_utils_list_insert_head_value(address_list,(void *)"RANDOM/foo:INTEGER");
+                result = plc4c_connection_create_read_request(connection, address_list, &read_request);
                 if(result != OK) {
                     printf("FAILED\n");
                     return -1;
@@ -158,6 +166,8 @@ int main() {
                 } else {
                     state = READ_REQUEST_SENT;
                 }
+                plc4c_utils_list_delete_elements(address_list, &delete_address);
+                free(address_list);
                 break;
             }
             // Wait until the read-request execution is finished.
