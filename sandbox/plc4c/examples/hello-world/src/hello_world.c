@@ -20,6 +20,8 @@
 #include <plc4c/plc4c.h>
 #include <plc4c/driver_simulated.h>
 #include <plc4c/transport_dummy.h>
+#include <plc4c/utils/list.h>
+#include "../../../spi/include/plc4c/spi/types_private.h"
 
 
 int numOpenConnections = 0;
@@ -172,6 +174,18 @@ int main() {
             case READ_RESPONSE_RECEIVED: {
                 // Get the response for the given read-request.
                 plc4c_read_response *response = plc4c_read_request_get_response(read_request_execution);
+                if(response == NULL) {
+                    printf("FAILED (No Response)\n");
+                    return -1;
+                }
+                plc4c_list_element *cur_element = plc4c_utils_list_head(response->items);
+                while (cur_element != NULL) {
+                    plc4c_value_item *value_item = cur_element->value;
+
+                    printf("Value %d\n", (int) value_item->value);
+
+                    cur_element = cur_element->next;
+                }
 
                 // TODO: Do something sensible ...
 

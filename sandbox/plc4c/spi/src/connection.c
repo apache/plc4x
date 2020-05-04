@@ -69,19 +69,20 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection) {
 
 return_code plc4c_connection_create_write_request(plc4c_connection *connection, int num_items, char* addresses[], void* values[], plc4c_write_request** write_request) {
     plc4c_write_request* new_write_request = (plc4c_write_request*) malloc(sizeof(plc4c_write_request));
-    new_write_request->num_items = num_items;
-    new_write_request->items = malloc(num_items * sizeof(plc4c_write_item*));
+    plc4c_utils_list_create(&(new_write_request->items));
     for(int i = 0; i < num_items; i++) {
         char* address = addresses[i];
-        plc4c_item* addressItem = connection->driver->parse_address_function(address);
+        // Parse an address string and get a driver-dependent data-structure representing the address back.
+        plc4c_item* address_item = connection->driver->parse_address_function(address);
 
-        plc4c_write_item* write_item = malloc(sizeof(plc4c_write_item));
-        write_item->item = addressItem;
-        write_item->value = values[i];
+        // Create a new value item, binding an address item to a value.
+        plc4c_value_item* value_item = malloc(sizeof(plc4c_value_item));
+        value_item->item = address_item;
+        value_item->value = values[i];
 
-        new_write_request->items = write_item;
+        // Add the new item ot the list of items.
+        plc4c_utils_list_insert_tail_value(new_write_request->items, value_item);
     }
     write_request = &new_write_request;
-
     return OK;
 }

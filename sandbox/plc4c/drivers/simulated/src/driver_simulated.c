@@ -58,7 +58,7 @@ return_code plc4c_driver_simulated_connect_machine_function(plc4c_system_task *t
     connection->connected = true;
     task->completed = true;
     return OK;
-}
+ }
 
 return_code plc4c_driver_simulated_disconnect_machine_function(plc4c_system_task *task) {
     plc4c_connection *connection = task->context;
@@ -82,15 +82,27 @@ return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task *task
     plc4c_read_request *read_request = read_request_execution->read_request;
     switch (task->state_id) {
         case READ_INIT: {
+            // Create a response.
+            plc4c_read_response *read_response = malloc(sizeof(plc4c_read_response));
+            read_response->read_request = read_request;
+            plc4c_utils_list_create(&(read_response->items));
+
             // Process every field in the request.
             plc4c_list_element *cur_element = plc4c_utils_list_head(read_request->items);
             while (cur_element != NULL) {
                 plc4c_driver_simulated_item *cur_item = cur_element->value;
+
+                // Create a new random value.
+                plc4c_value_item *value_item = malloc(sizeof(plc4c_value_item));
+                value_item->item = (plc4c_item *) cur_item;
+                // TODO: I know this is wrong ... just don't know how to do it right ...
+                value_item->value = arc4random();
+
+                // Add the value to the response.
+                plc4c_utils_list_insert_tail_value(read_response->items, value_item);
                 cur_element = cur_element->next;
             }
 
-            // Create a response.
-            plc4c_read_response *read_response = malloc(sizeof(plc4c_read_response));
             read_request_execution->read_response = read_response;
             task->state_id = READ_FINISHED;
             task->completed = true;
