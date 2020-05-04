@@ -16,15 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include<stdio.h>
 
-#include "HelloWorld.h"
+package org.apache.plc4x.java.spi.configuration.annotations;
 
-int add(int a, int b) {
-    return a + b;
-}
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 
-int main() {
-	printf("Hello World\n");
-	return 0;
+/**
+ * Helper annotation to customize handling of configuration parameter conversion.
+ */
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ParameterConverter {
+
+    /**
+     * Type which should be used for conversion of text value to object representation.
+     *
+     * @return Class implementing necessary conversion logic.
+     */
+    Class<? extends ConfigurationParameterConverter<?>> value();
+
 }

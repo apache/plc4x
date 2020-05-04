@@ -48,7 +48,7 @@
     <module>hello-integration-edgent</module>
     <module>hello-opm</module>
     <module>hello-storage-elasticsearch</module>
-    <module>hello-webapp</module>
+    <!--module>hello-webapp</module-->
     <module>hello-world-plc4x</module>
     <module>hello-integration-iotdb</module>
   </modules>
@@ -67,7 +67,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
         <executions>
           <execution>
             <id>generate-uber-jar</id>

@@ -17,9 +17,12 @@
   under the License.
 ]]
 
-include_directories("src/main/include")
+include_directories("src/main/include"
+        "../../api/src/main/include")
+
 file(GLOB sources "src/main/c/*.c")
 
-add_executable(plc4c-examples-hello-world ${sources})
+add_executable(plc4c-examples-hello-world ${sources} src/main/c/hello_world.c)
 
-target_link_libraries (plc4c-examples-hello-world ${CMAKE_DL_LIBS})
+target_link_libraries (plc4c-examples-hello-world
+        plc4c-spi)

@@ -71,7 +71,7 @@ endif()
 ]]
 # Core stuff
 add_subdirectory(api)
-#add_subdirectory(spi)
+add_subdirectory(spi)
 #add_subdirectory(transports)
 add_subdirectory(drivers)
 #add_subdirectory(integrations)

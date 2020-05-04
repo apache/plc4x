@@ -19,7 +19,8 @@
 
 include_directories("src/main/include")
 file(GLOB sources "src/main/c/*.c")
-add_library(plc4c-api ${sources})
+
+add_library(plc4c-api SHARED ${sources})
 
 if(BUILD_PHASE STREQUAL test-compile)
     file(GLOB testSources "src/test/c/*.c")

@@ -17,9 +17,24 @@
  * under the License.
  */
 
-#ifndef _HELLO_WORLD_H_
-#define _HELLO_WORLD_H_
+#include "plc4c.h"
 
-int add(int, int);
+/* private!! */
 
-#endif
+struct plc4c_system_t {
+   /* drivers */
+
+   /* connections */
+
+   /* callbacks */
+};
+
+struct plc4c_driver_t {
+  /* name */
+
+  /* ??? */
+};
+
+struct plc4c_connection_t {
+ /* ???? */
+};
