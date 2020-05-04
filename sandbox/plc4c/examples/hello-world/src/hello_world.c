@@ -207,7 +207,8 @@ int main() {
 
                 // TODO: THE Read Response was custom built opaquely by the driver
                 // SO IT HAS TO BE DELETED BY THE DRIVER
-                
+                plc4c_connection_read_response_destroy(connection, response);
+
                 // TODO: Do something sensible ...
 
                 // Clean up.

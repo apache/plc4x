@@ -73,6 +73,10 @@ return_code plc4c_connection_create_read_request(plc4c_connection *connection, p
     return OK;
 }
 
+void plc4c_connection_read_response_destroy(plc4c_connection *connection, plc4c_read_response *read_response){
+ connection->driver->free_read_response_function(read_response);
+}
+
 bool plc4c_connection_supports_writing(plc4c_connection *connection) {
     return connection->supports_writing;
 }

@@ -83,6 +83,14 @@ return_code plc4c_connection_create_read_request(plc4c_connection *connection,
                                                  plc4c_list *addresses,
                                                  plc4c_read_request **read_request);
 
+
+
+/**
+ * Destroys a given read_response
+ * @param read_response the read_response
+ */
+void plc4c_connection_read_response_destroy(plc4c_connection *connection, plc4c_read_response *read_response);
+
 /**
  * Check if the current connection supports write operations.
  *

@@ -221,6 +221,22 @@ return_code plc4c_driver_simulated_write_function(plc4c_system_task **task) {
     return OK;
 }
 
+void free_read_item(plc4c_list_element *read_item_element) {
+  plc4c_value_item *value_item = (plc4c_value_item*)read_item_element->value;
+  // do not delete the plc4c_item
+  // we also, in THIS case don't delete the random value which isn't really
+  // a pointer
+  //free(value_item->value);
+  value_item->value = NULL;
+}
+
+void plc4c_driver_simulated_free_read_response(plc4c_read_response *response) {
+  // the request will be cleaned up elsewhere
+  plc4c_utils_list_delete_elements(response->items, &free_read_item);
+}
+
+
+
 plc4c_driver *plc4c_driver_simulated_create() {
     plc4c_driver *driver = (plc4c_driver *) malloc(sizeof(plc4c_driver));
     driver->protocol_code = "simulated";
@@ -231,6 +247,7 @@ plc4c_driver *plc4c_driver_simulated_create() {
     driver->disconnect_function = &plc4c_driver_simulated_disconnect_function;
     driver->read_function = &plc4c_driver_simulated_read_function;
     driver->write_function = &plc4c_driver_simulated_write_function;
+    driver->free_read_response_function = &plc4c_driver_simulated_free_read_response;
     return driver;
 }
 

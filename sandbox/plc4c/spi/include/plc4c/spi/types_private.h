@@ -44,6 +44,8 @@ typedef return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
 
 typedef return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
 
+typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response * response);
+
 struct plc4c_system_t {
     /* drivers */
     plc4c_list *driver_list;
@@ -79,6 +81,7 @@ struct plc4c_driver_t {
     plc4c_connection_disconnect_function disconnect_function;
     plc4c_connection_read_function read_function;
     plc4c_connection_write_function write_function;
+    plc4c_connect_free_read_response_function free_read_response_function;
 };
 
 struct plc4c_driver_list_item_t {
