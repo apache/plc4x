@@ -43,9 +43,14 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
     numOpenConnections--;
 }
 
-void delete_address(plc4c_list_element *address_data) {
+void delete_address(plc4c_list_element *address_data_element) {
   // these are not malloc'd, no need to free
-  address_data->value = NULL;
+  address_data_element->value = NULL;
+}
+
+void delete_read_reponse_item(plc4c_list_element *response_item_element) {
+
+
 }
 
 enum plc4c_connection_state_t {
@@ -166,6 +171,7 @@ int main() {
                 } else {
                     state = READ_REQUEST_SENT;
                 }
+                // if you are going to re-use these, you wouldn't do this
                 plc4c_utils_list_delete_elements(address_list, &delete_address);
                 free(address_list);
                 break;
@@ -199,6 +205,9 @@ int main() {
                     cur_element = cur_element->next;
                 }
 
+                // TODO: THE Read Response was custom built opaquely by the driver
+                // SO IT HAS TO BE DELETED BY THE DRIVER
+                
                 // TODO: Do something sensible ...
 
                 // Clean up.
