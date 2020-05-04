@@ -61,29 +61,41 @@ int main() {
     plc4c_read_request_execution *read_request_execution = NULL;
 
     // Create a new uninitialized plc4c_system
+    printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
     return_code result = plc4c_system_create(&system);
     if (result != OK) {
+        printf("FAILED\n");
         return -1;
     }
+    printf("SUCCESS\n");
 
     // Manually register the "simulated" driver with the system.
+    printf("Registering driver for the 'simulated' protocol ... ");
     plc4c_driver *simulated_driver = plc4c_driver_simulated_create();
     result = plc4c_system_add_driver(system, simulated_driver);
     if (result != OK) {
+        printf("FAILED\n");
         return -1;
     }
+    printf("SUCCESS\n");
 
+    printf("Registering transport for the 'dummy' transport ... ");
     plc4c_transport *dummy_transport = plc4c_transport_dummy_create();
     result = plc4c_system_add_transport(system, dummy_transport);
     if (result != OK) {
+        printf("FAILED\n");
         return -1;
     }
+    printf("SUCCESS\n");
 
     // Initialize the plc4c_system (loading of drivers, setting up other stuff, ...)
+    printf("Initializing the PLC4C system (Loading of drivers and transports) ... ");
     result = plc4c_system_init(system);
     if (result != OK) {
+        printf("FAILED\n");
         return -1;
     }
+    printf("SUCCESS\n");
 
     // Register the global callbacks.
     plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
@@ -91,17 +103,23 @@ int main() {
 
     // Establish connections to remote devices
     // you may or may not care about the connection handle
+    printf("Connecting to 'simulated://foo' ... ");
     result = plc4c_system_connect(system, "simulated://foo", &connection);
     if (result != OK) {
+        printf("FAILED\n");
         return -1;
     }
 
     // Central program loop ...
     plc4c_connection_state state = CONNECTING;
     while (loop) {
+
+        printf("* ");
+
         // Give plc4c a chance to do something.
         // This is where all I/O is being done.
         if (plc4c_system_loop(system) != OK) {
+            printf("ERROR in the system loop\n");
             break;
         }
 
@@ -110,23 +128,30 @@ int main() {
             case CONNECTING: {
                 // Check if the connection is established:
                 if (plc4c_connection_is_connected(connection)) {
+                    printf("SUCCESS\n");
                     state = CONNECTED;
                 } else if (plc4c_connection_has_error(connection)) {
+                    printf("FAILED\n");
                     return -1;
                 }
                 break;
             }
             case CONNECTED: {
                 // Create a new read-request.
+                printf("Preparing a read-request for 'RANDOM/foo:INTEGER' ... ");
                 char *addresses[] = {"RANDOM/foo:INTEGER"};
                 result = plc4c_connection_create_read_request(connection, 1, addresses, &read_request);
                 if(result != OK) {
+                    printf("FAILED\n");
                     return -1;
                 }
+                printf("SUCCESS\n");
 
                 // Execute the read-request.
+                printf("Executing a read-request ... ");
                 result = plc4c_read_request_execute(read_request, &read_request_execution);
                 if(result != OK) {
+                    printf("FAILED\n");
                     return -1;
                 } else {
                     state = READ_REQUEST_SENT;
@@ -136,8 +161,10 @@ int main() {
             // Wait until the read-request execution is finished.
             case READ_REQUEST_SENT: {
                 if(plc4c_read_request_finished_successfully(read_request_execution)) {
+                    printf("SUCCESS\n");
                     state = READ_RESPONSE_RECEIVED;
                 } else if(plc4c_read_request_has_error(read_request_execution)) {
+                    printf("FAILED\n");
                     return -1;
                 }
                 break;
@@ -153,8 +180,10 @@ int main() {
                 plc4c_read_request_destroy(read_request);
 
                 // Disconnect.
+                printf("Disconnecting ... ");
                 result = plc4c_connection_disconnect(connection);
                 if(result != OK) {
+                    printf("FAILED");
                     return -1;
                 }
                 state = DISCONNECTING;
@@ -163,8 +192,12 @@ int main() {
             // Wait until the connection is disconnected
             case DISCONNECTING: {
                 if(!plc4c_connection_is_connected(connection)) {
+                    printf("SUCCESS\n");
                     plc4c_connection_destroy(connection);
                     state = DISCONNECTED;
+
+                    // Terminate the main program loop.
+                    loop = false;
                 }
                 break;
             }

@@ -30,7 +30,7 @@ typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
 typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
 typedef struct plc4c_write_item_t plc4c_write_item;
 
-typedef plc4c_item *(*plc4c_connection_parse_address_item)(const char *address_string);
+typedef plc4c_item *(*plc4c_connection_parse_address_item)(char *address_string);
 
 typedef struct plc4c_system_task_t plc4c_system_task;
 
@@ -38,9 +38,11 @@ typedef return_code (*plc4c_system_task_state_machine_function)(plc4c_system_tas
 
 typedef return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_read_function)(plc4c_read_request *read_request, plc4c_system_task **task);
+typedef return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_write_function)(plc4c_write_request *write_request, plc4c_system_task **task);
+typedef return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
+
+typedef return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
 
 struct plc4c_system_t {
     /* drivers */
@@ -74,6 +76,7 @@ struct plc4c_driver_t {
     char *default_transport_code;
     plc4c_connection_parse_address_item parse_address_function;
     plc4c_connection_connect_function connect_function;
+    plc4c_connection_disconnect_function disconnect_function;
     plc4c_connection_read_function read_function;
     plc4c_connection_write_function write_function;
 };
@@ -102,6 +105,8 @@ struct plc4c_connection_t {
     char *transport_code;
     char *transport_connect_information;
     char *parameters;
+
+    bool connected;
 
     plc4c_system *system;
     plc4c_driver *driver;

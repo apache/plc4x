@@ -22,7 +22,7 @@
 #include <plc4c/spi/types_private.h>
 
 bool plc4c_connection_is_connected(plc4c_connection *connection) {
-    return true;
+    return connection->connected;
 }
 
 bool plc4c_connection_has_error(plc4c_connection *connection) {
@@ -30,6 +30,12 @@ bool plc4c_connection_has_error(plc4c_connection *connection) {
 }
 
 return_code plc4c_connection_disconnect(plc4c_connection *connection) {
+    plc4c_system_task *new_disconnection_task = NULL;
+    return_code result = connection->driver->disconnect_function(connection, &new_disconnection_task);
+    if(result != OK) {
+        return -1;
+    }
+    plc4c_utils_list_insert_tail_value(connection->system->task_list, new_disconnection_task);
     return OK;
 }
 
