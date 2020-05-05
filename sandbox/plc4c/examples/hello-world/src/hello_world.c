@@ -200,16 +200,14 @@ int main() {
 
                     // Just cast the value to int for now ...
                     // TODO: We need to introduce a fully operational plc_value system later on.
-                    printf("Value %d\n", (int) value_item->value);
+                    printf("Value :");
+                    plc4c_data_printf(value_item->value);
+                    printf("\n");
 
                     cur_element = cur_element->next;
                 }
 
-                // TODO: THE Read Response was custom built opaquely by the driver
-                // SO IT HAS TO BE DELETED BY THE DRIVER
                 plc4c_connection_read_response_destroy(connection, response);
-
-                // TODO: Do something sensible ...
 
                 // Clean up.
                 plc4c_read_request_execution_destroy(read_request_execution);

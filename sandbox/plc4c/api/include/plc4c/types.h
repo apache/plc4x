@@ -50,6 +50,22 @@ typedef enum return_code {
 } return_code;
 
 /**
+ * PLC4C data types
+ */
+typedef enum plc4c_data_type {
+  PLC4C_BOOL,
+  PLC4C_CHAR,
+  PLC4C_UCHAR,
+  PLC4C_SHORT,
+  PLC4C_USHORT,
+  PLC4C_INT,
+  PLC4C_UINT,
+  PLC4C_FLOAT,
+  PLC4C_STRINGP,
+  PLC4C_VOIDP
+} plc4c_data_type;
+
+/**
  * Helper that translates from an return_code enum value to something a human can work with.
  *
  * @param err return code.
@@ -106,6 +122,9 @@ typedef struct plc4c_write_request_execution_t plc4c_write_request_execution;
  * A plc4c write-request response.
  */
 typedef struct plc4c_write_response_t plc4c_write_response;
+
+
+typedef struct plc4c_data_t plc4c_data;
 
 #ifdef __cplusplus
 }

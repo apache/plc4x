@@ -29,6 +29,7 @@ extern "C" {
 #include "plc4c/connection.h"
 #include "plc4c/read.h"
 #include "plc4c/write.h"
+#include "plc4c/data.h"
 
 #ifdef __cplusplus
 }
