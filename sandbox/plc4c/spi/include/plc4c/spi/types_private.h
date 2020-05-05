@@ -28,7 +28,8 @@ typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
 typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
 typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
-typedef struct plc4c_value_item_t plc4c_value_item;
+typedef struct plc4c_request_value_item_t plc4c_request_value_item;
+typedef struct plc4c_response_value_item_t plc4c_response_value_item;
 typedef struct plc4c_response_item_t plc4c_response_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(char *address_string);
@@ -134,8 +135,14 @@ struct plc4c_connection_list_item_t {
 };
 
 
-struct plc4c_value_item_t {
+struct plc4c_request_value_item_t {
     plc4c_item *item;
+    void *value;
+};
+
+struct plc4c_response_value_item_t {
+    plc4c_item *item;
+    plc4c_response_code response_code;
     void *value;
 };
 

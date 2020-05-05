@@ -111,7 +111,7 @@ plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connec
             plc4c_item *address_item = connection->driver->parse_address_function(address);
 
             // Create a new value item, binding an address item to a value.
-            plc4c_value_item *value_item = malloc(sizeof(plc4c_value_item));
+            plc4c_request_value_item *value_item = malloc(sizeof(plc4c_request_value_item));
             value_item->item = address_item;
             connection->driver->encode_value_function(address_item, value_element->value, &value_item->value);
 

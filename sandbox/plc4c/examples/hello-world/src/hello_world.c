@@ -44,8 +44,8 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
 }
 
 void delete_address(plc4c_list_element *address_data_element) {
-  // these are not malloc'd, no need to free
-  address_data_element->value = NULL;
+    // these are not malloc'd, no need to free
+    address_data_element->value = NULL;
 }
 
 void delete_read_response_item(plc4c_list_element *response_read_item_element) {
@@ -66,10 +66,11 @@ enum plc4c_connection_state_t {
     DISCONNECTING,
     DISCONNECTED
 };
-typedef enum plc4c_connection_state_t plc4c_connection_state ;
+typedef enum plc4c_connection_state_t plc4c_connection_state;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "hicpp-multiway-paths-covered"
+
 int main() {
     bool loop = true;
     plc4c_system *system = NULL;
@@ -161,9 +162,9 @@ int main() {
 
                 plc4c_list *address_list = NULL;
                 plc4c_utils_list_create(&address_list);
-                plc4c_utils_list_insert_head_value(address_list,(void *)"RANDOM/foo:INTEGER");
+                plc4c_utils_list_insert_head_value(address_list, (void *) "RANDOM/foo:INTEGER");
                 result = plc4c_connection_create_read_request(connection, address_list, &read_request);
-                if(result != OK) {
+                if (result != OK) {
                     printf("FAILED\n");
                     return -1;
                 }
@@ -177,7 +178,7 @@ int main() {
                 plc4c_utils_list_delete_elements(address_list, &delete_address);
                 free(address_list);
 
-                if(result != OK) {
+                if (result != OK) {
                     printf("FAILED\n");
                     return -1;
                 } else {
@@ -185,12 +186,12 @@ int main() {
                 }
                 break;
             }
-            // Wait until the read-request execution is finished.
+                // Wait until the read-request execution is finished.
             case READ_REQUEST_SENT: {
-                if(plc4c_read_request_finished_successfully(read_request_execution)) {
+                if (plc4c_read_request_finished_successfully(read_request_execution)) {
                     printf("SUCCESS\n");
                     state = READ_RESPONSE_RECEIVED;
-                } else if(plc4c_read_request_has_error(read_request_execution)) {
+                } else if (plc4c_read_request_has_error(read_request_execution)) {
                     printf("FAILED\n");
                     return -1;
                 }
@@ -199,7 +200,7 @@ int main() {
             case READ_RESPONSE_RECEIVED: {
                 // Get the response for the given read-request.
                 plc4c_read_response *read_response = plc4c_read_request_get_response(read_request_execution);
-                if(read_response == NULL) {
+                if (read_response == NULL) {
                     printf("FAILED (No Response)\n");
                     return -1;
                 }
@@ -207,11 +208,13 @@ int main() {
                 // Iterate over all returned items.
                 plc4c_list_element *cur_element = plc4c_utils_list_head(read_response->items);
                 while (cur_element != NULL) {
-                    plc4c_value_item *value_item = cur_element->value;
+                    plc4c_response_value_item *value_item = cur_element->value;
 
                     // Just cast the value to int for now ...
                     // TODO: We need to introduce a fully operational plc_value system later on.
-                    printf("Value %d\n", (int) value_item->value);
+                    printf("- Read Value %d (%s): %d\n", (int) value_item->value,
+                           plc4c_response_code_to_message(value_item->response_code),
+                           (int) value_item->value);
 
                     cur_element = cur_element->next;
                 }
@@ -225,10 +228,10 @@ int main() {
                 printf("Preparing a write-request for 'STDOUT/foo:INTEGER' ... ");
                 plc4c_list *address_list = NULL;
                 plc4c_utils_list_create(&address_list);
-                plc4c_utils_list_insert_head_value(address_list,(void *)"STDOUT/foo:STRING");
+                plc4c_utils_list_insert_head_value(address_list, (void *) "STDOUT/foo:STRING");
                 plc4c_list *value_list = NULL;
                 plc4c_utils_list_create(&value_list);
-                plc4c_utils_list_insert_head_value(value_list,(void *)"hurz");
+                plc4c_utils_list_insert_head_value(value_list, (void *) "hurz");
                 result = plc4c_connection_create_write_request(connection, address_list, value_list, &write_request);
 
                 // As we only used these to create the request, they can now be released again.
@@ -237,7 +240,7 @@ int main() {
                 free(address_list);
                 free(value_list);
 
-                if(result != OK) {
+                if (result != OK) {
                     printf("FAILED\n");
                     return -1;
                 }
@@ -246,7 +249,7 @@ int main() {
                 // Execute the write-request.
                 printf("Executing a write-request ... \n");
                 result = plc4c_write_request_execute(write_request, &write_request_execution);
-                if(result != OK) {
+                if (result != OK) {
                     printf("FAILED\n");
                     return -1;
                 } else {
@@ -254,72 +257,47 @@ int main() {
                 }
                 break;
             }
-            // Wait until the write-request execution is finished.
+                // Wait until the write-request execution is finished.
             case WRITE_REQUEST_SENT: {
-                if(plc4c_write_request_finished_successfully(write_request_execution)) {
+                if (plc4c_write_request_finished_successfully(write_request_execution)) {
                     printf("SUCCESS\n");
-
-                    plc4c_write_response *write_response = plc4c_write_request_get_response(write_request_execution);
-
-                    // Iterate over the responses ...
-                    printf("Write Response:\n");
-                    plc4c_list_element *cur_element = plc4c_utils_list_head(write_response->response_items);
-                    while (cur_element != NULL) {
-                        plc4c_response_item *response_item = cur_element->value;
-                        printf(" - %s: %s\n", response_item->item->name, plc4c_response_code_to_message(response_item->response_code));
-                        cur_element = cur_element->next;
-                    }
-
-                    // Clean up.
-                    plc4c_connection_write_response_destroy(write_response);
-                    plc4c_read_request_execution_destroy(read_request_execution);
-                    plc4c_read_request_destroy(read_request);
-
                     state = WRITE_RESPONSE_RECEIVED;
-                } else if(plc4c_write_request_has_error(write_request_execution)) {
+                } else if (plc4c_write_request_has_error(write_request_execution)) {
                     printf("FAILED\n");
                     return -1;
                 }
                 break;
             }
             case WRITE_RESPONSE_RECEIVED: {
-                // Get the response for the given write-request.
                 plc4c_write_response *write_response = plc4c_write_request_get_response(write_request_execution);
-                if(write_response == NULL) {
-                    printf("FAILED (No Response)\n");
-                    return -1;
-                }
 
-                // Iterate over all returned items.
+                // Iterate over the responses ...
                 plc4c_list_element *cur_element = plc4c_utils_list_head(write_response->response_items);
                 while (cur_element != NULL) {
-                    plc4c_value_item *value_item = cur_element->value;
-
-                    // Just cast the value to int for now ...
-                    // TODO: We need to introduce a fully operational plc_value system later on.
-                    printf("Value %d\n", (int) value_item->value);
-
+                    plc4c_response_item *response_item = cur_element->value;
+                    printf(" - Write Value %s (%s)\n", response_item->item->name,
+                           plc4c_response_code_to_message(response_item->response_code));
                     cur_element = cur_element->next;
                 }
 
                 // Clean up.
                 plc4c_connection_write_response_destroy(write_response);
-                plc4c_write_request_execution_destroy(write_request_execution);
-                plc4c_write_request_destroy(write_request);
+                plc4c_read_request_execution_destroy(read_request_execution);
+                plc4c_read_request_destroy(read_request);
 
                 // Disconnect.
                 printf("Disconnecting ... ");
                 result = plc4c_connection_disconnect(connection);
-                if(result != OK) {
+                if (result != OK) {
                     printf("FAILED");
                     return -1;
                 }
                 state = DISCONNECTING;
                 break;
             }
-            // Wait until the connection is disconnected
+                // Wait until the connection is disconnected
             case DISCONNECTING: {
-                if(!plc4c_connection_is_connected(connection)) {
+                if (!plc4c_connection_is_connected(connection)) {
                     printf("SUCCESS\n");
                     plc4c_connection_destroy(connection);
                     state = DISCONNECTED;
@@ -345,4 +323,5 @@ int main() {
 
     return 0;
 }
+
 #pragma clang diagnostic pop

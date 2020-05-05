@@ -101,8 +101,9 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
                 plc4c_driver_simulated_item *cur_item = cur_element->value;
 
                 // Create a new random value.
-                plc4c_value_item *value_item = malloc(sizeof(plc4c_value_item));
+                plc4c_response_value_item *value_item = malloc(sizeof(plc4c_response_value_item));
                 value_item->item = (plc4c_item *) cur_item;
+                value_item->response_code = PLC4C_RESPONSE_CODE_OK;
                 uint32_t *random_value = malloc(sizeof(uint32_t));
                 *random_value = arc4random();
                 value_item->value = random_value;
@@ -145,7 +146,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
             // Process every field in the request.
             plc4c_list_element *cur_element = plc4c_utils_list_head(write_request->items);
             while (cur_element != NULL) {
-                plc4c_value_item *cur_value_item = cur_element->value;
+                plc4c_request_value_item *cur_value_item = cur_element->value;
                 plc4c_driver_simulated_item *cur_item = (plc4c_driver_simulated_item*) cur_value_item->item;
 
                 plc4c_response_code response_code = -1;
@@ -332,8 +333,8 @@ plc4c_return_code plc4c_driver_simulated_write_function(plc4c_system_task **task
     return OK;
 }
 
-void free_read_item(plc4c_list_element *read_item_element) {
-    plc4c_value_item *value_item = (plc4c_value_item *) read_item_element->value;
+void free_read_response_item(plc4c_list_element *read_item_element) {
+    plc4c_response_value_item *value_item = (plc4c_response_value_item *) read_item_element->value;
     // do not delete the plc4c_item
     // we also, in THIS case don't delete the random value which isn't really
     // a pointer
@@ -343,11 +344,11 @@ void free_read_item(plc4c_list_element *read_item_element) {
 
 void plc4c_driver_simulated_free_read_response(plc4c_read_response *response) {
     // the request will be cleaned up elsewhere
-    plc4c_utils_list_delete_elements(response->items, &free_read_item);
+    plc4c_utils_list_delete_elements(response->items, &free_read_response_item);
 }
 
-void free_write_item(plc4c_list_element *write_item_element) {
-    plc4c_value_item *value_item = (plc4c_value_item *) write_item_element->value;
+void free_write_response_item(plc4c_list_element *write_item_element) {
+    plc4c_response_value_item *value_item = (plc4c_response_value_item *) write_item_element->value;
     // do not delete the plc4c_item
     // we also, in THIS case don't delete the random value which isn't really
     // a pointer
@@ -357,7 +358,7 @@ void free_write_item(plc4c_list_element *write_item_element) {
 
 void plc4c_driver_simulated_free_write_response(plc4c_write_response *response) {
     // the request will be cleaned up elsewhere
-    plc4c_utils_list_delete_elements(response->response_items, &free_write_item);
+    plc4c_utils_list_delete_elements(response->response_items, &free_write_response_item);
 }
 
 
