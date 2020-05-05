@@ -43,6 +43,16 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
     numOpenConnections--;
 }
 
+void delete_address(plc4c_list_element *address_data_element) {
+  // these are not malloc'd, no need to free
+  address_data_element->value = NULL;
+}
+
+void delete_read_reponse_item(plc4c_list_element *response_item_element) {
+
+
+}
+
 enum plc4c_connection_state_t {
     CONNECTING,
     CONNECTED,
@@ -141,8 +151,11 @@ int main() {
             case CONNECTED: {
                 // Create a new read-request.
                 printf("Preparing a read-request for 'RANDOM/foo:INTEGER' ... ");
-                char *addresses[] = {"RANDOM/foo:INTEGER"};
-                result = plc4c_connection_create_read_request(connection, 1, addresses, &read_request);
+
+                plc4c_list *address_list = NULL;
+                plc4c_utils_list_create(&address_list);
+                plc4c_utils_list_insert_head_value(address_list,(void *)"RANDOM/foo:INTEGER");
+                result = plc4c_connection_create_read_request(connection, address_list, &read_request);
                 if(result != OK) {
                     printf("FAILED\n");
                     return -1;
@@ -158,6 +171,9 @@ int main() {
                 } else {
                     state = READ_REQUEST_SENT;
                 }
+                // if you are going to re-use these, you wouldn't do this
+                plc4c_utils_list_delete_elements(address_list, &delete_address);
+                free(address_list);
                 break;
             }
             // Wait until the read-request execution is finished.
@@ -188,6 +204,10 @@ int main() {
 
                     cur_element = cur_element->next;
                 }
+
+                // TODO: THE Read Response was custom built opaquely by the driver
+                // SO IT HAS TO BE DELETED BY THE DRIVER
+                plc4c_connection_read_response_destroy(connection, response);
 
                 // TODO: Do something sensible ...
 

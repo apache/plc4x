@@ -58,6 +58,10 @@ bool plc4c_utils_list_contains(plc4c_list* list, plc4c_list_element* element) {
 }
 
 void plc4c_utils_list_insert_head(plc4c_list* list, plc4c_list_element* element) {
+    if (list->head == NULL) {
+      list->head = element;
+      return;
+    }
     list->head->next = element;
     element->previous = list->head;
     list->head = element;
@@ -122,17 +126,32 @@ void plc4c_utils_list_remove(plc4c_list* list, plc4c_list_element* element) {
 
 plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list* list) {
     plc4c_list_element *removed_element = list->head;
-    list->head = list->head->previous;
-    list->head->next = NULL;
-    removed_element->previous = NULL;
+    if (removed_element != NULL) {
+      if (list->head->next != NULL) {
+        list->head = list->head->next;
+        list->head->previous = NULL;
+      } else {
+        list->head = NULL;
+      }
+      removed_element->previous = NULL;
+      removed_element->next = NULL;
+    }
     return removed_element;
 }
 
 plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list* list) {
     plc4c_list_element *removed_element = list->tail;
-    list->tail = list->tail->next;
-    list->tail->previous = NULL;
-    removed_element->next = NULL;
+    if (removed_element != NULL) {
+      if (list->tail->previous != NULL) {
+        list->tail = list->tail->previous;
+        list->tail->next = NULL;
+      } else {
+        list->tail = NULL;
+        list->head = NULL;
+      }
+      removed_element->next = NULL;
+      removed_element->previous = NULL;
+    }
     return removed_element;
 }
 
@@ -142,4 +161,15 @@ plc4c_list_element *plc4c_utils_list_head(plc4c_list *list) {
 
 plc4c_list_element *plc4c_utils_list_tail(plc4c_list *list) {
     return list->tail;
+}
+
+void plc4c_utils_list_delete_elements(plc4c_list *list, plc4c_list_delete_element_callback callback) {
+  // for each of our elements, call the delete callback
+  plc4c_list_element *head = plc4c_utils_list_remove_head(list);
+  while (head != NULL) {
+    callback(head);
+    free(head);
+    head = plc4c_utils_list_remove_head(list);
+  }
+  // at this point the list is empty
 }

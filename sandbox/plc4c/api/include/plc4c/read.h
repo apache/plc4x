@@ -65,6 +65,7 @@ plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_executio
  */
 void plc4c_read_request_destroy(plc4c_read_request *read_request);
 
+
 /**
  * Destroys a given read-request execution.
  *
