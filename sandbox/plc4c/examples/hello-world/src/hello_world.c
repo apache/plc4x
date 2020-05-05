@@ -212,9 +212,9 @@ int main() {
 
                     // Just cast the value to int for now ...
                     // TODO: We need to introduce a fully operational plc_value system later on.
-                    printf("- Read Value %d (%s): %d\n", (int) value_item->value,
-                           plc4c_response_code_to_message(value_item->response_code),
-                           (int) value_item->value);
+                    printf("Value %s (%s):", value_item->name, plc4c_response_code_to_message(value_item->response_code));
+                    plc4c_data_printf(value_item->value);
+                    printf("\n");
 
                     cur_element = cur_element->next;
                 }

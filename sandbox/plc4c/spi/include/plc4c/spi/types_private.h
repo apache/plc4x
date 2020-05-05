@@ -23,6 +23,7 @@
 #include <plc4c/system.h>
 #include <plc4c/utils/list.h>
 #include <plc4c/utils/queue.h>
+#include <plc4c/data.h>
 
 typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
@@ -134,10 +135,30 @@ struct plc4c_connection_list_item_t {
     plc4c_connection_list_item *next;
 };
 
+struct plc4c_data_t {
+  plc4c_data_type data_type;
+  size_t size;
+  union {
+    bool boolean_value;
+    char char_value;
+    unsigned char uchar_value;
+    short short_value;
+    unsigned short ushort_value;
+    int int_value;
+    unsigned int uint_value;
+    /* more */
+    float float_value;
+    char *pstring_value;
+    void *pvoid_value;
+  }data;
+
+  plc4c_data_custom_destroy custom_destroy;
+  plc4c_data_custom_printf custom_printf;
+};
 
 struct plc4c_request_value_item_t {
     plc4c_item *item;
-    void *value;
+    plc4c_data *value;
 };
 
 struct plc4c_response_value_item_t {

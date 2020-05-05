@@ -103,10 +103,13 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
                 // Create a new random value.
                 plc4c_response_value_item *value_item = malloc(sizeof(plc4c_response_value_item));
                 value_item->item = (plc4c_item *) cur_item;
+                // create the plc4c_data
+                // if this were a custom type we could set a custom destroy method
+                // we can also set a custom printf method
+                value_item->value = plc4c_data_create_uint_data(arc4random());
                 value_item->response_code = PLC4C_RESPONSE_CODE_OK;
                 uint32_t *random_value = malloc(sizeof(uint32_t));
                 *random_value = arc4random();
-                value_item->value = random_value;
 
                 // Add the value to the response.
                 plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -335,10 +338,7 @@ plc4c_return_code plc4c_driver_simulated_write_function(plc4c_system_task **task
 
 void free_read_response_item(plc4c_list_element *read_item_element) {
     plc4c_response_value_item *value_item = (plc4c_response_value_item *) read_item_element->value;
-    // do not delete the plc4c_item
-    // we also, in THIS case don't delete the random value which isn't really
-    // a pointer
-    //free(value_item->value);
+    plc4c_data_delete(value_item->value);
     value_item->value = NULL;
 }
 
