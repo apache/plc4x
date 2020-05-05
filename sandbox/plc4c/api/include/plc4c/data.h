@@ -105,8 +105,16 @@ plc4c_data *plc4c_data_create_float_data(float f);
 plc4c_data *plc4c_data_create_string_data( unsigned int size, char* s);
 
 /**
+ * Creates a plc4c_data with a constant char*
+ * @param size the size of the string
+ * @param s the char *value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_constant_string_data( unsigned int size, char *s);
+
+/**
  * Set a custom function to call when destroying this data.  Typically when the type is
- * a PLC4C_VOIDP
+ * a PLC4C_VOID_POINTER
  * @param data pointer to plc4c_data
  * @param data_custom_destroy the function to call
  */

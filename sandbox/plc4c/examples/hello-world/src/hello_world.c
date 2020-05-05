@@ -17,6 +17,7 @@
  * under the License.
  */
 #include <stdio.h>
+#include <string.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/driver_simulated.h>
 #include <plc4c/transport_dummy.h>
@@ -210,9 +211,7 @@ int main() {
                 while (cur_element != NULL) {
                     plc4c_response_value_item *value_item = cur_element->value;
 
-                    // Just cast the value to int for now ...
-                    // TODO: We need to introduce a fully operational plc_value system later on.
-                    printf("Value %s (%s):", value_item->name, plc4c_response_code_to_message(value_item->response_code));
+                    printf("Value %s (%s):", value_item->item->name, plc4c_response_code_to_message(value_item->response_code));
                     plc4c_data_printf(value_item->value);
                     printf("\n");
 
@@ -231,7 +230,8 @@ int main() {
                 plc4c_utils_list_insert_head_value(address_list, (void *) "STDOUT/foo:STRING");
                 plc4c_list *value_list = NULL;
                 plc4c_utils_list_create(&value_list);
-                plc4c_utils_list_insert_head_value(value_list, (void *) "hurz");
+                char value[] = "hurtz";
+                plc4c_utils_list_insert_head_value(value_list,  plc4c_data_create_constant_string_data(strlen(value), value));
                 result = plc4c_connection_create_write_request(connection, address_list, value_list, &write_request);
 
                 // As we only used these to create the request, they can now be released again.

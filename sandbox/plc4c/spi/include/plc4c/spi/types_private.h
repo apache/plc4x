@@ -85,7 +85,6 @@ struct plc4c_driver_t {
     char *protocol_name;
     char *default_transport_code;
     plc4c_connection_parse_address_item parse_address_function;
-    plc4c_connection_encode_value_item encode_value_function;
     plc4c_connection_connect_function connect_function;
     plc4c_connection_disconnect_function disconnect_function;
     plc4c_connection_read_function read_function;
@@ -149,6 +148,7 @@ struct plc4c_data_t {
     /* more */
     float float_value;
     char *pstring_value;
+    char *const_string_value;
     void *pvoid_value;
   }data;
 
