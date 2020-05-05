@@ -157,9 +157,9 @@
     ['0x0009' ADS_READ_WRITE]
 ]
 
+// State is composed of two bytes which can be read as uint with little endian coding
+// that's why order of fields here reflects endianness
 [type 'State'
-    [simple     bit 'broadcast'             ]
-    [reserved   int 7 '0x0'                 ]
     [simple     bit 'initCommand'           ]
     [simple     bit 'updCommand'            ]
     [simple     bit 'timestampAdded'        ]
@@ -168,6 +168,8 @@
     [simple     bit 'adsCommand'            ]
     [simple     bit 'noReturn'              ]
     [simple     bit 'response'              ]
+    [simple     bit 'broadcast'             ]
+    [reserved   int 7 '0x0'                 ]
 ]
 
 // It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
