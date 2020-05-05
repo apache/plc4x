@@ -29,9 +29,9 @@ extern "C" {
  *
  * @param write_request the write-request object.
  * @param write_request_execution pointer to a data-structure handling one execution of the write-request.
- * @return return_code
+ * @return plc4c_return_code
  */
-return_code plc4c_write_request_execute(plc4c_write_request *write_reques,
+plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_reques,
                                         plc4c_write_request_execution **write_request_execution);
 
 /**

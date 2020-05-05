@@ -28,7 +28,7 @@ extern "C" {
 /**
  * PLC4C error codes
 */
-typedef enum return_code {
+typedef enum plc4c_return_code {
     UNFINISHED,
     OK,
     NO_MEMORY,
@@ -47,7 +47,7 @@ typedef enum return_code {
 
     UNKNOWN_ERROR,
     INTERNAL_ERROR
-} return_code;
+} plc4c_return_code;
 
 typedef enum plc4c_response_code {
     PLC4C_RESPONSE_CODE_OK,
@@ -65,7 +65,7 @@ typedef enum plc4c_response_code {
  * @param err return code.
  * @return A human readable description.
  */
-char *plc4c_return_code_to_message(return_code err);
+char *plc4c_return_code_to_message(plc4c_return_code err);
 
 /**
  * Helper that translates from an plc4c_response_code enum value to something a human can work with.

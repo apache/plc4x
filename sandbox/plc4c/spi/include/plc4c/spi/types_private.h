@@ -33,19 +33,19 @@ typedef struct plc4c_response_item_t plc4c_response_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(char *address_string);
 
-typedef return_code (*plc4c_connection_encode_value_item)(plc4c_item *item, void *value, void** encoded_value);
+typedef plc4c_return_code (*plc4c_connection_encode_value_item)(plc4c_item *item, void *value, void** encoded_value);
 
 typedef struct plc4c_system_task_t plc4c_system_task;
 
-typedef return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
+typedef plc4c_return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
 
-typedef return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
 
 typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response * response);
 

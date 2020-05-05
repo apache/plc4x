@@ -46,9 +46,9 @@ bool plc4c_connection_has_error(plc4c_connection *connection);
  * Function to terminate a connection to a PLC.
  *
  * @param connection
- * @param return_code
+ * @param plc4c_return_code
  */
-return_code plc4c_connection_disconnect(plc4c_connection *connection);
+plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection);
 
 /**
  * Destrop a previously created connection.
@@ -77,9 +77,9 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection);
  * @param num_items number of items we want to read.
  * @param addresses list of address strings.
  * @param read_request pointer to the read-request
- * @param return_code
+ * @param plc4c_return_code
  */
-return_code plc4c_connection_create_read_request(plc4c_connection *connection,
+plc4c_return_code plc4c_connection_create_read_request(plc4c_connection *connection,
                                                  plc4c_list *addresses,
                                                  plc4c_read_request **read_request);
 
@@ -107,9 +107,9 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection);
  * @param addresses list of address strings.
  * @param values list of pointers to values.
  * @param write_request pointer to the write-request
- * @param return_code
+ * @param plc4c_return_code
  */
-return_code plc4c_connection_create_write_request(plc4c_connection *connection,
+plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connection,
                                                   plc4c_list *addresses,
                                                   plc4c_list *values,
                                                   plc4c_write_request **write_request);

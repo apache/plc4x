@@ -81,7 +81,7 @@ int main() {
 
     // Create a new uninitialized plc4c_system
     printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
-    return_code result = plc4c_system_create(&system);
+    plc4c_return_code result = plc4c_system_create(&system);
     if (result != OK) {
         printf("FAILED\n");
         return -1;

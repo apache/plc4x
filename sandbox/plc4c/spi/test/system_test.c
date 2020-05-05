@@ -28,14 +28,14 @@ void tearDown(void) {
 }
 
 void test_system_plc4c_system_create_connection_args(char *connection_string,
-                                                     return_code expected_return_code,
+                                                     plc4c_return_code expected_return_code,
                                                      char *expected_connection_string,
                                                      char *expected_protocol_code,
                                                      char *expected_transport_code,
                                                      char *expected_transport_connect_information,
                                                      char *expected_parameters) {
     plc4c_connection *connection = NULL;
-    return_code result = plc4c_system_create_connection(connection_string, &connection);
+    plc4c_return_code result = plc4c_system_create_connection(connection_string, &connection);
     TEST_ASSERT_EQUAL(expected_return_code, result);
     if(expected_return_code != OK) {
         TEST_ASSERT_NULL(connection);

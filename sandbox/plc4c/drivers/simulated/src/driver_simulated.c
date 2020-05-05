@@ -55,7 +55,7 @@ struct plc4c_driver_simulated_item_t {
 };
 typedef struct plc4c_driver_simulated_item_t plc4c_driver_simulated_item;
 
-return_code plc4c_driver_simulated_connect_machine_function(plc4c_system_task *task) {
+plc4c_return_code plc4c_driver_simulated_connect_machine_function(plc4c_system_task *task) {
     plc4c_connection *connection = task->context;
     if (connection == NULL) {
         return INTERNAL_ERROR;
@@ -68,7 +68,7 @@ return_code plc4c_driver_simulated_connect_machine_function(plc4c_system_task *t
     return OK;
 }
 
-return_code plc4c_driver_simulated_disconnect_machine_function(plc4c_system_task *task) {
+plc4c_return_code plc4c_driver_simulated_disconnect_machine_function(plc4c_system_task *task) {
     plc4c_connection *connection = task->context;
     if (connection == NULL) {
         return INTERNAL_ERROR;
@@ -81,7 +81,7 @@ return_code plc4c_driver_simulated_disconnect_machine_function(plc4c_system_task
     return OK;
 }
 
-return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task *task) {
+plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task *task) {
     if (task->context == NULL) {
         return INTERNAL_ERROR;
     }
@@ -128,7 +128,7 @@ return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task *task
     return OK;
 }
 
-return_code plc4c_driver_simulated_write_machine_function(plc4c_system_task *task) {
+plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_task *task) {
     if (task->context == NULL) {
         return INTERNAL_ERROR;
     }
@@ -272,7 +272,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     return (plc4c_item *) item;
 }
 
-return_code plc4c_driver_simulated_encode_value(plc4c_item *item, void *value, void** encoded_value) {
+plc4c_return_code plc4c_driver_simulated_encode_value(plc4c_item *item, void *value, void** encoded_value) {
     plc4c_driver_simulated_item *simulated_item = (plc4c_driver_simulated_item*) item;
     switch (simulated_item->data_type) {
         case INTEGER: {
@@ -292,7 +292,7 @@ return_code plc4c_driver_simulated_encode_value(plc4c_item *item, void *value, v
 }
 
 
-return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection,
+plc4c_return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection,
                                                     plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->context = connection;
@@ -303,7 +303,7 @@ return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection
     return OK;
 }
 
-return_code plc4c_driver_simulated_disconnect_function(plc4c_connection *connection,
+plc4c_return_code plc4c_driver_simulated_disconnect_function(plc4c_connection *connection,
                                                        plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->context = connection;
@@ -314,7 +314,7 @@ return_code plc4c_driver_simulated_disconnect_function(plc4c_connection *connect
     return OK;
 }
 
-return_code plc4c_driver_simulated_read_function(plc4c_system_task **task) {
+plc4c_return_code plc4c_driver_simulated_read_function(plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = READ_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_read_machine_function;
@@ -323,7 +323,7 @@ return_code plc4c_driver_simulated_read_function(plc4c_system_task **task) {
     return OK;
 }
 
-return_code plc4c_driver_simulated_write_function(plc4c_system_task **task) {
+plc4c_return_code plc4c_driver_simulated_write_function(plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = WRITE_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_write_machine_function;

@@ -21,7 +21,7 @@
 #include <plc4c/write.h>
 #include <plc4c/spi/types_private.h>
 
-return_code plc4c_write_request_execute(plc4c_write_request *write_request,
+plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_request,
                                        plc4c_write_request_execution **write_request_execution) {
     plc4c_system_task *system_task;
     write_request->connection->driver->write_function(&system_task);

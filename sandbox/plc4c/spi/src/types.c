@@ -18,10 +18,62 @@
  */
 
 #include <plc4c/types.h>
-#include "plc4c/spi/types_private.h"
 
-char *plc4c_return_code_to_message(return_code err) {
-    return "hurz";
+char *plc4c_return_code_to_message(plc4c_return_code return_code) {
+    switch (return_code) {
+        case UNFINISHED: {
+            return "UNFINISHED";
+        }
+        case OK: {
+            return "OK";
+        }
+        case NO_MEMORY: {
+            return "OUT_OF_MEMORY";
+        }
+        case INVALID_CONNECTION_STRING: {
+            return "INVALID CONNECTION STRING";
+        }
+        case NON_MATCHING_LISTS: {
+            return "ITEM AND VALUE LISTS HAVE DIFFERENT SIZES";
+        }
+        case INVALID_LIST_SIZE: {
+            return "INVALID LIST SIZE";
+        }
+        case NOT_REACHABLE: {
+            return "DEVICE NOT REACHABLE";
+        }
+        case PERMISSION_DENIED: {
+            return "PERMISSION DENIED";
+        }
+
+        case NO_DRIVER_AVAILABLE: {
+            return "NO DRIVER FOUND";
+        }
+        case UNKNOWN_DRIVER: {
+            return "UNKNOWN DRIVER";
+        }
+
+        case UNSPECIFIED_TRANSPORT: {
+            return "TRANSPORT NOT SPECIFIED";
+        }
+        case NO_TRANSPORT_AVAILABLE: {
+            return "NO TRANSPORT FOUND";
+        }
+        case UNKNOWN_TRANSPORT: {
+            return "UNKNOWN TRANSPORT";
+        }
+
+        case UNKNOWN_ERROR: {
+            return "UNKNOWN ERROR";
+        }
+        case INTERNAL_ERROR: {
+            return "INTERNAL ERROR";
+        }
+
+        default: {
+            return "UNKNOWN RETURN CODE";
+        }
+    }
 }
 
 char *plc4c_response_code_to_message(plc4c_response_code response_code) {

@@ -29,9 +29,9 @@ bool plc4c_connection_has_error(plc4c_connection *connection) {
     return false;
 }
 
-return_code plc4c_connection_disconnect(plc4c_connection *connection) {
+plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection) {
     plc4c_system_task *new_disconnection_task = NULL;
-    return_code result = connection->driver->disconnect_function(connection, &new_disconnection_task);
+    plc4c_return_code result = connection->driver->disconnect_function(connection, &new_disconnection_task);
     if (result != OK) {
         return -1;
     }
@@ -51,7 +51,7 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection) {
     return connection->supports_reading;
 }
 
-return_code plc4c_connection_create_read_request(plc4c_connection *connection,
+plc4c_return_code plc4c_connection_create_read_request(plc4c_connection *connection,
                                                  plc4c_list *addresses,
                                                  plc4c_read_request **read_request) {
     // NEED NULL ASSERTS
@@ -83,7 +83,7 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection) {
     return connection->supports_writing;
 }
 
-return_code plc4c_connection_create_write_request(plc4c_connection *connection,
+plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connection,
                                                   plc4c_list *addresses,
                                                   plc4c_list *values,
                                                   plc4c_write_request **write_request) {
