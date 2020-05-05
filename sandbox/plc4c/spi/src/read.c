@@ -22,7 +22,7 @@
 #include <plc4c/spi/types_private.h>
 
 
-return_code plc4c_read_request_execute(plc4c_read_request *read_request,
+plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
                                        plc4c_read_request_execution **read_request_execution) {
     plc4c_system_task *system_task;
     read_request->connection->driver->read_function(&system_task);

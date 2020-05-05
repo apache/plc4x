@@ -29,23 +29,29 @@ typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
 typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
 typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
-typedef struct plc4c_value_item_t plc4c_value_item;
+typedef struct plc4c_request_value_item_t plc4c_request_value_item;
+typedef struct plc4c_response_value_item_t plc4c_response_value_item;
+typedef struct plc4c_response_item_t plc4c_response_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(char *address_string);
 
+typedef plc4c_return_code (*plc4c_connection_encode_value_item)(plc4c_item *item, void *value, void** encoded_value);
+
 typedef struct plc4c_system_task_t plc4c_system_task;
 
-typedef return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
+typedef plc4c_return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
 
-typedef return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
 
-typedef return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
 
 typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response * response);
+
+typedef void (*plc4c_connect_free_write_response_function)(plc4c_write_response * response);
 
 struct plc4c_system_t {
     /* drivers */
@@ -71,6 +77,7 @@ struct plc4c_system_t {
 };
 
 struct plc4c_item_t {
+    char* name;
 };
 
 struct plc4c_driver_t {
@@ -78,11 +85,13 @@ struct plc4c_driver_t {
     char *protocol_name;
     char *default_transport_code;
     plc4c_connection_parse_address_item parse_address_function;
+    plc4c_connection_encode_value_item encode_value_function;
     plc4c_connection_connect_function connect_function;
     plc4c_connection_disconnect_function disconnect_function;
     plc4c_connection_read_function read_function;
     plc4c_connection_write_function write_function;
     plc4c_connect_free_read_response_function free_read_response_function;
+    plc4c_connect_free_write_response_function free_write_response_function;
 };
 
 struct plc4c_driver_list_item_t {
@@ -147,9 +156,20 @@ struct plc4c_data_t {
   plc4c_data_custom_printf custom_printf;
 };
 
-struct plc4c_value_item_t {
+struct plc4c_request_value_item_t {
     plc4c_item *item;
     plc4c_data *value;
+};
+
+struct plc4c_response_value_item_t {
+    plc4c_item *item;
+    plc4c_response_code response_code;
+    void *value;
+};
+
+struct plc4c_response_item_t {
+    plc4c_item *item;
+    plc4c_response_code response_code;
 };
 
 struct plc4c_read_request_t {
@@ -168,9 +188,20 @@ struct plc4c_read_request_execution_t {
     plc4c_system_task *system_task;
 };
 
+struct plc4c_write_request_execution_t {
+    plc4c_write_request *write_request;
+    plc4c_write_response *write_response;
+    plc4c_system_task *system_task;
+};
+
 struct plc4c_read_response_t {
     plc4c_read_request *read_request;
     plc4c_list *items;
+};
+
+struct plc4c_write_response_t {
+    plc4c_write_request *write_request;
+    plc4c_list *response_items;
 };
 
 struct plc4c_system_task_t {

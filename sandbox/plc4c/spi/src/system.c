@@ -23,7 +23,7 @@
 #include "plc4c/spi/types_private.h"
 #include "plc4c/spi/system_private.h"
 
-return_code plc4c_system_create(plc4c_system **system) {
+plc4c_return_code plc4c_system_create(plc4c_system **system) {
     plc4c_system *new_system = malloc(sizeof(plc4c_system));
 
     plc4c_list *new_list = NULL;
@@ -88,7 +88,7 @@ void plc4c_system_set_on_loop_failure_callback(plc4c_system *system,
     system->on_loop_failure_callback = callback;
 }
 
-return_code plc4c_system_add_driver(plc4c_system *system,
+plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
                                     plc4c_driver *driver) {
     // If the system is not initialized, return an error.
     // There is nothing we can do here.
@@ -101,7 +101,7 @@ return_code plc4c_system_add_driver(plc4c_system *system,
     return OK;
 }
 
-return_code plc4c_system_add_transport(plc4c_system *system,
+plc4c_return_code plc4c_system_add_transport(plc4c_system *system,
                                        plc4c_transport *transport) {
     // If the system is not initialized, return an error.
     // There is nothing we can do here.
@@ -114,7 +114,7 @@ return_code plc4c_system_add_transport(plc4c_system *system,
     return OK;
 }
 
-return_code plc4c_system_add_connection(plc4c_system *system, plc4c_connection *connection) {
+plc4c_return_code plc4c_system_add_connection(plc4c_system *system, plc4c_connection *connection) {
     // If the system is not initialized, return an error.
     // There is nothing we can do here.
     if (system == NULL) {
@@ -126,7 +126,7 @@ return_code plc4c_system_add_connection(plc4c_system *system, plc4c_connection *
     return OK;
 }
 
-return_code plc4c_system_init(plc4c_system *system) {
+plc4c_return_code plc4c_system_init(plc4c_system *system) {
     // Nothing to really do at the moment.
 
     return OK;
@@ -136,7 +136,7 @@ void plc4c_system_shutdown(plc4c_system *system) {
 
 }
 
-return_code plc4c_system_create_connection(char *connection_string, plc4c_connection **connection) {
+plc4c_return_code plc4c_system_create_connection(char *connection_string, plc4c_connection **connection) {
     // Count the number of colons and question-marks so we know which pattern to use for
     // matching and how large the arrays for containing the different segments should be.
     int num_colons = 0;
@@ -261,13 +261,13 @@ return_code plc4c_system_create_connection(char *connection_string, plc4c_connec
     return OK;
 }
 
-return_code plc4c_system_connect(plc4c_system *system,
+plc4c_return_code plc4c_system_connect(plc4c_system *system,
                                  char *connection_string,
                                  plc4c_connection **connection) {
 
     // Parse the connection string and initialize some of the connection field variables from this.
     plc4c_connection *new_connection = NULL;
-    return_code result = plc4c_system_create_connection(connection_string, &new_connection);
+    plc4c_return_code result = plc4c_system_create_connection(connection_string, &new_connection);
     if (result != OK) {
         return result;
     }
@@ -361,7 +361,7 @@ return_code plc4c_system_connect(plc4c_system *system,
     return OK;
 }
 
-return_code plc4c_system_loop(plc4c_system *system) {
+plc4c_return_code plc4c_system_loop(plc4c_system *system) {
     // If the task-queue is empty, just return.
     if(plc4c_utils_list_empty(system->task_list)) {
         return OK;

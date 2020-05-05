@@ -45,7 +45,7 @@ typedef void (*plc4c_system_on_driver_load_success_callback)(plc4c_driver *drive
  * @param driver_name
  * @param error_code
  */
-typedef void (*plc4c_system_on_driver_load_failure_callback)(char *driver_name, return_code error);
+typedef void (*plc4c_system_on_driver_load_failure_callback)(char *driver_name, plc4c_return_code error);
 
 /**
  * Function pointer for a callback called when is successfully made
@@ -62,7 +62,7 @@ typedef void (*plc4c_system_on_connect_success_callback)(plc4c_connection *conne
  * @param connection_string
  * @param error_code
  */
-typedef void (*plc4c_system_on_connect_failure_callback)(char *connection_string, return_code error);
+typedef void (*plc4c_system_on_connect_failure_callback)(char *connection_string, plc4c_return_code error);
 
 /**
  * Function pointer for a callback called when is successfully made
@@ -79,7 +79,7 @@ typedef void (*plc4c_system_on_disconnect_success_callback)(plc4c_connection *co
  * @param connection
  * @param error_code
  */
-typedef void (*plc4c_system_on_disconnect_failure_callback)(plc4c_connection *connection, return_code error);
+typedef void (*plc4c_system_on_disconnect_failure_callback)(plc4c_connection *connection, plc4c_return_code error);
 
 /**
  * Function pointer for a callback called when a driver returns an error.
@@ -90,7 +90,7 @@ typedef void (*plc4c_system_on_disconnect_failure_callback)(plc4c_connection *co
  * @param error_code
  */
 typedef void(*plc4c_system_on_loop_failure_callback)
-        (plc4c_driver *driver, plc4c_connection *connection, return_code error);
+        (plc4c_driver *driver, plc4c_connection *connection, plc4c_return_code error);
 
 
 /**
@@ -108,7 +108,7 @@ typedef void(*plc4c_system_on_loop_failure_callback)
  * @param system
  * @return NO_MEMORY if failed to create system
  */
-return_code plc4c_system_create(plc4c_system **system);
+plc4c_return_code plc4c_system_create(plc4c_system **system);
 
 /**
  * Function to destroy a plc4c_system.
@@ -186,9 +186,9 @@ void plc4c_system_set_on_loop_failure_callback(plc4c_system *system,
  *
  * @param system the system the driver should be added to.
  * @param driver instance of the driver
- * @return return_code
+ * @return plc4c_return_code
  */
-return_code plc4c_system_add_driver(plc4c_system *system,
+plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
                                     plc4c_driver *driver);
 
 /**
@@ -196,18 +196,18 @@ return_code plc4c_system_add_driver(plc4c_system *system,
  *
  * @param system the system the transport should be added to.
  * @param transport instance of the transport
- * @return return_code
+ * @return plc4c_return_code
  */
-return_code plc4c_system_add_transport(plc4c_system *system,
+plc4c_return_code plc4c_system_add_transport(plc4c_system *system,
                                        plc4c_transport *transport);
 
 /**
  * Function to initialize the PLC4C system (Initialize the driver manager and the list of enabled drivers)
  *
  * @param system
- * @return return_code
+ * @return plc4c_return_code
  */
-return_code plc4c_system_init(plc4c_system *system);
+plc4c_return_code plc4c_system_init(plc4c_system *system);
 
 /**
  * Function to clean up the PLC4C system (Free any still used resources, terminate live connections, ...)
@@ -223,9 +223,9 @@ void plc4c_system_shutdown(plc4c_system *system);
  * @param system
  * @param connection_string
  * @param ponter to where the connection object will be created.
- * @return return_code INVALID_CONNECTION_STRING, NO_MEMORY
+ * @return plc4c_return_code INVALID_CONNECTION_STRING, NO_MEMORY
  */
-return_code plc4c_system_connect(plc4c_system *system,
+plc4c_return_code plc4c_system_connect(plc4c_system *system,
                                  char *connectionString,
                                  plc4c_connection **connection);
 
@@ -235,9 +235,9 @@ return_code plc4c_system_connect(plc4c_system *system,
  * handler loops as they would block the rest of the application.
  *
  * @param system the system instance
- * @return return_code
+ * @return plc4c_return_code
  */
-return_code plc4c_system_loop(plc4c_system *system);
+plc4c_return_code plc4c_system_loop(plc4c_system *system);
 
 #ifdef __cplusplus
 }
