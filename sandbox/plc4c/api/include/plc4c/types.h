@@ -49,6 +49,16 @@ typedef enum return_code {
     INTERNAL_ERROR
 } return_code;
 
+typedef enum plc4c_response_code {
+    PLC4C_RESPONSE_CODE_OK,
+    PLC4C_RESPONSE_CODE_NOT_FOUND,
+    PLC4C_RESPONSE_CODE_ACCESS_DENIED,
+    PLC4C_RESPONSE_CODE_INVALID_ADDRESS,
+    PLC4C_RESPONSE_CODE_INVALID_DATATYPE,
+    PLC4C_RESPONSE_CODE_INTERNAL_ERROR,
+    PLC4C_RESPONSE_CODE_RESPONSE_PENDING
+} plc4c_response_code;
+
 /**
  * Helper that translates from an return_code enum value to something a human can work with.
  *
@@ -56,6 +66,14 @@ typedef enum return_code {
  * @return A human readable description.
  */
 char *plc4c_return_code_to_message(return_code err);
+
+/**
+ * Helper that translates from an plc4c_response_code enum value to something a human can work with.
+ *
+ * @param err return code.
+ * @return A human readable description.
+ */
+char *plc4c_response_code_to_message(plc4c_response_code response_code);
 
 /**
  * The plc4c system.

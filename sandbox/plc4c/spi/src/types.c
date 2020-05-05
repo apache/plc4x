@@ -24,3 +24,31 @@ char *plc4c_return_code_to_message(return_code err) {
     return "hurz";
 }
 
+char *plc4c_response_code_to_message(plc4c_response_code response_code) {
+    switch (response_code) {
+        case PLC4C_RESPONSE_CODE_OK: {
+            return "OK";
+        }
+        case PLC4C_RESPONSE_CODE_NOT_FOUND: {
+            return "NOT FOUND";
+        }
+        case PLC4C_RESPONSE_CODE_ACCESS_DENIED: {
+            return "ACCESS DENIED";
+        }
+        case PLC4C_RESPONSE_CODE_INVALID_ADDRESS: {
+            return "INVALID ADDRESS";
+        }
+        case PLC4C_RESPONSE_CODE_INVALID_DATATYPE: {
+            return "INVALID_DATATYPE";
+        }
+        case PLC4C_RESPONSE_CODE_INTERNAL_ERROR: {
+            return "INTERNAL ERROR";
+        }
+        case PLC4C_RESPONSE_CODE_RESPONSE_PENDING: {
+            return "RESPONSE PENDING";
+        }
+        default: {
+            return "UNKNOWN RESPONSE CODE";
+        }
+    }
+}

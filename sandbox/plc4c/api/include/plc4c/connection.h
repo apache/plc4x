@@ -89,7 +89,7 @@ return_code plc4c_connection_create_read_request(plc4c_connection *connection,
  * Destroys a given read_response
  * @param read_response the read_response
  */
-void plc4c_connection_read_response_destroy(plc4c_connection *connection, plc4c_read_response *read_response);
+void plc4c_connection_read_response_destroy(plc4c_read_response *read_response);
 
 /**
  * Check if the current connection supports write operations.
@@ -113,6 +113,12 @@ return_code plc4c_connection_create_write_request(plc4c_connection *connection,
                                                   plc4c_list *addresses,
                                                   plc4c_list *values,
                                                   plc4c_write_request **write_request);
+
+/**
+ * Destroys a given write_response
+ * @param write_response the write_response
+ */
+void plc4c_connection_write_response_destroy(plc4c_write_response *write_response);
 
 /**
  * Check if the current connection supports subscriptions.
