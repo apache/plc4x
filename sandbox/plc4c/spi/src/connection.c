@@ -113,7 +113,7 @@ plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connec
             // Create a new value item, binding an address item to a value.
             plc4c_request_value_item *value_item = malloc(sizeof(plc4c_request_value_item));
             value_item->item = address_item;
-            connection->driver->encode_value_function(address_item, value_element->value, &value_item->value);
+            value_item->value = (plc4c_data*)value_element->value;
 
             // Add the new item ot the list of items.
             plc4c_utils_list_insert_tail_value(new_write_request->items, value_item);

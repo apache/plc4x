@@ -30,10 +30,6 @@ enum plc4c_driver_simulated_field_type_t {
 };
 typedef enum plc4c_driver_simulated_field_type_t plc4c_driver_simulated_field_type;
 
-enum plc4c_driver_simulated_field_datatype_t {
-    INTEGER,
-    STRING
-};
 typedef enum plc4c_driver_simulated_field_datatype_t plc4c_driver_simulated_field_datatype;
 
 // State definitions
@@ -50,7 +46,7 @@ enum write_states {
 struct plc4c_driver_simulated_item_t {
     char *name;
     plc4c_driver_simulated_field_type type;
-    plc4c_driver_simulated_field_datatype data_type;
+    plc4c_data_type data_type;
     int num_elements;
 };
 typedef struct plc4c_driver_simulated_item_t plc4c_driver_simulated_item;
@@ -99,17 +95,17 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
             plc4c_list_element *cur_element = plc4c_utils_list_head(read_request->items);
             while (cur_element != NULL) {
                 plc4c_driver_simulated_item *cur_item = cur_element->value;
-
-                // Create a new random value.
                 plc4c_response_value_item *value_item = malloc(sizeof(plc4c_response_value_item));
                 value_item->item = (plc4c_item *) cur_item;
-                // create the plc4c_data
-                // if this were a custom type we could set a custom destroy method
-                // we can also set a custom printf method
+
+                /*
+                 * create the plc4c_data
+                 * if this were a custom type we could set a custom destroy method
+                 * we can also set a custom printf method
+                 * right , now just create a new random value
+                 */
                 value_item->value = plc4c_data_create_uint_data(arc4random());
                 value_item->response_code = PLC4C_RESPONSE_CODE_OK;
-                uint32_t *random_value = malloc(sizeof(uint32_t));
-                *random_value = arc4random();
 
                 // Add the value to the response.
                 plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -151,32 +147,28 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
             while (cur_element != NULL) {
                 plc4c_request_value_item *cur_value_item = cur_element->value;
                 plc4c_driver_simulated_item *cur_item = (plc4c_driver_simulated_item*) cur_value_item->item;
-
+                plc4c_data * write_data = cur_value_item->value;
                 plc4c_response_code response_code = -1;
                 switch (cur_item->type) {
-                    case STDOUT: {
-                        switch (cur_item->data_type) {
-                            case INTEGER: {
-                                printf("--> Simulated Driver Write: Value (INTEGER) %s: %d\n", cur_item->name,  *((int*)cur_value_item->value));
-                                response_code = PLC4C_RESPONSE_CODE_OK;
-                                break;
-                            }
-                            case STRING: {
-                                printf("--> Simulated Driver Write: Value (STRING) %s: %s\n", cur_item->name,  (char*)cur_value_item->value);
-                                response_code = PLC4C_RESPONSE_CODE_OK;
-                                break;
-                            }
-                            default: {
-                                response_code = PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
-                                break;
-                            }
-                        }
-                        break;
+                  case STDOUT: {
+                    printf("");
+                    if (cur_item->data_type != write_data->data_type) {
+                      printf("--> Simulated Driver Write: Value is %s but Item type is %s", plc4c_data_type_name(write_data->data_type), plc4c_data_type_name(cur_item->data_type));
+                      response_code = PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
+                      break;
                     }
-                    default: {
-                        response_code = PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
-                        break;
-                    }
+                    printf("--> Simulated Driver Write: Value (%s) %s: ",
+                           plc4c_data_type_name(write_data->data_type),
+                           cur_item->name);
+                    plc4c_data_printf(write_data);
+                    printf("\n");
+                    response_code = PLC4C_RESPONSE_CODE_OK;
+                    break;
+                  }
+                  default: {
+                    response_code = PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
+                    break;
+                  }
                 }
 
                 // Create a response element and add that to the response ...
@@ -207,7 +199,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
 plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     plc4c_driver_simulated_field_type type = RANDOM;
     char *name = NULL;
-    plc4c_driver_simulated_field_datatype data_type = -1;
+    plc4c_data_type data_type = -1;
     int num_elements = 0;
     int start_segment_index = 0;
     char *start_segment = address_string;
@@ -242,9 +234,9 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
 
             // Translate the string into a constant.
             if(strcmp(datatype_name, "INTEGER") == 0) {
-                data_type = INTEGER;
+                data_type = PLC4C_INT;
             } else if(strcmp(datatype_name, "STRING") == 0) {
-                data_type = STRING;
+                data_type = PLC4C_CONSTANT_STRING;
             } else {
                 return NULL;
             }
@@ -274,25 +266,6 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     item->num_elements = num_elements;
 
     return (plc4c_item *) item;
-}
-
-plc4c_return_code plc4c_driver_simulated_encode_value(plc4c_item *item, void *value, void** encoded_value) {
-    plc4c_driver_simulated_item *simulated_item = (plc4c_driver_simulated_item*) item;
-    switch (simulated_item->data_type) {
-        case INTEGER: {
-            int* int_value = malloc(sizeof(int));
-            *int_value = (int) *((int*)value);
-            *encoded_value = int_value;
-            return OK;
-        }
-        case STRING: {
-            char* string_value = malloc(sizeof(char) * strlen((char*) value));
-            strcpy(string_value, (char*) value);
-            *encoded_value = string_value;
-            return OK;
-        }
-    }
-    return INTERNAL_ERROR;
 }
 
 
@@ -368,7 +341,6 @@ plc4c_driver *plc4c_driver_simulated_create() {
     driver->protocol_name = "Simulated PLC4X Datasource";
     driver->default_transport_code = "dummy";
     driver->parse_address_function = &plc4c_driver_simulated_parse_address;
-    driver->encode_value_function = &plc4c_driver_simulated_encode_value;
     driver->connect_function = &plc4c_driver_simulated_connect_function;
     driver->disconnect_function = &plc4c_driver_simulated_disconnect_function;
     driver->read_function = &plc4c_driver_simulated_read_function;

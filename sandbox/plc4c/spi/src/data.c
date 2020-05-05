@@ -64,15 +64,23 @@ plc4c_data *plc4c_data_create_uint_data(unsigned int ui) {
 
 plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
-  data->data_type = PLC4C_STRINGP;
+  data->data_type = PLC4C_STRING_POINTER;
   data->size = size;
   data->data.pstring_value = s;
   return data;
 }
 
+plc4c_data *plc4c_data_create_constant_string_data( unsigned int size, char *s) {
+  plc4c_data *data = malloc(sizeof(plc4c_data));
+  data->data_type = PLC4C_CONSTANT_STRING;
+  data->size = size;
+  data->data.const_string_value = s;
+  return data;
+}
+
 plc4c_data *plc4c_data_create_void_pointer_data(void* v) {
   plc4c_data *data = malloc(sizeof(plc4c_data));
-  data->data_type = PLC4C_VOIDP;
+  data->data_type = PLC4C_VOID_POINTER;
   data->size = 0;
   data->data.pvoid_value = v;
   return data;
@@ -108,10 +116,13 @@ void plc4c_data_printf(plc4c_data *data) {
      case PLC4C_FLOAT:
        printf("%f", data->data.float_value);
        break;
-     case PLC4C_STRINGP:
+     case PLC4C_STRING_POINTER:
        printf("%s", data->data.pstring_value);
        break;
-     case PLC4C_VOIDP:
+     case PLC4C_CONSTANT_STRING:
+       printf("%s", data->data.const_string_value);
+       break;
+     case PLC4C_VOID_POINTER:
        if (data->custom_printf != NULL) {
          data->custom_printf(data);
        } else {
@@ -138,10 +149,10 @@ void plc4c_data_delete(plc4c_data *data) {
     data->custom_destroy(data);
   } else {
     switch (data->data_type ) {
-      case PLC4C_VOIDP:
+      case PLC4C_VOID_POINTER:
         free(data->data.pvoid_value);
         break;
-      case PLC4C_STRINGP:
+      case PLC4C_STRING_POINTER:
         free(data->data.pstring_value);
         break;
       default:

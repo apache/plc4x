@@ -71,12 +71,13 @@ typedef enum plc4c_data_type {
   PLC4C_INT,
   PLC4C_UINT,
   PLC4C_FLOAT,
-  PLC4C_STRINGP,
-  PLC4C_VOIDP
+  PLC4C_STRING_POINTER,
+  PLC4C_CONSTANT_STRING,
+  PLC4C_VOID_POINTER
 } plc4c_data_type;
 
 /**
- * Helper that translates from an return_code enum value to something a human can work with.
+ * Helper that translates from a return_code enum value to something a human can work with.
  *
  * @param err return code.
  * @return A human readable description.
@@ -84,12 +85,19 @@ typedef enum plc4c_data_type {
 char *plc4c_return_code_to_message(plc4c_return_code err);
 
 /**
- * Helper that translates from an plc4c_response_code enum value to something a human can work with.
+ * Helper that translates from a plc4c_response_code enum value to something a human can work with.
  *
- * @param err return code.
+ * @param response_code plc4c_response_code.
  * @return A human readable description.
  */
 char *plc4c_response_code_to_message(plc4c_response_code response_code);
+
+/**
+ * Helper function translates from a plc4c_data_type enum value to something a human can work with.
+ * @param data_type plc4c_data_type
+ * @return string representation
+ */
+char *plc4c_data_type_name(plc4c_data_type data_type);
 
 /**
  * The plc4c system.
