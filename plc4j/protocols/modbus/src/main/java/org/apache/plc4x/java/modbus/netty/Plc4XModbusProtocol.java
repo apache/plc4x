@@ -26,6 +26,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,12 +50,6 @@ import org.apache.plc4x.java.modbus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 
 public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
 
@@ -59,6 +58,12 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
     public final AtomicInteger transactionId = new AtomicInteger();
 
     private final ConcurrentMap<Short, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> requestsMap = new ConcurrentHashMap<>();
+
+    private final short slaveId;
+
+    public Plc4XModbusProtocol(short slaveId) {
+        this.slaveId = slaveId;
+    }
 
     @Override
     protected void encode(ChannelHandlerContext ctx, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws Exception {
@@ -88,8 +93,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         if (quantity != field.getQuantity()) {
             LOGGER.warn("Supplied number of values [{}] don't match t the addressed quantity of [{}]", field.getQuantity(), quantity);
         }
-
-        short unitId = 0;
 
         /*
          * It seems that in Modbus, there are only two types of resources, that can be accessed:
@@ -137,7 +140,9 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 byte[] bytesToWrite = produceCoilValues(Arrays.asList(request.getFieldItem(fieldName).getValues()));
                 // As each coil value represents a bit, the number of bytes needed
                 // equals "ceil(quantity/8)" (a 3 bit shift is a division by 8 ... the +1 is the "ceil")
-                int requiredLength = (quantity >> 3) + 1;
+                // (8/8)+1 = 2, but must be 1;
+                int temp = quantity - 1;
+                int requiredLength = (temp >> 3) + 1;
                 if (bytesToWrite.length != requiredLength) {
                     throw new PlcProtocolException(
                         "Invalid coil values created. Should be big enough to transport N bits. Was " +
@@ -163,7 +168,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
-        out.add(new ModbusTcpPayload(transactionId, unitId, modbusRequest));
+        out.add(new ModbusTcpPayload(transactionId, slaveId, modbusRequest));
     }
 
     private void encodeReadRequest(PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> msg, List<Object> out) throws PlcException {
@@ -178,8 +183,6 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
         ModbusField field = (ModbusField) request.getField(fieldName);
         int quantity = field.getQuantity();
-        // TODO: the unit the should be used for multiple Requests
-        short unitId = 0;
 
         ModbusPdu modbusRequest;
         if (field instanceof CoilModbusField) {
@@ -202,7 +205,7 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
         }
         short transactionId = (short) this.transactionId.getAndIncrement();
         requestsMap.put(transactionId, msg);
-        out.add(new ModbusTcpPayload(transactionId, unitId, modbusRequest));
+        out.add(new ModbusTcpPayload(transactionId, slaveId, modbusRequest));
     }
 
     @SuppressWarnings("unchecked")
@@ -330,8 +333,10 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
 
     private byte[] produceCoilValues(List<?> values) throws PlcProtocolException {
         List<Byte> coils = new LinkedList<>();
+        int items = values.size();
         byte actualCoil = 0;
         int i = 7;
+        
         for (Object value : values) {
             final boolean coilSet;
             if (value.getClass() == Boolean.class) {
@@ -381,13 +386,17 @@ public class Plc4XModbusProtocol extends MessageToMessageCodec<ModbusTcpPayload,
                 throw new PlcUnsupportedDataTypeException(value.getClass());
             }
             byte coilToSet = coilSet ? (byte) 1 : (byte) 0;
-            actualCoil = (byte) (actualCoil & 0xff | coilToSet << i);
-            i--;
-            if (i < 0) {
+            int pos = 7 - i;
+            actualCoil = (byte) (actualCoil & 0xff | coilToSet << pos);
+            items--;
+            i--; 
+            if ((items!=0) && (i < 0)) {
                 coils.add(actualCoil);
                 actualCoil = 0;
-                i = 8;
+                i = 7;
             }
+            if (items==0) coils.add(actualCoil);            
+            
         }
         if (coils.isEmpty()) {
             // We only have one coil

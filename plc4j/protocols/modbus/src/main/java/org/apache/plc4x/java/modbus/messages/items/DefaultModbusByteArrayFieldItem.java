@@ -18,13 +18,14 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.messages.items;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
-
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
 
 /**
  * default implementation for DefaultByteArrayFieldItem for Usage within Modbus module
@@ -40,11 +41,16 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
     private ByteOrder byteOrder;
 
     private Byte[] completeByteArray;
+    private byte[] backend;
+    
+    private ByteBuf byteBuf = null;
 
     public DefaultModbusByteArrayFieldItem(Byte[]... values) {
         super(values);
         this.byteOrder = DEFAULT_ENDIANNESS;
         this.completeByteArray = Arrays.stream(getValues()).flatMap(Stream::of).toArray(Byte[]::new);
+        this.backend = ArrayUtils.toPrimitive(completeByteArray);
+        byteBuf = Unpooled.wrappedBuffer(backend);
     }
 
     @Override
@@ -60,17 +66,25 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public Byte[] getByteArray(int index) {
-        return getValue(index);
+        return getByteArrayFromIndex(index);
     }
 
     @Override
     public boolean isValidShort(int index) {
-        return this.completeByteArray.length >= shortIndexToByteIndex(index) + SHORT_BYTES;
+        try{
+            short b = byteBuf.getShort(index*Short.BYTES);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
     }
 
     @Override
     public Short getShort(int index) {
-        return getShort(index, this.byteOrder);
+        if (!isValidShort(index)){
+            return null;
+        }
+        return byteBuf.getShort(index*Short.BYTES);
     }
 
     /**
@@ -84,10 +98,12 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         if (!isValidShort(index)) {
             return null;
         }
-        return ByteBuffer
-            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(shortIndexToByteIndex(index))))
-            .order(byteOrder)
-            .getShort();
+        if (byteOrder.equals(ByteOrder.LITTLE_ENDIAN)) {
+            return byteBuf.getShortLE(index*Short.BYTES);            
+        } else {
+            return byteBuf.getShort(index*Short.BYTES);            
+        }
+
     }
 
     /**
@@ -103,12 +119,20 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidInteger(int index) {
-        return this.completeByteArray.length >= intIndexToByteIndex(index) + INTEGER_BYTES;
+        try{
+            int b = byteBuf.getInt(index*Integer.BYTES);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
     }
 
     @Override
     public Integer getInteger(int index) {
-        return getInteger(index, this.byteOrder);
+        if (!isValidInteger(index)){
+            return null;
+        }
+        return byteBuf.getInt(index*Integer.BYTES);
     }
 
     /**
@@ -122,10 +146,11 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         if (!isValidInteger(index)) {
             return null;
         }
-        return ByteBuffer
-            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(intIndexToByteIndex(index))))
-            .order(byteOrder)
-            .getInt();
+        if (byteOrder.equals(ByteOrder.LITTLE_ENDIAN)) {
+            return byteBuf.getIntLE(index*Integer.BYTES);            
+        } else {
+            return byteBuf.getInt(index*Integer.BYTES);            
+        }
     }
 
     /**
@@ -141,12 +166,20 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     @Override
     public boolean isValidLong(int index) {
-        return this.completeByteArray.length >= longIndexToByteIndex(index) + LONG_BYTES;
+        try{
+            long b = byteBuf.getLong(index*Long.BYTES);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
     }
 
     @Override
     public Long getLong(int index) {
-        return getLong(index, this.byteOrder);
+        if (!isValidLong(index)){
+            return null;
+        }
+        return byteBuf.getLong(index*Long.BYTES);
     }
 
     /**
@@ -160,10 +193,11 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
         if (!isValidLong(index)) {
             return null;
         }
-        return ByteBuffer
-            .wrap(ArrayUtils.toPrimitive(getByteArrayFromIndex(longIndexToByteIndex(index))))
-            .order(byteOrder)
-            .getLong();
+        if (byteOrder.equals(ByteOrder.LITTLE_ENDIAN)) {
+            return byteBuf.getLongLE(index*Long.BYTES);            
+        } else {
+            return byteBuf.getLong(index*Long.BYTES);            
+        }
     }
 
     /**
@@ -214,7 +248,80 @@ public class DefaultModbusByteArrayFieldItem extends DefaultByteArrayFieldItem {
 
     //ToDo: Implement conversion for Float and Unsigned-Datatypes
 
-    //ToDo: Add exceptions to avoid unwanted states --> e.g. neg indexes
+    @Override
+    public boolean isValidByte(int index) {
+        try{
+            byte b = byteBuf.getByte(index);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
+    }
+    
+    @Override
+    public Byte getByte(int index) {
+        if (!isValidByte(index)){
+            return null;
+        }
+        return byteBuf.getByte(index);
+    }
+    
+    @Override
+    public boolean isValidFloat(int index) {
+        try{
+            float f = byteBuf.getFloat(index*Float.BYTES);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
+    }
 
+    @Override
+    public Float getFloat(int index) {
+        if (!isValidFloat(index)){
+            return null;
+        }
+        return byteBuf.getFloat(index*Float.BYTES);
+    }
+  
+    @Override
+    public boolean isValidDouble(int index) {
+        try{
+            double f = byteBuf.getDouble(index*Double.BYTES);
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
+    }
+
+    @Override
+    public Double getDouble(int index) {
+        if (!isValidDouble(index)){
+            return null;
+        }
+        return byteBuf.getDouble(index*Double.BYTES);
+    }    
+  
+    //TODO: index or index*2? String is byte oriented.
+    @Override
+    public boolean isValidString(int index) {
+        try{
+            CharSequence s = byteBuf.getCharSequence(index*2, byteBuf.readableBytes(), Charset.defaultCharset());
+            return true;
+        } catch(Exception ex){
+            return false;
+        }
+    }
+
+    @Override
+    public String getString(int index) {
+        if (!isValidString(index)){
+            return null;
+        }
+        CharSequence s = byteBuf.getCharSequence(index*2, byteBuf.readableBytes(), Charset.defaultCharset());        
+        return s.toString();
+    }    
+    
+    
 }
 

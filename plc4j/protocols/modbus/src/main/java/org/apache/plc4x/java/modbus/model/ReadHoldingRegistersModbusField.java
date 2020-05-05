@@ -18,10 +18,9 @@
  */
 package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 public class ReadHoldingRegistersModbusField extends ModbusField {
 
@@ -40,6 +39,10 @@ public class ReadHoldingRegistersModbusField extends ModbusField {
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        if (quantity != null) {
+            if ((quantity < 0) || (quantity > 125)) throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);   
+        }
+        
         return new ReadHoldingRegistersModbusField(address, quantity);
     }
 }

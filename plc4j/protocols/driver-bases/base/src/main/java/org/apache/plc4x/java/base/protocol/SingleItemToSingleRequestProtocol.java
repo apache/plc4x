@@ -23,6 +23,11 @@ import io.netty.util.Timeout;
 import io.netty.util.Timer;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.PromiseCombiner;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
@@ -36,12 +41,6 @@ import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 /**
  * This layer can be used to split a {@link org.apache.plc4x.java.api.messages.PlcRequest} which addresses multiple {@link PlcField}s into multiple subsequent {@link org.apache.plc4x.java.api.messages.PlcRequest}s.
@@ -160,7 +159,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // Send everything so we get a proper failure for those pending writes
         this.queue.removeAndWriteAll();
-        this.timer.stop();
+        //this.timer.stop();
         this.scheduledTimeouts.clear();
         this.sentButUnacknowledgedSubContainer.clear();
         this.correlationToParentContainer.clear();
@@ -181,7 +180,7 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     protected void tryFinish(Integer currentTdpu, InternalPlcResponse msg, CompletableFuture<InternalPlcResponse> originalResponseFuture) {
         deliveredItems.incrementAndGet();
         PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> subPlcRequestContainer = sentButUnacknowledgedSubContainer.remove(currentTdpu);
-        LOGGER.info("{} got acknowledged", subPlcRequestContainer);
+        LOGGER.debug("{} got acknowledged", subPlcRequestContainer);
         PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> originalPlcRequestContainer = correlationToParentContainer.remove(currentTdpu);
         if (originalPlcRequestContainer == null) {
             LOGGER.warn("Unrelated package received {}", msg);
@@ -325,7 +324,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
                         ChannelPromise subPromise = new DefaultChannelPromise(promise.channel());
 
                         Integer tdpu = correlationIdGenerator.getAndIncrement();
-                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>()
+                        CompletableFuture<InternalPlcResponse> correlatedCompletableFuture = new CompletableFuture<>();
+                        // Important: don't chain to above as we want the above to be completed not the result of when complete
+                        correlatedCompletableFuture
                             .thenApply(InternalPlcResponse.class::cast)
                             .whenComplete((internalPlcResponse, throwable) -> {
                                 if (throwable != null) {

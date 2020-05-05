@@ -18,14 +18,13 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.model;
 
-import org.apache.plc4x.java.api.model.PlcField;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.api.model.PlcField;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+?)])?");
 
     private final int address;
 
@@ -68,7 +67,7 @@ public abstract class ModbusField implements PlcField {
     public String toString() {
         return "ModbusField{" +
             "address=" + address +
-            "quantity=" + quantity +
+            ",quantity=" + quantity +
             '}';
     }
 }
