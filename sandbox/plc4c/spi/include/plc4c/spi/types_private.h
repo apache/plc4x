@@ -47,10 +47,10 @@ typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection 
 typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection,
                                                                   plc4c_system_task **task);
 
-typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_connection *connection,
+typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_read_request_execution *read_request_execution,
                                                             plc4c_system_task **task);
 
-typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_connection *connection,
+typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_write_request_execution *write_request_execution,
                                                              plc4c_system_task **task);
 
 typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response *response);
@@ -123,7 +123,6 @@ struct plc4c_connection_t {
     char *parameters;
 
     bool connected;
-
     // Internal flag indicating the connection should be disconnected
     bool disconnect;
     // Number of system_tasks currently still active in the system.
@@ -132,6 +131,7 @@ struct plc4c_connection_t {
     plc4c_system *system;
     plc4c_driver *driver;
     plc4c_transport *transport;
+
     bool supports_reading;
     bool supports_writing;
     bool supports_subscriptions;
@@ -216,9 +216,9 @@ struct plc4c_write_response_t {
 struct plc4c_system_task_t {
     int state_id;
     plc4c_system_task_state_machine_function state_machine_function;
-    void *context;
     bool completed;
 
+    void *context;
     // Reference to the connection that owns this task
     plc4c_connection *connection;
 };

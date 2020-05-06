@@ -33,14 +33,20 @@ typedef enum plc4c_driver_simulated_field_type_t plc4c_driver_simulated_field_ty
 typedef enum plc4c_driver_simulated_field_datatype_t plc4c_driver_simulated_field_datatype;
 
 // State definitions
+enum plc4c_driver_simulated_disconnect_states {
+    PLC4C_DRIVER_SIMULATED_DISCONNECT_INIT,
+    PLC4C_DRIVER_SIMULATED_DISCONNECT_WAIT_TASKS_FINISHED,
+    PLC4C_DRIVER_SIMULATED_DISCONNECT_FINISHED
+};
+
 enum read_states {
-    READ_INIT,
-    READ_FINISHED
+    PLC4C_DRIVER_SIMULATED_READ_INIT,
+    PLC4C_DRIVER_SIMULATED_READ_FINISHED
 };
 
 enum write_states {
-    WRITE_INIT,
-    WRITE_FINISHED
+    PLC4C_DRIVER_SIMULATED_WRITE_INIT,
+    PLC4C_DRIVER_SIMULATED_WRITE_FINISHED
 };
 
 struct plc4c_driver_simulated_item_t {
@@ -69,11 +75,30 @@ plc4c_return_code plc4c_driver_simulated_disconnect_machine_function(plc4c_syste
     if (connection == NULL) {
         return INTERNAL_ERROR;
     }
-    if (!connection->connected) {
-        return INTERNAL_ERROR;
+
+    switch (task->state_id) {
+        case PLC4C_DRIVER_SIMULATED_DISCONNECT_INIT: {
+            connection->disconnect = true;
+            task->state_id = PLC4C_DRIVER_SIMULATED_DISCONNECT_WAIT_TASKS_FINISHED;
+            break;
+        }
+        case PLC4C_DRIVER_SIMULATED_DISCONNECT_WAIT_TASKS_FINISHED: {
+            // The disconnect system-task also counts.
+            if(connection->num_running_system_tasks == 1) {
+                connection->connected = false;
+                task->completed = true;
+                task->state_id = PLC4C_DRIVER_SIMULATED_DISCONNECT_FINISHED;
+            }
+            break;
+        }
+        case PLC4C_DRIVER_SIMULATED_DISCONNECT_FINISHED: {
+            // Do nothing
+            break;
+        }
+        default: {
+            return INTERNAL_ERROR;
+        }
     }
-    connection->connected = false;
-    task->completed = true;
     return OK;
 }
 
@@ -85,7 +110,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
     plc4c_read_request_execution *read_request_execution = task->context;
     plc4c_read_request *read_request = read_request_execution->read_request;
     switch (task->state_id) {
-        case READ_INIT: {
+        case PLC4C_DRIVER_SIMULATED_READ_INIT: {
             // Create a response.
             plc4c_read_response *read_response = malloc(sizeof(plc4c_read_response));
             read_response->read_request = read_request;
@@ -97,7 +122,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
                 plc4c_driver_simulated_item *cur_item = cur_element->value;
                 plc4c_response_value_item *value_item = malloc(sizeof(plc4c_response_value_item));
                 value_item->item = (plc4c_item *) cur_item;
-
+                value_item->response_code = PLC4C_RESPONSE_CODE_OK;
                 /*
                  * create the plc4c_data
                  * if this were a custom type we could set a custom destroy method
@@ -105,7 +130,6 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
                  * right , now just create a new random value
                  */
                 value_item->value = plc4c_data_create_uint_data(arc4random());
-                value_item->response_code = PLC4C_RESPONSE_CODE_OK;
 
                 // Add the value to the response.
                 plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -113,11 +137,11 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(plc4c_system_task
             }
 
             read_request_execution->read_response = read_response;
-            task->state_id = READ_FINISHED;
+            task->state_id = PLC4C_DRIVER_SIMULATED_READ_FINISHED;
             task->completed = true;
             break;
         }
-        case READ_FINISHED: {
+        case PLC4C_DRIVER_SIMULATED_READ_FINISHED: {
             // Do nothing
             break;
         }
@@ -136,7 +160,7 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
     plc4c_write_request_execution *write_request_execution = task->context;
     plc4c_write_request *write_request = write_request_execution->write_request;
     switch (task->state_id) {
-        case WRITE_INIT: {
+        case PLC4C_DRIVER_SIMULATED_WRITE_INIT: {
             // Create a response.
             plc4c_write_response *write_response = malloc(sizeof(plc4c_write_response));
             write_response->write_request = write_request;
@@ -183,11 +207,11 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
             }
 
             write_request_execution->write_response = write_response;
-            task->state_id = WRITE_FINISHED;
+            task->state_id = PLC4C_DRIVER_SIMULATED_WRITE_FINISHED;
             task->completed = true;
             break;
         }
-        case WRITE_FINISHED: {
+        case PLC4C_DRIVER_SIMULATED_WRITE_FINISHED: {
             // Do nothing
             break;
         }
@@ -274,10 +298,11 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
 plc4c_return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection,
                                                           plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-    new_task->context = connection;
     // There's nothing to do here, so no need for a state-machine.
     new_task->state_id = -1;
     new_task->state_machine_function = &plc4c_driver_simulated_connect_machine_function;
+    new_task->completed = false;
+    new_task->context = connection;
     new_task->connection = connection;
     *task = new_task;
     return OK;
@@ -286,33 +311,41 @@ plc4c_return_code plc4c_driver_simulated_connect_function(plc4c_connection *conn
 plc4c_return_code plc4c_driver_simulated_disconnect_function(plc4c_connection *connection,
                                                              plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-    new_task->context = connection;
-    // There's nothing to do here, so no need for a state-machine.
-    new_task->state_id = -1;
+    new_task->state_id = PLC4C_DRIVER_SIMULATED_DISCONNECT_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_disconnect_machine_function;
+    new_task->completed = false;
+    new_task->context = connection;
     new_task->connection = connection;
     *task = new_task;
     return OK;
 }
 
-plc4c_return_code plc4c_driver_simulated_read_function(plc4c_connection *connection,
+plc4c_return_code plc4c_driver_simulated_read_function(plc4c_read_request_execution *read_request_execution,
                                                        plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-    new_task->state_id = READ_INIT;
+    new_task->state_id = PLC4C_DRIVER_SIMULATED_READ_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_read_machine_function;
     new_task->completed = false;
-    new_task->connection = connection;
+    new_task->context = read_request_execution;
+    new_task->connection = read_request_execution->read_request->connection;
+
+    read_request_execution->system_task = new_task;
+
     *task = new_task;
     return OK;
 }
 
-plc4c_return_code plc4c_driver_simulated_write_function(plc4c_connection *connection,
+plc4c_return_code plc4c_driver_simulated_write_function(plc4c_write_request_execution *write_request_execution,
                                                         plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-    new_task->state_id = WRITE_INIT;
+    new_task->state_id = PLC4C_DRIVER_SIMULATED_WRITE_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_write_machine_function;
     new_task->completed = false;
-    new_task->connection = connection;
+    new_task->context = write_request_execution;
+    new_task->connection = write_request_execution->write_request->connection;
+
+    write_request_execution->system_task = new_task;
+
     *task = new_task;
     return OK;
 }

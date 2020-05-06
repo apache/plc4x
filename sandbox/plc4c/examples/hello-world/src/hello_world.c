@@ -220,7 +220,7 @@ int main() {
                 }
 
                 // Clean up.
-                plc4c_connection_read_response_destroy(read_response);
+                //plc4c_connection_read_response_destroy(read_response);
                 plc4c_read_request_execution_destroy(read_request_execution);
                 plc4c_read_request_destroy(read_request);
 
@@ -284,7 +284,7 @@ int main() {
 
                 // Clean up.
                 plc4c_connection_write_response_destroy(write_response);
-                plc4c_read_request_execution_destroy(read_request_execution);
+                //plc4c_read_request_execution_destroy(read_request_execution);
                 plc4c_read_request_destroy(read_request);
 
                 // Disconnect.

@@ -27,8 +27,12 @@ plc4c_driver *plc4c_driver_modbus_create() {
     driver->protocol_name = "Modbus";
     driver->default_transport_code = "tcp";
     driver->parse_address_function = NULL;
+    driver->connect_function = NULL;
+    driver->disconnect_function = NULL;
     driver->read_function = NULL;
     driver->write_function = NULL;
+    driver->free_read_response_function = NULL;
+    driver->free_write_response_function = NULL;
     return driver;
 }
 
