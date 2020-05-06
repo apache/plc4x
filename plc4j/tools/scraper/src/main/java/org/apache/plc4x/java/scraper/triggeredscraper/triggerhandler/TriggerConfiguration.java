@@ -19,7 +19,12 @@
 
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
@@ -37,7 +42,8 @@ import java.util.regex.Pattern;
 public class TriggerConfiguration{
     private static final Logger logger = LoggerFactory.getLogger(TriggerConfiguration.class);
 
-    private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
+    //private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
+    private static final String TRIGGER = "TRIGGER_VAR";
     private static final String SCHEDULED       = "SCHEDULED";
     private static final String PREVIOUS_DEF    = "PREV";
 
@@ -375,23 +381,25 @@ public class TriggerConfiguration{
             String comparatorVariable = matcher.group("compVar");
 
             switch (triggerStrategy){
-                case S_7_TRIGGER_VAR:
+                case TRIGGER:
 
                     if(triggerVar ==null || comparatorString==null || comparatorVariable==null){
-                        throw new ScraperConfigurationException("S7_TRIGGER_VAR trigger strategy needs the trigger-condition - information missing! given configString: "+jobTriggerStrategy);
+                        throw new ScraperConfigurationException("TRIGGER_VAR trigger strategy needs the trigger-condition - information missing! given configString: "+jobTriggerStrategy);
                     }
 
                     List<TriggerElement> triggerElements = new ArrayList<>();
 
+                    //TODO Change this (probably only 1 source to get the connection directly)
+                    String connectionString = triggeredScrapeJob.getSourceConnections().get(triggeredScrapeJob.getSourceConnections().keySet().iterator().next());
                     TriggerElement triggerElement = new TriggerElement(
                         comparatorString,
                         null,
                         comparatorVariable,
                         triggerVar,
-                        triggerStrategy);
+                        triggerStrategy,
+                        connectionString);
 
                     triggerElement.setTriggerJob(triggeredScrapeJob.getJobName());
-
                     triggerElements.add(triggerElement);
 
                     String concatConn = matcher.group("concatConn");
@@ -405,7 +413,8 @@ public class TriggerConfiguration{
                             concatConn,
                             comparatorVariable2,
                             triggerVar2,
-                            triggerStrategy);
+                            triggerStrategy,
+                            connectionString);
 
 
                         triggerElement2.setTriggerJob(triggeredScrapeJob.getJobName());
@@ -472,7 +481,8 @@ public class TriggerConfiguration{
     //ToDo replace constant TriggerType by more generic ones --> PLC4X-89
     public enum TriggerType {
         SCHEDULED,
-        S7_TRIGGER_VAR
+        S7_TRIGGER_VAR,
+        TRIGGER_VAR
     }
 
     public enum ConcatType {
@@ -527,21 +537,21 @@ public class TriggerConfiguration{
             this.plcField = plcField;
         }
 
-        TriggerElement(String comparator, String concatType, String compareValue, String plcField, String triggerStrategy) throws ScraperConfigurationException {
+        TriggerElement(String comparator, String concatType, String compareValue, String plcField, String triggerStrategy, String plcConnectionString) throws ScraperConfigurationException {
             this();
             this.plcFieldString = plcField;
             this.plcConnectionString = plcConnectionString;
-            if(triggerStrategy.equals(S_7_TRIGGER_VAR)){
-                // TODO: This really has to be cleaned up by using the connections prepareField method.
-                /*try {
-                    this.plcField = S7Field.of(this.plcFieldString);
+            if(triggerStrategy.equals(TRIGGER)){
+                try {
+                    //this.plcField = S7Field.of(this.plcFieldString);
+                    this.plcField = prepareField(plcFieldString);
                 }
                 catch (Exception e){
                     if(logger.isDebugEnabled()) {
                         logger.debug("Exception occurred parsing a S7Field");
                     }
                     throw new ScraperConfigurationException("Exception on parsing S7Field (" + plcField + "): " + e.getMessage());
-                }*/
+                }
                 this.compareValue = convertCompareValue(compareValue,this.plcField);
                 this.comparatorType = detectComparatorType(comparator);
                 matchTypeAndComparator();
@@ -551,6 +561,13 @@ public class TriggerConfiguration{
 
         }
 
+        //I used this because the prepareField method is deprecated with generated drivers
+        //So I need to create the field using the connection string here
+        private PlcField prepareField(String fieldQuery) throws PlcConnectionException {
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcDriver driver = driverManager.getDriver(plcConnectionString);
+            return driver.prepareField(fieldQuery);
+        }
 
         /**
          * parses the ref-value to a given value, as well as checking if ref-value matches to the given data-type
