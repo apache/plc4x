@@ -21,12 +21,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "plc4c/types.h"
 
 
 typedef void (*plc4c_data_custom_destroy)(plc4c_data *data);
+
 typedef void (*plc4c_data_custom_printf)(plc4c_data *data);
 
 /*
@@ -87,7 +89,7 @@ plc4c_data *plc4c_data_create_uint_data(unsigned int ui);
  * @param v the void* value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_void_pointer_data(void* v);
+plc4c_data *plc4c_data_create_void_pointer_data(void *v);
 
 /**
  * Creates a plc4c_data with float
@@ -102,7 +104,7 @@ plc4c_data *plc4c_data_create_float_data(float f);
  * @param s the char* value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_string_data( unsigned int size, char* s);
+plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s);
 
 /**
  * Creates a plc4c_data with a constant char*
@@ -110,7 +112,7 @@ plc4c_data *plc4c_data_create_string_data( unsigned int size, char* s);
  * @param s the char *value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_constant_string_data( unsigned int size, char *s);
+plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s);
 
 /**
  * Set a custom function to call when destroying this data.  Typically when the type is

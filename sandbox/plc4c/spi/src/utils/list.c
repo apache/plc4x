@@ -26,30 +26,30 @@ void plc4c_utils_list_create(plc4c_list **list) {
     *list = new_list;
 }
 
-size_t plc4c_utils_list_size(plc4c_list* list) {
-    if(list->head == NULL) {
+size_t plc4c_utils_list_size(plc4c_list *list) {
+    if (list->head == NULL) {
         return 0;
     }
     plc4c_list_element *cur_element = list->head;
     int count = 1;
-    while(cur_element->next != NULL) {
+    while (cur_element->next != NULL) {
         count++;
         cur_element = cur_element->next;
     }
     return count;
 }
 
-bool plc4c_utils_list_empty(plc4c_list* list) {
+bool plc4c_utils_list_empty(plc4c_list *list) {
     return list->head == NULL;
 }
 
-bool plc4c_utils_list_contains(plc4c_list* list, plc4c_list_element* element) {
-    if((list == NULL) || (element == NULL)) {
+bool plc4c_utils_list_contains(plc4c_list *list, plc4c_list_element *element) {
+    if ((list == NULL) || (element == NULL)) {
         return false;
     }
     plc4c_list_element *cur_element = list->head;
     do {
-        if(cur_element == element) {
+        if (cur_element == element) {
             return true;
         }
         cur_element = cur_element->next;
@@ -57,17 +57,17 @@ bool plc4c_utils_list_contains(plc4c_list* list, plc4c_list_element* element) {
     return false;
 }
 
-void plc4c_utils_list_insert_head(plc4c_list* list, plc4c_list_element* element) {
+void plc4c_utils_list_insert_head(plc4c_list *list, plc4c_list_element *element) {
     if (list->head == NULL) {
-      list->head = element;
-      return;
+        list->head = element;
+        return;
     }
     list->head->next = element;
     element->previous = list->head;
     list->head = element;
 }
 
-void plc4c_utils_list_insert_head_value(plc4c_list* list, void* value) {
+void plc4c_utils_list_insert_head_value(plc4c_list *list, void *value) {
     plc4c_list_element *new_element = malloc(sizeof(plc4c_list_element));
     new_element->value = value;
     new_element->next = NULL;
@@ -75,7 +75,7 @@ void plc4c_utils_list_insert_head_value(plc4c_list* list, void* value) {
     plc4c_utils_list_insert_head(list, new_element);
 }
 
-void plc4c_utils_list_insert_tail(plc4c_list* list, plc4c_list_element* element) {
+void plc4c_utils_list_insert_tail(plc4c_list *list, plc4c_list_element *element) {
     if (list->tail != NULL) {
         list->tail->previous = element;
         element->next = list->tail;
@@ -85,7 +85,7 @@ void plc4c_utils_list_insert_tail(plc4c_list* list, plc4c_list_element* element)
     list->tail = element;
 }
 
-void plc4c_utils_list_insert_tail_value(plc4c_list* list, void* value) {
+void plc4c_utils_list_insert_tail_value(plc4c_list *list, void *value) {
     plc4c_list_element *new_element = malloc(sizeof(plc4c_list_element));
     new_element->value = value;
     new_element->next = NULL;
@@ -93,29 +93,29 @@ void plc4c_utils_list_insert_tail_value(plc4c_list* list, void* value) {
     plc4c_utils_list_insert_tail(list, new_element);
 }
 
-void plc4c_utils_list_remove(plc4c_list* list, plc4c_list_element* element) {
+void plc4c_utils_list_remove(plc4c_list *list, plc4c_list_element *element) {
     // If the list doesn't contain this element, no need to do anything.
-    if(!plc4c_utils_list_contains(list, element)) {
+    if (!plc4c_utils_list_contains(list, element)) {
         return;
     }
 
     // Remember the next and previous elements.
-    plc4c_list_element* previous_element = element->previous;
-    plc4c_list_element* next_element = element->next;
+    plc4c_list_element *previous_element = element->previous;
+    plc4c_list_element *next_element = element->next;
 
     // Link the previous and next elements (taking the current element out of the list).
-    if(previous_element != NULL) {
+    if (previous_element != NULL) {
         previous_element->next = next_element;
     }
-    if(next_element != NULL) {
+    if (next_element != NULL) {
         next_element->previous = previous_element;
     }
 
     // Update head and tail (if required)
-    if(list->head == element) {
+    if (list->head == element) {
         list->head = next_element;
     }
-    if(list->tail == element) {
+    if (list->tail == element) {
         list->tail = previous_element;
     }
 
@@ -124,33 +124,33 @@ void plc4c_utils_list_remove(plc4c_list* list, plc4c_list_element* element) {
     element->previous = NULL;
 }
 
-plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list* list) {
+plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list *list) {
     plc4c_list_element *removed_element = list->head;
     if (removed_element != NULL) {
-      if (list->head->next != NULL) {
-        list->head = list->head->next;
-        list->head->previous = NULL;
-      } else {
-        list->head = NULL;
-      }
-      removed_element->previous = NULL;
-      removed_element->next = NULL;
+        if (list->head->next != NULL) {
+            list->head = list->head->next;
+            list->head->previous = NULL;
+        } else {
+            list->head = NULL;
+        }
+        removed_element->previous = NULL;
+        removed_element->next = NULL;
     }
     return removed_element;
 }
 
-plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list* list) {
+plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list *list) {
     plc4c_list_element *removed_element = list->tail;
     if (removed_element != NULL) {
-      if (list->tail->previous != NULL) {
-        list->tail = list->tail->previous;
-        list->tail->next = NULL;
-      } else {
-        list->tail = NULL;
-        list->head = NULL;
-      }
-      removed_element->next = NULL;
-      removed_element->previous = NULL;
+        if (list->tail->previous != NULL) {
+            list->tail = list->tail->previous;
+            list->tail->next = NULL;
+        } else {
+            list->tail = NULL;
+            list->head = NULL;
+        }
+        removed_element->next = NULL;
+        removed_element->previous = NULL;
     }
     return removed_element;
 }
@@ -164,12 +164,12 @@ plc4c_list_element *plc4c_utils_list_tail(plc4c_list *list) {
 }
 
 void plc4c_utils_list_delete_elements(plc4c_list *list, plc4c_list_delete_element_callback callback) {
-  // for each of our elements, call the delete callback
-  plc4c_list_element *head = plc4c_utils_list_remove_head(list);
-  while (head != NULL) {
-    callback(head);
-    free(head);
-    head = plc4c_utils_list_remove_head(list);
-  }
-  // at this point the list is empty
+    // for each of our elements, call the delete callback
+    plc4c_list_element *head = plc4c_utils_list_remove_head(list);
+    while (head != NULL) {
+        callback(head);
+        free(head);
+        head = plc4c_utils_list_remove_head(list);
+    }
+    // at this point the list is empty
 }

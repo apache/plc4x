@@ -35,7 +35,7 @@ typedef struct plc4c_response_item_t plc4c_response_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(char *address_string);
 
-typedef plc4c_return_code (*plc4c_connection_encode_value_item)(plc4c_item *item, void *value, void** encoded_value);
+typedef plc4c_return_code (*plc4c_connection_encode_value_item)(plc4c_item *item, void *value, void **encoded_value);
 
 typedef struct plc4c_system_task_t plc4c_system_task;
 
@@ -43,15 +43,16 @@ typedef plc4c_return_code (*plc4c_system_task_state_machine_function)(plc4c_syst
 
 typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
 
-typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection,
+                                                                  plc4c_system_task **task);
 
 typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
 
 typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
 
-typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response * response);
+typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response *response);
 
-typedef void (*plc4c_connect_free_write_response_function)(plc4c_write_response * response);
+typedef void (*plc4c_connect_free_write_response_function)(plc4c_write_response *response);
 
 struct plc4c_system_t {
     /* drivers */
@@ -77,7 +78,7 @@ struct plc4c_system_t {
 };
 
 struct plc4c_item_t {
-    char* name;
+    char *name;
 };
 
 struct plc4c_driver_t {
@@ -135,25 +136,25 @@ struct plc4c_connection_list_item_t {
 };
 
 struct plc4c_data_t {
-  plc4c_data_type data_type;
-  size_t size;
-  union {
-    bool boolean_value;
-    char char_value;
-    unsigned char uchar_value;
-    short short_value;
-    unsigned short ushort_value;
-    int int_value;
-    unsigned int uint_value;
-    /* more */
-    float float_value;
-    char *pstring_value;
-    char *const_string_value;
-    void *pvoid_value;
-  }data;
+    plc4c_data_type data_type;
+    size_t size;
+    union {
+        bool boolean_value;
+        char char_value;
+        unsigned char uchar_value;
+        short short_value;
+        unsigned short ushort_value;
+        int int_value;
+        unsigned int uint_value;
+        /* more */
+        float float_value;
+        char *pstring_value;
+        char *const_string_value;
+        void *pvoid_value;
+    } data;
 
-  plc4c_data_custom_destroy custom_destroy;
-  plc4c_data_custom_printf custom_printf;
+    plc4c_data_custom_destroy custom_destroy;
+    plc4c_data_custom_printf custom_printf;
 };
 
 struct plc4c_request_value_item_t {

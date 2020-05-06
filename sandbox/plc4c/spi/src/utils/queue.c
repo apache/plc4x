@@ -26,25 +26,25 @@ void plc4c_utils_queue_create(plc4c_queue **queue) {
     *queue = new_queue;
 }
 
-size_t plc4c_utils_queue_size(plc4c_queue* queue) {
-    if(queue->head == NULL) {
+size_t plc4c_utils_queue_size(plc4c_queue *queue) {
+    if (queue->head == NULL) {
         return 0;
     }
     plc4c_queue_element *cur_element = queue->head;
     int count = 1;
-    while(cur_element->next != NULL) {
+    while (cur_element->next != NULL) {
         count++;
         cur_element = cur_element->next;
     }
     return count;
 }
 
-bool plc4c_utils_queue_empty(plc4c_queue* queue) {
+bool plc4c_utils_queue_empty(plc4c_queue *queue) {
     return queue->head == NULL;
 }
 
-void plc4c_utils_queue_push(plc4c_queue* queue, plc4c_queue_element* element) {
-    if(queue->tail != NULL) {
+void plc4c_utils_queue_push(plc4c_queue *queue, plc4c_queue_element *element) {
+    if (queue->tail != NULL) {
         queue->tail->next = element;
     } else {
         queue->head = element;
@@ -52,14 +52,14 @@ void plc4c_utils_queue_push(plc4c_queue* queue, plc4c_queue_element* element) {
     queue->tail = element;
 }
 
-void plc4c_utils_queue_push_value(plc4c_queue* queue, void* value) {
+void plc4c_utils_queue_push_value(plc4c_queue *queue, void *value) {
     plc4c_queue_element *new_element = malloc(sizeof(plc4c_queue_element));
     new_element->value = value;
     new_element->next = NULL;
     plc4c_utils_queue_push(queue, new_element);
 }
 
-plc4c_queue_element *plc4c_utils_queue_pop(plc4c_queue* queue) {
+plc4c_queue_element *plc4c_utils_queue_pop(plc4c_queue *queue) {
     plc4c_queue_element *head_element = queue->head;
     queue->head = queue->head->next;
     head_element->next = NULL;

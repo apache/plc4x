@@ -27,4 +27,4 @@ file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/
 
 add_library(plc4c-driver-s7 ${sources} ${generatedSources})
 
-target_link_libraries (plc4c-driver-s7 ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-driver-s7 ${CMAKE_DL_LIBS})

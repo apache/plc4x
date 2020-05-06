@@ -211,7 +211,8 @@ int main() {
                 while (cur_element != NULL) {
                     plc4c_response_value_item *value_item = cur_element->value;
 
-                    printf("Value %s (%s):", value_item->item->name, plc4c_response_code_to_message(value_item->response_code));
+                    printf("Value %s (%s):", value_item->item->name,
+                            plc4c_response_code_to_message(value_item->response_code));
                     plc4c_data_printf(value_item->value);
                     printf("\n");
 
@@ -230,7 +231,7 @@ int main() {
                 plc4c_utils_list_insert_head_value(address_list, (void *) "STDOUT/foo:STRING");
                 plc4c_list *value_list = NULL;
                 plc4c_utils_list_create(&value_list);
-                char value[] = "hurtz";
+                char value[] = "bar";
                 plc4c_utils_list_insert_head_value(value_list,  plc4c_data_create_constant_string_data(strlen(value), value));
                 result = plc4c_connection_create_write_request(connection, address_list, value_list, &write_request);
 

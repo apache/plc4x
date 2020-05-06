@@ -89,7 +89,7 @@ void plc4c_system_set_on_loop_failure_callback(plc4c_system *system,
 }
 
 plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
-                                    plc4c_driver *driver) {
+                                          plc4c_driver *driver) {
     // If the system is not initialized, return an error.
     // There is nothing we can do here.
     if (system == NULL) {
@@ -102,7 +102,7 @@ plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
 }
 
 plc4c_return_code plc4c_system_add_transport(plc4c_system *system,
-                                       plc4c_transport *transport) {
+                                             plc4c_transport *transport) {
     // If the system is not initialized, return an error.
     // There is nothing we can do here.
     if (system == NULL) {
@@ -262,8 +262,8 @@ plc4c_return_code plc4c_system_create_connection(char *connection_string, plc4c_
 }
 
 plc4c_return_code plc4c_system_connect(plc4c_system *system,
-                                 char *connection_string,
-                                 plc4c_connection **connection) {
+                                       char *connection_string,
+                                       plc4c_connection **connection) {
 
     // Parse the connection string and initialize some of the connection field variables from this.
     plc4c_connection *new_connection = NULL;
@@ -285,7 +285,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
     }
     plc4c_list_element *cur_driver_list_element = system->driver_list->head;
     do {
-        plc4c_driver *cur_driver = (plc4c_driver*) cur_driver_list_element->value;
+        plc4c_driver *cur_driver = (plc4c_driver *) cur_driver_list_element->value;
         if (strcmp(cur_driver->protocol_code, new_connection->protocol_code) == 0) {
             // Set the driver reference in the new connection.
             new_connection->driver = cur_driver;
@@ -321,7 +321,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
     }
     plc4c_list_element *cur_transport_list_element = system->transport_list->head;
     do {
-        plc4c_transport *cur_transport = (plc4c_transport*) cur_transport_list_element->value;
+        plc4c_transport *cur_transport = (plc4c_transport *) cur_transport_list_element->value;
         if (strcmp(cur_transport->transport_code, new_connection->transport_code) == 0) {
             // Set the transport reference in the new connection.
             new_connection->transport = cur_transport;
@@ -341,7 +341,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
 
     plc4c_system_task *new_connection_task = NULL;
     result = new_connection->driver->connect_function(new_connection, &new_connection_task);
-    if(result != OK) {
+    if (result != OK) {
         return -1;
     }
     plc4c_utils_list_insert_tail_value(system->task_list, new_connection_task);
@@ -363,7 +363,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
 
 plc4c_return_code plc4c_system_loop(plc4c_system *system) {
     // If the task-queue is empty, just return.
-    if(plc4c_utils_list_empty(system->task_list)) {
+    if (plc4c_utils_list_empty(system->task_list)) {
         return OK;
     }
 
@@ -373,13 +373,13 @@ plc4c_return_code plc4c_system_loop(plc4c_system *system) {
         plc4c_system_task *cur_task = cur_task_element->value;
 
         // If the task is already completed, no need to do anything.
-        if((!cur_task->completed) && (cur_task->state_machine_function != NULL)) {
+        if ((!cur_task->completed) && (cur_task->state_machine_function != NULL)) {
             // Pass the task itself to the state-machine function of this task.
             cur_task->state_machine_function(cur_task);
         }
 
         // If the current task is completed at the end, remove it from the task_queue.
-        if(cur_task->completed) {
+        if (cur_task->completed) {
             plc4c_utils_list_remove(system->task_list, cur_task_element);
 
             // TODO: clean up the memory of the cur_task_element and cur_task

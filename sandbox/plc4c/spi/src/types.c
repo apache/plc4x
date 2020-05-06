@@ -106,43 +106,43 @@ char *plc4c_response_code_to_message(plc4c_response_code response_code) {
 }
 
 char *plc4c_data_type_name(plc4c_data_type data_type) {
-  switch (data_type) {
-    case PLC4C_CHAR: {
-      return "PLC4C_CHAR";
+    switch (data_type) {
+        case PLC4C_CHAR: {
+            return "PLC4C_CHAR";
+        }
+        case PLC4C_UCHAR: {
+            return "PLC4C_UCHAR";
+        }
+        case PLC4C_SHORT: {
+            return "PLC4C_SHORT";
+        }
+        case PLC4C_USHORT: {
+            return "PLC4C_USHORT";
+        }
+        case PLC4C_BOOL: {
+            return "PLC4C_BOOL";
+        }
+        case PLC4C_INT: {
+            return "PLC4C_INT";
+        }
+        case PLC4C_UINT: {
+            return "PLC4C_UINT";
+        }
+        case PLC4C_FLOAT: {
+            return "PLC4C_FLOAT";
+        }
+        case PLC4C_STRING_POINTER: {
+            return "PLC4C_STRING_POINTER";
+        }
+        case PLC4C_CONSTANT_STRING: {
+            return "PLC4C_CONSTANT_STRING";
+        }
+        case PLC4C_VOID_POINTER: {
+            return "PLC4C_VOID_POINTER";
+        }
+        default: {
+            return "UNKNOWN";
+        }
     }
-    case PLC4C_UCHAR: {
-      return "PLC4C_UCHAR";
-    }
-    case PLC4C_SHORT: {
-      return "PLC4C_SHORT";
-    }
-    case PLC4C_USHORT: {
-      return "PLC4C_USHORT";
-    }
-    case PLC4C_BOOL: {
-      return "PLC4C_BOOL";
-    }
-    case PLC4C_INT: {
-      return "PLC4C_INT";
-    }
-    case PLC4C_UINT: {
-      return "PLC4C_UINT";
-    }
-    case PLC4C_FLOAT: {
-      return "PLC4C_FLOAT";
-    }
-    case PLC4C_STRING_POINTER: {
-      return "PLC4C_STRING_POINTER";
-    }
-    case PLC4C_CONSTANT_STRING: {
-      return "PLC4C_CONSTANT_STRING";
-    }
-    case PLC4C_VOID_POINTER: {
-      return "PLC4C_VOID_POINTER";
-    }
-    default: {
-      return "UNKNOWN";
-    }
-  }
 }
 

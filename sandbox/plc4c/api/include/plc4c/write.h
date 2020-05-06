@@ -32,7 +32,7 @@ extern "C" {
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_reques,
-                                        plc4c_write_request_execution **write_request_execution);
+                                              plc4c_write_request_execution **write_request_execution);
 
 /**
  * Check if the write-request is completed successfully.

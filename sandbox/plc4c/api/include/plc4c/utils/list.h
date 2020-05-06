@@ -27,6 +27,7 @@ extern "C" {
 
 typedef struct plc4c_list plc4c_list;
 typedef struct plc4c_list_element plc4c_list_element;
+
 typedef void (*plc4c_list_delete_element_callback)(plc4c_list_element *element);
 
 struct plc4c_list {
@@ -37,30 +38,30 @@ struct plc4c_list {
 struct plc4c_list_element {
     plc4c_list_element *next;
     plc4c_list_element *previous;
-    void* value;
+    void *value;
 };
 
 void plc4c_utils_list_create(plc4c_list **list);
 
-size_t plc4c_utils_list_size(plc4c_list* list);
+size_t plc4c_utils_list_size(plc4c_list *list);
 
-bool plc4c_utils_list_empty(plc4c_list* list);
+bool plc4c_utils_list_empty(plc4c_list *list);
 
-bool plc4c_utils_list_contains(plc4c_list* list, plc4c_list_element* element);
+bool plc4c_utils_list_contains(plc4c_list *list, plc4c_list_element *element);
 
-void plc4c_utils_list_insert_head(plc4c_list* list, plc4c_list_element* element);
+void plc4c_utils_list_insert_head(plc4c_list *list, plc4c_list_element *element);
 
-void plc4c_utils_list_insert_head_value(plc4c_list* list, void* value);
+void plc4c_utils_list_insert_head_value(plc4c_list *list, void *value);
 
-void plc4c_utils_list_insert_tail(plc4c_list* list, plc4c_list_element* element);
+void plc4c_utils_list_insert_tail(plc4c_list *list, plc4c_list_element *element);
 
-void plc4c_utils_list_insert_tail_value(plc4c_list* list, void* value);
+void plc4c_utils_list_insert_tail_value(plc4c_list *list, void *value);
 
-void plc4c_utils_list_remove(plc4c_list* list, plc4c_list_element* element);
+void plc4c_utils_list_remove(plc4c_list *list, plc4c_list_element *element);
 
-plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list* list);
+plc4c_list_element *plc4c_utils_list_remove_head(plc4c_list *list);
 
-plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list* list);
+plc4c_list_element *plc4c_utils_list_remove_tail(plc4c_list *list);
 
 plc4c_list_element *plc4c_utils_list_head(plc4c_list *list);
 

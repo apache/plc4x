@@ -32,7 +32,7 @@ extern "C" {
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
-                                       plc4c_read_request_execution **read_request_execution);
+                                             plc4c_read_request_execution **read_request_execution);
 
 /**
  * Check if the read-request is completed successfully.

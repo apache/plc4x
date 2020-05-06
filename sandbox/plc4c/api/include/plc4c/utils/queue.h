@@ -35,20 +35,20 @@ struct plc4c_queue {
 
 struct plc4c_queue_element {
     plc4c_queue_element *next;
-    void* value;
+    void *value;
 };
 
 void plc4c_utils_queue_create(plc4c_queue **queue);
 
-size_t plc4c_utils_queue_size(plc4c_queue* queue);
+size_t plc4c_utils_queue_size(plc4c_queue *queue);
 
-bool plc4c_utils_queue_empty(plc4c_queue* queue);
+bool plc4c_utils_queue_empty(plc4c_queue *queue);
 
-void plc4c_utils_queue_push(plc4c_queue* queue, plc4c_queue_element* element);
+void plc4c_utils_queue_push(plc4c_queue *queue, plc4c_queue_element *element);
 
-void plc4c_utils_queue_push_value(plc4c_queue* queue, void* value);
+void plc4c_utils_queue_push_value(plc4c_queue *queue, void *value);
 
-plc4c_queue_element *plc4c_utils_queue_pop(plc4c_queue* queue);
+plc4c_queue_element *plc4c_utils_queue_pop(plc4c_queue *queue);
 
 plc4c_queue_element *plc4c_utils_queue_head(plc4c_queue *queue);
 

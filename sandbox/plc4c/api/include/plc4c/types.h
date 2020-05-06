@@ -63,17 +63,17 @@ typedef enum plc4c_response_code {
  * PLC4C data types
  */
 typedef enum plc4c_data_type {
-  PLC4C_BOOL,
-  PLC4C_CHAR,
-  PLC4C_UCHAR,
-  PLC4C_SHORT,
-  PLC4C_USHORT,
-  PLC4C_INT,
-  PLC4C_UINT,
-  PLC4C_FLOAT,
-  PLC4C_STRING_POINTER,
-  PLC4C_CONSTANT_STRING,
-  PLC4C_VOID_POINTER
+    PLC4C_BOOL,
+    PLC4C_CHAR,
+    PLC4C_UCHAR,
+    PLC4C_SHORT,
+    PLC4C_USHORT,
+    PLC4C_INT,
+    PLC4C_UINT,
+    PLC4C_FLOAT,
+    PLC4C_STRING_POINTER,
+    PLC4C_CONSTANT_STRING,
+    PLC4C_VOID_POINTER
 } plc4c_data_type;
 
 /**

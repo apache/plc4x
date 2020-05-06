@@ -23,6 +23,6 @@
 #include <plc4c/system.h>
 
 plc4c_return_code plc4c_system_create_connection(char *connection_string,
-                                           plc4c_connection **connection);
+                                                 plc4c_connection **connection);
 
 #endif //PLC4C_SPI_SYSTEM_PRIVATE_H_

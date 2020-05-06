@@ -23,12 +23,12 @@ file(GLOB_RECURSE sources "src/*.c")
 
 add_library(plc4c-spi SHARED ${sources} "src/utils/list.c" "src/utils/queue.c")
 
-if(BUILD_PHASE STREQUAL test-compile)
+if (BUILD_PHASE STREQUAL test-compile)
     file(GLOB testSources "test/*.c")
     add_executable(plc4c-spi-test ${testSources} test/system_test.c)
-    target_link_libraries (plc4c-spi-test
+    target_link_libraries(plc4c-spi-test
             plc4c-spi
             unity
             )
     add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
-endif()
+endif ()

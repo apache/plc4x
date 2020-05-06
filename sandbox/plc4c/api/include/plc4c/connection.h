@@ -80,9 +80,8 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection);
  * @param plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_read_request(plc4c_connection *connection,
-                                                 plc4c_list *addresses,
-                                                 plc4c_read_request **read_request);
-
+                                                       plc4c_list *addresses,
+                                                       plc4c_read_request **read_request);
 
 
 /**
@@ -110,9 +109,9 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection);
  * @param plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connection,
-                                                  plc4c_list *addresses,
-                                                  plc4c_list *values,
-                                                  plc4c_write_request **write_request);
+                                                        plc4c_list *addresses,
+                                                        plc4c_list *values,
+                                                        plc4c_write_request **write_request);
 
 /**
  * Destroys a given write_response

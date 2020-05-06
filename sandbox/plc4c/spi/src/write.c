@@ -22,7 +22,7 @@
 #include <plc4c/spi/types_private.h>
 
 plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_request,
-                                       plc4c_write_request_execution **write_request_execution) {
+                                              plc4c_write_request_execution **write_request_execution) {
     plc4c_system_task *system_task;
     write_request->connection->driver->write_function(&system_task);
     // Add the new task to the task-list.
@@ -40,10 +40,10 @@ plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_request
 }
 
 bool plc4c_write_request_finished_successfully(plc4c_write_request_execution *write_request_execution) {
-    if(write_request_execution == NULL) {
+    if (write_request_execution == NULL) {
         return true;
     }
-    if(write_request_execution->system_task == NULL) {
+    if (write_request_execution->system_task == NULL) {
         return true;
     }
     return write_request_execution->system_task->completed;
@@ -54,7 +54,7 @@ bool plc4c_write_request_has_error(plc4c_write_request_execution *write_request_
 }
 
 plc4c_write_response *plc4c_write_request_get_response(plc4c_write_request_execution *write_request_execution) {
-    if(write_request_execution == NULL) {
+    if (write_request_execution == NULL) {
         return NULL;
     }
     return write_request_execution->write_response;

@@ -189,7 +189,7 @@ void plc4c_system_set_on_loop_failure_callback(plc4c_system *system,
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
-                                    plc4c_driver *driver);
+                                          plc4c_driver *driver);
 
 /**
  * Function to manually add a transport to the system.
@@ -199,7 +199,7 @@ plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_system_add_transport(plc4c_system *system,
-                                       plc4c_transport *transport);
+                                             plc4c_transport *transport);
 
 /**
  * Function to initialize the PLC4C system (Initialize the driver manager and the list of enabled drivers)
@@ -226,8 +226,8 @@ void plc4c_system_shutdown(plc4c_system *system);
  * @return plc4c_return_code INVALID_CONNECTION_STRING, NO_MEMORY
  */
 plc4c_return_code plc4c_system_connect(plc4c_system *system,
-                                 char *connectionString,
-                                 plc4c_connection **connection);
+                                       char *connectionString,
+                                       plc4c_connection **connection);
 
 /**
  * Function to give any drivers the chance to do their work.

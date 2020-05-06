@@ -23,7 +23,7 @@
 
 
 plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
-                                       plc4c_read_request_execution **read_request_execution) {
+                                             plc4c_read_request_execution **read_request_execution) {
     plc4c_system_task *system_task;
     read_request->connection->driver->read_function(&system_task);
     // Add the new task to the task-list.
@@ -41,10 +41,10 @@ plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
 }
 
 bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read_request_execution) {
-    if(read_request_execution == NULL) {
+    if (read_request_execution == NULL) {
         return true;
     }
-    if(read_request_execution->system_task == NULL) {
+    if (read_request_execution->system_task == NULL) {
         return true;
     }
     return read_request_execution->system_task->completed;
@@ -55,7 +55,7 @@ bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_exe
 }
 
 plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_execution *read_request_execution) {
-    if(read_request_execution == NULL) {
+    if (read_request_execution == NULL) {
         return NULL;
     }
     return read_request_execution->read_response;

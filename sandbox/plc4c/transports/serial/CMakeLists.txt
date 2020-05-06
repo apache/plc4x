@@ -24,4 +24,4 @@ file(GLOB sources "src/*.c")
 
 add_library(plc4c-transports-serial ${sources})
 
-target_link_libraries (plc4c-transports-serial ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-transports-serial ${CMAKE_DL_LIBS})
