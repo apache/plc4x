@@ -284,6 +284,23 @@
                 </executions>
             </plugin>
         </plugins>
+        <!--
+          Developers working in plc4c will probably use an IDE like CLion to edit just this
+          Part of the project. These IDEs generate some work-directries we need to exclude.
+        -->
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.rat</groupId>
+              <artifactId>apache-rat-plugin</artifactId>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>cmake-*/**</exclude>
+                 </excludes>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
     </build>
 
     <!-- This dependency is just to ensure thrift is built first -->
