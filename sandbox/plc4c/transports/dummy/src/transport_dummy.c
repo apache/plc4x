@@ -22,7 +22,7 @@
 #include <plc4c/transport_dummy.h>
 
 plc4c_transport *plc4c_transport_dummy_create() {
-    plc4c_transport* transport = (plc4c_transport*) malloc(sizeof(plc4c_transport));
+    plc4c_transport *transport = (plc4c_transport *) malloc(sizeof(plc4c_transport));
     transport->transport_code = "dummy";
     return transport;
 }

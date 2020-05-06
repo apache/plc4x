@@ -256,8 +256,20 @@ plc4c_return_code plc4c_system_create_connection(char *connection_string, plc4c_
     new_connection->transport_code = transport_code;
     new_connection->transport_connect_information = transport_connect_information;
     new_connection->parameters = parameters;
-    *connection = new_connection;
 
+    new_connection->connected = false;
+    new_connection->disconnect = false;
+    new_connection->num_running_system_tasks = 0;
+
+    new_connection->system = NULL;
+    new_connection->driver = NULL;
+    new_connection->transport = NULL;
+
+    new_connection->supports_reading = NULL;
+    new_connection->supports_writing = NULL;
+    new_connection->supports_subscriptions = NULL;
+
+    *connection = new_connection;
     return OK;
 }
 
@@ -344,6 +356,8 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
     if (result != OK) {
         return -1;
     }
+    // Increment the number of running tasks for this connection.
+    new_connection->num_running_system_tasks++;
     plc4c_utils_list_insert_tail_value(system->task_list, new_connection_task);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +395,9 @@ plc4c_return_code plc4c_system_loop(plc4c_system *system) {
         // If the current task is completed at the end, remove it from the task_queue.
         if (cur_task->completed) {
             plc4c_utils_list_remove(system->task_list, cur_task_element);
-
+            if (cur_task->connection != NULL) {
+                cur_task->connection->num_running_system_tasks--;
+            }
             // TODO: clean up the memory of the cur_task_element and cur_task
         }
 

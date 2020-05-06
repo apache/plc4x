@@ -22,7 +22,7 @@
 #include <plc4c/driver_modbus.h>
 
 plc4c_driver *plc4c_driver_modbus_create() {
-    plc4c_driver* driver = (plc4c_driver*) malloc(sizeof(plc4c_driver));
+    plc4c_driver *driver = (plc4c_driver *) malloc(sizeof(plc4c_driver));
     driver->protocol_code = "modbus";
     driver->protocol_name = "Modbus";
     driver->default_transport_code = "tcp";

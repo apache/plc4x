@@ -22,7 +22,7 @@
 #include <plc4c/transport_serial.h>
 
 plc4c_transport *plc4c_transport_serial_create() {
-    plc4c_transport* transport = (plc4c_transport*) malloc(sizeof(plc4c_transport));
+    plc4c_transport *transport = (plc4c_transport *) malloc(sizeof(plc4c_transport));
     transport->transport_code = "serial";
     return transport;
 }

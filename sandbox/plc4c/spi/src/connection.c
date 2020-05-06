@@ -35,6 +35,8 @@ plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection) {
     if (result != OK) {
         return -1;
     }
+    // Increment the number of running tasks for this connection.
+    connection->num_running_system_tasks++;
     plc4c_utils_list_insert_tail_value(connection->system->task_list, new_disconnection_task);
     return OK;
 }

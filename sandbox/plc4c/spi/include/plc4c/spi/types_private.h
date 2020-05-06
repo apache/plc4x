@@ -41,14 +41,17 @@ typedef struct plc4c_system_task_t plc4c_system_task;
 
 typedef plc4c_return_code (*plc4c_system_task_state_machine_function)(plc4c_system_task *task);
 
-typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection *connection, plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_connect_function)(plc4c_connection *connection,
+                                                               plc4c_system_task **task);
 
 typedef plc4c_return_code (*plc4c_connection_disconnect_function)(plc4c_connection *connection,
                                                                   plc4c_system_task **task);
 
-typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_read_function)(plc4c_connection *connection,
+                                                            plc4c_system_task **task);
 
-typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_system_task **task);
+typedef plc4c_return_code (*plc4c_connection_write_function)(plc4c_connection *connection,
+                                                             plc4c_system_task **task);
 
 typedef void (*plc4c_connect_free_read_response_function)(plc4c_read_response *response);
 
@@ -120,6 +123,11 @@ struct plc4c_connection_t {
     char *parameters;
 
     bool connected;
+
+    // Internal flag indicating the connection should be disconnected
+    bool disconnect;
+    // Number of system_tasks currently still active in the system.
+    int num_running_system_tasks;
 
     plc4c_system *system;
     plc4c_driver *driver;
@@ -210,6 +218,9 @@ struct plc4c_system_task_t {
     plc4c_system_task_state_machine_function state_machine_function;
     void *context;
     bool completed;
+
+    // Reference to the connection that owns this task
+    plc4c_connection *connection;
 };
 
 #endif //PLC4C_SPI_TYPES_PRIVATE_H_

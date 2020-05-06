@@ -24,7 +24,9 @@
 plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_request,
                                               plc4c_write_request_execution **write_request_execution) {
     plc4c_system_task *system_task;
-    write_request->connection->driver->write_function(&system_task);
+    write_request->connection->driver->write_function(write_request->connection, &system_task);
+    // Increment the number of running tasks for this connection.
+    write_request->connection->num_running_system_tasks++;
     // Add the new task to the task-list.
     plc4c_utils_list_insert_tail_value(write_request->connection->system->task_list, system_task);
 

@@ -146,34 +146,36 @@ plc4c_return_code plc4c_driver_simulated_write_machine_function(plc4c_system_tas
             plc4c_list_element *cur_element = plc4c_utils_list_head(write_request->items);
             while (cur_element != NULL) {
                 plc4c_request_value_item *cur_value_item = cur_element->value;
-                plc4c_driver_simulated_item *cur_item = (plc4c_driver_simulated_item*) cur_value_item->item;
-                plc4c_data * write_data = cur_value_item->value;
+                plc4c_driver_simulated_item *cur_item = (plc4c_driver_simulated_item *) cur_value_item->item;
+                plc4c_data *write_data = cur_value_item->value;
                 plc4c_response_code response_code = -1;
                 switch (cur_item->type) {
-                  case STDOUT: {
-                    printf("");
-                    if (cur_item->data_type != write_data->data_type) {
-                      printf("--> Simulated Driver Write: Value is %s but Item type is %s", plc4c_data_type_name(write_data->data_type), plc4c_data_type_name(cur_item->data_type));
-                      response_code = PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
-                      break;
+                    case STDOUT: {
+                        printf("");
+                        if (cur_item->data_type != write_data->data_type) {
+                            printf("--> Simulated Driver Write: Value is %s but Item type is %s",
+                                   plc4c_data_type_name(write_data->data_type),
+                                   plc4c_data_type_name(cur_item->data_type));
+                            response_code = PLC4C_RESPONSE_CODE_INVALID_DATATYPE;
+                            break;
+                        }
+                        printf("--> Simulated Driver Write: Value (%s) %s: ",
+                               plc4c_data_type_name(write_data->data_type),
+                               cur_item->name);
+                        plc4c_data_printf(write_data);
+                        printf("\n");
+                        response_code = PLC4C_RESPONSE_CODE_OK;
+                        break;
                     }
-                    printf("--> Simulated Driver Write: Value (%s) %s: ",
-                           plc4c_data_type_name(write_data->data_type),
-                           cur_item->name);
-                    plc4c_data_printf(write_data);
-                    printf("\n");
-                    response_code = PLC4C_RESPONSE_CODE_OK;
-                    break;
-                  }
-                  default: {
-                    response_code = PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
-                    break;
-                  }
+                    default: {
+                        response_code = PLC4C_RESPONSE_CODE_INVALID_ADDRESS;
+                        break;
+                    }
                 }
 
                 // Create a response element and add that to the response ...
                 plc4c_response_item *response_item = malloc(sizeof(plc4c_response_item));
-                response_item->item = (plc4c_item*) cur_item;
+                response_item->item = (plc4c_item *) cur_item;
                 response_item->response_code = response_code;
                 plc4c_utils_list_insert_tail_value(write_response->response_items, response_item);
 
@@ -229,13 +231,13 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
         }
         // This marks the end of the data-type part if there is a size coming in addition.
         if ((i == strlen(address_string)) || (*(address_string + i) == '[')) {
-            char* datatype_name = malloc(sizeof(char) * ((i - start_segment_index) + 1));
+            char *datatype_name = malloc(sizeof(char) * ((i - start_segment_index) + 1));
             strlcpy(datatype_name, start_segment, (i - start_segment_index) + 1);
 
             // Translate the string into a constant.
-            if(strcmp(datatype_name, "INTEGER") == 0) {
+            if (strcmp(datatype_name, "INTEGER") == 0) {
                 data_type = PLC4C_INT;
-            } else if(strcmp(datatype_name, "STRING") == 0) {
+            } else if (strcmp(datatype_name, "STRING") == 0) {
                 data_type = PLC4C_CONSTANT_STRING;
             } else {
                 return NULL;
@@ -270,41 +272,47 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
 
 
 plc4c_return_code plc4c_driver_simulated_connect_function(plc4c_connection *connection,
-                                                    plc4c_system_task **task) {
+                                                          plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->context = connection;
     // There's nothing to do here, so no need for a state-machine.
     new_task->state_id = -1;
     new_task->state_machine_function = &plc4c_driver_simulated_connect_machine_function;
+    new_task->connection = connection;
     *task = new_task;
     return OK;
 }
 
 plc4c_return_code plc4c_driver_simulated_disconnect_function(plc4c_connection *connection,
-                                                       plc4c_system_task **task) {
+                                                             plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->context = connection;
     // There's nothing to do here, so no need for a state-machine.
     new_task->state_id = -1;
     new_task->state_machine_function = &plc4c_driver_simulated_disconnect_machine_function;
+    new_task->connection = connection;
     *task = new_task;
     return OK;
 }
 
-plc4c_return_code plc4c_driver_simulated_read_function(plc4c_system_task **task) {
+plc4c_return_code plc4c_driver_simulated_read_function(plc4c_connection *connection,
+                                                       plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = READ_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_read_machine_function;
     new_task->completed = false;
+    new_task->connection = connection;
     *task = new_task;
     return OK;
 }
 
-plc4c_return_code plc4c_driver_simulated_write_function(plc4c_system_task **task) {
+plc4c_return_code plc4c_driver_simulated_write_function(plc4c_connection *connection,
+                                                        plc4c_system_task **task) {
     plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
     new_task->state_id = WRITE_INIT;
     new_task->state_machine_function = &plc4c_driver_simulated_write_machine_function;
     new_task->completed = false;
+    new_task->connection = connection;
     *task = new_task;
     return OK;
 }
