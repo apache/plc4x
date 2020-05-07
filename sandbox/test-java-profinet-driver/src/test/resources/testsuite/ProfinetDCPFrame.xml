@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+
+  <name>Profinet DCP Frame</name>
+
+  <testcase>
+    <name>Profinet: DCP Identify Multicast</name>
+    <raw>fefe05000501000f00800004ffff0000000000000000000000000000000000000000000000000000000000000000</raw>
+    <root-type>ProfinetFrame</root-type>
+    <xml>
+      <ProfinetFrame className="org.apache.plc4x.java.profinet.dcp.readwrite.ProfinetFrame">
+        <frameType>IDENTIFY_MULTICAST_REQUEST</frameType>
+        <frame className="org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentRequestPDU">
+          <serviceId>IDENTIFY</serviceId>
+          <serviceType>REQUEST</serviceType>
+          <xid>83951631</xid>
+          <responseDelay>128</responseDelay>
+          <dcpDataLength>4</dcpDataLength>
+          <blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector">
+              <blockType>ALL_SELECTOR</blockType>
+            </blocks>
+          </blocks>
+        </frame>
+      </ProfinetFrame>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Profinet: DCP Identify Response</name>
+    <raw>feff05010501000f00000052020500040000020702010009000053372d31323030000202000c0000706c6378623164306564020300060000002a010d020400040000020002070004000000640102000e0001c0a802f1ffffff00c0a80201</raw>
+    <root-type>ProfinetFrame</root-type>
+    <xml>
+      <ProfinetFrame className="org.apache.plc4x.java.profinet.dcp.readwrite.ProfinetFrame">
+        <frameType>IDENTIFY_RESPONSE</frameType>
+        <frame className="org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentResponsePDU">
+          <serviceId>IDENTIFY</serviceId>
+          <serviceType>RESPONSE_SUCCESS</serviceType>
+          <xid>83951631</xid>
+          <responseDelay>0</responseDelay>
+          <dcpDataLength>82</dcpDataLength>
+          <blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>DEVICE_OPTIONS</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceOptions">
+                <length>4</length>
+                <info>0</info>
+                <blockType>DEVICE_PROPERTIES</blockType>
+                <subOption>DEVICE_INSTANCE</subOption>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>STATION_TYPE</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationType">
+                <length>9</length>
+                <info>0</info>
+                <vendorNameForDevice className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
+                  <text>S7-1200</text>
+                </vendorNameForDevice>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>STATION_NAME</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.StationName">
+                <length>12</length>
+                <info>0</info>
+                <name className="org.apache.plc4x.java.profinet.dcp.readwrite.Text">
+                  <text>plcxb1d0ed</text>
+                </name>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>DEVICE_ID</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceId">
+                <length>6</length>
+                <info>0</info>
+                <vendorId>42</vendorId>
+                <deviceId>269</deviceId>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>DEVICE_ROLE</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceRole">
+                <length>4</length>
+                <info>0</info>
+                <role>2</role>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceProperties">
+              <blockType>DEVICE_PROPERTIES</blockType>
+              <subOption>DEVICE_INSTANCE</subOption>
+              <properties className="org.apache.plc4x.java.profinet.dcp.readwrite.DeviceInstance">
+                <length>4</length>
+                <info>0</info>
+                <instanceLow>0</instanceLow>
+                <instanceHigh>100</instanceHigh>
+              </properties>
+            </blocks>
+            <blocks className="org.apache.plc4x.java.profinet.dcp.readwrite.IP">
+              <blockType>IP</blockType>
+              <subOption>IP_PARAMETER</subOption>
+              <length>14</length>
+              <info>1</info>
+              <ipAddress className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
+                <octet1>192</octet1>
+                <octet2>168</octet2>
+                <octet3>2</octet3>
+                <octet4>241</octet4>
+              </ipAddress>
+              <subnetMask className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
+                <octet1>255</octet1>
+                <octet2>255</octet2>
+                <octet3>255</octet3>
+                <octet4>0</octet4>
+              </subnetMask>
+              <standardGateway className="org.apache.plc4x.java.profinet.dcp.readwrite.IPv4Address">
+                <octet1>192</octet1>
+                <octet2>168</octet2>
+                <octet3>2</octet3>
+                <octet4>1</octet4>
+              </standardGateway>
+            </blocks>
+          </blocks>
+        </frame>
+      </ProfinetFrame>
+    </xml>
+  </testcase>
+
+
+
+</test:testsuite>
