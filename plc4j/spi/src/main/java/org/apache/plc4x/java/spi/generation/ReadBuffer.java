@@ -61,7 +61,7 @@ public class ReadBuffer {
     }
 
     public boolean hasMore(int numBits) {
-        return (numBits / 8) < (totalBytes - getPos());
+        return (numBits / 8) <= (totalBytes - getPos());
     }
 
     public byte peekByte(int offset) throws ParseException {

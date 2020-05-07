@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+
+  <!--
+  Below test suite covers profinet specific CustomTLV entries.
+  -->
+  <name>LLDPFrame</name>
+
+  <testcase>
+    <name>LLDP: Profinet Port Status TLV</name>
+    <raw>fe08000ecf0200000000</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <CustomTLV className="org.apache.plc4x.java.lldp.readwrite.CustomTLV">
+        <len>8</len>
+        <custom className="org.apache.plc4x.java.lldp.readwrite.ProfinetTLV">
+          <profinet className="org.apache.plc4x.java.lldp.readwrite.ProfinetPort">
+            <rtClass2>OFF</rtClass2>
+            <rtClass3>OFF</rtClass3>
+          </profinet>
+        </custom>
+      </CustomTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: Profinet Chassis MAC</name>
+    <raw>fe0a000ecf05e0dca0587da9</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <CustomTLV className="org.apache.plc4x.java.lldp.readwrite.CustomTLV">
+        <len>10</len>
+        <custom className="org.apache.plc4x.java.lldp.readwrite.ProfinetTLV">
+          <profinet className="org.apache.plc4x.java.lldp.readwrite.ProfinetChassisMac">
+            <mac className="org.apache.plc4x.java.lldp.readwrite.MacAddress">
+              <octet1>224</octet1>
+              <octet2>220</octet2>
+              <octet3>160</octet3>
+              <octet4>88</octet4>
+              <octet5>125</octet5>
+              <octet6>169</octet6>
+            </mac>
+          </profinet>
+        </custom>
+      </CustomTLV>
+    </xml>
+  </testcase>
+
+</test:testsuite>

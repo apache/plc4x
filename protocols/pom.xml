@@ -41,6 +41,7 @@
     <module>eip</module>
     <module>firmata</module>
     <module>knxnetip</module>
+    <module>lldp</module>
     <module>modbus</module>
     <module>s7</module>
   </modules>

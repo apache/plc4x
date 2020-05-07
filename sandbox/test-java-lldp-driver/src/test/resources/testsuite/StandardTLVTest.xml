@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+
+  <!--
+  Below test suite covers standard part of LLDP standard.
+  -->
+  <name>LLDPFrame</name>
+
+  <testcase>
+    <name>LLDP: Chassis Id</name>
+    <raw>02510753372d313230302020202020202020202020202020202020202036455337203231322d31424534302d3058423020205320562d4b4f414332323134202020202020202020372056202034202032202031</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <ChassisIdTLV className="org.apache.plc4x.java.lldp.readwrite.ChassisIdTLV">
+        <len>81</len>
+        <chassisIdType>LOCAL</chassisIdType>
+        <chassisId className="org.apache.plc4x.java.lldp.readwrite.Text">
+          <text>S7-1200                   6ES7 212-1BE40-0XB0  S V-KOAC2214         7 V  4  2  1</text>
+        </chassisId>
+      </ChassisIdTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: PortId</name>
+    <raw>041407706f72742d3030312e706c6378623164306564</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <PortIdTLV className="org.apache.plc4x.java.lldp.readwrite.PortIdTLV">
+        <len>20</len>
+        <portIdType>LOCAL</portIdType>
+        <portId className="org.apache.plc4x.java.lldp.readwrite.Text">
+          <text>port-001.plcxb1d0ed</text>
+        </portId>
+      </PortIdTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: Time To Live</name>
+    <raw>06020014</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <TimeToLiveTLV className="org.apache.plc4x.java.lldp.readwrite.TimeToLiveTLV">
+        <len>2</len>
+        <ttl className="org.apache.plc4x.java.lldp.readwrite.TTL">
+          <value>
+            <hour>0</hour>
+            <minute>0</minute>
+            <second>20</second>
+            <nano>0</nano>
+          </value>
+        </ttl>
+      </TimeToLiveTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: Port Description</name>
+    <raw>08295369656d656e732c2053494d415449432053372c2045746865726e657420506f72742c205831205031</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <PortDescriptionTLV className="org.apache.plc4x.java.lldp.readwrite.PortDescriptionTLV">
+        <len>41</len>
+        <description className="org.apache.plc4x.java.lldp.readwrite.Text">
+          <text>Siemens, SIMATIC S7, Ethernet Port, X1 P1</text>
+        </description>
+      </PortDescriptionTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: System Name</name>
+    <raw>0a0f4445534b544f502d4f4d3138565139</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <SystemNameTLV className="org.apache.plc4x.java.lldp.readwrite.SystemNameTLV">
+        <len>15</len>
+        <name className="org.apache.plc4x.java.lldp.readwrite.Text">
+          <text>DESKTOP-OM18VQ9</text>
+        </name>
+      </SystemNameTLV>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>LLDP: System Description</name>
+    <raw>0c545369656d656e732c2053494d415449432053372c204350552d313230302c2036455337203231322d31424534302d305842302c2048573a20372c2046573a20562e342e322e312c205320562d4b4f414332323134</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <SystemDescriptionTLV className="org.apache.plc4x.java.lldp.readwrite.SystemDescriptionTLV">
+        <len>84</len>
+        <description className="org.apache.plc4x.java.lldp.readwrite.Text">
+          <text>Siemens, SIMATIC S7, CPU-1200, 6ES7 212-1BE40-0XB0, HW: 7, FW: V.4.2.1, S V-KOAC2214</text>
+        </description>
+      </SystemDescriptionTLV>
+    </xml>
+  </testcase>
+
+  <!--
+  <testcase>
+    <name>LLDP: Capabilities</name>
+    <raw>0e0400840084</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <SystemCapabilitiesTLV className="org.apache.plc4x.java.lldp.readwrite.SystemCapabilitiesTLV">
+        <systemCapabilities className="org.apache.plc4x.java.lldp.readwrite.SystemCapabilitiesValueBlock">
+          <other>false</other>
+          <repeater>false</repeater>
+          <bridge>false</bridge>
+          <wlanAccessPoint>false</wlanAccessPoint>
+          <router>false</router>
+          <telephone>false</telephone>
+          <docsisCableDevice>true</docsisCableDevice>
+          <stationOnly>false</stationOnly>
+          <twoPortMACRelay>false</twoPortMACRelay>
+          <cvlancomponent>false</cvlancomponent>
+          <svlancomponent>false</svlancomponent>
+        </systemCapabilities>
+        <enabledCapabilities className="org.apache.plc4x.java.lldp.readwrite.SystemCapabilitiesValueBlock">
+          <other>false</other>
+          <repeater>false</repeater>
+          <bridge>false</bridge>
+          <wlanAccessPoint>false</wlanAccessPoint>
+          <router>false</router>
+          <telephone>false</telephone>
+          <docsisCableDevice>true</docsisCableDevice>
+          <stationOnly>false</stationOnly>
+          <twoPortMACRelay>false</twoPortMACRelay>
+          <cvlancomponent>false</cvlancomponent>
+          <svlancomponent>false</svlancomponent>
+        </enabledCapabilities>
+      </SystemCapabilitiesTLV>
+    </xml>
+  </testcase>
+  -->
+
+  <testcase>
+    <name>LLDP: Management Address</name>
+    <raw>10140501c0a802f10200000001082b0601040181c06e</raw>
+    <root-type>TLV</root-type>
+    <xml>
+      <ManagementAddressTLV className="org.apache.plc4x.java.lldp.readwrite.ManagementAddressTLV">
+        <len>20</len>
+        <addressLength>5</addressLength>
+        <addressSubType>1</addressSubType>
+        <ip className="org.apache.plc4x.java.lldp.readwrite.IPv4Address">
+          <octet1>192</octet1>
+          <octet2>168</octet2>
+          <octet3>2</octet3>
+          <octet4>241</octet4>
+        </ip>
+        <interfaceType>2</interfaceType>
+        <interfaceNumber>1</interfaceNumber>
+        <oid>8</oid>
+        <objectIdentifier className="org.apache.plc4x.java.lldp.readwrite.Value">
+          <data>KwYBBAGBwG4=</data>
+        </objectIdentifier>
+      </ManagementAddressTLV>
+    </xml>
+  </testcase>
+
+</test:testsuite>
