@@ -73,7 +73,7 @@ bool plc4c_read_request_execution_check_finished_with_error(
   return false;
 }
 
-plc4c_read_response *plc4c_read_request_get_response(
+plc4c_read_response *plc4c_read_request_execution_get_response(
     plc4c_read_request_execution *read_request_execution) {
   if (read_request_execution == NULL) {
     return NULL;

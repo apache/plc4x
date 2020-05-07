@@ -209,7 +209,7 @@ int main() {
       case READ_RESPONSE_RECEIVED: {
         // Get the response for the given read-request.
         plc4c_read_response *read_response =
-            plc4c_read_request_get_response(read_request_execution);
+            plc4c_read_request_execution_get_response(read_request_execution);
         if (read_response == NULL) {
           printf("FAILED (No Response)\n");
           return -1;
