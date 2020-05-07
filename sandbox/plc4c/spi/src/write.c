@@ -57,7 +57,7 @@ plc4c_return_code plc4c_write_request_execute(
   return OK;
 }
 
-bool plc4c_write_request_finished_successfully(
+bool plc4c_write_request_check_finished_successfully(
     plc4c_write_request_execution *write_request_execution) {
   if (write_request_execution == NULL) {
     return true;
@@ -68,12 +68,12 @@ bool plc4c_write_request_finished_successfully(
   return write_request_execution->system_task->completed;
 }
 
-bool plc4c_write_request_has_error(
+bool plc4c_write_request_execution_check_completed_with_error(
     plc4c_write_request_execution *write_request_execution) {
   return false;
 }
 
-plc4c_write_response *plc4c_write_request_get_response(
+plc4c_write_response *plc4c_write_request_execution_get_response(
     plc4c_write_request_execution *write_request_execution) {
   if (write_request_execution == NULL) {
     return NULL;

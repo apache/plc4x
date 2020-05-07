@@ -57,7 +57,7 @@ plc4c_return_code plc4c_read_request_execute(
   return OK;
 }
 
-bool plc4c_read_request_finished_successfully(
+bool plc4c_read_request_execution_check_finished_successfully(
     plc4c_read_request_execution *read_request_execution) {
   if (read_request_execution == NULL) {
     return true;
@@ -68,7 +68,7 @@ bool plc4c_read_request_finished_successfully(
   return read_request_execution->system_task->completed;
 }
 
-bool plc4c_read_request_has_error(
+bool plc4c_read_request_execution_check_finished_with_error(
     plc4c_read_request_execution *read_request_execution) {
   return false;
 }

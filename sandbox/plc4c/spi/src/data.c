@@ -144,7 +144,7 @@ void plc4c_data_set_custom_printf(plc4c_data *data,
   data->custom_printf = data_custom_printf;
 }
 
-void plc4c_data_delete(plc4c_data *data) {
+void plc4c_data_destroy(plc4c_data *data) {
   assert(data != NULL);
   if (data->custom_destroy != NULL) {
     data->custom_destroy(data);

@@ -145,7 +145,7 @@ void plc4c_data_printf(plc4c_data *data);
  * will handle the destruction of the data.
  * @param data pointer to plc4c_data
  */
-void plc4c_data_delete(plc4c_data *data);
+void plc4c_data_destroy(plc4c_data *data);
 
 #ifdef __cplusplus
 }

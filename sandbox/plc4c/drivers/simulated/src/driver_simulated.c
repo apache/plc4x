@@ -62,7 +62,7 @@ plc4c_return_code plc4c_driver_simulated_connect_machine_function(
   if (connection == NULL) {
     return INTERNAL_ERROR;
   }
-  if (plc4c_connection_is_connected(connection)) {
+  if (plc4c_connection_get_connected(connection)) {
     return INTERNAL_ERROR;
   }
   plc4c_connection_set_connected(connection, true);
@@ -79,13 +79,13 @@ plc4c_return_code plc4c_driver_simulated_disconnect_machine_function(
 
   switch (task->state_id) {
     case PLC4C_DRIVER_SIMULATED_DISCONNECT_INIT: {
-      plc4c_connection_disconnect_set(connection, true);
+      plc4c_connection_set_disconnect(connection, true);
       task->state_id = PLC4C_DRIVER_SIMULATED_DISCONNECT_WAIT_TASKS_FINISHED;
       break;
     }
     case PLC4C_DRIVER_SIMULATED_DISCONNECT_WAIT_TASKS_FINISHED: {
       // The disconnect system-task also counts.
-      if (plc4c_connection_running_tasks_count(connection) == 1) {
+      if (plc4c_connection_get_running_tasks_count(connection) == 1) {
         plc4c_connection_set_connected(connection, false);
         task->completed = true;
         task->state_id = PLC4C_DRIVER_SIMULATED_DISCONNECT_FINISHED;
@@ -372,7 +372,7 @@ plc4c_return_code plc4c_driver_simulated_write_function(
 void free_read_response_item(plc4c_list_element *read_item_element) {
   plc4c_response_value_item *value_item =
       (plc4c_response_value_item *)read_item_element->value;
-  plc4c_data_delete(value_item->value);
+  plc4c_data_destroy(value_item->value);
   value_item->value = NULL;
 }
 

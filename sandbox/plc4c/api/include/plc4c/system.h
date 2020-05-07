@@ -119,6 +119,15 @@ typedef void (*plc4c_system_on_loop_failure_callback)(
 plc4c_return_code plc4c_system_create(plc4c_system **system);
 
 /**
+ * Function to initialize the PLC4C system (Initialize the driver manager and
+ * the list of enabled drivers)
+ *
+ * @param system
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_system_init(plc4c_system *system);
+
+/**
  * Function to destroy a plc4c_system.
  * This will also destroy all connections associated with the system.
  *
@@ -128,6 +137,7 @@ void plc4c_system_destroy(plc4c_system *system);
 
 /**
  * Returns the plc4c_list for tasks for a given system
+ * TODO: Possilby this should be an SPI function
  * @param system plc4c_system
  * @return plc4c_list
  */
@@ -135,6 +145,7 @@ plc4c_list *plc4c_system_get_task_list(plc4c_system *system);
 
 /**
  * Sets the plc4c_list for tasks for a given system
+ * TODO: Possilby this should be an SPI function
  * @param system plc4c_system
  * @param task_list plc4c_list
  */
@@ -229,15 +240,6 @@ plc4c_return_code plc4c_system_add_driver(plc4c_system *system,
  */
 plc4c_return_code plc4c_system_add_transport(plc4c_system *system,
                                              plc4c_transport *transport);
-
-/**
- * Function to initialize the PLC4C system (Initialize the driver manager and
- * the list of enabled drivers)
- *
- * @param system
- * @return plc4c_return_code
- */
-plc4c_return_code plc4c_system_init(plc4c_system *system);
 
 /**
  * Function to clean up the PLC4C system (Free any still used resources,

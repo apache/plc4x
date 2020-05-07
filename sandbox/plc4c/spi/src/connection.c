@@ -109,7 +109,7 @@ void plc4c_connection_set_parameters(plc4c_connection *connection,
   }
 }
 
-bool plc4c_connection_is_connected(plc4c_connection *connection) {
+bool plc4c_connection_get_connected(plc4c_connection *connection) {
   return connection->connected;
 }
 
@@ -118,11 +118,11 @@ void plc4c_connection_set_connected(plc4c_connection *connection,
   connection->connected = connected;
 }
 
-bool plc4c_connection_disconnect_is_set(plc4c_connection *connection) {
+bool plc4c_connection_get_disconnect(plc4c_connection *connection) {
   return connection->disconnect;
 }
 
-void plc4c_connection_disconnect_set(plc4c_connection *connection,
+void plc4c_connection_set_disconnect(plc4c_connection *connection,
                                      bool disconnect) {
   connection->disconnect = disconnect;
 }
@@ -181,7 +181,7 @@ char *plc4c_connection_get_connection_string(plc4c_connection *connection) {
   return connection->connection_string;
 }
 
-bool plc4c_connection_supports_reading(plc4c_connection *connection) {
+bool plc4c_connection_get_supports_reading(plc4c_connection *connection) {
   return connection->supports_reading;
 }
 
@@ -210,13 +210,13 @@ plc4c_return_code plc4c_connection_create_read_request(
   return OK;
 }
 
-void plc4c_connection_read_response_destroy(
+void plc4c_connection_destroy_read_response(
     plc4c_read_response *read_response) {
   read_response->read_request->connection->driver->free_read_response_function(
       read_response);
 }
 
-bool plc4c_connection_supports_writing(plc4c_connection *connection) {
+bool plc4c_connection_get_supports_writing(plc4c_connection *connection) {
   return connection->supports_writing;
 }
 
@@ -267,13 +267,13 @@ plc4c_return_code plc4c_connection_create_write_request(
   return OK;
 }
 
-void plc4c_connection_write_response_destroy(
+void plc4c_connection_destroy_write_response(
     plc4c_write_response *write_response) {
   write_response->write_request->connection->driver
       ->free_write_response_function(write_response);
 }
 
-int plc4c_connection_running_tasks_count(plc4c_connection *connection) {
+int plc4c_connection_get_running_tasks_count(plc4c_connection *connection) {
   return connection->num_running_system_tasks;
 }
 

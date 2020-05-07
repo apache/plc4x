@@ -150,7 +150,7 @@ int main() {
     switch (state) {
       case CONNECTING: {
         // Check if the connection is established:
-        if (plc4c_connection_is_connected(connection)) {
+        if (plc4c_connection_get_connected(connection)) {
           printf("SUCCESS\n");
           state = CONNECTED;
         } else if (plc4c_connection_has_error(connection)) {
@@ -195,10 +195,12 @@ int main() {
       }
         // Wait until the read-request execution is finished.
       case READ_REQUEST_SENT: {
-        if (plc4c_read_request_finished_successfully(read_request_execution)) {
+        if (plc4c_read_request_execution_check_finished_successfully(
+                read_request_execution)) {
           printf("SUCCESS\n");
           state = READ_RESPONSE_RECEIVED;
-        } else if (plc4c_read_request_has_error(read_request_execution)) {
+        } else if (plc4c_read_request_execution_check_finished_with_error(
+                       read_request_execution)) {
           printf("FAILED\n");
           return -1;
         }
@@ -228,7 +230,7 @@ int main() {
         }
 
         // Clean up.
-        plc4c_connection_read_response_destroy(read_response);
+        plc4c_connection_destroy_read_response(read_response);
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
@@ -274,11 +276,12 @@ int main() {
       }
         // Wait until the write-request execution is finished.
       case WRITE_REQUEST_SENT: {
-        if (plc4c_write_request_finished_successfully(
+        if (plc4c_write_request_check_finished_successfully(
                 write_request_execution)) {
           printf("SUCCESS\n");
           state = WRITE_RESPONSE_RECEIVED;
-        } else if (plc4c_write_request_has_error(write_request_execution)) {
+        } else if (plc4c_write_request_execution_check_completed_with_error(
+                       write_request_execution)) {
           printf("FAILED\n");
           return -1;
         }
@@ -286,7 +289,7 @@ int main() {
       }
       case WRITE_RESPONSE_RECEIVED: {
         plc4c_write_response *write_response =
-            plc4c_write_request_get_response(write_request_execution);
+            plc4c_write_request_execution_get_response(write_request_execution);
 
         // Iterate over the responses ...
         plc4c_list_element *cur_element =
@@ -299,7 +302,7 @@ int main() {
         }
 
         // Clean up.
-        plc4c_connection_write_response_destroy(write_response);
+        plc4c_connection_destroy_write_response(write_response);
         plc4c_write_request_execution_destroy(write_request_execution);
 
         // Disconnect.
@@ -314,7 +317,7 @@ int main() {
       }
         // Wait until the connection is disconnected
       case DISCONNECTING: {
-        if (!plc4c_connection_is_connected(connection)) {
+        if (!plc4c_connection_get_connected(connection)) {
           printf("SUCCESS\n");
           // we could let the system shut this down,
           // or do it ourselves

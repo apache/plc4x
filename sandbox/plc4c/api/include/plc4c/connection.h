@@ -34,6 +34,12 @@ extern "C" {
 void plc4c_connection_initialize(plc4c_connection *connection);
 
 /**
+ * Destroy a previously created connection.
+ * @param connection
+ */
+void plc4c_connection_destroy(plc4c_connection *connection);
+
+/**
  * Returns the connection string for a given connection
  * @param connection plc4c_connection
  * @return connection string
@@ -115,7 +121,7 @@ void plc4c_connection_set_parameters(plc4c_connection *connection,
  * @param connection the connection.
  * @return true if the connection is established.
  */
-bool plc4c_connection_is_connected(plc4c_connection *connection);
+bool plc4c_connection_get_connected(plc4c_connection *connection);
 
 /**
  * Sets the connected status of a given connection
@@ -130,14 +136,14 @@ void plc4c_connection_set_connected(plc4c_connection *connection,
  * @param connection plc4c_connection
  * @return if the flag is set
  */
-bool plc4c_connection_disconnect_is_set(plc4c_connection *connection);
+bool plc4c_connection_get_disconnect(plc4c_connection *connection);
 
 /**
  * Sets the status of the disconnect flag for a given connection
  * @param connection plc4c_connection
  * @param disconnect the new flag status
  */
-void plc4c_connection_disconnect_set(plc4c_connection *connection,
+void plc4c_connection_set_disconnect(plc4c_connection *connection,
                                      bool disconnect);
 
 /**
@@ -172,24 +178,12 @@ bool plc4c_connection_has_error(plc4c_connection *connection);
 plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection);
 
 /**
- * Destrop a previously created connection.
- *
- * @param connection
- */
-void plc4c_connection_destroy(plc4c_connection *connection);
-
-/**
- * Get the connection string from a given connection.
- */
-char *plc4c_connection_get_connection_string(plc4c_connection *connection);
-
-/**
  * Check if the current connection supports read operations.
  *
  * @param connection reference to the connection
  * @return true if the connection supports reading, false otherwise
  */
-bool plc4c_connection_supports_reading(plc4c_connection *connection);
+bool plc4c_connection_get_supports_reading(plc4c_connection *connection);
 
 /**
  * Initializes an empty read-request.
@@ -208,7 +202,7 @@ plc4c_return_code plc4c_connection_create_read_request(
  * Destroys a given read_response
  * @param read_response the read_response
  */
-void plc4c_connection_read_response_destroy(plc4c_read_response *read_response);
+void plc4c_connection_destroy_read_response(plc4c_read_response *read_response);
 
 /**
  * Check if the current connection supports write operations.
@@ -216,7 +210,7 @@ void plc4c_connection_read_response_destroy(plc4c_read_response *read_response);
  * @param connection reference to the connection
  * @return true if the connection supports writing, false otherwise
  */
-bool plc4c_connection_supports_writing(plc4c_connection *connection);
+bool plc4c_connection_get_supports_writing(plc4c_connection *connection);
 
 /**
  * Initializes an empty write-request.
@@ -236,7 +230,7 @@ plc4c_return_code plc4c_connection_create_write_request(
  * Destroys a given write_response
  * @param write_response the write_response
  */
-void plc4c_connection_write_response_destroy(
+void plc4c_connection_destroy_write_response(
     plc4c_write_response *write_response);
 
 /**
@@ -245,14 +239,14 @@ void plc4c_connection_write_response_destroy(
  * @param connection reference to the connection
  * @return true if the connection supports subscriptions, false otherwise
  */
-bool plc4c_connection_supports_subscriptions(plc4c_connection *connection);
+bool plc4c_connection_get_supports_subscriptions(plc4c_connection *connection);
 
 /**
  * Returns the current number of running tasks for this connection
  * @param connection plc4c_connection
  * @return the count of running tasks
  */
-int plc4c_connection_running_tasks_count(plc4c_connection *connection);
+int plc4c_connection_get_running_tasks_count(plc4c_connection *connection);
 
 /**
  *
