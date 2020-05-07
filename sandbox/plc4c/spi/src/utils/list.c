@@ -173,3 +173,14 @@ void plc4c_utils_list_delete_elements(plc4c_list *list, plc4c_list_delete_elemen
     }
     // at this point the list is empty
 }
+
+plc4c_list_element *plc4c_utils_list_find_element_by_item(plc4c_list *list, void *item){
+  plc4c_list_element *head = plc4c_utils_list_head(list);
+  while (head != NULL) {
+    if (head->value == item) {
+      break;
+    }
+    head = head->next;
+  }
+  return head;
+}

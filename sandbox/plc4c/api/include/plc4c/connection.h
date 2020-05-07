@@ -23,8 +23,91 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+
 #include "types.h"
 #include "utils/list.h"
+
+/**
+ * Initializes the connection members to their defaults.
+ * @param connection plc4c_connection
+ */
+void plc4c_connection_initialize(plc4c_connection *connection);
+
+/**
+ * Returns the connection string for a given connection
+ * @param connection plc4c_connection
+ * @return connection string
+ */
+char *plc4c_connection_get_connection_string(plc4c_connection *connection);
+
+/**
+ * Set the connection string
+ * @param connection plc4c_connection
+ * @param connection_string
+ */
+void plc4c_connection_set_connection_string(plc4c_connection *connection,
+                                            char *connection_string);
+
+/**
+ * Returns the protocol code for the given connection
+ * @param connection plc4c_connection
+ * @return protocol code
+ */
+char *plc4c_connection_get_protocol_code(plc4c_connection *connection);
+
+/**
+ * Set the protocol code
+ * @param connection plc4c_connection
+ * @param protocol_code
+ */
+void plc4c_connection_set_protocol_code(plc4c_connection *connection,
+                                        char *protocol_code);
+
+/**
+ * Returns the transport code for the given connection
+ * @param connection
+ * @return transport code
+ */
+char *plc4c_connection_get_transport_code(plc4c_connection *connection);
+
+/**
+ * Set the transport code
+ * @param connection plc4c_connection
+ * @param transport_code
+ */
+void plc4c_connection_set_transport_code(plc4c_connection *connection,
+                                         char *transport_code);
+
+/**
+ * Returns the transport connection information for a given connection
+ * @param connection plc4c_connection
+ * @return transport connection information
+ */
+char *plc4c_connection_get_transport_connect_information(
+    plc4c_connection *connection);
+
+/**
+ * Set the transport connect information
+ * @param connection plc4c_connection
+ * @param transport_connect_information
+ */
+void plc4c_connection_set_transport_connect_information(
+    plc4c_connection *connection, char *transport_connect_information);
+
+/**
+ * Returns the parameters for a given connection
+ * @param connection plc4c_connection
+ * @return parameters
+ */
+char *plc4c_connection_get_parameters(plc4c_connection *connection);
+
+/**
+ * Set the parameters
+ * @param connection plc4c_connection
+ * @param parameters
+ */
+void plc4c_connection_set_parameters(plc4c_connection *connection,
+                                     char *parameters);
 
 /**
  * Check if the connection is established successfully.
@@ -33,6 +116,44 @@ extern "C" {
  * @return true if the connection is established.
  */
 bool plc4c_connection_is_connected(plc4c_connection *connection);
+
+/**
+ * Sets the connected status of a given connection
+ * @param connection plc4c_connection
+ * @param connected bool is connected
+ */
+void plc4c_connection_set_connected(plc4c_connection *connection,
+                                    bool connected);
+
+/**
+ * Returns the status of the disconnect flag for a given connection
+ * @param connection plc4c_connection
+ * @return if the flag is set
+ */
+bool plc4c_connection_disconnect_is_set(plc4c_connection *connection);
+
+/**
+ * Sets the status of the disconnect flag for a given connection
+ * @param connection plc4c_connection
+ * @param disconnect the new flag status
+ */
+void plc4c_connection_disconnect_set(plc4c_connection *connection,
+                                     bool disconnect);
+
+/**
+ * Returns the system associated with a given connection
+ * @param connection plc4c_connection
+ * @return plc4c_system
+ */
+plc4c_system *plc4c_connection_get_system(plc4c_connection *connection);
+
+/**
+ * Sets a plc4c_system for a given connnection
+ * @param connection plc4c_connection
+ * @param system plc4c_system
+ */
+void plc4c_connection_set_system(plc4c_connection *connection,
+                                 plc4c_system *system);
 
 /**
  * Check if an error occurred while connecting.
@@ -79,10 +200,9 @@ bool plc4c_connection_supports_reading(plc4c_connection *connection);
  * @param read_request pointer to the read-request
  * @param plc4c_return_code
  */
-plc4c_return_code plc4c_connection_create_read_request(plc4c_connection *connection,
-                                                       plc4c_list *addresses,
-                                                       plc4c_read_request **read_request);
-
+plc4c_return_code plc4c_connection_create_read_request(
+    plc4c_connection *connection, plc4c_list *addresses,
+    plc4c_read_request **read_request);
 
 /**
  * Destroys a given read_response
@@ -108,16 +228,16 @@ bool plc4c_connection_supports_writing(plc4c_connection *connection);
  * @param write_request pointer to the write-request
  * @param plc4c_return_code
  */
-plc4c_return_code plc4c_connection_create_write_request(plc4c_connection *connection,
-                                                        plc4c_list *addresses,
-                                                        plc4c_list *values,
-                                                        plc4c_write_request **write_request);
+plc4c_return_code plc4c_connection_create_write_request(
+    plc4c_connection *connection, plc4c_list *addresses, plc4c_list *values,
+    plc4c_write_request **write_request);
 
 /**
  * Destroys a given write_response
  * @param write_response the write_response
  */
-void plc4c_connection_write_response_destroy(plc4c_write_response *write_response);
+void plc4c_connection_write_response_destroy(
+    plc4c_write_response *write_response);
 
 /**
  * Check if the current connection supports subscriptions.
@@ -127,7 +247,34 @@ void plc4c_connection_write_response_destroy(plc4c_write_response *write_respons
  */
 bool plc4c_connection_supports_subscriptions(plc4c_connection *connection);
 
+/**
+ * Returns the current number of running tasks for this connection
+ * @param connection plc4c_connection
+ * @return the count of running tasks
+ */
+int plc4c_connection_running_tasks_count(plc4c_connection *connection);
+
+/**
+ *
+ * @param connection
+ */
+void plc4c_connection_running_tasks_clear(plc4c_connection *connection);
+
+/**
+ * Signals the plc4c_connection that a task has been added
+ * @param connection plc4c_connection
+ * @return the number of tasks after this operation
+ */
+int plc4c_connection_task_added(plc4c_connection *connection);
+
+/**
+ * Signals the plc4c_connection that a task has been completed and removed
+ * @param connection plc4c_connection
+ * @return the number of tasks after this operation
+ */
+int plc4c_connection_task_removed(plc4c_connection *connection);
+
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_CONNECTION_H_
+#endif  // PLC4C_CONNECTION_H_

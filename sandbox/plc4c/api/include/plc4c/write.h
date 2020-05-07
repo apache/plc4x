@@ -25,14 +25,32 @@ extern "C" {
 #include "plc4c/types.h"
 
 /**
+ * Returns the plc4c_connection for a give write request
+ * @param write_request plc4c_write_request
+ * @return plc4c_connection
+ */
+plc4c_connection *plc4c_write_request_get_connection(
+    plc4c_write_request *write_request);
+
+/**
+ * Sets the plc4c_connection for a given write request
+ * @param write_request plc4c_write_request
+ * @param connection plc4c_connection
+ */
+void plc4c_write_request_set_connection(plc4c_write_request *write_request,
+                                        plc4c_connection *connection);
+
+/**
  * Actually executes the write-request.
  *
  * @param write_request the write-request object.
- * @param write_request_execution pointer to a data-structure handling one execution of the write-request.
+ * @param write_request_execution pointer to a data-structure handling one
+ * execution of the write-request.
  * @return plc4c_return_code
  */
-plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_reques,
-                                              plc4c_write_request_execution **write_request_execution);
+plc4c_return_code plc4c_write_request_execute(
+    plc4c_write_request *write_reques,
+    plc4c_write_request_execution **write_request_execution);
 
 /**
  * Check if the write-request is completed successfully.
@@ -40,7 +58,8 @@ plc4c_return_code plc4c_write_request_execute(plc4c_write_request *write_reques,
  * @param write_request_execution the write-request execution.
  * @return true if the write-request is completed successfully.
  */
-bool plc4c_write_request_finished_successfully(plc4c_write_request_execution *write_request_execution);
+bool plc4c_write_request_finished_successfully(
+    plc4c_write_request_execution *write_request_execution);
 
 /**
  * Check if the write-request is completed unsuccessfully.
@@ -48,7 +67,8 @@ bool plc4c_write_request_finished_successfully(plc4c_write_request_execution *wr
  * @param write_request_execution the write-request execution.
  * @return true if the write-request is completed with an error.
  */
-bool plc4c_write_request_has_error(plc4c_write_request_execution *write_request_execution);
+bool plc4c_write_request_has_error(
+    plc4c_write_request_execution *write_request_execution);
 
 /**
  * Retrieve the write-response from a given write-request execution.
@@ -56,7 +76,8 @@ bool plc4c_write_request_has_error(plc4c_write_request_execution *write_request_
  * @param write_request_execution the write-request execution.
  * @return the write-response.
  */
-plc4c_write_response *plc4c_write_request_get_response(plc4c_write_request_execution *write_request_execution);
+plc4c_write_response *plc4c_write_request_get_response(
+    plc4c_write_request_execution *write_request_execution);
 
 /**
  * Destroys a given write-request.
@@ -70,9 +91,10 @@ void plc4c_write_request_destroy(plc4c_write_request *write_request);
  *
  * @param write_request_execution the write-request execution.
  */
-void plc4c_write_request_execution_destroy(plc4c_write_request_execution *write_request_execution);
+void plc4c_write_request_execution_destroy(
+    plc4c_write_request_execution *write_request_execution);
 
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_WRITE_H_
+#endif  // PLC4C_WRITE_H_

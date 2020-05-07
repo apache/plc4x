@@ -25,14 +25,32 @@ extern "C" {
 #include "plc4c/types.h"
 
 /**
+ * Returns the plc4c_connection for a give read request
+ * @param read_request plc4c_read_request
+ * @return plc4c_connection
+ */
+plc4c_connection *plc4c_read_request_get_connection(
+    plc4c_read_request *read_request);
+
+/**
+ * Sets the plc4c_connection for a given read request
+ * @param read_request plc4c_read_request
+ * @param connection plc4c_connection
+ */
+void plc4c_read_request_set_connection(plc4c_read_request *read_request,
+                                       plc4c_connection *connection);
+
+/**
  * Actually executes the read-request.
  * @param connection connection this read-request will be executed on.
  * @param read_request the read-request object.
- * @param read_request_execution pointer to a data-structure handling one execution of the read-request.
+ * @param read_request_execution pointer to a data-structure handling one
+ * execution of the read-request.
  * @return plc4c_return_code
  */
-plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
-                                             plc4c_read_request_execution **read_request_execution);
+plc4c_return_code plc4c_read_request_execute(
+    plc4c_read_request *read_request,
+    plc4c_read_request_execution **read_request_execution);
 
 /**
  * Check if the read-request is completed successfully.
@@ -40,7 +58,8 @@ plc4c_return_code plc4c_read_request_execute(plc4c_read_request *read_request,
  * @param read_request_execution the read-request execution.
  * @return true if the read-request is completed successfully.
  */
-bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read_request_execution);
+bool plc4c_read_request_finished_successfully(
+    plc4c_read_request_execution *read_request_execution);
 
 /**
  * Check if the read-request is completed unsuccessfully.
@@ -48,7 +67,8 @@ bool plc4c_read_request_finished_successfully(plc4c_read_request_execution *read
  * @param read_request_execution the read-request execution.
  * @return true if the read-request is completed with an error.
  */
-bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_execution);
+bool plc4c_read_request_has_error(
+    plc4c_read_request_execution *read_request_execution);
 
 /**
  * Retrieve the read-response from a given read-request execution.
@@ -56,7 +76,8 @@ bool plc4c_read_request_has_error(plc4c_read_request_execution *read_request_exe
  * @param read_request_execution the read-request execution.
  * @return the read-response.
  */
-plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_execution *read_request_execution);
+plc4c_read_response *plc4c_read_request_get_response(
+    plc4c_read_request_execution *read_request_execution);
 
 /**
  * Destroys a given read-request.
@@ -65,15 +86,15 @@ plc4c_read_response *plc4c_read_request_get_response(plc4c_read_request_executio
  */
 void plc4c_read_request_destroy(plc4c_read_request *read_request);
 
-
 /**
  * Destroys a given read-request execution.
  *
  * @param read_request_execution the read-request execution.
  */
-void plc4c_read_request_execution_destroy(plc4c_read_request_execution *read_request_execution);
+void plc4c_read_request_execution_destroy(
+    plc4c_read_request_execution *read_request_execution);
 
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_READ_H_
+#endif  // PLC4C_READ_H_
