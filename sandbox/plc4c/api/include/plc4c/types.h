@@ -27,57 +27,58 @@ extern "C" {
 
 /**
  * PLC4C error codes
-*/
+ */
 typedef enum plc4c_return_code {
-    UNFINISHED,
-    OK,
-    NO_MEMORY,
-    INVALID_CONNECTION_STRING,
-    NON_MATCHING_LISTS,
-    INVALID_LIST_SIZE,
-    NOT_REACHABLE,
-    PERMISSION_DENIED,
+  UNFINISHED,
+  OK,
+  NO_MEMORY,
+  INVALID_CONNECTION_STRING,
+  NON_MATCHING_LISTS,
+  INVALID_LIST_SIZE,
+  NOT_REACHABLE,
+  PERMISSION_DENIED,
 
-    NO_DRIVER_AVAILABLE,
-    UNKNOWN_DRIVER,
+  NO_DRIVER_AVAILABLE,
+  UNKNOWN_DRIVER,
 
-    UNSPECIFIED_TRANSPORT,
-    NO_TRANSPORT_AVAILABLE,
-    UNKNOWN_TRANSPORT,
+  UNSPECIFIED_TRANSPORT,
+  NO_TRANSPORT_AVAILABLE,
+  UNKNOWN_TRANSPORT,
 
-    UNKNOWN_ERROR,
-    INTERNAL_ERROR
+  UNKNOWN_ERROR,
+  INTERNAL_ERROR
 } plc4c_return_code;
 
 typedef enum plc4c_response_code {
-    PLC4C_RESPONSE_CODE_OK,
-    PLC4C_RESPONSE_CODE_NOT_FOUND,
-    PLC4C_RESPONSE_CODE_ACCESS_DENIED,
-    PLC4C_RESPONSE_CODE_INVALID_ADDRESS,
-    PLC4C_RESPONSE_CODE_INVALID_DATATYPE,
-    PLC4C_RESPONSE_CODE_INTERNAL_ERROR,
-    PLC4C_RESPONSE_CODE_RESPONSE_PENDING
+  PLC4C_RESPONSE_CODE_OK,
+  PLC4C_RESPONSE_CODE_NOT_FOUND,
+  PLC4C_RESPONSE_CODE_ACCESS_DENIED,
+  PLC4C_RESPONSE_CODE_INVALID_ADDRESS,
+  PLC4C_RESPONSE_CODE_INVALID_DATATYPE,
+  PLC4C_RESPONSE_CODE_INTERNAL_ERROR,
+  PLC4C_RESPONSE_CODE_RESPONSE_PENDING
 } plc4c_response_code;
 
 /**
  * PLC4C data types
  */
 typedef enum plc4c_data_type {
-    PLC4C_BOOL,
-    PLC4C_CHAR,
-    PLC4C_UCHAR,
-    PLC4C_SHORT,
-    PLC4C_USHORT,
-    PLC4C_INT,
-    PLC4C_UINT,
-    PLC4C_FLOAT,
-    PLC4C_STRING_POINTER,
-    PLC4C_CONSTANT_STRING,
-    PLC4C_VOID_POINTER
+  PLC4C_BOOL,
+  PLC4C_CHAR,
+  PLC4C_UCHAR,
+  PLC4C_SHORT,
+  PLC4C_USHORT,
+  PLC4C_INT,
+  PLC4C_UINT,
+  PLC4C_FLOAT,
+  PLC4C_STRING_POINTER,
+  PLC4C_CONSTANT_STRING,
+  PLC4C_VOID_POINTER
 } plc4c_data_type;
 
 /**
- * Helper that translates from a return_code enum value to something a human can work with.
+ * Helper that translates from a return_code enum value to something a human can
+ * work with.
  *
  * @param err return code.
  * @return A human readable description.
@@ -85,7 +86,8 @@ typedef enum plc4c_data_type {
 char *plc4c_return_code_to_message(plc4c_return_code err);
 
 /**
- * Helper that translates from a plc4c_response_code enum value to something a human can work with.
+ * Helper that translates from a plc4c_response_code enum value to something a
+ * human can work with.
  *
  * @param response_code plc4c_response_code.
  * @return A human readable description.
@@ -93,7 +95,8 @@ char *plc4c_return_code_to_message(plc4c_return_code err);
 char *plc4c_response_code_to_message(plc4c_response_code response_code);
 
 /**
- * Helper function translates from a plc4c_data_type enum value to something a human can work with.
+ * Helper function translates from a plc4c_data_type enum value to something a
+ * human can work with.
  * @param data_type plc4c_data_type
  * @return string representation
  */
@@ -149,10 +152,9 @@ typedef struct plc4c_write_request_execution_t plc4c_write_request_execution;
  */
 typedef struct plc4c_write_response_t plc4c_write_response;
 
-
 typedef struct plc4c_data_t plc4c_data;
 
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_TYPES_H_
+#endif  // PLC4C_TYPES_H_

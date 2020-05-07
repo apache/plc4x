@@ -29,4 +29,4 @@ plc4c_transport *plc4c_transport_dummy_create();
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_TRANSPORT_DUMMY_H_
+#endif  // PLC4C_TRANSPORT_DUMMY_H_

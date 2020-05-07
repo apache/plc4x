@@ -24,8 +24,8 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "plc4c/types.h"
 
+#include "plc4c/types.h"
 
 typedef void (*plc4c_data_custom_destroy)(plc4c_data *data);
 
@@ -115,31 +115,34 @@ plc4c_data *plc4c_data_create_string_data(unsigned int size, char *s);
 plc4c_data *plc4c_data_create_constant_string_data(unsigned int size, char *s);
 
 /**
- * Set a custom function to call when destroying this data.  Typically when the type is
- * a PLC4C_VOID_POINTER
+ * Set a custom function to call when destroying this data.  Typically when the
+ * type is a PLC4C_VOID_POINTER
  * @param data pointer to plc4c_data
  * @param data_custom_destroy the function to call
  */
-void plc4c_data_set_custom_destroy(plc4c_data *data, plc4c_data_custom_destroy data_custom_destroy);
+void plc4c_data_set_custom_destroy(
+    plc4c_data *data, plc4c_data_custom_destroy data_custom_destroy);
 
 /**
  * Set a custom function to call when plc4c_data_printf is called.
  * @param data pointer to plc4c_data
  * @param data_custom_printf the function to call
  */
-void plc4c_data_set_custom_printf(plc4c_data *data, plc4c_data_custom_printf data_custom_printf);
+void plc4c_data_set_custom_printf(plc4c_data *data,
+                                  plc4c_data_custom_printf data_custom_printf);
 
 /**
- * Print the value of the plc4c_data to std out as printf does, formatted by the type.
- * If plc4c_data_set_custom_printf has been called and set, then that function will print the value.
+ * Print the value of the plc4c_data to std out as printf does, formatted by the
+ * type. If plc4c_data_set_custom_printf has been called and set, then that
+ * function will print the value.
  * @param data
  */
 void plc4c_data_printf(plc4c_data *data);
 
 /**
  * Delete the plc4c_data correctly accounting for the type.
- * If plc4c_data_set_custom_destroy has been called and set, then that function will handle the destruction
- * of the data.
+ * If plc4c_data_set_custom_destroy has been called and set, then that function
+ * will handle the destruction of the data.
  * @param data pointer to plc4c_data
  */
 void plc4c_data_delete(plc4c_data *data);
@@ -148,4 +151,4 @@ void plc4c_data_delete(plc4c_data *data);
 }
 #endif
 
-#endif //PLC4C_API_INCLUDE_PLC4C_DATA_H_
+#endif  // PLC4C_API_INCLUDE_PLC4C_DATA_H_

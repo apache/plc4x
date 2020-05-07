@@ -29,4 +29,4 @@ plc4c_transport *plc4c_transport_tcp_create();
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_TRANSPORT_TCP_H_
+#endif  // PLC4C_TRANSPORT_TCP_H_

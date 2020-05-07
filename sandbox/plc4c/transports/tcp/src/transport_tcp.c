@@ -17,13 +17,13 @@
   under the License.
 */
 
-#include <stdlib.h>
 #include <plc4c/spi/types_private.h>
 #include <plc4c/transport_tcp.h>
+#include <stdlib.h>
 
 plc4c_transport *plc4c_transport_tcp_create() {
-    plc4c_transport *transport = (plc4c_transport *) malloc(sizeof(plc4c_transport));
-    transport->transport_code = "tcp";
-    return transport;
+  plc4c_transport *transport =
+      (plc4c_transport *)malloc(sizeof(plc4c_transport));
+  transport->transport_code = "tcp";
+  return transport;
 }
-

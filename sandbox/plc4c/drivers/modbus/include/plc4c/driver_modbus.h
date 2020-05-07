@@ -29,4 +29,4 @@ plc4c_driver *plc4c_driver_modbus_create();
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_DRIVER_S7_H_
+#endif  // PLC4C_DRIVER_S7_H_

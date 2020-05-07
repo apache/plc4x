@@ -22,16 +22,17 @@
 extern "C" {
 #endif
 
-/* Convenience header file that just imports all the different parts of the API */
+/* Convenience header file that just imports all the different parts of the API
+ */
 
-#include "plc4c/types.h"
-#include "plc4c/system.h"
 #include "plc4c/connection.h"
-#include "plc4c/read.h"
-#include "plc4c/write.h"
 #include "plc4c/data.h"
+#include "plc4c/read.h"
+#include "plc4c/system.h"
+#include "plc4c/types.h"
+#include "plc4c/write.h"
 
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_H_
+#endif  // PLC4C_H_

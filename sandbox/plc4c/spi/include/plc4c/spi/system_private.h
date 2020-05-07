@@ -19,10 +19,10 @@
 #ifndef PLC4C_SPI_SYSTEM_PRIVATE_H_
 #define PLC4C_SPI_SYSTEM_PRIVATE_H_
 
-#include <plc4c/types.h>
 #include <plc4c/system.h>
+#include <plc4c/types.h>
 
 plc4c_return_code plc4c_system_create_connection(char *connection_string,
                                                  plc4c_connection **connection);
 
-#endif //PLC4C_SPI_SYSTEM_PRIVATE_H_
+#endif  // PLC4C_SPI_SYSTEM_PRIVATE_H_

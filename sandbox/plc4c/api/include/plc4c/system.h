@@ -140,7 +140,8 @@ plc4c_list *plc4c_system_get_task_list(plc4c_system *system);
  */
 void plc4c_system_set_task_list(plc4c_system *system, plc4c_list *task_list);
 
-void plc4c_system_remove_connection(plc4c_system *system, plc4c_connection *connection);
+void plc4c_system_remove_connection(plc4c_system *system,
+                                    plc4c_connection *connection);
 
 /**
  * Function to set the on_driver_loaded callback for the plc4c system.

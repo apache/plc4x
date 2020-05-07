@@ -29,4 +29,4 @@ plc4c_transport *plc4c_transport_serial_create();
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_TRANSPORT_SERIAL_H_
+#endif  // PLC4C_TRANSPORT_SERIAL_H_

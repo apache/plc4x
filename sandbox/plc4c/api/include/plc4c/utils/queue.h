@@ -29,13 +29,13 @@ typedef struct plc4c_queue plc4c_queue;
 typedef struct plc4c_queue_element plc4c_queue_element;
 
 struct plc4c_queue {
-    plc4c_queue_element *head;
-    plc4c_queue_element *tail;
+  plc4c_queue_element *head;
+  plc4c_queue_element *tail;
 };
 
 struct plc4c_queue_element {
-    plc4c_queue_element *next;
-    void *value;
+  plc4c_queue_element *next;
+  void *value;
 };
 
 void plc4c_utils_queue_create(plc4c_queue **queue);
@@ -57,4 +57,4 @@ plc4c_queue_element *plc4c_utils_queue_tail(plc4c_queue *queue);
 #ifdef __cplusplus
 }
 #endif
-#endif //PLC4C_UTILS_QUEUE_H_
+#endif  // PLC4C_UTILS_QUEUE_H_

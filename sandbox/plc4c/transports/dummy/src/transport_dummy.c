@@ -17,13 +17,13 @@
   under the License.
 */
 
-#include <stdlib.h>
 #include <plc4c/spi/types_private.h>
 #include <plc4c/transport_dummy.h>
+#include <stdlib.h>
 
 plc4c_transport *plc4c_transport_dummy_create() {
-    plc4c_transport *transport = (plc4c_transport *) malloc(sizeof(plc4c_transport));
-    transport->transport_code = "dummy";
-    return transport;
+  plc4c_transport *transport =
+      (plc4c_transport *)malloc(sizeof(plc4c_transport));
+  transport->transport_code = "dummy";
+  return transport;
 }
-

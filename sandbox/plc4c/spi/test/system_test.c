@@ -16,70 +16,78 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include <unity.h>
-#include <stdlib.h>
 #include <plc4c/spi/types_private.h>
+#include <stdlib.h>
+#include <unity.h>
+
 #include "plc4c/spi/system_private.h"
 
-void setUp(void) {
-}
+void setUp(void) {}
 
-void tearDown(void) {
-}
+void tearDown(void) {}
 
-void test_system_plc4c_system_create_connection_args(char *connection_string,
-                                                     plc4c_return_code expected_return_code,
-                                                     char *expected_connection_string,
-                                                     char *expected_protocol_code,
-                                                     char *expected_transport_code,
-                                                     char *expected_transport_connect_information,
-                                                     char *expected_parameters) {
-    plc4c_connection *connection = NULL;
-    plc4c_return_code result = plc4c_system_create_connection(connection_string, &connection);
-    TEST_ASSERT_EQUAL(expected_return_code, result);
-    if (expected_return_code != OK) {
-        TEST_ASSERT_NULL(connection);
-    } else {
-        TEST_ASSERT_EQUAL_STRING(expected_connection_string, connection->connection_string);
-        TEST_ASSERT_EQUAL_STRING(expected_protocol_code, connection->protocol_code);
-        TEST_ASSERT_EQUAL_STRING(expected_transport_code, connection->transport_code);
-        TEST_ASSERT_EQUAL_STRING(expected_transport_connect_information, connection->transport_connect_information);
-        TEST_ASSERT_EQUAL_STRING(expected_parameters, connection->parameters);
-        free(connection);
-    }
+void test_system_plc4c_system_create_connection_args(
+    char *connection_string, plc4c_return_code expected_return_code,
+    char *expected_connection_string, char *expected_protocol_code,
+    char *expected_transport_code, char *expected_transport_connect_information,
+    char *expected_parameters) {
+  plc4c_connection *connection = NULL;
+  plc4c_return_code result =
+      plc4c_system_create_connection(connection_string, &connection);
+  TEST_ASSERT_EQUAL(expected_return_code, result);
+  if (expected_return_code != OK) {
+    TEST_ASSERT_NULL(connection);
+  } else {
+    TEST_ASSERT_EQUAL_STRING(expected_connection_string,
+                             connection->connection_string);
+    TEST_ASSERT_EQUAL_STRING(expected_protocol_code, connection->protocol_code);
+    TEST_ASSERT_EQUAL_STRING(expected_transport_code,
+                             connection->transport_code);
+    TEST_ASSERT_EQUAL_STRING(expected_transport_connect_information,
+                             connection->transport_connect_information);
+    TEST_ASSERT_EQUAL_STRING(expected_parameters, connection->parameters);
+    free(connection);
+  }
 }
 
 void test_system_plc4c_system_create_connection(void) {
-    test_system_plc4c_system_create_connection_args("s7://1.2.3.4", OK, "s7://1.2.3.4", "s7", NULL, "1.2.3.4", NULL);
-    test_system_plc4c_system_create_connection_args("s7:tcp://1.2.3.4", OK, "s7:tcp://1.2.3.4", "s7", "tcp", "1.2.3.4",
-                                                    NULL);
-    test_system_plc4c_system_create_connection_args("s7://1.2.3.4?params", OK, "s7://1.2.3.4?params", "s7", NULL,
-                                                    "1.2.3.4", "params");
-    test_system_plc4c_system_create_connection_args("s7:tcp://1.2.3.4?params", OK, "s7:tcp://1.2.3.4?params", "s7",
-                                                    "tcp", "1.2.3.4", "params");
+  test_system_plc4c_system_create_connection_args(
+      "s7://1.2.3.4", OK, "s7://1.2.3.4", "s7", NULL, "1.2.3.4", NULL);
+  test_system_plc4c_system_create_connection_args(
+      "s7:tcp://1.2.3.4", OK, "s7:tcp://1.2.3.4", "s7", "tcp", "1.2.3.4", NULL);
+  test_system_plc4c_system_create_connection_args("s7://1.2.3.4?params", OK,
+                                                  "s7://1.2.3.4?params", "s7",
+                                                  NULL, "1.2.3.4", "params");
+  test_system_plc4c_system_create_connection_args(
+      "s7:tcp://1.2.3.4?params", OK, "s7:tcp://1.2.3.4?params", "s7", "tcp",
+      "1.2.3.4", "params");
 
-    // A colon after the "://" shouldn't matter ...
-    test_system_plc4c_system_create_connection_args("s7://1.2.3.4:42", OK, "s7://1.2.3.4:42", "s7", NULL, "1.2.3.4:42",
-                                                    NULL);
-    test_system_plc4c_system_create_connection_args("s7://1.2.3.4?param=a:42", OK, "s7://1.2.3.4?param=a:42", "s7",
-                                                    NULL, "1.2.3.4", "param=a:42");
+  // A colon after the "://" shouldn't matter ...
+  test_system_plc4c_system_create_connection_args(
+      "s7://1.2.3.4:42", OK, "s7://1.2.3.4:42", "s7", NULL, "1.2.3.4:42", NULL);
+  test_system_plc4c_system_create_connection_args(
+      "s7://1.2.3.4?param=a:42", OK, "s7://1.2.3.4?param=a:42", "s7", NULL,
+      "1.2.3.4", "param=a:42");
 
-    // Well obviously the parser shouldn't be able to find anything here ...
-    test_system_plc4c_system_create_connection_args("hurz", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
-    // In these cases the parser expects a "//" after the second colon, which isn't there ...
-    test_system_plc4c_system_create_connection_args("a:b:c://d", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL,
-                                                    NULL);
-    test_system_plc4c_system_create_connection_args("a:b:d", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
+  // Well obviously the parser shouldn't be able to find anything here ...
+  test_system_plc4c_system_create_connection_args(
+      "hurz", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
+  // In these cases the parser expects a "//" after the second colon, which
+  // isn't there ...
+  test_system_plc4c_system_create_connection_args(
+      "a:b:c://d", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
+  test_system_plc4c_system_create_connection_args(
+      "a:b:d", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
 
-    // There should only be one question-mark ...
-    test_system_plc4c_system_create_connection_args("a://a?b?c", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL,
-                                                    NULL);
+  // There should only be one question-mark ...
+  test_system_plc4c_system_create_connection_args(
+      "a://a?b?c", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
 }
 
 int main(void) {
-    UNITY_BEGIN();
+  UNITY_BEGIN();
 
-    RUN_TEST(test_system_plc4c_system_create_connection);
+  RUN_TEST(test_system_plc4c_system_create_connection);
 
-    return UNITY_END();
+  return UNITY_END();
 }
