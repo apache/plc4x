@@ -77,7 +77,7 @@ public class TriggerConfiguration{
 
         String exceptionMessage;
 
-        if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR)) {
+        if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR) ||this.triggerType.equals(TriggerType.TRIGGER_VAR) ) {
             //test for valid field-connection string, on exception quit job and return message to user
             if(this.triggerElementList.isEmpty()){
                 exceptionMessage = String.format("No items in trigger List for trigger-type S7_TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
@@ -423,7 +423,7 @@ public class TriggerConfiguration{
                     }
 
                     //ToDo add clever Strategy to concat more than two conditions if needed
-                    return new TriggerConfiguration(TriggerType.S7_TRIGGER_VAR,scheduledMs,triggerElements,triggeredScrapeJob);
+                    return new TriggerConfiguration(TriggerType.TRIGGER_VAR,scheduledMs,triggerElements,triggeredScrapeJob);
                 case SCHEDULED:
                     if(triggerVar !=null || comparatorString!=null || comparatorVariable!=null){
                         throw new ScraperConfigurationException("SCHEDULED trigger strategy must only be used with scheduled interval - nothing more!  given configString: "+jobTriggerStrategy);

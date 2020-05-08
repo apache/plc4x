@@ -65,6 +65,8 @@ public class TriggerHandlerImpl implements TriggerHandler {
                 return true;
             case S7_TRIGGER_VAR:
                 return checkS7TriggerVariable();
+            case TRIGGER_VAR:
+                return checkGenericTrigger();
             default:
                 //should not happen
                 return false;
@@ -77,6 +79,40 @@ public class TriggerHandlerImpl implements TriggerHandler {
      */
     private boolean checkS7TriggerVariable(){
 
+        List<Object> acquiredValuesList = new ArrayList<>();
+        for(TriggerConfiguration.TriggerElement triggerElement:triggerConfiguration.getTriggerElementList()){
+            try {
+                Object result = triggerCollector.requestResult(triggerElement.getUuid());
+                if(result==null){
+                    return false;
+                }
+                acquiredValuesList.add(result);
+            } catch (ScraperException e) {
+                LOGGER.warn("Went wrong",e);
+            }
+        }
+
+        //check if trigger condition from TriggerConfiguration is fulfilled
+        boolean trigger = false;
+        try {
+            trigger = triggerConfiguration.evaluateTrigger(acquiredValuesList);
+        } catch (ScraperException e) {
+            LOGGER.warn("Could not evaluate trigger");
+        }
+
+        //only trigger scraping of data on rising edge of trigger
+        if(trigger && !this.lastTriggerState){
+            this.lastTriggerState = true;
+            return true;
+        }
+        else{
+            this.lastTriggerState = trigger;
+            return false;
+        }
+
+    }
+
+    private boolean checkGenericTrigger(){
         List<Object> acquiredValuesList = new ArrayList<>();
         for(TriggerConfiguration.TriggerElement triggerElement:triggerConfiguration.getTriggerElementList()){
             try {
