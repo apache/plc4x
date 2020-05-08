@@ -22,51 +22,33 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>karaf-features</artifactId>
+    <artifactId>plc4j</artifactId>
     <version>0.7.0-SNAPSHOT</version>
   </parent>
-
   <modelVersion>4.0.0</modelVersion>
-  <packaging>pom</packaging>
 
-  <artifactId>driver-eip-feature</artifactId>
-  <name>PLC4J: Karaf-Features: EIP</name>
+  <artifactId>plc4j-osgi</artifactId>
+  <name>PLC4J: OSGi</name>
+  <description>OSGi Module for PLC4X</description>
   <dependencies>
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-osgi</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
+      <version>6.0.0</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-eip</artifactId>
-      <version>${project.version}</version>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.karaf.tooling</groupId>
-        <artifactId>karaf-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <enableGeneration>true</enableGeneration>
-          <aggregateFeatures>true</aggregateFeatures>
-        </configuration>
-        <executions>
-          <execution>
-            <id>generate-features-file</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>features-generate-descriptor</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
 
 </project>

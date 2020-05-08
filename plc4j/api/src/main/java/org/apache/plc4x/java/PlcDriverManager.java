@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-public class PlcDriverManager implements DriverManager {
+public class PlcDriverManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcDriverManager.class);
 
@@ -68,7 +68,6 @@ public class PlcDriverManager implements DriverManager {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
         PlcConnection connection = driver.getConnection(url);
@@ -84,7 +83,6 @@ public class PlcDriverManager implements DriverManager {
      * @return PlcConnection object.
      * @throws PlcConnectionException an exception if the connection attempt failed.
      */
-    @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         PlcDriver driver = getDriver(url);
         PlcConnection connection = driver.getConnection(url, authentication);

@@ -67,6 +67,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.spi.transport.Transport,org.apache.plc4x.java.transport.tcp.TcpTransport</Export-Service>
           </instructions>
         </configuration>
