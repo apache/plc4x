@@ -17,6 +17,13 @@
 // under the License.
 //
 
+[type 'EthernetFrame'
+    [simple MacAddress 'destination' ]
+    [simple MacAddress 'source'      ]
+    [simple uint 16    'ethernetType']
+    [simple ProfinetFrame 'payload'  ]
+]
+
 [type 'ProfinetFrame'
     [enum FrameType 'frameType'                ]
     [simple ProfinetData 'frame'  ['frameType']]
