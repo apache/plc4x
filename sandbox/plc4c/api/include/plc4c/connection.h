@@ -219,14 +219,11 @@ bool plc4c_connection_get_supports_reading(plc4c_connection *connection);
  * Initializes an empty read-request.
  *
  * @param connection connection that this read-request will be executed on.
- * @param num_items number of items we want to read.
- * @param addresses list of address strings.
  * @param read_request pointer to the read-request
  * @param plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_read_request(
-    plc4c_connection *connection, plc4c_list *addresses,
-    plc4c_read_request **read_request);
+    plc4c_connection *connection, plc4c_read_request **read_request);
 
 /**
  * Check if the current connection supports write operations.
@@ -240,14 +237,11 @@ bool plc4c_connection_get_supports_writing(plc4c_connection *connection);
  * Initializes an empty write-request.
  *
  * @param connection connection that this write-request will be executed on.
- * @param addresses list of address strings.
- * @param values list of pointers to values.
  * @param write_request pointer to the write-request
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_write_request(
-    plc4c_connection *connection, plc4c_list *addresses, plc4c_list *values,
-    plc4c_write_request **write_request);
+    plc4c_connection *connection, plc4c_write_request **write_request);
 
 /**
  * Check if the current connection supports subscriptions.
@@ -264,12 +258,11 @@ bool plc4c_connection_get_supports_subscriptions(plc4c_connection *connection);
  * on.
  * TODO: Somehow we need to provide the subscription type and depending on the
  * type some additional parameters (Cycle-time).
- * @param addresses list of address strings.
  * @param subscription_request pointer to the subscription-request
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_subscription_request(
-    plc4c_connection *connection, plc4c_list *addresses,
+    plc4c_connection *connection,
     plc4c_subscription_request **subscription_request);
 
 /**
@@ -284,7 +277,7 @@ plc4c_return_code plc4c_connection_create_subscription_request(
  * @return plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_unsubscription_request(
-    plc4c_connection *connection, plc4c_list *addresses,
+    plc4c_connection *connection,
     plc4c_unsubscription_request **unsubscription_request);
 
 /**

@@ -60,6 +60,45 @@ void plc4c_subscription_request_set_connection(
 }
 
 /**
+ * Adds a cyclic (polling) item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @param polling_interval_in_millis interval in millis in which new data should
+ * be mada available.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_cyclic_item(
+    plc4c_subscription_request *subscription_request, char *address,
+    long polling_interval_in_millis) {
+  // TODO: Implement this ...
+  return OK;
+}
+
+/**
+ * Adds a change-of-state item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_change_of_state_item(
+    plc4c_subscription_request *subscription_request, char *address) {
+  // TODO: Implement this ...
+  return OK;
+}
+
+/**
+ * Adds a event item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_event_item(
+    plc4c_subscription_request *subscription_request, char *address) {
+  // TODO: Implement this ...
+  return OK;
+}
+
+/**
  * Actually executes the subscription-request.
  * @param connection connection this subscription-request will be executed on.
  * @param subscription_request the subscription-request object.
@@ -94,6 +133,18 @@ plc4c_return_code plc4c_subscription_request_execute(
 }
 
 /**
+ * Check if new data is available for a given subscription handle.
+ * TODO: The subscription handle must contain a reference to the system-task
+ * associated with it as well as to the subscription request.
+ * @param subscription_handle the subscription handle
+ * @return plc4c_return_code
+ */
+bool plc4c_subscription_check_data_available(void *subscription_handle) {
+  // TODO: Implement something sensible here ...
+  return true;
+}
+
+/**
  * Destroys a given subscription-request execution.
  *
  * @param subscription_request_execution the subscription-request execution.
@@ -101,6 +152,11 @@ plc4c_return_code plc4c_subscription_request_execute(
 void plc4c_subscription_request_execution_destroy(
     plc4c_subscription_request_execution *subscription_request_execution) {
   free(subscription_request_execution);
+}
+
+void plc4c_subscription_response_destroy(
+    plc4c_subscription_response *subscription_response) {
+  free(subscription_response);
 }
 
 /**

@@ -56,6 +56,36 @@ void plc4c_subscription_request_set_connection(
     plc4c_connection *connection);
 
 /**
+ * Adds a cyclic (polling) item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @param polling_interval_in_millis interval in millis in which new data should
+ * be mada available.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_cyclic_item(
+    plc4c_subscription_request *subscription_request, char *address,
+    long polling_interval_in_millis);
+
+/**
+ * Adds a change-of-state item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_change_of_state_item(
+    plc4c_subscription_request *subscription_request, char *address);
+
+/**
+ * Adds a event item to the subscription request.
+ * @param subscription_request the subscription-request object.
+ * @param address address for the resource.
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_subscription_request_add_event_item(
+    plc4c_subscription_request *subscription_request, char *address);
+
+/**
  * Actually executes the subscription-request.
  * @param connection connection this subscription-request will be executed on.
  * @param subscription_request the subscription-request object.
@@ -66,6 +96,15 @@ void plc4c_subscription_request_set_connection(
 plc4c_return_code plc4c_subscription_request_execute(
     plc4c_subscription_request *subscription_request,
     plc4c_subscription_request_execution **subscription_request_execution);
+
+/**
+ * Check if new data is available for a given subscription handle.
+ * TODO: The subscription handle must contain a reference to the system-task
+ * associated with it as well as to the subscription request.
+ * @param subscription_handle the subscription handle
+ * @return plc4c_return_code
+ */
+bool plc4c_subscription_check_data_available(void *subscription_handle);
 
 /**
  * Destroys a given subscription-request execution.
@@ -102,6 +141,14 @@ bool plc4c_subscription_request_execution_check_finished_with_error(
  */
 plc4c_subscription_response *plc4c_subscription_request_execution_get_response(
     plc4c_subscription_request_execution *subscription_request_execution);
+
+/**
+ * Destroys a given subscription-response.
+ *
+ * @param subscription_response the subscription-response.
+ */
+void plc4c_subscription_response_destroy(
+    plc4c_subscription_response *subscription_response);
 
 /*
  *
@@ -182,6 +229,14 @@ bool plc4c_unsubscription_request_execution_check_finished_with_error(
 plc4c_unsubscription_response *
 plc4c_unsubscription_request_execution_get_response(
     plc4c_unsubscription_request_execution *unsubscription_request_execution);
+
+/**
+ * Destroys a given unsubscription-response.
+ *
+ * @param unsubscription_response the unsubscription-response.
+ */
+void plc4c_unsubscription_response_destroy(
+    plc4c_unsubscription_response *unsubscription_response);
 
 #ifdef __cplusplus
 }

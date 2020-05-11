@@ -32,6 +32,24 @@ void plc4c_write_request_set_connection(plc4c_write_request *write_request,
   write_request->connection = connection;
 }
 
+plc4c_return_code plc4c_write_request_add_item(
+    plc4c_write_request *write_request, char *address, plc4c_data *value) {
+  // Parse an address string and get a driver-dependent data-structure
+  // representing the address back.
+  plc4c_item *address_item =
+      write_request->connection->driver->parse_address_function(address);
+
+  // Create a new value item, binding an address item to a value.
+  plc4c_request_value_item *value_item =
+      malloc(sizeof(plc4c_request_value_item));
+  value_item->item = address_item;
+  value_item->value = (plc4c_data *)value;
+
+  // Add the new item ot the list of items.
+  plc4c_utils_list_insert_tail_value(write_request->items, value_item);
+  return OK;
+}
+
 plc4c_return_code plc4c_write_request_execute(
     plc4c_write_request *write_request,
     plc4c_write_request_execution **write_request_execution) {

@@ -26,10 +26,18 @@ extern "C" {
 
 /**
  * Destroys a given read-request.
- *
  * @param read_request the read-request.
  */
 void plc4c_read_request_destroy(plc4c_read_request *read_request);
+
+/**
+ * Function for adding a new item to a given request.
+ * @param read_request the read-request.
+ * @param address address string
+ * @return return code
+ */
+plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
+                                              char *address);
 
 /**
  * Returns the plc4c_connection for a give read request

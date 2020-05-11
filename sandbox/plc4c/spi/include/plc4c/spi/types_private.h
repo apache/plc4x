@@ -32,6 +32,8 @@ typedef struct plc4c_connection_list_item_t plc4c_connection_list_item;
 typedef struct plc4c_request_value_item_t plc4c_request_value_item;
 typedef struct plc4c_response_value_item_t plc4c_response_value_item;
 typedef struct plc4c_response_item_t plc4c_response_item;
+typedef struct plc4c_response_subscription_item_t plc4c_response_subscription_item;
+typedef struct plc4c_response_unsubscription_item_t plc4c_response_unsubscription_item;
 
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(
     char *address_string);

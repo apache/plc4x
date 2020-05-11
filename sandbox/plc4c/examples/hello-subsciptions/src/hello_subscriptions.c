@@ -25,41 +25,12 @@
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
-int numOpenConnections = 0;
-
-/**
- * Here we could implement something that keeps track of all open connections.
- * For example on embedded devices using the W5100 SPI Network device, this can
- * only handle 4 simultaneous connections.
- *
- * @param connection the connection that was just established
- */
-void onGlobalConnect(plc4c_connection *cur_connection) {
-  printf("Connected to %s",
-         plc4c_connection_get_connection_string(cur_connection));
-  numOpenConnections++;
-}
-
-void onGlobalDisconnect(plc4c_connection *cur_connection) {
-  printf("Disconnected from %s",
-         plc4c_connection_get_connection_string(cur_connection));
-  numOpenConnections--;
-}
-
-void delete_read_response_item(plc4c_list_element *response_read_item_element) {
-
-}
-
-void delete_write_response_item(
-    plc4c_list_element *response_write_item_element) {}
-
 enum plc4c_connection_state_t {
   CONNECTING,
   CONNECTED,
-  READ_REQUEST_SENT,
-  READ_RESPONSE_RECEIVED,
-  WRITE_REQUEST_SENT,
-  WRITE_RESPONSE_RECEIVED,
+  SUBSCRIPTION_REQUEST_SENT,
+  SUBSCRIPTION_RESPONSE_RECEIVED,
+  READING_EVENTS,
   DISCONNECTING,
   DISCONNECTED
 };
@@ -72,10 +43,10 @@ int main() {
   bool loop = true;
   plc4c_system *system = NULL;
   plc4c_connection *connection = NULL;
-  plc4c_read_request *read_request = NULL;
-  plc4c_write_request *write_request = NULL;
-  plc4c_read_request_execution *read_request_execution = NULL;
-  plc4c_write_request_execution *write_request_execution = NULL;
+  plc4c_subscription_request *subscription_request = NULL;
+  plc4c_subscription_request_execution *subscription_request_execution = NULL;
+  int num_events = 0;
+  void *subscription_handle = NULL;
 
   // Create a new uninitialized plc4c_system
   printf("Creating new PLC4C System (Initializing inner data-structures) ... ");
@@ -116,10 +87,6 @@ int main() {
   }
   printf("SUCCESS\n");
 
-  // Register the global callbacks.
-  plc4c_system_set_on_connect_success_callback(system, &onGlobalConnect);
-  plc4c_system_set_on_disconnect_success_callback(system, &onGlobalDisconnect);
-
   // Establish connections to remote devices
   // you may or may not care about the connection handle
   printf("Connecting to 'simulated://foo' ... ");
@@ -157,17 +124,18 @@ int main() {
       case CONNECTED: {
         // Create a new read-request.
         printf("Preparing a read-request ... ");
-        result =
-            plc4c_connection_create_read_request(connection, &read_request);
+
+        result = plc4c_connection_create_subscription_request(
+            connection, &subscription_request);
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         }
         printf("SUCCESS\n");
 
-        printf("Adding an item for 'RANDOM/foo:INTEGER' ... ");
-        result =
-            plc4c_read_request_add_item(read_request, "RANDOM/foo:INTEGER");
+        printf("Adding cyclic item for 'RANDOM/foo:INTEGER' ... ");
+        result = plc4c_subscription_request_add_cyclic_item(
+            subscription_request, "RANDOM/foo:INTEGER", 500);
         if (result != OK) {
           printf("FAILED\n");
           return -1;
@@ -176,130 +144,89 @@ int main() {
 
         // Execute the read-request.
         printf("Executing a read-request ... ");
-        result =
-            plc4c_read_request_execute(read_request, &read_request_execution);
-
+        result = plc4c_subscription_request_execute(
+            subscription_request, &subscription_request_execution);
         if (result != OK) {
           printf("FAILED\n");
           return -1;
         } else {
-          state = READ_REQUEST_SENT;
+          state = SUBSCRIPTION_REQUEST_SENT;
         }
         break;
       }
         // Wait until the read-request execution is finished.
-      case READ_REQUEST_SENT: {
-        if (plc4c_read_request_execution_check_finished_successfully(
-                read_request_execution)) {
+      case SUBSCRIPTION_REQUEST_SENT: {
+        if (plc4c_subscription_request_execution_check_finished_successfully(
+                subscription_request_execution)) {
           printf("SUCCESS\n");
-          state = READ_RESPONSE_RECEIVED;
-        } else if (plc4c_read_request_execution_check_finished_with_error(
-                       read_request_execution)) {
+          state = SUBSCRIPTION_RESPONSE_RECEIVED;
+        } else if (
+            plc4c_subscription_request_execution_check_finished_with_error(
+                subscription_request_execution)) {
           printf("FAILED\n");
           return -1;
         }
         break;
       }
-      case READ_RESPONSE_RECEIVED: {
-        // Get the response for the given read-request.
-        plc4c_read_response *read_response =
-            plc4c_read_request_execution_get_response(read_request_execution);
-        if (read_response == NULL) {
+      case SUBSCRIPTION_RESPONSE_RECEIVED: {
+        // Get the response for the given subscription-request.
+        plc4c_subscription_response *subscription_response =
+            plc4c_subscription_request_execution_get_response(
+                subscription_request_execution);
+        if (subscription_response == NULL) {
           printf("FAILED (No Response)\n");
           return -1;
         }
 
         // Iterate over all returned items.
         plc4c_list_element *cur_element =
-            plc4c_utils_list_head(read_response->items);
+            plc4c_utils_list_head(subscription_response->response_items);
         while (cur_element != NULL) {
-          plc4c_response_value_item *value_item = cur_element->value;
+          plc4c_response_subscription_item *subscription_item_item =
+              cur_element->value;
 
-          printf("Value %s (%s):", value_item->item->name,
-                 plc4c_response_code_to_message(value_item->response_code));
-          plc4c_data_printf(value_item->value);
-          printf("\n");
+          printf("Value %s (%s):", subscription_item_item->item->name,
+                 plc4c_response_code_to_message(
+                     subscription_item_item->response_code));
+
+          if (subscription_item_item->response_code == OK) {
+            // Save the subscription handles...
+            subscription_handle = subscription_item_item->subscription_handle;
+          }
 
           cur_element = cur_element->next;
         }
 
         // Clean up.
-        plc4c_read_destroy_read_response(read_response);
-        plc4c_read_request_execution_destroy(read_request_execution);
-        plc4c_read_request_destroy(read_request);
+        plc4c_subscription_response_destroy(subscription_response);
+        plc4c_subscription_request_execution_destroy(
+            subscription_request_execution);
+        plc4c_subscription_request_destroy(subscription_request);
 
-        // Create a new write-request.
-        printf("Preparing a write-request ... ");
-        char value[] = "bar";
-        result =
-            plc4c_connection_create_write_request(connection, &write_request);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
-
-        printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
-        result = plc4c_write_request_add_item(
-            write_request, "STDOUT/foo:STRING",
-            plc4c_data_create_constant_string_data(strlen(value), value));
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        }
-        printf("SUCCESS\n");
-
-        // Execute the write-request.
-        printf("Executing a write-request ... \n");
-        result = plc4c_write_request_execute(write_request,
-                                             &write_request_execution);
-        if (result != OK) {
-          printf("FAILED\n");
-          return -1;
-        } else {
-          state = WRITE_REQUEST_SENT;
-        }
+        state = READING_EVENTS;
         break;
       }
-        // Wait until the write-request execution is finished.
-      case WRITE_REQUEST_SENT: {
-        if (plc4c_write_request_check_finished_successfully(
-                write_request_execution)) {
-          printf("SUCCESS\n");
-          state = WRITE_RESPONSE_RECEIVED;
-        } else if (plc4c_write_request_execution_check_completed_with_error(
-                       write_request_execution)) {
-          printf("FAILED\n");
-          return -1;
-        }
-        break;
-      }
-      case WRITE_RESPONSE_RECEIVED: {
-        plc4c_write_response *write_response =
-            plc4c_write_request_execution_get_response(write_request_execution);
+        // Wait for 10 incoming events.
+      case READING_EVENTS: {
+        // Check if an event is available ...
+        if (plc4c_subscription_check_data_available(subscription_handle)) {
+          // Increment the number of processed events.
+          num_events++;
 
-        // Iterate over the responses ...
-        plc4c_list_element *cur_element =
-            plc4c_utils_list_head(write_response->response_items);
-        while (cur_element != NULL) {
-          plc4c_response_item *response_item = cur_element->value;
-          printf(" - Write Value %s (%s)\n", response_item->item->name,
-                 plc4c_response_code_to_message(response_item->response_code));
-          cur_element = cur_element->next;
+          // If 10 events have been processed, disconnect.
+          if (num_events > 10) {
+            // Disconnect.
+            printf("Disconnecting ... ");
+            result = plc4c_connection_disconnect(connection);
+            if (result != OK) {
+              printf("FAILED");
+              return -1;
+            }
+            state = DISCONNECTING;
+          }
         }
+        // TODO: do something here ...
 
-        // Clean up.
-        plc4c_write_destroy_write_response(write_response);
-        plc4c_write_request_execution_destroy(write_request_execution);
-
-        // Disconnect.
-        printf("Disconnecting ... ");
-        result = plc4c_connection_disconnect(connection);
-        if (result != OK) {
-          printf("FAILED");
-          return -1;
-        }
-        state = DISCONNECTING;
         break;
       }
         // Wait until the connection is disconnected

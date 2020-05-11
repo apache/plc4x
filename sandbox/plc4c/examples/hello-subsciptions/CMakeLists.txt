@@ -17,5 +17,11 @@
   under the License.
 ]]
 
-add_subdirectory(hello-subsciptions)
-add_subdirectory(hello-world)
+include_directories("../../api/include" "../../drivers/simulated/include" "../../transports/dummy/include")
+
+file(GLOB sources "src/*.c")
+
+add_executable(plc4c-examples-hello-subscriptions ${sources} src/hello_subscriptions.c)
+
+target_link_libraries(plc4c-examples-hello-subscriptions
+        plc4c-spi plc4c-driver-simulated plc4c-transport-dummy)
