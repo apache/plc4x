@@ -365,7 +365,8 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
     if (strcmp(cur_driver->protocol_code,
                plc4c_connection_get_protocol_code(new_connection)) == 0) {
       // Set the driver reference in the new connection.
-      new_connection->driver = cur_driver;
+      plc4c_connection_set_driver(new_connection, cur_driver);
+
       // If no transport was selected, use the drivers default transport (if it
       // exists).
       if (plc4c_connection_get_transport_code(new_connection) == NULL) {
@@ -380,7 +381,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   } while (cur_driver_list_element != NULL);
 
   // If the driver property is still NULL, the desired driver was not found.
-  if (new_connection->driver == NULL) {
+  if (plc4c_connection_get_driver(new_connection) == NULL) {
     return UNKNOWN_DRIVER;
   }
 
@@ -406,7 +407,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
     if (strcmp(cur_transport->transport_code,
                plc4c_connection_get_transport_code(new_connection)) == 0) {
       // Set the transport reference in the new connection.
-      new_connection->transport = cur_transport;
+      plc4c_connection_set_transport(new_connection, cur_transport);
       break;
     }
     cur_transport_list_element = cur_transport_list_element->next;
@@ -414,7 +415,7 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
 
   // If the transport property is still NULL, the desired transport was not
   // found.
-  if (new_connection->transport == NULL) {
+  if (plc4c_connection_get_transport(new_connection) == NULL) {
     return UNKNOWN_TRANSPORT;
   }
 
@@ -423,8 +424,8 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   plc4c_system_task *new_connection_task = NULL;
-  result = new_connection->driver->connect_function(new_connection,
-                                                    &new_connection_task);
+  result = plc4c_connection_get_driver(new_connection)
+               ->connect_function(new_connection, &new_connection_task);
   if (result != OK) {
     return -1;
   }

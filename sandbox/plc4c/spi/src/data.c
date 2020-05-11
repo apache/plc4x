@@ -91,6 +91,7 @@ plc4c_data *plc4c_data_create_float_data(float f) {
   data->data_type = PLC4C_FLOAT;
   data->size = sizeof(float);
   data->data.float_value = f;
+  return data;
 }
 
 void plc4c_data_printf(plc4c_data *data) {

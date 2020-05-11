@@ -77,6 +77,15 @@ void plc4c_connection_set_transport_code(plc4c_connection *connection,
   }
 }
 
+plc4c_transport *plc4c_connection_get_transport(plc4c_connection *connection) {
+  return connection->transport;
+}
+
+void plc4c_connection_set_transport(plc4c_connection *connection,
+                                    plc4c_transport *transport) {
+  connection->transport = transport;
+}
+
 char *plc4c_connection_get_transport_connect_information(
     plc4c_connection *connection) {
   return connection->transport_connect_information;
@@ -134,6 +143,15 @@ plc4c_system *plc4c_connection_get_system(plc4c_connection *connection) {
 void plc4c_connection_set_system(plc4c_connection *connection,
                                  plc4c_system *system) {
   connection->system = system;
+}
+
+plc4c_driver *plc4c_connection_get_driver(plc4c_connection *connection) {
+  return connection->driver;
+}
+
+void plc4c_connection_set_driver(plc4c_connection *connection,
+                                 plc4c_driver *driver) {
+  connection->driver = driver;
 }
 
 bool plc4c_connection_has_error(plc4c_connection *connection) { return false; }
