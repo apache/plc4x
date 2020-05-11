@@ -71,6 +71,7 @@ bool plc4c_read_request_execution_check_finished_successfully(
 
 bool plc4c_read_request_execution_check_finished_with_error(
     plc4c_read_request_execution *read_request_execution) {
+  // TODO: Implement this sensibly ...
   return false;
 }
 
@@ -90,3 +91,10 @@ void plc4c_read_request_execution_destroy(
     plc4c_read_request_execution *read_request_execution) {
   free(read_request_execution);
 }
+
+void plc4c_read_destroy_read_response(
+    plc4c_read_response *read_response) {
+  read_response->read_request->connection->driver->free_read_response_function(
+      read_response);
+}
+

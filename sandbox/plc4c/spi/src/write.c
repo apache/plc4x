@@ -89,3 +89,10 @@ void plc4c_write_request_execution_destroy(
     plc4c_write_request_execution *write_request_execution) {
   free(write_request_execution);
 }
+
+void plc4c_write_destroy_write_response(
+    plc4c_write_response *write_response) {
+  write_response->write_request->connection->driver
+      ->free_write_response_function(write_response);
+}
+

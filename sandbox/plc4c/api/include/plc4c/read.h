@@ -94,6 +94,12 @@ bool plc4c_read_request_execution_check_finished_with_error(
 plc4c_read_response *plc4c_read_request_execution_get_response(
     plc4c_read_request_execution *read_request_execution);
 
+/**
+ * Destroys a given read_response
+ * @param read_response the read_response
+ */
+void plc4c_read_destroy_read_response(plc4c_read_response *read_response);
+
 #ifdef __cplusplus
 }
 #endif

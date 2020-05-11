@@ -228,12 +228,6 @@ plc4c_return_code plc4c_connection_create_read_request(
   return OK;
 }
 
-void plc4c_connection_destroy_read_response(
-    plc4c_read_response *read_response) {
-  read_response->read_request->connection->driver->free_read_response_function(
-      read_response);
-}
-
 bool plc4c_connection_get_supports_writing(plc4c_connection *connection) {
   return connection->supports_writing;
 }
@@ -283,12 +277,6 @@ plc4c_return_code plc4c_connection_create_write_request(
 
   *write_request = new_write_request;
   return OK;
-}
-
-void plc4c_connection_destroy_write_response(
-    plc4c_write_response *write_response) {
-  write_response->write_request->connection->driver
-      ->free_write_response_function(write_response);
 }
 
 int plc4c_connection_get_running_tasks_count(plc4c_connection *connection) {

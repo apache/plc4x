@@ -58,11 +58,25 @@ typedef plc4c_return_code (*plc4c_connection_write_function)(
     plc4c_write_request_execution *write_request_execution,
     plc4c_system_task **task);
 
+typedef plc4c_return_code (*plc4c_connection_subscribe_function)(
+    plc4c_subscription_request_execution *subscription_request_execution,
+    plc4c_system_task **task);
+
+typedef plc4c_return_code (*plc4c_connection_unsubscribe_function)(
+    plc4c_unsubscription_request_execution *unsubscription_request_execution,
+    plc4c_system_task **task);
+
 typedef void (*plc4c_connect_free_read_response_function)(
     plc4c_read_response *response);
 
 typedef void (*plc4c_connect_free_write_response_function)(
     plc4c_write_response *response);
+
+typedef void (*plc4c_connect_free_subscription_response_function)(
+    plc4c_subscription_response *response);
+
+typedef void (*plc4c_connect_free_unsubscription_response_function)(
+    plc4c_unsubscription_response *response);
 
 struct plc4c_system_t {
   /* drivers */
@@ -100,8 +114,12 @@ struct plc4c_driver_t {
   plc4c_connection_disconnect_function disconnect_function;
   plc4c_connection_read_function read_function;
   plc4c_connection_write_function write_function;
+  plc4c_connection_subscribe_function subscribe_function;
+  plc4c_connection_unsubscribe_function unsubscribe_function;
   plc4c_connect_free_read_response_function free_read_response_function;
   plc4c_connect_free_write_response_function free_write_response_function;
+  plc4c_connect_free_subscription_response_function free_subscription_response_function;
+  plc4c_connect_free_unsubscription_response_function free_unsubscription_response_function;
 };
 
 struct plc4c_driver_list_item_t {
@@ -178,7 +196,20 @@ struct plc4c_request_value_item_t {
 struct plc4c_response_value_item_t {
   plc4c_item *item;
   plc4c_response_code response_code;
-  void *value;
+  plc4c_data *value;
+};
+
+struct plc4c_response_subscription_item_t {
+  plc4c_item *item;
+  plc4c_response_code response_code;
+  // This is highly coupled to the protocol used.
+  void *subscription_handle;
+};
+
+struct plc4c_request_unsubscription_item_t {
+  plc4c_item *item;
+  // This is highly coupled to the protocol used.
+  void *subscription_handle;
 };
 
 struct plc4c_response_item_t {
@@ -196,6 +227,16 @@ struct plc4c_write_request_t {
   plc4c_list *items;
 };
 
+struct plc4c_subscription_request_t {
+  plc4c_connection *connection;
+  plc4c_list *items;
+};
+
+struct plc4c_unsubscription_request_t {
+  plc4c_connection *connection;
+  plc4c_list *items;
+};
+
 struct plc4c_read_request_execution_t {
   plc4c_read_request *read_request;
   plc4c_read_response *read_response;
@@ -208,6 +249,18 @@ struct plc4c_write_request_execution_t {
   plc4c_system_task *system_task;
 };
 
+struct plc4c_subscription_request_execution_t {
+  plc4c_subscription_request *subscription_request;
+  plc4c_subscription_response *subscription_response;
+  plc4c_system_task *system_task;
+};
+
+struct plc4c_unsubscription_request_execution_t {
+  plc4c_unsubscription_request *unsubscription_request;
+  plc4c_unsubscription_response *unsubscription_response;
+  plc4c_system_task *system_task;
+};
+
 struct plc4c_read_response_t {
   plc4c_read_request *read_request;
   plc4c_list *items;
@@ -215,6 +268,16 @@ struct plc4c_read_response_t {
 
 struct plc4c_write_response_t {
   plc4c_write_request *write_request;
+  plc4c_list *response_items;
+};
+
+struct plc4c_subscription_response_t {
+  plc4c_subscription_request *subscription_request;
+  plc4c_list *response_items;
+};
+
+struct plc4c_unsubscription_response_t {
+  plc4c_unsubscription_request *unsubscription_request;
   plc4c_list *response_items;
 };
 

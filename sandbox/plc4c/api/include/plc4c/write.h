@@ -94,6 +94,12 @@ bool plc4c_write_request_execution_check_completed_with_error(
 plc4c_write_response *plc4c_write_request_execution_get_response(
     plc4c_write_request_execution *write_request_execution);
 
+/**
+ * Destroys a given write_response
+ * @param write_response the write_response
+ */
+void plc4c_write_destroy_write_response(plc4c_write_response *write_response);
+
 #ifdef __cplusplus
 }
 #endif
