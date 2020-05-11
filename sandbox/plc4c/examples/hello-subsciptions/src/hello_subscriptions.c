@@ -122,9 +122,8 @@ int main() {
         break;
       }
       case CONNECTED: {
-        // Create a new read-request.
-        printf("Preparing a read-request ... ");
-
+        // Create a new subscription-request.
+        printf("Preparing a subscription-request ... ");
         result = plc4c_connection_create_subscription_request(
             connection, &subscription_request);
         if (result != OK) {
@@ -142,8 +141,8 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        // Execute the read-request.
-        printf("Executing a read-request ... ");
+        // Execute the subscription-request.
+        printf("Executing a subscription-request ... ");
         result = plc4c_subscription_request_execute(
             subscription_request, &subscription_request_execution);
         if (result != OK) {
@@ -178,26 +177,24 @@ int main() {
           return -1;
         }
 
-        // Iterate over all returned items.
+        // Save the subsciption handle.
         plc4c_list_element *cur_element =
             plc4c_utils_list_head(subscription_response->response_items);
-        while (cur_element != NULL) {
-          plc4c_response_subscription_item *subscription_item_item =
-              cur_element->value;
-
-          printf("Value %s (%s):", subscription_item_item->item->name,
-                 plc4c_response_code_to_message(
-                     subscription_item_item->response_code));
-
-          if (subscription_item_item->response_code == OK) {
-            // Save the subscription handles...
-            subscription_handle = subscription_item_item->subscription_handle;
-          }
-
-          cur_element = cur_element->next;
+        plc4c_response_subscription_item *subscription_item_item =
+            cur_element->value;
+        printf("Value %s (%s):", subscription_item_item->item->name,
+               plc4c_response_code_to_message(
+                   subscription_item_item->response_code));
+        // Check if the response was ok.
+        if (subscription_item_item->response_code == OK) {
+          // Save the subscription handles...
+          subscription_handle = subscription_item_item->subscription_handle;
+        } else {
+          printf("FAILED (No Response)\n");
+          return -1;
         }
 
-        // Clean up.
+        // Clean up the subscription..
         plc4c_subscription_response_destroy(subscription_response);
         plc4c_subscription_request_execution_destroy(
             subscription_request_execution);
@@ -210,6 +207,9 @@ int main() {
       case READING_EVENTS: {
         // Check if an event is available ...
         if (plc4c_subscription_check_data_available(subscription_handle)) {
+
+          // TODO: Actually get the data ...
+
           // Increment the number of processed events.
           num_events++;
 
