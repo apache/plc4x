@@ -63,12 +63,11 @@ public class RawSocketChannelFactory extends NettyChannelFactory implements HasC
 
     @Override
     public void configureBootstrap(Bootstrap bootstrap) {
-        if(configuration != null) {
+        if (configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);
-            /*bootstrap.option(RawSocketChannelOption.PORT, configuration.getDefaultPort());
-            bootstrap.option(RawSocketChannelOption.PROTOCOL_ID, configuration.getProtocolId());
-            bootstrap.option(RawSocketChannelOption.SPEED_FACTOR, configuration.getReplaySpeedFactor());*/
-            if(configuration.getPcapPacketHandler() != null) {
+            bootstrap.option(PcapChannelOption.PORT, configuration.getDefaultPort());
+            bootstrap.option(PcapChannelOption.PROTOCOL_ID, configuration.getProtocolId());
+            if (configuration.getPcapPacketHandler() != null) {
                 bootstrap.option(PcapChannelOption.PACKET_HANDLER, configuration.getPcapPacketHandler());
             }
         }

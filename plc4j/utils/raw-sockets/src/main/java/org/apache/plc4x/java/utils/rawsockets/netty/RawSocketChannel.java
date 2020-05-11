@@ -96,7 +96,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         PcapNetworkInterface nif = Pcaps.getDevByName(deviceName);
         handle = nif.openLive(65535, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
         if(logger.isDebugEnabled()) {
-            logger.debug(String.format("Listening on device %s", deviceName));
+            logger.debug("Listening on device {}", deviceName);
         }
 
         // If the address allows fine tuning which packets to process, set a filter to reduce the load.
@@ -135,7 +135,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // be able to actually send data. The PcapInputStream simply acts as a
         // breaking point if no packets are coming in and the read operation would
         // simply block indefinitely.
-        activate(new PcapInputStream(buffer), new DiscardingOutputStream());
+        activate(new PcapInputStream(buffer), new PcapOutputStream(handle));
     }
 
     @Override
@@ -199,18 +199,28 @@ public class RawSocketChannel extends OioByteStreamChannel {
     }
 
     /**
-     * This output stream simply discards anything it should send.
+     * This output stream simply pass whole buffer to pcap library hopping it will be
+     * sent over interface.
      */
-    private static class DiscardingOutputStream extends OutputStream {
-        @Override
-        public void write(int b) throws IOException {
-            // discard
-            logger.debug("Discarding {}", b);
+    private static class PcapOutputStream extends OutputStream {
+        private final PcapHandle handle;
+
+        public PcapOutputStream(PcapHandle handle) {
+            this.handle = handle;
         }
 
         @Override
-        public void write(byte[] b, int off, int len) {
-            logger.debug("Discarding {}", b);
+        public void write(int b) throws IOException {
+            throw new IOException("Appending single bytes is not permitted. Use write(byte[], int, int)");
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            try {
+                handle.sendPacket(b);
+            } catch (NotOpenException | PcapNativeException e) {
+                throw new IOException(e);
+            }
         }
     }
 
@@ -245,6 +255,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
             }
             throw new SocketTimeoutException();
         }
+
     }
 
     /**
@@ -262,4 +273,5 @@ public class RawSocketChannel extends OioByteStreamChannel {
             }
         }
     }
+
 }
