@@ -20,6 +20,7 @@ package org.apache.plc4x.java.profinet.dcp.protocol;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.plc4x.java.profinet.dcp.configuration.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.dcp.readwrite.AllSelector;
 import org.apache.plc4x.java.profinet.dcp.readwrite.DCPBlock;
 import org.apache.plc4x.java.profinet.dcp.readwrite.DcpIdentRequestPDU;
@@ -36,22 +37,29 @@ import org.apache.plc4x.java.profinet.dcp.readwrite.types.DCPServiceType;
 import org.apache.plc4x.java.profinet.dcp.readwrite.types.FrameType;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Driver logic for handling Profinet-DCP packets.
  */
-public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> {
+public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> implements
+    HasConfiguration<ProfinetConfiguration> {
 
     public static MacAddress PROFINET_BROADCAST = createAddress(0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00);
-    public static MacAddress TEST_ADDRESS = createAddress(0x08, 0x00, 0x27, 0x10, 0xFF, 0x10);
     public static int PN_DCP = 0x8892;
 
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
     private final Logger logger = LoggerFactory.getLogger(ProfinetDCPProtocolLogic.class);
 
     private AtomicInteger invokeId = new AtomicInteger(0);
+    private ProfinetConfiguration configuration;
+
+    @Override
+    public void setConfiguration(ProfinetConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public void onConnect(ConversationContext<EthernetFrame> context) {
@@ -63,7 +71,7 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> {
         int dcpDataLength = blocks[0].getLengthInBytes();
 
         DcpIdentRequestPDU requestPDU = new DcpIdentRequestPDU(serviceId, serviceType, xid, responseDelay, dcpDataLength, blocks);
-        EthernetFrame ethernetFrame = new EthernetFrame(PROFINET_BROADCAST, TEST_ADDRESS, PN_DCP,
+        EthernetFrame ethernetFrame = new EthernetFrame(PROFINET_BROADCAST, configuration.getSender(), PN_DCP,
             new ProfinetFrame(FrameType.IDENTIFY_MULTICAST_REQUEST, requestPDU));
 
         // this is broadcast thus reply might come from multiple participants
@@ -117,4 +125,5 @@ public class ProfinetDCPProtocolLogic extends Plc4xProtocolBase<EthernetFrame> {
     public final static MacAddress createAddress(int octet1, int octet2, int octet3, int octet4, int octet5, int octet6) {
         return new MacAddress((short) octet1, (short) octet2, (short) octet3, (short) octet4, (short) octet5, (short) octet6);
     }
+
 }

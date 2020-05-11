@@ -103,7 +103,7 @@ public class ProfinetDCPPlcDriver extends GeneratedDriverBase<EthernetFrame> {
 
 
     public static void main(String[] args) throws Exception {
-        PlcConnection connection = new PlcDriverManager().getConnection("profinet-dcp:raw://ens2f1");
+        PlcConnection connection = new PlcDriverManager().getConnection("profinet-dcp:raw://ens2f1?sender=00:10:18:6c:4c:e2");
         //connection.connect();
     }
 

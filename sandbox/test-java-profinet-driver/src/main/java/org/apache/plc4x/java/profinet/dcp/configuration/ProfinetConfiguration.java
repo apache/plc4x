@@ -18,12 +18,32 @@
  */
 package org.apache.plc4x.java.profinet.dcp.configuration;
 
+import java.util.stream.Stream;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.profinet.dcp.readwrite.MacAddress;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Packet;
 
 public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
+
+    @Required
+    @ConfigurationParameter
+    @ParameterConverter(MacAddressConverter.class)
+    protected MacAddress sender;
+
+    public void setSender(MacAddress sender) {
+        this.sender = sender;
+    }
+
+    public MacAddress getSender() {
+        return sender;
+    }
 
     @Override
     public boolean getSupportVlans() {
@@ -49,5 +69,25 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                 return packet.getRawData();
             }
         };
+    }
+
+    public static class MacAddressConverter implements ConfigurationParameterConverter<MacAddress> {
+        @Override
+        public Class<MacAddress> getType() {
+            return MacAddress.class;
+        }
+
+        @Override
+        public MacAddress convert(String value) {
+            String[] split = value.split(":");
+            short[] segments = ArrayUtils.toPrimitive(Stream.of(split).map(segment -> Integer.parseInt(segment, 16))
+                .map(Integer::shortValue).toArray(Short[]::new));
+
+            if (segments.length != 6) {
+                throw new IllegalArgumentException("Value " + value + " is not valid MAC address");
+            }
+
+            return new MacAddress(segments[0], segments[1], segments[2], segments[3], segments[4], segments[5]);
+        }
     }
 }
