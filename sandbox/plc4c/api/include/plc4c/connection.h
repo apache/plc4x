@@ -85,6 +85,21 @@ void plc4c_connection_set_transport_code(plc4c_connection *connection,
                                          char *transport_code);
 
 /**
+ * Returns the transport for the given connection
+ * @param connection plc4c_connection
+ * @return transport plc4c_transport
+ */
+plc4c_transport *plc4c_connection_get_transport(plc4c_connection *connection);
+
+/**
+ * Set the transport
+ * @param connection plc4c_connection
+ * @param transport plc4c_transport
+ */
+void plc4c_connection_set_transport(plc4c_connection *connection,
+                                         plc4c_transport *transport);
+
+/**
  * Returns the transport connection information for a given connection
  * @param connection plc4c_connection
  * @return transport connection information
@@ -154,12 +169,27 @@ void plc4c_connection_set_disconnect(plc4c_connection *connection,
 plc4c_system *plc4c_connection_get_system(plc4c_connection *connection);
 
 /**
- * Sets a plc4c_system for a given connnection
+ * Sets a plc4c_system for a given connection
  * @param connection plc4c_connection
  * @param system plc4c_system
  */
 void plc4c_connection_set_system(plc4c_connection *connection,
                                  plc4c_system *system);
+
+/**
+ * Returns the driver associated with a given connection
+ * @param connection plc4c_connection
+ * @return plc4c_driver
+ */
+plc4c_driver *plc4c_connection_get_driver(plc4c_connection *connection);
+
+/**
+ * Sets a plc4c_driver for a given connection
+ * @param connection plc4c_connection
+ * @param plc4c_driver
+ */
+ void plc4c_connection_set_driver(plc4c_connection *connection,
+                                 plc4c_driver *driver);
 
 /**
  * Check if an error occurred while connecting.
