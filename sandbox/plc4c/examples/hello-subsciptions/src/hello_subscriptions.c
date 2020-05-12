@@ -206,14 +206,35 @@ int main() {
         // Wait for 10 incoming events.
       case READING_EVENTS: {
         // Check if an event is available ...
+        printf("Checking Events ... ");
         if (plc4c_subscription_check_data_available(subscription_handle)) {
+          printf("New events available.\n");
 
-          // TODO: Actually get the data ...
+          printf("Getting Events ... ");
+          plc4c_list *events = NULL;
+          result = plc4c_subscription_get_subscription_events(
+              subscription_handle, &events);
+          if (result != OK) {
+            printf("FAILED\n");
+            return -1;
+          }
+          printf("SUCCESS\n");
 
-          // Increment the number of processed events.
-          num_events++;
+          plc4c_list_element *cur_element = plc4c_utils_list_head(events);
+          while (cur_element != NULL) {
+            plc4c_response_subscription_item *subscription_event_item =
+                cur_element->value;
 
-          // If 10 events have been processed, disconnect.
+            // TODO: Do something with the event ...
+            printf("Got Event %s", subscription_event_item->item->name);
+
+            // Increment the number of processed events.
+            num_events++;
+
+            cur_element = cur_element->next;
+          }
+
+          // If at least 10 events have been processed, disconnect.
           if (num_events > 10) {
             // Disconnect.
             printf("Disconnecting ... ");
@@ -224,9 +245,9 @@ int main() {
             }
             state = DISCONNECTING;
           }
+        } else {
+          printf("No events.\n");
         }
-        // TODO: do something here ...
-
         break;
       }
         // Wait until the connection is disconnected

@@ -408,9 +408,17 @@ plc4c_driver *plc4c_driver_simulated_create() {
   driver->disconnect_function = &plc4c_driver_simulated_disconnect_function;
   driver->read_function = &plc4c_driver_simulated_read_function;
   driver->write_function = &plc4c_driver_simulated_write_function;
+  // TODO: Implement ...
+  driver->subscribe_function = NULL;
+  // TODO: Implement ...
+  driver->unsubscribe_function = NULL;
   driver->free_read_response_function =
       &plc4c_driver_simulated_free_read_response;
   driver->free_write_response_function =
       &plc4c_driver_simulated_free_write_response;
+  // TODO: Implement ...
+  driver->free_subscription_response_function = NULL;
+  // TODO: Implement ...
+  driver->free_unsubscription_response_function = NULL;
   return driver;
 }

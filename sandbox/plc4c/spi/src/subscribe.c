@@ -205,6 +205,20 @@ plc4c_subscription_response *plc4c_subscription_request_execution_get_response(
 
 /*
  *
+ * Event handling
+ *
+ */
+
+plc4c_return_code plc4c_subscription_get_subscription_events(
+    void *subscription_handle, plc4c_list **events) {
+  plc4c_list *new_event_list = NULL;
+  plc4c_utils_list_create(&new_event_list);
+  *events = new_event_list;
+  return OK;
+}
+
+/*
+ *
  * Unsubscriptions
  *
  */

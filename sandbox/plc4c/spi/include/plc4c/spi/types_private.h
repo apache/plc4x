@@ -278,6 +278,11 @@ struct plc4c_subscription_response_t {
   plc4c_list *response_items;
 };
 
+struct plc4c_subscription_event_t {
+  plc4c_subscription_request *subscription_request;
+  plc4c_list *event_items;
+};
+
 struct plc4c_unsubscription_response_t {
   plc4c_unsubscription_request *unsubscription_request;
   plc4c_list *response_items;

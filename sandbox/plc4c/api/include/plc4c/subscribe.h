@@ -152,6 +152,21 @@ void plc4c_subscription_response_destroy(
 
 /*
  *
+ * Event handling
+ *
+ */
+
+/**
+ * Gets a list of events for a given subscription-handle from the system.
+ * @param subscription_handle
+ * @param events
+ * @return
+ */
+plc4c_return_code plc4c_subscription_get_subscription_events(
+    void *subscription_handle, plc4c_list **events);
+
+/*
+ *
  * Unsubscriptions
  *
  */

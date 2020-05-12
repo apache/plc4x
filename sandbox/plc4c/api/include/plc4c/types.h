@@ -169,6 +169,11 @@ typedef struct plc4c_subscription_request_execution_t
 typedef struct plc4c_subscription_response_t plc4c_subscription_response;
 
 /**
+ * A plc4s subscription-event.
+ */
+typedef struct plc4c_subscription_event_t plc4c_subscription_event;
+
+/**
  * A plc4c unsubscription-request.
  */
 typedef struct plc4c_unsubscription_request_t plc4c_unsubscription_request;
