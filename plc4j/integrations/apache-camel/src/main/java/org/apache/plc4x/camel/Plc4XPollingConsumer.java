@@ -24,7 +24,6 @@ import org.apache.camel.PollingConsumer;
 import org.apache.camel.Processor;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.service.ServiceSupport;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -38,20 +37,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsumer {
+public class Plc4XPollingConsumer implements PollingConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XPollingConsumer.class);
 
-    private Plc4XEndpoint endpoint;
+    private Plc4XEndpoint plc4XEndpoint;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private PlcReadRequest.Builder requestBuilder;
     private Map parameters;
 
-    //private int request =0;
 
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
-        this.endpoint = endpoint;
-        this.parameters = endpoint.getParameters();
+        plc4XEndpoint=endpoint;
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
@@ -59,12 +56,12 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     @Override
     public String toString() {
-        return "Plc4XConsumer[" + endpoint + "]";
+        return "Plc4XConsumer[" + plc4XEndpoint + "]";
     }
 
     @Override
     public Endpoint getEndpoint() {
-        return endpoint;
+        return plc4XEndpoint;
     }
 
     public ExceptionHandler getExceptionHandler() {
@@ -77,17 +74,17 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     @Override
     public Exchange receive() {
-        Exchange exchange = endpoint.createExchange();
+        Exchange exchange = plc4XEndpoint.createExchange();
         try {
             PlcReadResponse read = createReadRequest().execute().get();
-            if(endpoint.getTags().size()==1) {
-                TagData tag = endpoint.getTags().get(0);
+            if(plc4XEndpoint.getTags().size()==1) {
+                TagData tag = plc4XEndpoint.getTags().get(0);
                 tag.setValue(read.getAllObjects(tag.getTagName()));
                 exchange.getIn().setBody(tag);
             }
             else{
                 List<TagData> values = new ArrayList<>();
-                for(TagData tag : endpoint.getTags()){
+                for(TagData tag : plc4XEndpoint.getTags()){
                     tag.setValue(read.getObject(tag.getTagName()));
                     values.add(tag);
                 }
@@ -109,18 +106,18 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
 
     @Override
     public Exchange receive(long timeout) {
-        Exchange exchange = endpoint.createExchange();
+        Exchange exchange = plc4XEndpoint.createExchange();
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
             PlcReadResponse plcReadResponse = read.get(timeout, TimeUnit.MILLISECONDS);
-            if(endpoint.getTags().size()==1) {
-                TagData tag = endpoint.getTags().get(0);
+            if(plc4XEndpoint.getTags().size()==1) {
+                TagData tag = plc4XEndpoint.getTags().get(0);
                 tag.setValue(plcReadResponse.getAllObjects(tag.getTagName()));
                 exchange.getIn().setBody(tag);
             }
             else{
                 List<TagData> values = new ArrayList<>();
-                for(TagData tag : endpoint.getTags()){
+                for(TagData tag : plc4XEndpoint.getTags()){
                     tag.setValue(plcReadResponse.getObject(tag.getTagName()));
                     values.add(tag);
                 }
@@ -135,24 +132,16 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
         return exchange;
     }
 
-    @Override
-    protected void doStart() {
-    }
-
-    @Override
-    protected void doStop() throws Exception {
-    }
-
 
     private PlcReadRequest createReadRequest() {
         requestBuilder = plcConnection.readRequestBuilder();
-        if (endpoint.getTags().size()>1){
-            for(TagData tag : endpoint.getTags()){
+        if (plc4XEndpoint.getTags().size()>1){
+            for(TagData tag : plc4XEndpoint.getTags()){
                 requestBuilder.addItem(tag.getTagName(),tag.getQuery());
             }
         }
         else{
-            TagData tag = endpoint.getTags().get(0);
+            TagData tag = plc4XEndpoint.getTags().get(0);
             requestBuilder.addItem(tag.getTagName(),tag.getQuery());
         }
         return requestBuilder.build();
@@ -171,5 +160,15 @@ public class Plc4XPollingConsumer extends ServiceSupport implements PollingConsu
     @Override
     public Processor getProcessor() {
         return null;
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+
     }
 }

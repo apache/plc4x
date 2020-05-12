@@ -19,12 +19,13 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.Endpoint;
-import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.support.DefaultComponent;
-import org.apache.camel.util.PropertiesHelper;
+import org.apache.camel.util.IntrospectionSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Plc4XComponent extends DefaultComponent {
@@ -33,7 +34,11 @@ public class Plc4XComponent extends DefaultComponent {
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
         Endpoint endpoint = new Plc4XEndpoint(uri, this);
-        setProperties(endpoint, parameters);
+        List<TagData>tags = getAndRemoveOrResolveReferenceParameter(parameters,"tags", List.class);
+        if(tags!=null){
+            ((Plc4XEndpoint)endpoint).setTags(tags);
+        }
+        setProperties(endpoint,parameters);
         return endpoint;
     }
 
@@ -45,16 +50,15 @@ public class Plc4XComponent extends DefaultComponent {
 
     @Override
     protected void validateParameters(String uri, Map<String, Object> parameters, String optionPrefix) {
-        if (parameters == null || parameters.isEmpty()) {
-            return;
-        }
-        Map<String, Object> param = parameters;
-        if (optionPrefix != null) {
-            param = PropertiesHelper.extractProperties(parameters, optionPrefix);
-        }
+        if (parameters != null && !parameters.isEmpty()) {
+            Map<String, Object> param = parameters;
+            if (optionPrefix != null) {
+                param = IntrospectionSupport.extractProperties(parameters, optionPrefix);
+            }
 
-        if (param.size() > 0) {
-           return;
+            if (parameters.size() > 0) {
+                LOGGER.info("{} parameters will be passed to the PLC Driver",param);
+            }
         }
     }
 

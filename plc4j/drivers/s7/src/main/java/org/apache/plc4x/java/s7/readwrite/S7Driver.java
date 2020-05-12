@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.s7.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
@@ -31,12 +30,10 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
 
     public static final int ISO_ON_TCP_PORT = 102;
