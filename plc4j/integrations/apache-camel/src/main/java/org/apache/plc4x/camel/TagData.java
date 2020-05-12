@@ -18,6 +18,10 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
 public class TagData {
     private String tagName;
     private String query;
@@ -27,6 +31,7 @@ public class TagData {
         this.tagName = alias;
         this.query = query;
         this.value = value;
+        setType();
     }
 
     public TagData(String tagName, String query) {
@@ -57,6 +62,42 @@ public class TagData {
     public void setValue(Object value) {
         this.value = value;
     }
+
+
+    private void setType(){
+        if(value!=null && value instanceof String){
+            String val = (String)value;
+            if(canParse.get(Boolean.TYPE).test(val)){
+                value = Boolean.parseBoolean(val);
+            }
+            if(canParse.get(Short.TYPE).test(val)){
+                value = Short.parseShort(val);
+            }
+            else if(canParse.get(Integer.TYPE).test(val)){
+                value = Integer.parseInt(val);
+            }
+            else if(canParse.get(Long.TYPE).test(val)){
+                value = Long.parseLong(val);
+            }
+            else if(canParse.get(Double.TYPE).test(val)){
+                value = Double.parseDouble(val);
+            }
+            else if(canParse.get(Float.TYPE).test(val)){
+                value = Float.parseFloat(val);
+            }
+
+        }
+    }
+
+    private Map<Class<?>, Predicate<String>> canParse = new HashMap<>();
+    {
+        canParse.put(Integer.TYPE, s -> {try {Integer.parseInt(s); return true;} catch(Exception e) {return false;}});
+        canParse.put(Long.TYPE, s -> {try {Long.parseLong(s); return true;} catch(Exception e) {return false;}});
+        canParse.put(Short.TYPE, s -> {try {Short.parseShort(s); return true;} catch(Exception e) {return false;}});
+        canParse.put(Boolean.TYPE, s -> {try {Boolean.parseBoolean(s); return true;} catch(Exception e) {return false;}});
+        canParse.put(Double.TYPE, s -> {try {Double.parseDouble(s); return true;} catch(Exception e) {return false;}});
+        canParse.put(Float.TYPE, s -> {try {Float.parseFloat(s); return true;} catch(Exception e) {return false;}});
+    };
 
     @Override
     public  String toString(){

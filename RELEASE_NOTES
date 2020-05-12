@@ -4,22 +4,44 @@
 
 This version is the first after a major refactoring of the driver
 core. All previous driver versions are now considered deprecated
-and are currently being replaced by versions using the new driver
-structure and generated driver codebase.
+and have been replaced by versions using the new driver structure
+and generated driver codebase.
 
 New Features
 ------------
 
 - Drivers now support structured types using PlcValues
+- The EIP (EtherNet/IP) driver no longer requires an external
+  library and is implemented fully in the PLC4X project
+- The Modbus driver no longer requires an external library
+  and is implemented fully in the PLC4X project
+- The new S7 Driver supports writing multiple entries in one
+  request (The API allowed this from the beginning now not
+  every item is wrapped in a single request. It should bring
+  significant performance gains when writing multiple vlaues)
+- S7 Driver now supports String datatypes.
+- OSGi : Implementation of Drivers/Transports as OSGi services
+  to be able to use them in an OSGi container.
 
 Incompatible changes
 --------------------
 
 - Due to the refactoring of the driver core there might be issues
   running drivers built against older core versions.
+- This version doesn't provide a Beckhoff AMS/ADS driver as this
+  driver is still being ported to the new mspec format.
+- All drivers connection strings now follow the same pattern:
+  {protocol-code:(transport-code:)?//{transport-config}(?{params})?
+  Please check the drivers documentation on our website:
+  https://plc4x.apache.org/users/protocols/s7.html
 
 Bug Fixes
 ---------
+
+PLC4X-174	UDP Transport does not accept ports containing 0
+PLC4X-134   S7 is terminating the connection during handshake
+PLC4X-192   Support for conversion of complex connection string
+            parameters
 
 ==============================================================
 (Unreleased) Apache PLC4X 0.6.0-SNAPSHOT

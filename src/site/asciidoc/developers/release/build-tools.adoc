@@ -45,17 +45,14 @@ This can and should be automated by the `maven-release-plugin`.
 Per default the plugin will ask for the working copy version during the build execution.
 This is the version the `develop` branch will be changed to.
 
-The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
-Otherwise we would have to define the working copy version for each module.
-
-   mvn release:branch -DbranchName=rel/code-generation/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -DbranchName=rel/code-generation/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{project.version}` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -DbranchName=rel/code-generation/{current-short-version} -DautoVersionSubmodules=true
+   mvn release:branch -DbranchName=rel/code-generation/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -120,7 +117,7 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -DautoVersionSubmodules=true
+   mvn release:prepare
 
 In general the plugin will now ask you 3 questions:
 

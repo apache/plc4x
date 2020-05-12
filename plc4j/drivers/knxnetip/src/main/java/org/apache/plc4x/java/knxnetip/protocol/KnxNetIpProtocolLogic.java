@@ -370,7 +370,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         // Create a subscription event from the input.
         // TODO: Check this ... this is sort of not really right ...
         final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(),
-            Collections.singletonMap("knxData", new ResponseItem(PlcResponseCode.OK, plcValue)));
+            Collections.singletonMap("knxData", new ResponseItem<>(PlcResponseCode.OK, plcValue)));
 
         // Try sending the subscription event to all listeners.
         for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {

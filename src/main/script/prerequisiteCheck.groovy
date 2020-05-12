@@ -34,10 +34,10 @@ def checkVersionAtLeast(String current, String minimum) {
         def currentSegment = currentSegments[i].toInteger()
         def minimumSegment = minimumSegments[i].toInteger()
         if(currentSegment < minimumSegment) {
-            println current.padRight(14) + "FAILED (required min " + minimum + " but got " + current + ")"
+            println current.padRight(14) + " FAILED (required min " + minimum + " but got " + current + ")"
             return false
         } else if(currentSegment > minimumSegment) {
-            println current.padRight(14) + "OK"
+            println current.padRight(14) + " OK"
             return true
         }
     }
@@ -58,10 +58,10 @@ def checkVersionAtMost(String current, String maximum) {
         def currentSegment = currentSegments[i].toInteger()
         def maximumSegment = maximumSegments[i].toInteger()
         if(currentSegment > maximumSegment) {
-            println current.padRight(14) + "FAILED (required max " + maximum + " but got " + current + ")"
+            println current.padRight(14) + " FAILED (required max " + maximum + " but got " + current + ")"
             return false
         } else if(currentSegment < maximumSegment) {
-            println current.padRight(14) + "OK"
+            println current.padRight(14) + " OK"
             return true
         }
     }

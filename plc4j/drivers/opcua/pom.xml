@@ -72,30 +72,23 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
 
-
-  <dependency>
-    <groupId>org.osgi</groupId>
-    <artifactId>osgi.cmpn</artifactId>
-    <version>6.0.0</version>
-    <scope>provided</scope>
-  </dependency>
-
 </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
+            <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.opcua.OpcuaPlcDriver</Export-Service>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-<!--
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-dependency-plugin</artifactId>
-      <configuration>
-        <usedDependencies combine.children="append">
-          <usedDependency>org.eclipse.milo:sdk-client</usedDependency>
-        </usedDependencies>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
--->
 </project>

@@ -29,14 +29,14 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version} -DautoVersionSubmodules=true
+   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
 * [ ] Prepare the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DautoVersionSubmodules=true
+   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash
 ----
 [%interactive]
 * [ ] Perform the release:
@@ -142,17 +142,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
 
-The parameter `autoVersionSubmodules` will tell the release plugin to release all modules with the same version.
-Otherwise we would have to define the working copy version for each module.
-
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{minor-version} -DautoVersionSubmodules=true
+   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version} -DautoVersionSubmodules=true
+   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -217,7 +214,7 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DautoVersionSubmodules=true
+   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash
 
 (The `-P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
