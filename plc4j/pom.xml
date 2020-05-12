@@ -36,7 +36,7 @@
   <modules>
     <module>api</module>
     <module>drivers</module>
-    <!--module>examples</module-->
+    <module>examples</module>
     <module>integrations</module>
     <module>karaf-features</module>
     <module>spi</module>
