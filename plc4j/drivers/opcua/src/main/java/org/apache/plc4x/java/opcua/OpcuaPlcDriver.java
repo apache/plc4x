@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  *
  * Created by Matthias Milan Strljic on 10.05.2019
  */
-@Component(service = PlcDriver.class, immediate = true)
 public class OpcuaPlcDriver implements PlcDriver {
 
 
