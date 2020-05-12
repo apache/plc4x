@@ -183,7 +183,9 @@ public class SingleItemToSingleRequestProtocol extends ChannelDuplexHandler {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // Send everything so we get a proper failure for those pending writes
         this.queue.removeAndWriteAll();
-        this.timer.stop();
+        for (Timeout timeout : this.scheduledTimeouts.values()) {
+            timeout.cancel();
+        }
         this.scheduledTimeouts.clear();
         this.sentButUnacknowledgedSubContainer.clear();
         this.correlationToParentContainer.clear();
