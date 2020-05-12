@@ -20,6 +20,8 @@ New Features
   every item is wrapped in a single request. It should bring
   significant performance gains when writing multiple vlaues)
 - S7 Driver now supports String datatypes.
+- OSGi : Implementation of Drivers/Transports as OSGi services
+  to be able to use them in an OSGi container.
 
 Incompatible changes
 --------------------
