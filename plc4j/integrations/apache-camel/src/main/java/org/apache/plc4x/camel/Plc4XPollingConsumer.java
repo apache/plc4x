@@ -26,8 +26,14 @@ import org.apache.camel.spi.ExceptionHandler;
 import org.apache.camel.support.LoggingExceptionHandler;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +50,17 @@ public class Plc4XPollingConsumer implements PollingConsumer {
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private PlcReadRequest.Builder requestBuilder;
-    private Map parameters;
+    private  Map<String,Object> tags;
+    private String trigger;
 
-
+//TODO Is this still needed with the scraper working?
     public Plc4XPollingConsumer(Plc4XEndpoint endpoint) throws PlcException {
         plc4XEndpoint=endpoint;
         this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
         this.plcConnection = endpoint.getConnection();
+        this.tags = endpoint.getTags();
+        this.trigger= endpoint.getTrigger();
     }
 
     @Override
@@ -73,7 +82,7 @@ public class Plc4XPollingConsumer implements PollingConsumer {
     }
 
     @Override
-    public Exchange receive() {
+    public Exchange receive() {/**
         Exchange exchange = plc4XEndpoint.createExchange();
         try {
             PlcReadResponse read = createReadRequest().execute().get();
@@ -96,7 +105,8 @@ public class Plc4XPollingConsumer implements PollingConsumer {
         } catch (ExecutionException e) {
             exchange.setException(e);
         }
-        return exchange;
+        return exchange;*/
+    return null;
     }
 
     @Override
@@ -105,7 +115,7 @@ public class Plc4XPollingConsumer implements PollingConsumer {
     }
 
     @Override
-    public Exchange receive(long timeout) {
+    public Exchange receive(long timeout) {/**
         Exchange exchange = plc4XEndpoint.createExchange();
         CompletableFuture<? extends PlcReadResponse> read = createReadRequest().execute();
         try {
@@ -129,11 +139,12 @@ public class Plc4XPollingConsumer implements PollingConsumer {
             } catch(ExecutionException | TimeoutException e){
                 exchange.setException(e);
             }
-        return exchange;
+        return exchange;*/
+    return null;
     }
 
 
-    private PlcReadRequest createReadRequest() {
+    private PlcReadRequest createReadRequest() {/**
         requestBuilder = plcConnection.readRequestBuilder();
         if (plc4XEndpoint.getTags().size()>1){
             for(TagData tag : plc4XEndpoint.getTags()){
@@ -145,7 +156,7 @@ public class Plc4XPollingConsumer implements PollingConsumer {
             requestBuilder.addItem(tag.getTagName(),tag.getQuery());
         }
         return requestBuilder.build();
-    }
+    */return null;}
 
     private Object unwrapIfSingle(Collection collection) {
         if (collection.isEmpty()) {

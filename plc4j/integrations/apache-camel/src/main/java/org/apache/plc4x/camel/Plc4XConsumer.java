@@ -25,6 +25,7 @@ import org.apache.camel.support.DefaultConsumer;
 import org.apache.camel.spi.ExceptionHandler;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.scraper.ScrapeJob;
@@ -47,8 +48,7 @@ public class Plc4XConsumer extends DefaultConsumer {
 
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private  List<TagData> tags;
-    private  Map<String,String> fields;
+    private  Map<String,Object> tags;
     private String trigger;
     private PlcSubscriptionResponse subscriptionResponse;
     private Plc4XEndpoint plc4XEndpoint;
@@ -56,15 +56,13 @@ public class Plc4XConsumer extends DefaultConsumer {
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
 
-    private final static String TRIGGER = "TRIGGER_VAR";
-    private final static String PLC_NAME = "PLC";
+
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
         super(endpoint, processor);
         plc4XEndpoint =endpoint;
         this.plcConnection = endpoint.getConnection();
         this.tags = endpoint.getTags();
-        this.fields = TagData.toMap(this.tags);
         this.trigger= endpoint.getTrigger();
         plc4XEndpoint=endpoint;
     }
@@ -91,13 +89,13 @@ public class Plc4XConsumer extends DefaultConsumer {
     protected void doStart() throws InterruptedException, ExecutionException {
         if(trigger==null) {
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            if (tags.size() == 1) {
-                TagData tag = tags.get(0);
-                builder.addItem(tag.getTagName(), tag.getQuery());
-
-            } else {
-                for (TagData tag : tags) {
-                    builder.addItem(tag.getTagName(), tag.getQuery());
+            for( String tag : tags.keySet()){
+                try{
+                    String query = (String)tags.get(tag);
+                    builder.addItem(tag,query);
+                }
+                catch (PlcIncompatibleDatatypeException e){
+                    LOGGER.error("For consumer, please use Map<String,String>, currently using {}",tags.getClass().getSimpleName());
                 }
             }
             PlcReadRequest request = builder.build();
@@ -105,18 +103,11 @@ public class Plc4XConsumer extends DefaultConsumer {
                 request.execute().thenAccept(response -> {
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();
-                        if (tags.size() > 1) {
-                            List<TagData> values = new ArrayList<>();
-                            for (TagData tag : tags) {
-                                tag.setValue(response.getObject(tag.getTagName()));
-                                values.add(tag);
-                            }
-                            exchange.getIn().setBody(values);
-                        } else {
-                            TagData tag = tags.get(0);
-                            tag.setValue(response.getAllObjects(tag.getTagName()));
-                            exchange.getIn().setBody(tag);
+                        Map<String,Object> rsp = new HashMap<>();
+                        for(String field : response.getFieldNames()){
+                            rsp.put(field,response.getObject(field));
                         }
+                        exchange.getIn().setBody(rsp);
                         getProcessor().process(exchange);
                     } catch (Exception e) {
                         exceptionHandler.handleException(e);
@@ -125,25 +116,14 @@ public class Plc4XConsumer extends DefaultConsumer {
             }, 500, TimeUnit.MILLISECONDS);
         }
         else{
-
-            ScraperConfiguration configuration =  getScraperConfig(TagData.toMap(plc4XEndpoint.getTags()));
-            TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
             try {
+                ScraperConfiguration configuration =  getScraperConfig(validateTags());
+                TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
                 TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
+                    LOGGER.info("SCRAPER {} {} {}",job,alias,response);
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();
-                        if (tags.size() > 1) {
-                            List<TagData> values = new ArrayList<>();
-                            for (TagData tag : tags) {
-                                tag.setValue(response.get(tag.getTagName()));
-                                values.add(tag);
-                            }
-                            exchange.getIn().setBody(values);
-                        } else {
-                            TagData tag = tags.get(0);
-                            tag.setValue(response.get(tag.getTagName()));
-                            exchange.getIn().setBody(tag);
-                        }
+                        exchange.getIn().setBody(response);
                         getProcessor().process(exchange);
                     } catch (Exception e) {
                         exceptionHandler.handleException(e);
@@ -157,10 +137,24 @@ public class Plc4XConsumer extends DefaultConsumer {
         }
     }
 
+    private Map<String, String> validateTags() {
+        Map<String, String> map = new HashMap<>();
+        for(Map.Entry<String,Object>tag: tags.entrySet()){
+            if(tag.getValue() instanceof String){
+                map.put(tag.getKey(),(String)tag.getValue());
+            }
+        }
+        if(map.size()!=tags.size()){
+            LOGGER.error("At least one entry does not match the format : Map.Entry<String,String> ");
+            return null;
+        }
+        else return map;
+    }
+
     private ScraperConfigurationTriggeredImpl getScraperConfig(Map<String,String> tagList){
         String config = "(TRIGGER_VAR,"+plc4XEndpoint.getPeriod()+",("+ plc4XEndpoint.getTrigger() +")==(true))";
-        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel",config,0,Collections.singletonList(PLC_NAME),tagList));
-        Map<String,String> source = Collections.singletonMap(PLC_NAME,plc4XEndpoint.getUri());
+        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel",config,0,Collections.singletonList(Constants.PLC_NAME),tagList));
+        Map<String,String> source = Collections.singletonMap(Constants.PLC_NAME,plc4XEndpoint.getUri());
         return new ScraperConfigurationTriggeredImpl(source,job);
     }
 

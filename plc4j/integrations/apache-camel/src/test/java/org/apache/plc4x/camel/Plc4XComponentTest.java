@@ -25,10 +25,7 @@ import org.apache.camel.test.junit5.CamelTestSupport;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Plc4XComponentTest extends CamelTestSupport {
@@ -49,9 +46,8 @@ public class Plc4XComponentTest extends CamelTestSupport {
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
             public void configure() {
-                List<TagData> tags = new ArrayList<>();
-                tags.add(new TagData("testTagName","testTagAddress"));
-                tags.add(new TagData("testTagName2","testTagAddress2"));
+               Map<String,Object> tags = new HashMap<>();
+               tags.put("Test1","%TestQuery");
                 Plc4XEndpoint producer = getContext().getEndpoint("plc4x:mock:10.10.10.1/1/1", Plc4XEndpoint.class);
                 producer.setTags(tags);
                 from("direct:plc4x")

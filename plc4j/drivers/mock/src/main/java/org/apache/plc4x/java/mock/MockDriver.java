@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.mock.connection.MockConnection;
+import org.apache.plc4x.java.mock.field.MockField;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,6 +59,11 @@ public class MockDriver implements PlcDriver {
             throw new PlcConnectionException("Invalid URL: no device name given.");
         }
         return connectionMap.computeIfAbsent(deviceName, name -> new MockConnection(authentication));
+    }
+
+    @Override
+    public MockField prepareField(String query){
+        return new MockField(query);
     }
 
 }
