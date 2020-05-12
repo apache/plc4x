@@ -27,7 +27,7 @@ import org.apache.camel.spi.UriPath;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.List;
 import java.util.Map;
@@ -42,24 +42,61 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @UriParam
     private List<TagData> tags;
 
+    @UriParam
+    private String trigger;
+
+    @UriParam
+    private int period;
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
 
     private final PlcDriverManager plcDriverManager;
     private  PlcConnection connection;
     private String uri;
 
+    public String getUri() {
+        return uri;
+    }
+
+    public String getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(String trigger) {
+        this.trigger = trigger;
+    }
+
     public Plc4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
-        plcDriverManager= new PlcDriverManager();
-        uri = endpointUri;
+        if(trigger==null) {
+            plcDriverManager = new PlcDriverManager();
+            uri = endpointUri;
+            //Here we establish the connection in the endpoint, as it is created once during the context
+            // to avoid disconnecting and reconnecting for every request
+            try {
+                String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+                uri=plc4xURI;
+                connection = plcDriverManager.getConnection(plc4xURI);
 
-        //Here we establish the connection in the endpoint, as it is created once during the context
-        // to avoid disconnecting and reconnecting for every request
-        try {
+            } catch (PlcConnectionException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            plcDriverManager = new PooledPlcDriverManager();
             String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
-            connection = plcDriverManager.getConnection(plc4xURI);
-
-        } catch (PlcConnectionException e) {
-            e.printStackTrace();
+            uri=plc4xURI;
+            try {
+                connection = plcDriverManager.getConnection(plc4xURI);
+            } catch (PlcConnectionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

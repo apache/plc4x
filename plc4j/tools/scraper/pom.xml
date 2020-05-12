@@ -101,18 +101,7 @@
       <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4j-driver-s7</artifactId>
-          <version>0.7.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4j-driver-s7</artifactId>
-          <version>0.7.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
+
   </dependencies>
 
   <build>
@@ -122,7 +111,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency-->
           </usedDependencies>
         </configuration>
       </plugin>

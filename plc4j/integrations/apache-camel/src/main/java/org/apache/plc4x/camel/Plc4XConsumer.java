@@ -27,13 +27,19 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.scraper.ScrapeJob;
+import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class Plc4XConsumer extends DefaultConsumer {
@@ -42,18 +48,25 @@ public class Plc4XConsumer extends DefaultConsumer {
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
     private  List<TagData> tags;
-    private Map parameters;
+    private  Map<String,String> fields;
+    private String trigger;
     private PlcSubscriptionResponse subscriptionResponse;
     private Plc4XEndpoint plc4XEndpoint;
 
     private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> future;
 
+    private final static String TRIGGER = "TRIGGER_VAR";
+    private final static String PLC_NAME = "PLC";
+
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
         super(endpoint, processor);
         plc4XEndpoint =endpoint;
         this.plcConnection = endpoint.getConnection();
         this.tags = endpoint.getTags();
+        this.fields = TagData.toMap(this.tags);
+        this.trigger= endpoint.getTrigger();
+        plc4XEndpoint=endpoint;
     }
 
     @Override
@@ -76,31 +89,30 @@ public class Plc4XConsumer extends DefaultConsumer {
 
     @Override
     protected void doStart() throws InterruptedException, ExecutionException {
-        PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-        if (tags.size()==1){
-            TagData tag = tags.get(0);
-            builder.addItem(tag.getTagName(),tag.getQuery());
+        if(trigger==null) {
+            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            if (tags.size() == 1) {
+                TagData tag = tags.get(0);
+                builder.addItem(tag.getTagName(), tag.getQuery());
 
-        }
-        else{
-           for(TagData tag : tags){
-               builder.addItem(tag.getTagName(),tag.getQuery());
-           }
-        }
-        PlcReadRequest request = builder.build();
-        future = executorService.schedule(() -> {
-            request.execute().thenAccept(response -> {
+            } else {
+                for (TagData tag : tags) {
+                    builder.addItem(tag.getTagName(), tag.getQuery());
+                }
+            }
+            PlcReadRequest request = builder.build();
+            future = executorService.schedule(() -> {
+                request.execute().thenAccept(response -> {
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();
-                        if (tags.size()>1){
+                        if (tags.size() > 1) {
                             List<TagData> values = new ArrayList<>();
-                            for(TagData tag : tags){
+                            for (TagData tag : tags) {
                                 tag.setValue(response.getObject(tag.getTagName()));
                                 values.add(tag);
                             }
                             exchange.getIn().setBody(values);
-                        }
-                        else {
+                        } else {
                             TagData tag = tags.get(0);
                             tag.setValue(response.getAllObjects(tag.getTagName()));
                             exchange.getIn().setBody(tag);
@@ -110,7 +122,46 @@ public class Plc4XConsumer extends DefaultConsumer {
                         exceptionHandler.handleException(e);
                     }
                 });
-        }, 500, TimeUnit.MILLISECONDS);
+            }, 500, TimeUnit.MILLISECONDS);
+        }
+        else{
+
+            ScraperConfiguration configuration =  getScraperConfig(TagData.toMap(plc4XEndpoint.getTags()));
+            TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
+            try {
+                TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
+                    try {
+                        Exchange exchange = plc4XEndpoint.createExchange();
+                        if (tags.size() > 1) {
+                            List<TagData> values = new ArrayList<>();
+                            for (TagData tag : tags) {
+                                tag.setValue(response.get(tag.getTagName()));
+                                values.add(tag);
+                            }
+                            exchange.getIn().setBody(values);
+                        } else {
+                            TagData tag = tags.get(0);
+                            tag.setValue(response.get(tag.getTagName()));
+                            exchange.getIn().setBody(tag);
+                        }
+                        getProcessor().process(exchange);
+                    } catch (Exception e) {
+                        exceptionHandler.handleException(e);
+                    };
+                    },collector);
+                scraper.start();
+                collector.start();
+            } catch (ScraperException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private ScraperConfigurationTriggeredImpl getScraperConfig(Map<String,String> tagList){
+        String config = "(TRIGGER_VAR,"+plc4XEndpoint.getPeriod()+",("+ plc4XEndpoint.getTrigger() +")==(true))";
+        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel",config,0,Collections.singletonList(PLC_NAME),tagList));
+        Map<String,String> source = Collections.singletonMap(PLC_NAME,plc4XEndpoint.getUri());
+        return new ScraperConfigurationTriggeredImpl(source,job);
     }
 
     @Override

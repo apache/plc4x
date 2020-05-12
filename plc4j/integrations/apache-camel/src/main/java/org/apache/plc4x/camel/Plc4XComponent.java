@@ -38,6 +38,14 @@ public class Plc4XComponent extends DefaultComponent {
         if(tags!=null){
             ((Plc4XEndpoint)endpoint).setTags(tags);
         }
+        String trigger = getAndRemoveOrResolveReferenceParameter(parameters,"trigger",String.class);
+        if(trigger!=null){
+            ((Plc4XEndpoint)endpoint).setTrigger(trigger);
+        }
+        int period = getAndRemoveOrResolveReferenceParameter(parameters,"period",Integer.class);
+        if(period!=0){
+            ((Plc4XEndpoint)endpoint).setPeriod(period);
+        }
         setProperties(endpoint,parameters);
         return endpoint;
     }

@@ -20,11 +20,9 @@
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
 import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
