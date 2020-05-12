@@ -28,7 +28,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
 
