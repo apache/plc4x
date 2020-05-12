@@ -140,12 +140,6 @@
       <version>0.7.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <dependencyManagement>
