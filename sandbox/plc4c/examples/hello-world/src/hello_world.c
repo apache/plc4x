@@ -46,11 +46,6 @@ void onGlobalDisconnect(plc4c_connection *cur_connection) {
   numOpenConnections--;
 }
 
-void delete_address(plc4c_list_element *address_data_element) {
-  // these are not malloc'd, no need to free
-  address_data_element->value = NULL;
-}
-
 void delete_read_response_item(plc4c_list_element *response_read_item_element) {
 
 }
@@ -161,14 +156,18 @@ int main() {
       }
       case CONNECTED: {
         // Create a new read-request.
-        printf("Preparing a read-request for 'RANDOM/foo:INTEGER' ... ");
+        printf("Preparing a read-request ... ");
+        result =
+            plc4c_connection_create_read_request(connection, &read_request);
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        printf("SUCCESS\n");
 
-        plc4c_list *address_list = NULL;
-        plc4c_utils_list_create(&address_list);
-        plc4c_utils_list_insert_head_value(address_list,
-                                           (void *)"RANDOM/foo:INTEGER");
-        result = plc4c_connection_create_read_request(connection, address_list,
-                                                      &read_request);
+        printf("Adding an item for 'RANDOM/foo:INTEGER' ... ");
+        result =
+            plc4c_read_request_add_item(read_request, "RANDOM/foo:INTEGER");
         if (result != OK) {
           printf("FAILED\n");
           return -1;
@@ -179,11 +178,6 @@ int main() {
         printf("Executing a read-request ... ");
         result =
             plc4c_read_request_execute(read_request, &read_request_execution);
-
-        // As we only used these to create the request, they can now be released
-        // again.
-        plc4c_utils_list_delete_elements(address_list, &delete_address);
-        free(address_list);
 
         if (result != OK) {
           printf("FAILED\n");
@@ -230,32 +224,25 @@ int main() {
         }
 
         // Clean up.
-        plc4c_connection_destroy_read_response(read_response);
+        plc4c_read_destroy_read_response(read_response);
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
         // Create a new write-request.
-        printf("Preparing a write-request for 'STDOUT/foo:INTEGER' ... ");
-        plc4c_list *address_list = NULL;
-        plc4c_utils_list_create(&address_list);
-        plc4c_utils_list_insert_head_value(address_list,
-                                           (void *)"STDOUT/foo:STRING");
-        plc4c_list *value_list = NULL;
-        plc4c_utils_list_create(&value_list);
+        printf("Preparing a write-request ... ");
         char value[] = "bar";
-        plc4c_utils_list_insert_head_value(
-            value_list,
+        result =
+            plc4c_connection_create_write_request(connection, &write_request);
+        if (result != OK) {
+          printf("FAILED\n");
+          return -1;
+        }
+        printf("SUCCESS\n");
+
+        printf("Adding an item for 'STDOUT/foo:INTEGER' ... ");
+        result = plc4c_write_request_add_item(
+            write_request, "STDOUT/foo:STRING",
             plc4c_data_create_constant_string_data(strlen(value), value));
-        result = plc4c_connection_create_write_request(
-            connection, address_list, value_list, &write_request);
-
-        // As we only used these to create the request, they can now be released
-        // again.
-        plc4c_utils_list_delete_elements(address_list, &delete_address);
-        plc4c_utils_list_delete_elements(value_list, &delete_address);
-        free(address_list);
-        free(value_list);
-
         if (result != OK) {
           printf("FAILED\n");
           return -1;
@@ -302,7 +289,7 @@ int main() {
         }
 
         // Clean up.
-        plc4c_connection_destroy_write_response(write_response);
+        plc4c_write_destroy_write_response(write_response);
         plc4c_write_request_execution_destroy(write_request_execution);
 
         // Disconnect.

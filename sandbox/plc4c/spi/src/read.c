@@ -32,6 +32,14 @@ void plc4c_read_request_set_connection(plc4c_read_request *read_request,
   read_request->connection = connection;
 }
 
+plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
+                                              char *address) {
+  plc4c_item *item =
+      read_request->connection->driver->parse_address_function(address);
+  plc4c_utils_list_insert_tail_value(read_request->items, item);
+  return OK;
+}
+
 plc4c_return_code plc4c_read_request_execute(
     plc4c_read_request *read_request,
     plc4c_read_request_execution **read_request_execution) {
@@ -71,6 +79,7 @@ bool plc4c_read_request_execution_check_finished_successfully(
 
 bool plc4c_read_request_execution_check_finished_with_error(
     plc4c_read_request_execution *read_request_execution) {
+  // TODO: Implement this sensibly ...
   return false;
 }
 
@@ -90,3 +99,10 @@ void plc4c_read_request_execution_destroy(
     plc4c_read_request_execution *read_request_execution) {
   free(read_request_execution);
 }
+
+void plc4c_read_destroy_read_response(
+    plc4c_read_response *read_response) {
+  read_response->read_request->connection->driver->free_read_response_function(
+      read_response);
+}
+

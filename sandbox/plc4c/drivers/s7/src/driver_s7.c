@@ -31,7 +31,11 @@ plc4c_driver *plc4c_driver_s7_create() {
   driver->disconnect_function = NULL;
   driver->read_function = NULL;
   driver->write_function = NULL;
+  driver->subscribe_function = NULL;
+  driver->unsubscribe_function = NULL;
   driver->free_read_response_function = NULL;
   driver->free_write_response_function = NULL;
+  driver->free_subscription_response_function = NULL;
+  driver->free_unsubscription_response_function = NULL;
   return driver;
 }

@@ -97,7 +97,7 @@ plc4c_transport *plc4c_connection_get_transport(plc4c_connection *connection);
  * @param transport plc4c_transport
  */
 void plc4c_connection_set_transport(plc4c_connection *connection,
-                                         plc4c_transport *transport);
+                                    plc4c_transport *transport);
 
 /**
  * Returns the transport connection information for a given connection
@@ -188,7 +188,7 @@ plc4c_driver *plc4c_connection_get_driver(plc4c_connection *connection);
  * @param connection plc4c_connection
  * @param plc4c_driver
  */
- void plc4c_connection_set_driver(plc4c_connection *connection,
+void plc4c_connection_set_driver(plc4c_connection *connection,
                                  plc4c_driver *driver);
 
 /**
@@ -219,20 +219,11 @@ bool plc4c_connection_get_supports_reading(plc4c_connection *connection);
  * Initializes an empty read-request.
  *
  * @param connection connection that this read-request will be executed on.
- * @param num_items number of items we want to read.
- * @param addresses list of address strings.
  * @param read_request pointer to the read-request
  * @param plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_read_request(
-    plc4c_connection *connection, plc4c_list *addresses,
-    plc4c_read_request **read_request);
-
-/**
- * Destroys a given read_response
- * @param read_response the read_response
- */
-void plc4c_connection_destroy_read_response(plc4c_read_response *read_response);
+    plc4c_connection *connection, plc4c_read_request **read_request);
 
 /**
  * Check if the current connection supports write operations.
@@ -246,22 +237,11 @@ bool plc4c_connection_get_supports_writing(plc4c_connection *connection);
  * Initializes an empty write-request.
  *
  * @param connection connection that this write-request will be executed on.
- * @param num_items number of items we want to write.
- * @param addresses list of address strings.
- * @param values list of pointers to values.
  * @param write_request pointer to the write-request
- * @param plc4c_return_code
+ * @return plc4c_return_code
  */
 plc4c_return_code plc4c_connection_create_write_request(
-    plc4c_connection *connection, plc4c_list *addresses, plc4c_list *values,
-    plc4c_write_request **write_request);
-
-/**
- * Destroys a given write_response
- * @param write_response the write_response
- */
-void plc4c_connection_destroy_write_response(
-    plc4c_write_response *write_response);
+    plc4c_connection *connection, plc4c_write_request **write_request);
 
 /**
  * Check if the current connection supports subscriptions.
@@ -270,6 +250,35 @@ void plc4c_connection_destroy_write_response(
  * @return true if the connection supports subscriptions, false otherwise
  */
 bool plc4c_connection_get_supports_subscriptions(plc4c_connection *connection);
+
+/**
+ * Initializes an empty subscription-request.
+ *
+ * @param connection connection that this subscription-request will be executed
+ * on.
+ * TODO: Somehow we need to provide the subscription type and depending on the
+ * type some additional parameters (Cycle-time).
+ * @param subscription_request pointer to the subscription-request
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_connection_create_subscription_request(
+    plc4c_connection *connection,
+    plc4c_subscription_request **subscription_request);
+
+/**
+ * Initializes an empty unsubscription-request.
+ *
+ * @param connection connection that this unsubscription-request will be
+ * executed on.
+ * TODO: Somehow we need to provide the unsubscription type and depending on the
+ * type some additional parameters (Cycle-time).
+ * @param addresses list of address strings.
+ * @param unsubscription_request pointer to the unsubscription-request
+ * @return plc4c_return_code
+ */
+plc4c_return_code plc4c_connection_create_unsubscription_request(
+    plc4c_connection *connection,
+    plc4c_unsubscription_request **unsubscription_request);
 
 /**
  * Returns the current number of running tasks for this connection

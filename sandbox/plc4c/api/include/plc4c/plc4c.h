@@ -28,6 +28,7 @@ extern "C" {
 #include "plc4c/connection.h"
 #include "plc4c/data.h"
 #include "plc4c/read.h"
+#include "plc4c/subscribe.h"
 #include "plc4c/system.h"
 #include "plc4c/types.h"
 #include "plc4c/write.h"

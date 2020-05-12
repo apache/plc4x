@@ -152,6 +152,38 @@ typedef struct plc4c_write_request_execution_t plc4c_write_request_execution;
  */
 typedef struct plc4c_write_response_t plc4c_write_response;
 
+/**
+ * A plc4c subscription-request.
+ */
+typedef struct plc4c_subscription_request_t plc4c_subscription_request;
+
+/**
+ * A plc4c subscription-request-execution.
+ */
+typedef struct plc4c_subscription_request_execution_t
+    plc4c_subscription_request_execution;
+
+/**
+ * A plc4c subscription-response.
+ */
+typedef struct plc4c_subscription_response_t plc4c_subscription_response;
+
+/**
+ * A plc4c unsubscription-request.
+ */
+typedef struct plc4c_unsubscription_request_t plc4c_unsubscription_request;
+
+/**
+ * A plc4c unsubscription-request-execution.
+ */
+typedef struct plc4c_unsubscription_request_execution_t
+    plc4c_unsubscription_request_execution;
+
+/**
+ * A plc4c unsubscription-response.
+ */
+typedef struct plc4c_unsubscription_response_t plc4c_unsubscription_response;
+
 typedef struct plc4c_data_t plc4c_data;
 
 #ifdef __cplusplus

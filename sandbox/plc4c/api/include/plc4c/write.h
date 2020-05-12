@@ -26,10 +26,19 @@ extern "C" {
 
 /**
  * Destroys a given write-request.
- *
  * @param write_request the write-request.
  */
 void plc4c_write_request_destroy(plc4c_write_request *write_request);
+
+/**
+ * Function for adding a new item to a given request.
+ * @param write_request the write-request.
+ * @param address address string
+ * @param value value of the given resource
+ * @return return code
+ */
+plc4c_return_code plc4c_write_request_add_item(
+    plc4c_write_request *write_request, char *address, plc4c_data *value);
 
 /**
  * Returns the plc4c_connection for a give write request
@@ -93,6 +102,12 @@ bool plc4c_write_request_execution_check_completed_with_error(
  */
 plc4c_write_response *plc4c_write_request_execution_get_response(
     plc4c_write_request_execution *write_request_execution);
+
+/**
+ * Destroys a given write_response
+ * @param write_response the write_response
+ */
+void plc4c_write_destroy_write_response(plc4c_write_response *write_response);
 
 #ifdef __cplusplus
 }
