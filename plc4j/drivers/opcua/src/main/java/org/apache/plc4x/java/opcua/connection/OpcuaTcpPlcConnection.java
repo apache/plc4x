@@ -80,7 +80,6 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
  * Corresponding implementaion for a TCP-based connection for an OPC UA server.
  * TODO: At the moment are just connections without any security mechanism possible
  *
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 

@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  * Implementation of the OPC UA protocol, based on:
  * - Eclipse Milo (https://github.com/eclipse/milo)
  *
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 @Component(service = PlcDriver.class, immediate = true)
 public class OpcuaPlcDriver implements PlcDriver {
