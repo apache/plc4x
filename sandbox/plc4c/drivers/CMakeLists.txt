@@ -19,3 +19,4 @@
 
 add_subdirectory(modbus)
 add_subdirectory(s7)
+add_subdirectory(simulated)

@@ -39,7 +39,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaSubsriptionHandle implements PlcSubscriptionHandle {
     private Set<Consumer<PlcSubscriptionEvent>> consumers = new HashSet<>();

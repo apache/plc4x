@@ -17,5 +17,6 @@
   under the License.
 ]]
 
+add_subdirectory(dummy)
 add_subdirectory(serial)
 add_subdirectory(tcp)

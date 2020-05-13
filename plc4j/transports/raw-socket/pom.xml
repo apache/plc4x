@@ -65,4 +65,23 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <!--
+       Generate an OSGI compatible MANIFEST file.
+     -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Activator>org.apache.plc4x.java.osgi.TransportActivator</Bundle-Activator>
+            <Export-Service>org.apache.plc4x.java.spi.transport.Transport,org.apache.plc4x.java.transport.rawsocket.RawSocketTransport</Export-Service>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

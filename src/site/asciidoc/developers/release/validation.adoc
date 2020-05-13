@@ -36,6 +36,9 @@ gpg --verify apache-plc4x-{current-full-version}-source-release.zip.asc apache-p
 [subs="attributes"]
 ----
 shasum -a512 apache-plc4x-{current-full-version}-source-release.zip
+
+Alternatively (automatically compares the checkum):
+gsha512sum -c apache-plc4x-{current-full-version}-source-release.zip.sha512
 ----
 [%interactive]
 * [ ] Unzip the archive:
@@ -56,12 +59,14 @@ TIP: (Especially pay attention to the year in the `NOTICE` file if this is the f
 ----
 java -jar apache-rat-0.13.jar apache-plc4x-{current-full-version}-source-release.zip > rat.log
 ----
+[%interactive]
 * [ ] Search for `SNAPSHOT` references:
 [subs="attributes"]
 ----
 find . -type f -name 'pom.xml' -exec grep -l "SNAPSHOT" {} \;
 ----
 [%interactive]
+* [ ] Search for `Copyright` references, and if they are in headers, make sure these files containing them are mentioned in the LICENSE file.
 * [ ] Build the project according to the information in the README.md file.
 * [ ] [RM] Build the project with all `with-xyz` profiles and tests enabled and an empty maven local repo: by appendng `-Dmaven.repo.local=../.m2`.
 
