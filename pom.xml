@@ -17,7 +17,8 @@
   limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -847,7 +848,7 @@
 
               // Get the latest released version from our doap file.
               def plc4xDoapFile = new File(project.getBasedir(), "src/site/resources-filtered/plc4x-doap.rdf")
-              if(plc4xDoapFile.exists()) {
+              if (plc4xDoapFile.exists()) {
                 def doapDocument = new XmlSlurper().parse(plc4xDoapFile)
                 def lastReleasedVersion = doapDocument.Project.release[0].Version.revision
                 print "\nCurrent last released version:    " + lastReleasedVersion + " (current-last-released-version)"
@@ -1139,6 +1140,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>4.2.8</version>
+        </plugin>
+
+        <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
           <version>1.5.3</version>
@@ -1232,7 +1239,7 @@
           <configuration>
             <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}</outputFile>
             <transformers>
-              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
             </transformers>
             <filters>
               <filter>
@@ -1686,7 +1693,7 @@
                 </goals>
                 <configuration>
                   <rules>
-                    <dependencyConvergence />
+                    <dependencyConvergence/>
                   </rules>
                 </configuration>
               </execution>
@@ -1776,7 +1783,7 @@
                         </goals>
                       </pluginExecutionFilter>
                       <action>
-                        <ignore />
+                        <ignore/>
                       </action>
                     </pluginExecution>
                   </pluginExecutions>

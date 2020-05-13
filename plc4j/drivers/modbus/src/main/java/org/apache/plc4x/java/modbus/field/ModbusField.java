@@ -18,9 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.modbus.field;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField {
@@ -30,6 +32,26 @@ public abstract class ModbusField implements PlcField {
     private final int address;
 
     private final int quantity;
+
+    public static ModbusField of(String addressString) throws PlcInvalidFieldException {
+        Matcher matcher = ModbusFieldCoil.ADDRESS_PATTERN.matcher(addressString);
+        if(matcher.matches()) {
+            return ModbusFieldCoil.of(addressString);
+        }
+        matcher = ModbusFieldDiscreteInput.ADDRESS_PATTERN.matcher(addressString);
+        if(matcher.matches()) {
+            return ModbusFieldDiscreteInput.of(addressString);
+        }
+        matcher = ModbusFieldHoldingRegister.ADDRESS_PATTERN.matcher(addressString);
+        if(matcher.matches()) {
+            return ModbusFieldHoldingRegister.of(addressString);
+        }
+        matcher = ModbusFieldInputRegister.ADDRESS_PATTERN.matcher(addressString);
+        if(matcher.matches()) {
+            return ModbusFieldInputRegister.of(addressString);
+        }
+        throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
+    }
 
     protected ModbusField(int address, Integer quantity) {
         this.address = address;

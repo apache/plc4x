@@ -18,7 +18,8 @@
   ~ under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -31,7 +32,8 @@
   <artifactId>plc4j-scraper</artifactId>
 
   <name>PLC4J: Tools: Scraper</name>
-  <description>Utility to efficiently collect a large number of items on multiple devices by different triggers.</description>
+  <description>Utility to efficiently collect a large number of items on multiple devices by different triggers.
+  </description>
 
   <dependencies>
     <!--Jackson-->
@@ -101,18 +103,6 @@
       <version>0.7.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4j-driver-s7</artifactId>
-          <version>0.7.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4j-driver-s7</artifactId>
-          <version>0.7.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
   </dependencies>
 
   <build>

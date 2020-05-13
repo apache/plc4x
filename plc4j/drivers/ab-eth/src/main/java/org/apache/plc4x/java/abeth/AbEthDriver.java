@@ -20,20 +20,19 @@ package org.apache.plc4x.java.abeth;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
+import org.apache.plc4x.java.abeth.field.AbEthField;
 import org.apache.plc4x.java.abeth.field.AbEthFieldHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
-import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
     public static final int AB_ETH_PORT = 2222;
@@ -72,7 +71,9 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
             .build();
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -82,6 +83,11 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
             }
             return -1;
         }
+    }
+
+    @Override
+    public PlcField prepareField(String query) {
+        return AbEthField.of(query);
     }
 
 }

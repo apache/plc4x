@@ -22,6 +22,7 @@ New Features
 - S7 Driver now supports String datatypes.
 - OSGi : Implementation of Drivers/Transports as OSGi services
   to be able to use them in an OSGi container.
+- New Firmata protocol driver
 
 Incompatible changes
 --------------------
@@ -34,6 +35,8 @@ Incompatible changes
   {protocol-code:(transport-code:)?//{transport-config}(?{params})?
   Please check the drivers documentation on our website:
   https://plc4x.apache.org/users/protocols/s7.html
+- The karaf-feature modules are removed as the drivers now all
+  provide both a feature.xml as well as a `kar` bundled archive
 
 Bug Fixes
 ---------

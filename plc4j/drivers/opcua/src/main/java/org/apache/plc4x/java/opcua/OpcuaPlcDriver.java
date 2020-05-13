@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -81,6 +82,11 @@ public class OpcuaPlcDriver implements PlcDriver {
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("opcua does not support Auth at this state");
+    }
+
+    @Override
+    public OpcuaField prepareField(String query){
+        return OpcuaField.of(query);
     }
 
 }

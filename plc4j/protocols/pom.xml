@@ -36,7 +36,6 @@
   <modules>
     <!--module>ads</module-->
     <module>delta-v</module>
-    <module>ethernet-ip</module>
     <module>benchmarks</module>
   </modules>
 
