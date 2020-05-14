@@ -75,6 +75,9 @@ If you get any successful output, you probably don't need to do anything.
 
 Usually this is already installed on Windows machines.
 
+Download the installer from https://dotnet.microsoft.com/download/dotnet-core/3.1[here]
+(Be sure to download an installer from the second column labeled `Build apps - SDK`)
+
 === python
 
 Checking:
@@ -138,3 +141,20 @@ Not quite sure which elements are really needed, better just install all of them
 Make sure it's `bin` directory is added to your systems `PATH`, however the installer should have taken care of this.
 Also make sure you restarted your IDE and or console window after changing the `PATH` settings for the changes to take effect.
 
+=== OpenSSL
+
+It is encouraged to build them yourself, but binaries can be downloaded from sites like:
+https://slproweb.com/products/Win32OpenSSL.html[this]
+
+Usually I download the 64Bit installer.
+
+Be sure to add the `bin` directory to the systems Path.
+
+=== Clang
+
+Same with OpenSSL, it's a little tricky to find pre-compiled binaries for windows.
+
+Seem the versions available https://releases.llvm.org/download.html[here] to the trick.
+Download and install the `LLVM` package.
+
+Select to add the LLVM to the path (doesn't matter if just for the current user or for all)

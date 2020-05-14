@@ -272,7 +272,7 @@ def checkPython() {
         def stdErr = new StringBuilder()
         process.consumeProcessOutput(stdOut, stdErr)
         process.waitForOrKill(500)
-        Matcher matcher = extractVersion(stdErr)
+        Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             def curVersion = matcher[0][1]
             def result = checkVersionAtLeast(curVersion, "2.7.0")
@@ -281,21 +281,6 @@ def checkPython() {
             }
         } else {
             println "missing"
-            // For debugging regular build failures on our build vm
-            println "StdOut: " + stdOut
-            println "StrErr: " + stdErr
-            println "matcher size: " + matcher.size()
-            for (int i = 0; i < matcher.size(); i++) {
-                println "matcher[" + i + "]=" + matcher[i]
-            }
-            // Example for a failed python detection:
-            //
-            //Detecting Python version: missing
-            //StdOut:
-            //StrErr: Python 2.7.12
-            // Example of a successful detection
-            //StrErr:
-            //2.7.15        OK
             allConditionsMet = false
         }
     } catch(Exception e) {
