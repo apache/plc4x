@@ -32,29 +32,7 @@ set(PLC4C_ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(BUILD_PHASE compile CACHE STRING "Phase of the Maven build we are executing cmake")
 
 # Access the Unity version the maven build is providing us with.
-set(UNITY_VERSION 0 CACHE STRING "Version of the used Unity test framework")
-
-# Depending on the phase of the build we are currently running, initialize
-# The test system.
-if (BUILD_PHASE STREQUAL compile)
-    # Nothing really to do here ... just need it to check the known values.
-elseif (BUILD_PHASE STREQUAL test-compile)
-    # Initialize the test subsystem as well as the Unity library sources
-    include(CTest)
-
-    # Make the Unity sources available to the build as "Unity" library
-    add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
-
-    #add_library(Unity STATIC
-    #  target/dependency/Unity-${UNITY_VERSION}/src/unity.c
-    #)
-    #target_include_directories(Unity PUBLIC
-    #  target/dependency/Unity-${UNITY_VERSION}/src
-    #)
-else ()
-    # Output an error
-    message(FATAL_ERROR "Given BUILD_PHASE unknown. Known values are 'compile' and 'test-compile'")
-endif ()
+set(UNITY_VERSION 2.5.0)
 
 set(DEBUG_OUTPUT OFF CACHE BOOL "Enable outputting of debug information")
 if (DEBUG_OUTPUT)
@@ -65,6 +43,13 @@ if (DEBUG_OUTPUT)
         message(STATUS "${_variableName}=${${_variableName}}")
     endforeach ()
 endif ()
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(CTest)
+
+    # Make the Unity sources available to the build as "Unity" library
+    add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
+endif()
 
 #[[
     Build all the modules of PLC4C

@@ -1,3 +1,4 @@
+
 #[[
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -17,12 +18,10 @@
   under the License.
 ]]
 
-include_directories("include" "../api/include")
-
-file(GLOB_RECURSE sources "src/*.c")
-
-add_library(plc4c-spi SHARED ${sources} "src/utils/list.c" "src/utils/queue.c")
-
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
-    add_subdirectory(test)
-endif()
+file(GLOB testSources "*.c")
+add_executable(plc4c-spi-test ${testSources} system_test.c)
+target_link_libraries(plc4c-spi-test
+        plc4c-spi
+        unity
+        )
+add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
