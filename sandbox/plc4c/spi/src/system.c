@@ -228,6 +228,7 @@ plc4c_return_code plc4c_system_create_connection(
           // Allocate enough memory to hold the sub-string.
           protocol_code =
               malloc(sizeof(char) * ((i - start_segment_index) + 1));
+          *(protocol_code + (i - start_segment_index)) = '\0';
           // Copy the sub-string to the freshly allocated memory area.
           strncpy(protocol_code, start_segment, (i - start_segment_index));
 
@@ -254,6 +255,7 @@ plc4c_return_code plc4c_system_create_connection(
           // Allocate enough memory to hold the sub-string.
           transport_code =
               malloc(sizeof(char) * ((i - start_segment_index) + 1));
+          *(transport_code + (i - start_segment_index)) = '\0';
           // Copy the sub-string to the freshly allocated memory area.
           strncpy(transport_code, start_segment, (i - start_segment_index));
 
@@ -290,6 +292,7 @@ plc4c_return_code plc4c_system_create_connection(
         // Allocate enough memory to hold the sub-string.
         transport_connect_information =
             malloc(sizeof(char) * ((i - start_segment_index) + 1));
+        *(transport_connect_information + (i - start_segment_index)) = '\0';
         // Copy the sub-string to the freshly allocated memory area.
         strncpy(transport_connect_information, start_segment,
                 (i - start_segment_index));
@@ -306,14 +309,16 @@ plc4c_return_code plc4c_system_create_connection(
         // connect information.
         if (num_question_marks == 0) {
           transport_connect_information =
-              malloc(sizeof(char) * ((i - start_segment_index)) + 1);
+              malloc(sizeof(char) * ((i - start_segment_index)) + 2);
+          *(transport_connect_information + (i - start_segment_index) + 1) = '\0';
           strncpy(transport_connect_information, start_segment,
-                  (i - start_segment_index));
+                  (i - start_segment_index) + 1);
         }
         // I a question-mark was found, this is the parameters section.
         else {
-          parameters = malloc(sizeof(char) * (i - start_segment_index) + 1);
-          strncpy(parameters, start_segment, (i - start_segment_index));
+          parameters = malloc(sizeof(char) * (i - start_segment_index) + 2);
+          *(parameters + (i - start_segment_index) + 1) = '\0';
+          strncpy(parameters, start_segment, (i - start_segment_index) + 1);
         }
       }
     }
