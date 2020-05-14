@@ -256,10 +256,6 @@ def checkCmake() {
         def result = checkVersionAtLeast(curVersion, "3.0.0")
         if(!result) {
             allConditionsMet = false
-            
-            
-            
-            
         }
     } else {
         println "missing"
@@ -330,7 +326,12 @@ def checkBoost() {
 
 def checkOpenSSL() {
     print "Detecting OpenSSL version: "
-    def output = "openssl version".execute().text
+    def output
+    try {
+        output = "openssl version".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     Matcher matcher = extractVersion(output)
     if(matcher.size() > 0) {
         def curVersion = matcher[0][1]
@@ -348,7 +349,12 @@ def checkOpenSSL() {
 // Not only should the docker executable be available, but also should the docker daemon be running.
 def checkDocker() {
     print "Detecting Docker version:  "
-    def output = "docker info".execute().text
+    def output
+    try {
+        output = "docker info".execute().text
+    } catch(IOException e) {
+        output = ""
+    }
     // Check if Docker is installed at all
     def matcher1 = output =~ /Server:/
     if(matcher1.size() > 0) {
