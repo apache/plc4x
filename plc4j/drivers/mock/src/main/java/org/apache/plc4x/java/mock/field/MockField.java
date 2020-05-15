@@ -18,12 +18,18 @@ under the License.
 */
 package org.apache.plc4x.java.mock.field;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
 public class MockField implements PlcField {
 
     private final String address;
     private final MockPlcValue plcValue;
+
+
+    public static MockField of(String addressString) throws PlcInvalidFieldException {
+        return new MockField(addressString);
+    }
 
     public MockField(String address) {
         this.address = address;

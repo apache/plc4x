@@ -15,16 +15,47 @@
 //  limitations under the License.
 //
 
-http://www.apibook.com/blog/archives/186
+== General thoughts
 
-- All PLC4C API related functions should use the prefix `plc4c_`
-- Only public API related symbols should be exported
-- Establish an object model
-- Supply a plc4c_init() function to initialize the DriverManager
-- Supply a plc4c_shutdown() function for cleaning up open connections
-- Provide a free()/unref() function for each kind of allocated object
+* Generally all operations in PLC4X that require any form of interaction with a remote system are to be considered async operations.
+** Async functions should return a plc4x_promise object
+** Example functions:
+*** Connection
+*** Read
+*** Write
+*** Subscribe
+*** Unsubscribe
+*** Disconnect
+*** Destroy PLC4X System (As perhaps open connections need to be terminated)
+*** Shutdown PLC4X System (As perhaps open connections need to be terminated)
+* Generally all others are considered synchronous operations
+** Sync functions should return a return_code
+** Example functions
+*** Create PLC4X System
+*** Init PLC4X System
+*** Load Driver
+* Every function (except setters) should return either a return_code or a plc4c_promise
+* No function generally does any IO, they just interact with the state
+** Example: read operation just adds a new task to the connection object
+** Only function doing IO is the plc4c_system_loop function which has the job of sending outgoing data and processing incoming data
+** Different strategies could be applied to handle scheduling of task processing in plc4c_system_loop to avoid hogging too much CPU time
 
-- Error handling
-    - Every function returns an error state (ideally an enum)
-    - Function for converting enum error code to something human-readable
-    - "Return" structures or real return values by double-pointer arguments
+== API Usage
+
+* At first the user needs to create an instance of the plc4c_system, which contains all system-relevant data:
+** System configuration
+** Drivers
+** Connections
+** ...
+* After the plc4c_system is created the user then initializes the system
+** Initializes the driver manager
+** Initializes any internal structures
+** Loads drivers
+* After the plc4c_system is initialized, the user can create plc4c_connections by using the plc4c_system_connect function
+** Returns a promise
+* The user can attach success- and failure-callbacks to the promise
+
+== Open Questions
+
+* Perhaps all functions should use the async pattern as otherwise users have to know these details.
+* Not sure if perhaps the serialization of messages could be done in the functions and the loop just deals with the sending/reading ... however I would opt for having this functionality in the loop as for intermediate states it would have to handle these anyway.

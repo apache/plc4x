@@ -19,10 +19,10 @@ under the License.
 package org.apache.plc4x.java.firmata.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguration;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
+import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
 import org.apache.plc4x.java.firmata.readwrite.io.FirmataMessageIO;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
@@ -31,12 +31,10 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
 
     @Override
@@ -86,7 +84,9 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
             .build();
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -94,9 +94,11 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
                 int type = byteBuf.getByte(byteBuf.readerIndex()) & 0xF0;
                 switch (type) {
                     case 0xE0:
-                    case 0x90: return 3;
+                    case 0x90:
+                        return 3;
                     case 0xC0:
-                    case 0xD0: return 2;
+                    case 0xD0:
+                        return 2;
                     case 0xF0: {
                         int commandType = byteBuf.getByte(byteBuf.readerIndex()) & 0x0F;
                         switch (commandType) {
@@ -112,7 +114,7 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
                                     } else {
                                         return -1;
                                     }
-                                } catch(Exception e) {
+                                } catch (Exception e) {
                                     throw new PlcRuntimeException("Invalid packet content", e);
                                 }
                             }
@@ -134,7 +136,9 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
         }
     }
 
-    /** Consumes all Bytes till one of the potential message type indicators */
+    /**
+     * Consumes all Bytes till one of the potential message type indicators
+     */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
 
         @Override
@@ -157,6 +161,11 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
                     return false;
             }
         }
+    }
+
+    @Override
+    public FirmataField prepareField(String query) {
+        return FirmataField.of(query);
     }
 
 }

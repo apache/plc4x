@@ -17,7 +17,11 @@
   under the License.
 ]]
 
-add_library(plc4c-transpots-serial
-        )
+include_directories("include" "../../api/include" "../../spi/include")
 
-target_link_libraries (plc4c-transpots-serial ${CMAKE_DL_LIBS})
+# Add the sources
+file(GLOB sources "src/*.c")
+
+add_library(plc4c-transports-serial ${sources})
+
+target_link_libraries(plc4c-transports-serial ${CMAKE_DL_LIBS})

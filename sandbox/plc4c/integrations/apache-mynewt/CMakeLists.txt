@@ -20,4 +20,4 @@
 add_library(plc4c-integrations-apache-mynewt
         )
 
-target_link_libraries (plc4c-integrations-apache-mynewt ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-integrations-apache-mynewt ${CMAKE_DL_LIBS})

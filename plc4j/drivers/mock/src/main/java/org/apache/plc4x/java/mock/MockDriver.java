@@ -63,7 +63,7 @@ public class MockDriver implements PlcDriver {
 
     @Override
     public MockField prepareField(String query){
-        return new MockField(query);
+        return MockField.of(query);
     }
 
 }

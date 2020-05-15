@@ -36,35 +36,35 @@ set(UNITY_VERSION 0 CACHE STRING "Version of the used Unity test framework")
 
 # Depending on the phase of the build we are currently running, initialize
 # The test system.
-if(BUILD_PHASE STREQUAL compile)
-  # Nothing really to do here ... just need it to check the known values.
-elseif(BUILD_PHASE STREQUAL test-compile)
-  # Initialize the test subsystem as well as the Unity library sources
-  include(CTest)
+if (BUILD_PHASE STREQUAL compile)
+    # Nothing really to do here ... just need it to check the known values.
+elseif (BUILD_PHASE STREQUAL test-compile)
+    # Initialize the test subsystem as well as the Unity library sources
+    include(CTest)
 
-  # Make the Unity sources available to the build as "Unity" library
-  add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
+    # Make the Unity sources available to the build as "Unity" library
+    add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
 
-  #add_library(Unity STATIC
-  #  target/dependency/Unity-${UNITY_VERSION}/src/unity.c
-  #)
-  #target_include_directories(Unity PUBLIC
-  #  target/dependency/Unity-${UNITY_VERSION}/src
-  #)
-else()
-  # Output an error
-  message(FATAL_ERROR "Given BUILD_PHASE unknown. Known values are 'compile' and 'test-compile'")
-endif()
+    #add_library(Unity STATIC
+    #  target/dependency/Unity-${UNITY_VERSION}/src/unity.c
+    #)
+    #target_include_directories(Unity PUBLIC
+    #  target/dependency/Unity-${UNITY_VERSION}/src
+    #)
+else ()
+    # Output an error
+    message(FATAL_ERROR "Given BUILD_PHASE unknown. Known values are 'compile' and 'test-compile'")
+endif ()
 
 set(DEBUG_OUTPUT OFF CACHE BOOL "Enable outputting of debug information")
-if(DEBUG_OUTPUT)
-  # Trace all CMAKE Variables
-  get_cmake_property(_variableNames VARIABLES)
-  list (SORT _variableNames)
-  foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-  endforeach()
-endif()
+if (DEBUG_OUTPUT)
+    # Trace all CMAKE Variables
+    get_cmake_property(_variableNames VARIABLES)
+    list(SORT _variableNames)
+    foreach (_variableName ${_variableNames})
+        message(STATUS "${_variableName}=${${_variableName}}")
+    endforeach ()
+endif ()
 
 #[[
     Build all the modules of PLC4C
@@ -72,7 +72,7 @@ endif()
 # Core stuff
 add_subdirectory(api)
 add_subdirectory(spi)
-#add_subdirectory(transports)
+add_subdirectory(transports)
 add_subdirectory(drivers)
 #add_subdirectory(integrations)
 add_subdirectory(examples)

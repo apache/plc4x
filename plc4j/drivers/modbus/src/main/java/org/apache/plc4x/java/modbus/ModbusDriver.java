@@ -19,8 +19,8 @@ under the License.
 package org.apache.plc4x.java.modbus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
+import org.apache.plc4x.java.modbus.field.ModbusField;
 import org.apache.plc4x.java.modbus.field.ModbusFieldHandler;
 import org.apache.plc4x.java.modbus.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
@@ -31,11 +31,9 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
-import org.osgi.service.component.annotations.Component;
 
 import java.util.function.ToIntFunction;
 
-@Component(service = PlcDriver.class, immediate = true)
 public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
 
     @Override
@@ -106,6 +104,11 @@ public class ModbusDriver extends GeneratedDriverBase<ModbusTcpADU> {
             }
             return -1;
         }
+    }
+
+    @Override
+    public ModbusField prepareField(String query){
+        return ModbusField.of(query);
     }
 
 }

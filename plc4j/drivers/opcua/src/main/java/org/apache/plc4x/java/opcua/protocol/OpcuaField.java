@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaField implements PlcField {
 

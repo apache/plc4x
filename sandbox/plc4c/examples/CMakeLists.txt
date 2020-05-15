@@ -17,4 +17,5 @@
   under the License.
 ]]
 
+add_subdirectory(hello-subsciptions)
 add_subdirectory(hello-world)

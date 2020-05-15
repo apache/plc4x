@@ -53,7 +53,6 @@
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
-        <version>4.2.8</version>
         <executions>
           <execution>
             <id>generate-feature-xml</id>
@@ -65,6 +64,8 @@
               <goal>verify</goal>
             </goals>
             <configuration>
+              <enableGeneration>true</enableGeneration>
+              <aggregateFeatures>true</aggregateFeatures>
             </configuration>
           </execution>
           <execution>
@@ -81,16 +82,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-s7</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -100,6 +91,16 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.s7.readwrite.S7Driver</Export-Service>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4x-build-utils-language-java</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4x-protocols-s7</usedDependency>
+          </usedDependencies>
         </configuration>
       </plugin>
     </plugins>

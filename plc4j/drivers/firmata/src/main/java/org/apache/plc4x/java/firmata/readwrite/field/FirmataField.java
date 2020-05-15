@@ -18,9 +18,11 @@ under the License.
 */
 package org.apache.plc4x.java.firmata.readwrite.field;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class FirmataField implements PlcField {
@@ -30,6 +32,18 @@ public abstract class FirmataField implements PlcField {
     private final int address;
 
     private final int quantity;
+
+    public static FirmataField of(String fieldString) {
+        Matcher matcher = FirmataFieldAnalog.ADDRESS_PATTERN.matcher(fieldString);
+        if (matcher.matches()) {
+            return FirmataFieldAnalog.of(fieldString);
+        }
+        matcher = FirmataFieldDigital.ADDRESS_PATTERN.matcher(fieldString);
+        if (matcher.matches()) {
+            return FirmataFieldDigital.of(fieldString);
+        }
+        throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+    }
 
     protected FirmataField(int address, Integer quantity) {
         this.address = address;
