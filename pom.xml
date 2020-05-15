@@ -103,7 +103,7 @@
 
     <plc4x-code-generation.version>1.2.0</plc4x-code-generation.version>
 
-    <antlr.version>4.7.2</antlr.version>
+    <antlr.version>4.8</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
@@ -1239,6 +1239,8 @@
             -->
             <detectLinks>false</detectLinks>
             <validateLinks>false</validateLinks>
+            <failOnWarnings>false</failOnWarnings>
+            <failOnError>false</failOnError>
           </configuration>
         </plugin>
 
@@ -1285,7 +1287,9 @@
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
-            <arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments>
+            <!-- TODO: try to find out why antlr doesn't like the line.separator setting -->
+            <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
+            <arguments>-Papache-release ${arguments}</arguments>
           </configuration>
         </plugin>
       </plugins>

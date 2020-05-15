@@ -140,6 +140,26 @@ def checkJavaVersion(String minVersion, String maxVersion) {
     }
 }
 
+def checkMavenVersion(String minVersion, String maxVersion) {
+    print "Detecting Maven version:   "
+    def curVersion = project.projectBuilderConfiguration.systemProperties['maven.version']
+    def result
+    if (minVersion != null) {
+        result = checkVersionAtLeast(curVersion, minVersion)
+        if (!result) {
+            allConditionsMet = false
+            return
+        }
+    }
+    if (maxVersion != null) {
+        result = checkVersionAtMost(curVersion, maxVersion)
+        if (!result) {
+            allConditionsMet = false
+            return
+        }
+    }
+}
+
 def checkFlex() {
     print "Detecting Flex version:    "
     def output
@@ -524,6 +544,11 @@ if (!boostEnabled && cppEnabled) {
 
 if (sandboxEnabled && dockerEnabled) {
     checkDocker()
+}
+
+if (proxiesEnabled || cppEnabled || cEnabled) {
+    // CMake requires at least maven 3.6.0
+    checkMavenVersion("3.6.0", null)
 }
 
 if (apacheReleaseEnabled) {
