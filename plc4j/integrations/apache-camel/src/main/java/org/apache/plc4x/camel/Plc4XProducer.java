@@ -22,6 +22,7 @@ import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.support.DefaultAsyncProducer;
+import org.apache.commons.math3.util.Pair;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
@@ -30,7 +31,8 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -54,20 +56,19 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         Message in = exchange.getIn();
         Object body = in.getBody();
         PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-        if (body instanceof List) { //Check if we have a List
-            if(((List) body).get(0) instanceof TagData){    //Check if this List contains TagData
-                List<TagData> tags =(List<TagData>) body;
-                for(TagData tag : tags){
-                    builder.addItem(tag.getTagName(),tag.getQuery(),tag.getValue());
-                }
+        if (body instanceof Map) { //Check if we have a Map
+            Map<String, Map<String, Object>> tags = (Map<String, Map<String, Object>>) body;
+            for (Map.Entry<String, Map<String, Object>> entry : tags.entrySet()) {
+                //Tags are stored like this --> Map<Tagname,Map<Query,Value>> for writing
+                String name = entry.getKey();
+                String query = entry.getValue().keySet().iterator().next();
+                Object value = entry.getValue().get(query);
+                builder.addItem(name,query,value);
             }
-            else {
-                throw new PlcInvalidFieldException("Parameter 'tags' has to be a List of TagData");
-            }
+        } else {
+            throw new PlcInvalidFieldException("The body must contain a Map<String,Map<String,Object>");
         }
-        else {
-            throw new PlcInvalidFieldException("Parameter 'tags' has to be a List");
-        }
+
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {

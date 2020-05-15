@@ -40,7 +40,7 @@ jobs:
 
 
   - name: triggered-demo-job1
-    triggerConfig: (S7_TRIGGER_VAR,10,(%M0.3:BOOL)==(true))
+    triggerConfig: (TRIGGER_VAR,10,(%M0.3:BOOL)==(true))
     sources:
       - MOCK_1
       - MOCK_2
@@ -49,7 +49,7 @@ jobs:
 
 
   - name: triggered-demo-job2
-    triggerConfig: (S7_TRIGGER_VAR,10,(%M0.7:BOOL)==(true))
+    triggerConfig: (TRIGGER_VAR,10,(%M0.7:BOOL)==(true))
     sources:
       - MOCK_1
       - MOCK_2

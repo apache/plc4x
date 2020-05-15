@@ -135,6 +135,17 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-connection-pool</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-scraper</artifactId>
+      <version>0.7.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-core-engine</artifactId>
       <version>${camel.version}</version>
@@ -159,7 +170,6 @@
       <artifactId>camel-util</artifactId>
       <version>${camel.version}</version>
     </dependency>
-
 
     <!-- Support camel documentation-->
     <!-- TODO: Do we need this? -->

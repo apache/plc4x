@@ -21,11 +21,10 @@ package org.apache.plc4x.camel;
 import org.apache.camel.Endpoint;
 import org.apache.camel.support.DefaultComponent;
 import org.apache.camel.util.IntrospectionSupport;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class Plc4XComponent extends DefaultComponent {
@@ -34,9 +33,20 @@ public class Plc4XComponent extends DefaultComponent {
     @Override
     protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
         Endpoint endpoint = new Plc4XEndpoint(uri, this);
-        List<TagData>tags = getAndRemoveOrResolveReferenceParameter(parameters,"tags", List.class);
+        //Tags have a Name, a query and an optional value (for writing)
+        //Reading --> Map<String,String>
+        //Writing --> Map<String,Map.Entry<String,Object>>
+        Map<String, Object> tags = getAndRemoveOrResolveReferenceParameter(parameters, "tags", Map.class);
         if(tags!=null){
             ((Plc4XEndpoint)endpoint).setTags(tags);
+        }
+        String trigger = getAndRemoveOrResolveReferenceParameter(parameters,"trigger",String.class);
+        if(trigger!=null){
+            ((Plc4XEndpoint)endpoint).setTrigger(trigger);
+        }
+        Object period = getAndRemoveOrResolveReferenceParameter(parameters,"period",Integer.class);
+        if(period!=null && period instanceof Integer){
+            ((Plc4XEndpoint)endpoint).setPeriod((int)period);
         }
         setProperties(endpoint,parameters);
         return endpoint;

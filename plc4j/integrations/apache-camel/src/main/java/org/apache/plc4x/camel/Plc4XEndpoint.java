@@ -24,10 +24,11 @@ import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
+import org.apache.commons.math3.util.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.slf4j.LoggerFactory;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
 import java.util.List;
 import java.util.Map;
@@ -36,26 +37,60 @@ import java.util.Objects;
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
-    @UriPath @Metadata(required = true)
+    @UriPath
+    @Metadata(required = true)
     private String driver;
 
     @UriParam
-    private List<TagData> tags;
+    private Map<String, Object> tags;
 
+    @UriParam
+    private String trigger;
 
-    private final PlcDriverManager plcDriverManager;
-    private  PlcConnection connection;
+    @UriParam
+    private int period;
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    private  PlcDriverManager plcDriverManager;
+    private PlcConnection connection;
     private String uri;
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(String trigger) {
+        this.trigger = trigger;
+        plcDriverManager = new PooledPlcDriverManager();
+        String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+        uri=plc4xURI;
+        try {
+            connection = plcDriverManager.getConnection(plc4xURI);
+        } catch (PlcConnectionException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Plc4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
-        plcDriverManager= new PlcDriverManager();
+        plcDriverManager = new PlcDriverManager();
         uri = endpointUri;
-
         //Here we establish the connection in the endpoint, as it is created once during the context
         // to avoid disconnecting and reconnecting for every request
         try {
             String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+            uri = plc4xURI;
             connection = plcDriverManager.getConnection(plc4xURI);
 
         } catch (PlcConnectionException e) {
@@ -75,11 +110,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @Override
     public Producer createProducer() throws Exception {
         //Checking if connection is still up and reconnecting if not
-        if(!connection.isConnected()){
-            try{
-                connection= plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-            }
-            catch (Exception e){
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -89,11 +123,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
         //Checking if connection is still up and reconnecting if not
-        if(!connection.isConnected()){
-            try{
-                connection= plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-            }
-            catch (Exception e){
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -103,11 +136,10 @@ public class Plc4XEndpoint extends DefaultEndpoint {
     @Override
     public PollingConsumer createPollingConsumer() throws Exception {
         //Checking if connection is still up and reconnecting if not
-        if(!connection.isConnected()){
-            try{
-                connection= plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
-            }
-            catch (Exception e){
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -131,11 +163,11 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.driver = driver;
     }
 
-    public List<TagData> getTags() {
+    public Map<String, Object> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagData> tags) {
+    public void setTags(Map<String, Object> tags) {
         this.tags = tags;
     }
 
@@ -158,20 +190,19 @@ public class Plc4XEndpoint extends DefaultEndpoint {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDriver(), getTags(),getPlcDriverManager());
+        return Objects.hash(super.hashCode(), getDriver(), getTags(), getPlcDriverManager());
     }
 
     @Override
-    public void doStop(){
+    public void doStop() {
         //Shutting down the connection when leaving the Context
-        try{
-            if(connection!=null){
-                if(connection.isConnected()){
+        try {
+            if (connection != null) {
+                if (connection.isConnected()) {
                     connection.close();
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
