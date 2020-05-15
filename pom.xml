@@ -1239,8 +1239,8 @@
             -->
             <detectLinks>false</detectLinks>
             <validateLinks>false</validateLinks>
-            <failOnWarnings>true</failOnWarnings>
-            <failOnError>true</failOnError>
+            <failOnWarnings>false</failOnWarnings>
+            <failOnError>false</failOnError>
           </configuration>
         </plugin>
 
