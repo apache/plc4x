@@ -85,6 +85,11 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         return AMSADSPlcDriver.TCP_PORT;
     }
 
+    @Override
+    public int getBaudRate() {
+        return 57600;
+    }
+
     public static class AmsNetIdConverter implements ConfigurationParameterConverter<AmsNetId> {
 
         @Override
