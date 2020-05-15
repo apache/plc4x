@@ -152,7 +152,9 @@ Be sure to add the `bin` directory to the systems Path.
 
 === Clang
 
-Same with OpenSSL, it's a little tricky to find pre-compiled binaries for windows.
+Pre-Compiled Clang executables seem to be shipped with `Visual Studio Community` edition. So if you have this installed, just make sure the executables are available on the path.
+
+If not, it's a little tricky to find pre-compiled binaries for windows.
 
 Seem the versions available https://releases.llvm.org/download.html[here] to the trick.
 Download and install the `LLVM` package.

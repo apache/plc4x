@@ -26,6 +26,7 @@ baseDirectory = project.model.pomFile.parent
 /*
  Checks if a given version number is at least as high as a given reference version.
 */
+
 def checkVersionAtLeast(String current, String minimum) {
     def currentSegments = current.tokenize('.')
     def minimumSegments = minimum.tokenize('.')
@@ -33,16 +34,16 @@ def checkVersionAtLeast(String current, String minimum) {
     for (int i = 0; i < numSegments; ++i) {
         def currentSegment = currentSegments[i].toInteger()
         def minimumSegment = minimumSegments[i].toInteger()
-        if(currentSegment < minimumSegment) {
+        if (currentSegment < minimumSegment) {
             println current.padRight(14) + " FAILED (required min " + minimum + " but got " + current + ")"
             return false
-        } else if(currentSegment > minimumSegment) {
+        } else if (currentSegment > minimumSegment) {
             println current.padRight(14) + " OK"
             return true
         }
     }
     def curNotShorter = currentSegments.size() >= minimumSegments.size()
-    if(curNotShorter) {
+    if (curNotShorter) {
         println current.padRight(14) + " OK"
     } else {
         println current.padRight(14) + " (required min " + minimum + " but got " + current + ")"
@@ -57,16 +58,16 @@ def checkVersionAtMost(String current, String maximum) {
     for (int i = 0; i < numSegments; ++i) {
         def currentSegment = currentSegments[i].toInteger()
         def maximumSegment = maximumSegments[i].toInteger()
-        if(currentSegment > maximumSegment) {
+        if (currentSegment > maximumSegment) {
             println current.padRight(14) + " FAILED (required max " + maximum + " but got " + current + ")"
             return false
-        } else if(currentSegment < maximumSegment) {
+        } else if (currentSegment < maximumSegment) {
             println current.padRight(14) + " OK"
             return true
         }
     }
     def curNotShorter = currentSegments.size() >= maximumSegments.size()
-    if(curNotShorter) {
+    if (curNotShorter) {
         println current.padRight(14) + " OK"
     } else {
         println current.padRight(14) + " (required max " + maximum + " but got " + current + ")"
@@ -79,16 +80,18 @@ def checkBison() {
     def output
     try {
         output = "bison --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "2.4.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
+
+        // TODO: Ensure the path of the `bison` binary doesn't contain any spaces.
     } else {
         println "missing"
         allConditionsMet = false
@@ -100,14 +103,14 @@ def checkDotnet() {
     def output
     try {
         output = "dotnet --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "2.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -121,16 +124,16 @@ def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
     def curVersion = System.properties['java.version']
     def result
-    if(minVersion != null) {
+    if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
             return
         }
     }
-    if(maxVersion != null) {
+    if (maxVersion != null) {
         result = checkVersionAtMost(curVersion, maxVersion)
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
             return
         }
@@ -142,14 +145,14 @@ def checkFlex() {
     def output
     try {
         output = "flex --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "2.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -163,14 +166,14 @@ def checkGcc() {
     def output
     try {
         output = "gcc --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -184,14 +187,14 @@ def checkGit() {
     def output
     try {
         output = "git --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -205,14 +208,14 @@ def checkGpp() {
     def output
     try {
         output = "g++ --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -226,14 +229,14 @@ def checkClang() {
     def output
     try {
         output = "clang --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -247,14 +250,14 @@ def checkCmake() {
     def output
     try {
         output = "cmake --version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "3.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -283,7 +286,7 @@ def checkPython() {
             println "missing"
             allConditionsMet = false
         }
-    } catch(Exception e) {
+    } catch (Exception e) {
         println "missing"
         allConditionsMet = false
     }
@@ -293,12 +296,13 @@ def checkPython() {
  * This check does an extremely simple check, if the boost library exists in the maven local repo.
  * We're not checking if it could be resolved.
  */
+
 def checkBoost() {
     print "Detecting Boost library:   "
     def localRepoBaseDir = session.getLocalRepository().getBasedir()
     def expectedFile = new File(localRepoBaseDir, "org/apache/plc4x/plc4x-tools-boost/" + project.version +
         "/plc4x-tools-boost-" + project.version + "-lib-" + project.properties["os.classifier"] + ".zip")
-    if(!expectedFile.exists()) {
+    if (!expectedFile.exists()) {
         println "              missing"
         println ""
         println "Missing the Boost library. This has to be built by activating the Maven profile 'with-boost'. This only has to be built once."
@@ -314,14 +318,14 @@ def checkOpenSSL() {
     def output
     try {
         output = "openssl version".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     Matcher matcher = extractVersion(output)
-    if(matcher.size() > 0) {
+    if (matcher.size() > 0) {
         def curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
-        if(!result) {
+        if (!result) {
             allConditionsMet = false
         }
     } else {
@@ -337,18 +341,18 @@ def checkDocker() {
     def output
     try {
         output = "docker info".execute().text
-    } catch(IOException e) {
+    } catch (IOException e) {
         output = ""
     }
     // Check if Docker is installed at all
     def matcher1 = output =~ /Server:/
-    if(matcher1.size() > 0) {
+    if (matcher1.size() > 0) {
         // If it is check if the daemon is running and if the version is ok
         def matcher2 = output =~ /Server Version: (\d+\.\d+(\.\d+)?).*/
-        if(matcher2.size() > 0) {
+        if (matcher2.size() > 0) {
             def curVersion = matcher2[0][1]
             def result = checkVersionAtLeast(curVersion, "1.0.0")
-            if(!result) {
+            if (!result) {
                 allConditionsMet = false
             }
         } else {
@@ -359,7 +363,7 @@ def checkDocker() {
         println "missing"
         allConditionsMet = false
     }
-        // TODO: Implement the actual check ...
+    // TODO: Implement the actual check ...
 }
 
 /**
@@ -380,7 +384,7 @@ private Matcher extractVersion(input) {
 
 def osString = project.properties['os.classifier']
 def osMatcher = osString =~ /(.*)-(.*)/
-if(osMatcher.size() == 0) {
+if (osMatcher.size() == 0) {
     throw new RuntimeException("Currently unsupported OS")
 }
 def os = osMatcher[0][1]
@@ -406,34 +410,34 @@ def sandboxEnabled = false
 def apacheReleaseEnabled = false
 def activeProfiles = session.request.activeProfiles
 for (def activeProfile : activeProfiles) {
-    if(activeProfile == "with-boost") {
+    if (activeProfile == "with-boost") {
         boostEnabled = true
         println "boost"
-    } else if(activeProfile == "with-c") {
+    } else if (activeProfile == "with-c") {
         cEnabled = true
         println "c"
-    } else if(activeProfile == "with-cpp") {
+    } else if (activeProfile == "with-cpp") {
         cppEnabled = true
         println "cpp"
-    } else if(activeProfile == "with-docker") {
+    } else if (activeProfile == "with-docker") {
         dockerEnabled = true
         println "docker"
-    } else if(activeProfile == "with-dotnet") {
+    } else if (activeProfile == "with-dotnet") {
         dotnetEnabled = true
         println "dotnet"
-    } else if(activeProfile == "with-logstash") {
+    } else if (activeProfile == "with-logstash") {
         logstashEnabled = true
         println "logstash"
-    } else if(activeProfile == "with-python") {
+    } else if (activeProfile == "with-python") {
         pythonEnabled = true
         println "python"
-    } else if(activeProfile == "with-proxies") {
+    } else if (activeProfile == "with-proxies") {
         proxiesEnabled = true
         println "proxies"
-    } else if(activeProfile == "with-sandbox") {
+    } else if (activeProfile == "with-sandbox") {
         sandboxEnabled = true
         println "sandbox"
-    } else if(activeProfile == "apache-release") {
+    } else if (activeProfile == "apache-release") {
         apacheReleaseEnabled = true
         println "apache-release"
     }
@@ -442,9 +446,9 @@ println ""
 
 // - Windows:
 //     - Check the length of the path of the base dir as we're having issues with the length of paths being too long.
-if(os == "win") {
+if (os == "win") {
     File pomFile = project.model.pomFile
-    if(pomFile.absolutePath.length() > 100) {
+    if (pomFile.absolutePath.length() > 100) {
         println "On Windows we encounter problems with maximum path lengths. " +
             "Please move the project to a place it has a shorter base path " +
             "and run the build again."
@@ -452,7 +456,7 @@ if(os == "win") {
     }
 }
 
-if(pythonEnabled && !proxiesEnabled) {
+if (pythonEnabled && !proxiesEnabled) {
     println "Currently the build of the python modules require the `with-proxies` profile to be enabled tpo."
     allConditionsMet = false;
 }
@@ -462,66 +466,76 @@ if(pythonEnabled && !proxiesEnabled) {
 // profiles.
 /////////////////////////////////////////////////////
 
-if(proxiesEnabled) {
+if (proxiesEnabled) {
     checkBison()
-    if(!boostEnabled) {
+    if (!boostEnabled) {
         checkBoost()
     }
 }
 
-if(dotnetEnabled) {
+if (dotnetEnabled) {
     checkDotnet()
 }
 
-if(logstashEnabled) {
+if (logstashEnabled) {
     // Logstash doesn't compile with java versions above 11 (currently)
     checkJavaVersion(null, "11")
 }
 
-if(proxiesEnabled) {
+if (proxiesEnabled) {
     checkFlex()
     checkOpenSSL()
 }
 
-if(proxiesEnabled || cppEnabled) {
+if (proxiesEnabled || cppEnabled) {
     checkClang()
     // The cmake-maven-plugin requires at least java 11
     checkJavaVersion("11", null)
     checkGcc()
 }
 
-if(javaEnabled) {
+if (javaEnabled) {
     checkGit()
 }
 
-if(cEnabled) {
+if (cEnabled) {
     // The cmake-maven-plugin requires at least java 11
     checkJavaVersion("11", null)
     checkGcc()
 }
 
-if(proxiesEnabled || cppEnabled) {
+if (proxiesEnabled || cppEnabled) {
     checkGpp()
 }
 
-if(pythonEnabled) {
+if (pythonEnabled) {
     checkPython()
 }
 
+// Boost needs the visual-studio `cl` compiler to compile the boostrap.
+if (boostEnabled && (os == "win")) {
+    // TODO: checkVisualStudio()
+}
+
 // We only need this check, if boost is not enabled but we're enabling cpp.
-if(!boostEnabled && cppEnabled) {
+if (!boostEnabled && cppEnabled) {
     checkBoost()
 }
 
-if(sandboxEnabled && dockerEnabled) {
+if (sandboxEnabled && dockerEnabled) {
     checkDocker()
 }
 
-if(apacheReleaseEnabled) {
+if (apacheReleaseEnabled) {
     // TODO: Check libpcap is installed
 }
 
-if(!allConditionsMet) {
+if (cppEnabled && (os == "win")) {
+    print "Unfortunately currently we don't support building the 'with-cpp' profile on windows. This will definitely change in the future."
+    allConditionsMet = false
+}
+
+if (!allConditionsMet) {
     throw new RuntimeException("Not all conditions met, see log for details.")
 }
 println ""
