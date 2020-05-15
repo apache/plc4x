@@ -51,11 +51,11 @@ public class Plc4XComponentTest extends CamelTestSupport {
                 Plc4XEndpoint producer = getContext().getEndpoint("plc4x:mock:10.10.10.1/1/1", Plc4XEndpoint.class);
                 producer.setTags(tags);
                 from("direct:plc4x")
-                    .setBody(constant(Arrays.asList(new TagData("test","testAddress",false))))
+                    .setBody(constant(Collections.singletonMap("test",Collections.singletonMap("testAddress",false))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from("direct:plc4x2")
-                    .setBody(constant(Arrays.asList(new TagData("test2","testAddress2",0x05))))
+                    .setBody(constant(Collections.singletonMap("test2",Collections.singletonMap("testAddress2",0x05))))
                     .to("plc4x:mock:10.10.10.1/1/1")
                     .to("mock:result");
                 from(producer)
