@@ -40,7 +40,6 @@ import java.util.regex.Pattern;
 public class TriggerConfiguration{
     private static final Logger logger = LoggerFactory.getLogger(TriggerConfiguration.class);
 
-    //private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
     private static final String TRIGGER = "TRIGGER_VAR";
     private static final String SCHEDULED       = "SCHEDULED";
     private static final String PREVIOUS_DEF    = "PREV";
@@ -56,7 +55,7 @@ public class TriggerConfiguration{
     private List<TriggerElement> triggerElementList;
 
     /**
-     * default constructor when an S7Field should be used for triggering
+     * default constructor when an Field should be used for triggering
      * @param triggerType type of trigger from enum
      * @param scrapeInterval scrape interval of triggered variable
      * @param triggerElementList list of triggerElemts with concat that combined is used as triger
@@ -75,10 +74,10 @@ public class TriggerConfiguration{
 
         String exceptionMessage;
 
-        if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR) ||this.triggerType.equals(TriggerType.TRIGGER_VAR) ) {
+        if(this.triggerType.equals(TriggerType.TRIGGER_VAR) ) {
             //test for valid field-connection string, on exception quit job and return message to user
             if(this.triggerElementList.isEmpty()){
-                exceptionMessage = String.format("No items in trigger List for trigger-type S7_TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
+                exceptionMessage = String.format("No items in trigger List for trigger-type TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             checkTriggerVarList();
@@ -150,7 +149,7 @@ public class TriggerConfiguration{
     /**
      * defines the used base type for comparison
      * @return the detected base type
-     * @throws ScraperException when an unsupported S7-Type is chosen,which is not (yet) implemented for comparison
+     * @throws ScraperException when an unsupported Type is chosen,which is not (yet) implemented for comparison
      * ToDo check how to handle time-variables if needed
      */
     private static Class<?> validateDataType(PlcField plcField) throws ScraperConfigurationException {
@@ -541,12 +540,11 @@ public class TriggerConfiguration{
             this.plcConnectionString = plcConnectionString;
             if(triggerStrategy.equals(TRIGGER)){
                 try {
-                    //this.plcField = S7Field.of(this.plcFieldString);
                     this.plcField = prepareField(plcFieldString);
                 }
                 catch (Exception e){
                     if(logger.isDebugEnabled()) {
-                        logger.debug("Exception occurred parsing a S7Field");
+                        logger.debug("Exception occurred parsing a PlcField");
                     }
                     throw new ScraperConfigurationException("Exception on parsing S7Field (" + plcField + "): " + e.getMessage());
                 }
