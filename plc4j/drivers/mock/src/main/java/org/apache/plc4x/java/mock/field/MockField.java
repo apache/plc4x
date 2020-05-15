@@ -21,19 +21,36 @@ package org.apache.plc4x.java.mock.field;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MockField implements PlcField {
 
-    private final String address;
-    private final MockPlcValue plcValue;
+    private String address;
+    private MockPlcValue plcValue;
+    private MockType type;
 
+    private static final Pattern PATTERN =
+        Pattern.compile("%(?<name>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<type>[A-Z]*)");
 
     public static MockField of(String addressString) throws PlcInvalidFieldException {
-        return new MockField(addressString);
+        Matcher matcher = PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+            String addr = matcher.group("name");
+            MockType type = MockType.valueOf(matcher.group("type"));
+            return new MockField(addr, type);
+        }
+        return null;
     }
 
     public MockField(String address) {
         this.address = address;
         this.plcValue = null;
+    }
+
+    public MockField(String address, MockType type) {
+        this.address = address;
+        this.type = type;
     }
 
     public MockField(String address, MockPlcValue plcValue) {
@@ -65,4 +82,18 @@ public class MockField implements PlcField {
         return address.hashCode();
     }
 
+
+    @Override
+    public Class<?> getDefaultJavaType() {
+        switch (type) {
+            case BOOL:
+                return Boolean.class;
+            case INT:
+                return Integer.class;
+            case REAL:
+                return Double.class;
+            default:
+                return null;
+        }
+    }
 }
