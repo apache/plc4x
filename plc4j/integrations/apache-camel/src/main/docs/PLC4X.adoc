@@ -60,5 +60,5 @@ read from the PLC.
 To write data to the PLC, we also use a `Map`. The difference with the Producer is that the `Value` of the Map has also to
 be a Map. Also, this `Map` has to be set into the `Body` of the `Message`
 
-// endpoint options: START
-// endpoint options: END
+The used `Map` would be a `Map<String,Map<String,Object>` where the `Map<String,Object>` represent the Query and the
+data we want to write to it.
