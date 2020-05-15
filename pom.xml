@@ -1287,7 +1287,9 @@
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
-            <arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments>
+            <!-- TODO: Find out why antlr4 plugin doesn't like this -->
+            <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
+            <arguments>-Papache-release ${arguments}</arguments>
           </configuration>
         </plugin>
       </plugins>
