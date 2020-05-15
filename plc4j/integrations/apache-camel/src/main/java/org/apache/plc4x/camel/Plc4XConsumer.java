@@ -119,6 +119,7 @@ public class Plc4XConsumer extends DefaultConsumer {
             try {
                 ScraperConfiguration configuration =  getScraperConfig(validateTags());
                 TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
+
                 TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
                     try {
                         Exchange exchange = plc4XEndpoint.createExchange();

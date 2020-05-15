@@ -31,6 +31,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,16 +57,16 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         Object body = in.getBody();
         PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
         if (body instanceof Map) { //Check if we have a Map
-            Map<String, Map.Entry<String, Object>> tags = (Map<String, Map.Entry<String, Object>>) body;
-            for (Map.Entry<String, Map.Entry<String, Object>> entry : tags.entrySet()) {
-                //Tags are stored like this --> Map<Tagname,Entry<Query,Value>> for writing
+            Map<String, Map<String, Object>> tags = (Map<String, Map<String, Object>>) body;
+            for (Map.Entry<String, Map<String, Object>> entry : tags.entrySet()) {
+                //Tags are stored like this --> Map<Tagname,Map<Query,Value>> for writing
                 String name = entry.getKey();
-                String query = entry.getValue().getKey();
-                Object value = entry.getValue().getValue();
+                String query = entry.getValue().keySet().iterator().next();
+                Object value = entry.getValue().get(query);
                 builder.addItem(name,query,value);
             }
         } else {
-            throw new PlcInvalidFieldException("Parameter 'tags' has to be a List of TagData");
+            throw new PlcInvalidFieldException("The body must contain a Map<String,Map<String,Object>");
         }
 
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
