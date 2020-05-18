@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class EipField implements PlcField {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^%(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String TAG="tag";
     private static final String ELEMENTS="elementNb";
@@ -108,5 +108,26 @@ public class EipField implements PlcField {
             }
         }
         return null;
+    }
+
+    @Override
+    public Class<?> getDefaultJavaType() {
+        switch (type){
+            //ToDo differenciate Short, Integer and Long
+            case INT:
+            case DINT:
+            case SINT:
+            case LINT:
+                return java.lang.Integer.class;
+            case STRING:
+            case STRING36:
+                return java.lang.String.class;
+            case REAL:
+                return java.lang.Double.class;
+            case BOOL:
+                return java.lang.Boolean.class;
+            default:
+                return Object.class;
+        }
     }
 }

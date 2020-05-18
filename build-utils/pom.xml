@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-build-utils</artifactId>
@@ -37,6 +37,7 @@
     <module>language-base-freemarker</module>
     <module>protocol-base-mspec</module>
 
+    <module>language-c</module>
     <module>language-java</module>
     <module>protocol-test</module>
   </modules>

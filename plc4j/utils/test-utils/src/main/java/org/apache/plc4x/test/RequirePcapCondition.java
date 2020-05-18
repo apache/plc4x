@@ -44,11 +44,11 @@ public class RequirePcapCondition implements ExecutionCondition {
                 String versionString = matcher.group("version");
                 return ConditionEvaluationResult.enabled("Found libpcap version " + versionString);
             }
-        } catch(Exception e) {
+        } catch(Throwable e) {
             logger.info("Error detecting libpcap version.", e);
         }
         if(SystemUtils.IS_OS_WINDOWS) {
-            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid WinPcap version. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed freatures.");
+            return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid WinPcap version. Please install from here: https://sourceforge.net/projects/winpcap413-176/ as this version supports all needed features.");
         } else {
             return ConditionEvaluationResult.disabled("Test disabled due to missing or invalid libpcap version. Please install at least version 1.1.0 to support all features.");
         }

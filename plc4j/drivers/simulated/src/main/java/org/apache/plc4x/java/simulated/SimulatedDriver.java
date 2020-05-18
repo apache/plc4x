@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.simulated.connection.SimulatedConnection;
 import org.apache.plc4x.java.simulated.connection.SimulatedDevice;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.osgi.service.component.annotations.Component;
+import org.apache.plc4x.java.simulated.field.SimulatedField;
 
 /**
  * Test driver holding its state in the client process.
@@ -33,7 +33,6 @@ import org.osgi.service.component.annotations.Component;
  * Every device contains a random value generator accessible by address {@code random}.
  * Any value can be stored into test devices, however the state will be gone when connection is closed.
  */
-@Component(service = PlcDriver.class, immediate = true)
 public class SimulatedDriver implements PlcDriver {
 
     @Override
@@ -60,6 +59,11 @@ public class SimulatedDriver implements PlcDriver {
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("Test driver does not support authentication.");
+    }
+
+    @Override
+    public SimulatedField prepareField(String query){
+        return SimulatedField.of(query);
     }
 
 }

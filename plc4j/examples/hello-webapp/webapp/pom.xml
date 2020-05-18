@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-webapp</artifactId>
@@ -39,6 +39,13 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -79,7 +86,7 @@
             <usedDependency>org.apache.flex.blazeds:blazeds-spring-boot-starter</usedDependency>
             <usedDependency>org.apache.flex.blazeds:flex-messaging-remoting</usedDependency>
             <usedDependency>org.apache.plc4x.examples:plc4j-hello-webapp-client</usedDependency>
-            <usedDependency>jakarta.jms:jakarta.jms-api</usedDependency>
+            <usedDependency>org.apache.activemq:activemq-client</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -102,17 +109,29 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.7.0-SNAPSHOT</version>
+      <version>0.8.0-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -136,6 +155,12 @@
       <groupId>org.apache.flex.blazeds</groupId>
       <artifactId>blazeds-spring-boot-starter</artifactId>
       <version>${blazeds.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.flex.blazeds</groupId>
@@ -146,6 +171,12 @@
       <groupId>org.apache.flex.blazeds</groupId>
       <artifactId>flex-messaging-common</artifactId>
       <version>${blazeds.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>xml-apis</artifactId>
+          <groupId>xml-apis</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.flex.blazeds</groupId>
@@ -174,9 +205,17 @@
           <groupId>com.adobe.blazeds</groupId>
           <artifactId>blazeds-remoting</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -185,10 +224,12 @@
       <groupId>jakarta.annotation</groupId>
       <artifactId>jakarta.annotation-api</artifactId>
     </dependency>
+
+    <!-- Not really required however BlazeDS seems to fail if this is missing -->
     <dependency>
-      <groupId>jakarta.jms</groupId>
-      <artifactId>jakarta.jms-api</artifactId>
-      <version>2.0.3</version>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+      <version>5.15.12</version>
     </dependency>
 
     <dependency>
@@ -204,8 +245,25 @@
       <dependency>
         <groupId>org.apache.plc4x.examples</groupId>
         <artifactId>plc4j-hello-webapp-client</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>0.8.0-SNAPSHOT</version>
         <type>war</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-driver-opcua</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

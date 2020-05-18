@@ -21,17 +21,31 @@ package org.apache.plc4x.java.amsads.configuration;
 import org.apache.plc4x.java.amsads.AMSADSPlcDriver;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class AdsConfiguration implements Configuration, TcpTransportConfiguration, SerialTransportConfiguration {
 
+    @Required
+    @ConfigurationParameter
+    @ParameterConverter(AmsNetIdConverter.class)
     protected AmsNetId targetAmsNetId;
 
+    @Required
+    @ConfigurationParameter
     protected int targetAmsPort;
 
+    @Required
+    @ConfigurationParameter
+    @ParameterConverter(AmsNetIdConverter.class)
     protected AmsNetId sourceAmsNetId;
 
+    @Required
+    @ConfigurationParameter
     protected int sourceAmsPort;
 
     public AmsNetId getTargetAmsNetId() {
@@ -71,4 +85,21 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         return AMSADSPlcDriver.TCP_PORT;
     }
 
+    @Override
+    public int getBaudRate() {
+        return 57600;
+    }
+
+    public static class AmsNetIdConverter implements ConfigurationParameterConverter<AmsNetId> {
+
+        @Override
+        public Class<AmsNetId> getType() {
+            return AmsNetId.class;
+        }
+
+        @Override
+        public AmsNetId convert(String value) {
+            return AMSADSPlcDriver.AmsNetIdOf(value);
+        }
+    }
 }

@@ -24,7 +24,7 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcua.connection.OpcuaConnectionFactory;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.osgi.service.component.annotations.Component;
+import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
  *
  * Created by Matthias Milan Strljic on 10.05.2019
  */
-@Component(service = PlcDriver.class, immediate = true)
 public class OpcuaPlcDriver implements PlcDriver {
 
 
@@ -83,6 +82,11 @@ public class OpcuaPlcDriver implements PlcDriver {
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("opcua does not support Auth at this state");
+    }
+
+    @Override
+    public OpcuaField prepareField(String query){
+        return OpcuaField.of(query);
     }
 
 }

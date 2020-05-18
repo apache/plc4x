@@ -17,4 +17,4 @@
   under the License.
 ]]
 
-add_subdirectory(hello-world-plc4x)
+#add_subdirectory(hello-world-plc4x)

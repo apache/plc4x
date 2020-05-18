@@ -19,7 +19,6 @@
 package org.apache.plc4x.camel;
 
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.main.BaseMainSupport;
 import org.apache.camel.main.Main;
 import org.apache.camel.main.MainListenerSupport;
 
@@ -68,15 +67,7 @@ public class ManualTest {
 
     public static class Events extends MainListenerSupport {
 
-        @Override
-        public void afterStart(BaseMainSupport main) {
-            System.out.println("MainExample with Camel is now started!");
-        }
 
-        @Override
-        public void beforeStop(BaseMainSupport main) {
-            System.out.println("MainExample with Camel is now being stopped!");
-        }
 
     }
 }
