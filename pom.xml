@@ -1095,22 +1095,12 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1452,6 +1442,42 @@
       </build>
     </profile>
 
+    <!--
+      It seems Java 8 has problems with the "illega-access" setting,
+      so we need to make this self-activating.
+    -->
+    <profile>
+      <id>_allow_illegal_access_reflection_in_tests</id>
+      <activation>
+        <jdk>[1.9,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <argLine>
+                  --illegal-access=permit
+                </argLine>
+              </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration>
+                <argLine>
+                  --illegal-access=permit
+                </argLine>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
     <!-- Build PLC4X including the Sandbox modules -->
     <profile>
       <id>with-sandbox</id>
@@ -1737,6 +1763,7 @@
               <algorithms>
                 <algorithm>SHA-512</algorithm>
               </algorithms>
+              <includeRelativePath>true</includeRelativePath>
               <fileSets>
                 <fileSet>
                   <directory>${project.build.directory}</directory>
