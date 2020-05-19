@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.7.1-SNAPSHOT</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -45,6 +45,9 @@
     <module>test-streampipes-plc4x-adapters</module>
     <module>test-streampipes-plc4x-processors</module>
     <module>test-streampipes-plc4x-shared</module>
+
+    <!-- Examples -->
+    <module>hello-influx-data-collection</module>
   </modules>
 
   <dependencies>

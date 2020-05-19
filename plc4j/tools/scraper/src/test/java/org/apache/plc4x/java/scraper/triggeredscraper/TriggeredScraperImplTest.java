@@ -32,7 +32,6 @@ import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.T
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -76,7 +75,6 @@ public class TriggeredScraperImplTest {
      * Test is added because we assume some strange behavior.
      */
     @Test
-    @Disabled
     public void scrapeMultipleTargets() throws ScraperException, IOException, InterruptedException {
         // Prepare the Mocking
         // Scrate Jobs 1 and 2
