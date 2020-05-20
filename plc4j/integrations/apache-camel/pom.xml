@@ -171,7 +171,6 @@
       <version>${camel.version}</version>
     </dependency>
 
-
     <!-- Support camel documentation-->
     <!-- TODO: Do we need this? -->
     <!--dependency>

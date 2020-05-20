@@ -26,21 +26,21 @@ import java.util.regex.Pattern;
 
 public class MockField implements PlcField {
 
-    private  String address;
+    private String address;
     private MockPlcValue plcValue;
-    private  MockType type;
+    private MockType type;
 
     private static final Pattern PATTERN =
         Pattern.compile("%(?<name>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<type>[A-Z]*)");
 
     public static MockField of(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = PATTERN.matcher(addressString);
-        if (matcher.matches()){
+        if (matcher.matches()) {
             String addr = matcher.group("name");
             MockType type = MockType.valueOf(matcher.group("type"));
-            return new MockField(addr,type);
+            return new MockField(addr, type);
         }
-        return  null;
+        return null;
     }
 
     public MockField(String address) {
@@ -85,14 +85,15 @@ public class MockField implements PlcField {
 
     @Override
     public Class<?> getDefaultJavaType() {
-      switch(type){
-          case BOOL:
-              return Boolean.class;
-          case INT:
-              return Integer.class;
-          case REAL:
-              return Double.class;
-          default: return null;
-      }
+        switch (type) {
+            case BOOL:
+                return Boolean.class;
+            case INT:
+                return Integer.class;
+            case REAL:
+                return Double.class;
+            default:
+                return null;
+        }
     }
 }

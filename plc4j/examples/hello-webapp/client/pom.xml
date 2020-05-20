@@ -111,7 +111,7 @@
     <dependency>
       <groupId>org.apache.royale.framework</groupId>
       <artifactId>JewelTheme</artifactId>
-      <version>0.9.7-SNAPSHOT</version>
+      <version>${royale.version}</version>
       <type>swc</type>
       <scope>theme</scope>
       <classifier>js</classifier>

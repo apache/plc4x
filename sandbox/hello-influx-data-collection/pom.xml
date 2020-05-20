@@ -22,13 +22,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.plc4x.examples</groupId>
-    <artifactId>plc4j-examples</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <groupId>org.apache.plc4x.sandbox</groupId>
+    <artifactId>plc4x-sandbox</artifactId>
+    <version>0.7.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-influx-data-collection</artifactId>
-  <name>PLC4J: Examples: Hello InfluxDB Data Collection</name>
+  <name>Sandbox: PLC4J: Examples: Hello InfluxDB Data Collection</name>
   <description>Data Collection with PLC4X and InfluxDB.</description>
 
   <properties>
@@ -91,7 +91,15 @@
 
   <build>
     <plugins>
+      <!-- This is just examples including these checks here requires an insane amount of housekeeping. -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
@@ -102,7 +110,7 @@
             <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
           </usedDependencies>
         </configuration>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 
