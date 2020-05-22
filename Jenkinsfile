@@ -172,8 +172,10 @@ pipeline {
             }
             steps {
                 echo 'Building Site'
+                sh 'java --version'
+                sh 'mvn --version'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -X -pl .'
+                sh './mvnw -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -X -pl .'
             }
         }
 
