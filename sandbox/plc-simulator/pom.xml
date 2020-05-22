@@ -78,19 +78,14 @@
   <dependencies>
     <!-- The Server is based on the same generated code as the client -->
     <dependency>
-      <groupId>org.apache.plc4x.sandbox</groupId>
-      <artifactId>test-java-s7-driver</artifactId>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-s7</artifactId>
       <version>0.8.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-driver-base-java</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-protocol-driver-base</artifactId>
+      <artifactId>plc4j-spi</artifactId>
       <version>0.8.0-SNAPSHOT</version>
     </dependency>
 

@@ -26,7 +26,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends GeneratedDriverByteToMessageCodec<BASE_PACKET_CLASS> {
+public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> extends GeneratedDriverByteToMessageCodec<BASE_PACKET_CLASS> {
 
     private final ToIntFunction<ByteBuf> packetSizeEstimator;
     private final Consumer<ByteBuf> corruptPackageRemover;
