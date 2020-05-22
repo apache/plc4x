@@ -21,11 +21,11 @@ package org.apache.plc4x.simulator.server.s7.protocol;
 import io.netty.channel.*;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.types.*;
-import org.apache.plc4x.simulator.model.Context;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.simulator.server.s7.S7PlcHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -34,7 +34,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7Step7ServerAdapter.class);
 
-    private Context context;
+    private S7PlcHandler handler;
 
     private State state;
 
@@ -56,8 +56,8 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
     private static final int maxPduLength = 240;
     private int pduLength;
 
-    public S7Step7ServerAdapter(Context context) {
-        this.context = context;
+    public S7Step7ServerAdapter(S7PlcHandler handler) {
+        this.handler = handler;
         state = State.INITIAL;
     }
 
@@ -257,14 +257,19 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                     }
                                                     final byte bitAddress = addressAny.getBitAddress();
                                                     switch (addressAny.getTransportSize()) {
-                                                        case INT:
+                                                        case INT: // These case should never happen. UINT will always be picked
                                                         case UINT: {
-                                                            String firstKey = context.getMemory().keySet().iterator().next();
-                                                            Object value = context.getMemory().get(firstKey);
-                                                            short shortValue = 42; // ((Number) value).shortValue();
-                                                            byte[] data = new byte[2];
-                                                            data[0] = (byte) (shortValue & 0xff);
-                                                            data[1] = (byte) ((shortValue >> 8) & 0xff);
+                                                            // The value should be represented as Short
+                                                            S7PlcHandler.S7Int s7Int = handler.readIntFromDataBlock(addressAny.getDbNumber(), addressAny.getByteAddress(), addressAny.getBitAddress());
+
+                                                            WriteBuffer writeBuffer = new WriteBuffer(2, false);
+                                                            if (s7Int.isSigned()) {
+                                                                writeBuffer.writeShort(16, s7Int.getSigned());
+                                                            } else {
+                                                                writeBuffer.writeUnsignedInt(16, s7Int.getUnsigned());
+                                                            }
+                                                            byte[] data = writeBuffer.getData();
+
                                                             payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, 8 * data.length, data);
                                                             break;
                                                         }
@@ -279,7 +284,8 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                     final int ioNumber = (addressAny.getByteAddress() * 8) + addressAny.getBitAddress();
                                                     final int numElements = (addressAny.getTransportSize() == TransportSize.BOOL) ?
                                                         addressAny.getNumberOfElements() : addressAny.getTransportSize().getSizeInBytes() * 8;
-                                                    final BitSet bitSet = toBitSet(context.getDigitalInputs(), ioNumber, numElements);
+                                                    // TODO
+                                                    final BitSet bitSet = new BitSet(); //toBitSet(handler.getDigitalInputs(), ioNumber, numElements);
                                                     final byte[] data = Arrays.copyOf(bitSet.toByteArray(), (numElements + 7) / 8);
                                                     payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, 8 * data.length, data);
                                                     break;

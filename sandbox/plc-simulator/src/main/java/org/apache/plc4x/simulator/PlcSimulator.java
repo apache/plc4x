@@ -20,6 +20,8 @@ package org.apache.plc4x.simulator;
 
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
+import org.apache.plc4x.simulator.server.s7.S7PlcHandler;
+import org.apache.plc4x.simulator.server.s7.S7ServerModule;
 import org.apache.plc4x.simulator.simulation.SimulationModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +50,7 @@ public class PlcSimulator {
         SimulationModule foundSimulationModule = null;
         ServiceLoader<SimulationModule> simulationModuleLoader = ServiceLoader.load(SimulationModule.class, classLoader);
         for (SimulationModule curSimulationModule : simulationModuleLoader) {
-            if(curSimulationModule.getName().equals(simulationName)) {
+            if (curSimulationModule.getName().equals(simulationName)) {
                 LOGGER.info(String.format("Initializing simulation module: %s ...", simulationName));
                 foundSimulationModule = curSimulationModule;
                 context = curSimulationModule.getContext();
@@ -56,7 +58,7 @@ public class PlcSimulator {
             }
         }
         // If we couldn't find the simulation module provided, report an error and exit.
-        if(foundSimulationModule == null) {
+        if (foundSimulationModule == null) {
             LOGGER.info(String.format("Couldn't find simulation module %s", simulationName));
             System.exit(1);
         }
@@ -88,6 +90,31 @@ public class PlcSimulator {
         LOGGER.info("Starting Server Modules:");
         for (ServerModule serverModule : serverModules.values()) {
             LOGGER.info(String.format("Starting server module: %s ...", serverModule.getName()));
+            ((S7ServerModule) serverModule).setHandler(new S7PlcHandler() {
+                @Override
+                public void onConnectionInitiated() {
+
+                }
+
+                @Override
+                public void onConnectionEstablished() {
+
+                }
+
+                @Override
+                public void onConnectionClosed() {
+
+                }
+
+                @Override
+                public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) {
+                    if (byteAddress == 0) {
+                        return S7Int._int((short) -42);
+                    } else {
+                        return S7Int._uint(42);
+                    }
+                }
+            });
             serverModule.start();
             LOGGER.info("Started");
         }
@@ -98,7 +125,7 @@ public class PlcSimulator {
             while (running) {
                 try {
                     simulationModule.loop();
-                } catch(Exception e) {
+                } catch (Exception e) {
                     LOGGER.error("Caught error while executing loop() method of " + simulationModule.getName() +
                         " simulation.", e);
                 }

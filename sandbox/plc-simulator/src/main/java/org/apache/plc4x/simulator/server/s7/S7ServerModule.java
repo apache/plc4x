@@ -45,7 +45,8 @@ public class S7ServerModule implements ServerModule {
 
     private EventLoopGroup loopGroup;
     private EventLoopGroup workerGroup;
-    private Context context;
+    // private Context context;
+    private S7PlcHandler handler;
 
     @Override
     public String getName() {
@@ -54,12 +55,18 @@ public class S7ServerModule implements ServerModule {
 
     @Override
     public void setContext(Context context) {
-        this.context = context;
+        // Do Nothing...
+    }
+
+    public void setHandler(S7PlcHandler handler) {
+        this.handler = handler;
     }
 
     @Override
     public void start() throws SimulatorExcepiton {
-        S7Driver driver = new S7Driver();
+        if (this.handler == null) {
+            throw new IllegalStateException("A handler has to be set to start the PLC Server");
+        }
         if(loopGroup != null) {
             return;
         }
@@ -78,7 +85,7 @@ public class S7ServerModule implements ServerModule {
                         pipeline.addLast(new GeneratedProtocolMessageCodec<>(TPKTPacket.class, new TPKTPacketIO(), true, null,
                             new S7Driver.ByteLengthEstimator(),
                             new S7Driver.CorruptPackageCleaner()));
-                        pipeline.addLast(new S7Step7ServerAdapter(context));
+                        pipeline.addLast(new S7Step7ServerAdapter(handler));
                     }
                 }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
