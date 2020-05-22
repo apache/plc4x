@@ -173,10 +173,7 @@ pipeline {
             steps {
                 echo 'Building Site'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                // Explicitly deselecting the "_allow_illegal_access_reflection_in_tests"
-                // profile as there seem to be problems on the site building node to detect the java version.
-                // In this case we don't really care as no unit- or integration-tests are being executed.
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash,!_allow_illegal_access_reflection_in_tests site -pl .'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -X -pl .'
             }
         }
 
