@@ -215,7 +215,10 @@ pipeline {
                 // Unstash the previously stashed site.
                 unstash 'plc4x-site'
                 // Publish the site with the scm-publish plugin.
-                sh 'mvn -f jenkins.pom -X -P deploy-site scm-publish:publish-scm'
+                // Explicitly deselecting the "_allow_illegal_access_reflection_in_tests"
+                // profile as there seem to be problems on the site building node to detect the java version.
+                // In this case we don't really care as no unit- or integration-tests are being executed.
+                sh 'mvn -f jenkins.pom -X -P deploy-site,!_allow_illegal_access_reflection_in_tests scm-publish:publish-scm'
 
                 // Clean up the snapshots directory (freeing up more space after deploying).
                 dir("target/staging") {
