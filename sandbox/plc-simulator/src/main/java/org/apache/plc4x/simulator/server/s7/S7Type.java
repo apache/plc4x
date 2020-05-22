@@ -19,22 +19,22 @@
 
 package org.apache.plc4x.simulator.server.s7;
 
-import java.net.InetSocketAddress;
-
 /**
- * Handler for PLC Server.
+ * TODO write comment
  *
  * @author julian
  * Created by julian on 22.05.20
  */
-public interface S7PlcHandler {
+public enum S7Type {
+    INT(short.class),
+    UINT(int.class),
+    DINT(int.class),
+    LINT(long.class),
+    REAL(float.class);
 
-    void onConnectionInitiated(InetSocketAddress remoteAddress);
+    private Class<?> javaType;
 
-    void onConnectionEstablished();
-
-    void onConnectionClosed();
-
-    S7Value readDB(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException;
-
+    S7Type(Class<?> javaType) {
+        this.javaType = javaType;
+    }
 }

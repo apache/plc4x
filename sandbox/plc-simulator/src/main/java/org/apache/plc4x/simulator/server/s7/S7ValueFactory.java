@@ -32,42 +32,51 @@ import java.math.BigInteger;
 public class S7ValueFactory {
 
     // Signed 2 Byte INT
-    public static S7Int INT(short s) {
-        return S7Int.INT(s);
+    public static S7Value INT(short s) {
+        return new S7Value(S7Type.INT, s);
     }
 
     // Unsigned 2 Byte INT
-    public static S7Int UINT(int i) {
-        return S7Int.UINT(i);
+    public static S7Value UINT(int i) {
+        checkUnsigned(i);
+        return new S7Value(S7Type.UINT, i);
     }
 
     // Signed 4 Byte INT
-    public static S7Int DINT(int l) {
+    public static S7Value DINT(int i) {
+        return new S7Value(S7Type.DINT, i);
+    }
+
+    // Unsigned 4 Byte INT
+    public static S7Value UDINT(long l) {
+        checkUnsigned(l);
         throw new NotImplementedException("");
     }
 
     // Signed 8 Byte Int
-    public static S7Int LINT(long l) {
-        throw new NotImplementedException("");
-    }
-
-    // Unsigned 4 Byte INT
-    public static S7Int UDINT(long l) {
-        throw new NotImplementedException("");
+    public static S7Value LINT(long l) {
+        return new S7Value(S7Type.LINT, l);
     }
 
     // Unsigned 8 Byte INT
-    public static S7Int ULINT(BigInteger bi) {
+    public static S7Value ULINT(BigInteger bi) {
+        checkUnsigned(bi.doubleValue());
         throw new NotImplementedException("");
     }
 
     // 4 Byte floating point
-    public static Object REAL(float f) {
-        throw new NotImplementedException("");
+    public static S7Value REAL(float f) {
+        return new S7Value(S7Type.REAL, f);
     }
 
     // 8 Byte floating point
-    public static Object LREAL(double d) {
+    public static S7Value LREAL(double d) {
         throw new NotImplementedException("");
+    }
+
+    private static void checkUnsigned(double v) {
+        if (v < 0) {
+            throw new IllegalArgumentException("Unsigned Value cannot have negative value");
+        }
     }
 }

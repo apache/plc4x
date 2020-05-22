@@ -30,8 +30,7 @@ import java.util.ServiceLoader;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.plc4x.simulator.server.s7.S7ValueFactory.INT;
-import static org.apache.plc4x.simulator.server.s7.S7ValueFactory.UINT;
+import static org.apache.plc4x.simulator.server.s7.S7ValueFactory.*;
 
 public class PlcSimulator {
 
@@ -95,11 +94,15 @@ public class PlcSimulator {
             ((S7ServerModule) serverModule).setHandler(new S7PlcHandlerBase() {
 
                 @Override
-                public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
+                public S7Value readDB(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
                     if (byteAddress == 0) {
                         return INT((short) -42);
                     } else if (byteAddress == 2) {
                         return UINT(42);
+                    } else if (byteAddress == 4) {
+                        return LINT(-42);
+                    } else if (byteAddress == 12) {
+                        return DINT(-42);
                     } else {
                         throw new InvalidAddressException();
                     }

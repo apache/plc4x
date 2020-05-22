@@ -45,7 +45,7 @@ public abstract class S7PlcHandlerBase implements S7PlcHandler {
      * Will always return invalid address.
      */
     @Override
-    public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
+    public S7Value readDB(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
         throw new InvalidAddressException();
     }
 }

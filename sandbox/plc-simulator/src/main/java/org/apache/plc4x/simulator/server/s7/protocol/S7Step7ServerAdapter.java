@@ -19,12 +19,14 @@ under the License.
 package org.apache.plc4x.simulator.server.s7.protocol;
 
 import io.netty.channel.*;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.simulator.server.s7.InvalidAddressException;
 import org.apache.plc4x.simulator.server.s7.S7Int;
 import org.apache.plc4x.simulator.server.s7.S7PlcHandler;
+import org.apache.plc4x.simulator.server.s7.S7Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -267,34 +269,31 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                     final byte bitAddress = addressAny.getBitAddress();
                                                     switch (addressAny.getTransportSize()) {
                                                         case INT: // These case should never happen. UINT will always be picked
+                                                        case DINT:
+                                                        case LINT:
+                                                        case LTIME: // Is given for some transports LINT
+                                                        case UDINT: // Is given for DINT
                                                         case UINT: {
                                                             // The value should be represented as Short
-                                                            S7Int s7Int;
+                                                            S7Value value;
                                                             try {
-                                                                s7Int = handler.readIntFromDataBlock(addressAny.getDbNumber(), addressAny.getByteAddress(), addressAny.getBitAddress());
-                                                            } catch (InvalidAddressException e) {
-                                                                // Send a INVALID_ADDRESS response
-                                                                payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.INVALID_ADDRESS, DataTransportSize.NULL, 0, new byte[0]);
-                                                                break;
+                                                                value = handler.readDB(addressAny.getDbNumber(), addressAny.getByteAddress(), addressAny.getBitAddress());
                                                             } catch (Exception e) {
-                                                                // We have no idea, so just send INVALID_ADDRESS ?
+                                                                // Send a INVALID_ADDRESS response
                                                                 payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.INVALID_ADDRESS, DataTransportSize.NULL, 0, new byte[0]);
                                                                 break;
                                                             }
 
-                                                            WriteBuffer writeBuffer = new WriteBuffer(2, false);
-                                                            if (s7Int.isSigned()) {
-                                                                writeBuffer.writeShort(16, s7Int.getSigned());
-                                                            } else {
-                                                                writeBuffer.writeUnsignedInt(16, s7Int.getUnsigned());
-                                                            }
-                                                            byte[] data = writeBuffer.getData();
+
+                                                            byte[] data = value.getData();
 
                                                             payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, 8 * data.length, data);
                                                             break;
                                                         }
                                                         default: {
-                                                            // TODO: Return invalid address.
+                                                            LOGGER.warn("Got a request with unhandled type {}, returning INVALID_ADDRESS", addressAny.getTransportSize());
+                                                            payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.INVALID_ADDRESS, DataTransportSize.NULL, 0, new byte[0]);
+                                                            break;
                                                         }
                                                     }
                                                     break;
