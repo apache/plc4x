@@ -22,10 +22,13 @@ import io.netty.channel.*;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.simulator.server.s7.InvalidAddressException;
+import org.apache.plc4x.simulator.server.s7.S7Int;
 import org.apache.plc4x.simulator.server.s7.S7PlcHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -72,6 +75,9 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                         LOGGER.error("Expecting COTP Connection-Request");
                         return;
                     }
+
+                    // Callback
+                    handler.onConnectionInitiated((InetSocketAddress) ctx.pipeline().channel().remoteAddress());
 
                     COTPTpduSize proposedTpduSize = null;
                     COTPPacketConnectionRequest cotpConnectionRequest = (COTPPacketConnectionRequest) cotpPacket;
@@ -145,6 +151,9 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                     S7MessageResponseData s7MessageResponse = new S7MessageResponseData(
                         s7TpduReference, s7ParameterSetupCommunicationResponse, null, (short) 0, (short) 0);
                     ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef)));
+
+                    // Now we should be connected
+                    handler.onConnectionEstablished();
 
                     state = State.S7_CONNECTED;
                     break;
@@ -260,7 +269,18 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                         case INT: // These case should never happen. UINT will always be picked
                                                         case UINT: {
                                                             // The value should be represented as Short
-                                                            S7PlcHandler.S7Int s7Int = handler.readIntFromDataBlock(addressAny.getDbNumber(), addressAny.getByteAddress(), addressAny.getBitAddress());
+                                                            S7Int s7Int;
+                                                            try {
+                                                                s7Int = handler.readIntFromDataBlock(addressAny.getDbNumber(), addressAny.getByteAddress(), addressAny.getBitAddress());
+                                                            } catch (InvalidAddressException e) {
+                                                                // Send a INVALID_ADDRESS response
+                                                                payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.INVALID_ADDRESS, DataTransportSize.NULL, 0, new byte[0]);
+                                                                break;
+                                                            } catch (Exception e) {
+                                                                // We have no idea, so just send INVALID_ADDRESS ?
+                                                                payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.INVALID_ADDRESS, DataTransportSize.NULL, 0, new byte[0]);
+                                                                break;
+                                                            }
 
                                                             WriteBuffer writeBuffer = new WriteBuffer(2, false);
                                                             if (s7Int.isSigned()) {

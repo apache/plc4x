@@ -19,22 +19,11 @@
 
 package org.apache.plc4x.simulator.server.s7;
 
-import java.net.InetSocketAddress;
-
 /**
- * Handler for PLC Server.
+ * Base class for Exceptions that can occur when a Filed is read.
  *
  * @author julian
  * Created by julian on 22.05.20
  */
-public interface S7PlcHandler {
-
-    void onConnectionInitiated(InetSocketAddress remoteAddress);
-
-    void onConnectionEstablished();
-
-    void onConnectionClosed();
-
-    S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException;
-
+public abstract class FieldReadException extends Exception {
 }

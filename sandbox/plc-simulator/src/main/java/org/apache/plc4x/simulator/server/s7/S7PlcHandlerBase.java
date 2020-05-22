@@ -22,19 +22,30 @@ package org.apache.plc4x.simulator.server.s7;
 import java.net.InetSocketAddress;
 
 /**
- * Handler for PLC Server.
- *
- * @author julian
- * Created by julian on 22.05.20
+ * Base Implementation.
  */
-public interface S7PlcHandler {
+public abstract class S7PlcHandlerBase implements S7PlcHandler {
 
-    void onConnectionInitiated(InetSocketAddress remoteAddress);
+    @Override
+    public void onConnectionInitiated(InetSocketAddress remoteAddress) {
+        // Intentionally do nothing
+    }
 
-    void onConnectionEstablished();
+    @Override
+    public void onConnectionEstablished() {
+        // Intentionally do nothing
+    }
 
-    void onConnectionClosed();
+    @Override
+    public void onConnectionClosed() {
+        // Intentionally do nothing
+    }
 
-    S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException;
-
+    /**
+     * Will always return invalid address.
+     */
+    @Override
+    public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
+        throw new InvalidAddressException();
+    }
 }

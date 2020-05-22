@@ -20,8 +20,7 @@ package org.apache.plc4x.simulator;
 
 import org.apache.plc4x.simulator.model.Context;
 import org.apache.plc4x.simulator.server.ServerModule;
-import org.apache.plc4x.simulator.server.s7.S7PlcHandler;
-import org.apache.plc4x.simulator.server.s7.S7ServerModule;
+import org.apache.plc4x.simulator.server.s7.*;
 import org.apache.plc4x.simulator.simulation.SimulationModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+
+import static org.apache.plc4x.simulator.server.s7.S7ValueFactory.INT;
+import static org.apache.plc4x.simulator.server.s7.S7ValueFactory.UINT;
 
 public class PlcSimulator {
 
@@ -90,30 +92,19 @@ public class PlcSimulator {
         LOGGER.info("Starting Server Modules:");
         for (ServerModule serverModule : serverModules.values()) {
             LOGGER.info(String.format("Starting server module: %s ...", serverModule.getName()));
-            ((S7ServerModule) serverModule).setHandler(new S7PlcHandler() {
-                @Override
-                public void onConnectionInitiated() {
-
-                }
+            ((S7ServerModule) serverModule).setHandler(new S7PlcHandlerBase() {
 
                 @Override
-                public void onConnectionEstablished() {
-
-                }
-
-                @Override
-                public void onConnectionClosed() {
-
-                }
-
-                @Override
-                public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) {
+                public S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException {
                     if (byteAddress == 0) {
-                        return S7Int._int((short) -42);
+                        return INT((short) -42);
+                    } else if (byteAddress == 2) {
+                        return UINT(42);
                     } else {
-                        return S7Int._uint(42);
+                        throw new InvalidAddressException();
                     }
                 }
+
             });
             serverModule.start();
             LOGGER.info("Started");

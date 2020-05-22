@@ -51,7 +51,8 @@ public abstract class BaseOptimizer {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
                     fields.put(fieldName,
                         new ResponseItem<>(subReadResponse.getResponseCode(fieldName),
-                            subReadResponse.getAsPlcValue().getValue(fieldName)));
+                            // We cannot safely access the response value if response code != OK
+                            subReadResponse.getResponseCode(fieldName) == PlcResponseCode.OK ? subReadResponse.getAsPlcValue().getValue(fieldName) : null));
                 } else {
                     fields.put(fieldName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }

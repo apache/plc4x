@@ -19,22 +19,12 @@
 
 package org.apache.plc4x.simulator.server.s7;
 
-import java.net.InetSocketAddress;
-
 /**
- * Handler for PLC Server.
+ * Exception that indicates that the Field is not known.
+ * This results in {@link org.apache.plc4x.java.api.types.PlcResponseCode}s INVALID_ADDRESS.
  *
  * @author julian
  * Created by julian on 22.05.20
  */
-public interface S7PlcHandler {
-
-    void onConnectionInitiated(InetSocketAddress remoteAddress);
-
-    void onConnectionEstablished();
-
-    void onConnectionClosed();
-
-    S7Int readIntFromDataBlock(int dbNumber, int byteAddress, byte bitAddress) throws FieldReadException;
-
+public class InvalidAddressException extends FieldReadException {
 }
