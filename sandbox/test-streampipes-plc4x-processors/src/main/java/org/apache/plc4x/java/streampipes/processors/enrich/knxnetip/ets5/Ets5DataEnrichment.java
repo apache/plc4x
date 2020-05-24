@@ -27,10 +27,10 @@ import org.apache.plc4x.java.knxnetip.ets5.model.GroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KnxDatapointIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.streampipes.model.runtime.Event;
-import org.streampipes.wrapper.context.EventProcessorRuntimeContext;
-import org.streampipes.wrapper.routing.SpOutputCollector;
-import org.streampipes.wrapper.runtime.EventProcessor;
+import org.apache.streampipes.model.runtime.Event;
+import org.apache.streampipes.wrapper.context.EventProcessorRuntimeContext;
+import org.apache.streampipes.wrapper.routing.SpOutputCollector;
+import org.apache.streampipes.wrapper.runtime.EventProcessor;
 
 import java.io.File;
 

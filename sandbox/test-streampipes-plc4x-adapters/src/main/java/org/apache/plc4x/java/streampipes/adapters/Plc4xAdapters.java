@@ -22,8 +22,8 @@ package org.apache.plc4x.java.streampipes.adapters;
 import org.apache.plc4x.java.streampipes.adapters.config.ConnectWorkerConfig;
 import org.apache.plc4x.java.streampipes.adapters.source.bacnetip.BacNetIpAdapter;
 import org.apache.plc4x.java.streampipes.adapters.source.knxnetip.KnxNetIpAdapter;
-import org.streampipes.connect.container.worker.init.AdapterWorkerContainer;
-import org.streampipes.connect.init.AdapterDeclarerSingleton;
+import org.apache.streampipes.connect.container.worker.init.AdapterWorkerContainer;
+import org.apache.streampipes.connect.init.AdapterDeclarerSingleton;
 
 public class Plc4xAdapters extends AdapterWorkerContainer {
 

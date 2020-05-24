@@ -19,8 +19,8 @@ under the License.
 
 package org.apache.plc4x.java.streampipes.adapters.config;
 
-import org.streampipes.config.SpConfig;
-import org.streampipes.connect.init.Config;
+import org.apache.streampipes.config.SpConfig;
+import org.apache.streampipes.connect.init.Config;
 
 public enum ConnectWorkerConfig {
 
