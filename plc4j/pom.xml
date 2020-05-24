@@ -350,7 +350,7 @@
       It seems Java 8 has problems with the "illega-access" setting,
       so we need to make this self-activating.
     -->
-    <profile>
+    <!--profile>
       <id>_allow_illegal_access_reflection_in_tests</id>
       <activation>
         <jdk>[1.9,)</jdk>
@@ -363,7 +363,7 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <configuration>
                 <argLine>
-                  --illegal-access=permit
+                  - -illegal-access=permit
                 </argLine>
               </configuration>
             </plugin>
@@ -373,14 +373,14 @@
               <artifactId>maven-failsafe-plugin</artifactId>
               <configuration>
                 <argLine>
-                  --illegal-access=permit
+                  - -illegal-access=permit
                 </argLine>
               </configuration>
             </plugin>
           </plugins>
         </pluginManagement>
       </build>
-    </profile>
+    </profile-->
   </profiles>
 
 </project>
