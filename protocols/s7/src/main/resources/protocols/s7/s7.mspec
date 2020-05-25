@@ -251,7 +251,7 @@
         ['0x04' S7PayloadUserDataItemCpuFunctionReadSzlRequest
         ]
         ['0x08' S7PayloadUserDataItemCpuFunctionReadSzlResponse
-            [simple   uint 16 'szlPartialListLength']
+            [const    uint 16 'szlItemLength' '28']
             [implicit uint 16 'szlItemCount'  'COUNT(items)']
             [array SzlDataTreeItem 'items' count 'szlItemCount']
         ]
@@ -486,7 +486,6 @@
     ['0x1C' COMPONENT_IDENTIFICATION]
     ['0x22' INTERRUPT_STATUS]
     ['0x25' ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS]
-    ['0x31' COMMUNICATION_CAPABILITY_PARAMETERS]
     ['0x32' COMMUNICATION_STATUS_DATA]
     ['0x74' STATUS_SINGLE_MODULE_LED]
     ['0x90' DP_MASTER_SYSTEM_INFORMATION]
