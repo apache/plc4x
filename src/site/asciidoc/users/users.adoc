@@ -34,9 +34,13 @@ On this page we are maintaining a list of companies openly communicating that th
 If your company is using Apache PLC4X and you would like to give back to the community, please create a Pull-Request on github or post an email to dev@plc4x.apache.org and give us the permission to list your company.
 
 |===
-|Name |Market |Description
+||Name |Market |Description
 
-|https://www.codecentric.de[codecentric AG] |IT Consulting |Individual Software Development
+||https://www.codecentric.de[codecentric AG] |IT Consulting |Individual Software Development
+
+|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200]|https://www.pragmaticminds.de[pragmatic minds GmbH] |Big Data / Analytics |We use PLC4X to collect data from different types of PLCs as preliminary step for data analytics and visualization.
+
+|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200]|https://www.pragmaticindustries.de[pragmatic industries GmbH] |(I)IoT / Industry 4.0 |PLC4X is an important part of our platform _Digital Cockpit_ which we develop in-house.
 
 // TODO: Add your company in alphabetical order ...
 
