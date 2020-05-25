@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-tools</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
 
   <artifactId>plc4x-tools-thrift</artifactId>
@@ -35,6 +35,7 @@
 
   <properties>
     <thrift.with.cpp>OFF</thrift.with.cpp>
+    <thrift.with.csharp>OFF</thrift.with.csharp>
     <thrift.with.python>OFF</thrift.with.python>
   </properties>
 
@@ -53,7 +54,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -62,11 +62,11 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <basedir>${cmake.root-dir}</basedir>
+                  <basedir>${cmake.root}</basedir>
                   <executable>chmod</executable>
                   <arguments>
                     <argument>+x</argument>
-                    <argument>${cmake.child-dir}</argument>
+                    <argument>cmake</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -89,7 +89,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <executions>
               <execution>
                 <id>make-cmake-executable</id>
@@ -98,11 +97,11 @@
                   <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <basedir>${cmake.root-dir}</basedir>
+                  <basedir>${cmake.root}</basedir>
                   <executable>chmod</executable>
                   <arguments>
                     <argument>+x</argument>
-                    <argument>${cmake.child-dir}</argument>
+                    <argument>cmake</argument>
                   </arguments>
                 </configuration>
               </execution>
@@ -120,8 +119,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
             <executions>
               <execution>
                 <id>package-thrift-cpp</id>
@@ -141,6 +140,37 @@
         </plugins>
       </build>
     </profile>
+    <!-- If C# is enabled, we need to add another assembly to the build to package the libraries -->
+    <profile>
+      <id>with-dotnet</id>
+      <properties>
+        <thrift.with.csharp>ON</thrift.with.csharp>
+      </properties>
+      <build>
+        <plugins>
+          <!-- This library is currently not buildable via CMake (yet) -->
+          <!--plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>package-thrift-cpp</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.artifactId}-${project.version}</finalName>
+                  <descriptors>
+                    <descriptor>src/assembly/csharp.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin-->
+        </plugins>
+      </build>
+    </profile>
     <!-- If Python is enabled, we need to add another assembly to the build to package the libraries -->
     <profile>
       <id>with-python</id>
@@ -150,8 +180,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.1.1</version>
             <executions>
               <execution>
                 <id>package-thrift-python</id>
@@ -178,7 +208,6 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.0</version>
         <executions>
           <!-- Download the CMake binary distribution for this platform. -->
           <execution>
@@ -241,7 +270,6 @@
       <plugin>
         <groupId>com.googlecode.cmake-maven-project</groupId>
         <artifactId>cmake-maven-plugin</artifactId>
-        <version>3.7.2-b1</version>
         <executions>
           <!-- Uses a CMake generator to generate the build using the build tool of choice -->
           <execution>
@@ -256,23 +284,53 @@
                 and tell the plugin where to find that version.
               -->
               <downloadBinaries>false</downloadBinaries>
-              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
-              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+              <cmakeDir>${cmake.root}</cmakeDir>
 
               <sourcePath>${project.build.directory}/thrift-${thrift.version}</sourcePath>
               <targetPath>${project.build.directory}/build</targetPath>
               <generator>${cmake.generator}</generator>
-              <!--
-                The classifier of the current platform. One of
-                [windows-x86_32, windows-x86_64, linux-x86_32, linux-x86_64, linux-arm_32, mac-x86_64].
-                It defines the version and type of the cmake installation to download.
-              -->
-              <classifier>${os.classifier}</classifier>
               <options>
                 <!-- Disable testing for now -->
                 <option>-DBUILD_TESTING=OFF</option>
+
+                <!-- Enable and disable the building of code generators for different languages -->
+                <option>-DTHRIFT_COMPILER_AS3=OFF</option>
+                <option>-DTHRIFT_COMPILER_C_GLIB=OFF</option>
+                <option>-DTHRIFT_COMPILER_CL=OFF</option>
+                <option>-DTHRIFT_COMPILER_CPP=${thrift.with.cpp}</option>
+                <option>-DTHRIFT_COMPILER_CSHARP=${thrift.with.csharp}</option>
+                <option>-DTHRIFT_COMPILER_D=OFF</option>
+                <option>-DTHRIFT_COMPILER_DART=OFF</option>
+                <option>-DTHRIFT_COMPILER_DELPHI=OFF</option>
+                <option>-DTHRIFT_COMPILER_ERL=OFF</option>
+                <option>-DTHRIFT_COMPILER_GO=OFF</option>
+                <option>-DTHRIFT_COMPILER_GV=OFF</option>
+                <option>-DTHRIFT_COMPILER_HAXE=OFF</option>
+                <option>-DTHRIFT_COMPILER_HS=OFF</option>
+                <option>-DTHRIFT_COMPILER_HTML=OFF</option>
+                <option>-DTHRIFT_COMPILER_JAVA=ON</option>
+                <option>-DTHRIFT_COMPILER_JAVAME=OFF</option>
+                <option>-DTHRIFT_COMPILER_JS=OFF</option>
+                <option>-DTHRIFT_COMPILER_JSON=OFF</option>
+                <option>-DTHRIFT_COMPILER_LUA=OFF</option>
+                <option>-DTHRIFT_COMPILER_NETCORE=OFF</option>
+                <option>-DTHRIFT_COMPILER_NETSTD=OFF</option>
+                <option>-DTHRIFT_COMPILER_OCAML=OFF</option>
+                <option>-DTHRIFT_COMPILER_PERL=OFF</option>
+                <option>-DTHRIFT_COMPILER_PHP=OFF</option>
+                <option>-DTHRIFT_COMPILER_PY=${thrift.with.python}</option>
+                <option>-DTHRIFT_COMPILER_RB=OFF</option>
+                <option>-DTHRIFT_COMPILER_RS=OFF</option>
+                <option>-DTHRIFT_COMPILER_ST=OFF</option>
+                <option>-DTHRIFT_COMPILER_SWIFT=OFF</option>
+                <option>-DTHRIFT_COMPILER_XML=OFF</option>
+                <option>-DTHRIFT_COMPILER_XSD=OFF</option>
+
+                <!-- Enable and disable the building of libs for different languages -->
                 <option>-DBUILD_C_GLIB=OFF</option>
                 <option>-DBUILD_CPP=${thrift.with.cpp}</option>
+                <!-- Unfortunately this doesn't exist yet -->
+                <option>-DBUILD_CSHARP=${thrift.with.csharp}</option>
                 <!-- Don't build Java, as the libs are available via Maven -->
                 <option>-DBUILD_JAVA=OFF</option>
                 <option>-DBUILD_PYTHON=${thrift.with.python}</option>
@@ -296,12 +354,10 @@
                 and tell the plugin where to find that version.
               -->
               <downloadBinaries>false</downloadBinaries>
-              <cmakeRootDir>${cmake.root-dir}</cmakeRootDir>
-              <cmakeChildDir>${cmake.child-dir}</cmakeChildDir>
+              <cmakeDir>${cmake.root}</cmakeDir>
 
               <!-- The directory where the "generate" step generated the build configuration -->
               <projectDirectory>${project.build.directory}/build</projectDirectory>
-              <classifier>${os.classifier}</classifier>
             </configuration>
           </execution>
         </executions>
@@ -309,8 +365,8 @@
 
       <!-- Add the thrift compiler executable to the build -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.1.1</version>
         <executions>
           <execution>
             <id>source-release-assembly</id>
@@ -336,8 +392,8 @@
     </plugins>
   </build>
 
-  <!-- Make sure boost lib is built first -->
   <dependencies>
+    <!-- Make sure Boost is built first -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-tools-boost</artifactId>

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
 
   <artifactId>plc4j-apache-kafka</artifactId>
@@ -56,8 +56,10 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
+            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
@@ -72,17 +74,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-pool</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
     </dependency>
 
     <dependency>
@@ -106,38 +108,50 @@
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-ab-eth</artifactId>
+      <version>0.7.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!--dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ethernet-ip</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency-->
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-knxnetip</artifactId>
+      <version>0.7.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-simulated</artifactId>
-      <version>0.6.0</version>
+      <version>0.7.0</version>
       <scope>runtime</scope>
     </dependency>
 

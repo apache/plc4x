@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ModuleNodeTest {
 
@@ -115,36 +115,44 @@ class ModuleNodeTest {
         NodeVisitor<String> toString = new AbstractNodeVisitor<String>() {
 
 
-            @Override public String visit(CompareNode compareNode) {
+            @Override
+            public String visit(CompareNode compareNode) {
                 assert compareNode.getComparators().size() == 1;
                 return compareNode.getLeft().accept(this) + " " + compareNode.getOps().get(0).accept(this) + " " + compareNode.getComparators().get(0).accept(this);
             }
 
-            @Override public String visit(EqNode eqNode) {
+            @Override
+            public String visit(EqNode eqNode) {
                 return "==";
             }
 
-            @Override public String visit(NotEqNode notEqNode) {
+            @Override
+            public String visit(NotEqNode notEqNode) {
                 return "!=";
             }
 
-            @Override public String visit(NumNode numNode) {
+            @Override
+            public String visit(NumNode numNode) {
                 return Double.toString(numNode.getN());
             }
 
-            @Override public String visit(StrNode strNode) {
+            @Override
+            public String visit(StrNode strNode) {
                 return strNode.getS();
             }
 
-            @Override public String visit(NameNode nameNode) {
+            @Override
+            public String visit(NameNode nameNode) {
                 return nameNode.getId();
             }
 
-            @Override public String visit(AttributeNode attributeNode) {
+            @Override
+            public String visit(AttributeNode attributeNode) {
                 return attributeNode.getAttr();
             }
 
-            @Override public String visit(CallNode callNode) {
+            @Override
+            public String visit(CallNode callNode) {
                 final String function = callNode.getFunc().accept(this);
 
                 String s = function + "(";
@@ -158,17 +166,20 @@ class ModuleNodeTest {
                 return s;
             }
 
-            @Override public String visit(KeywordNode keywordNode) {
+            @Override
+            public String visit(KeywordNode keywordNode) {
                 return keywordNode.getArg() + " = " + keywordNode.getValue().accept(this);
             }
 
-            @Override public String visit(AssignNode assignNode) {
+            @Override
+            public String visit(AssignNode assignNode) {
                 assert assignNode.getTargets().size() == 1;
                 printer.writeLine(String.format("%s = %s;", assignNode.getTargets().get(0).accept(this), assignNode.getValue().accept(this))); ;
                 return super.visit(assignNode);
             }
 
-            @Override public String visit(IfNode ifNode) {
+            @Override
+            public String visit(IfNode ifNode) {
                 printer.writeLine(String.format("If (%s) {", ifNode.getTest().accept(this)));
                 printer.startBlock();
                 for (Node node : ifNode.getBody()) {

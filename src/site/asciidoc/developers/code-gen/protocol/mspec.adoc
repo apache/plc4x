@@ -151,6 +151,8 @@ If they don't match an exception is thrown.
 
 When serializing, the `checksum-expression` is evaluated and the result is then output.
 
+Note: As quite often a checksum is calculated based on the byte data of a message read up to the checksum, an artificial variable is available in expressions called `checksumRawData` of type `byte[]` which contains an array of all the byte data read in the current message element and it's sub types in case of a discriminated type.
+
 This field doesn't keep any data in memory.
 
 See also:

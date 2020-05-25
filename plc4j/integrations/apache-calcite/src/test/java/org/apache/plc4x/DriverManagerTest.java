@@ -22,7 +22,6 @@ import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.jdbc.Driver;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.ScraperConfigurationClassicImpl;
-import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Test;

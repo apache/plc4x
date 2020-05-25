@@ -17,7 +17,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/testsuite.xsd"
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
                 bigEndian="true">
 
   <name>Allen-Bradley DF1</name>
@@ -32,8 +32,8 @@
         <sourceAddress>0</sourceAddress>
         <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadRequest">
           <status>0</status>
-          <transactionCounter>1</transactionCounter>
-          <address>17</address>
+          <transactionCounter>256</transactionCounter>
+          <address>4352</address>
           <size>2</size>
         </command>
       </DF1SymbolMessageFrame>
@@ -50,7 +50,7 @@
         <sourceAddress>9</sourceAddress>
         <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse">
           <status>0</status>
-          <transactionCounter>1</transactionCounter>
+          <transactionCounter>256</transactionCounter>
           <data>
             <data>255</data>
             <data>255</data>
@@ -70,7 +70,7 @@
         <sourceAddress>9</sourceAddress>
         <command className="org.apache.plc4x.java.df1.readwrite.DF1UnprotectedReadResponse">
           <status>0</status>
-          <transactionCounter>1</transactionCounter>
+          <transactionCounter>256</transactionCounter>
           <data>
             <data>16</data>
             <data>255</data>

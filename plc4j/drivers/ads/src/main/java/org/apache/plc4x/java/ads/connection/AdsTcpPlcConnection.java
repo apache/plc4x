@@ -40,15 +40,14 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.base.model.InternalPlcConsumerRegistration;
-import org.apache.plc4x.java.base.model.InternalPlcSubscriptionHandle;
-import org.apache.plc4x.java.base.model.SubscriptionPlcField;
-import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.tcp.connection.TcpSocketChannelFactory;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.InternalPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.protocol.SingleItemToSingleRequestProtocol;
+import org.apache.plc4x.java.transport.tcp.TcpSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,7 +286,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
             adsDeviceNotificationRequest -> adsDeviceNotificationRequest.getAdsStampHeaders().forEach(adsStampHeader -> {
                 Instant timeStamp = adsStampHeader.getTimeStamp().getAsDate().toInstant();
 
-                Map<String, Pair<PlcResponseCode, BaseDefaultFieldItem>> fields = new HashMap<>();
+                Map<String, Pair<PlcResponseCode, PlcValue>> fields = new HashMap<>();
                 adsStampHeader.getAdsNotificationSamples()
                     .forEach(adsNotificationSample -> {
                         NotificationHandle notificationHandle = adsNotificationSample.getNotificationHandle();
@@ -302,8 +301,8 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                         String plcFieldName = adsSubscriptionHandle.getPlcFieldName();
                         AdsDataType adsDataType = adsSubscriptionHandle.getAdsDataType();
                         try {
-                            BaseDefaultFieldItem baseDefaultFieldItem = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
-                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultFieldItem));
+                            PlcValue baseDefaultPlcValue = LittleEndianDecoder.decodeData(adsDataType, data.getBytes());
+                            fields.put(plcFieldName, Pair.of(PlcResponseCode.OK, baseDefaultPlcValue));
                         } catch (RuntimeException e) {
                             LOGGER.error("Can't decode {}", data, e);
                         }

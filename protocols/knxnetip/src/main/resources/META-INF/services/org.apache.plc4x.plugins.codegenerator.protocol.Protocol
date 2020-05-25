@@ -17,4 +17,3 @@
 # under the License.
 #
 org.apache.plc4x.protocol.knxnetip.KnxNetIpProtocol
-org.apache.plc4x.protocol.knxnetip.Ets5Types

@@ -48,11 +48,13 @@ public class CallExpression extends Expression {
         return target;
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
+    @Override
+    public void write(Generator writer) {
         if (target == null) {
             writer.generateStaticCall(method, arguments);
         } else {

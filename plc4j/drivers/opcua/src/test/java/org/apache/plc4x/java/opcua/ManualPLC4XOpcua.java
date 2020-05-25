@@ -24,16 +24,16 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
-import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.eclipse.milo.examples.server.ExampleServer;
 
 import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.function.Consumer;
@@ -45,35 +45,40 @@ import java.util.function.Consumer;
  * The current version is tested against a public server, which is to be replaced later by a separate instance of the Milo framework.
  * Afterwards the code represented here will be used as an example for the introduction page.
  * <p>
- * TODO: replace current public server with local Milo instance
  *
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class ManualPLC4XOpcua {
-    private static final String BOOL_IDENTIFIER = "ns=2;i=10844";
-    private static final String BYTE_STRING_IDENTIFIER = "ns=2;i=10858";
-    private static final String BYTE_IDENTIFIER = "ns=2;i=10846";
-    private static final String DOUBLE_IDENTIFIER = "ns=2;i=10854";
-    private static final String FLOAT_IDENTIFIER = "ns=2;i=10853";
-    private static final String INT16_IDENTIFIER = "ns=2;i=10847";
-    private static final String INT32_IDENTIFIER = "ns=2;i=10849";
-    private static final String INT64_IDENTIFIER = "ns=2;i=10851";
-    private static final String INTEGER_IDENTIFIER = "ns=2;i=10869";
-    private static final String SBYTE_IDENTIFIER = "ns=2;i=10845";
-    private static final String STRING_IDENTIFIER = "ns=2;i=10855";
-    private static final String UINT16_IDENTIFIER = "ns=2;i=10848";
-    private static final String UINT32_IDENTIFIER = "ns=2;i=10850";
-    private static final String UINT64_IDENTIFIER = "ns=2;i=10852";
-    private static final String UINTEGER_IDENTIFIER = "ns=2;i=10870";
+    private static final String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
+    private static final String BYTE_STRING_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/ByteString";
+    private static final String BYTE_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Byte";
+    private static final String DOUBLE_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Double";
+    private static final String FLOAT_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Float";
+    private static final String INT16_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Int16";
+    private static final String INT32_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Int32";
+    private static final String INT64_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Int64";
+    private static final String INTEGER_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Integer";
+    private static final String SBYTE_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/SByte";
+    private static final String STRING_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/String";
+    private static final String UINT16_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInt16";
+    private static final String UINT32_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInt32";
+    private static final String UINT64_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInt64";
+    private static final String UINTEGER_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/UInteger";
     private static final String DOES_NOT_EXIST_IDENTIFIER = "ns=2;i=12512623";
 
     public static void main(String args[]) {
+        try {
+            ExampleServer testServer = new ExampleServer();
+            testServer.startup().get();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         OpcuaTcpPlcConnection opcuaConnection = null;
         OpcuaPlcFieldHandler fieldH = new OpcuaPlcFieldHandler();
-        PlcField field = fieldH.createField("ns=2;i=10855");
+        PlcField field = fieldH.createField(BOOL_IDENTIFIER);
         try {
             opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection("opcua:tcp://localhost:4843?discovery=true");
+                new PlcDriverManager().getConnection("opcua:tcp://127.0.0.1:12686/milo?discovery=false");
 
         } catch (PlcConnectionException e) {
             e.printStackTrace();
@@ -104,19 +109,20 @@ public class ManualPLC4XOpcua {
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = opcuaConnection.read(request).get();
-            Collection coll = response.getAllStrings("String");
+
+            //Collection coll = response.getAllStrings("String");
 
             PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
             wBuilder.addItem("w-Bool", BOOL_IDENTIFIER, true);
-            wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
-            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 1);
+            //wBuilder.addItem("w-ByteString", BYTE_STRING_IDENTIFIER, "TEST".getBytes());
+            wBuilder.addItem("w-Byte", BYTE_IDENTIFIER, (byte) 0x00);
             wBuilder.addItem("w-Double", DOUBLE_IDENTIFIER, (double) 0.25);
             wBuilder.addItem("w-Float", FLOAT_IDENTIFIER, (float) 0.25);
             wBuilder.addItem("w-INT16", INT16_IDENTIFIER, (short) 12);
             wBuilder.addItem("w-Int32", INT32_IDENTIFIER, (int) 314);
             wBuilder.addItem("w-Int64", INT64_IDENTIFIER, (long) 123125);
             wBuilder.addItem("w-Integer", INTEGER_IDENTIFIER, (int) 314);
-            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (short) 23);
+            wBuilder.addItem("w-SByte", SBYTE_IDENTIFIER, (byte) 23);
             wBuilder.addItem("w-String", STRING_IDENTIFIER, "TEST");
             wBuilder.addItem("w-UInt16", UINT16_IDENTIFIER, (int) 222);
             wBuilder.addItem("w-UInt32", UINT32_IDENTIFIER, (long) 21412);

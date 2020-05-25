@@ -44,7 +44,7 @@ pipeline {
 
     tools {
         maven 'Maven 3 (latest)'
-        jdk 'JDK 1.8 (latest)'
+        jdk 'JDK 11 (latest)'
     }
 
     options {
@@ -85,8 +85,8 @@ pipeline {
             }
             steps {
                 echo 'Building'
-                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash,with-c ${MVN_TEST_FAIL_IGNORE} ${MVN_LOCAL_REPO_OPT} clean install'
             }
             post {
                 always {
@@ -109,8 +109,8 @@ pipeline {
 
                 // We'll deploy to a relative directory so we can save
                 // that and deploy in a later step on a different node
-                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
-                sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                //sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-c,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
+                sh 'mvn -U -P${JENKINS_PROFILE},skip-prerequisite-check,development,with-sandbox,with-logstash,with-c ${MVN_TEST_FAIL_IGNORE} ${JQASSISTANT_NEO4J_VERSION} -DaltDeploymentRepository=snapshot-repo::default::file:./local-snapshots-dir clean deploy'
 
                 // Stash the build results so we can deploy them on another node
                 stash name: 'plc4x-build-snapshots', includes: 'local-snapshots-dir/**'
@@ -173,7 +173,7 @@ pipeline {
             steps {
                 echo 'Building Site'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -pl .'
             }
         }
 
@@ -185,11 +185,11 @@ pipeline {
                 echo 'Staging Site'
                 // Build a directory containing the aggregated website.
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site:stage'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site:stage'
+                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site:stage -pl .'
                 // Make sure the script is executable.
                 sh 'chmod +x tools/clean-site.sh'
                 // Remove some redundant resources, which shouldn't be required.
-                sh 'tools/clean-site.sh'
+                //sh 'tools/clean-site.sh'
                 // Stash the generated site so we can publish it on the 'git-website' node.
                 stash includes: 'target/staging/**/*', name: 'plc4x-site'
             }

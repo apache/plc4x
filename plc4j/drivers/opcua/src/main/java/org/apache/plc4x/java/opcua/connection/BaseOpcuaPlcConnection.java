@@ -23,14 +23,13 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.base.connection.AbstractPlcConnection;
-import org.apache.plc4x.java.base.messages.*;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.AbstractPlcConnection;
+import org.apache.plc4x.java.spi.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection implements PlcReader, PlcWriter, PlcSubscriber {
 

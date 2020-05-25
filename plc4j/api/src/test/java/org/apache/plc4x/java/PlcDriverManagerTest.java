@@ -1,41 +1,40 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java;
 
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.mock.MockPlcConnection;
-import org.apache.plc4x.test.FastTests;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlcDriverManagerTest {
 
@@ -45,9 +44,8 @@ public class PlcDriverManagerTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Category(FastTests.class)
     public void getExistingDriverTest() throws PlcException {
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url");
+        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url");
 
         assertThat(mockConnection.getAuthentication(), nullValue());
         assertThat(mockConnection.isConnected(), is(true));
@@ -59,11 +57,10 @@ public class PlcDriverManagerTest {
      * @throws PlcException something went wrong
      */
     @Test
-    @Category(FastTests.class)
     public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("spi-mock://some-cool-url", authentication);
+        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url", authentication);
 
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
@@ -75,10 +72,10 @@ public class PlcDriverManagerTest {
      *
      * @throws PlcConnectionException something went wrong
      */
-    @Test(expected = PlcConnectionException.class)
-    @Category(FastTests.class)
-    public void getNotExistingDriverTest() throws PlcConnectionException {
-        new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url");
+    @Test
+    public void getNotExistingDriverTest() {
+        assertThrows(PlcConnectionException.class,
+            () -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"));
     }
 
     /**
@@ -86,10 +83,10 @@ public class PlcDriverManagerTest {
      *
      * @throws PlcConnectionException something went wrong
      */
-    @Test(expected = PlcConnectionException.class)
-    @Category(FastTests.class)
+    @Test
     public void getInvalidUriTest() throws PlcConnectionException {
-        new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog");
+        assertThrows(PlcConnectionException.class,
+            () -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"));
     }
 
     /**
@@ -100,9 +97,8 @@ public class PlcDriverManagerTest {
      * @throws MalformedURLException something went wrong
      * @throws PlcConnectionException something went wrong
      */
-    @Test(expected = IllegalStateException.class)
-    @Category(FastTests.class)
-    public void getDuplicateDriver() throws MalformedURLException, PlcConnectionException {
+    @Test
+    public void getDuplicateDriver() throws MalformedURLException {
         // Save and replace the context classloader as we need to force the ServiceLoader to
         // use a different service file.
         ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
@@ -111,7 +107,8 @@ public class PlcDriverManagerTest {
         ClassLoader fakeClassLoader = new URLClassLoader(urls, originalClassloader);
 
         // expect exception
-        new PlcDriverManager(fakeClassLoader).getConnection("spi-mock://some-cool-url");
+        assertThrows(IllegalStateException.class,
+            () -> new PlcDriverManager(fakeClassLoader).getConnection("api-mock://some-cool-url"));
     }
 
 }

@@ -25,8 +25,7 @@ import org.apache.plc4x.java.ads.connection.AdsConnectionFactory;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.osgi.service.component.annotations.Component;
+import org.apache.plc4x.java.api.PlcDriver;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -39,7 +38,6 @@ import java.util.regex.Pattern;
  * - TCP
  * - Serial
  */
-@Component(service = PlcDriver.class, immediate = true)
 public class AdsPlcDriver implements PlcDriver {
 
     public static final Pattern ADS_ADDRESS_PATTERN =

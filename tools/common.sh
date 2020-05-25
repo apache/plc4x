@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ################################################################################
 ##
@@ -19,14 +19,14 @@
 ##
 ################################################################################
 
-BUILDTOOLS_DIR=`dirname $0`
+BUILDTOOLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null && pwd)"
 
 PLC4X_ROOT_DIR=.
 # BUNDLE_DIR is results of maven release:perform's creation of release candidate
 BUNDLE_DIR=${PLC4X_ROOT_DIR}/target/checkout/target
 
 PLC4X_ASF_GIT_URL=https://git-wip-us.apache.org/repos/asf/plc4x.git
-PLC4X_ASF_DIST_URL=https://www.apache.org/dist/plc4x
+PLC4X_ASF_DIST_URL=https://downloads.apache.org/plc4x
 PLC4X_ASF_DIST_DYN_URL=https://www.apache.org/dyn/closer.cgi/plc4x
 PLC4X_ASF_SVN_RELEASE_URL=https://dist.apache.org/repos/dist/release/plc4x
 PLC4X_ASF_SVN_RC_URL=https://dist.apache.org/repos/dist/dev/plc4x
@@ -51,7 +51,7 @@ function usage() {  #  [$*: msgs]
 }
 
 function handleHelp() { # usage: handleHelp "$@"
-  if [ "$1" == "-?" -o "$1" == "--help" ]; then
+  if [ "$1" == "-?" ] ||  [ "$1" == "--help" ]; then
     usage
   fi
 }
@@ -67,17 +67,18 @@ function noExtraArgs() { # usage: noExtraArgs "$@"
 }
 
 function getAbsPath() { # $1: rel-or-abs-path 
-    echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+    echo "$(cd "$(dirname "$1")" >> /dev/null || exit $?; pwd)/$(basename "$1")"
 }
 
+# shellcheck disable=SC2046
 function confirm () {  # [$1: question]
   while true; do
     # call with a prompt string or use a default                                                                                                                                                   
     /bin/echo -n "${1:-Are you sure?}"
     read -r -p " [y/n] " response
     case $response in
-      [yY]) return `true` ;;
-      [nN]) return `false` ;;
+      [yY]) return $(true) ;;
+      [nN]) return $(false) ;;
       *) echo "illegal response '$response'" ;;
     esac
   done
@@ -92,9 +93,9 @@ function checkPLC4XSourceRootGitDie { # no args; dies if !ok
 }
 
 function checkUsingMgmtCloneWarn() { # no args; warns if plc4x root isn't a mgmt clone
-  CLONE_DIR=`cd ${PLC4X_ROOT_DIR}; pwd`
-  CLONE_DIRNAME=`basename $CLONE_DIR`
-  if [ ! `echo $CLONE_DIRNAME | grep -o -E '^mgmt-plc4x'` ]; then
+  CLONE_DIR="$(cd ${PLC4X_ROOT_DIR} > /dev/null || exit $?; pwd)"
+  CLONE_DIRNAME="$(basename "${CLONE_DIR}")"
+  if [ ! "$(echo ${CLONE_DIRNAME} | grep -o -E '^mgmt-plc4x')" ]; then
     echo "Warning: the PLC4X root dir \"${PLC4X_ROOT_DIR}\" is not a release mgmt clone!"
     return 1
   else
@@ -111,79 +112,69 @@ function checkBundleDir() { # no args  returns true/false (0/1)
 }
 
 function checkVerNum() {  #  $1: X.Y.Z  returns true/false (0/1)
-  if [ `echo $1 | grep -o -E '^\d+\.\d+\.\d+$'` ]; then
-    return 0
-  else
-    return 1
-  fi
+ [[ $1 =~ ^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}$ ]] && return 0
+ return 1
 }
 
 function checkVerNumDie() { #  $1: X.Y.Z  dies if not ok
-  checkVerNum $1 || die "Not a X.Y.Z version number \"$1\""
+  checkVerNum "$1" || die "Not a X.Y.Z version number \"$1\""
 }
 
 function checkRcNum() {  # $1: rc-num   returns true/false (0/1)
-  if [ `echo $1 | grep -o -E '^\d+$'` ] && [ $1 != 0 ]; then
-    return 0
-  else
-    return 1
-  fi
+ [[ $1 =~ ^[0-9]{1,2}$ ]] && return 0
+ return 1
 }
 
 function checkRcNumDie() {  # $1: rc-num dies if not ok
-  checkRcNum $1 || die "Not a release candidate number \"$1\""
+  checkRcNum "$1" || die "Not a release candidate number \"$1\""
 }
 
 function createReleaseProperties { # X.Y.Z
   VER="$1"
-  checkVerNumDie ${VER}
+  checkVerNumDie "${VER}"
   echo "releaseNum=${VER}" > ${RELEASE_PROP_FILE}
 }
 
 function getReleaseProperty {  # <property-name>
   PN=$1
-  PNVAL=`grep ${PN} ${RELEASE_PROP_FILE}`
-  VAL=`echo ${PNVAL} | sed -e "s/^${PN}=//"`
-  echo ${VAL}
+  PNVAL=$(grep "${PN}" ${RELEASE_PROP_FILE})
+  VAL=$(echo "${PNVAL}" | sed -e "s/^${PN}=//")
+  echo "${VAL}"
 }
 
 function getPLC4XVer() {  # [$1 == "bundle"]
   MSG="getPLC4XVer(): unknown mode \"$1\""
   VER=""
   if [ "$1" == "" ]; then
-    VER=`getReleaseProperty releaseNum`
+    VER=$(getReleaseProperty releaseNum)
     MSG="Unable to identify the release version id from ${RELEASE_PROP_FILE}"
-  elif [ $1 == "gradle" ]; then
+  elif [ "$1" == "gradle" ]; then
     die "'getPLC4XVer() gradle' is no longer supported"
-    # Get the X.Y.Z version from gradle build info
-    PROPS=${PLC4X_ROOT_DIR}/gradle.properties
-    VER=`grep build_version ${PROPS} | grep -o -E '\d+\.\d+\.\d+'`
-    MSG="Unable to identify the version id from ${PROPS}"
-  elif [ $1 == "bundle" ]; then
+  elif [ "$1" == "bundle" ]; then
     # Get the X.Y.Z version from a build generated bundle's name
-    BUNDLE=`echo ${BUNDLE_DIR}/apache-plc4x-*-source-release.tar.gz`
-    VER=`echo ${BUNDLE} | grep -o -E '\d+\.\d+\.\d+'`
+    BUNDLE=$(echo "${BUNDLE_DIR}"/apache-plc4x-*-source-release.tar.gz)
+    VER=$(echo "${BUNDLE}" | grep -o -E '\d+\.\d+\.\d+')
     MSG="Unable to identify the version id from bundle ${BUNDLE}"
   fi
   [ "${VER}" ] || die "${MSG}"
-  echo $VER
+  echo "$VER"
 }
 
 function getMajMinVerNum() {  #  $1: X.Y.Z  returns X.Y
   VER=$1; shift
-  checkVerNumDie ${VER}
-  MAJ_MIN_VER=`echo ${VER} | sed -e 's/\.[0-9][0-9]*$//'`
-  echo ${MAJ_MIN_VER}
+  checkVerNumDie "${VER}"
+  MAJ_MIN_VER=$(echo "${VER}" | sed -e 's/\.[0-9][0-9]*$//')
+  echo "${MAJ_MIN_VER}"
 }
 
 function getReleaseBranch() { # $1: X.Y.Z version
-  MAJ_MIN_NUM=`getMajMinVerNum $1`
+  MAJ_MIN_NUM=$(getMajMinVerNum "$1")
   echo "release/${MAJ_MIN_NUM}"
 }
 
 function getReleaseTag() {  # $1: X.Y.Z  [$2: rc-num]
   VER=$1; shift
-  checkVerNumDie ${VER}
+  checkVerNumDie "${VER}"
   RC_SFX=""
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX="-RC$1"
@@ -193,7 +184,7 @@ function getReleaseTag() {  # $1: X.Y.Z  [$2: rc-num]
 
 function getReleaseTagComment() {  # $1: X.Y.Z  [$2: rc-num]
   VER=$1; shift
-  checkVerNumDie ${VER}
+  checkVerNumDie "${VER}"
   RC_SFX=""
   if [ $# -gt 0 ] && [ "$1" != "" ]; then
     RC_SFX=" RC$1"

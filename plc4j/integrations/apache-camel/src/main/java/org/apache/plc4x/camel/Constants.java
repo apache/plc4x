@@ -22,7 +22,8 @@ public class Constants {
 
     public static final String FIELD_NAME_HEADER = "fieldName";
     public static final String FIELD_QUERY_HEADER = "fieldQuery";
-    
+    public final static String TRIGGER = "TRIGGER_VAR";
+    public final static String PLC_NAME = "PLC";
     private Constants() {
       throw new IllegalStateException("Utility class!");
     }

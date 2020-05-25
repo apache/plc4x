@@ -27,11 +27,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Matthias Milan Strljic on 10.05.2019
  */
 public class OpcuaField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>[\\w(.)-=]+))?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=((?<identifier>.+))?");
 
     private final OpcuaIdentifierType identifierType;
 

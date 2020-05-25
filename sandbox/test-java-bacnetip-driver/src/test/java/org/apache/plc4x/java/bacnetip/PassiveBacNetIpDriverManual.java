@@ -18,25 +18,25 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
-import org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler;
-
-import java.io.File;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.value.PlcStruct;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 
 public class PassiveBacNetIpDriverManual {
 
     public static void main(String[] args) throws Exception {
-        NettyPlcConnection connection = new PassiveBacNetIpPlcConnection(new PcapChannelFactory(
-            //new File("/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Captures/Merck/BACnetWhoIsRouterToNetwork.pcapng"), null,
-            new File("/Users/christofer.dutz/Downloads/20190906_udp.pcapng"), null,
-            PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
-            PcapSocketChannelConfig.SPEED_FAST_DOUBLE, new UdpIpPacketHandler()), "", new HelloWorldProtocol());
+        final PassiveBacNetIpDriver driver = new PassiveBacNetIpDriver();
+        final PlcConnection connection = driver.getConnection(
+            "bacnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/Captures/BACnet.pcapng?ede-directory-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/BacNET/Merck/EDE-Files");
         connection.connect();
+        final PlcSubscriptionResponse subscriptionResponse = connection.subscriptionRequestBuilder().addEventField(
+            "Hurz", "*/*/*").build().execute().get();
+        subscriptionResponse.getSubscriptionHandle("Hurz").register(plcSubscriptionEvent -> {
+            PlcStruct plcStruct = (PlcStruct)
+                ((DefaultPlcSubscriptionEvent) plcSubscriptionEvent).getValues().get("event").getValue();
+            System.out.println(plcStruct);
+        });
     }
 
 }

@@ -77,6 +77,10 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                             return;
                         }
                     }
+                    if(proposedTpduSize == null) {
+                        LOGGER.error("Missing COTP Connection-Request Parameter Tpdu Size");
+                        return;
+                    }
 
                     remoteReference = cotpConnectionRequest.getSourceReference();
                     protocolClass = cotpConnectionRequest.getProtocolClass();
@@ -125,8 +129,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
                     S7ParameterSetupCommunication s7ParameterSetupCommunicationResponse =
                         new S7ParameterSetupCommunication(amqCaller, amqCallee, pduLength);
                     S7MessageResponse s7MessageResponse = new S7MessageResponse(
-                        s7TpduReference, s7ParameterSetupCommunicationResponse, new S7PayloadSetupCommunication(),
-                        (short) 0, (short) 0);
+                        s7TpduReference, s7ParameterSetupCommunicationResponse, null, (short) 0, (short) 0);
                     ctx.writeAndFlush(new TPKTPacket(new COTPPacketData(null, s7MessageResponse, true, cotpTpduRef)));
 
                     state = State.S7_CONNECTED;
@@ -177,7 +180,7 @@ public class S7Step7ServerProtocol extends ChannelInboundHandlerAdapter {
 
                                                 S7PayloadUserDataItemCpuFunctionReadSzlResponse readSzlResponsePayload =
                                                     new S7PayloadUserDataItemCpuFunctionReadSzlResponse(
-                                                        (short) 0xFF, DataTransportSize.OCTET_STRING, szlId,
+                                                        DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, szlId,
                                                         readSzlRequestPayload.getSzlIndex(), items);
 
                                                 S7ParameterUserDataItem[] responseParameterItems =

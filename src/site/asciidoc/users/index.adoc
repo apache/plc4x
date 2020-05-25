@@ -1,0 +1,355 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../images/
+:icons: font
+
+== Users
+
+This part of the PLC4X website is dedicated to people wanting to use Apache PLC4X.
+
+It will provide information on the features and how to use them as well as documentation on how to use the different integration modules.
+
+Apache PLC4X allows you to communicate directly with your industrial Hardware, without having to retrofit it.
+
+This is possible, as PLC4X implements drivers for the most common industrial communication protocols and uses these to access industrial hardware using a shared API.
+
+Currently we support the following protocols:
+
+++++
+<div id="protocolCarousel" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/ab-eth.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/ab-eth-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>AB-ETH</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/ads.html';" style="cursor:pointer;">
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/ads-ams.png" alt="Card image cap">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><b>ADS/AMS</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/bacnetip.html';" style="cursor:pointer;">
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/bacnet-ip.gif" alt="Card image cap">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title"><b>BACnet/IP</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/deltav.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/deltav-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>DeltaV</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/df1.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/df1-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>DF1</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/ethernet-ip.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/ethernet-ip-logo.pngg" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>EtherNet/IP</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/firmata.html';" style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="../images/protocols/firmata.gif" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>Firmata</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/knxnetip.html';"
+             style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/knxnetip-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>KNXnet/IP</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/modbus.html';"
+             style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/modbus-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>Modbus</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/opc-ua.html';"
+             style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/opc-ua-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>OPC UA</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/s7.html';"
+             style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/s7-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>S7 (Step7)</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="col-md-12 col-lg-4">
+        <div class="card h-100 p-5 justify-content-center"
+             onclick="location.href='protocols/simulated.html';"
+             style="cursor:pointer;">
+          <!--div class="d-flex align-items-center justify-content-center h-100">
+            <img src="images/protocols/simulated-logo.png" alt="Card image cap">
+          </div-->
+          <div class="card-body">
+            <h5 class="card-title"><b>Simulated</b></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#protocolCarousel" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#protocolCarousel" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>
+<br/>
+<br/>
+++++
+
+Besides providing access to devices using one of above protocols, Apache PLC4X also ships with integration modules for the following tools and frameworks.
+
+++++
+                    <div id="integrationCarousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-calcite.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_calcite_logo.svg" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache Calcite™</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-camel.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_camel_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache Camel™</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-edgent.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_edgent_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache Edgent™ (retired)</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-iotdb.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_iotdb_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache IoTDB™ (incubating)</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-kafka.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_kafka_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache Kafka™</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-nifi.html';" style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_nifi_logo.svg" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache Nifi™</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/apache-streampipes.html';"
+                                         style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/apache_streampipes_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Apache StreamPipes™ (incubating)</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/eclipse-ditto.html';"
+                                         style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/eclipse_ditto_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Eclipse Ditto</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="card h-100 p-5 justify-content-center"
+                                         onclick="location.href='integrations/elastic-logstash.html';"
+                                         style="cursor:pointer;">
+                                        <div class="d-flex align-items-center justify-content-center h-100">
+                                            <img src="../images/integrations/elastic_logstash_logo.png" alt="Card image cap">
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><b>Elastic Logstash™</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#integrationCarousel" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#integrationCarousel" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+<br/>
+<br/>
+++++
+
+As last category of tools come modules that can be used in your applications:
+
+- link:tools/connection-pool.html[Connection Pool] (Connection Pool for PLC connections)
+- link:tools/opm.html[Object PLC Mapping (OPM)] (Object PLC Mapping - Like JPA for PLC data)
+- link:tools/scraper.html[Scraper] (Util for automating fetching PLC data using a variety of triggers)
+- link:tools/testing.html[Testing-Utils] (Want to build/test an application without having a PLC ... this is the tool for you)
+

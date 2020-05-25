@@ -18,8 +18,9 @@ under the License.
 */
 package org.apache.plc4x.java.amsads.model;
 
-import org.apache.plc4x.java.base.messages.PlcSubscriber;
-import org.apache.plc4x.java.base.model.DefaultPlcSubscriptionHandle;
+import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 import java.util.Objects;
 

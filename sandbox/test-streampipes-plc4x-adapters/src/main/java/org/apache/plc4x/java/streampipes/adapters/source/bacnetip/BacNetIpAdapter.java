@@ -18,19 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.adapters.source.bacnetip;
 
-import io.netty.channel.ChannelHandlerContext;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.readwrite.*;
-import org.apache.plc4x.java.base.PlcMessageToMessageCodec;
-import org.apache.plc4x.java.base.connection.ChannelFactory;
-import org.apache.plc4x.java.base.connection.NettyPlcConnection;
-import org.apache.plc4x.java.base.connection.PcapChannelFactory;
-import org.apache.plc4x.java.base.connection.RawSocketChannelFactory;
-import org.apache.plc4x.java.base.messages.PlcRequestContainer;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketAddress;
-import org.apache.plc4x.java.utils.pcapsockets.netty.PcapSocketChannelConfig;
+import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
 import org.pcap4j.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +40,6 @@ import org.streampipes.sdk.builder.adapter.SpecificDataStreamAdapterBuilder;
 import org.streampipes.sdk.helpers.*;
 import org.streampipes.sdk.utils.Datatypes;
 
-import java.io.File;
-import java.nio.ByteBuffer;
 import java.util.*;
 
 public class BacNetIpAdapter extends SpecificDataStreamAdapter {
@@ -72,7 +59,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     private String deviceName;
     private String pcapFile;
-    private NettyPlcConnection connection;
+    private DefaultNettyPlcConnection connection;
 
     public BacNetIpAdapter() {
         super();
@@ -193,7 +180,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
     @Override
     public void startAdapter() throws AdapterException {
-        try {
+        /*try {
             ChannelFactory channelFactory;
             if (deviceName != null) {
                 channelFactory = new RawSocketChannelFactory(deviceName, null,
@@ -203,7 +190,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
                 channelFactory = new PcapChannelFactory(new File(pcapFile), null,
                     PassiveBacNetIpDriver.BACNET_IP_PORT, PcapSocketAddress.ALL_PROTOCOLS,
                     PcapSocketChannelConfig.SPEED_REALTIME,
-                    new org.apache.plc4x.java.utils.pcapsockets.netty.UdpIpPacketHandler());
+                    new UdpIpPacketHandler());
             } else {
                 throw new AdapterException("Configuration Exception. Either device or file have to be selected.");
             }
@@ -347,7 +334,7 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
         } catch (PlcConnectionException e) {
             logger.error("An error occurred starting the BACnet/IP driver", e);
             throw new AdapterException("An error occurred starting the BACnet/IP driver");
-        }
+        }*/
     }
 
     @Override
@@ -371,14 +358,14 @@ public class BacNetIpAdapter extends SpecificDataStreamAdapter {
 
         StaticPropertyAlternatives sources = (StaticPropertyAlternatives) extractor.getStaticPropertyByName("source");
         final Optional<StaticPropertyAlternative> selectedAlternative = sources.getAlternatives().stream().filter(
-            staticPropertyAlternative -> staticPropertyAlternative.getSelected()).findFirst();
+            StaticPropertyAlternative::getSelected).findFirst();
         if (selectedAlternative.isPresent()) {
             final StaticPropertyAlternative staticPropertyAlternative = selectedAlternative.get();
             if ("device".equals(staticPropertyAlternative.getInternalName())) {
                 final Optional<Option> first =
                     ((OneOfStaticProperty) staticPropertyAlternative.getStaticProperty()).getOptions().stream().filter(
-                        option -> option.isSelected()).findFirst();
-                deviceName = first.get().getName();
+                        Option::isSelected).findFirst();
+                deviceName = first.isPresent() ? first.get().getName() : "Unknown";
             } else {
                 pcapFile = ((FileStaticProperty) staticPropertyAlternative.getStaticProperty()).getLocationPath();
             }

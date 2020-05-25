@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-client</artifactId>
@@ -40,9 +40,10 @@
         <version>${royale.version}</version>
         <extensions>true</extensions>
         <configuration>
-          <mainClass>HelloPLC4X.mxml</mainClass>
+          <mainClass>App.mxml</mainClass>
           <targets>JSRoyale</targets>
           <debug>true</debug>
+          <additionalCompilerOptions>-source-map=true;</additionalCompilerOptions>
           <!--keepAs3Metadata>
             <name>Bindable</name>
             <name>Managed</name>
@@ -68,6 +69,8 @@
             <usedDependency>org.apache.royale.framework:Jewel</usedDependency>
             <usedDependency>org.apache.royale.framework:Language</usedDependency>
             <usedDependency>org.apache.royale.framework:Network</usedDependency>
+            <usedDependency>org.apache.royale.framework:MXRoyale</usedDependency>
+            <usedDependency>org.apache.royale.framework:JewelTheme</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -96,41 +99,23 @@
       <type>swc</type>
       <classifier>js</classifier>
     </dependency>
-    <!--dependency>
+    <dependency>
       <groupId>org.apache.royale.framework</groupId>
-      <artifactId>HTML</artifactId>
+      <artifactId>MXRoyale</artifactId>
       <version>${royale.version}</version>
       <type>swc</type>
       <classifier>js</classifier>
     </dependency>
+
+    <!-- Use the Jewel Theme -->
     <dependency>
       <groupId>org.apache.royale.framework</groupId>
-      <artifactId>Collections</artifactId>
+      <artifactId>JewelTheme</artifactId>
       <version>${royale.version}</version>
       <type>swc</type>
+      <scope>theme</scope>
       <classifier>js</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.apache.royale.framework</groupId>
-      <artifactId>Binding</artifactId>
-      <version>${royale.version}</version>
-      <type>swc</type>
-      <classifier>js</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.royale.framework</groupId>
-      <artifactId>Graphics</artifactId>
-      <version>${royale.version}</version>
-      <type>swc</type>
-      <classifier>js</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.royale.framework</groupId>
-      <artifactId>Basic</artifactId>
-      <version>${royale.version}</version>
-      <type>swc</type>
-      <classifier>js</classifier>
-    </dependency-->
   </dependencies>
 
 </project>

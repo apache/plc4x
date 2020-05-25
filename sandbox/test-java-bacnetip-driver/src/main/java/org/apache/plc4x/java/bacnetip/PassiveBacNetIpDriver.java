@@ -18,59 +18,96 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.bacnetip.connection.PassiveBacNetIpPlcConnection;
-import org.apache.plc4x.java.bacnetip.protocol.HelloWorldProtocol;
-import org.apache.plc4x.java.spi.PlcDriver;
-import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketIpAddress;
+import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
+import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
+import org.apache.plc4x.java.bacnetip.protocol.PassiveBacNetIpProtocolLogic;
+import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
+import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
+import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.osgi.service.component.annotations.Component;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
-import static org.apache.plc4x.java.utils.rawsockets.netty.RawSocketAddress.ALL_PROTOCOLS;
-
-public class PassiveBacNetIpDriver implements PlcDriver {
+@Component(service = PlcDriver.class, immediate = true)
+public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     public static final int BACNET_IP_PORT = 47808;
 
-    private static final Pattern PASSIVE_BACNET_IP_URI_PATTERN =
-        Pattern.compile("^bachnet-ip-passive://(?<networkDevice>.*)(?<params>\\?.*)?");
-
     @Override
     public String getProtocolCode() {
-        return "bacnet-ip-passive";
+        return "bacnet-ip";
     }
 
     @Override
     public String getProtocolName() {
-        return "BACnet/IP (Passive)";
+        return "BACnet/IP";
     }
 
     @Override
-    public PlcConnection connect(String url) throws PlcConnectionException {
-        Matcher matcher = PASSIVE_BACNET_IP_URI_PATTERN.matcher(url);
-        if (!matcher.matches()) {
-            throw new PlcConnectionException(
-                "Connection url doesn't match the format 'bacnet-ip-passive://{host|ip}'");
-        }
-        String networkDevice = matcher.group("networkDevice");
-
-        String params = matcher.group("params") != null ? matcher.group("params").substring(1) : null;
-
-        try {
-            RawSocketIpAddress rawSocketAddress = new RawSocketIpAddress(
-                networkDevice, ALL_PROTOCOLS, null, BACNET_IP_PORT);
-            return new PassiveBacNetIpPlcConnection(rawSocketAddress, params, new HelloWorldProtocol());
-        } catch (Exception e) {
-            throw new PlcConnectionException("Error connecting to host", e);
-        }
+    protected Class<? extends Configuration> getConfigurationType() {
+        return PassiveBacNetIpConfiguration.class;
     }
 
     @Override
-    public PlcConnection connect(String url, PlcAuthentication authentication) throws PlcConnectionException {
-        throw new PlcConnectionException("BACnet/IP connections don't support authentication.");
+    protected String getDefaultTransport() {
+        return "udp";
+    }
+
+    @Override
+    protected boolean canRead() {
+        return false;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return false;
+    }
+
+    @Override
+    protected boolean canSubscribe() {
+        return true;
+    }
+
+    @Override
+    protected BacNetIpFieldHandler getFieldHandler() {
+        return new BacNetIpFieldHandler();
+    }
+
+    @Override
+    protected ProtocolStackConfigurer<BVLC> getStackConfigurer() {
+        return SingleProtocolStackConfigurer.builder(BVLC.class, BVLCIO.class)
+            .withProtocol(PassiveBacNetIpProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
+            .build();
+    }
+
+    /** Estimate the Length of a Packet */
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+        @Override
+        public int applyAsInt(ByteBuf byteBuf) {
+            if (byteBuf.readableBytes() >= 4) {
+                return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2);
+            }
+            return -1;
+        }
+    }
+
+    /** Consumes all Bytes till another Magic Byte is found */
+    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
+        @Override
+        public void accept(ByteBuf byteBuf) {
+            while (byteBuf.getUnsignedByte(0) != BVLC.BACNETTYPE) {
+                // Just consume the bytes till the next possible start position.
+                byteBuf.readByte();
+            }
+        }
     }
 
 }

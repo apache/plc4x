@@ -73,7 +73,7 @@ the language of choice.
 ### Java
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
-[https://plc4x.apache.org/plc4j/users/gettingstarted.html](https://plc4x.apache.org/plc4j/users/gettingstarted.html)
+[https://plc4x.apache.org/users/plc4j/gettingstarted.html](https://plc4x.apache.org/users/plc4j/gettingstarted.html)
 
 ## Developers
 
@@ -153,7 +153,7 @@ Some tools need to be installed before being able to build on Windows:
 * WinPCAP
 * OpenSSL
 
-He have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
+We have tested `WinBuilds` with the bundle of: http://win-builds.org/doku.php/download_and_installation_from_windows
 Run the installer as "Administrator" or you won't be able to install it to "C:\Program Files" or the 32 Bit counterpart.
 When running the installer, make sure to select the options:
 * Native Windows

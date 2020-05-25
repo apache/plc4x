@@ -18,7 +18,7 @@
 //
 
 ////////////////////////////////////////////////////////////////
-// AMS/TCP Paket
+// AMS/TCP Packet
 ////////////////////////////////////////////////////////////////
 
 [type 'AmsTCPPacket'
@@ -38,7 +38,7 @@
 ]
 
 ////////////////////////////////////////////////////////////////
-// AMS/Serial Paket
+// AMS/Serial Packet
 ////////////////////////////////////////////////////////////////
 
 // If an AMS serial frame has been received and the frame is OK (magic cookie OK, CRC OK, correct fragment number etc.),
@@ -145,16 +145,16 @@
 ]
 
 [enum uint 16 'CommandId'
-    ['0x00' INVALID]
-    ['0x01' ADS_READ_DEVICE_INFO]
-    ['0x02' ADS_READ]
-    ['0x03' ADS_WRITE]
-    ['0x04' ADS_READ_STATE]
-    ['0x05' ADS_WRITE_CONTROL]
-    ['0x06' ADS_ADD_DEVICE_NOTIFICATION]
-    ['0x07' ADS_DELETE_DEVICE_NOTIFICATION]
-    ['0x08' ADS_DEVICE_NOTIFICATION]
-    ['0x09' ADS_READ_WRITE]
+    ['0x0000' INVALID]
+    ['0x0001' ADS_READ_DEVICE_INFO]
+    ['0x0002' ADS_READ]
+    ['0x0003' ADS_WRITE]
+    ['0x0004' ADS_READ_STATE]
+    ['0x0005' ADS_WRITE_CONTROL]
+    ['0x0006' ADS_ADD_DEVICE_NOTIFICATION]
+    ['0x0007' ADS_DELETE_DEVICE_NOTIFICATION]
+    ['0x0008' ADS_DEVICE_NOTIFICATION]
+    ['0x0009' ADS_READ_WRITE]
 ]
 
 [type 'State'

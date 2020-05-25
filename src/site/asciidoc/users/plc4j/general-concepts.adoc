@@ -1,0 +1,106 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== General Concepts
+
+On this page we'll give a short introduction to the most important concepts that will help you understand Apache PLC4X better.
+
+The most important concepts from a user perspective are in general:
+
+- Connections
+-- protocols
+-- transports
+-- configuration
+- Addresses
+
+The two parts where we have built the PLC4X API to abstract are the `connection strings` and the `address strings`.
+
+Both are pretty dependent on the type of device you are planning to communicate with. However these can both be easily configured in an external configuration or passed in as arguments.
+
+=== Connections
+
+In general a connection is a physical or logical connection between two endpoints.
+
+This connection uses a technical transport mechanism and passes data following a given protocol logic.
+Therefore we have modeled both of these aspects separately.
+
+Let's start with the `Transports`. The following are currently available, but they will probably be more soon:
+
+- TCP
+- UDP
+- Raw Socket
+- Serial Port
+- PCAP replay
+- Test
+
+While TCP, UDP are based on the normal TCP and UDP stack of the operating system, Raw sockets directly provide low-level access to `Ethernet Frames`.
+This allows them to not only be used in passive-mode drivers for simply reading all network traffic, it also allows communicating with protocols that are Ethernet based, but don't use TCP or UDP. This is usually the case with `Fieldbus` protocols which usually require lower latency than TCP and UDP can provide.
+
+The Serial Port transport simply reads and writes data to a given serial port.
+
+The probably most special forms of transport are currently the `PCAP replay` and the `Test` transport.
+
+The `PCAP replay` transport allows recording network traffic using tools like `WireShark` and to simply replay these recorded `pcap` and `pcapng` files. This is really helpful for writing new drivers (especially passive mode drivers) without having to be connected to the real device.
+
+From a driver point of view there is actually no difference between a `Raw Socket` and a `PCAP replay` transport.
+
+The `Test` transport is generally built for being used inside the PLC4X testsuite as it allows fine-grained access to the input and output of the drivers.
+
+With this we can explicitly control which data is passed into and retrieved from drivers and to validate this in unit- and integration-tests.
+
+==== Connection Strings
+
+A fully qualified PLC4X connection string would look like this:
+
+----
+{driver code}:{transport code}://{transport config}?{options}
+----
+
+The `driver code` generally selects the protocol we want to use, the `transport code` now selects the type of transport that should be used.
+
+Depending on the selected transport mechanism the `transport config` tells the transport which resource it should use.
+
+For example with a `TCP` and `UDP` transport, this will be the `IP address` or `hostname` optionally followed by the `Port`.
+
+For a `Serial` transport this will be the `name of the serial interface`. `Raw Sockets` will require the `device name` and so on.
+
+For a full description of all transports and their options, please consult the `Transport Documentation`.
+
+The last segment - `options` - can be used to fine tune some protocol or transport options to non-default values. For details on these options, please have a look at the `Protocol Documentation` and the `Transport Documentation`.
+
+The general structure of this part is always the same:
+
+----
+?{option-1-name}={option-1-value}&{option-2-name}={option-2-value}&{option-3-name}={option-3-value}
+----
+
+So in general the options are stared with a `?` and then followed by `name-value` pairs, which are separated by ampersand characters `&`.
+
+A driver for a given protocol however usually has a `default transport`, so sometimes it is possible to omit the transport code.
+
+Then this shorter version can be used. Please inspect the `Protocol Documentation` on `default transports`:
+
+----
+{driver code}://{transport config}?{options}
+----
+
+=== Individual Resource Addresses
+
+Addresses for individual fields on a PLC are extremely dependent on the used protocol.
+As we usually decided to stick to the address formats that are used in those particular environments.
+
+Please check the `Protocol Documentation` on details about these address formats.

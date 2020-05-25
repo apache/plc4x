@@ -21,24 +21,28 @@ package org.apache.plc4x.camel;
 import org.apache.camel.AsyncCallback;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.apache.camel.impl.DefaultAsyncProducer;
+import org.apache.camel.support.DefaultAsyncProducer;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Plc4XProducer extends DefaultAsyncProducer {
+    private final Logger log = LoggerFactory.getLogger(Plc4XProducer.class);
     private PlcConnection plcConnection;
     private AtomicInteger openRequests;
 
     public Plc4XProducer(Plc4XEndpoint endpoint) throws PlcException {
         super(endpoint);
         String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
+        this.plcConnection = endpoint.getConnection();
         if (!plcConnection.getMetadata().canWrite()) {
             throw new PlcException("This connection (" + plc4xURI + ") doesn't support writing.");
         }
@@ -48,18 +52,21 @@ public class Plc4XProducer extends DefaultAsyncProducer {
     @Override
     public void process(Exchange exchange) throws Exception {
         Message in = exchange.getIn();
-        String fieldName = in.getHeader(Constants.FIELD_NAME_HEADER, String.class);
-        String fieldQuery = in.getHeader(Constants.FIELD_QUERY_HEADER, String.class);
         Object body = in.getBody();
-        if (body instanceof List) {
-            List<?> bodyList = in.getBody(List.class);
-            Object[] values = bodyList.toArray();
-//            builder.addItem(fieldName, fieldQuery, values);
-        } else {
-            Object value = in.getBody(Object.class);
-//            builder.addItem(fieldName, fieldQuery, value);
-        }
         PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
+        if (body instanceof Map) { //Check if we have a Map
+            Map<String, Map<String, Object>> tags = (Map<String, Map<String, Object>>) body;
+            for (Map.Entry<String, Map<String, Object>> entry : tags.entrySet()) {
+                //Tags are stored like this --> Map<Tagname,Map<Query,Value>> for writing
+                String name = entry.getKey();
+                String query = entry.getValue().keySet().iterator().next();
+                Object value = entry.getValue().get(query);
+                builder.addItem(name,query,value);
+            }
+        } else {
+            throw new PlcInvalidFieldException("The body must contain a Map<String,Map<String,Object>");
+        }
+
         CompletableFuture<? extends PlcWriteResponse> completableFuture = builder.build().execute();
         int currentlyOpenRequests = openRequests.incrementAndGet();
         try {
@@ -99,12 +106,6 @@ public class Plc4XProducer extends DefaultAsyncProducer {
         if (openRequestsAtStop > 0) {
             log.warn("There are still {} open requests", openRequestsAtStop);
         }
-        try {
-            plcConnection.close();
-        } catch (Exception e) {
-            log.warn("Could not close {}", plcConnection, e);
-        }
-        super.doStop();
     }
 
 }

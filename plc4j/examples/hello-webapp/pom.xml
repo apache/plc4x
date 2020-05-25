@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp</artifactId>
@@ -32,13 +32,12 @@
   <packaging>pom</packaging>
 
   <properties>
-    <royale.version>0.9.4</royale.version>
-    <spring-boot.version>2.1.2.RELEASE</spring-boot.version>
+    <royale.version>0.9.7</royale.version>
+    <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
   </properties>
 
   <modules>
     <module>client</module>
-    <module>service</module>
     <module>webapp</module>
   </modules>
 
@@ -48,7 +47,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
         <executions>
           <execution>
             <id>generate-uber-jar</id>
@@ -60,17 +58,6 @@
         </executions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>com.buschmais.jqassistant</groupId>
-          <artifactId>jqassistant-maven-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <dependencyManagement>

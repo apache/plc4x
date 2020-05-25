@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4net</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
 
   <artifactId>plc4net-api</artifactId>
@@ -43,7 +43,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <executions>
           <execution>
             <id>dotnet-build</id>

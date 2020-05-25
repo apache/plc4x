@@ -19,61 +19,130 @@ under the License.
 package org.apache.plc4x.camel;
 
 import org.apache.camel.*;
-import org.apache.camel.impl.DefaultEndpoint;
+import org.apache.camel.support.DefaultEndpoint;
 import org.apache.camel.spi.Metadata;
 import org.apache.camel.spi.UriEndpoint;
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriPath;
+import org.apache.commons.math3.util.Pair;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @UriEndpoint(scheme = "plc4x", title = "PLC4X", syntax = "plc4x:driver", label = "plc4x")
 public class Plc4XEndpoint extends DefaultEndpoint {
 
-    /**
-     * The name of the PLC4X driver
-     */
-    @UriPath(label = "common")
-    @Metadata(required = "true")
-    @SuppressWarnings("unused")
+    @UriPath
+    @Metadata(required = true)
     private String driver;
 
-    /**
-     * The address for the PLC4X driver
-     */
     @UriParam
-    @Metadata(required = "false")
-    @SuppressWarnings("unused")
-    private String address;
+    private Map<String, Object> tags;
 
-    /**
-     * TODO: document me
-     */
     @UriParam
-    @Metadata(required = "false")
-    @SuppressWarnings("unused")
-    private Class dataType;
+    private String trigger;
 
-    private final PlcDriverManager plcDriverManager;
+    @UriParam
+    private int period;
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
+    private  PlcDriverManager plcDriverManager;
+    private PlcConnection connection;
+    private String uri;
+
+    public String getUri() {
+        return uri;
+    }
+
+    public String getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(String trigger) {
+        this.trigger = trigger;
+        plcDriverManager = new PooledPlcDriverManager();
+        String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+        uri=plc4xURI;
+        try {
+            connection = plcDriverManager.getConnection(plc4xURI);
+        } catch (PlcConnectionException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Plc4XEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
         plcDriverManager = new PlcDriverManager();
+        uri = endpointUri;
+        //Here we establish the connection in the endpoint, as it is created once during the context
+        // to avoid disconnecting and reconnecting for every request
+        try {
+            String plc4xURI = uri.replaceFirst("plc4x:/?/?", "");
+            uri = plc4xURI;
+            connection = plcDriverManager.getConnection(plc4xURI);
+
+        } catch (PlcConnectionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PlcConnection getConnection() {
+        return connection;
+    }
+
+    @Override
+    public void setProperties(Object bean, Map<String, Object> parameters) {
+
     }
 
     @Override
     public Producer createProducer() throws Exception {
+        //Checking if connection is still up and reconnecting if not
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return new Plc4XProducer(this);
     }
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
+        //Checking if connection is still up and reconnecting if not
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return new Plc4XConsumer(this, processor);
     }
 
     @Override
     public PollingConsumer createPollingConsumer() throws Exception {
+        //Checking if connection is still up and reconnecting if not
+        if (!connection.isConnected()) {
+            try {
+                connection = plcDriverManager.getConnection(uri.replaceFirst("plc4x:/?/?", ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return new Plc4XPollingConsumer(this);
     }
 
@@ -94,20 +163,12 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         this.driver = driver;
     }
 
-    public String getAddress() {
-        return address;
+    public Map<String, Object> getTags() {
+        return tags;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Class getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(Class dataType) {
-        this.dataType = dataType;
+    public void setTags(Map<String, Object> tags) {
+        this.tags = tags;
     }
 
     @Override
@@ -123,14 +184,27 @@ public class Plc4XEndpoint extends DefaultEndpoint {
         }
         Plc4XEndpoint that = (Plc4XEndpoint) o;
         return Objects.equals(getDriver(), that.getDriver()) &&
-            Objects.equals(getAddress(), that.getAddress()) &&
-            Objects.equals(getDataType(), that.getDataType()) &&
+            Objects.equals(getTags(), that.getTags()) &&
             Objects.equals(getPlcDriverManager(), that.getPlcDriverManager());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDriver(), getAddress(), getDataType(), getPlcDriverManager());
+        return Objects.hash(super.hashCode(), getDriver(), getTags(), getPlcDriverManager());
+    }
+
+    @Override
+    public void doStop() {
+        //Shutting down the connection when leaving the Context
+        try {
+            if (connection != null) {
+                if (connection.isConnected()) {
+                    connection.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

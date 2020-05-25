@@ -1,0 +1,31 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Firmata Driver
+
+Built to work with the Arduino Sketch available from https://github.com/firmata/arduino/blob/master/examples/StandardFirmata/StandardFirmata.ino[here].
+
+Functionality:
+
+- The driver supports Writing and Subscribing to data.
+- As soon as the driver connects, it resets the StandardFirmata sketch
+- As soon as a subscription comes in, the driver checks, if the input is currently not configured, set to output or set to input
+-- If it's not configured, it is set to input mode
+-- If it's set to output, an error is returned
+-- If it's set to input, nothing is changed
+- After a subscription comes in or is cancelled the driver checks if any changes are needed and these updates are executed.
+- As soon as an update comes in, the driver checks which subscriptions need to receive an update and fires events accordingly.

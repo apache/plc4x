@@ -25,14 +25,15 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
-import org.junit.Assert;
-import org.junit.Test;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
+import org.apache.plc4x.test.RequirePcap;
+import org.junit.jupiter.api.Test;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * TODO write comment
@@ -45,6 +46,7 @@ public class RawSocketChannelTest {
     private static final Logger logger = LoggerFactory.getLogger(RawSocketChannelTest.class);
 
     @Test
+    @RequirePcap
     public void doConnect() throws Exception {
         Channel channel = null;
         final EventLoopGroup workerGroup = new OioEventLoopGroup();
@@ -75,10 +77,8 @@ public class RawSocketChannelTest {
             // Start the client.
             PcapNetworkInterface loopbackDevice = Pcaps.findAllDevs().stream().filter(
                 PcapNetworkInterface::isLoopBack).findFirst().orElse(null);
-            Assert.assertNotNull("Couldn't find loopback device", loopbackDevice);
-            final ChannelFuture f = bootstrap.connect(
-                new RawSocketIpAddress(loopbackDevice.getName(), RawSocketAddress.ALL_PROTOCOLS,
-                    InetAddress.getByName("127.0.0.1"), 1234));
+            assertNotNull(loopbackDevice);
+            final ChannelFuture f = bootstrap.connect(new RawSocketAddress(loopbackDevice.getName()));
             // Wait for sync
             f.sync();
             // Wait till the session is finished initializing.

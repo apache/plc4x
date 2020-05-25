@@ -20,15 +20,16 @@ package org.apache.plc4x.camel;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.mockito.Mockito.*;
@@ -39,25 +40,26 @@ public class Plc4XProducerTest {
 
     private Exchange testExchange;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Plc4XEndpoint endpointMock = mock(Plc4XEndpoint.class, RETURNS_DEEP_STUBS);
         when(endpointMock.getEndpointUri()).thenReturn("plc4x:mock:10.10.10.1/1/1");
-        PlcDriverManager plcDriverManagerMock = mock(PlcDriverManager.class, RETURNS_DEEP_STUBS);
+        PlcConnection mockConnection = mock(PlcConnection.class, RETURNS_DEEP_STUBS);
 
-        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canRead()).thenReturn(true);
-        when(plcDriverManagerMock.getConnection(anyString()).getMetadata().canWrite()).thenReturn(true);
-        when(plcDriverManagerMock.getConnection(anyString()).writeRequestBuilder())
+        when(mockConnection.getMetadata().canRead()).thenReturn(true);
+        when(mockConnection.getMetadata().canWrite()).thenReturn(true);
+        when(mockConnection.writeRequestBuilder())
             .thenReturn(mock(PlcWriteRequest.Builder.class, RETURNS_DEEP_STUBS));
 
-        when(endpointMock.getPlcDriverManager()).thenReturn(plcDriverManagerMock);
+        when(endpointMock.getConnection()).thenReturn(mockConnection);
         SUT = new Plc4XProducer(endpointMock);
         testExchange = mock(Exchange.class, RETURNS_DEEP_STUBS);
-
-        when(testExchange.getIn().getHeader(eq(Constants.FIELD_NAME_HEADER), eq(String.class)))
-            .thenReturn("Hurz");
-        when(testExchange.getIn().getHeader(eq(Constants.FIELD_QUERY_HEADER), eq(String.class)))
-            .thenReturn("PlcField.class");
+        Map<String, Map<String,Object>> tags = new HashMap();
+        tags.put("test1", Collections.singletonMap("testAddress1",0));
+        tags.put("test1", Collections.singletonMap("testAddress2",true));
+        tags.put("test1", Collections.singletonMap("testAddress3","TestString"));
+        when(testExchange.getIn().getBody())
+            .thenReturn(tags);
     }
 
     @Test
@@ -66,11 +68,8 @@ public class Plc4XProducerTest {
         SUT.process(testExchange);
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
         SUT.process(testExchange);
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
-        SUT.process(testExchange);
-        when(testExchange.getIn().getBody()).thenReturn(Arrays.asList("test","test"));
-        when(testExchange.getIn().getBody(eq(List.class))).thenReturn(Arrays.asList("test","test"));
-        SUT.process(testExchange);
+        when(testExchange.getIn().getBody()).thenReturn(2);
+
     }
 
     @Test
@@ -81,9 +80,6 @@ public class Plc4XProducerTest {
         SUT.process(testExchange, doneSync -> {
         });
         when(testExchange.getPattern()).thenReturn(ExchangePattern.InOut);
-        SUT.process(testExchange, doneSync -> {
-        });
-        when(testExchange.getPattern()).thenReturn(ExchangePattern.OutOnly);
         SUT.process(testExchange, doneSync -> {
         });
     }

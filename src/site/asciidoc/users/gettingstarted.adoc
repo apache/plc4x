@@ -21,4 +21,4 @@ Depending on the programming language, the usage will differ, therefore please g
 
 === Java
 
-For guides on how to write PLC4X applications with Java, please go to the link:../plc4j/users/gettingstarted.html[Java Getting Started]
+For guides on how to write PLC4X applications with Java, please go to the link:plc4j/gettingstarted.html[Java Getting Started]

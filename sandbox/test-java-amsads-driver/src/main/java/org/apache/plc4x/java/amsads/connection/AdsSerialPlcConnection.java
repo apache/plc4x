@@ -18,19 +18,11 @@
  */
 package org.apache.plc4x.java.amsads.connection;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.amsads.protocol.Ads2PayloadProtocol;
-import org.apache.plc4x.java.amsads.protocol.Payload2SerialProtocol;
-import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
-import org.apache.plc4x.java.base.protocol.SingleItemToSingleRequestProtocol;
-import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
+import org.apache.plc4x.java.transport.serial.SerialChannelFactory;
+import org.apache.plc4x.java.transport.serial.SerialSocketAddress;
 
-import java.util.concurrent.CompletableFuture;
-
+@Deprecated
 public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
 
     private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort) {
@@ -38,7 +30,7 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
     }
 
     private AdsSerialPlcConnection(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort, AmsNetId sourceAmsNetId, int sourceAmsPort) {
-        super(new SerialChannelFactory(serialPort), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
+        super(new SerialChannelFactory(new SerialSocketAddress(serialPort)), targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
     public static AdsSerialPlcConnection of(String serialPort, AmsNetId targetAmsNetId, int targetAmsPort) {
@@ -49,19 +41,20 @@ public class AdsSerialPlcConnection extends AdsAbstractPlcConnection {
         return new AdsSerialPlcConnection(serialPort, targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort);
     }
 
-    @Override
-    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
-        return new ChannelInitializer() {
-            @Override
-            protected void initChannel(Channel channel) {
-                // Build the protocol stack for communicating with the ads protocol.
-                ChannelPipeline pipeline = channel.pipeline();
-                pipeline.addLast(new Payload2SerialProtocol());
-                pipeline.addLast(new Ads2PayloadProtocol());
-                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
-                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsSerialPlcConnection.this, AdsSerialPlcConnection.this, null, timer));
-            }
-        };
-    }
+    // TODO fix this
+//    @Override
+//    protected ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture) {
+//        return new ChannelInitializer<Channel>() {
+//            @Override
+//            protected void initChannel(Channel channel) {
+//                // Build the protocol stack for communicating with the ads protocol.
+//                ChannelPipeline pipeline = channel.pipeline();
+//                pipeline.addLast(new Payload2SerialProtocol());
+//                pipeline.addLast(new Ads2PayloadProtocol());
+//                pipeline.addLast(new Plc4x2AdsProtocol(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, fieldMapping));
+//                pipeline.addLast(new SingleItemToSingleRequestProtocol(AdsSerialPlcConnection.this, AdsSerialPlcConnection.this, null, timer));
+//            }
+//        };
+//    }
 
 }

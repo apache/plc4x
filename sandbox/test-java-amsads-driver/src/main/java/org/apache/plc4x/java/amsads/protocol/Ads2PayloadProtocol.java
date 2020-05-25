@@ -25,9 +25,9 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@Deprecated
 public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacket> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ads2PayloadProtocol.class);
@@ -61,7 +62,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         }
         WriteBuffer writeBuffer = new WriteBuffer(amsPacket.getLengthInBytes(), true);
         try {
-            AmsPacketIO.serialize(writeBuffer, amsPacket);
+            AmsPacketIO.staticSerialize(writeBuffer, amsPacket);
         } catch (ParseException e) {
             throw new AdsException(invokeId, e);
         }
@@ -82,7 +83,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
         ReadBuffer readBuffer = new ReadBuffer(bytes);
         while (readBuffer.getPos() < bytes.length) {
             try {
-                AmsPacket packet = AmsPacketIO.parse(readBuffer);
+                AmsPacket packet = AmsPacketIO.staticParse(readBuffer);
                 out.add(packet);
             } catch (Exception e) {
                 LOGGER.warn("Error decoding package: " + e.getMessage());

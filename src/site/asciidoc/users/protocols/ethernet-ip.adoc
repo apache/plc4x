@@ -1,0 +1,98 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== EtherNet/IP
+
+=== Connection String Options
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`eip`
+
+|Name
+2+|EtherNet/IP Protocol
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-eip</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Default Transport:
+2+|`tcp`
+
+3+|Supported Operations
+|
+| `read`
+|Read tags from a PLC4X device
+
+|
+| `write`
+|Write values to tags on a PLC4X device
+
+3+|Options
+
+|
+| `backplane`
+| `backplane` value for the client (PLC4X device). Mandatory.
+
+|
+| `slot` 
+| `slot` value for the client (PLC4X device). Mandatory.
+|===
+
+=== Address Format
+To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic segments.
+ This is used to refer to objects through their symbolic names. This makes reading data a lot easier, as you do not
+ need to specify the Datatype for reading.
+ 
+
+----
+
+%{tagname}[{startIndex}]:{numberOfElements}
+%{tagname}[{startIndex}]:{numberOfElements}:{DataType}
+
+----
+[cols="2" ,options="header"]
+|===
+|Name |Description
+|Tagname |symbolic name of the Data
+|Start Index (optional)|if the data is an array, we can specify a starting index from where we want to read
+|Number of elements (optional)|if the data is an array, we can specify the number of elements we want to read. Use this in combination with the starting index to get the exact scope you want.
+|DataType (writing) |Specify the Data-type of the value you want to write (mandatory)
+|===
+
+==== Data Types
+[cols="2" ,options="header"]
+|===
+|To store a|Use this data type
+|Bit|BOOL
+|Bit array|DWORD (32-bit boolean array)
+|8-bit integer|SINT
+|16-bit integer|INT
+|32-bit integer|DINT
+|64-bit integer|LINT
+|32-bit float|REAL
+|===

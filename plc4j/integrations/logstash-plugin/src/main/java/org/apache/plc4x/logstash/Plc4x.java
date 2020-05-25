@@ -141,6 +141,7 @@ public class Plc4x implements Input {
                 Thread.sleep(1000);
                 // or maybe just yield(); ?
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 logger.severe("Error thead sleep plc4x plugin: "+ e);
             }
         }

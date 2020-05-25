@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.amsads.protocol.util;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.amsads.model.AdsDataType;
+import org.apache.plc4x.java.amsads.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolPayloadTooBigException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;

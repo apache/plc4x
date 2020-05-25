@@ -31,11 +31,13 @@ public class ConstructorDeclaration extends MethodDefinition {
         super(null, null, parameters, body);
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
+    @Override
+    public void write(Generator writer) {
         throw new UnsupportedOperationException("This should be called by the Class Implementor!");
     }
 }

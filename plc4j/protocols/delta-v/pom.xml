@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-protocols</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-protocol-delta-v</artifactId>
@@ -114,7 +114,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
         <configuration>
           <classpathScope>test</classpathScope>
           <mainClass>org.apache.plc4x.java.deltav.PoCInflux</mainClass>
@@ -144,7 +143,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
-            <version>1.6.0</version>
             <configuration combine.children="append">
               <arguments>${pcapng.file.path}</arguments>
             </configuration>

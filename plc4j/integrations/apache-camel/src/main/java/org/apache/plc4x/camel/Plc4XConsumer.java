@@ -1,5 +1,5 @@
 /*
- Licensed to the Apache Software Foundation (ASF) under one
+Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
  distributed with this work for additional information
  regarding copyright ownership.  The ASF licenses this file
@@ -18,54 +18,63 @@
  */
 package org.apache.plc4x.camel;
 
-import org.apache.camel.*;
+import org.apache.camel.Endpoint;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.support.DefaultConsumer;
 import org.apache.camel.spi.ExceptionHandler;
-import org.apache.camel.support.LoggingExceptionHandler;
-import org.apache.camel.support.ServiceSupport;
-import org.apache.camel.util.AsyncProcessorConverterHelper;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.scraper.ScrapeJob;
+import org.apache.plc4x.java.scraper.config.JobConfigurationImpl;
+import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
+import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
+import org.apache.plc4x.java.scraper.exception.ScraperException;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScrapeJobImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
+import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.*;
+import java.util.concurrent.*;
 
-public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util.function.Consumer<PlcSubscriptionEvent> {
+public class Plc4XConsumer extends DefaultConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Plc4XConsumer.class);
 
-    private Plc4XEndpoint endpoint;
-    private AsyncProcessor processor;
     private ExceptionHandler exceptionHandler;
     private PlcConnection plcConnection;
-    private String fieldQuery;
-    private Class<?> dataType;
+    private  Map<String,Object> tags;
+    private String trigger;
     private PlcSubscriptionResponse subscriptionResponse;
+    private Plc4XEndpoint plc4XEndpoint;
+
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> future;
+
+
 
     public Plc4XConsumer(Plc4XEndpoint endpoint, Processor processor) throws PlcException {
-        this.endpoint = endpoint;
-        this.dataType = endpoint.getDataType();
-        this.processor = AsyncProcessorConverterHelper.convert(processor);
-        this.exceptionHandler = new LoggingExceptionHandler(endpoint.getCamelContext(), getClass());
-        String plc4xURI = endpoint.getEndpointUri().replaceFirst("plc4x:/?/?", "");
-        this.plcConnection = endpoint.getPlcDriverManager().getConnection(plc4xURI);
-        this.fieldQuery = endpoint.getAddress();
+        super(endpoint, processor);
+        plc4XEndpoint =endpoint;
+        this.plcConnection = endpoint.getConnection();
+        this.tags = endpoint.getTags();
+        this.trigger= endpoint.getTrigger();
+        plc4XEndpoint=endpoint;
     }
 
     @Override
     public String toString() {
-        return "Plc4XConsumer[" + endpoint + "]";
+        return "Plc4XConsumer[" + plc4XEndpoint + "]";
     }
 
     @Override
     public Endpoint getEndpoint() {
-        return endpoint;
+        return plc4XEndpoint;
     }
 
     public ExceptionHandler getExceptionHandler() {
@@ -78,37 +87,82 @@ public class Plc4XConsumer extends ServiceSupport implements Consumer, java.util
 
     @Override
     protected void doStart() throws InterruptedException, ExecutionException {
-        // TODO: Is it correct to only support one field?
-        PlcSubscriptionRequest request = plcConnection.subscriptionRequestBuilder()
-            .addCyclicField("default", fieldQuery, Duration.of(3, ChronoUnit.SECONDS)).build();
-        subscriptionResponse = request.execute().get();
-        // TODO: we need to return the plcSubscriptionResponse here too as we need this to unsubscribe...
-        // TODO: figure out what to do with this
-        // plcSubscriber.register(this, plcSubscriptionResponse.getSubscriptionHandles());
+        if(trigger==null) {
+            PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+            for( String tag : tags.keySet()){
+                try{
+                    String query = (String)tags.get(tag);
+                    builder.addItem(tag,query);
+                }
+                catch (PlcIncompatibleDatatypeException e){
+                    LOGGER.error("For consumer, please use Map<String,String>, currently using {}",tags.getClass().getSimpleName());
+                }
+            }
+            PlcReadRequest request = builder.build();
+            future = executorService.schedule(() -> {
+                request.execute().thenAccept(response -> {
+                    try {
+                        Exchange exchange = plc4XEndpoint.createExchange();
+                        Map<String,Object> rsp = new HashMap<>();
+                        for(String field : response.getFieldNames()){
+                            rsp.put(field,response.getObject(field));
+                        }
+                        exchange.getIn().setBody(rsp);
+                        getProcessor().process(exchange);
+                    } catch (Exception e) {
+                        exceptionHandler.handleException(e);
+                    }
+                });
+            }, 500, TimeUnit.MILLISECONDS);
+        }
+        else{
+            try {
+                ScraperConfiguration configuration =  getScraperConfig(validateTags());
+                TriggerCollector collector = new TriggerCollectorImpl(plc4XEndpoint.getPlcDriverManager());
+
+                TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (job, alias, response) -> {
+                    try {
+                        Exchange exchange = plc4XEndpoint.createExchange();
+                        exchange.getIn().setBody(response);
+                        getProcessor().process(exchange);
+                    } catch (Exception e) {
+                        exceptionHandler.handleException(e);
+                    };
+                    },collector);
+                scraper.start();
+                collector.start();
+            } catch (ScraperException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private Map<String, String> validateTags() {
+        Map<String, String> map = new HashMap<>();
+        for(Map.Entry<String,Object>tag: tags.entrySet()){
+            if(tag.getValue() instanceof String){
+                map.put(tag.getKey(),(String)tag.getValue());
+            }
+        }
+        if(map.size()!=tags.size()){
+            LOGGER.error("At least one entry does not match the format : Map.Entry<String,String> ");
+            return null;
+        }
+        else return map;
+    }
+
+    private ScraperConfigurationTriggeredImpl getScraperConfig(Map<String,String> tagList){
+        String config = "(TRIGGER_VAR,"+plc4XEndpoint.getPeriod()+",("+ plc4XEndpoint.getTrigger() +")==(true))";
+        List<JobConfigurationImpl> job = Collections.singletonList(new JobConfigurationImpl("PLC4X-Camel",config,0,Collections.singletonList(Constants.PLC_NAME),tagList));
+        Map<String,String> source = Collections.singletonMap(Constants.PLC_NAME,plc4XEndpoint.getUri());
+        return new ScraperConfigurationTriggeredImpl(source,job);
     }
 
     @Override
     protected void doStop() throws InterruptedException, ExecutionException, TimeoutException {
-        PlcUnsubscriptionRequest request = plcConnection.unsubscriptionRequestBuilder().addHandles(subscriptionResponse.getSubscriptionHandles()).build();
-        CompletableFuture<? extends PlcUnsubscriptionResponse> unsubscriptionFuture = request.execute();
-        /*PlcUnsubscriptionResponse unsubscriptionResponse =*/ unsubscriptionFuture.get(5, TimeUnit.SECONDS);
-        // TODO: Handle the response ...
-        try {
-            plcConnection.close();
-        } catch (Exception e) {
-            LOGGER.error("Error closing connection", e);
-        }
-    }
-
-    @Override
-    public void accept(PlcSubscriptionEvent plcSubscriptionEvent) {
-        LOGGER.debug("Received {}", plcSubscriptionEvent);
-        try {
-            Exchange exchange = endpoint.createExchange();
-            exchange.getIn().setBody(unwrapIfSingle(plcSubscriptionEvent.getAllObjects("default")));
-            processor.process(exchange);
-        } catch (Exception e) {
-            exceptionHandler.handleException(e);
+        // First stop the polling process
+        if (future != null) {
+            future.cancel(true);
         }
     }
 

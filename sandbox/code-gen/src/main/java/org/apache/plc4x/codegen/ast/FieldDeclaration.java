@@ -46,11 +46,13 @@ public class FieldDeclaration implements Node {
         this(new HashSet<>(Arrays.asList(modifiers)), type, name, null);
     }
 
-    @Override public <T> T accept(NodeVisitor<T> visitor) {
+    @Override
+    public <T> T accept(NodeVisitor<T> visitor) {
         return null;
     }
 
-    @Override public void write(Generator writer) {
+    @Override
+    public void write(Generator writer) {
         writer.generateFieldDeclaration(modifiers, type, name, initializer);
     }
 }

@@ -28,14 +28,15 @@ import org.apache.plc4x.java.amsads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.amsads.readwrite.AmsTcpHeader;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsTCPPacketIO;
-import org.apache.plc4x.java.utils.ParseException;
-import org.apache.plc4x.java.utils.ReadBuffer;
-import org.apache.plc4x.java.utils.WriteBuffer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@Deprecated
 public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Payload2TcpProtocol.class);
@@ -47,14 +48,14 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
         byte[] bytes = amsPacket.array();
         AmsPacket amsPacketSer;
         try {
-            amsPacketSer = AmsPacketIO.parse(new ReadBuffer(bytes, true));
+            amsPacketSer = AmsPacketIO.staticParse(new ReadBuffer(bytes, true));
         } catch (ParseException e) {
             throw new AdsException(-1L, e);
         }
 
         WriteBuffer writeBuffer = new WriteBuffer(amsPacketSer.getLengthInBytes(), true);
         try {
-            AmsTCPPacketIO.serialize(writeBuffer, new AmsTCPPacket(new AmsTcpHeader(amsPacketSer.getLengthInBytes()), amsPacketSer));
+            AmsTCPPacketIO.staticSerialize(writeBuffer, new AmsTCPPacket(new AmsTcpHeader(amsPacketSer.getLengthInBytes()), amsPacketSer));
         } catch (ParseException e) {
             throw new AdsException(amsPacketSer.getAmsHeader().getInvokeId(), e);
         }
@@ -74,12 +75,12 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
         ReadBuffer readBuffer = new ReadBuffer(bytes);
         while (readBuffer.getPos() < bytes.length) {
             try {
-                AmsTCPPacket amsTCPPacket = AmsTCPPacketIO.parse(readBuffer);
+                AmsTCPPacket amsTCPPacket = AmsTCPPacketIO.staticParse(readBuffer);
                 AmsPacket amsPacket = amsTCPPacket.getUserdata();
 
                 WriteBuffer writeBuffer = new WriteBuffer(amsPacket.getLengthInBytes(), true);
                 try {
-                    AmsPacketIO.serialize(writeBuffer, amsPacket);
+                    AmsPacketIO.staticSerialize(writeBuffer, amsPacket);
                 } catch (ParseException e) {
                     throw new AdsException(amsPacket.getAmsHeader().getInvokeId(), e);
                 }

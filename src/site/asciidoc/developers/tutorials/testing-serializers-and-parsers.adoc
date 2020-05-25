@@ -1,0 +1,146 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/
+
+= Testing Serializers and Parsers
+
+Currently the build generates the serializers and parsers from a provided `mspec` specification.
+
+A typical full round-trip test for the model, parsers and serializers would look as follows:
+
+* Starting from a byte array
+* The parser is used to parse the byte array
+* The parsed model instance is compared with an expected model
+* If the expected model matched the expected one the model is serialized back to a byte array
+* The resulting byte array is compared to the original byte array
+* If the byte arrays are identical, the round-trip is regarded ok
+
+Doing this manually would require a lot of manual object construction and validation, so we created a framework for creating such tests.
+
+As XML, no matter what you think about it, allows simple and easy readable descriptions these tests are provided as `XML files`.
+
+All generated model classes allow parsing and serializing to XML via `Jackson`.
+
+== Structure of a test
+
+A typical test looks like this:
+
+----
+  <testcase>
+    <name>Read Input Registers Request</name>
+    <raw>000000000006ff0408d20002</raw>
+    <root-type>ModbusTcpADU</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+        <transactionIdentifier>0</transactionIdentifier>
+        <unitIdentifier>255</unitIdentifier>
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadInputRegistersRequest">
+          <startingAddress>2258</startingAddress>
+          <quantity>2</quantity>
+        </pdu>
+      </ModbusTcpADU>
+    </xml>
+  </testcase>
+----
+
+As you can see, the `name` provides a simple human readable name for the test which is used for reporting success and failure.
+
+The `raw` element contains the `hex-representation` of the `binary input`.
+
+After that the `root-type` specifies the base type used for parsing this data. In above example the test will use the `ModbusTcpADUIO.serialize` and `ModbusTcpADUIO.parse` methods for serializing and parsing.
+
+Some parsers require additional parameters for parsing. In above example the Modbus protocol can't decide if something is a request or response from the data itself, so we have to pass that information in using a `parser-arguments` argument.
+
+The final element is the `xml` element, which contains the XML representation of the parsed object.
+
+Each test implements exactly the test-strategy sketched above, however for comparing the parsed and the expected model, we use `XMLUint` to serialize the parsed model to XML and compare that to the given XML in the test-case declaration.
+
+== Structure of a testsuite
+
+Multiple tests are usually wrapped into a testsuite document.
+
+In general this is just a container with a given testsuite `name` and a number of `testcase` elements.
+
+One important setting however controls the endianness of the protocol in general.
+
+This is controlled with a `bigEndian` attribute in the testsuite root element.
+
+An example testsuite document looks as follows:
+
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                bigEndian="true">
+
+  <name>Allen-Bradley DF1</name>
+
+  <testcase>
+    ...
+  </testcase>
+
+  <testcase>
+    ...
+  </testcase>
+
+  <testcase>
+    ...
+  </testcase>
+
+  <testcase>
+    ...
+  </testcase>
+
+</test:testsuite>
+----
+
+== The Junit runner
+
+All logic is implemented in the `plc4j-utils-test-utils` module, so make sure to add the following test-dependency:
+
+----
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>{project.version}</version>
+      <scope>test</scope>
+    </dependency>
+----
+
+In order to run these tests as part of the build, as a last step we need to create a test-runner class.
+
+This is generally just a hand-full of boilerplate code, telling the test which document to use for testing.
+
+Following code snippet sort of looks the same for every testsuite:
+
+----
+package org.apache.plc4x.java.modbus;
+
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
+
+public class ModbusIOTest extends ParserSerializerTestsuiteRunner {
+
+    public ModbusIOTest() {
+        super("/testsuite/ModbusTestsuite.xml");
+    }
+
+}
+----
+
+Here the document `ModbusTestsuite.xml` is located in the directory: `src/test/resources/testsuite/`.

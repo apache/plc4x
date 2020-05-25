@@ -1,0 +1,169 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== OPC UA
+=== Connection String Options
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`opcua`
+
+|Name
+2+|OPC UA
+
+|Maven Dependency
+2+|
+
+----
+
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-opcua</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+
+----
+
+|Default Transport:
+2+| `tcp`
+
+|Compatible Transports:
+2+| - `tcp`
+
+
+3+|Supported Operations
+
+| read      | The read interface allows to read the full range of supported PLC4X types in single and bulk requests |
+| write     | The write interface is capable of writting the overhanded base type. At the moment there are some issues with unsigned 
+types because they represent the wrong datatype to write which will conflict with the corresponding target variable type. |
+| subscribe | Subscriptions are possible with events on event- and cyclic-basis |
+
+
+3+|Options
+
+|Key         |   Type [default]    | Description |
+`discovery`  |   boolean [`true`] | Controls the feature of the discovery endpoint of an OPC UA server which every server will propagate over an '<address>/discovery' endpoint. The most common issue here ist that the most servers are not correct configured and propagate the wrong external IP- or URL-addresses. If that is the case you can disable the discovery by configuring it with an 'false' value. |
+
+
+|===
+
+=== Address Format
+To read, write and subscribe data to a PLC4X device, the OPC UA driver uses the OPC variable declaration string.
+It includes the namespace(ns) of the hierarchy tree followed by the type of identifier string(s), numeric(i), binary(b) or guid(g) and its address.
+ 
+
+----
+
+ns={namespace-index};[s|i|g|b]={Identifier}
+
+----
+
+
+
+==== Example of a valid OPC UA address:
+
+String address:
+----
+ns=2;s=HelloWorld/ScalarTypes/Boolean
+----
+Numeric address
+----
+ns=1;i=1337
+----
+GUID address:
+----
+ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a
+----
+
+== Example operations with PLC4J
+
+=== Read value of an PLC value
+----
+String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean"; // String in opc ua format to describe target value
+String fieldName = "Bool"; // local unique key for the requested variable
+String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
+
+PlcConnection opcuaReadConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
+PlcReadRequest.Builder builder = opcuaReadConnection.readRequestBuilder();
+builder.addItem(fieldName, BOOL_IDENTIFIER);
+PlcReadRequest request = builder.build();
+PlcReadResponse response = opcuaConnection.read(request).get();
+
+if(response.getResponseCode(fieldName) == PlcResponseCode.OK){
+    Boolean plcBooleanValue = response.getBoolean();                         
+}
+
+----
+=== Write value of an PLC value
+----
+String BOOL_IDENTIFIER = "ns=2;s=HelloWorld/ScalarTypes/Boolean"; // String in opc ua format to describe target value
+String fieldName = "Bool"; // local unique key for the requested variable
+String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
+
+PlcConnection opcuaReadConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
+PlcWriteRequest.Builder wBuilder = opcuaConnection.writeRequestBuilder();
+wBuilder.addItem(fieldName, BOOL_IDENTIFIER, true);
+PlcWriteRequest writeRequest = wBuilder.build();
+PlcWriteResponse wResponse = opcuaConnection.write(writeRequest).get();
+
+if(wResponse.getResponseCode(fieldName) == PlcResponseCode.OK){
+    // Todo ...                       
+}
+
+----
+=== Subscribe PLC events
+
+----
+String fieldAddress = "ns=2;s=HelloWorld/ScalarTypes/String"; // String in opc ua format to describe target value
+String fieldName = "field1"; // local unique key for the requested variable
+String connectionString = "opcua:tcp://127.0.0.1:12686/milo?discovery=false"; // Address of the opc ua server
+
+PlcConnection opcuaSubConnection =  new PlcDriverManager().getConnection(connectionString); // build connection
+PlcSubscriptionRequest.Builder subBuilder =  opcuaSubConnection.subscriptionRequestBuilder(); // get builder
+subBuilder.addChangeOfStateField(fieldName, fieldAddress); // add the tuple of fieldName and Address to the request
+PlcSubscriptionRequest subReq = subBuilder.build(); // build the request
+PlcSubscriptionResponse subResp = subReq.execute().get(); // execute the build up of a subscription
+Consumer<PlcSubscriptionEvent> consumer = plcSubscriptionEvent -> System.out.println("Your Information"); // create a consumer function for the subscription
+PlcConsumerRegistration registration = subResp.getSubscriptionHandle(fieldName).register(consumer); // add the consumer to the created subscription  of the request and access it over the  SubscriptionHandler
+registration.unregister(); // Unsubscribe
+
+----
+
+=== More details on OPC UA
+
+https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
+The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.
+
+This multi-layered approach accomplishes the original design specification goals of:
+
+* Functional equivalence: all COM OPC Classic specifications are mapped to UA
+* Platform independence: from an embedded micro-controller to cloud-based infrastructure
+* Secure: encryption, authentication, and auditing
+* Extensible: ability to add new features without affecting existing applications
+* Comprehensive information modeling: for defining complex information
+
+=== More details
+At the moment, the underlying stack to accomplish the OPC UA functionallity is the eclipse project milo which is a powerfull server-side and client-side driver to enable the OPC UA capabilties. The Milo server SDK is also used to implement the bridge server functionallity inside of the sandbox.
+
+https://projects.eclipse.org/projects/iot.milo[Eclipse Milo - Project]
+
+|===

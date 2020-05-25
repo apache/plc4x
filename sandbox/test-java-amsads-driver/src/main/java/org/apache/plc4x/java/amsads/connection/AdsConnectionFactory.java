@@ -23,6 +23,7 @@ import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import java.net.InetAddress;
 import java.util.Objects;
 
+@Deprecated
 public class AdsConnectionFactory {
 
     public AdsTcpPlcConnection adsTcpPlcConnectionOf(InetAddress address, Integer port, AmsNetId targetAmsNetId, Integer targetAmsPort, AmsNetId sourceAmsNetId, Integer sourceAmsPort) {
