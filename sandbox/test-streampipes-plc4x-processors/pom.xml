@@ -63,7 +63,7 @@
             <goals>
               <goal>enforce</goal>
             </goals>
-            <configuration>
+            <configuration combine.children="append">
               <skip>true</skip>
             </configuration>
           </execution>
