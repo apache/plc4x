@@ -42,6 +42,7 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
+#include <stdint.h>
 <#if helper.getComplexTypeReferencesInFields()?has_content>
 <#list helper.getComplexTypeReferencesInFields() as complexType>
 #include "${helper.camelCaseToSnakeCase(complexType.getName())}.h"
@@ -50,7 +51,7 @@ extern "C" {
 
 struct plc4c_${helper.getCTypeName(type.name)} {
 <#list type.allPropertyFields as field>
-  ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>/*[] TODO Implement this differently */</#if> ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)};
+  ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
 </#list>
 };
 typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};

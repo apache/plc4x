@@ -18,6 +18,8 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
@@ -25,12 +27,15 @@ import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefini
 import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
+import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.terms.*;
+import sun.tools.tree.ArrayExpression;
 
 import java.util.*;
 
@@ -155,9 +160,28 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                 case BIT:
                     return "bool";
                 case UINT:
-                    return "unsigned int";
-                case INT:
-                    return "int";
+                case INT: {
+                    StringBuilder sb = new StringBuilder();
+                    if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
+                        sb.append("u");
+                    }
+                    if(simpleTypeReference.getSizeInBits() % 64 == 0) {
+                        sb.append("int64_t");
+                    } else if(simpleTypeReference.getSizeInBits() % 32 == 0) {
+                        sb.append("int32_t");
+                    } else if(simpleTypeReference.getSizeInBits() % 16 == 0) {
+                        sb.append("int16_t");
+                    } else if(simpleTypeReference.getSizeInBits() % 8 == 0) {
+                        sb.append("int8_t");
+                    } else {
+                        if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.UINT) {
+                            // We already have the "u" in there ...
+                            sb.append("nsigned ");
+                        }
+                        sb.append("int");
+                    }
+                    return sb.toString();
+                }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                     int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
@@ -186,6 +210,20 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         }
     }
 
+    public String getLoopExpressionSuffix(TypedField field) {
+        if(field instanceof ArrayField) {
+            ArrayField arrayField = (ArrayField) field;
+            if(arrayField.getLoopType() == ArrayField.LoopType.COUNT) {
+                Term countTerm = arrayField.getLoopExpression();
+                if (isFixedValueExpression(countTerm)) {
+                    int evaluatedCount = evaluateFixedValueExpression(countTerm);
+                    return "[" + evaluatedCount +"]";
+                }
+            }
+        }
+        return "";
+    }
+
     /**
      * Ge the type-size suffix in case of simple types.
      *
@@ -201,8 +239,18 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                     return " : 1";
                 case UINT:
                 case INT:
+                    // If the bit-size is exactly one of the built-in tpye-sizes, omit the suffix.
+                    if((simpleTypeReference.getSizeInBits() == 8) || (simpleTypeReference.getSizeInBits() == 16) ||
+                        (simpleTypeReference.getSizeInBits() == 32) || (simpleTypeReference.getSizeInBits() == 64)) {
+                        return "";
+                    }
+                    return " : " + simpleTypeReference.getSizeInBits();
                 case FLOAT:
                 case UFLOAT:
+                    // If the bit-size is exactly one of the built-in tpye-sizes, omit the suffix.
+                    if((simpleTypeReference.getSizeInBits() == 32) || (simpleTypeReference.getSizeInBits() == 64)) {
+                        return "";
+                    }
                     return " : " + simpleTypeReference.getSizeInBits();
                 case STRING:
                 case TIME:
@@ -272,6 +320,63 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             }
         }
         return filteredEnumValues.values();
+    }
+
+    /**
+     * Check if the expression doesn't reference any variables.
+     * If this is the case, the expression can be evaluated at code-generation time.
+     * @param term term
+     * @return true if it doesn't reference any variable literals.
+     */
+    private boolean isFixedValueExpression(Term term) {
+        if(term instanceof VariableLiteral) {
+            return false;
+        }
+        if(term instanceof UnaryTerm) {
+            UnaryTerm unaryTerm = (UnaryTerm) term;
+            return isFixedValueExpression(unaryTerm.getA());
+        }
+        if(term instanceof BinaryTerm) {
+            BinaryTerm binaryTerm = (BinaryTerm) term;
+            return isFixedValueExpression(binaryTerm.getA()) && isFixedValueExpression(binaryTerm.getB());
+        }
+        if(term instanceof TernaryTerm) {
+            TernaryTerm ternaryTerm = (TernaryTerm) term;
+            return isFixedValueExpression(ternaryTerm.getA()) && isFixedValueExpression(ternaryTerm.getB()) &&
+                isFixedValueExpression(ternaryTerm.getC());
+        }
+        return true;
+    }
+
+    private int evaluateFixedValueExpression(Term term) {
+        final Expression expression = new ExpressionBuilder(toString(term)).build();
+        return (int) expression.evaluate();
+    }
+
+    private String toString(Term term) {
+        if(term instanceof NullLiteral) {
+            return "null";
+        }
+        if(term instanceof BooleanLiteral) {
+            return Boolean.toString(((BooleanLiteral) term).getValue());
+        }
+        if(term instanceof NumericLiteral) {
+            return ((NumericLiteral) term).getNumber().toString();
+        }
+        if(term instanceof StringLiteral) {
+            return "\"" + ((StringLiteral) term).getValue() + "\"";
+        }
+        if(term instanceof UnaryTerm) {
+            return ((UnaryTerm) term).getOperation() + toString(((UnaryTerm) term).getA());
+        }
+        if(term instanceof BinaryTerm) {
+            return toString(((BinaryTerm) term).getA()) + ((BinaryTerm) term).getOperation() + toString(((BinaryTerm) term).getB());
+        }
+        if(term instanceof TernaryTerm) {
+            return "(" + toString(((TernaryTerm) term).getA()) + ") ? (" + toString(((TernaryTerm) term).getB()) +
+                ") : (" + toString(((TernaryTerm) term).getC()) + ")";
+        }
+        return "";
     }
 
 }
