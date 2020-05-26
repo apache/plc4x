@@ -874,6 +874,9 @@
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>
 
+            <!-- JEVN local version files -->
+            <exclude>**/.java-version</exclude>
+
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
 
