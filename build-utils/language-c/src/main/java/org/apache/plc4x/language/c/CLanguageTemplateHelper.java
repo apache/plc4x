@@ -130,16 +130,20 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      * @return type name we should use in C
      */
     public String getLanguageTypeNameForField(TypedField field) {
-        // If the referenced type is a DataIo type, the value is of type PlcValue.
+        // If the referenced type is a DataIo type, the value is of type plc4c_data.
         if (field instanceof PropertyField) {
             PropertyField propertyField = (PropertyField) field;
             if (propertyField.getType() instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
                 final TypeDefinition typeDefinition = types.get(complexTypeReference.getName());
                 if (typeDefinition instanceof DataIoTypeDefinition) {
-                    return "PlcValue";
+                    return "plc4c_data*";
                 }
             }
+        }
+        // If this is an array with variable length, then we have to use our "plc4c_list" to store the data.
+        if((field instanceof ArrayField) && (!isFixedValueExpression(((ArrayField) field).getLoopExpression()))) {
+            return "plc4c_list";
         }
         TypeReference typeReference = field.getType();
         return getLanguageTypeName(typeReference);

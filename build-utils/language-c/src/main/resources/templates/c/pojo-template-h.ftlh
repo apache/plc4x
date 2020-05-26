@@ -43,6 +43,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/utils/list.h>
 <#if helper.getComplexTypeReferencesInFields()?has_content>
 <#list helper.getComplexTypeReferencesInFields() as complexType>
 #include "${helper.camelCaseToSnakeCase(complexType.getName())}.h"
