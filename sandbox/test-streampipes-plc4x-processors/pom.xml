@@ -47,28 +47,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
-        <executions>
-          <!--
-            For some strange reason it keeps on complaining about classes in commons-codec,
-            which is no longer contained in any dependencies.
-          -->
-          <execution>
-            <id>enforce-ban-duplicate-classes</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration combine.children="append">
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
