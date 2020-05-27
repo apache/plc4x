@@ -38,17 +38,21 @@ import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
 import org.eclipse.milo.opcua.sdk.client.api.identity.IdentityProvider;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
+import org.eclipse.milo.opcua.sdk.client.nodes.UaNode;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UByte;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.*;
+import org.eclipse.milo.opcua.stack.core.util.annotations.UInt16Primitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,8 +68,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
+import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.*;
 
 /**
  * Corresponding implementaion for a TCP-based connection for an OPC UA server.
@@ -450,6 +453,11 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 NodeId idNode = generateNodeId(uaField);
                 Object valueObject = internalPlcWriteRequest.getPlcValue(fieldName).getObject();
                 // Added small work around for handling BigIntegers as input type for UInt64
+                if(valueObject)
+                if (valueObject instanceof UByte) valueObject = ubyte(valueObject.toString());
+                if (valueObject instanceof UShort) valueObject = ushort(valueObject.toString());
+                if (valueObject instanceof UInteger) valueObject = uint(valueObject.toString());
+                if (valueObject instanceof ULong) valueObject = ulong((BigInteger) valueObject);
                 if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
                 Variant var = new Variant(valueObject);
                 DataValue value = new DataValue(var, null, null, null);
