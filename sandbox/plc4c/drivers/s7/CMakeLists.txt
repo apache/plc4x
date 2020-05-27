@@ -18,7 +18,7 @@
 ]]
 
 include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/s7/includes")
+    "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/includes")
 
 # Add the sources
 file(GLOB sources "src/*.c")
