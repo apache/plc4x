@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,17 +15,22 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
+#ifndef PLC4C_MODBUS_READ_WRITE_MODBUS_P_D_U_REPORT_SERVER_ID_REQUEST_H_
+#define PLC4C_MODBUS_READ_WRITE_MODBUS_P_D_U_REPORT_SERVER_ID_REQUEST_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/modbus/includes")
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/utils/list.h>
 
-# Add the sources
-file(GLOB sources "src/*.c")
+struct plc4c_modbus_read_write_modbus_p_d_u_report_server_id_request {
+};
+typedef struct plc4c_modbus_read_write_modbus_p_d_u_report_server_id_request plc4c_modbus_read_write_modbus_p_d_u_report_server_id_request;
 
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/*.c")
-
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
-
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_P_D_U_REPORT_SERVER_ID_REQUEST_H_

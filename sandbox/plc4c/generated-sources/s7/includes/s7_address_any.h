@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,17 +15,30 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
+#ifndef PLC4C_S7_READ_WRITE_S7_ADDRESS_ANY_H_
+#define PLC4C_S7_READ_WRITE_S7_ADDRESS_ANY_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/modbus/includes")
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/utils/list.h>
+#include "transport_size.h"
+#include "memory_area.h"
 
-# Add the sources
-file(GLOB sources "src/*.c")
+struct plc4c_s7_read_write_s7_address_any {
+  plc4c_s7_read_write_transport_size transport_size;
+  uint16_t number_of_elements;
+  uint16_t db_number;
+  plc4c_s7_read_write_memory_area area;
+  uint16_t byte_address;
+  unsigned int bit_address : 3;
+};
+typedef struct plc4c_s7_read_write_s7_address_any plc4c_s7_read_write_s7_address_any;
 
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/*.c")
-
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
-
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_S7_ADDRESS_ANY_H_
