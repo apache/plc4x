@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,17 +15,7 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/modbus/includes")
+#include "s7_parameter_user_data_item.h"
 
-# Add the sources
-file(GLOB sources "src/*.c")
-
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/*.c")
-
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
-
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})

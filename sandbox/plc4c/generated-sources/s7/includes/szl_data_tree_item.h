@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,17 +15,27 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
+#ifndef PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+#define PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/modbus/includes")
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/utils/list.h>
 
-# Add the sources
-file(GLOB sources "src/*.c")
+struct plc4c_s7_read_write_szl_data_tree_item {
+  uint16_t item_index;
+  int8_t mlfb[20];
+  uint16_t module_type_id;
+  uint16_t ausbg;
+  uint16_t ausbe;
+};
+typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
 
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/*.c")
-
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
-
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_

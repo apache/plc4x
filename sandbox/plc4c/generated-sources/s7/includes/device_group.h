@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -7,7 +7,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -15,17 +15,25 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/modbus/includes")
+#ifndef PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_
+#define PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-# Add the sources
-file(GLOB sources "src/*.c")
+#include <stdbool.h>
 
-# Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/modbus/src/*.c")
+enum plc4c_s7_read_write_device_group {
+  plc4c_s7_read_write_device_group_PG_OR_PC = 0x01,
+  plc4c_s7_read_write_device_group_OS = 0x02,
+  plc4c_s7_read_write_device_group_OTHERS = 0x03
+};
+typedef enum plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group;
 
-add_library(plc4c-driver-modbus ${sources} ${generatedSources})
 
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_
