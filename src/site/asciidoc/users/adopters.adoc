@@ -36,7 +36,7 @@ If your company is using Apache PLC4X and you would like to give back to the com
 |===
 ||Name |Market |Description
 
-a|image::users/companies/logo-codecentric.png[cc, 200, 200] |https://www.codecentric.de[codecentric AG^,opts=nofollow] |IT Consulting |Individual Software Development
+a|image::users/companies/logo-codecentric.png[cc, 200, 200] |https://www.codecentric.de[codecentric AG^,opts=nofollow] |IT Consulting |We develop software that solves real problems - and PLC4X solves the problem of IoT connectivity in a highly performant and open source way
 
 a|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200] |https://www.pragmaticminds.de[pragmatic minds GmbH^,opts=nofollow] |Big Data / Analytics |We use PLC4X to collect data from different types of PLCs as preliminary step for data analytics and visualization.
 
