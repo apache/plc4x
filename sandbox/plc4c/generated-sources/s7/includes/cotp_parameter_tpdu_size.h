@@ -16,6 +16,23 @@
   specific language governing permissions and limitations
   under the License.
 */
+#ifndef PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_
+#define PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "Cotp_packet.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/utils/list.h>
+#include "cotp_tpdu_size.h"
 
+struct plc4c_s7_read_write_cotp_parameter_tpdu_size {
+  plc4c_s7_read_write_cotp_tpdu_size tpdu_size;
+};
+typedef struct plc4c_s7_read_write_cotp_parameter_tpdu_size plc4c_s7_read_write_cotp_parameter_tpdu_size;
+
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_

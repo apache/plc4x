@@ -16,6 +16,27 @@
   specific language governing permissions and limitations
   under the License.
 */
+#ifndef PLC4C_S7_READ_WRITE_COTP_PACKET_DISCONNECT_RESPONSE_H_
+#define PLC4C_S7_READ_WRITE_COTP_PACKET_DISCONNECT_RESPONSE_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include "Cotp_packet_connection_response.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/utils/list.h>
+#include "cotp_parameter.h"
+#include "s7_message.h"
 
+struct plc4c_s7_read_write_cotp_packet_disconnect_response {
+  plc4c_list parameters;
+  plc4c_s7_read_write_s7_message payload;
+  uint16_t destination_reference;
+  uint16_t source_reference;
+};
+typedef struct plc4c_s7_read_write_cotp_packet_disconnect_response plc4c_s7_read_write_cotp_packet_disconnect_response;
+
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_COTP_PACKET_DISCONNECT_RESPONSE_H_

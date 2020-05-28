@@ -16,8 +16,8 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_
-#define PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_
+#ifndef PLC4C_S7_READ_WRITE_COTP_PACKET_CONNECTION_REQUEST_H_
+#define PLC4C_S7_READ_WRITE_COTP_PACKET_CONNECTION_REQUEST_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,14 +25,20 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "Cotp_tpdu_size.h"
+#include "cotp_parameter.h"
+#include "s7_message.h"
+#include "cotp_protocol_class.h"
 
-struct plc4c_s7_read_write_cotp_parameter_tpdu_size {
-  plc4c_s7_read_write_cotp_tpdu_size tpdu_size;
+struct plc4c_s7_read_write_cotp_packet_connection_request {
+  plc4c_list parameters;
+  plc4c_s7_read_write_s7_message payload;
+  uint16_t destination_reference;
+  uint16_t source_reference;
+  plc4c_s7_read_write_cotp_protocol_class protocol_class;
 };
-typedef struct plc4c_s7_read_write_cotp_parameter_tpdu_size plc4c_s7_read_write_cotp_parameter_tpdu_size;
+typedef struct plc4c_s7_read_write_cotp_packet_connection_request plc4c_s7_read_write_cotp_packet_connection_request;
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_S7_READ_WRITE_COTP_PARAMETER_TPDU_SIZE_H_
+#endif  // PLC4C_S7_READ_WRITE_COTP_PACKET_CONNECTION_REQUEST_H_

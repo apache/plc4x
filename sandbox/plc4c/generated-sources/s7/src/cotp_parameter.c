@@ -17,5 +17,5 @@
   under the License.
 */
 
-#include "Cotp_parameter_called_tsap.h"
+#include "cotp_parameter.h"
 

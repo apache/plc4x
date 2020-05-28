@@ -107,20 +107,21 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         StringBuilder snakeCase = new StringBuilder();
         final char[] chars = camelCase.toCharArray();
         for(int i = 0; i < chars.length; i++) {
+            String lowerCaseChar = String.valueOf(chars[i]).toLowerCase();
             // If the previous letter is a lowercase letter and this one is uppercase, create a new snake-segment.
             if ((i > 0) && !Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
-                snakeCase.append('_').append(String.valueOf(chars[i]).toLowerCase());
+                snakeCase.append('_').append(lowerCaseChar);
             }
             else if((i < (chars.length - 2)) && Character.isUpperCase(chars[i]) && !Character.isUpperCase(chars[i + 1])) {
-                snakeCase.append('_').append(String.valueOf(chars[i]).toLowerCase());
+                snakeCase.append('_').append(lowerCaseChar);
             }
             // If this is uppercase and the previous one is too ... just make this letter lowercase.
             else if ((i > 0) && Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
-                snakeCase.append(String.valueOf(chars[i]).toLowerCase());
+                snakeCase.append(lowerCaseChar);
             } else if (chars[i] == '-') {
                 snakeCase.append("_");
             } else {
-                snakeCase.append(chars[i]);
+                snakeCase.append(lowerCaseChar);
             }
         }
         // If the first letter was a capital letter, the string will start with a "_".
