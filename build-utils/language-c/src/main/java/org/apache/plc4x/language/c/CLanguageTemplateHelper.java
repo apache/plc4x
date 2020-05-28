@@ -105,13 +105,22 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      */
     public String camelCaseToSnakeCase(String camelCase) {
         StringBuilder snakeCase = new StringBuilder();
-        for (char c : camelCase.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                snakeCase.append('_').append(String.valueOf(c).toLowerCase());
-            } else if (c == '-') {
+        final char[] chars = camelCase.toCharArray();
+        for(int i = 0; i < chars.length; i++) {
+            // If the previous letter is a lowercase letter and this one is uppercase, create a new snake-segment.
+            if ((i > 0) && !Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append('_').append(String.valueOf(chars[i]).toLowerCase());
+            }
+            else if((i < (chars.length - 2)) && Character.isUpperCase(chars[i]) && !Character.isUpperCase(chars[i + 1])) {
+                snakeCase.append('_').append(String.valueOf(chars[i]).toLowerCase());
+            }
+            // If this is uppercase and the previous one is too ... just make this letter lowercase.
+            else if ((i > 0) && Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append(String.valueOf(chars[i]).toLowerCase());
+            } else if (chars[i] == '-') {
                 snakeCase.append("_");
             } else {
-                snakeCase.append(c);
+                snakeCase.append(chars[i]);
             }
         }
         // If the first letter was a capital letter, the string will start with a "_".
@@ -123,7 +132,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
     }
 
     /**
-     * Little wrapper around the actual getLanguageTypeName which handles the case of reqriting
+     * Little wrapper around the actual getLanguageTypeName which handles the case of requiring
      * DataIo type fields.
      *
      * @param field field we want to get the type name for

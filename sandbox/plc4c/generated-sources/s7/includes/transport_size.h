@@ -97,7 +97,7 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_writ
   }
 }
 
-bool plc4c_s7_read_write_transport_size_get_supported__l_o_g_o(plc4c_s7_read_write_transport_size value) {
+bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_transport_size value) {
   switch(value) {
     case 0: { /* '0x00' */
       return false;
