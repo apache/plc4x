@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request {
+  plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request_type _type;
   uint16_t fifo_pointer_address;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request;

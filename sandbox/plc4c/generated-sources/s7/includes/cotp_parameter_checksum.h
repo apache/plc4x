@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_cotp_parameter_checksum {
+  plc4c_s7_read_write_cotp_parameter_checksum_type _type;
   uint8_t crc;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_checksum plc4c_s7_read_write_cotp_parameter_checksum;

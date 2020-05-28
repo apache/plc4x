@@ -22,13 +22,11 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
@@ -62,6 +60,30 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
 
     public String getIncludesDirectory() {
         return String.join("", protocolName.split("-")) + ".includes";
+    }
+
+    /**
+     * Check if this is an abstract type ...
+     * @param typeDefinition the type definition
+     * @return true if this is an abstract type
+     */
+    public boolean isAbstractType(ComplexTypeDefinition typeDefinition) {
+        return typeDefinition.isAbstract();
+    }
+
+    public boolean isDiscriminatedType(ComplexTypeDefinition typeDefinition) {
+        return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
+    }
+
+    public List<DiscriminatedComplexTypeDefinition> getDiscriminatedSubTypes(
+        ComplexTypeDefinition complexTypeDefinition) {
+        // Sebastian would be proud of me ;-)
+        SwitchField switchField =  (SwitchField) complexTypeDefinition.getFields().stream().filter(
+            field -> field instanceof SwitchField).findFirst().orElse(null);
+        if(switchField != null) {
+            return switchField.getCases();
+        }
+        return Collections.emptyList();
     }
 
     public Collection<ComplexTypeReference> getComplexTypeReferencesInFields() {

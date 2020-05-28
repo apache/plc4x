@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_cotp_parameter_calling_tsap {
+  plc4c_s7_read_write_cotp_parameter_calling_tsap_type _type;
   uint16_t tsap_id;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_calling_tsap plc4c_s7_read_write_cotp_parameter_calling_tsap;

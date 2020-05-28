@@ -29,11 +29,21 @@ extern "C" {
 #include "s7_payload.h"
 
 struct plc4c_s7_read_write_s7_message {
+  plc4c_s7_read_write_s7_message_type _type;
   uint16_t tpdu_reference;
   plc4c_s7_read_write_s7_parameter parameter;
   plc4c_s7_read_write_s7_payload payload;
 };
 typedef struct plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message;
+
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_message_type {
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request = 0;
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response = 1;
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2;
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3;
+}
+typedef enum plc4c_s7_read_write_s7_message_types plc4c_s7_read_write_s7_message_types;
 
 #ifdef __cplusplus
 }

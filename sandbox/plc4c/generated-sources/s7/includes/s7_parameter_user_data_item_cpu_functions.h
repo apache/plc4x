@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions {
+  plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions_type _type;
   uint8_t method;
   unsigned int cpu_function_type : 4;
   unsigned int cpu_function_group : 4;

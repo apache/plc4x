@@ -28,6 +28,7 @@ extern "C" {
 #include "modbus_pdu_read_file_record_request_item.h"
 
 struct plc4c_modbus_read_write_modbus_pdu_read_file_record_request {
+  plc4c_modbus_read_write_modbus_pdu_read_file_record_request_type _type;
   plc4c_list items;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_file_record_request plc4c_modbus_read_write_modbus_pdu_read_file_record_request;

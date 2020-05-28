@@ -29,10 +29,22 @@ extern "C" {
 #include "s7_message.h"
 
 struct plc4c_s7_read_write_cotp_packet {
+  plc4c_s7_read_write_cotp_packet_type _type;
   plc4c_list parameters;
   plc4c_s7_read_write_s7_message payload;
 };
 typedef struct plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet;
+
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_cotp_packet_type {
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_data = 0;
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_request = 1;
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_response = 2;
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_request = 3;
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_response = 4;
+  plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_tpdu_error = 5;
+}
+typedef enum plc4c_s7_read_write_cotp_packet_types plc4c_s7_read_write_cotp_packet_types;
 
 #ifdef __cplusplus
 }

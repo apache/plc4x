@@ -27,8 +27,20 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_s7_parameter {
+  plc4c_s7_read_write_s7_parameter_type _type;
 };
 typedef struct plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter;
+
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_parameter_type {
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_setup_communication = 0;
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_read_var_request = 1;
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_read_var_response = 2;
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_write_var_request = 3;
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_write_var_response = 4;
+  plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_user_data = 5;
+}
+typedef enum plc4c_s7_read_write_s7_parameter_types plc4c_s7_read_write_s7_parameter_types;
 
 #ifdef __cplusplus
 }

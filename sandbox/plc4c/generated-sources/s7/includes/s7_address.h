@@ -27,8 +27,15 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_s7_address {
+  plc4c_s7_read_write_s7_address_type _type;
 };
 typedef struct plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address;
+
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_address_type {
+  plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any = 0;
+}
+typedef enum plc4c_s7_read_write_s7_address_types plc4c_s7_read_write_s7_address_types;
 
 #ifdef __cplusplus
 }

@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_exception_status_request {
+  plc4c_modbus_read_write_modbus_pdu_read_exception_status_request_type _type;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_exception_status_request plc4c_modbus_read_write_modbus_pdu_read_exception_status_request;
 

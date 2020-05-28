@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request {
+  plc4c_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request_type _type;
   uint16_t read_starting_address;
   uint16_t read_quantity;
   uint16_t write_starting_address;

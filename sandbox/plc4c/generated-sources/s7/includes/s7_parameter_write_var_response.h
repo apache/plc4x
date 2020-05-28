@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_s7_parameter_write_var_response {
+  plc4c_s7_read_write_s7_parameter_write_var_response_type _type;
   uint8_t num_items;
 };
 typedef struct plc4c_s7_read_write_s7_parameter_write_var_response plc4c_s7_read_write_s7_parameter_write_var_response;

@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_response {
+  plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_response_type _type;
   uint16_t reference_address;
   uint16_t and_mask;
   uint16_t or_mask;

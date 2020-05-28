@@ -28,6 +28,7 @@ extern "C" {
 #include "s7_var_request_parameter_item.h"
 
 struct plc4c_s7_read_write_s7_parameter_read_var_request {
+  plc4c_s7_read_write_s7_parameter_read_var_request_type _type;
   plc4c_list items;
 };
 typedef struct plc4c_s7_read_write_s7_parameter_read_var_request plc4c_s7_read_write_s7_parameter_read_var_request;

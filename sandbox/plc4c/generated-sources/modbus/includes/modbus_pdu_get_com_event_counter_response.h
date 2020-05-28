@@ -27,6 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response {
+  plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response_type _type;
   uint16_t status;
   uint16_t event_count;
 };
