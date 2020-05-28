@@ -28,7 +28,7 @@ extern "C" {
 #include "cotp_tpdu_size.h"
 
 struct plc4c_s7_read_write_cotp_parameter_tpdu_size {
-  plc4c_s7_read_write_cotp_parameter_tpdu_size_type _type;
+  plc4c_s7_read_write_cotp_parameter_type _type;
   plc4c_s7_read_write_cotp_tpdu_size tpdu_size;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_tpdu_size plc4c_s7_read_write_cotp_parameter_tpdu_size;

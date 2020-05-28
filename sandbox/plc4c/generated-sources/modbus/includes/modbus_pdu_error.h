@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_error {
-  plc4c_modbus_read_write_modbus_pdu_error_type _type;
+  plc4c_modbus_read_write_modbus_pdu_type _type;
   uint8_t exception_code;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_error plc4c_modbus_read_write_modbus_pdu_error;

@@ -29,7 +29,7 @@ extern "C" {
 #include "s7_payload.h"
 
 struct plc4c_s7_read_write_s7_message_response_data {
-  plc4c_s7_read_write_s7_message_response_data_type _type;
+  plc4c_s7_read_write_s7_message_type _type;
   uint16_t tpdu_reference;
   plc4c_s7_read_write_s7_parameter parameter;
   plc4c_s7_read_write_s7_payload payload;

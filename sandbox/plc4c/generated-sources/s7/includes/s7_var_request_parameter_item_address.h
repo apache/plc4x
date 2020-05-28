@@ -28,7 +28,7 @@ extern "C" {
 #include "s7_address.h"
 
 struct plc4c_s7_read_write_s7_var_request_parameter_item_address {
-  plc4c_s7_read_write_s7_var_request_parameter_item_address_type _type;
+  plc4c_s7_read_write_s7_var_request_parameter_item_type _type;
   plc4c_s7_read_write_s7_address address;
 };
 typedef struct plc4c_s7_read_write_s7_var_request_parameter_item_address plc4c_s7_read_write_s7_var_request_parameter_item_address;

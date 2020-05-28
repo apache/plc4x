@@ -28,7 +28,7 @@ extern "C" {
 #include "s7_payload_user_data_item.h"
 
 struct plc4c_s7_read_write_s7_payload_user_data {
-  plc4c_s7_read_write_s7_payload_user_data_type _type;
+  plc4c_s7_read_write_s7_payload_type _type;
   plc4c_list items;
 };
 typedef struct plc4c_s7_read_write_s7_payload_user_data plc4c_s7_read_write_s7_payload_user_data;

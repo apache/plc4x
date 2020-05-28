@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response {
-  plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response_type _type;
+  plc4c_modbus_read_write_modbus_pdu_type _type;
   plc4c_list value;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response plc4c_modbus_read_write_modbus_pdu_read_holding_registers_response;

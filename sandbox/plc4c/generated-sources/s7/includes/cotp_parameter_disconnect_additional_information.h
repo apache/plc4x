@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_cotp_parameter_disconnect_additional_information {
-  plc4c_s7_read_write_cotp_parameter_disconnect_additional_information_type _type;
+  plc4c_s7_read_write_cotp_parameter_type _type;
   plc4c_list data;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_disconnect_additional_information plc4c_s7_read_write_cotp_parameter_disconnect_additional_information;

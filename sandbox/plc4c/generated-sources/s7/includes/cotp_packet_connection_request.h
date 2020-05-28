@@ -30,7 +30,7 @@ extern "C" {
 #include "cotp_protocol_class.h"
 
 struct plc4c_s7_read_write_cotp_packet_connection_request {
-  plc4c_s7_read_write_cotp_packet_connection_request_type _type;
+  plc4c_s7_read_write_cotp_packet_type _type;
   plc4c_list parameters;
   plc4c_s7_read_write_s7_message payload;
   uint16_t destination_reference;

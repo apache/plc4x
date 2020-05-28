@@ -29,7 +29,7 @@ extern "C" {
 #include "memory_area.h"
 
 struct plc4c_s7_read_write_s7_address_any {
-  plc4c_s7_read_write_s7_address_any_type _type;
+  plc4c_s7_read_write_s7_address_type _type;
   plc4c_s7_read_write_transport_size transport_size;
   uint16_t number_of_elements;
   uint16_t db_number;

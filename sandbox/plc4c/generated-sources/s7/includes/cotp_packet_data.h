@@ -29,7 +29,7 @@ extern "C" {
 #include "s7_message.h"
 
 struct plc4c_s7_read_write_cotp_packet_data {
-  plc4c_s7_read_write_cotp_packet_data_type _type;
+  plc4c_s7_read_write_cotp_packet_type _type;
   plc4c_list parameters;
   plc4c_s7_read_write_s7_message payload;
   bool eot : 1;

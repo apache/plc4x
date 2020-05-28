@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_diagnostic_request {
-  plc4c_modbus_read_write_modbus_pdu_diagnostic_request_type _type;
+  plc4c_modbus_read_write_modbus_pdu_type _type;
   uint8_t subfunction;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_diagnostic_request plc4c_modbus_read_write_modbus_pdu_diagnostic_request;

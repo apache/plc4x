@@ -30,7 +30,7 @@ extern "C" {
 #include "szl_id.h"
 
 struct plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request {
-  plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request_type _type;
+  plc4c_s7_read_write_s7_payload_user_data_item_type _type;
   plc4c_s7_read_write_data_transport_error_code return_code;
   plc4c_s7_read_write_data_transport_size transport_size;
   plc4c_s7_read_write_szl_id szl_id;

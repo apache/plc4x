@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_s7_parameter_setup_communication {
-  plc4c_s7_read_write_s7_parameter_setup_communication_type _type;
+  plc4c_s7_read_write_s7_parameter_type _type;
   uint16_t max_amq_caller;
   uint16_t max_amq_callee;
   uint16_t pdu_length;

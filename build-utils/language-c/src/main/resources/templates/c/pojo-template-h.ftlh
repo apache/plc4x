@@ -51,8 +51,11 @@ extern "C" {
 </#if>
 
 struct plc4c_${helper.getCTypeName(type.name)} {
-<#if (helper.isAbstractType(type) || helper.isDiscriminatedType(type))>
+<#if helper.isAbstractType(type)>
   plc4c_${helper.getCTypeName(type.name)}_type _type;
+</#if>
+<#if helper.isDiscriminatedType(type)>
+  plc4c_${helper.getCTypeName(type.parentType.name)}_type _type;
 </#if>
 <#list type.allPropertyFields as field>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;

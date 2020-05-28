@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request {
-  plc4c_modbus_read_write_modbus_pdu_read_discrete_inputs_request_type _type;
+  plc4c_modbus_read_write_modbus_pdu_type _type;
   uint16_t starting_address;
   uint16_t quantity;
 };
