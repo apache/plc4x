@@ -40,7 +40,7 @@ enum plc4c_s7_read_write_s7_parameter_type {
   plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_write_var_response = 4;
   plc4c_s7_read_write_s7_parameter_type_s7_read_write_s7_parameter_user_data = 5;
 }
-typedef enum plc4c_s7_read_write_s7_parameter_types plc4c_s7_read_write_s7_parameter_types;
+typedef enum plc4c_s7_read_write_s7_parameter_type plc4c_s7_read_write_s7_parameter_type;
 
 #ifdef __cplusplus
 }

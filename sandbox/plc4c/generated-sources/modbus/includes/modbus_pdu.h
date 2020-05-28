@@ -73,7 +73,7 @@ enum plc4c_modbus_read_write_modbus_pdu_type {
   plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_request = 37;
   plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_response = 38;
 }
-typedef enum plc4c_modbus_read_write_modbus_pdu_types plc4c_modbus_read_write_modbus_pdu_types;
+typedef enum plc4c_modbus_read_write_modbus_pdu_type plc4c_modbus_read_write_modbus_pdu_type;
 
 #ifdef __cplusplus
 }

@@ -39,7 +39,7 @@ enum plc4c_s7_read_write_cotp_parameter_type {
   plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum = 3;
   plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information = 4;
 }
-typedef enum plc4c_s7_read_write_cotp_parameter_types plc4c_s7_read_write_cotp_parameter_types;
+typedef enum plc4c_s7_read_write_cotp_parameter_type plc4c_s7_read_write_cotp_parameter_type;
 
 #ifdef __cplusplus
 }

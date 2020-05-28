@@ -43,7 +43,7 @@ enum plc4c_s7_read_write_s7_message_type {
   plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2;
   plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3;
 }
-typedef enum plc4c_s7_read_write_s7_message_types plc4c_s7_read_write_s7_message_types;
+typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_type;
 
 #ifdef __cplusplus
 }

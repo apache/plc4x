@@ -38,7 +38,7 @@ enum plc4c_s7_read_write_s7_payload_type {
   plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response = 2;
   plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data = 3;
 }
-typedef enum plc4c_s7_read_write_s7_payload_types plc4c_s7_read_write_s7_payload_types;
+typedef enum plc4c_s7_read_write_s7_payload_type plc4c_s7_read_write_s7_payload_type;
 
 #ifdef __cplusplus
 }

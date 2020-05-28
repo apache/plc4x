@@ -44,7 +44,7 @@ enum plc4c_s7_read_write_cotp_packet_type {
   plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_response = 4;
   plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_tpdu_error = 5;
 }
-typedef enum plc4c_s7_read_write_cotp_packet_types plc4c_s7_read_write_cotp_packet_types;
+typedef enum plc4c_s7_read_write_cotp_packet_type plc4c_s7_read_write_cotp_packet_type;
 
 #ifdef __cplusplus
 }

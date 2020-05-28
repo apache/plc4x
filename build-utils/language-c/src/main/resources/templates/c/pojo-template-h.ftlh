@@ -76,7 +76,7 @@ enum plc4c_${helper.getCTypeName(type.name)}_type {
   plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index};
   </#list>
 }
-typedef enum plc4c_${helper.getCTypeName(type.name)}_types plc4c_${helper.getCTypeName(type.name)}_types;
+typedef enum plc4c_${helper.getCTypeName(type.name)}_type plc4c_${helper.getCTypeName(type.name)}_type;
 
 </#if>
 #ifdef __cplusplus
