@@ -17,5 +17,8 @@
   under the License.
 */
 
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+
 #include "s7_var_payload_status_item.h"
 

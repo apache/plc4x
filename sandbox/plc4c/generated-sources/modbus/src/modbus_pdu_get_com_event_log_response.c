@@ -17,5 +17,8 @@
   under the License.
 */
 
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+
 #include "modbus_pdu_get_com_event_log_response.h"
 
