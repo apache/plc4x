@@ -19,6 +19,22 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "cotp_parameter_tpdu_size.h"
 
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(plc4c_read_buffer buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter_tpdu_size** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_s7_read_write_cotp_parameter_tpdu_size* msg = malloc(sizeof(plc4c_s7_read_write_cotp_parameter_tpdu_size));
+
+  // Enum field (tpduSize)
+  plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size.valueOf(plc4c_spi_read_byte(buf, 8));
+
+  return OK;
+}
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_tpdu_size_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_cotp_parameter_tpdu_size* message) {
+  return OK;
+}

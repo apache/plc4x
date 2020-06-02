@@ -19,6 +19,19 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_message_request.h"
 
+plc4c_return_code plc4c_s7_read_write_s7_message_request_parse(plc4c_read_buffer buf, plc4c_s7_read_write_s7_message_request** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_s7_read_write_s7_message_request* msg = malloc(sizeof(plc4c_s7_read_write_s7_message_request));
+
+  return OK;
+}
+
+plc4c_return_code plc4c_s7_read_write_s7_message_request_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_message_request* message) {
+  return OK;
+}

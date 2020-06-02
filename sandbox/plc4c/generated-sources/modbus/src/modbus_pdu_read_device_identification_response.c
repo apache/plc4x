@@ -19,6 +19,19 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_pdu_read_device_identification_response.h"
 
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_device_identification_response_parse(plc4c_read_buffer buf, bool response, plc4c_modbus_read_write_modbus_pdu_read_device_identification_response** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_modbus_read_write_modbus_pdu_read_device_identification_response* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_device_identification_response));
+
+  return OK;
+}
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_device_identification_response_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_pdu_read_device_identification_response* message) {
+  return OK;
+}

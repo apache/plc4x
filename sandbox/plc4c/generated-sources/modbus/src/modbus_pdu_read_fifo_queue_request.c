@@ -19,6 +19,23 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_pdu_read_fifo_queue_request.h"
 
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request_parse(plc4c_read_buffer buf, bool response, plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request));
+
+  // Simple Field (fifoPointerAddress)
+  uint16_t fifoPointerAddress = plc4c_spi_read_unsigned_int(buf, 16);
+  msg.fifo_pointer_address = fifoPointerAddress;
+
+  return OK;
+}
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_pdu_read_fifo_queue_request* message) {
+  return OK;
+}

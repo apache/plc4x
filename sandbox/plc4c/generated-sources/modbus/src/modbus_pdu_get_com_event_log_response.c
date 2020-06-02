@@ -19,6 +19,34 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_pdu_get_com_event_log_response.h"
 
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response_parse(plc4c_read_buffer buf, bool response, plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response));
+
+  // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t byteCount = plc4c_spi_read_unsigned_short(buf, 8);
+
+  // Simple Field (status)
+  uint16_t status = plc4c_spi_read_unsigned_int(buf, 16);
+  msg.status = status;
+
+  // Simple Field (eventCount)
+  uint16_t eventCount = plc4c_spi_read_unsigned_int(buf, 16);
+  msg.event_count = eventCount;
+
+  // Simple Field (messageCount)
+  uint16_t messageCount = plc4c_spi_read_unsigned_int(buf, 16);
+  msg.message_count = messageCount;
+
+  return OK;
+}
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response* message) {
+  return OK;
+}

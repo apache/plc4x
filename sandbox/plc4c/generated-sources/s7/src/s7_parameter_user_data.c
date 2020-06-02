@@ -19,6 +19,22 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_parameter_user_data.h"
 
+plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_parse(plc4c_read_buffer buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_user_data** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_s7_read_write_s7_parameter_user_data* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter_user_data));
+
+  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+
+  return OK;
+}
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_parameter_user_data* message) {
+  return OK;
+}

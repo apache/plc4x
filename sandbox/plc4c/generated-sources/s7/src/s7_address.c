@@ -19,6 +19,27 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_address.h"
 
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_read_buffer buf, plc4c_s7_read_write_s7_address** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_s7_read_write_s7_address* msg = malloc(sizeof(plc4c_s7_read_write_s7_address));
+
+  // Discriminator Field (addressType) (Used as input to a switch field)
+  uint8_t addressType = plc4c_spi_read_unsigned_short(buf, 8);
+
+  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+  if(plc4c_spi_evaluation_helper_equals(addressType, 0x10)) {
+    plc4c_s7_read_write_s7_address_any_parse(buf, msg);
+  }
+
+  return OK;
+}
+
+plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_address* message) {
+  return OK;
+}

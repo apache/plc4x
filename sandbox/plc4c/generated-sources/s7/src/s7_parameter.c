@@ -19,6 +19,42 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
+#include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_parameter.h"
 
+plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_read_buffer buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter** message) {
+  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
+  uint16_t cur_pos;
+
+  plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+
+  // Discriminator Field (parameterType) (Used as input to a switch field)
+  uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
+
+  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xF0)) {
+    plc4c_s7_read_write_s7_parameter_setup_communication_parse(buf, msg, messageType);
+  } else 
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x04) && plc4c_spi_evaluation_helper_equals(messageType, 0x01)) {
+    plc4c_s7_read_write_s7_parameter_read_var_request_parse(buf, msg, messageType);
+  } else 
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x04) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
+    plc4c_s7_read_write_s7_parameter_read_var_response_parse(buf, msg, messageType);
+  } else 
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x01)) {
+    plc4c_s7_read_write_s7_parameter_write_var_request_parse(buf, msg, messageType);
+  } else 
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
+    plc4c_s7_read_write_s7_parameter_write_var_response_parse(buf, msg, messageType);
+  } else 
+  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x00) && plc4c_spi_evaluation_helper_equals(messageType, 0x07)) {
+    plc4c_s7_read_write_s7_parameter_user_data_parse(buf, msg, messageType);
+  }
+
+  return OK;
+}
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_parameter* message) {
+  return OK;
+}
