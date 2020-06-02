@@ -22,13 +22,11 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition;
-import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.PropertyField;
+import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
 import org.apache.plc4x.plugins.codegenerator.types.fields.TypedField;
 import org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
@@ -62,6 +60,30 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
 
     public String getIncludesDirectory() {
         return String.join("", protocolName.split("-")) + ".includes";
+    }
+
+    /**
+     * Check if this is an abstract type ...
+     * @param typeDefinition the type definition
+     * @return true if this is an abstract type
+     */
+    public boolean isAbstractType(ComplexTypeDefinition typeDefinition) {
+        return typeDefinition.isAbstract();
+    }
+
+    public boolean isDiscriminatedType(ComplexTypeDefinition typeDefinition) {
+        return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
+    }
+
+    public List<DiscriminatedComplexTypeDefinition> getDiscriminatedSubTypes(
+        ComplexTypeDefinition complexTypeDefinition) {
+        // Sebastian would be proud of me ;-)
+        SwitchField switchField =  (SwitchField) complexTypeDefinition.getFields().stream().filter(
+            field -> field instanceof SwitchField).findFirst().orElse(null);
+        if(switchField != null) {
+            return switchField.getCases();
+        }
+        return Collections.emptyList();
     }
 
     public Collection<ComplexTypeReference> getComplexTypeReferencesInFields() {
@@ -105,13 +127,23 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      */
     public String camelCaseToSnakeCase(String camelCase) {
         StringBuilder snakeCase = new StringBuilder();
-        for (char c : camelCase.toCharArray()) {
-            if (Character.isUpperCase(c)) {
-                snakeCase.append('_').append(String.valueOf(c).toLowerCase());
-            } else if (c == '-') {
+        final char[] chars = camelCase.toCharArray();
+        for(int i = 0; i < chars.length; i++) {
+            String lowerCaseChar = String.valueOf(chars[i]).toLowerCase();
+            // If the previous letter is a lowercase letter and this one is uppercase, create a new snake-segment.
+            if ((i > 0) && !Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append('_').append(lowerCaseChar);
+            }
+            else if((i < (chars.length - 2)) && Character.isUpperCase(chars[i]) && !Character.isUpperCase(chars[i + 1])) {
+                snakeCase.append('_').append(lowerCaseChar);
+            }
+            // If this is uppercase and the previous one is too ... just make this letter lowercase.
+            else if ((i > 0) && Character.isUpperCase(chars[i - 1]) && Character.isUpperCase(chars[i])) {
+                snakeCase.append(lowerCaseChar);
+            } else if (chars[i] == '-') {
                 snakeCase.append("_");
             } else {
-                snakeCase.append(c);
+                snakeCase.append(lowerCaseChar);
             }
         }
         // If the first letter was a capital letter, the string will start with a "_".
@@ -123,7 +155,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
     }
 
     /**
-     * Little wrapper around the actual getLanguageTypeName which handles the case of reqriting
+     * Little wrapper around the actual getLanguageTypeName which handles the case of requiring
      * DataIo type fields.
      *
      * @param field field we want to get the type name for

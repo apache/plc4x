@@ -176,7 +176,7 @@
                             <protocolName>modbus</protocolName>
                             <languageName>c</languageName>
                             <outputFlavor>read-write</outputFlavor>
-                            <!--outputDir>${project.basedir}/generated-sources</outputDir-->
+                            <outputDir>${project.basedir}/generated-sources</outputDir>
                         </configuration>
                     </execution>
                     <execution>
@@ -189,7 +189,7 @@
                             <protocolName>s7</protocolName>
                             <languageName>c</languageName>
                             <outputFlavor>read-write</outputFlavor>
-                            <!--outputDir>${project.basedir}/generated-sources</outputDir-->
+                            <outputDir>${project.basedir}/generated-sources</outputDir>
                         </configuration>
                     </execution>
                 </executions>

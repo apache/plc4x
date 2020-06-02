@@ -51,12 +51,34 @@ extern "C" {
 </#if>
 
 struct plc4c_${helper.getCTypeName(type.name)} {
+<#if helper.isAbstractType(type)>
+  plc4c_${helper.getCTypeName(type.name)}_type _type;
+</#if>
+<#if helper.isDiscriminatedType(type)>
+  plc4c_${helper.getCTypeName(type.parentType.name)}_type _type;
+</#if>
 <#list type.allPropertyFields as field>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
 </#list>
 };
 typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
 
+<#--
+    Abstract types only occur as parents in the case of discriminated types.
+    As C doesn't have any form of polymorph type-system, we need to save the type information in the
+    data-structure. So with this enum we're doing exactly this. It will be used in the serializers and
+    parsers and stored in discriminated types.
+-->
+<#if helper.isAbstractType(type)>
+// Enum assigning each sub-type an individual id.
+enum plc4c_${helper.getCTypeName(type.name)}_type {
+  <#list helper.getDiscriminatedSubTypes(type) as subtype>
+  plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index};
+  </#list>
+}
+typedef enum plc4c_${helper.getCTypeName(type.name)}_type plc4c_${helper.getCTypeName(type.name)}_type;
+
+</#if>
 #ifdef __cplusplus
 }
 #endif
