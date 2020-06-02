@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
@@ -469,6 +470,18 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             }
         }
         return "Hurz";
+    }
+
+    public Collection<String> switchTypeImports() {
+        if(thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) thisType;
+            SwitchField switchField = (SwitchField) complexTypeDefinition.getFields().stream().filter(field -> field instanceof SwitchField).findFirst().orElse(null);
+            if(switchField != null) {
+                return switchField.getCases().stream().map(
+                    sc -> camelCaseToSnakeCase(sc.getName())).collect(Collectors.toList());
+            }
+        }
+        return Collections.emptyList();
     }
 
     public String toSwitchExpression(String expression) {

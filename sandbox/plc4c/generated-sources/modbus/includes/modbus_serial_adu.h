@@ -31,9 +31,13 @@ struct plc4c_modbus_read_write_modbus_serial_adu {
   uint16_t transaction_id;
   uint16_t length;
   uint8_t address;
-  plc4c_modbus_read_write_modbus_pdu pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu;
 };
 typedef struct plc4c_modbus_read_write_modbus_serial_adu plc4c_modbus_read_write_modbus_serial_adu;
+
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** message);
+
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_serial_adu* message);
 
 #ifdef __cplusplus
 }

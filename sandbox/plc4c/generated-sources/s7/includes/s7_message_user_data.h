@@ -27,14 +27,19 @@ extern "C" {
 #include <plc4c/utils/list.h>
 #include "s7_parameter.h"
 #include "s7_payload.h"
+#include "s7_message.h"
 
 struct plc4c_s7_read_write_s7_message_user_data {
   plc4c_s7_read_write_s7_message_type _type;
   uint16_t tpdu_reference;
-  plc4c_s7_read_write_s7_parameter parameter;
-  plc4c_s7_read_write_s7_payload payload;
+  plc4c_s7_read_write_s7_parameter* parameter;
+  plc4c_s7_read_write_s7_payload* payload;
 };
 typedef struct plc4c_s7_read_write_s7_message_user_data plc4c_s7_read_write_s7_message_user_data;
+
+plc4c_return_code plc4c_s7_read_write_s7_message_user_data_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message_user_data** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_message_user_data_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_message_user_data* message);
 
 #ifdef __cplusplus
 }

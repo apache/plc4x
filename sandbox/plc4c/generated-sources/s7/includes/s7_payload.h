@@ -26,19 +26,22 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_payload_type {
+  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response = 0,
+  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request = 1,
+  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response = 2,
+  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data = 3};
+typedef enum plc4c_s7_read_write_s7_payload_type plc4c_s7_read_write_s7_payload_type;
+
 struct plc4c_s7_read_write_s7_payload {
   plc4c_s7_read_write_s7_payload_type _type;
 };
 typedef struct plc4c_s7_read_write_s7_payload plc4c_s7_read_write_s7_payload;
 
-// Enum assigning each sub-type an individual id.
-enum plc4c_s7_read_write_s7_payload_type {
-  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response = 0;
-  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request = 1;
-  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response = 2;
-  plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data = 3;
-}
-typedef enum plc4c_s7_read_write_s7_payload_type plc4c_s7_read_write_s7_payload_type;
+plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter parameter, plc4c_s7_read_write_s7_payload** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload* message);
 
 #ifdef __cplusplus
 }

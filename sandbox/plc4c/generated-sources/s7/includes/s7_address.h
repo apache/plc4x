@@ -26,16 +26,19 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_address_type {
+  plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any = 0};
+typedef enum plc4c_s7_read_write_s7_address_type plc4c_s7_read_write_s7_address_type;
+
 struct plc4c_s7_read_write_s7_address {
   plc4c_s7_read_write_s7_address_type _type;
 };
 typedef struct plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address;
 
-// Enum assigning each sub-type an individual id.
-enum plc4c_s7_read_write_s7_address_type {
-  plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any = 0;
-}
-typedef enum plc4c_s7_read_write_s7_address_type plc4c_s7_read_write_s7_address_type;
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_address* message);
 
 #ifdef __cplusplus
 }

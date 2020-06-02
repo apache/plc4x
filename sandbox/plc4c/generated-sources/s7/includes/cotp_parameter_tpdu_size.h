@@ -26,12 +26,17 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 #include "cotp_tpdu_size.h"
+#include "cotp_parameter.h"
 
 struct plc4c_s7_read_write_cotp_parameter_tpdu_size {
   plc4c_s7_read_write_cotp_parameter_type _type;
-  plc4c_s7_read_write_cotp_tpdu_size tpdu_size;
+  plc4c_s7_read_write_cotp_tpdu_size* tpdu_size;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_tpdu_size plc4c_s7_read_write_cotp_parameter_tpdu_size;
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter_tpdu_size** message);
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_tpdu_size_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter_tpdu_size* message);
 
 #ifdef __cplusplus
 }

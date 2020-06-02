@@ -17,45 +17,47 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_serial_adu.h"
 
-plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_read_buffer buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_modbus_read_write_modbus_serial_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
 
   // Simple Field (transactionId)
   uint16_t transactionId = plc4c_spi_read_unsigned_int(buf, 16);
-  msg.transaction_id = transactionId;
+  msg->transaction_id = transactionId;
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint16_t reserved = plc4c_spi_read_unsigned_int(buf, 16);
     if(reserved != (uint16_t) 0x0000) {
-      LOGGER.info("Expected constant value " + 0x0000 + " but got " + reserved + " for reserved field.");
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0000, reserved);
     }
   }
 
   // Simple Field (length)
   uint16_t length = plc4c_spi_read_unsigned_int(buf, 16);
-  msg.length = length;
+  msg->length = length;
 
   // Simple Field (address)
   uint8_t address = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.address = address;
+  msg->address = address;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu pdu = plc4c_modbus_read_write_modbus_pdu_parse(buf, response);
-  msg.pdu = pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
+  plc4c_modbus_read_write_modbus_pdu_parse(buf, response, &pdu);
+  msg->pdu = pdu;
 
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_serial_adu* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_serial_adu* message) {
   return OK;
 }

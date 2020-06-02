@@ -17,15 +17,17 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include "s7_address_any.h"
 
 #include "s7_address.h"
 
-plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_read_buffer buf, plc4c_s7_read_write_s7_address** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_s7_address* msg = malloc(sizeof(plc4c_s7_read_write_s7_address));
 
@@ -34,12 +36,12 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_read_buffer buf, pl
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(plc4c_spi_evaluation_helper_equals(addressType, 0x10)) {
-    plc4c_s7_read_write_s7_address_any_parse(buf, msg);
+    plc4c_s7_read_write_s7_address_any_parse(buf, NULL/* Disabled for now */);
   }
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_address* message) {
+plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_address* message) {
   return OK;
 }

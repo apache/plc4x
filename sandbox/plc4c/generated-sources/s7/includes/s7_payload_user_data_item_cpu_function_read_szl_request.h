@@ -28,15 +28,20 @@ extern "C" {
 #include "data_transport_error_code.h"
 #include "data_transport_size.h"
 #include "szl_id.h"
+#include "s7_payload_user_data_item.h"
 
 struct plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request {
   plc4c_s7_read_write_s7_payload_user_data_item_type _type;
-  plc4c_s7_read_write_data_transport_error_code return_code;
-  plc4c_s7_read_write_data_transport_size transport_size;
-  plc4c_s7_read_write_szl_id szl_id;
+  plc4c_s7_read_write_data_transport_error_code* return_code;
+  plc4c_s7_read_write_data_transport_size* transport_size;
+  plc4c_s7_read_write_szl_id* szl_id;
   uint16_t szl_index;
 };
 typedef struct plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request;
+
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request_parse(plc4c_spi_read_buffer* buf, unsigned int cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request* message);
 
 #ifdef __cplusplus
 }

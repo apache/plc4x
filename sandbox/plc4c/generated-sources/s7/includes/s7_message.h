@@ -28,22 +28,28 @@ extern "C" {
 #include "s7_parameter.h"
 #include "s7_payload.h"
 
+// Enum assigning each sub-type an individual id.
+enum plc4c_s7_read_write_s7_message_type {
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request = 0,
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response = 1,
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2,
+  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3};
+typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_type;
+
+// Constant values.
+const uint8_t S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;
+
 struct plc4c_s7_read_write_s7_message {
   plc4c_s7_read_write_s7_message_type _type;
   uint16_t tpdu_reference;
-  plc4c_s7_read_write_s7_parameter parameter;
-  plc4c_s7_read_write_s7_payload payload;
+  plc4c_s7_read_write_s7_parameter* parameter;
+  plc4c_s7_read_write_s7_payload* payload;
 };
 typedef struct plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message;
 
-// Enum assigning each sub-type an individual id.
-enum plc4c_s7_read_write_s7_message_type {
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request = 0;
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response = 1;
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2;
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3;
-}
-typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_type;
+plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_message* message);
 
 #ifdef __cplusplus
 }

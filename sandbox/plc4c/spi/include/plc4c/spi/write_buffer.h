@@ -26,7 +26,7 @@
 struct plc4c_spi_write_buffer {
 
 };
-typedef struct plc4c_spi_v plc4c_spi_write_buffer;
+typedef struct plc4c_spi_write_buffer plc4c_spi_write_buffer;
 
 uint8_t* plc4c_spi_write_get_data(plc4c_spi_write_buffer* buf);
 

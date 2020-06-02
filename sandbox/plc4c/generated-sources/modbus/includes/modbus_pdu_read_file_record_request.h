@@ -26,12 +26,17 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 #include "modbus_pdu_read_file_record_request_item.h"
+#include "modbus_pdu.h"
 
 struct plc4c_modbus_read_write_modbus_pdu_read_file_record_request {
   plc4c_modbus_read_write_modbus_pdu_type _type;
-  plc4c_list items;
+  plc4c_list* items;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_file_record_request plc4c_modbus_read_write_modbus_pdu_read_file_record_request;
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_read_file_record_request** message);
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_request* message);
 
 #ifdef __cplusplus
 }

@@ -26,12 +26,17 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 #include "s7_address.h"
+#include "s7_var_request_parameter_item.h"
 
 struct plc4c_s7_read_write_s7_var_request_parameter_item_address {
   plc4c_s7_read_write_s7_var_request_parameter_item_type _type;
-  plc4c_s7_read_write_s7_address address;
+  plc4c_s7_read_write_s7_address* address;
 };
 typedef struct plc4c_s7_read_write_s7_var_request_parameter_item_address plc4c_s7_read_write_s7_var_request_parameter_item_address;
+
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item_address** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_address_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item_address* message);
 
 #ifdef __cplusplus
 }

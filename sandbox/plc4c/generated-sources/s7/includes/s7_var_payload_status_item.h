@@ -28,9 +28,13 @@ extern "C" {
 #include "data_transport_error_code.h"
 
 struct plc4c_s7_read_write_s7_var_payload_status_item {
-  plc4c_s7_read_write_data_transport_error_code return_code;
+  plc4c_s7_read_write_data_transport_error_code* return_code;
 };
 typedef struct plc4c_s7_read_write_s7_var_payload_status_item plc4c_s7_read_write_s7_var_payload_status_item;
+
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item* message);
 
 #ifdef __cplusplus
 }

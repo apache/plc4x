@@ -17,15 +17,17 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include "s7_var_request_parameter_item_address.h"
 
 #include "s7_var_request_parameter_item.h"
 
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_read_buffer buf, plc4c_s7_read_write_s7_var_request_parameter_item** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_s7_var_request_parameter_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
 
@@ -34,12 +36,12 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(plc4c_spi_evaluation_helper_equals(itemType, 0x12)) {
-    plc4c_s7_read_write_s7_var_request_parameter_item_address_parse(buf, msg);
+    plc4c_s7_read_write_s7_var_request_parameter_item_address_parse(buf, NULL/* Disabled for now */);
   }
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_var_request_parameter_item* message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item* message) {
   return OK;
 }

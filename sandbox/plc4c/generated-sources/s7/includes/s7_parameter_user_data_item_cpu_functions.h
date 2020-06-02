@@ -25,6 +25,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_parameter_user_data_item.h"
 
 struct plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions {
   plc4c_s7_read_write_s7_parameter_user_data_item_type _type;
@@ -38,6 +39,10 @@ struct plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions {
   uint16_t error_code;
 };
 typedef struct plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions;
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions* message);
 
 #ifdef __cplusplus
 }

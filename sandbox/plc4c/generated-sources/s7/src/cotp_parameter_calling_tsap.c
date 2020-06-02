@@ -17,25 +17,26 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "cotp_parameter_calling_tsap.h"
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(plc4c_read_buffer buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter_calling_tsap** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter_calling_tsap** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_cotp_parameter_calling_tsap* msg = malloc(sizeof(plc4c_s7_read_write_cotp_parameter_calling_tsap));
 
   // Simple Field (tsapId)
   uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
-  msg.tsap_id = tsapId;
+  msg->tsap_id = tsapId;
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_calling_tsap_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_cotp_parameter_calling_tsap* message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_calling_tsap_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter_calling_tsap* message) {
   return OK;
 }

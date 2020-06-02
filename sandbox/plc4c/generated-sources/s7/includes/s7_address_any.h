@@ -27,17 +27,22 @@ extern "C" {
 #include <plc4c/utils/list.h>
 #include "transport_size.h"
 #include "memory_area.h"
+#include "s7_address.h"
 
 struct plc4c_s7_read_write_s7_address_any {
   plc4c_s7_read_write_s7_address_type _type;
-  plc4c_s7_read_write_transport_size transport_size;
+  plc4c_s7_read_write_transport_size* transport_size;
   uint16_t number_of_elements;
   uint16_t db_number;
-  plc4c_s7_read_write_memory_area area;
+  plc4c_s7_read_write_memory_area* area;
   uint16_t byte_address;
   unsigned int bit_address : 3;
 };
 typedef struct plc4c_s7_read_write_s7_address_any plc4c_s7_read_write_s7_address_any;
+
+plc4c_return_code plc4c_s7_read_write_s7_address_any_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address_any** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_address_any_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_address_any* message);
 
 #ifdef __cplusplus
 }

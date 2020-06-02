@@ -17,26 +17,28 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_tcp_adu.h"
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_read_buffer buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_modbus_read_write_modbus_tcp_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_tcp_adu));
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
-  msg.transaction_identifier = transactionIdentifier;
+  msg->transaction_identifier = transactionIdentifier;
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
-  if(protocolIdentifier != ModbusTcpADU.PROTOCOLIDENTIFIER) {
-    throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier);
+  if(protocolIdentifier != MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER) {
+    return PARSE_ERROR;
+    // throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier);
   }
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -44,15 +46,16 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_read_buffer
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.unit_identifier = unitIdentifier;
+  msg->unit_identifier = unitIdentifier;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu pdu = plc4c_modbus_read_write_modbus_pdu_parse(buf, response);
-  msg.pdu = pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
+  plc4c_modbus_read_write_modbus_pdu_parse(buf, response, &pdu);
+  msg->pdu = pdu;
 
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_tcp_adu* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* message) {
   return OK;
 }

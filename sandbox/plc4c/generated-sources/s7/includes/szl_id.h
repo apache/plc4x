@@ -29,11 +29,15 @@ extern "C" {
 #include "szl_sublist.h"
 
 struct plc4c_s7_read_write_szl_id {
-  plc4c_s7_read_write_szl_module_type_class type_class;
+  plc4c_s7_read_write_szl_module_type_class* type_class;
   unsigned int sublist_extract : 4;
-  plc4c_s7_read_write_szl_sublist sublist_list;
+  plc4c_s7_read_write_szl_sublist* sublist_list;
 };
 typedef struct plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id;
+
+plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_id** message);
+
+plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_id* message);
 
 #ifdef __cplusplus
 }

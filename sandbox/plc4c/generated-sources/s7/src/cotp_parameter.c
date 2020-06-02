@@ -17,15 +17,21 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
+#include "cotp_parameter_tpdu_size.h"
+#include "cotp_parameter_calling_tsap.h"
+#include "cotp_parameter_called_tsap.h"
+#include "cotp_parameter_checksum.h"
+#include "cotp_parameter_disconnect_additional_information.h"
 
 #include "cotp_parameter.h"
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_read_buffer buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_cotp_parameter* msg = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
 
@@ -37,24 +43,24 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_read_buffer buf
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC0)) {
-    plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(buf, msg, rest);
+    plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(buf, rest, NULL/* Disabled for now */);
   } else 
   if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC1)) {
-    plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(buf, msg, rest);
+    plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(buf, rest, NULL/* Disabled for now */);
   } else 
   if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC2)) {
-    plc4c_s7_read_write_cotp_parameter_called_tsap_parse(buf, msg, rest);
+    plc4c_s7_read_write_cotp_parameter_called_tsap_parse(buf, rest, NULL/* Disabled for now */);
   } else 
   if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC3)) {
-    plc4c_s7_read_write_cotp_parameter_checksum_parse(buf, msg, rest);
+    plc4c_s7_read_write_cotp_parameter_checksum_parse(buf, rest, NULL/* Disabled for now */);
   } else 
   if(plc4c_spi_evaluation_helper_equals(parameterType, 0xE0)) {
-    plc4c_s7_read_write_cotp_parameter_disconnect_additional_information_parse(buf, msg, rest);
+    plc4c_s7_read_write_cotp_parameter_disconnect_additional_information_parse(buf, rest, NULL/* Disabled for now */);
   }
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_cotp_parameter* message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter* message) {
   return OK;
 }

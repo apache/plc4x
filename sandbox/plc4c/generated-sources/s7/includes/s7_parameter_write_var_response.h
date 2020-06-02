@@ -25,12 +25,17 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_parameter.h"
 
 struct plc4c_s7_read_write_s7_parameter_write_var_response {
   plc4c_s7_read_write_s7_parameter_type _type;
   uint8_t num_items;
 };
 typedef struct plc4c_s7_read_write_s7_parameter_write_var_response plc4c_s7_read_write_s7_parameter_write_var_response;
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_write_var_response** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_parameter_write_var_response* message);
 
 #ifdef __cplusplus
 }

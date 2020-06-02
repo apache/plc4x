@@ -29,12 +29,16 @@ extern "C" {
 #include "data_transport_size.h"
 
 struct plc4c_s7_read_write_s7_var_payload_data_item {
-  plc4c_s7_read_write_data_transport_error_code return_code;
-  plc4c_s7_read_write_data_transport_size transport_size;
+  plc4c_s7_read_write_data_transport_error_code* return_code;
+  plc4c_s7_read_write_data_transport_size* transport_size;
   uint16_t data_length;
   plc4c_list data;
 };
 typedef struct plc4c_s7_read_write_s7_var_payload_data_item plc4c_s7_read_write_s7_var_payload_data_item;
+
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* buf, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* message);
 
 #ifdef __cplusplus
 }

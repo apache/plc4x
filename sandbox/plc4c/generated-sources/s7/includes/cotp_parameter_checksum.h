@@ -25,12 +25,17 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "cotp_parameter.h"
 
 struct plc4c_s7_read_write_cotp_parameter_checksum {
   plc4c_s7_read_write_cotp_parameter_type _type;
   uint8_t crc;
 };
 typedef struct plc4c_s7_read_write_cotp_parameter_checksum plc4c_s7_read_write_cotp_parameter_checksum;
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_checksum_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter_checksum** message);
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_checksum_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter_checksum* message);
 
 #ifdef __cplusplus
 }

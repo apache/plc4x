@@ -36,15 +36,22 @@ ${helper.setConstants(type, protocolName, outputFlavor)}${helper.getSourceDirect
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
+<#-- Add an import for any sub-type defined -->
+<#if helper.switchTypeImports()?has_content>
+    <#list helper.switchTypeImports() as typeImport>
+#include "${typeImport}.h"
+    </#list>
+</#if>
 
 #include "${helper.camelCaseToSnakeCase(typeName)}.h"
 
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffer buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)} ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)} ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_${helper.getCTypeName(type.name)}* msg = malloc(sizeof(plc4c_${helper.getCTypeName(type.name)}));
 <#list type.fields as field>
@@ -55,11 +62,12 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
   {
     // Create an array of all the bytes read in this message element so far.
-    byte[] checksumRawData = io.getBytes(startPos, io.getPos());
+    byte[] checksumRawData = plc4c_spi_read_get_bytes(buf, startPos, plc4c_spi_read_get_pos(buf));
     ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
     ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.checksumExpression, type.parserArguments)});
     if(${field.name} != _${field.name}Ref) {
-      throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
+      return PARSE_ERROR;
+      // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
     }
   }
             <#break>
@@ -67,14 +75,15 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
 
   // Const Field (${field.name})
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-  if(${field.name} != ${typeName}.${field.name?upper_case}) {
-    throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
+  if(${field.name} != ${helper.getCTypeName(type.name)?upper_case}_${helper.camelCaseToSnakeCase(field.name)?upper_case}) {
+    return PARSE_ERROR;
+    // throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
   }
             <#break>
         <#case "enum">
 
   // Enum field (${field.name})
-  ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))?no_esc});
+  ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))?no_esc};
             <#break>
         <#case "discriminator">
 
@@ -90,20 +99,20 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
 
   // Manual Field (${field.name})
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
-  msg.${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
+  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
         <#break>
         <#case "optional">
 
   // Optional Field (${field.name}) (Can be skipped, if a given expression evaluates to false)
             <#if field.conditionExpression.contains("curPos")>
-  curPos = io.getPos() - startPos;
+  curPos = plc4c_spi_read_get_pos(buf) - startPos;
             </#if>
-  ${helper.getLanguageTypeNameForField(field)} ${field.name} = NULL;
+  ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleType(field.type)>*</#if> ${field.name} = <#if !helper.isSimpleType(field.type)>NULL<#else>0</#if>;
   if(${helper.toParseExpression(field, field.conditionExpression, type.parserArguments)?no_esc}) {
         <#if helper.isSimpleType(field.type)>
     ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
         <#else>
-    ${field.name} = plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>);
+    plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
         </#if>
   }
             <#break>
@@ -122,7 +131,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
   {
     ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
     if(reserved != ${helper.getReservedValue(field)}) {
-      LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
+      printf("Expected constant value '%d' but got '%d' for reserved field.", ${field.referenceValue}, reserved);
     }
   }
             <#break>
@@ -134,17 +143,18 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-  ${helper.getLanguageTypeNameForField(field)} ${field.name} = plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>);
+  ${helper.getLanguageTypeNameForField(field)}* ${field.name} = NULL;
+  plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
             </#if>
             <#-- Update the protpery in the struct -->
-  msg.${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
+  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
             <#break>
         <#case "switch">
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
             <#list field.cases as case>
   <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>plc4c_spi_evaluation_helper_equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
-    plc4c_${helper.getCTypeName(case.name)}_parse(buf, msg<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+    plc4c_${helper.getCTypeName(case.name)}_parse(buf<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, NULL/* Disabled for now */);
   }<#sep> else </#sep>
             </#list>
             <#break>
@@ -159,6 +169,6 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_read_buffe
   return OK;
 }
 
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_write_buffer buf, plc4c_${helper.getCTypeName(type.name)}* message) {
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message) {
   return OK;
 }

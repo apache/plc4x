@@ -25,6 +25,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_parameter.h"
 
 struct plc4c_s7_read_write_s7_parameter_setup_communication {
   plc4c_s7_read_write_s7_parameter_type _type;
@@ -33,6 +34,10 @@ struct plc4c_s7_read_write_s7_parameter_setup_communication {
   uint16_t pdu_length;
 };
 typedef struct plc4c_s7_read_write_s7_parameter_setup_communication plc4c_s7_read_write_s7_parameter_setup_communication;
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_setup_communication_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_setup_communication** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_parameter_setup_communication_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_parameter_setup_communication* message);
 
 #ifdef __cplusplus
 }

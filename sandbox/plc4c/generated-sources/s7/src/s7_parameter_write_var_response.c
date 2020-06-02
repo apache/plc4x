@@ -17,25 +17,26 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_parameter_write_var_response.h"
 
-plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_parse(plc4c_read_buffer buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_write_var_response** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_write_var_response** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_s7_parameter_write_var_response* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter_write_var_response));
 
   // Simple Field (numItems)
   uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.num_items = numItems;
+  msg->num_items = numItems;
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_parameter_write_var_response* message) {
+plc4c_return_code plc4c_s7_read_write_s7_parameter_write_var_response_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_parameter_write_var_response* message) {
   return OK;
 }

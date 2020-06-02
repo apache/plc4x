@@ -29,16 +29,24 @@ extern "C" {
 #include "data_transport_size.h"
 #include "szl_id.h"
 #include "szl_data_tree_item.h"
+#include "s7_payload_user_data_item.h"
+
+// Constant values.
+const uint16_t S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH = 28;
 
 struct plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response {
   plc4c_s7_read_write_s7_payload_user_data_item_type _type;
-  plc4c_s7_read_write_data_transport_error_code return_code;
-  plc4c_s7_read_write_data_transport_size transport_size;
-  plc4c_s7_read_write_szl_id szl_id;
+  plc4c_s7_read_write_data_transport_error_code* return_code;
+  plc4c_s7_read_write_data_transport_size* transport_size;
+  plc4c_s7_read_write_szl_id* szl_id;
   uint16_t szl_index;
-  plc4c_list items;
+  plc4c_list* items;
 };
 typedef struct plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response;
+
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response_parse(plc4c_spi_read_buffer* buf, unsigned int cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response** message);
+
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response* message);
 
 #ifdef __cplusplus
 }

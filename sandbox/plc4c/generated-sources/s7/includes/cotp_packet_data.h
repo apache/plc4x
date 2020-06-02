@@ -27,15 +27,20 @@ extern "C" {
 #include <plc4c/utils/list.h>
 #include "cotp_parameter.h"
 #include "s7_message.h"
+#include "cotp_packet.h"
 
 struct plc4c_s7_read_write_cotp_packet_data {
   plc4c_s7_read_write_cotp_packet_type _type;
-  plc4c_list parameters;
-  plc4c_s7_read_write_s7_message payload;
+  plc4c_list* parameters;
+  plc4c_s7_read_write_s7_message* payload;
   bool eot : 1;
   unsigned int tpdu_ref : 7;
 };
 typedef struct plc4c_s7_read_write_cotp_packet_data plc4c_s7_read_write_cotp_packet_data;
+
+plc4c_return_code plc4c_s7_read_write_cotp_packet_data_parse(plc4c_spi_read_buffer* buf, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet_data** message);
+
+plc4c_return_code plc4c_s7_read_write_cotp_packet_data_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet_data* message);
 
 #ifdef __cplusplus
 }

@@ -17,15 +17,16 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "modbus_pdu_read_file_record_response_item.h"
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_read_buffer buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
 
@@ -34,11 +35,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.reference_type = referenceType;
+  msg->reference_type = referenceType;
 
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_write_buffer buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message) {
   return OK;
 }

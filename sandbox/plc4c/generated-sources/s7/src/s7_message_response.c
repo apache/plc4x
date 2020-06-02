@@ -17,29 +17,30 @@
   under the License.
 */
 
+#include <stdio.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 
 #include "s7_message_response.h"
 
-plc4c_return_code plc4c_s7_read_write_s7_message_response_parse(plc4c_read_buffer buf, plc4c_s7_read_write_s7_message_response** message) {
-  uint16_t start_pos = plc4c_spi_read_get_pos(buf);
-  uint16_t cur_pos;
+plc4c_return_code plc4c_s7_read_write_s7_message_response_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message_response** message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+  uint16_t curPos;
 
   plc4c_s7_read_write_s7_message_response* msg = malloc(sizeof(plc4c_s7_read_write_s7_message_response));
 
   // Simple Field (errorClass)
   uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.error_class = errorClass;
+  msg->error_class = errorClass;
 
   // Simple Field (errorCode)
   uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
-  msg.error_code = errorCode;
+  msg->error_code = errorCode;
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_message_response_serialize(plc4c_write_buffer buf, plc4c_s7_read_write_s7_message_response* message) {
+plc4c_return_code plc4c_s7_read_write_s7_message_response_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_message_response* message) {
   return OK;
 }
