@@ -21,25 +21,26 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "s7_address_any.h"
 
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_address_any_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address_any** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_s7_address_any* msg = malloc(sizeof(plc4c_s7_read_write_s7_address_any));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Enum field (transportSize)
   plc4c_s7_read_write_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
 
   // Simple Field (numberOfElements)
   uint16_t numberOfElements = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->number_of_elements = numberOfElements;
 
   // Simple Field (dbNumber)
   uint16_t dbNumber = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->db_number = dbNumber;
 
   // Enum field (area)
   plc4c_s7_read_write_memory_area area = plc4c_spi_read_byte(buf, 8);
@@ -54,11 +55,9 @@ plc4c_return_code plc4c_s7_read_write_s7_address_any_parse(plc4c_spi_read_buffer
 
   // Simple Field (byteAddress)
   uint16_t byteAddress = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->byte_address = byteAddress;
 
   // Simple Field (bitAddress)
   unsigned int bitAddress = plc4c_spi_read_unsigned_byte(buf, 3);
-  msg->bit_address = bitAddress;
 
   return OK;
 }

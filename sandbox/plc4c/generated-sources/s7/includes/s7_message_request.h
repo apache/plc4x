@@ -25,9 +25,9 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_message.h"
 #include "s7_parameter.h"
 #include "s7_payload.h"
-#include "s7_message.h"
 
 struct plc4c_s7_read_write_s7_message_request {
   plc4c_s7_read_write_s7_message_type _type;

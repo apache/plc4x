@@ -21,14 +21,17 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "s7_parameter_setup_communication.h"
 
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_parameter_setup_communication_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter_setup_communication** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_s7_parameter_setup_communication* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter_setup_communication));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
@@ -40,15 +43,12 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_setup_communication_parse(plc
 
   // Simple Field (maxAmqCaller)
   uint16_t maxAmqCaller = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->max_amq_caller = maxAmqCaller;
 
   // Simple Field (maxAmqCallee)
   uint16_t maxAmqCallee = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->max_amq_callee = maxAmqCallee;
 
   // Simple Field (pduLength)
   uint16_t pduLength = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->pdu_length = pduLength;
 
   return OK;
 }

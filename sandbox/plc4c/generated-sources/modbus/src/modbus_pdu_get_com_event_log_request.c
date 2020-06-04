@@ -21,14 +21,17 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_get_com_event_log_request.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   return OK;
 }

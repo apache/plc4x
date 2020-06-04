@@ -28,6 +28,12 @@ extern "C" {
 #include "cotp_parameter.h"
 #include "s7_message.h"
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_cotp_packet_discriminator {
+  uint8_t tpduCode;
+};
+typedef struct plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_cotp_packet_type {
   plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_data = 0,
@@ -37,6 +43,9 @@ enum plc4c_s7_read_write_cotp_packet_type {
   plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_response = 4,
   plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_tpdu_error = 5};
 typedef enum plc4c_s7_read_write_cotp_packet_type plc4c_s7_read_write_cotp_packet_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_get_discriminator(plc4c_s7_read_write_cotp_packet_type type);
 
 struct plc4c_s7_read_write_cotp_packet {
   plc4c_s7_read_write_cotp_packet_type _type;

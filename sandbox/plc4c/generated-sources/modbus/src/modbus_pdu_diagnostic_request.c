@@ -21,22 +21,23 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_diagnostic_request.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_diagnostic_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_diagnostic_request** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_diagnostic_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_diagnostic_request));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (status)
   uint16_t status = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->status = status;
 
   // Simple Field (eventCount)
   uint16_t eventCount = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->event_count = eventCount;
 
   return OK;
 }

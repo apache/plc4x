@@ -103,6 +103,8 @@ public<#if type.abstract> abstract</#if> class ${typeName}<#if type.parentType??
     public Object[] getDiscriminatorValues() {
         return DISCRIMINATOR_VALUES;
     }
+
+    public
 </#if>
 
 <#list type.propertyFields as field>

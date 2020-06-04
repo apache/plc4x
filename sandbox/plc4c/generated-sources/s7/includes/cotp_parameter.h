@@ -26,6 +26,12 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_cotp_parameter_discriminator {
+  uint8_t parameterType;
+};
+typedef struct plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_cotp_parameter_type {
   plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size = 0,
@@ -34,6 +40,9 @@ enum plc4c_s7_read_write_cotp_parameter_type {
   plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum = 3,
   plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information = 4};
 typedef enum plc4c_s7_read_write_cotp_parameter_type plc4c_s7_read_write_cotp_parameter_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_get_discriminator(plc4c_s7_read_write_cotp_parameter_type type);
 
 struct plc4c_s7_read_write_cotp_parameter {
   plc4c_s7_read_write_cotp_parameter_type _type;

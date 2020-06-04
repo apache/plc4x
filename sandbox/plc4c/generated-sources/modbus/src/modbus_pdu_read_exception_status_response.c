@@ -21,18 +21,20 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_read_exception_status_response.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_exception_status_response_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_read_exception_status_response** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_read_exception_status_response* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_exception_status_response));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (value)
   uint8_t value = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->value = value;
 
   return OK;
 }

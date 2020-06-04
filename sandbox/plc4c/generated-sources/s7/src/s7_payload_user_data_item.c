@@ -23,14 +23,32 @@
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_payload_user_data_item_cpu_function_read_szl_request.h"
 #include "s7_payload_user_data_item_cpu_function_read_szl_response.h"
-
 #include "s7_payload_user_data_item.h"
 
+// Array of discriminator values that match the enum type constants.
+// (The order is identical to the enum constants so we can use the
+// enum constant to directly access a given types discriminator values)
+const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminators[] = {
+  {/* s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request */
+   .cpuFunctionType = 0x04},
+  {/* s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response */
+   .cpuFunctionType = 0x08}
+};
+
+// Function returning the discriminator values for a given type constant.
+plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_get_discriminator(plc4c_s7_read_write_s7_payload_user_data_item_type type) {
+  return plc4c_s7_read_write_s7_payload_user_data_item_discriminators[type];
+}
+
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* buf, unsigned int cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_s7_payload_user_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
@@ -44,18 +62,16 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   // Simple Field (szlId)
   plc4c_s7_read_write_szl_id* szlId = NULL;
   plc4c_s7_read_write_szl_id_parse(buf, &szlId);
-  msg->szl_id = szlId;
 
   // Simple Field (szlIndex)
   uint16_t szlIndex = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->szl_index = szlIndex;
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(plc4c_spi_evaluation_helper_equals(cpuFunctionType, 0x04)) {
-    plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request_parse(buf, cpuFunctionType, NULL/* Disabled for now */);
+  if(cpuFunctionType == 0x04) {
+    plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request_parse(buf, cpuFunctionType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(cpuFunctionType, 0x08)) {
-    plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response_parse(buf, cpuFunctionType, NULL/* Disabled for now */);
+  if(cpuFunctionType == 0x08) {
+    plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response_parse(buf, cpuFunctionType, &msg);
   }
 
   return OK;

@@ -25,27 +25,49 @@
 #include "s7_payload_write_var_request.h"
 #include "s7_payload_write_var_response.h"
 #include "s7_payload_user_data.h"
-
 #include "s7_payload.h"
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter parameter, plc4c_s7_read_write_s7_payload** message) {
+// Array of discriminator values that match the enum type constants.
+// (The order is identical to the enum constants so we can use the
+// enum constant to directly access a given types discriminator values)
+const plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_discriminators[] = {
+  {/* s7_read_write_s7_payload_read_var_response */
+   .messageType = 0x03, .parameter_parameterType = 0x04},
+  {/* s7_read_write_s7_payload_user_data */
+   .messageType = 0x07, .parameter_parameterType = 0x00},
+  {/* s7_read_write_s7_payload_write_var_request */
+   .messageType = 0x01, .parameter_parameterType = 0x05},
+  {/* s7_read_write_s7_payload_write_var_response */
+   .messageType = 0x03, .parameter_parameterType = 0x05}
+};
+
+// Function returning the discriminator values for a given type constant.
+plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_get_discriminator(plc4c_s7_read_write_s7_payload_type type) {
+  return plc4c_s7_read_write_s7_payload_discriminators[type];
+}
+
+// Parse function.
+plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter* parameter, plc4c_s7_read_write_s7_payload** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_s7_payload* msg = malloc(sizeof(plc4c_s7_read_write_s7_payload));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(plc4c_spi_evaluation_helper_equals(parameter.getDiscriminatorValues()[0], 0x04) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
-    plc4c_s7_read_write_s7_payload_read_var_response_parse(buf, messageType, parameter, NULL/* Disabled for now */);
+  if((parameter.getParameterType() == 0x04) && (messageType == 0x03)) {
+    plc4c_s7_read_write_s7_payload_read_var_response_parse(buf, messageType, parameter, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameter.getDiscriminatorValues()[0], 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x01)) {
-    plc4c_s7_read_write_s7_payload_write_var_request_parse(buf, messageType, parameter, NULL/* Disabled for now */);
+  if((parameter.getParameterType() == 0x05) && (messageType == 0x01)) {
+    plc4c_s7_read_write_s7_payload_write_var_request_parse(buf, messageType, parameter, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameter.getDiscriminatorValues()[0], 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
-    plc4c_s7_read_write_s7_payload_write_var_response_parse(buf, messageType, parameter, NULL/* Disabled for now */);
+  if((parameter.getParameterType() == 0x05) && (messageType == 0x03)) {
+    plc4c_s7_read_write_s7_payload_write_var_response_parse(buf, messageType, parameter, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameter.getDiscriminatorValues()[0], 0x00) && plc4c_spi_evaluation_helper_equals(messageType, 0x07)) {
-    plc4c_s7_read_write_s7_payload_user_data_parse(buf, messageType, parameter, NULL/* Disabled for now */);
+  if((parameter.getParameterType() == 0x00) && (messageType == 0x07)) {
+    plc4c_s7_read_write_s7_payload_user_data_parse(buf, messageType, parameter, &msg);
   }
 
   return OK;

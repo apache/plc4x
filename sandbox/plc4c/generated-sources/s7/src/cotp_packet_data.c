@@ -21,22 +21,23 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "cotp_packet_data.h"
 
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_cotp_packet_data_parse(plc4c_spi_read_buffer* buf, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet_data** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_cotp_packet_data* msg = malloc(sizeof(plc4c_s7_read_write_cotp_packet_data));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (eot)
   bool eot = plc4c_spi_read_bit(buf);
-  msg->eot = eot;
 
   // Simple Field (tpduRef)
   unsigned int tpduRef = plc4c_spi_read_unsigned_short(buf, 7);
-  msg->tpdu_ref = tpduRef;
 
   return OK;
 }

@@ -28,6 +28,12 @@ extern "C" {
 #include "s7_parameter.h"
 #include "s7_payload.h"
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_s7_message_discriminator {
+  uint8_t messageType;
+};
+typedef struct plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_message_type {
   plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request = 0,
@@ -35,6 +41,9 @@ enum plc4c_s7_read_write_s7_message_type {
   plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2,
   plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3};
 typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_discriminator(plc4c_s7_read_write_s7_message_type type);
 
 // Constant values.
 const uint8_t S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;

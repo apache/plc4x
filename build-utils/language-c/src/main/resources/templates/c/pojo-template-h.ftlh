@@ -44,34 +44,57 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-<#if helper.getComplexTypeReferencesInFields()?has_content>
-<#list helper.getComplexTypeReferencesInFields() as complexType>
-#include "${helper.camelCaseToSnakeCase(complexType.getName())}.h"
-</#list>
+<#--
+    Add any import statements for partent-types, complex types used in properties or parser arguments.
+-->
+<#if helper.getIncludeTypesForHFiles()?has_content>
+    <#list helper.getIncludeTypesForHFiles() as typeImport>
+#include "${typeImport}.h"
+    </#list>
 </#if>
-<#if helper.isDiscriminatedType(type)>
-#include "${helper.camelCaseToSnakeCase(type.parentType.name)}.h"
-</#if>
-        <#--
-            Abstract types only occur as parents in the case of discriminated types.
-            As C doesn't have any form of polymorph type-system, we need to save the type information in the
-            data-structure. So with this enum we're doing exactly this. It will be used in the serializers and
-            parsers and stored in discriminated types.
-        -->
+<#--
+    Abstract types only occur as parents in the case of discriminated types.
+    As C doesn't have any form of polymorph type-system, we need to save the type information in the
+    data-structure. So with this enum we're doing exactly this. It will be used in the serializers and
+    parsers and stored in discriminated types.
+-->
 <#if helper.isAbstractType(type)>
+
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_${helper.getCTypeName(type.name)}_discriminator {
+<#if helper.getDiscriminatorTypes()?has_content>
+    <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
+  ${helper.getLanguageTypeName(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+    </#list>
+</#if>
+};
+typedef struct plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_discriminator;
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_${helper.getCTypeName(type.name)}_type {
-    <#list helper.getDiscriminatedSubTypes(type) as subtype>
+    <#list helper.getDiscriminatedSubTypes() as subtype>
   plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,
     </#list>
 };
 typedef enum plc4c_${helper.getCTypeName(type.name)}_type plc4c_${helper.getCTypeName(type.name)}_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_get_discriminator(plc4c_${helper.getCTypeName(type.name)}_type type);
 </#if>
-        <#--
-            When using const fields, output the constant reference values
-            as defines so we can use them elsewhere
-        -->
+<#--#if helper.isDiscriminatedType(type)>
+
+// Discriminator values used by the parser to determine the type to be used. All values have to apply.
+const void*[] DISCRIMINATOR_VALUES = {
+    <#list type.discriminatorValues as discriminatorValue>
+    <#- There are rare occasions where the discriminator is defined by a parser argument, in this case we currently can't detect the type ->
+  (${helper.getDiscriminatorConstantType(type, discriminatorValue?index)}) ${discriminatorValue}<#sep>, </#sep>
+    </#list>
+};
+</#if-->
+<#--
+    When using const fields, output the constant reference values
+    as global const values so we can use them elsewhere.
+-->
 <#if type.constFields?has_content>
 
 // Constant values.
@@ -80,6 +103,9 @@ const ${helper.getLanguageTypeNameForField(field)} ${helper.getCTypeName(type.na
     </#list>
 </#if>
 
+<#--
+    Create the general data-structure for this type
+-->
 struct plc4c_${helper.getCTypeName(type.name)} {
 <#if helper.isAbstractType(type)>
   plc4c_${helper.getCTypeName(type.name)}_type _type;
@@ -93,8 +119,14 @@ struct plc4c_${helper.getCTypeName(type.name)} {
 };
 typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
 
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)} ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message);
+<#--
+    Define the parse-method for elements of this tpye
+-->
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)}<#if !helper.isSimpleType(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message);
 
+<#--
+    Define the serialize-method for elements of this tpye
+-->
 plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message);
 
 #ifdef __cplusplus

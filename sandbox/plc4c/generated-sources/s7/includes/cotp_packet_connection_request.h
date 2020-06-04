@@ -25,10 +25,10 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "cotp_parameter.h"
-#include "s7_message.h"
-#include "cotp_protocol_class.h"
 #include "cotp_packet.h"
+#include "cotp_parameter.h"
+#include "cotp_protocol_class.h"
+#include "s7_message.h"
 
 struct plc4c_s7_read_write_cotp_packet_connection_request {
   plc4c_s7_read_write_cotp_packet_type _type;

@@ -26,14 +26,38 @@
 #include "cotp_parameter_called_tsap.h"
 #include "cotp_parameter_checksum.h"
 #include "cotp_parameter_disconnect_additional_information.h"
-
 #include "cotp_parameter.h"
 
+// Array of discriminator values that match the enum type constants.
+// (The order is identical to the enum constants so we can use the
+// enum constant to directly access a given types discriminator values)
+const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminators[] = {
+  {/* s7_read_write_cotp_parameter_called_tsap */
+   .parameterType = 0xC2},
+  {/* s7_read_write_cotp_parameter_calling_tsap */
+   .parameterType = 0xC1},
+  {/* s7_read_write_cotp_parameter_checksum */
+   .parameterType = 0xC3},
+  {/* s7_read_write_cotp_parameter_disconnect_additional_information */
+   .parameterType = 0xE0},
+  {/* s7_read_write_cotp_parameter_tpdu_size */
+   .parameterType = 0xC0}
+};
+
+// Function returning the discriminator values for a given type constant.
+plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_get_discriminator(plc4c_s7_read_write_cotp_parameter_type type) {
+  return plc4c_s7_read_write_cotp_parameter_discriminators[type];
+}
+
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_cotp_parameter* msg = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
@@ -42,20 +66,20 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   uint8_t parameterLength = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC0)) {
-    plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(buf, rest, NULL/* Disabled for now */);
+  if(parameterType == 0xC0) {
+    plc4c_s7_read_write_cotp_parameter_tpdu_size_parse(buf, rest, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC1)) {
-    plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(buf, rest, NULL/* Disabled for now */);
+  if(parameterType == 0xC1) {
+    plc4c_s7_read_write_cotp_parameter_calling_tsap_parse(buf, rest, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC2)) {
-    plc4c_s7_read_write_cotp_parameter_called_tsap_parse(buf, rest, NULL/* Disabled for now */);
+  if(parameterType == 0xC2) {
+    plc4c_s7_read_write_cotp_parameter_called_tsap_parse(buf, rest, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xC3)) {
-    plc4c_s7_read_write_cotp_parameter_checksum_parse(buf, rest, NULL/* Disabled for now */);
+  if(parameterType == 0xC3) {
+    plc4c_s7_read_write_cotp_parameter_checksum_parse(buf, rest, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xE0)) {
-    plc4c_s7_read_write_cotp_parameter_disconnect_additional_information_parse(buf, rest, NULL/* Disabled for now */);
+  if(parameterType == 0xE0) {
+    plc4c_s7_read_write_cotp_parameter_disconnect_additional_information_parse(buf, rest, &msg);
   }
 
   return OK;

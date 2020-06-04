@@ -21,18 +21,20 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_tcp_adu.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_tcp_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_tcp_adu));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->transaction_identifier = transactionIdentifier;
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
@@ -46,12 +48,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->unit_identifier = unitIdentifier;
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, &pdu);
-  msg->pdu = pdu;
 
   return OK;
 }

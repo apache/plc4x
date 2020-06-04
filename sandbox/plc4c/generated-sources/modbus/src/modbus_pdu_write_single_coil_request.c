@@ -21,22 +21,23 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_write_single_coil_request.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_single_coil_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_write_single_coil_request** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_write_single_coil_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_single_coil_request));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (address)
   uint16_t address = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->address = address;
 
   // Simple Field (value)
   uint16_t value = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->value = value;
 
   return OK;
 }

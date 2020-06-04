@@ -29,11 +29,20 @@ extern "C" {
 #include "data_transport_size.h"
 #include "szl_id.h"
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator {
+  unsigned int cpuFunctionType;
+};
+typedef struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_payload_user_data_item_type {
   plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request = 0,
   plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response = 1};
 typedef enum plc4c_s7_read_write_s7_payload_user_data_item_type plc4c_s7_read_write_s7_payload_user_data_item_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_get_discriminator(plc4c_s7_read_write_s7_payload_user_data_item_type type);
 
 struct plc4c_s7_read_write_s7_payload_user_data_item {
   plc4c_s7_read_write_s7_payload_user_data_item_type _type;

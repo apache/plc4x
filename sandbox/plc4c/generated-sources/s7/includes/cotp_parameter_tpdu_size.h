@@ -25,8 +25,8 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "cotp_tpdu_size.h"
 #include "cotp_parameter.h"
+#include "cotp_tpdu_size.h"
 
 struct plc4c_s7_read_write_cotp_parameter_tpdu_size {
   plc4c_s7_read_write_cotp_parameter_type _type;

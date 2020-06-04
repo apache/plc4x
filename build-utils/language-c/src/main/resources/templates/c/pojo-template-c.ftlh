@@ -40,20 +40,45 @@ ${helper.setConstants(type, protocolName, outputFlavor)}${helper.getSourceDirect
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-<#-- Add an import for any sub-type defined -->
-<#if helper.switchTypeImports()?has_content>
-    <#list helper.switchTypeImports() as typeImport>
+<#-- Add any needed import statements -->
+<#if helper.getIncludeTypesForCFiles()?has_content>
+    <#list helper.getIncludeTypesForCFiles() as typeImport>
 #include "${typeImport}.h"
     </#list>
 </#if>
+<#-- Helper function to get the discriminator for a given enum type constant -->
+<#if helper.isAbstractType(type)>
 
-#include "${helper.camelCaseToSnakeCase(typeName)}.h"
+// Array of discriminator values that match the enum type constants.
+// (The order is identical to the enum constants so we can use the
+// enum constant to directly access a given types discriminator values)
+const plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_discriminators[] = {
+    <#if helper.getDiscriminatorValues()?has_content>
+        <#list helper.getDiscriminatorValues() as name, typeValues>
+  {/* ${helper.getCTypeName(name)} */
+   <#list typeValues as key, value>.${key} = <#if value??>${value}<#else>-1</#if><#sep>, </#list>}<#sep >,
+</#list>
+    </#if>
 
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)} ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message) {
+};
+
+// Function returning the discriminator values for a given type constant.
+plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_get_discriminator(plc4c_${helper.getCTypeName(type.name)}_type type) {
+  return plc4c_${helper.getCTypeName(type.name)}_discriminators[type];
+}
+</#if>
+
+// Parse function.
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)}<#if !helper.isSimpleType(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_${helper.getCTypeName(type.name)}* msg = malloc(sizeof(plc4c_${helper.getCTypeName(type.name)}));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+<#if type.getPropertyFields()?has_content>
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)(<#list type.getPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#sep >, </#list>) = NULL;
+</#if>
 <#list type.fields as field>
     <#switch field.typeName>
         <#case "checksum">
@@ -99,7 +124,6 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 
   // Manual Field (${field.name})
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
-  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
         <#break>
         <#case "optional">
 
@@ -146,15 +170,13 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   ${helper.getLanguageTypeNameForField(field)}* ${field.name} = NULL;
   plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
             </#if>
-            <#-- Update the protpery in the struct -->
-  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
             <#break>
         <#case "switch">
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
             <#list field.cases as case>
-  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>plc4c_spi_evaluation_helper_equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
-    plc4c_${helper.getCTypeName(case.name)}_parse(buf<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, NULL/* Disabled for now */);
+  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{
+    plc4c_${helper.getCTypeName(case.name)}_parse(buf<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, &msg);
   }<#sep> else </#sep>
             </#list>
             <#break>

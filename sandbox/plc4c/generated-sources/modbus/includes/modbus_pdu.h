@@ -26,6 +26,14 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_modbus_read_write_modbus_pdu_discriminator {
+  bool error;
+  unsigned int function;
+  bool response;
+};
+typedef struct plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_modbus_read_write_modbus_pdu_type {
   plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_error = 0,
@@ -65,6 +73,9 @@ enum plc4c_modbus_read_write_modbus_pdu_type {
   plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_request = 34,
   plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_response = 35};
 typedef enum plc4c_modbus_read_write_modbus_pdu_type plc4c_modbus_read_write_modbus_pdu_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_get_discriminator(plc4c_modbus_read_write_modbus_pdu_type type);
 
 struct plc4c_modbus_read_write_modbus_pdu {
   plc4c_modbus_read_write_modbus_pdu_type _type;

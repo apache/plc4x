@@ -27,36 +27,62 @@
 #include "s7_parameter_write_var_request.h"
 #include "s7_parameter_write_var_response.h"
 #include "s7_parameter_user_data.h"
-
 #include "s7_parameter.h"
 
+// Array of discriminator values that match the enum type constants.
+// (The order is identical to the enum constants so we can use the
+// enum constant to directly access a given types discriminator values)
+const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
+  {/* s7_read_write_s7_parameter_read_var_request */
+   .messageType = 0x01, .parameterType = 0x04},
+  {/* s7_read_write_s7_parameter_read_var_response */
+   .messageType = 0x03, .parameterType = 0x04},
+  {/* s7_read_write_s7_parameter_setup_communication */
+   .messageType = -1, .parameterType = 0xF0},
+  {/* s7_read_write_s7_parameter_user_data */
+   .messageType = 0x07, .parameterType = 0x00},
+  {/* s7_read_write_s7_parameter_write_var_request */
+   .messageType = 0x01, .parameterType = 0x05},
+  {/* s7_read_write_s7_parameter_write_var_response */
+   .messageType = 0x03, .parameterType = 0x05}
+};
+
+// Function returning the discriminator values for a given type constant.
+plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_get_discriminator(plc4c_s7_read_write_s7_parameter_type type) {
+  return plc4c_s7_read_write_s7_parameter_discriminators[type];
+}
+
+// Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0xF0)) {
-    plc4c_s7_read_write_s7_parameter_setup_communication_parse(buf, messageType, NULL/* Disabled for now */);
+  if(parameterType == 0xF0) {
+    plc4c_s7_read_write_s7_parameter_setup_communication_parse(buf, messageType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x04) && plc4c_spi_evaluation_helper_equals(messageType, 0x01)) {
-    plc4c_s7_read_write_s7_parameter_read_var_request_parse(buf, messageType, NULL/* Disabled for now */);
+  if((parameterType == 0x04) && (messageType == 0x01)) {
+    plc4c_s7_read_write_s7_parameter_read_var_request_parse(buf, messageType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x04) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
-    plc4c_s7_read_write_s7_parameter_read_var_response_parse(buf, messageType, NULL/* Disabled for now */);
+  if((parameterType == 0x04) && (messageType == 0x03)) {
+    plc4c_s7_read_write_s7_parameter_read_var_response_parse(buf, messageType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x01)) {
-    plc4c_s7_read_write_s7_parameter_write_var_request_parse(buf, messageType, NULL/* Disabled for now */);
+  if((parameterType == 0x05) && (messageType == 0x01)) {
+    plc4c_s7_read_write_s7_parameter_write_var_request_parse(buf, messageType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x05) && plc4c_spi_evaluation_helper_equals(messageType, 0x03)) {
-    plc4c_s7_read_write_s7_parameter_write_var_response_parse(buf, messageType, NULL/* Disabled for now */);
+  if((parameterType == 0x05) && (messageType == 0x03)) {
+    plc4c_s7_read_write_s7_parameter_write_var_response_parse(buf, messageType, &msg);
   } else 
-  if(plc4c_spi_evaluation_helper_equals(parameterType, 0x00) && plc4c_spi_evaluation_helper_equals(messageType, 0x07)) {
-    plc4c_s7_read_write_s7_parameter_user_data_parse(buf, messageType, NULL/* Disabled for now */);
+  if((parameterType == 0x00) && (messageType == 0x07)) {
+    plc4c_s7_read_write_s7_parameter_user_data_parse(buf, messageType, &msg);
   }
 
   return OK;

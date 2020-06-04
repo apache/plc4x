@@ -21,22 +21,23 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_write_multiple_holding_registers_request.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (startingAddress)
   uint16_t startingAddress = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->starting_address = startingAddress;
 
   // Simple Field (quantity)
   uint16_t quantity = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->quantity = quantity;
 
   // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t byteCount = plc4c_spi_read_unsigned_short(buf, 8);

@@ -25,9 +25,9 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "cotp_packet.h"
 #include "cotp_parameter.h"
 #include "s7_message.h"
-#include "cotp_packet.h"
 
 struct plc4c_s7_read_write_cotp_packet_disconnect_response {
   plc4c_s7_read_write_cotp_packet_type _type;

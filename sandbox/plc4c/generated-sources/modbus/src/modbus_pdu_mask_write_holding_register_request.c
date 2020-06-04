@@ -21,26 +21,26 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-
 #include "modbus_pdu_mask_write_holding_register_request.h"
 
+// Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request** message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_mask_write_holding_register_request));
+  // Pointer to the parsed datastructure.
+  void* msg = NULL;
+  // Factory function that allows filling the properties of this type
+  void (*factory_ptr)()
 
   // Simple Field (referenceAddress)
   uint16_t referenceAddress = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->reference_address = referenceAddress;
 
   // Simple Field (andMask)
   uint16_t andMask = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->and_mask = andMask;
 
   // Simple Field (orMask)
   uint16_t orMask = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->or_mask = orMask;
 
   return OK;
 }

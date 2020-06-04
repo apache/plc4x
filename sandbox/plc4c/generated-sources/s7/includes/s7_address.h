@@ -26,10 +26,19 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_s7_address_discriminator {
+  uint8_t addressType;
+};
+typedef struct plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_discriminator;
+
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_address_type {
   plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any = 0};
 typedef enum plc4c_s7_read_write_s7_address_type plc4c_s7_read_write_s7_address_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_get_discriminator(plc4c_s7_read_write_s7_address_type type);
 
 struct plc4c_s7_read_write_s7_address {
   plc4c_s7_read_write_s7_address_type _type;
