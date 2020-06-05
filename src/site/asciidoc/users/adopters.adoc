@@ -19,19 +19,9 @@
 
 == Companies using Apache PLC4X
 
-The people working on Apache PLC4X, and the companies behind them have put an enormous amount of effort into creating this great tool.
+image::toddy-loves-apache.png[width=200,float=left]
 
-The problem some of them are facing, is that they are usually not allowed to mention which companies are using PLC4X.
-
-However being able to name references is most vital nowdays in gaining trust.
-
-So if you work for a company which is using Apache PLC4X, one way you can help the project is by admitting you are using it.
-
-This might be only very little active contribution on your side, but for the project this is of extremely high value.
-
-On this page we are maintaining a list of companies openly communicating that they are using Apache PLC4X.
-
-If your company is using Apache PLC4X and you would like to give back to the community, please create a Pull-Request on github or post an email to dev@plc4x.apache.org and give us the permission to list your company.
+The companies in the following list are actively using Apache PLC4X.
 
 |===
 ||Name |Market |Description
@@ -45,3 +35,17 @@ a|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200] |https://ww
 // TODO: Add your company in alphabetical order ...
 
 |===
+
+The people working on Apache PLC4X, and the companies behind them have put an enormous amount of effort into creating this great tool.
+
+The problem some of them are facing, is that they are usually not allowed to mention which companies are using PLC4X.
+
+However being able to name references is most vital nowdays in gaining trust.
+
+So if you work for a company which is using Apache PLC4X, one way you can help the project is by admitting you are using it.
+
+This might be only very little active contribution on your side, but for the project this is of extremely high value.
+
+On this page we are maintaining a list of companies openly communicating that they are using Apache PLC4X.
+
+If your company is using Apache PLC4X and you would like to give back to the community, please create a Pull-Request on github or post an email to dev@plc4x.apache.org and give us the permission to list your company.
