@@ -251,7 +251,7 @@
               <goal>analyze-only</goal>
             </goals>
             <configuration>
-              <failOnWarning>false</failOnWarning>
+              <failOnWarning>true</failOnWarning>
               <ignoredDependencies>
                 <ignoredDependency>org.assertj:assertj-core</ignoredDependency>
                 <ignoredDependency>org.junit.jupiter:junit-jupiter</ignoredDependency>
