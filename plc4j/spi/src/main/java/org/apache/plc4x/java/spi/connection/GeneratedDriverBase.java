@@ -150,4 +150,5 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         throw new PlcConnectionException("Authentication not supported.");
     }
 
+
 }

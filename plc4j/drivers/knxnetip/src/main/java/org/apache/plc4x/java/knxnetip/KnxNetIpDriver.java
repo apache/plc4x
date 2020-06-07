@@ -20,6 +20,7 @@ package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
@@ -92,6 +93,11 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
             }
             return -1;
         }
+    }
+
+    @Override
+    public KnxNetIpField prepareField(String query){
+        return KnxNetIpField.of(query);
     }
 
 }

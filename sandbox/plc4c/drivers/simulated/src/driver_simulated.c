@@ -133,7 +133,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(
          * we can also set a custom printf method
          * right , now just create a new random value
          */
-        value_item->value = plc4c_data_create_uint_data(arc4random());
+        value_item->value = plc4c_data_create_uint_data(rand());
 
         // Add the value to the response.
         plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -243,7 +243,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     // This marks the end of the type part.
     if (*(address_string + i) == '/') {
       char *type_str = malloc(sizeof(char) * (i + 1));
-      strlcpy(type_str, start_segment, i + 1);
+      strncpy(type_str, start_segment, i);
       if (strcmp(type_str, "RANDOM") == 0) {
         type = RANDOM;
       } else if (strcmp(type_str, "STATE") == 0) {
@@ -259,7 +259,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     // This marks the end of the name part.
     if (*(address_string + i) == ':') {
       name = malloc(sizeof(char) * ((i - start_segment_index) + 1));
-      strlcpy(name, start_segment, (i - start_segment_index) + 1);
+      strncpy(name, start_segment, (i - start_segment_index));
       start_segment = address_string + i + 1;
       start_segment_index = i + 1;
     }
@@ -268,7 +268,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     if ((i == strlen(address_string)) || (*(address_string + i) == '[')) {
       char *datatype_name =
           malloc(sizeof(char) * ((i - start_segment_index) + 1));
-      strlcpy(datatype_name, start_segment, (i - start_segment_index) + 1);
+      strncpy(datatype_name, start_segment, (i - start_segment_index));
 
       // Translate the string into a constant.
       if (strcmp(datatype_name, "INTEGER") == 0) {
@@ -290,7 +290,7 @@ plc4c_item *plc4c_driver_simulated_parse_address(char *address_string) {
     if (*(address_string + i) == ']') {
       char *num_elements_str =
           malloc(sizeof(char) * ((i - start_segment_index) + 1));
-      strlcpy(num_elements_str, start_segment, (i - start_segment_index) + 1);
+      strncpy(num_elements_str, start_segment, (i - start_segment_index));
       char *success = NULL;
       num_elements = (int)strtol(num_elements_str, &success, 10);
       break;

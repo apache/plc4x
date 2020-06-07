@@ -338,6 +338,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         list.add(new PlcDouble(swap(data.getFloat(index))));
                         index += type.getSize();
                         break;
+                    case BOOL:
+                        list.add(new PlcBoolean(data.getBoolean(index)));
+                        index+= type.getSize();
                     default:
                         return null;
                 }
@@ -353,6 +356,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     return new PlcInteger(Integer.reverseBytes(data.getInt(0)));
                 case REAL:
                     return new PlcDouble(swap(data.getFloat(0)));
+                case BOOL:
+                    return new PlcBoolean(data.getBoolean(0));
                 default:
                     return null;
             }

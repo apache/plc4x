@@ -20,6 +20,7 @@ package org.apache.plc4x.java.eip.readwrite;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
+import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
@@ -100,6 +101,11 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
                 byteBuf.readByte();
             }
         }
+    }
+
+    @Override
+    public EipField prepareField(String query){
+        return EipField.of(query);
     }
 
 }

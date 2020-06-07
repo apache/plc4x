@@ -18,6 +18,9 @@ under the License.
 */
 package org.apache.plc4x.simulator.server;
 
+import org.apache.plc4x.simulator.exceptions.SimulatorExcepiton;
+import org.apache.plc4x.simulator.model.Context;
+
 public interface ServerModule {
 
     /**
@@ -25,8 +28,10 @@ public interface ServerModule {
      */
     String getName();
 
-    void start();
+    void setContext(Context contexts);
 
-    void stop();
+    void start() throws SimulatorExcepiton;
+
+    void stop() throws SimulatorExcepiton;
 
 }

@@ -24,4 +24,4 @@ file(GLOB sources "src/*.c")
 
 add_library(plc4c-driver-simulated ${sources})
 
-target_link_libraries(plc4c-driver-simulated ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-driver-simulated plc4c-spi ${CMAKE_DL_LIBS})

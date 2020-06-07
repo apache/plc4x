@@ -17,14 +17,15 @@
   under the License.
 ]]
 
-include_directories("include" "../../api/include" "../../spi/include")
+include_directories("include" "../../api/include" "../../spi/include"
+    "${PLC4C_ROOT_DIR}/generated-sources/plc4x/s7/includes")
 
 # Add the sources
 file(GLOB sources "src/*.c")
 
 # Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/src/main/c/*.c")
+file(GLOB generatedSources "${PLC4C_ROOT_DIR}/target/generated-sources/plc4x/s7/src/*.c")
 
 add_library(plc4c-driver-s7 ${sources} ${generatedSources})
 
-target_link_libraries(plc4c-driver-s7 ${CMAKE_DL_LIBS})
+target_link_libraries(plc4c-driver-s7 plc4c-spi ${CMAKE_DL_LIBS})

@@ -56,7 +56,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.emptyList();
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/c/enum-template.ftlh"));
     }
 
     @Override

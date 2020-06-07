@@ -18,7 +18,10 @@ under the License.
 */
 package org.apache.plc4x.camel;
 
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -113,5 +116,14 @@ public class TagData {
             && ((TagData)tag).getQuery().equals(query);
 
 
+    }
+
+    public static Map<String,String> toMap(List<TagData> tags){
+        Map<String,String> map = new HashMap<>();
+        LoggerFactory.getLogger(TagData.class).info("Classloader {} ", Thread.currentThread().getContextClassLoader());
+        for(TagData tag : tags){
+            map.put(tag.getTagName(),tag.getQuery());
+        }
+        return map;
     }
 }

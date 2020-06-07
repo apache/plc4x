@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.getSourceDirectory(protocolName)?replace(".", "/")}/${typeName}.c
+${helper.setConstants(type, protocolName, outputFlavor)}${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -35,4 +35,9 @@ ${helper.getSourceDirectory(protocolName)?replace(".", "/")}/${typeName}.c
   specific language governing permissions and limitations
   under the License.
 */
+
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+
+#include "${helper.camelCaseToSnakeCase(typeName)}.h"
 

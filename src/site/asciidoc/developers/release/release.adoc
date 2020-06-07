@@ -66,8 +66,6 @@ This helps reviewers to see what's in the convenience maven package and to relea
 
 But in order to be allowed to upload artifacts, your account has to be enabled for this and you have to tell Maven about your credentials.
 
-:current-full-version:
-
 In order to do this, you should provide these credentials via `.m2/settings.xml`.
 
 So if you don't already have one, you should create a `.m2` directory in your user home and inside that create a `settings.xml` file with at least this content:
@@ -115,6 +113,14 @@ If you happen to have multiple keys, adding the following profile to your `setti
       </properties>
     </profile>
 
+Currently there is a Java-Version sweet-spot for being able to release all modules and that is Java 11.
+
+So be sure to set `Java 11` as the java version used to do the release.
+
+Also at least `Maven 3.6` is required for CMake.
+
+Ideally use the Maven-Wrapper to ensure the Maven version fits the build.
+
 === Preparing the codebase for a release
 
 Usually you will have to update the RELEASE_NOTES document to the new version.
@@ -142,14 +148,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{minor-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -214,7 +220,7 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash
+   mvn release:prepare -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox
 
 (The `-P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
@@ -274,7 +280,7 @@ However it will not delete the tag in GIT (locally and remotely). So you have to
 
 This is done by executing another goal of the `maven-release-plugin`:
 
-   mvn release:perform -DreleaseProfiles=apache-release,with-boost,with-proxies,with-logstash
+   mvn release:perform
 
 This executes automatically as all information it requires is located in the `release.properties` file the `prepare` goal prepared.
 

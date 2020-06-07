@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.s7.readwrite.io.TPKTPacketIO;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
@@ -108,6 +109,11 @@ public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
                 byteBuf.readByte();
             }
         }
+    }
+
+    @Override
+    public S7Field prepareField(String query){
+        return S7Field.of(query);
     }
 
 }

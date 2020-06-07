@@ -19,6 +19,9 @@
 
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
+import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.scraper.exception.ScraperConfigurationException;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
@@ -37,7 +40,7 @@ import java.util.regex.Pattern;
 public class TriggerConfiguration{
     private static final Logger logger = LoggerFactory.getLogger(TriggerConfiguration.class);
 
-    private static final String S_7_TRIGGER_VAR = "S7_TRIGGER_VAR";
+    private static final String TRIGGER = "TRIGGER_VAR";
     private static final String SCHEDULED       = "SCHEDULED";
     private static final String PREVIOUS_DEF    = "PREV";
 
@@ -52,7 +55,7 @@ public class TriggerConfiguration{
     private List<TriggerElement> triggerElementList;
 
     /**
-     * default constructor when an S7Field should be used for triggering
+     * default constructor when an Field should be used for triggering
      * @param triggerType type of trigger from enum
      * @param scrapeInterval scrape interval of triggered variable
      * @param triggerElementList list of triggerElemts with concat that combined is used as triger
@@ -71,10 +74,10 @@ public class TriggerConfiguration{
 
         String exceptionMessage;
 
-        if(this.triggerType.equals(TriggerType.S7_TRIGGER_VAR)) {
+        if(this.triggerType.equals(TriggerType.TRIGGER_VAR) ) {
             //test for valid field-connection string, on exception quit job and return message to user
             if(this.triggerElementList.isEmpty()){
-                exceptionMessage = String.format("No items in trigger List for trigger-type S7_TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
+                exceptionMessage = String.format("No items in trigger List for trigger-type TRIGGER_VAR for Job %s!", triggeredScrapeJobImpl.getJobName());
                 throw new ScraperConfigurationException(exceptionMessage);
             }
             checkTriggerVarList();
@@ -146,7 +149,7 @@ public class TriggerConfiguration{
     /**
      * defines the used base type for comparison
      * @return the detected base type
-     * @throws ScraperException when an unsupported S7-Type is chosen,which is not (yet) implemented for comparison
+     * @throws ScraperException when an unsupported Type is chosen,which is not (yet) implemented for comparison
      * ToDo check how to handle time-variables if needed
      */
     private static Class<?> validateDataType(PlcField plcField) throws ScraperConfigurationException {
@@ -375,23 +378,25 @@ public class TriggerConfiguration{
             String comparatorVariable = matcher.group("compVar");
 
             switch (triggerStrategy){
-                case S_7_TRIGGER_VAR:
+                case TRIGGER:
 
                     if(triggerVar ==null || comparatorString==null || comparatorVariable==null){
-                        throw new ScraperConfigurationException("S7_TRIGGER_VAR trigger strategy needs the trigger-condition - information missing! given configString: "+jobTriggerStrategy);
+                        throw new ScraperConfigurationException("TRIGGER_VAR trigger strategy needs the trigger-condition - information missing! given configString: "+jobTriggerStrategy);
                     }
 
                     List<TriggerElement> triggerElements = new ArrayList<>();
 
+                    //TODO Change this (probably only 1 source to get the connection directly)
+                    String connectionString = triggeredScrapeJob.getSourceConnections().get(triggeredScrapeJob.getSourceConnections().keySet().iterator().next());
                     TriggerElement triggerElement = new TriggerElement(
                         comparatorString,
                         null,
                         comparatorVariable,
                         triggerVar,
-                        triggerStrategy);
+                        triggerStrategy,
+                        connectionString);
 
                     triggerElement.setTriggerJob(triggeredScrapeJob.getJobName());
-
                     triggerElements.add(triggerElement);
 
                     String concatConn = matcher.group("concatConn");
@@ -405,7 +410,8 @@ public class TriggerConfiguration{
                             concatConn,
                             comparatorVariable2,
                             triggerVar2,
-                            triggerStrategy);
+                            triggerStrategy,
+                            connectionString);
 
 
                         triggerElement2.setTriggerJob(triggeredScrapeJob.getJobName());
@@ -414,7 +420,7 @@ public class TriggerConfiguration{
                     }
 
                     //ToDo add clever Strategy to concat more than two conditions if needed
-                    return new TriggerConfiguration(TriggerType.S7_TRIGGER_VAR,scheduledMs,triggerElements,triggeredScrapeJob);
+                    return new TriggerConfiguration(TriggerType.TRIGGER_VAR,scheduledMs,triggerElements,triggeredScrapeJob);
                 case SCHEDULED:
                     if(triggerVar !=null || comparatorString!=null || comparatorVariable!=null){
                         throw new ScraperConfigurationException("SCHEDULED trigger strategy must only be used with scheduled interval - nothing more!  given configString: "+jobTriggerStrategy);
@@ -472,7 +478,8 @@ public class TriggerConfiguration{
     //ToDo replace constant TriggerType by more generic ones --> PLC4X-89
     public enum TriggerType {
         SCHEDULED,
-        S7_TRIGGER_VAR
+        S7_TRIGGER_VAR,
+        TRIGGER_VAR
     }
 
     public enum ConcatType {
@@ -527,21 +534,20 @@ public class TriggerConfiguration{
             this.plcField = plcField;
         }
 
-        TriggerElement(String comparator, String concatType, String compareValue, String plcField, String triggerStrategy) throws ScraperConfigurationException {
+        TriggerElement(String comparator, String concatType, String compareValue, String plcField, String triggerStrategy, String plcConnectionString) throws ScraperConfigurationException {
             this();
             this.plcFieldString = plcField;
             this.plcConnectionString = plcConnectionString;
-            if(triggerStrategy.equals(S_7_TRIGGER_VAR)){
-                // TODO: This really has to be cleaned up by using the connections prepareField method.
-                /*try {
-                    this.plcField = S7Field.of(this.plcFieldString);
+            if(triggerStrategy.equals(TRIGGER)){
+                try {
+                    this.plcField = prepareField(plcFieldString);
                 }
                 catch (Exception e){
                     if(logger.isDebugEnabled()) {
-                        logger.debug("Exception occurred parsing a S7Field");
+                        logger.debug("Exception occurred parsing a PlcField");
                     }
                     throw new ScraperConfigurationException("Exception on parsing S7Field (" + plcField + "): " + e.getMessage());
-                }*/
+                }
                 this.compareValue = convertCompareValue(compareValue,this.plcField);
                 this.comparatorType = detectComparatorType(comparator);
                 matchTypeAndComparator();
@@ -551,6 +557,13 @@ public class TriggerConfiguration{
 
         }
 
+        //I used this because the prepareField method is deprecated with generated drivers
+        //So I need to create the field using the connection string here
+        private PlcField prepareField(String fieldQuery) throws PlcConnectionException {
+            PlcDriverManager driverManager = new PlcDriverManager();
+            PlcDriver driver = driverManager.getDriver(plcConnectionString);
+            return driver.prepareField(fieldQuery);
+        }
 
         /**
          * parses the ref-value to a given value, as well as checking if ref-value matches to the given data-type

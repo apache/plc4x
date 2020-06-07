@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-hello-webapp</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-hello-webapp-client</artifactId>
@@ -111,7 +111,7 @@
     <dependency>
       <groupId>org.apache.royale.framework</groupId>
       <artifactId>JewelTheme</artifactId>
-      <version>0.9.7-SNAPSHOT</version>
+      <version>${royale.version}</version>
       <type>swc</type>
       <scope>theme</scope>
       <classifier>js</classifier>

@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.simulator.simulation;
 
-import java.util.Map;
+import org.apache.plc4x.simulator.model.Context;
 
 public interface SimulationModule {
 
@@ -29,10 +29,9 @@ public interface SimulationModule {
 
     /**
      * Gives access to the internal simulations context.
-     * This is an immutable map of named properties that should contain only simple data-types.
      * @return reference to the simulations context
      */
-    Map<String, Object> getContext();
+    Context getContext();
 
     /**
      * Method for doing the actual processing inside the simulation.

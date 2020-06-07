@@ -30,4 +30,9 @@ public class Df1Configuration implements Configuration, SerialTransportConfigura
     @ConfigurationParameter("remote-addr")
     private short remoteAddr;
 
+    @Override
+    public int getBaudRate() {
+        return 57600;
+    }
+
 }

@@ -31,6 +31,9 @@ void test_system_plc4c_system_create_connection_args(
     char *expected_connection_string, char *expected_protocol_code,
     char *expected_transport_code, char *expected_transport_connect_information,
     char *expected_parameters) {
+
+  printf("Running test with '%s'", connection_string);
+
   plc4c_connection *connection = NULL;
   plc4c_return_code result =
       plc4c_system_create_connection(connection_string, &connection);
@@ -48,6 +51,7 @@ void test_system_plc4c_system_create_connection_args(
     TEST_ASSERT_EQUAL_STRING(expected_parameters, connection->parameters);
     free(connection);
   }
+  printf("OK\n");
 }
 
 void test_system_plc4c_system_create_connection(void) {

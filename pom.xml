@@ -29,7 +29,7 @@
 
   <groupId>org.apache.plc4x</groupId>
   <artifactId>plc4x-parent</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>PLC4X</name>
@@ -96,14 +96,14 @@
     <project.reporting.outputencoding>UTF-8</project.reporting.outputencoding>
 
     <!-- Timestamp for the reproducible builds -->
-    <project.build.outputTimestamp>2019-11-01T10:30:00Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2020-05-15T10:51:17Z</project.build.outputTimestamp>
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
     <plc4x-code-generation.version>1.2.0</plc4x-code-generation.version>
 
-    <antlr.version>4.7.2</antlr.version>
+    <antlr.version>4.8</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
@@ -155,7 +155,7 @@
     <pcap4j.version>1.8.2</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
-    <snakeyaml.version>1.23</snakeyaml.version>
+    <snakeyaml.version>1.24</snakeyaml.version>
     <spock-reports.version>1.6.1</spock-reports.version>
     <spock.version>1.2-groovy-2.5</spock.version>
     <t-digest.version>3.2</t-digest.version>
@@ -805,7 +805,10 @@
               <source>${project.basedir}/src/main/script/prerequisiteCheck.groovy</source>
             </configuration>
           </execution>
-          <!-- Set some dynamic variables which are useful for the site generation -->
+          <!--
+            Set some dynamic variables which are useful for the site generation and
+            generate an 'pom.adoc' file containing them in a format asciidoc can use.
+          -->
           <execution>
             <id>provide-custom-properties</id>
             <phase>pre-site</phase>
@@ -813,49 +816,7 @@
               <goal>execute</goal>
             </goals>
             <configuration>
-              <source>import org.apache.maven.repository.internal.MavenRepositorySystemUtils
-
-              print "\nCalculating some additional properties:"
-              // Get the current year
-              def currentYear = Calendar.getInstance().get(Calendar.YEAR) as String
-              print "\nCurrent year:                     " + currentYear
-              project.properties['current-year'] = currentYear
-
-              // Calculate some version related stuff
-              def currentVersion = project.version as String
-              def match = (currentVersion =~ /(\d+)\.(\d+)\.(\d+)(-SNAPSHOT)?/)
-              print "\nCurrent version:                  " + currentVersion
-              if (match.count &gt;= 1) {
-                def majorVersion = match[0][1] as Integer
-                def minorVersion = match[0][2] as Integer
-                def bugfixVersion = match[0][3] as Integer
-
-                def currentFullVersion = majorVersion + "." + minorVersion + "." + bugfixVersion
-                def currentShortVersion = majorVersion + "." + minorVersion
-                def currentNextIncrementalVersion = majorVersion + "." + minorVersion + "." + (bugfixVersion + 1)
-                def currentNextMinorVersion = majorVersion + "." + (minorVersion + 1) + ".0"
-
-                print "\nCurrent full version:             " + currentFullVersion + " (current-full-version)"
-                project.properties['current-full-version'] = currentFullVersion
-                print "\nCurrent short version:            " + currentShortVersion + "   (current-short-version)"
-                project.properties['current-short-version'] = currentShortVersion
-                print "\nCurrent next incremental version: " + currentNextIncrementalVersion + " (current-next-incremental-version)"
-                project.properties['current-next-incremental-version'] = currentNextIncrementalVersion
-                print "\nCurrent next minor version:       " + currentNextMinorVersion + " (current-next-minor-version)"
-                project.properties['current-next-minor-version'] = currentNextMinorVersion
-              }
-
-              // Get the latest released version from our doap file.
-              def plc4xDoapFile = new File(project.getBasedir(), "src/site/resources-filtered/plc4x-doap.rdf")
-              if(plc4xDoapFile.exists()) {
-                def doapDocument = new XmlSlurper().parse(plc4xDoapFile)
-                def lastReleasedVersion = doapDocument.Project.release[0].Version.revision
-                print "\nCurrent last released version:    " + lastReleasedVersion + " (current-last-released-version)"
-                project.properties['current-last-released-version'] = lastReleasedVersion
-              }
-
-              print "\n"
-              </source>
+              <source>${project.basedir}/src/main/script/preSiteGeneration.groovy</source>
             </configuration>
           </execution>
         </executions>
@@ -867,23 +828,6 @@
           </dependency>
         </dependencies>
       </plugin>
-
-      <!-- Write all the properties into a file so we can access them from asciidoctor -->
-      <!--plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>write-project-properties</goal>
-            </goals>
-            <configuration>
-              <outputFile>${project.build.directory}/pom.adoc</outputFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin-->
 
       <!-- Check if all source files have the required apache license headers -->
       <plugin>
@@ -904,7 +848,7 @@
             <!-- Git related files -->
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
-
+            <exclude>**/cmake-*/**</exclude>
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
             <!--
@@ -929,6 +873,9 @@
 
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>
+
+            <!-- JEVN local version files -->
+            <exclude>**/.java-version</exclude>
 
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
@@ -1040,38 +987,6 @@
       </plugin>
 
       <!--
-        Convert the pom.adoc file from a java property file into an asciidoctor property file.
-      -->
-      <!--plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <executions>
-          <execution>
-            <id>convert-property-to-adoc</id>
-            <!- Only execute this for the parent module ->
-            <inherited>false</inherited>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${project.build.directory}/pom.adoc</file>
-              <replacements>
-                <replacement>
-                  <token>(.*)=(.*)</token>
-                  <value>\:$1\: $2</value>
-                </replacement>
-                <replacement>
-                  <token>#(.*)</token>
-                  <value>// $1</value>
-                </replacement>
-              </replacements>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin-->
-
-      <!--
         Make the maven-site-plugin stage the output in the "asf-site" branch
       -->
       <plugin>
@@ -1139,6 +1054,12 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.karaf.tooling</groupId>
+          <artifactId>karaf-maven-plugin</artifactId>
+          <version>4.2.8</version>
+        </plugin>
+
+        <plugin>
           <groupId>com.google.code.maven-replacer-plugin</groupId>
           <artifactId>replacer</artifactId>
           <version>1.5.3</version>
@@ -1177,22 +1098,12 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1274,7 +1185,7 @@
               <attributes>
                 <source-highlighter>prettify</source-highlighter>
                 <imagesoutdir>${project.build.directory}/site/images</imagesoutdir>
-                <!--pom-adoc>${project.build.directory}/pom.adoc</pom-adoc-->
+                <pom-adoc>${project.build.directory}/pom.adoc</pom-adoc>
               </attributes>
               <requires>
                 <require>asciidoctor-diagram</require>
@@ -1321,6 +1232,8 @@
             -->
             <detectLinks>false</detectLinks>
             <validateLinks>false</validateLinks>
+            <failOnWarnings>false</failOnWarnings>
+            <failOnError>false</failOnError>
           </configuration>
         </plugin>
 
@@ -1367,7 +1280,9 @@
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <!-- Set the line separator to the unix style separator (Needed for reproducible builds -->
-            <arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments>
+            <!-- TODO: try to find out why antlr doesn't like the line.separator setting -->
+            <!--arguments>-Papache-release -Dline.separator='\n' ${arguments}</arguments-->
+            <arguments>-Papache-release ${arguments}</arguments>
           </configuration>
         </plugin>
       </plugins>
@@ -1815,6 +1730,7 @@
               <algorithms>
                 <algorithm>SHA-512</algorithm>
               </algorithms>
+              <includeRelativePath>true</includeRelativePath>
               <fileSets>
                 <fileSet>
                   <directory>${project.build.directory}</directory>
