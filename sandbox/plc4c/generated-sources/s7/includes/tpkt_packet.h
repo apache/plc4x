@@ -31,6 +31,9 @@ extern "C" {
 const uint8_t S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID = 0x03;
 
 struct plc4c_s7_read_write_tpkt_packet {
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
+  uint8_t protocol_id;
   plc4c_s7_read_write_cotp_packet* payload;
 };
 typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;

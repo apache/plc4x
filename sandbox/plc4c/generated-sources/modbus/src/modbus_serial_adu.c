@@ -29,12 +29,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_modbus_read_write_modbus_serial_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
+
 
   // Simple Field (transactionId)
   uint16_t transactionId = plc4c_spi_read_unsigned_int(buf, 16);
+  msg->transaction_id = transactionId;
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
@@ -46,13 +46,16 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (length)
   uint16_t length = plc4c_spi_read_unsigned_int(buf, 16);
+  msg->length = length;
 
   // Simple Field (address)
   uint8_t address = plc4c_spi_read_unsigned_short(buf, 8);
+  msg->address = address;
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
-  plc4c_modbus_read_write_modbus_pdu_parse(buf, response, &pdu);
+  plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
+  msg->pdu = pdu;
 
   return OK;
 }

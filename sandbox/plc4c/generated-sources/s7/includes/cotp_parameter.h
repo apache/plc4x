@@ -25,6 +25,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "cotp_tpdu_size.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_cotp_parameter_discriminator {
@@ -45,7 +46,26 @@ typedef enum plc4c_s7_read_write_cotp_parameter_type plc4c_s7_read_write_cotp_pa
 plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_get_discriminator(plc4c_s7_read_write_cotp_parameter_type type);
 
 struct plc4c_s7_read_write_cotp_parameter {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_cotp_parameter_type _type;
+  /* Properties */
+  union {
+    struct { /* COTPParameterTpduSize */
+      plc4c_s7_read_write_cotp_tpdu_size* cotp_parameter_tpdu_size_tpdu_size;
+    };
+    struct { /* COTPParameterCallingTsap */
+      uint16_t cotp_parameter_calling_tsap_tsap_id;
+    };
+    struct { /* COTPParameterCalledTsap */
+      uint16_t cotp_parameter_called_tsap_tsap_id;
+    };
+    struct { /* COTPParameterChecksum */
+      uint8_t cotp_parameter_checksum_crc;
+    };
+    struct { /* COTPParameterDisconnectAdditionalInformation */
+      plc4c_list cotp_parameter_disconnect_additional_information_data;
+    };
+  };
 };
 typedef struct plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter;
 

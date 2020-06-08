@@ -132,6 +132,10 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
             // Extract the output path from the first line of the generated content
             String outputFileName = input.readLine();
+            // If there is no outputFileName, this file should be skipped.
+            if(outputFileName == null) {
+                return;
+            }
             File outputFile = new File(outputDir, outputFileName);
 
             // Create any missing directories

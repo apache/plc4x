@@ -21,7 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_address_any.h"
 #include "s7_address.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -43,16 +42,30 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_address* msg = malloc(sizeof(plc4c_s7_read_write_s7_address));
 
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(addressType == 0x10) {
-    plc4c_s7_read_write_s7_address_any_parse(buf, &msg);
+  if(addressType == 0x10) { /* S7AddressAny */
+    plc4c_s7_read_write_transport_size* transportSize = NULL;
+    msg->s7_address_any_transport_size = transportSize;
+
+    uint16_t numberOfElements = -1;
+    msg->s7_address_any_number_of_elements = numberOfElements;
+
+    uint16_t dbNumber = -1;
+    msg->s7_address_any_db_number = dbNumber;
+
+    plc4c_s7_read_write_memory_area* area = NULL;
+    msg->s7_address_any_area = area;
+
+    uint16_t byteAddress = -1;
+    msg->s7_address_any_byte_address = byteAddress;
+
+    unsigned int bitAddress = -1;
+    msg->s7_address_any_bit_address = bitAddress;
   }
 
   return OK;

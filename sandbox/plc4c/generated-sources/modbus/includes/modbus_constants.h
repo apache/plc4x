@@ -30,6 +30,9 @@ extern "C" {
 const uint16_t MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT = 502;
 
 struct plc4c_modbus_read_write_modbus_constants {
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
+  uint16_t modbus_tcp_default_port;
 };
 typedef struct plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants;
 

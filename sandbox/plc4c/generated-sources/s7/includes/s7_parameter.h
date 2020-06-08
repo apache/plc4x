@@ -25,6 +25,8 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_parameter_user_data_item.h"
+#include "s7_var_request_parameter_item.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_parameter_discriminator {
@@ -47,7 +49,31 @@ typedef enum plc4c_s7_read_write_s7_parameter_type plc4c_s7_read_write_s7_parame
 plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_get_discriminator(plc4c_s7_read_write_s7_parameter_type type);
 
 struct plc4c_s7_read_write_s7_parameter {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_s7_parameter_type _type;
+  /* Properties */
+  union {
+    struct { /* S7ParameterSetupCommunication */
+      uint16_t s7_parameter_setup_communication_max_amq_caller;
+      uint16_t s7_parameter_setup_communication_max_amq_callee;
+      uint16_t s7_parameter_setup_communication_pdu_length;
+    };
+    struct { /* S7ParameterReadVarRequest */
+      plc4c_list* s7_parameter_read_var_request_items;
+    };
+    struct { /* S7ParameterReadVarResponse */
+      uint8_t s7_parameter_read_var_response_num_items;
+    };
+    struct { /* S7ParameterWriteVarRequest */
+      plc4c_list* s7_parameter_write_var_request_items;
+    };
+    struct { /* S7ParameterWriteVarResponse */
+      uint8_t s7_parameter_write_var_response_num_items;
+    };
+    struct { /* S7ParameterUserData */
+      plc4c_list* s7_parameter_user_data_items;
+    };
+  };
 };
 typedef struct plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter;
 

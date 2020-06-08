@@ -29,9 +29,8 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_tpkt_packet* msg = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
@@ -53,7 +52,8 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Simple Field (payload)
   plc4c_s7_read_write_cotp_packet* payload = NULL;
-  plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), &payload);
+  plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), (void*) &payload);
+  msg->payload = payload;
 
   return OK;
 }

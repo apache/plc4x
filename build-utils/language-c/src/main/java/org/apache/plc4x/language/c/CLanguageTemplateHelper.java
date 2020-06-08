@@ -78,6 +78,25 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
     }
 
+    public boolean isSwitchField(Field field) {
+        return field instanceof SwitchField;
+    }
+
+    public boolean isEnumField(Field field) {
+        return field instanceof EnumField;
+    }
+
+    /**
+     * Modified version returning all the normal property fields, but also the typeSwitch fields
+     * As we need to generate the union structs for these.
+     *
+     * @return list of property fields as well as typeSwitch fields.
+     */
+    public Collection<Field> getFields() {
+        return ((ComplexTypeDefinition) thisType).getFields().stream().filter(
+            field -> (field instanceof PropertyField) || (field instanceof SwitchField)).collect(Collectors.toList());
+    }
+
     private SwitchField getSwitchField() {
         return getSwitchField(thisType);
     }
@@ -101,16 +120,28 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
     }
 
     public Collection<ComplexTypeReference> getComplexTypeReferencesInFields() {
-        List<ComplexTypeReference> complexTypeReferences = new LinkedList<>();
-        if (thisType instanceof ComplexTypeDefinition) {
-            for (PropertyField propertyField : ((ComplexTypeDefinition) thisType).getAllPropertyFields()) {
-                if (propertyField.getType() instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                    complexTypeReferences.add(complexTypeReference);
+        return getComplexTypeReferencesInFields(thisType);
+    }
+
+    public Collection<ComplexTypeReference> getComplexTypeReferencesInFields(TypeDefinition baseType) {
+        Set<ComplexTypeReference> complexTypeReferences = new HashSet<>();
+        if (baseType instanceof ComplexTypeDefinition) {
+            for (Field field : ((ComplexTypeDefinition) baseType).getFields()) {
+                if(field instanceof PropertyField) {
+                    PropertyField propertyField = (PropertyField) field;
+                    if (propertyField.getType() instanceof ComplexTypeReference) {
+                        ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
+                        complexTypeReferences.add(complexTypeReference);
+                    }
+                } else if(field instanceof SwitchField) {
+                    SwitchField switchField = (SwitchField) field;
+                    for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
+                        complexTypeReferences.addAll(getComplexTypeReferencesInFields(switchCase));
+                    }
                 }
             }
-        } else if (thisType instanceof EnumTypeDefinition) {
-            for (String constantName : ((EnumTypeDefinition) thisType).getConstantNames()) {
+        } else if (baseType instanceof EnumTypeDefinition) {
+            for (String constantName : ((EnumTypeDefinition) baseType).getConstantNames()) {
                 final TypeReference constantType = ((EnumTypeDefinition) thisType).getConstantType(constantName);
                 if (constantType instanceof ComplexTypeReference) {
                     ComplexTypeReference complexTypeReference = (ComplexTypeReference) constantType;
@@ -884,21 +915,16 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         for (ComplexTypeReference complexTypeReferencesInField : getComplexTypeReferencesInFields()) {
             imports.add(camelCaseToSnakeCase(complexTypeReferencesInField.getName()));
         }
-        // If this is a discriminated tpye, add an import to the parent type.
+        // If this is a discriminated type, add an import to the parent type.
         if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            DiscriminatedComplexTypeDefinition dicriminatedType = (DiscriminatedComplexTypeDefinition) thisType;
-            imports.add(camelCaseToSnakeCase(dicriminatedType.getParentType().getName()));
+            DiscriminatedComplexTypeDefinition discriminatedType = (DiscriminatedComplexTypeDefinition) thisType;
+            imports.add(camelCaseToSnakeCase(discriminatedType.getParentType().getName()));
         }
         return imports;
     }
 
     public Collection<String> getIncludeTypesForCFiles() {
         List<String> imports = new LinkedList<>();
-        SwitchField switchField = getSwitchField();
-        if (switchField != null) {
-            imports.addAll(switchField.getCases().stream().map(
-                sc -> camelCaseToSnakeCase(sc.getName())).collect(Collectors.toList()));
-        }
         // Add a reference to the current types header file itself.
         imports.add(camelCaseToSnakeCase(thisType.getName()));
         return imports;
@@ -936,7 +962,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             // Check if this segment is referring to an argument.
             final Optional<Argument> argument = Arrays.stream(parentType.getParserArguments()).filter(
                 curArgument -> curArgument.getName().equals(fieldName)).findFirst();
-            if(argument.isPresent()) {
+            if (argument.isPresent()) {
                 type = Optional.of(argument.get().getType());
             }
         }
@@ -945,10 +971,10 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         // found in this level, get that type's definition and continue from there.
         if (type.isPresent() && (rest != null)) {
             TypeReference typeReference = type.get();
-            if(typeReference instanceof ComplexTypeReference) {
+            if (typeReference instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
                 final TypeDefinition typeDefinition = this.types.get(complexTypeReference.getName());
-                if(typeDefinition instanceof ComplexTypeDefinition) {
+                if (typeDefinition instanceof ComplexTypeDefinition) {
                     return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, rest);
                 }
             }
@@ -1000,10 +1026,10 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             Map<String, Map<String, String>> discriminatorTypes = new TreeMap<>();
             for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
                 discriminatorTypes.put(switchCase.getName(), new TreeMap<>());
-                for(int i = 0; i < discriminatorNames.length; i++) {
+                for (int i = 0; i < discriminatorNames.length; i++) {
                     String discriminatorName = discriminatorNames[i];
                     String discriminatorValue;
-                    if(i < switchCase.getDiscriminatorValues().length) {
+                    if (i < switchCase.getDiscriminatorValues().length) {
                         discriminatorValue = switchCase.getDiscriminatorValues()[i];
                     } else {
                         discriminatorValue = null;

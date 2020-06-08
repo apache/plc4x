@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.setConstants(type, protocolName, outputFlavor)}${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
+<#if !helper.isDiscriminatedType(type)>${helper.setConstants(type, protocolName, outputFlavor)}${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -74,10 +74,9 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
+  plc4c_${helper.getCTypeName(type.name)}* msg = malloc(sizeof(plc4c_${helper.getCTypeName(type.name)}));
 <#if type.getPropertyFields()?has_content>
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)(<#list type.getPropertyFields() as field>${helper.getLanguageTypeNameForField(field)}<#sep >, </#list>) = NULL;
+
 </#if>
 <#list type.fields as field>
     <#switch field.typeName>
@@ -109,6 +108,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 
   // Enum field (${field.name})
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))?no_esc};
+  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
             <#break>
         <#case "discriminator">
 
@@ -124,6 +124,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 
   // Manual Field (${field.name})
   ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
         <#break>
         <#case "optional">
 
@@ -136,8 +137,10 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
         <#if helper.isSimpleType(field.type)>
     ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
         <#else>
+    plc4c_${helper.getCTypeName(field.type.name)}* ${field.name} = NULL;
     plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
         </#if>
+    msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
   }
             <#break>
         <#case "padding">
@@ -168,15 +171,21 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
   ${helper.getLanguageTypeNameForField(field)}* ${field.name} = NULL;
-  plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
+  plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${field.name});
             </#if>
+  msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
             <#break>
         <#case "switch">
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
             <#list field.cases as case>
-  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{
-    plc4c_${helper.getCTypeName(case.name)}_parse(buf<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, &msg);
+  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+                <#list case.propertyFields as caseField>
+    ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleType(caseField.type)>*</#if> ${caseField.name}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if><#if helper.getLanguageTypeNameForField(caseField) == "plc4c_list"><#elseif !helper.isSimpleType(caseField.type)> = NULL<#else> = -1</#if>;
+    msg->${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)} = ${caseField.name};
+                    <#sep >
+
+                </#list>
   }<#sep> else </#sep>
             </#list>
             <#break>
@@ -194,3 +203,4 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message) {
   return OK;
 }
+</#if>

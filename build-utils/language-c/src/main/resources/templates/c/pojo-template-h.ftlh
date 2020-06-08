@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.setConstants(type, protocolName, outputFlavor)}${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+<#if !helper.isDiscriminatedType(type)>${helper.setConstants(type, protocolName, outputFlavor)}${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -81,16 +81,6 @@ typedef enum plc4c_${helper.getCTypeName(type.name)}_type plc4c_${helper.getCTyp
 // Function to get the discriminator values for a given type.
 plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_get_discriminator(plc4c_${helper.getCTypeName(type.name)}_type type);
 </#if>
-<#--#if helper.isDiscriminatedType(type)>
-
-// Discriminator values used by the parser to determine the type to be used. All values have to apply.
-const void*[] DISCRIMINATOR_VALUES = {
-    <#list type.discriminatorValues as discriminatorValue>
-    <#- There are rare occasions where the discriminator is defined by a parser argument, in this case we currently can't detect the type ->
-  (${helper.getDiscriminatorConstantType(type, discriminatorValue?index)}) ${discriminatorValue}<#sep>, </#sep>
-    </#list>
-};
-</#if-->
 <#--
     When using const fields, output the constant reference values
     as global const values so we can use them elsewhere.
@@ -107,14 +97,27 @@ const ${helper.getLanguageTypeNameForField(field)} ${helper.getCTypeName(type.na
     Create the general data-structure for this type
 -->
 struct plc4c_${helper.getCTypeName(type.name)} {
+  /* This is an abstract type so this property saves the type of this typed union */
 <#if helper.isAbstractType(type)>
   plc4c_${helper.getCTypeName(type.name)}_type _type;
 </#if>
-<#if helper.isDiscriminatedType(type)>
-  plc4c_${helper.getCTypeName(type.parentType.name)}_type _type;
-</#if>
-<#list type.allPropertyFields as field>
+  /* Properties */
+<#list helper.getFields() as field>
+    <#if helper.isSwitchField(field)>
+  union {
+        <#list field.cases as case>
+    struct { /* ${case.name} */
+            <#list case.propertyFields as caseField>
+      ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleType(caseField.type)>*</#if> ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
+            </#list>
+    };
+        </#list>
+  };
+    <#elseif helper.isEnumField(field)>
+  ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)};
+    <#else>
   ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleType(field.type)>*</#if> ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
+    </#if>
 </#list>
 };
 typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
@@ -133,3 +136,4 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_wr
 }
 #endif
 #endif  // PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
+</#if>

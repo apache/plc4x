@@ -29,9 +29,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_modbus_read_write_modbus_constants* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_constants));
 
   // Const Field (modbusTcpDefaultPort)
   uint16_t modbusTcpDefaultPort = plc4c_spi_read_unsigned_int(buf, 16);

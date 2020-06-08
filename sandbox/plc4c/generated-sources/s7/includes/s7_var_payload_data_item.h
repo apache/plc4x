@@ -29,8 +29,10 @@ extern "C" {
 #include "data_transport_size.h"
 
 struct plc4c_s7_read_write_s7_var_payload_data_item {
-  plc4c_s7_read_write_data_transport_error_code* return_code;
-  plc4c_s7_read_write_data_transport_size* transport_size;
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
+  plc4c_s7_read_write_data_transport_error_code return_code;
+  plc4c_s7_read_write_data_transport_size transport_size;
   uint16_t data_length;
   plc4c_list data;
 };

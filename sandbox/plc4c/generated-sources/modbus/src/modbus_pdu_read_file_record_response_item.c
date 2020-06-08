@@ -29,15 +29,15 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
+
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t dataLength = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
+  msg->reference_type = referenceType;
 
   return OK;
 }

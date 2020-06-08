@@ -21,7 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_var_request_parameter_item_address.h"
 #include "s7_var_request_parameter_item.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -43,16 +42,15 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_var_request_parameter_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(itemType == 0x12) {
-    plc4c_s7_read_write_s7_var_request_parameter_item_address_parse(buf, &msg);
+  if(itemType == 0x12) { /* S7VarRequestParameterItemAddress */
+    plc4c_s7_read_write_s7_address* address = NULL;
+    msg->s7_var_request_parameter_item_address_address = address;
   }
 
   return OK;

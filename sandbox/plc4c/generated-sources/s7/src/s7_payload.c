@@ -21,10 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_payload_read_var_response.h"
-#include "s7_payload_write_var_request.h"
-#include "s7_payload_write_var_response.h"
-#include "s7_payload_user_data.h"
 #include "s7_payload.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -52,22 +48,24 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_payload* msg = malloc(sizeof(plc4c_s7_read_write_s7_payload));
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if((parameter.getParameterType() == 0x04) && (messageType == 0x03)) {
-    plc4c_s7_read_write_s7_payload_read_var_response_parse(buf, messageType, parameter, &msg);
+  if((parameter.getParameterType() == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
+    plc4c_list* items;
+    msg->s7_payload_read_var_response_items = items;
   } else 
-  if((parameter.getParameterType() == 0x05) && (messageType == 0x01)) {
-    plc4c_s7_read_write_s7_payload_write_var_request_parse(buf, messageType, parameter, &msg);
+  if((parameter.getParameterType() == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
+    plc4c_list* items;
+    msg->s7_payload_write_var_request_items = items;
   } else 
-  if((parameter.getParameterType() == 0x05) && (messageType == 0x03)) {
-    plc4c_s7_read_write_s7_payload_write_var_response_parse(buf, messageType, parameter, &msg);
+  if((parameter.getParameterType() == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
+    plc4c_list* items;
+    msg->s7_payload_write_var_response_items = items;
   } else 
-  if((parameter.getParameterType() == 0x00) && (messageType == 0x07)) {
-    plc4c_s7_read_write_s7_payload_user_data_parse(buf, messageType, parameter, &msg);
+  if((parameter.getParameterType() == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
+    plc4c_list* items;
+    msg->s7_payload_user_data_items = items;
   }
 
   return OK;

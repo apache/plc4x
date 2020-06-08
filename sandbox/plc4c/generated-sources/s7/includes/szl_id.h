@@ -29,9 +29,11 @@ extern "C" {
 #include "szl_sublist.h"
 
 struct plc4c_s7_read_write_szl_id {
-  plc4c_s7_read_write_szl_module_type_class* type_class;
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
+  plc4c_s7_read_write_szl_module_type_class type_class;
   unsigned int sublist_extract : 4;
-  plc4c_s7_read_write_szl_sublist* sublist_list;
+  plc4c_s7_read_write_szl_sublist sublist_list;
 };
 typedef struct plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id;
 

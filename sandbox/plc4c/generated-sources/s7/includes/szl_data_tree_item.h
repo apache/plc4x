@@ -27,6 +27,8 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_szl_data_tree_item {
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
   uint16_t item_index;
   int8_t mlfb[20];
   uint16_t module_type_id;

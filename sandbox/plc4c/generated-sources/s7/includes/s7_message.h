@@ -49,8 +49,25 @@ plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_
 const uint8_t S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;
 
 struct plc4c_s7_read_write_s7_message {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_s7_message_type _type;
+  /* Properties */
+  uint8_t protocol_id;
   uint16_t tpdu_reference;
+  union {
+    struct { /* S7MessageRequest */
+    };
+    struct { /* S7MessageResponse */
+      uint8_t s7_message_response_error_class;
+      uint8_t s7_message_response_error_code;
+    };
+    struct { /* S7MessageResponseData */
+      uint8_t s7_message_response_data_error_class;
+      uint8_t s7_message_response_data_error_code;
+    };
+    struct { /* S7MessageUserData */
+    };
+  };
   plc4c_s7_read_write_s7_parameter* parameter;
   plc4c_s7_read_write_s7_payload* payload;
 };

@@ -21,10 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_message_request.h"
-#include "s7_message_response.h"
-#include "s7_message_response_data.h"
-#include "s7_message_user_data.h"
 #include "s7_message.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -52,9 +48,8 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_message* msg = malloc(sizeof(plc4c_s7_read_write_s7_message));
+
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
@@ -76,6 +71,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
 
   // Simple Field (tpduReference)
   uint16_t tpduReference = plc4c_spi_read_unsigned_int(buf, 16);
+  msg->tpdu_reference = tpduReference;
 
   // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t parameterLength = plc4c_spi_read_unsigned_int(buf, 16);
@@ -84,29 +80,39 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   uint16_t payloadLength = plc4c_spi_read_unsigned_int(buf, 16);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(messageType == 0x01) {
-    plc4c_s7_read_write_s7_message_request_parse(buf, &msg);
+  if(messageType == 0x01) { /* S7MessageRequest */
   } else 
-  if(messageType == 0x02) {
-    plc4c_s7_read_write_s7_message_response_parse(buf, &msg);
+  if(messageType == 0x02) { /* S7MessageResponse */
+    uint8_t errorClass = -1;
+    msg->s7_message_response_error_class = errorClass;
+
+    uint8_t errorCode = -1;
+    msg->s7_message_response_error_code = errorCode;
   } else 
-  if(messageType == 0x03) {
-    plc4c_s7_read_write_s7_message_response_data_parse(buf, &msg);
+  if(messageType == 0x03) { /* S7MessageResponseData */
+    uint8_t errorClass = -1;
+    msg->s7_message_response_data_error_class = errorClass;
+
+    uint8_t errorCode = -1;
+    msg->s7_message_response_data_error_code = errorCode;
   } else 
-  if(messageType == 0x07) {
-    plc4c_s7_read_write_s7_message_user_data_parse(buf, &msg);
+  if(messageType == 0x07) { /* S7MessageUserData */
   }
 
   // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_parameter* parameter = NULL;
   if((parameterLength) > (0)) {
+    plc4c_s7_read_write_s7_parameter* parameter = NULL;
     plc4c_s7_read_write_s7_parameter_parse(buf, messageType, &parameter);
+    msg->parameter = parameter;
   }
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
   if((payloadLength) > (0)) {
+    plc4c_s7_read_write_s7_payload* payload = NULL;
     plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
+    msg->payload = payload;
   }
 
   return OK;

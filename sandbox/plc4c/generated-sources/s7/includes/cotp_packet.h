@@ -26,6 +26,7 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 #include "cotp_parameter.h"
+#include "cotp_protocol_class.h"
 #include "s7_message.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
@@ -48,7 +49,38 @@ typedef enum plc4c_s7_read_write_cotp_packet_type plc4c_s7_read_write_cotp_packe
 plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_get_discriminator(plc4c_s7_read_write_cotp_packet_type type);
 
 struct plc4c_s7_read_write_cotp_packet {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_cotp_packet_type _type;
+  /* Properties */
+  union {
+    struct { /* COTPPacketData */
+      bool cotp_packet_data_eot : 1;
+      unsigned int cotp_packet_data_tpdu_ref : 7;
+    };
+    struct { /* COTPPacketConnectionRequest */
+      uint16_t cotp_packet_connection_request_destination_reference;
+      uint16_t cotp_packet_connection_request_source_reference;
+      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_connection_request_protocol_class;
+    };
+    struct { /* COTPPacketConnectionResponse */
+      uint16_t cotp_packet_connection_response_destination_reference;
+      uint16_t cotp_packet_connection_response_source_reference;
+      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_connection_response_protocol_class;
+    };
+    struct { /* COTPPacketDisconnectRequest */
+      uint16_t cotp_packet_disconnect_request_destination_reference;
+      uint16_t cotp_packet_disconnect_request_source_reference;
+      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_disconnect_request_protocol_class;
+    };
+    struct { /* COTPPacketDisconnectResponse */
+      uint16_t cotp_packet_disconnect_response_destination_reference;
+      uint16_t cotp_packet_disconnect_response_source_reference;
+    };
+    struct { /* COTPPacketTpduError */
+      uint16_t cotp_packet_tpdu_error_destination_reference;
+      uint8_t cotp_packet_tpdu_error_reject_cause;
+    };
+  };
   plc4c_list* parameters;
   plc4c_s7_read_write_s7_message* payload;
 };

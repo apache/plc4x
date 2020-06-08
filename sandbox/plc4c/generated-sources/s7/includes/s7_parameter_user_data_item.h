@@ -41,7 +41,21 @@ typedef enum plc4c_s7_read_write_s7_parameter_user_data_item_type plc4c_s7_read_
 plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(plc4c_s7_read_write_s7_parameter_user_data_item_type type);
 
 struct plc4c_s7_read_write_s7_parameter_user_data_item {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_s7_parameter_user_data_item_type _type;
+  /* Properties */
+  union {
+    struct { /* S7ParameterUserDataItemCPUFunctions */
+      uint8_t s7_parameter_user_data_item_cpu_functions_method;
+      unsigned int s7_parameter_user_data_item_cpu_functions_cpu_function_type : 4;
+      unsigned int s7_parameter_user_data_item_cpu_functions_cpu_function_group : 4;
+      uint8_t s7_parameter_user_data_item_cpu_functions_cpu_subfunction;
+      uint8_t s7_parameter_user_data_item_cpu_functions_sequence_number;
+      uint8_t s7_parameter_user_data_item_cpu_functions_data_unit_reference_number;
+      uint8_t s7_parameter_user_data_item_cpu_functions_last_data_unit;
+      uint16_t s7_parameter_user_data_item_cpu_functions_error_code;
+    };
+  };
 };
 typedef struct plc4c_s7_read_write_s7_parameter_user_data_item plc4c_s7_read_write_s7_parameter_user_data_item;
 

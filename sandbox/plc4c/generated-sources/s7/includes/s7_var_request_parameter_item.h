@@ -25,6 +25,7 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "s7_address.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_var_request_parameter_item_discriminator {
@@ -41,7 +42,14 @@ typedef enum plc4c_s7_read_write_s7_var_request_parameter_item_type plc4c_s7_rea
 plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(plc4c_s7_read_write_s7_var_request_parameter_item_type type);
 
 struct plc4c_s7_read_write_s7_var_request_parameter_item {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_s7_var_request_parameter_item_type _type;
+  /* Properties */
+  union {
+    struct { /* S7VarRequestParameterItemAddress */
+      plc4c_s7_read_write_s7_address* s7_var_request_parameter_item_address_address;
+    };
+  };
 };
 typedef struct plc4c_s7_read_write_s7_var_request_parameter_item plc4c_s7_read_write_s7_var_request_parameter_item;
 

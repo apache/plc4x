@@ -28,6 +28,8 @@ extern "C" {
 #include "modbus_pdu.h"
 
 struct plc4c_modbus_read_write_modbus_serial_adu {
+  /* This is an abstract type so this property saves the type of this typed union */
+  /* Properties */
   uint16_t transaction_id;
   uint16_t length;
   uint8_t address;

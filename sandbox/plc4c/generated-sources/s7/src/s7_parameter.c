@@ -21,12 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_parameter_setup_communication.h"
-#include "s7_parameter_read_var_request.h"
-#include "s7_parameter_read_var_response.h"
-#include "s7_parameter_write_var_request.h"
-#include "s7_parameter_write_var_response.h"
-#include "s7_parameter_user_data.h"
 #include "s7_parameter.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -58,31 +52,41 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(parameterType == 0xF0) {
-    plc4c_s7_read_write_s7_parameter_setup_communication_parse(buf, messageType, &msg);
+  if(parameterType == 0xF0) { /* S7ParameterSetupCommunication */
+    uint16_t maxAmqCaller = -1;
+    msg->s7_parameter_setup_communication_max_amq_caller = maxAmqCaller;
+
+    uint16_t maxAmqCallee = -1;
+    msg->s7_parameter_setup_communication_max_amq_callee = maxAmqCallee;
+
+    uint16_t pduLength = -1;
+    msg->s7_parameter_setup_communication_pdu_length = pduLength;
   } else 
-  if((parameterType == 0x04) && (messageType == 0x01)) {
-    plc4c_s7_read_write_s7_parameter_read_var_request_parse(buf, messageType, &msg);
+  if((parameterType == 0x04) && (messageType == 0x01)) { /* S7ParameterReadVarRequest */
+    plc4c_list* items;
+    msg->s7_parameter_read_var_request_items = items;
   } else 
-  if((parameterType == 0x04) && (messageType == 0x03)) {
-    plc4c_s7_read_write_s7_parameter_read_var_response_parse(buf, messageType, &msg);
+  if((parameterType == 0x04) && (messageType == 0x03)) { /* S7ParameterReadVarResponse */
+    uint8_t numItems = -1;
+    msg->s7_parameter_read_var_response_num_items = numItems;
   } else 
-  if((parameterType == 0x05) && (messageType == 0x01)) {
-    plc4c_s7_read_write_s7_parameter_write_var_request_parse(buf, messageType, &msg);
+  if((parameterType == 0x05) && (messageType == 0x01)) { /* S7ParameterWriteVarRequest */
+    plc4c_list* items;
+    msg->s7_parameter_write_var_request_items = items;
   } else 
-  if((parameterType == 0x05) && (messageType == 0x03)) {
-    plc4c_s7_read_write_s7_parameter_write_var_response_parse(buf, messageType, &msg);
+  if((parameterType == 0x05) && (messageType == 0x03)) { /* S7ParameterWriteVarResponse */
+    uint8_t numItems = -1;
+    msg->s7_parameter_write_var_response_num_items = numItems;
   } else 
-  if((parameterType == 0x00) && (messageType == 0x07)) {
-    plc4c_s7_read_write_s7_parameter_user_data_parse(buf, messageType, &msg);
+  if((parameterType == 0x00) && (messageType == 0x07)) { /* S7ParameterUserData */
+    plc4c_list* items;
+    msg->s7_parameter_user_data_items = items;
   }
 
   return OK;

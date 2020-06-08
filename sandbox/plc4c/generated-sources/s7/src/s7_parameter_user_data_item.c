@@ -21,7 +21,6 @@
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
-#include "s7_parameter_user_data_item_cpu_functions.h"
 #include "s7_parameter_user_data_item.h"
 
 // Array of discriminator values that match the enum type constants.
@@ -43,16 +42,36 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
   uint16_t curPos;
 
   // Pointer to the parsed datastructure.
-  void* msg = NULL;
-  // Factory function that allows filling the properties of this type
-  void (*factory_ptr)()
+  plc4c_s7_read_write_s7_parameter_user_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter_user_data_item));
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if(itemType == 0x12) {
-    plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions_parse(buf, &msg);
+  if(itemType == 0x12) { /* S7ParameterUserDataItemCPUFunctions */
+    uint8_t method = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_method = method;
+
+    unsigned int cpuFunctionType = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_cpu_function_type = cpuFunctionType;
+
+    unsigned int cpuFunctionGroup = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_cpu_function_group = cpuFunctionGroup;
+
+    uint8_t cpuSubfunction = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_cpu_subfunction = cpuSubfunction;
+
+    uint8_t sequenceNumber = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_sequence_number = sequenceNumber;
+
+    uint8_t dataUnitReferenceNumber = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number = dataUnitReferenceNumber;
+
+    uint8_t lastDataUnit = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_last_data_unit = lastDataUnit;
+
+    uint16_t errorCode = -1;
+    msg->s7_parameter_user_data_item_cpu_functions_error_code = errorCode;
   }
 
   return OK;

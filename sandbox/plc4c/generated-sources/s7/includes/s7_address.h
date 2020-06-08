@@ -25,6 +25,8 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "memory_area.h"
+#include "transport_size.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_address_discriminator {
@@ -41,7 +43,19 @@ typedef enum plc4c_s7_read_write_s7_address_type plc4c_s7_read_write_s7_address_
 plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_get_discriminator(plc4c_s7_read_write_s7_address_type type);
 
 struct plc4c_s7_read_write_s7_address {
+  /* This is an abstract type so this property saves the type of this typed union */
   plc4c_s7_read_write_s7_address_type _type;
+  /* Properties */
+  union {
+    struct { /* S7AddressAny */
+      plc4c_s7_read_write_transport_size* s7_address_any_transport_size;
+      uint16_t s7_address_any_number_of_elements;
+      uint16_t s7_address_any_db_number;
+      plc4c_s7_read_write_memory_area* s7_address_any_area;
+      uint16_t s7_address_any_byte_address;
+      unsigned int s7_address_any_bit_address : 3;
+    };
+  };
 };
 typedef struct plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address;
 
