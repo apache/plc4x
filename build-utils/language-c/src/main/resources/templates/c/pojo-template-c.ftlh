@@ -73,7 +73,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_${helper.getCTypeName(type.name)}* msg = malloc(sizeof(plc4c_${helper.getCTypeName(type.name)}));
 <#if type.getPropertyFields()?has_content>
 
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
     // Create an array of all the bytes read in this message element so far.
     byte[] checksumRawData = plc4c_spi_read_get_bytes(buf, startPos, plc4c_spi_read_get_pos(buf));
     ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-    ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.checksumExpression, type.parserArguments)});
+    ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.checksumExpression, type.parserArguments)});
     if(${field.name} != _${field.name}Ref) {
       return PARSE_ERROR;
       // throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
@@ -123,7 +123,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
         <#case "manual">
 
   // Manual Field (${field.name})
-  ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+  ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.parseExpression, type.parserArguments)});
   msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
         <#break>
         <#case "optional">
@@ -133,12 +133,12 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   curPos = plc4c_spi_read_get_pos(buf) - startPos;
             </#if>
   ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleType(field.type)>*</#if> ${field.name} = <#if !helper.isSimpleType(field.type)>NULL<#else>0</#if>;
-  if(${helper.toParseExpression(field, field.conditionExpression, type.parserArguments)?no_esc}) {
+  if(${helper.toParseExpression(field.conditionExpression, type.parserArguments)?no_esc}) {
         <#if helper.isSimpleType(field.type)>
     ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
         <#else>
     plc4c_${helper.getCTypeName(field.type.name)}* ${field.name} = NULL;
-    plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
+    plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, &${field.name});
         </#if>
     msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
   }
@@ -146,7 +146,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
         <#case "padding">
 
   // Padding Field (${field.name})
-  bool _${field.name}NeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, ${helper.getNumBits(field.type)})) && (${helper.toParseExpression(field, field.paddingCondition, type.parserArguments)?no_esc}));
+  bool _${field.name}NeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, ${helper.getNumBits(field.type)})) && (${helper.toParseExpression(field.paddingCondition, type.parserArguments)?no_esc}));
   if(_${field.name}NeedsPadding) {
     // Just read the padding data and ignore it
     ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
@@ -171,7 +171,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
   ${helper.getLanguageTypeNameForField(field)}* ${field.name} = NULL;
-  plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${field.name});
+  plc4c_${helper.getCTypeName(field.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${field.name});
             </#if>
   msg->${helper.camelCaseToSnakeCase(field.name)} = ${field.name};
             <#break>
@@ -179,7 +179,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
             <#list field.cases as case>
-  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(field.discriminatorExpressions[discriminatorValue?index], type.parserArguments)?no_esc}<#--${helper.toVariableParseExpressionHurz(field)}--> == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
                 <#list case.propertyFields as caseField>
     ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleType(caseField.type)>*</#if> ${caseField.name}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if><#if helper.getLanguageTypeNameForField(caseField) == "plc4c_list"><#elseif !helper.isSimpleType(caseField.type)> = NULL<#else> = -1</#if>;
     msg->${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)} = ${caseField.name};
@@ -192,7 +192,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
         <#case "virtual">
 
   // Virtual field (Just declare a local variable so we can access it in the parser)
-  ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+  ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field.valueExpression, type.parserArguments)});
             <#break>
     </#switch>
 </#list>

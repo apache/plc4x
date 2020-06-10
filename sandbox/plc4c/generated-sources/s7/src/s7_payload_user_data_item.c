@@ -43,7 +43,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_payload_user_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
 
 

@@ -311,11 +311,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void enterTypeSwitchField(MSpecParser.TypeSwitchFieldContext ctx) {
         int numDiscriminators = ctx.discriminators.expression().size();
-        String[] discriminatorNames = new String[numDiscriminators];
+        Term[] discriminatorExpressions = new Term[numDiscriminators];
         for (int i = 0; i < numDiscriminators; i++) {
-            discriminatorNames[i] = ctx.discriminators.expression().get(i).expr.getText();
+            discriminatorExpressions[i] = getExpressionTerm(ctx.discriminators.expression().get(i).expr.getText());
         }
-        DefaultSwitchField field = new DefaultSwitchField(discriminatorNames);
+        DefaultSwitchField field = new DefaultSwitchField(discriminatorExpressions);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }

@@ -28,7 +28,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_serial_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
 
 

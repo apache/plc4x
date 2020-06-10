@@ -28,7 +28,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_var_payload_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
 
 
@@ -45,7 +45,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   msg->data_length = dataLength;
 
   // Padding Field (pad)
-  bool _padNeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((COUNT(data)) % (2))) == (1)))));
+  bool _padNeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_utils_list_size(&data)) % (2))) == (1)))));
   if(_padNeedsPadding) {
     // Just read the padding data and ignore it
     plc4c_spi_read_unsigned_short(buf, 8);

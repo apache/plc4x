@@ -47,23 +47,23 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_payload* msg = malloc(sizeof(plc4c_s7_read_write_s7_payload));
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-  if((parameter.getParameterType() == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
+  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
     plc4c_list* items;
     msg->s7_payload_read_var_response_items = items;
   } else 
-  if((parameter.getParameterType() == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
+  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
     plc4c_list* items;
     msg->s7_payload_write_var_request_items = items;
   } else 
-  if((parameter.getParameterType() == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
+  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
     plc4c_list* items;
     msg->s7_payload_write_var_response_items = items;
   } else 
-  if((parameter.getParameterType() == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
+  if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
     plc4c_list* items;
     msg->s7_payload_user_data_items = items;
   }

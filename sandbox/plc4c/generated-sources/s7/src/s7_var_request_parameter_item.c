@@ -41,7 +41,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_var_request_parameter_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
 
   // Discriminator Field (itemType) (Used as input to a switch field)

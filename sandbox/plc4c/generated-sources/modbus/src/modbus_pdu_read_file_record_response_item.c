@@ -28,7 +28,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed datastructure.
+  // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
 
 

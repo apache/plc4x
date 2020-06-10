@@ -432,7 +432,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         final ComplexTypeDefinition parentType = (ComplexTypeDefinition) type.getParentType();
         final Optional<Field> typeSwitchField = parentType.getFields().stream().filter(field -> field instanceof SwitchField).findFirst();
         final SwitchField switchField = (SwitchField) typeSwitchField.get();
-        String fieldName = switchField.getDiscriminatorNames()[index];
+        /*erm discriminatorExpression = switchField.getDiscriminatorExpressions()[index];
         final Optional<Field> regularField = parentType.getFields().stream().filter(field ->
             ((field instanceof PropertyField) && ((PropertyField) field).getName().equals(fieldName)) ||
                 ((field instanceof ImplicitField) && ((ImplicitField) field).getName().equals(fieldName)) ||
@@ -450,7 +450,7 @@ public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHel
         final Optional<Argument> typeArgument = Arrays.stream(type.getParserArguments()).filter(argument -> fieldName.equals(argument.getName())).findFirst();
         if(typeArgument.isPresent()) {
             return getLanguageTypeName(typeArgument.get().getType(), true);
-        }
+        }*/
         return "Object";
     }
 

@@ -42,6 +42,33 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
     private String protocolName;
     private String flavorName;
 
+    private static Map<String, SimpleTypeReference> builtInFields;
+    {
+        builtInFields = new HashMap<>();
+        builtInFields.put("curPos", new SimpleTypeReference() {
+            @Override
+            public SimpleBaseType getBaseType() {
+                return SimpleBaseType.UINT;
+            }
+
+            @Override
+            public int getSizeInBits() {
+                return 16;
+            }
+        });
+        builtInFields.put("startPos", new SimpleTypeReference() {
+            @Override
+            public SimpleBaseType getBaseType() {
+                return SimpleBaseType.UINT;
+            }
+
+            @Override
+            public int getSizeInBits() {
+                return 16;
+            }
+        });
+    }
+
     public CLanguageTemplateHelper(Map<String, TypeDefinition> types) {
         this.types = types;
     }
@@ -514,29 +541,15 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return "Hurz";
     }
 
-    public String toSwitchExpression(String expression) {
-        StringBuilder sb = new StringBuilder();
-        Pattern pattern = Pattern.compile("([^\\.]*)\\.([a-zA-Z\\d]+)(.*)");
-        Matcher matcher;
-        while ((matcher = pattern.matcher(expression)).matches()) {
-            String prefix = matcher.group(1);
-            String middle = matcher.group(2);
-            sb.append(prefix).append(".get").append(WordUtils.capitalize(middle)).append("()");
-            expression = matcher.group(3);
-        }
-        sb.append(expression);
-        return sb.toString();
+    public String toParseExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableParseExpression(term1, parserArguments));
     }
 
-    public String toParseExpression(TypedField field, Term term, Argument[] parserArguments) {
-        return toExpression(field, term, term1 -> toVariableParseExpression(field, term1, parserArguments));
+    public String toSerializationExpression(Term term, Argument[] parserArguments) {
+        return toExpression(term, term1 -> toVariableSerializationExpression(term1, parserArguments));
     }
 
-    public String toSerializationExpression(TypedField field, Term term, Argument[] parserArguments) {
-        return toExpression(field, term, term1 -> toVariableSerializationExpression(field, term1, parserArguments));
-    }
-
-    private String toExpression(TypedField field, Term term, Function<Term, String> variableExpressionGenerator) {
+    private String toExpression(Term term, Function<Term, String> variableExpressionGenerator) {
         if (term == null) {
             return "";
         }
@@ -565,11 +578,11 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             Term a = ut.getA();
             switch (ut.getOperation()) {
                 case "!":
-                    return "!(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "!(" + toExpression(a, variableExpressionGenerator) + ")";
                 case "-":
-                    return "-(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "-(" + toExpression(a, variableExpressionGenerator) + ")";
                 case "()":
-                    return "(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(a, variableExpressionGenerator) + ")";
                 default:
                     throw new RuntimeException("Unsupported unary operation type " + ut.getOperation());
             }
@@ -580,9 +593,9 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             String operation = bt.getOperation();
             switch (operation) {
                 case "^":
-                    return "Math.pow((" + toExpression(field, a, variableExpressionGenerator) + "), (" + toExpression(field, b, variableExpressionGenerator) + "))";
+                    return "Math.pow((" + toExpression(a, variableExpressionGenerator) + "), (" + toExpression(b, variableExpressionGenerator) + "))";
                 default:
-                    return "(" + toExpression(field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, b, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
             }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
@@ -590,7 +603,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                return "((" + toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
+                return "((" + toExpression(a, variableExpressionGenerator) + ") ? " + toExpression(b, variableExpressionGenerator) + " : " + toExpression(c, variableExpressionGenerator) + ")";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -599,7 +612,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         }
     }
 
-    private String toVariableParseExpression(TypedField field, Term term, Argument[] parserArguments) {
+    public String toVariableParseExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         if ("CAST".equals(vl.getName())) {
@@ -607,9 +620,16 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
-            sb.append("(").append(toVariableParseExpression(field, vl.getArgs().get(0), parserArguments))
+            sb.append("(").append(toVariableParseExpression(vl.getArgs().get(0), parserArguments))
                 .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        } else if ("COUNT".equals(vl.getName())) {
+            StringBuilder sb = new StringBuilder();
+            if ((vl.getArgs() == null) || (vl.getArgs().size() != 1)) {
+                throw new RuntimeException("A COUNT expression expects exactly one argument.");
+            }
+            sb.append("plc4c_utils_list_size(&").append(((VariableLiteral) vl.getArgs().get(0)).getName()).append(")");
+            return sb.toString();
         } else if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
             if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
@@ -642,7 +662,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
                     }
                     // We have to manually evaluate the type information at code-generation time.
-                    else if (isTypeArg) {
+                    /*else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -658,8 +678,8 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
-                    } else {
-                        sb.append(toVariableParseExpression(field, va, null));
+                    }*/ else {
+                        sb.append(toVariableParseExpression(va, null));
                     }
                 } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -678,7 +698,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                     if (!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toParseExpression(field, arg, parserArguments));
+                    sb.append(toParseExpression(arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");
@@ -688,10 +708,90 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             }
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         }
+
+        final String name = vl.getName();
+
+        // Try to find the type of the addressed property.
+        final Optional<TypeReference> propertyTypeOptional = getTypeReference((ComplexTypeDefinition) thisType, name);
+
+        // If we couldn't find the type, we didn't find the property.
+        if(!propertyTypeOptional.isPresent()) {
+            throw new RuntimeException("Could not find property with name '" + name + "' in type " + thisType.getName());
+        }
+
+        final TypeReference propertyType = propertyTypeOptional.get();
+
+        // If it's a simple field, there is no sub-type to access.
+        if(propertyType instanceof SimpleTypeReference) {
+            if(vl.getChild() != null) {
+                throw new RuntimeException("Simple property '" + name + "' doesn't have child properties.");
+            }
+            return name;
+        }
+
+        // If it references a complex, type we need to get that type's definition first.
+        final TypeDefinition propertyTypeDefinition = types.get(((ComplexTypeReference) propertyType).getName());
+        // If we're not accessing any child property, no need to handle anything special.
+        if(vl.getChild() == null) {
+            return name;
+        }
+        // If there is a child we need to check if this is a discriminator property.
+        // As discriminator properties are not real properties, but saved in the static metadata
+        // of a type, we need to generate a different access pattern.
+        final Optional<DiscriminatorField> discriminatorFieldOptional = ((ComplexTypeDefinition) propertyTypeDefinition).getFields().stream().filter(
+            curField -> curField instanceof DiscriminatorField).map(curField -> (DiscriminatorField) curField).filter(
+            discriminatorField -> discriminatorField.getName().equals(vl.getChild().getName())).findFirst();
+        // If child references a discriminator field of the type we found, we have to escape it.
+        if(discriminatorFieldOptional.isPresent()) {
+            return "plc4c_" + getCTypeName(propertyTypeDefinition.getName()) + "_get_discriminator(" + name +"->_type)." + vl.getChild().getName();
+        }
+        // Else ... generate a simple access path.
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
     }
 
-    private String toVariableSerializationExpression(TypedField field, Term term, Argument[] serialzerArguments) {
+    private Optional<TypeReference> getTypeReference(ComplexTypeDefinition baseType, String propertyName) {
+        // If this is a built-in type, use that.
+        if(builtInFields.containsKey(propertyName)) {
+            return Optional.of(builtInFields.get(propertyName));
+        }
+        // Check if the expression root is referencing a field
+        final Optional<PropertyField> propertyFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof PropertyField).map(field -> (PropertyField) field).filter(
+                propertyField -> propertyField.getName().equals(propertyName)).findFirst();
+        if(propertyFieldOptional.isPresent()) {
+            final PropertyField propertyField = propertyFieldOptional.get();
+            return Optional.of(propertyField.getType());
+        }
+        // Check if the expression is a ImplicitField
+        final Optional<ImplicitField> implicitFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof ImplicitField).map(field -> (ImplicitField) field).filter(
+            implicitField -> implicitField.getName().equals(propertyName)).findFirst();
+        if(implicitFieldOptional.isPresent()) {
+            final ImplicitField implicitField = implicitFieldOptional.get();
+            return Optional.of(implicitField.getType());
+        }
+        // Check if the expression root is referencing an argument
+        if(baseType.getParserArguments() != null) {
+            final Optional<Argument> argumentOptional = Arrays.stream(baseType.getParserArguments()).filter(
+                argument -> argument.getName().equals(propertyName)).findFirst();
+            if (argumentOptional.isPresent()) {
+                final Argument argument = argumentOptional.get();
+                return Optional.of(argument.getType());
+            }
+        }
+        // Check if the expression is a DiscriminatorField
+        // This is a more theoretical case where the expression is referencing a discriminator value of the current type
+        final Optional<DiscriminatorField> discriminatorFieldOptional = baseType.getFields().stream().filter(
+            field -> field instanceof DiscriminatorField).map(field -> (DiscriminatorField) field).filter(
+                discriminatorField -> discriminatorField.getName().equals(propertyName)).findFirst();
+        if(discriminatorFieldOptional.isPresent()) {
+            final DiscriminatorField discriminatorField = discriminatorFieldOptional.get();
+            return Optional.of(discriminatorField.getType());
+        }
+        return Optional.empty();
+    }
+
+    private String toVariableSerializationExpression(Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
@@ -721,7 +821,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                     }
                     if (isSerializerArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                    } else if (isTypeArg) {
+                    } /*else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -737,8 +837,8 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
-                    } else {
-                        sb.append(toVariableSerializationExpression(field, va, null));
+                    }*/ else {
+                        sb.append(toVariableSerializationExpression(va, null));
                     }
                 } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -792,7 +892,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                         }
                         if (isSerializerArg) {
                             sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                        } else if (isTypeArg) {
+                        } /*else if (isTypeArg) {
                             String part = va.getChild().getName();
                             switch (part) {
                                 case "name":
@@ -808,8 +908,8 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                                     sb.append("\"").append(encoding).append("\"");
                                     break;
                             }
-                        } else {
-                            sb.append(toVariableSerializationExpression(field, va, null));
+                        }*/ else {
+                            sb.append(toVariableSerializationExpression(va, null));
                         }
                     } else if (arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
@@ -833,7 +933,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         }
         if (isSerializerArg) {
             return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-        } else if (isTypeArg) {
+        } /*else if (isTypeArg) {
             String part = vl.getChild().getName();
             switch (part) {
                 case "name":
@@ -848,7 +948,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
                 default:
                     return "";
             }
-        } else {
+        }*/ else {
             return "_value." + toVariableExpressionRest(vl);
         }
     }
@@ -930,52 +1030,55 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return imports;
     }
 
-    private String getDiscriminatorName(String discriminatorExpression) {
-        return discriminatorExpression.replaceAll("[.\\[\\]()]", "_");
+    private String getVariableLiteralName(VariableLiteral variableLiteral) {
+        return variableLiteral.getName() + ((variableLiteral.getChild() != null) ?
+            "_" + getVariableLiteralName(variableLiteral.getChild()) : "");
     }
 
-    private Optional<TypeReference> getDiscriminatorType(ComplexTypeDefinition parentType, String disciminatorExpression) {
-        final String fieldName = (disciminatorExpression.contains(".")) ?
-            disciminatorExpression.substring(0, disciminatorExpression.indexOf('.')) : disciminatorExpression;
-        final String rest = (disciminatorExpression.contains(".")) ?
-            disciminatorExpression.substring(disciminatorExpression.indexOf('.') + 1) : null;
-
-        Optional<TypeReference> type = Optional.empty();
-        // Check if this segment is referring to a field.
-        final Optional<Field> regularField = parentType.getFields().stream().filter(field ->
-            ((field instanceof PropertyField) && ((PropertyField) field).getName().equals(fieldName)) ||
-                ((field instanceof ImplicitField) && ((ImplicitField) field).getName().equals(fieldName)) ||
-                ((field instanceof DiscriminatorField) && ((DiscriminatorField) field).getName().equals(fieldName))).findFirst();
-        if (regularField.isPresent()) {
-            final Field field = regularField.get();
-            if (field instanceof PropertyField) {
-                type = Optional.of(((PropertyField) field).getType());
-            } else if (field instanceof ImplicitField) {
-                type = Optional.of(((ImplicitField) field).getType());
-            } else if (field instanceof DiscriminatorField) {
-                type = Optional.of(((DiscriminatorField) field).getType());
+    private String getDiscriminatorName(Term discriminatorExpression) {
+        if(discriminatorExpression instanceof Literal) {
+            Literal literal = (Literal) discriminatorExpression;
+            if(literal instanceof NullLiteral) {
+                return "null";
+            } else if(literal instanceof BooleanLiteral) {
+                return Boolean.toString(((BooleanLiteral) literal).getValue());
+            } else if(literal instanceof NumericLiteral) {
+                return ((NumericLiteral) literal).getNumber().toString();
+            } else if(literal instanceof StringLiteral) {
+                return ((StringLiteral) literal).getValue();
+            } else if(literal instanceof VariableLiteral) {
+                VariableLiteral variableLiteral = (VariableLiteral) literal;
+                return getVariableLiteralName(variableLiteral);
             }
+        } else if(discriminatorExpression instanceof UnaryTerm) {
+            UnaryTerm unaryTerm = (UnaryTerm) discriminatorExpression;
+            return getDiscriminatorName(unaryTerm.getA());
+        } else if(discriminatorExpression instanceof BinaryTerm) {
+            BinaryTerm binaryTerm = (BinaryTerm) discriminatorExpression;
+            return getDiscriminatorName(binaryTerm.getA()) + "_" + getDiscriminatorName(binaryTerm.getB());
+        } else if(discriminatorExpression instanceof TernaryTerm) {
+            TernaryTerm ternaryTerm = (TernaryTerm) discriminatorExpression;
+            return getDiscriminatorName(ternaryTerm.getA()) + "_" + getDiscriminatorName(ternaryTerm.getB())
+                + "_" + getDiscriminatorName(ternaryTerm.getC());
         }
+        return "";
+    }
 
-        // If we haven't found a field with the given name, continue searching in the arguments.
-        if (!type.isPresent()) {
-            // Check if this segment is referring to an argument.
-            final Optional<Argument> argument = Arrays.stream(parentType.getParserArguments()).filter(
-                curArgument -> curArgument.getName().equals(fieldName)).findFirst();
-            if (argument.isPresent()) {
-                type = Optional.of(argument.get().getType());
-            }
+    private Optional<TypeReference> getDiscriminatorType(ComplexTypeDefinition parentType, Term disciminatorExpression) {
+        if (!(disciminatorExpression instanceof VariableLiteral)) {
+            throw new RuntimeException("Currently no arithmetic expressions are supported as discriminator expressions.");
         }
-
+        VariableLiteral variableLiteral = (VariableLiteral) disciminatorExpression;
+        Optional<TypeReference> type = getTypeReference(parentType, variableLiteral.getName());
         // If we found something but there's a "rest" left, we got to use the type we
         // found in this level, get that type's definition and continue from there.
-        if (type.isPresent() && (rest != null)) {
+        if (type.isPresent() && (variableLiteral.getChild() != null)) {
             TypeReference typeReference = type.get();
             if (typeReference instanceof ComplexTypeReference) {
                 ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
                 final TypeDefinition typeDefinition = this.types.get(complexTypeReference.getName());
                 if (typeDefinition instanceof ComplexTypeDefinition) {
-                    return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, rest);
+                    return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, variableLiteral.getChild());
                 }
             }
         }
@@ -994,7 +1097,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         final SwitchField switchField = getSwitchField(parentType);
         if (switchField != null) {
             Map<String, TypeReference> discriminatorTypes = new TreeMap<>();
-            for (String discriminatorExpression : switchField.getDiscriminatorNames()) {
+            for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
                 // Get some symbolic name we can use.
                 String discriminatorName = getDiscriminatorName(discriminatorExpression);
                 Optional<TypeReference> discriminatorType = getDiscriminatorType(parentType, discriminatorExpression);
@@ -1017,25 +1120,22 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         final SwitchField switchField = getSwitchField(parentType);
         if (switchField != null) {
             // Get the symbolic names of all discriminators
-            String[] discriminatorNames = new String[switchField.getDiscriminatorNames().length];
-            for (int i = 0; i < switchField.getDiscriminatorNames().length; i++) {
-                discriminatorNames[i] = getDiscriminatorName(switchField.getDiscriminatorNames()[i]);
+            String[] discriminatorNames = new String[switchField.getDiscriminatorExpressions().length];
+            for (int i = 0; i < switchField.getDiscriminatorExpressions().length; i++) {
+                discriminatorNames[i] = getDiscriminatorName(switchField.getDiscriminatorExpressions()[i]);
             }
-            // Build a map containing the named discriminator values for every case
-            // of the typeSwitch.
+            // Build a map containing the named discriminator values for every case of the typeSwitch.
             Map<String, Map<String, String>> discriminatorTypes = new TreeMap<>();
             for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
                 discriminatorTypes.put(switchCase.getName(), new TreeMap<>());
-                for (int i = 0; i < discriminatorNames.length; i++) {
-                    String discriminatorName = discriminatorNames[i];
+                for (int i = 0; i < switchField.getDiscriminatorExpressions().length; i++) {
                     String discriminatorValue;
                     if (i < switchCase.getDiscriminatorValues().length) {
                         discriminatorValue = switchCase.getDiscriminatorValues()[i];
                     } else {
                         discriminatorValue = null;
                     }
-                    discriminatorTypes.get(switchCase.getName()).put(
-                        discriminatorName, discriminatorValue);
+                    discriminatorTypes.get(switchCase.getName()).put(discriminatorNames[i], discriminatorValue);
                 }
             }
             return discriminatorTypes;
