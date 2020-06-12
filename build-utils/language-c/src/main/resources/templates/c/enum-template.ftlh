@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.setConstants(type, protocolName, outputFlavor)}${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -43,10 +43,13 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-<#if helper.getComplexTypeReferencesInFields()?has_content>
-  <#list helper.getComplexTypeReferencesInFields() as complexType>
-#include "${helper.camelCaseToSnakeCase(complexType.getName())}.h"
-  </#list>
+<#--
+    Add any import statements for partent-types, complex types used in properties or parser arguments.
+-->
+<#if helper.getComplexTypeReferences()?has_content>
+    <#list helper.getComplexTypeReferences() as typeReference>
+#include "${helper.camelCaseToSnakeCase(typeReference.name)}.h"
+    </#list>
 </#if>
 
 <#--
@@ -68,7 +71,7 @@ typedef enum plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
 
-${helper.getLanguageTypeName(type.getConstantType(constantName))} plc4c_${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(plc4c_${helper.getCTypeName(type.name)} value) {
+${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} plc4c_${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(plc4c_${helper.getCTypeName(type.name)} value) {
   switch(value) {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
     case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */

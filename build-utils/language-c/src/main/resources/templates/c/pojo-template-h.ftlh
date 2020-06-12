@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<#if !helper.isDiscriminatedType(type)>${helper.setConstants(type, protocolName, outputFlavor)}${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+<#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -47,9 +47,9 @@ extern "C" {
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
-<#if helper.getIncludeTypesForHFiles()?has_content>
-    <#list helper.getIncludeTypesForHFiles() as typeImport>
-#include "${typeImport}.h"
+<#if helper.getComplexTypeReferences()?has_content>
+    <#list helper.getComplexTypeReferences() as typeReference>
+#include "${helper.camelCaseToSnakeCase(typeReference.name)}.h"
     </#list>
 </#if>
 <#--
@@ -58,13 +58,13 @@ extern "C" {
     data-structure. So with this enum we're doing exactly this. It will be used in the serializers and
     parsers and stored in discriminated types.
 -->
-<#if helper.isAbstractType(type)>
+<#if helper.isDiscriminatedParentTypeDefinition(type)>
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
-  ${helper.getLanguageTypeName(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
+  ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
     </#list>
 </#if>
 };
@@ -72,7 +72,7 @@ typedef struct plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${hel
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_${helper.getCTypeName(type.name)}_type {
-    <#list helper.getDiscriminatedSubTypes() as subtype>
+    <#list helper.getSubTypeDefinitions() as subtype>
   plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,
     </#list>
 };
@@ -97,18 +97,18 @@ const ${helper.getLanguageTypeNameForField(field)} ${helper.getCTypeName(type.na
     Create the general data-structure for this type
 -->
 struct plc4c_${helper.getCTypeName(type.name)} {
+<#if helper.isDiscriminatedParentTypeDefinition(type)>
   /* This is an abstract type so this property saves the type of this typed union */
-<#if helper.isAbstractType(type)>
   plc4c_${helper.getCTypeName(type.name)}_type _type;
 </#if>
   /* Properties */
-<#list helper.getFields() as field>
+<#list helper.getPropertyAndSwitchFields() as field>
     <#if helper.isSwitchField(field)>
   union {
         <#list field.cases as case>
     struct { /* ${case.name} */
             <#list case.propertyFields as caseField>
-      ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleType(caseField.type)>*</#if> ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
+      ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleTypeReference(caseField.type)>*</#if> ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
             </#list>
     };
         </#list>
@@ -116,7 +116,7 @@ struct plc4c_${helper.getCTypeName(type.name)} {
     <#elseif helper.isEnumField(field)>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)};
     <#else>
-  ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleType(field.type)>*</#if> ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
+  ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleTypeReference(field.type)>*</#if> ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
     </#if>
 </#list>
 };
@@ -125,7 +125,7 @@ typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeNa
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type)}<#if !helper.isSimpleType(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message);
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message);
 
 <#--
     Define the serialize-method for elements of this tpye

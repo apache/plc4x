@@ -31,7 +31,6 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_var_payload_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
 
-
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
   msg->return_code = returnCode;
@@ -44,12 +43,25 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   uint16_t dataLength = plc4c_spi_read_unsigned_int(buf, 16);
   msg->data_length = dataLength;
 
+  // Array field (data)
+  plc4c_list data;
+  {
+    // Count array
+    uint8_t itemCount = ((plc4c_s7_read_write_data_transport_size_get_size_in_bits) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      
+      int8_t value = plc4c_spi_read_byte(buf, 8);
+      plc4c_utils_list_insert_head_value(&data, &value);
+    }
+  }
+
   // Padding Field (pad)
-  bool _padNeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_utils_list_size(&data)) % (2))) == (1)))));
+  bool _padNeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(data)) % (2))) == (1)))));
   if(_padNeedsPadding) {
     // Just read the padding data and ignore it
     plc4c_spi_read_unsigned_short(buf, 8);
   }
+
 
   return OK;
 }

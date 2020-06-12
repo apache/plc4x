@@ -31,7 +31,6 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_szl_id* msg = malloc(sizeof(plc4c_s7_read_write_szl_id));
 
-
   // Enum field (typeClass)
   plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_spi_read_byte(buf, 4);
   msg->type_class = typeClass;
@@ -43,6 +42,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
   // Enum field (sublistList)
   plc4c_s7_read_write_szl_sublist sublistList = plc4c_spi_read_byte(buf, 8);
   msg->sublist_list = sublistList;
+
 
   return OK;
 }

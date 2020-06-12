@@ -25,10 +25,12 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "data_transport_error_code.h"
-#include "data_transport_size.h"
-#include "szl_data_tree_item.h"
 #include "szl_id.h"
+#include "data_transport_error_code.h"
+#include "s7_payload_user_data_item.h"
+#include "szl_data_tree_item.h"
+#include "s7_payload_user_data_item.h"
+#include "data_transport_size.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator {

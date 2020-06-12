@@ -35,9 +35,15 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class JavaLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
 
+    private final TypeDefinition thisType;
+    private final String protocolName;
+    private final String flavorName;
     private final Map<String, TypeDefinition> types;
 
-    public JavaLanguageTemplateHelper(Map<String, TypeDefinition> types) {
+    public JavaLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+        this.thisType = thisType;
+        this.protocolName = protocolName;
+        this.flavorName = flavorName;
         this.types = types;
     }
 

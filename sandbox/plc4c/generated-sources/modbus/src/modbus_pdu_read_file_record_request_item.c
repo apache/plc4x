@@ -31,7 +31,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item));
 
-
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
   msg->reference_type = referenceType;
@@ -47,6 +46,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
   // Simple Field (recordLength)
   uint16_t recordLength = plc4c_spi_read_unsigned_int(buf, 16);
   msg->record_length = recordLength;
+
 
   return OK;
 }

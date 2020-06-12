@@ -53,7 +53,6 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
 
@@ -88,6 +87,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     plc4c_list* items;
     msg->s7_parameter_user_data_items = items;
   }
+
 
   return OK;
 }

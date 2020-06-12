@@ -31,10 +31,21 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_szl_data_tree_item* msg = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
 
-
   // Simple Field (itemIndex)
   uint16_t itemIndex = plc4c_spi_read_unsigned_int(buf, 16);
   msg->item_index = itemIndex;
+
+  // Array field (mlfb)
+  plc4c_list mlfb;
+  {
+    // Count array
+    uint8_t itemCount = 20;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      
+      int8_t value = plc4c_spi_read_byte(buf, 8);
+      plc4c_utils_list_insert_head_value(&mlfb, &value);
+    }
+  }
 
   // Simple Field (moduleTypeId)
   uint16_t moduleTypeId = plc4c_spi_read_unsigned_int(buf, 16);
@@ -47,6 +58,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   // Simple Field (ausbe)
   uint16_t ausbe = plc4c_spi_read_unsigned_int(buf, 16);
   msg->ausbe = ausbe;
+
 
   return OK;
 }

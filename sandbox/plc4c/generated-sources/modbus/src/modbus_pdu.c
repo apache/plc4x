@@ -113,7 +113,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
 
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_pdu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu));
-
   // Implicit Field (error) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   bool error = plc4c_spi_read_bit(buf);
 
@@ -333,6 +332,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   } else 
   if((error == false) && (function == 0x2B) && (response == true)) { /* ModbusPDUReadDeviceIdentificationResponse */
   }
+
 
   return OK;
 }

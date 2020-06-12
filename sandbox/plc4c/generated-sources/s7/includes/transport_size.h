@@ -24,8 +24,8 @@ extern "C" {
 #endif
 
 #include <stdbool.h>
-#include "data_transport_size.h"
 #include "transport_size.h"
+#include "data_transport_size.h"
 
 enum plc4c_s7_read_write_transport_size {
   plc4c_s7_read_write_transport_size_BOOL = 0x01,

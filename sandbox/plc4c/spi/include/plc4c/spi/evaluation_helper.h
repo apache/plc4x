@@ -19,8 +19,14 @@
 #ifndef PLC4C_SPI_EVALUATION_HELPER_H_
 #define PLC4C_SPI_EVALUATION_HELPER_H_
 
+#include <stdint.h>
 #include <stdbool.h>
+#include <plc4c/utils/list.h>
 
 bool plc4c_spi_evaluation_helper_equals(int a, int b);
+
+double plc4c_spi_evaluation_helper_ceil(double a);
+
+uint8_t plc4c_spi_evaluation_helper_count(plc4c_list a);
 
 #endif  // PLC4C_SPI_EVALUATION_HELPER_H_

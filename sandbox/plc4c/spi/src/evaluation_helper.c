@@ -20,8 +20,17 @@
 #include <plc4c/spi/evaluation_helper.h>
 
 #include <stdbool.h>
+#include <math.h>
 
 bool plc4c_spi_evaluation_helper_equals(int a, int b) {
   return a == b;
+}
+
+double plc4c_spi_evaluation_helper_ceil(double a) {
+  return ceil(a);
+}
+
+uint8_t plc4c_spi_evaluation_helper_count(plc4c_list a) {
+  return plc4c_utils_list_size(&a);
 }
 

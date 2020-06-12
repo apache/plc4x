@@ -27,7 +27,6 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item {
-  /* This is an abstract type so this property saves the type of this typed union */
   /* Properties */
   uint8_t reference_type;
   uint16_t file_number;

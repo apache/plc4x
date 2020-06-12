@@ -66,8 +66,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types) {
-        return new CLanguageTemplateHelper(types);
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+        return new CLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
 
 }

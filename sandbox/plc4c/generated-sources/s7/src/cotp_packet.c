@@ -54,7 +54,6 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_cotp_packet* msg = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
 
-
   // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t headerLength = plc4c_spi_read_unsigned_short(buf, 8);
 
@@ -114,6 +113,19 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
     msg->cotp_packet_tpdu_error_reject_cause = rejectCause;
   }
 
+  // Array field (parameters)
+  curPos = plc4c_spi_read_get_pos(buf) - startPos;
+  plc4c_list parameters;
+  {
+    // Length array
+    uint8_t _parametersLength = (((headerLength) + (1))) - (curPos);
+    uint8_t parametersEndPos = plc4c_spi_read_get_pos(buf) + _parametersLength;
+    while(plc4c_spi_read_get_pos(buf) < parametersEndPos) {
+      plc4c_utils_list_insert_head_value(&parameters, plc4c_s7_read_write_cotp_parameter_parse(buf, (((headerLength) + (1))) - (curPos), (void*) &parameters));
+      curPos = plc4c_spi_read_get_pos(buf) - startPos;
+    }
+  }
+
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   curPos = plc4c_spi_read_get_pos(buf) - startPos;
   plc4c_s7_read_write_s7_message* payload = NULL;
@@ -122,6 +134,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
     plc4c_s7_read_write_s7_message_parse(buf, &payload);
     msg->payload = payload;
   }
+
 
   return OK;
 }

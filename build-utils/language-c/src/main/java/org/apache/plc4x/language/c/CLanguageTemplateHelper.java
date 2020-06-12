@@ -18,11 +18,9 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
-import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerLanguageTemplateHelper;
+import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
@@ -31,152 +29,19 @@ import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper {
+public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    private final Map<String, TypeDefinition> types;
-    private TypeDefinition thisType;
-    private String protocolName;
-    private String flavorName;
-
-    private static Map<String, SimpleTypeReference> builtInFields;
-    {
-        builtInFields = new HashMap<>();
-        builtInFields.put("curPos", new SimpleTypeReference() {
-            @Override
-            public SimpleBaseType getBaseType() {
-                return SimpleBaseType.UINT;
-            }
-
-            @Override
-            public int getSizeInBits() {
-                return 16;
-            }
-        });
-        builtInFields.put("startPos", new SimpleTypeReference() {
-            @Override
-            public SimpleBaseType getBaseType() {
-                return SimpleBaseType.UINT;
-            }
-
-            @Override
-            public int getSizeInBits() {
-                return 16;
-            }
-        });
-    }
-
-    public CLanguageTemplateHelper(Map<String, TypeDefinition> types) {
-        this.types = types;
-    }
-
-    public void setConstants(TypeDefinition thisType, String protocolName, String flavorName) {
-        this.thisType = thisType;
-        this.protocolName = protocolName;
-        this.flavorName = flavorName;
+    public CLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+        super(thisType, protocolName, flavorName, types);
     }
 
     public String getSourceDirectory() {
-        return String.join("", protocolName.split("-")) + ".src";
+        return String.join("", getProtocolName().split("-")) + ".src";
     }
 
     public String getIncludesDirectory() {
-        return String.join("", protocolName.split("-")) + ".includes";
-    }
-
-    /**
-     * Check if this is an abstract type ...
-     *
-     * @param typeDefinition the type definition
-     * @return true if this is an abstract type
-     */
-    public boolean isAbstractType(ComplexTypeDefinition typeDefinition) {
-        return typeDefinition.isAbstract();
-    }
-
-    public boolean isSimpleType(TypeReference typeReference) {
-        return typeReference instanceof SimpleTypeReference;
-    }
-
-    public boolean isDiscriminatedType(ComplexTypeDefinition typeDefinition) {
-        return typeDefinition instanceof DiscriminatedComplexTypeDefinition;
-    }
-
-    public boolean isSwitchField(Field field) {
-        return field instanceof SwitchField;
-    }
-
-    public boolean isEnumField(Field field) {
-        return field instanceof EnumField;
-    }
-
-    /**
-     * Modified version returning all the normal property fields, but also the typeSwitch fields
-     * As we need to generate the union structs for these.
-     *
-     * @return list of property fields as well as typeSwitch fields.
-     */
-    public Collection<Field> getFields() {
-        return ((ComplexTypeDefinition) thisType).getFields().stream().filter(
-            field -> (field instanceof PropertyField) || (field instanceof SwitchField)).collect(Collectors.toList());
-    }
-
-    private SwitchField getSwitchField() {
-        return getSwitchField(thisType);
-    }
-
-    private SwitchField getSwitchField(TypeDefinition type) {
-        if (type instanceof ComplexTypeDefinition) {
-            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) type;
-            // Sebastian would be proud of me ;-)
-            return (SwitchField) complexTypeDefinition.getFields().stream().filter(
-                field -> field instanceof SwitchField).findFirst().orElse(null);
-        }
-        return null;
-    }
-
-    public List<DiscriminatedComplexTypeDefinition> getDiscriminatedSubTypes() {
-        SwitchField switchField = getSwitchField();
-        if (switchField != null) {
-            return switchField.getCases();
-        }
-        return Collections.emptyList();
-    }
-
-    public Collection<ComplexTypeReference> getComplexTypeReferencesInFields() {
-        return getComplexTypeReferencesInFields(thisType);
-    }
-
-    public Collection<ComplexTypeReference> getComplexTypeReferencesInFields(TypeDefinition baseType) {
-        Set<ComplexTypeReference> complexTypeReferences = new HashSet<>();
-        if (baseType instanceof ComplexTypeDefinition) {
-            for (Field field : ((ComplexTypeDefinition) baseType).getFields()) {
-                if(field instanceof PropertyField) {
-                    PropertyField propertyField = (PropertyField) field;
-                    if (propertyField.getType() instanceof ComplexTypeReference) {
-                        ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                        complexTypeReferences.add(complexTypeReference);
-                    }
-                } else if(field instanceof SwitchField) {
-                    SwitchField switchField = (SwitchField) field;
-                    for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
-                        complexTypeReferences.addAll(getComplexTypeReferencesInFields(switchCase));
-                    }
-                }
-            }
-        } else if (baseType instanceof EnumTypeDefinition) {
-            for (String constantName : ((EnumTypeDefinition) baseType).getConstantNames()) {
-                final TypeReference constantType = ((EnumTypeDefinition) thisType).getConstantType(constantName);
-                if (constantType instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) constantType;
-                    complexTypeReferences.add(complexTypeReference);
-                }
-            }
-        }
-        return complexTypeReferences;
+        return String.join("", getProtocolName().split("-")) + ".includes";
     }
 
     /**
@@ -187,8 +52,9 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      * @return c-style type name
      */
     public String getCTypeName(String typeName) {
-        return camelCaseToSnakeCase(protocolName).toLowerCase() + "_" + camelCaseToSnakeCase(flavorName).toLowerCase() + "_" +
-            camelCaseToSnakeCase(typeName).toLowerCase();
+        return camelCaseToSnakeCase(getProtocolName()).toLowerCase() +
+            "_" + camelCaseToSnakeCase(getFlavorName()).toLowerCase() +
+            "_" + camelCaseToSnakeCase(typeName).toLowerCase();
     }
 
     /**
@@ -232,24 +98,24 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      * @param field field we want to get the type name for
      * @return type name we should use in C
      */
-    public String getLanguageTypeNameForField(TypedField field) {
-        // If the referenced type is a DataIo type, the value is of type plc4c_data.
-        if (field instanceof PropertyField) {
-            PropertyField propertyField = (PropertyField) field;
-            if (propertyField.getType() instanceof ComplexTypeReference) {
-                ComplexTypeReference complexTypeReference = (ComplexTypeReference) propertyField.getType();
-                final TypeDefinition typeDefinition = types.get(complexTypeReference.getName());
-                if (typeDefinition instanceof DataIoTypeDefinition) {
-                    return "plc4c_data*";
-                }
-            }
+    @Override
+    public String getLanguageTypeNameForField(Field field) {
+        if(!(field instanceof TypedField)) {
+            throw new RuntimeException("Field " + field + " is not a TypedField");
         }
         // If this is an array with variable length, then we have to use our "plc4c_list" to store the data.
         if ((field instanceof ArrayField) && (!isFixedValueExpression(((ArrayField) field).getLoopExpression()))) {
             return "plc4c_list";
         }
-        TypeReference typeReference = field.getType();
-        return getLanguageTypeName(typeReference);
+        TypedField typedField = (TypedField) field;
+        TypeReference typeReference = typedField.getType();
+        if (typeReference instanceof ComplexTypeReference) {
+            final TypeDefinition typeDefinition = getTypeDefinitionForTypeReference(typeReference);
+            if (typeDefinition instanceof DataIoTypeDefinition) {
+                return "plc4c_data*";
+            }
+        }
+        return getLanguageTypeNameForTypeReference(typeReference);
     }
 
     /**
@@ -260,7 +126,8 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
      * @param typeReference type reference
      * @return c type
      */
-    public String getLanguageTypeName(TypeReference typeReference) {
+    @Override
+    public String getLanguageTypeNameForTypeReference(TypeReference typeReference) {
         if (typeReference instanceof SimpleTypeReference) {
             SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
             switch (simpleTypeReference.getBaseType()) {
@@ -376,7 +243,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         if ("null".equals(valueString)) {
             // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
             if (typeReference instanceof ComplexTypeReference) {
-                if (types.get(((ComplexTypeReference) typeReference).getName()) instanceof EnumTypeDefinition) {
+                if (getTypeDefinitionForTypeReference(typeReference) instanceof EnumTypeDefinition) {
                     return "-1";
                 }
             }
@@ -410,7 +277,6 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             if ("null".equals(valueString)) {
                 return "-1";
             }
-            ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
             String typeName = valueString.substring(0, valueString.indexOf('.'));
             String constantName = valueString.substring(valueString.indexOf('.') + 1);
             return "plc4c_" + getCTypeName(typeName) + "_" + constantName;
@@ -429,64 +295,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return filteredEnumValues.values();
     }
 
-    /**
-     * Check if the expression doesn't reference any variables.
-     * If this is the case, the expression can be evaluated at code-generation time.
-     *
-     * @param term term
-     * @return true if it doesn't reference any variable literals.
-     */
-    private boolean isFixedValueExpression(Term term) {
-        if (term instanceof VariableLiteral) {
-            return false;
-        }
-        if (term instanceof UnaryTerm) {
-            UnaryTerm unaryTerm = (UnaryTerm) term;
-            return isFixedValueExpression(unaryTerm.getA());
-        }
-        if (term instanceof BinaryTerm) {
-            BinaryTerm binaryTerm = (BinaryTerm) term;
-            return isFixedValueExpression(binaryTerm.getA()) && isFixedValueExpression(binaryTerm.getB());
-        }
-        if (term instanceof TernaryTerm) {
-            TernaryTerm ternaryTerm = (TernaryTerm) term;
-            return isFixedValueExpression(ternaryTerm.getA()) && isFixedValueExpression(ternaryTerm.getB()) &&
-                isFixedValueExpression(ternaryTerm.getC());
-        }
-        return true;
-    }
-
-    private int evaluateFixedValueExpression(Term term) {
-        final Expression expression = new ExpressionBuilder(toString(term)).build();
-        return (int) expression.evaluate();
-    }
-
-    private String toString(Term term) {
-        if (term instanceof NullLiteral) {
-            return "null";
-        }
-        if (term instanceof BooleanLiteral) {
-            return Boolean.toString(((BooleanLiteral) term).getValue());
-        }
-        if (term instanceof NumericLiteral) {
-            return ((NumericLiteral) term).getNumber().toString();
-        }
-        if (term instanceof StringLiteral) {
-            return "\"" + ((StringLiteral) term).getValue() + "\"";
-        }
-        if (term instanceof UnaryTerm) {
-            return ((UnaryTerm) term).getOperation() + toString(((UnaryTerm) term).getA());
-        }
-        if (term instanceof BinaryTerm) {
-            return toString(((BinaryTerm) term).getA()) + ((BinaryTerm) term).getOperation() + toString(((BinaryTerm) term).getB());
-        }
-        if (term instanceof TernaryTerm) {
-            return "(" + toString(((TernaryTerm) term).getA()) + ") ? (" + toString(((TernaryTerm) term).getB()) +
-                ") : (" + toString(((TernaryTerm) term).getC()) + ")";
-        }
-        return "";
-    }
-
+    @Override
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
@@ -541,6 +350,21 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return "Hurz";
     }
 
+    @Override
+    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+        return null;
+    }
+
+    @Override
+    public String getNullValueForTypeReference(TypeReference typeReference) {
+        return null;
+    }
+
+
+
+
+
+
     public String toParseExpression(Term term, Argument[] parserArguments) {
         return toExpression(term, term1 -> toVariableParseExpression(term1, parserArguments));
     }
@@ -565,7 +389,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
             } else if (term instanceof VariableLiteral) {
                 VariableLiteral variableLiteral = (VariableLiteral) term;
                 // If this literal references an Enum type, then we have to output it differently.
-                if (types.get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                     return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
                 } else {
                     return variableExpressionGenerator.apply(term);
@@ -614,83 +438,11 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
 
     public String toVariableParseExpression(Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
-        // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
-        if ("CAST".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder(vl.getName());
-            if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
-                throw new RuntimeException("A CAST expression expects exactly two arguments.");
-            }
-            sb.append("(").append(toVariableParseExpression(vl.getArgs().get(0), parserArguments))
-                .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
-            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-        } else if ("COUNT".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder();
-            if ((vl.getArgs() == null) || (vl.getArgs().size() != 1)) {
-                throw new RuntimeException("A COUNT expression expects exactly one argument.");
-            }
-            sb.append("plc4c_utils_list_size(&").append(((VariableLiteral) vl.getArgs().get(0)).getName()).append(")");
-            return sb.toString();
-        } else if ("STATIC_CALL".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder();
-            if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
-                throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
-            }
-            // Get the class and method name
-            String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
-            // Cut off the double-quptes
-            methodName = methodName.substring(1, methodName.length() - 1);
-            sb.append(methodName).append("(");
-            for (int i = 1; i < vl.getArgs().size(); i++) {
-                Term arg = vl.getArgs().get(i);
-                if (i > 1) {
-                    sb.append(", ");
-                }
-                if (arg instanceof VariableLiteral) {
-                    VariableLiteral va = (VariableLiteral) arg;
-                    // "io" is the default name of the reader argument which is always available.
-                    boolean isParserArg = "io".equals(va.getName());
-                    boolean isTypeArg = "_type".equals(va.getName());
-                    if (!isParserArg && !isTypeArg && parserArguments != null) {
-                        for (Argument parserArgument : parserArguments) {
-                            if (parserArgument.getName().equals(va.getName())) {
-                                isParserArg = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (isParserArg) {
-                        sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                    }
-                    // We have to manually evaluate the type information at code-generation time.
-                    /*else if (isTypeArg) {
-                        String part = va.getChild().getName();
-                        switch (part) {
-                            case "name":
-                                sb.append("\"").append(field.getTypeName()).append("\"");
-                                break;
-                            case "length":
-                                sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
-                                break;
-                            case "encoding":
-                                String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                                // Cut off the single quotes.
-                                encoding = encoding.substring(1, encoding.length() - 1);
-                                sb.append("\"").append(encoding).append("\"");
-                                break;
-                        }
-                    }*/ else {
-                        sb.append(toVariableParseExpression(va, null));
-                    }
-                } else if (arg instanceof StringLiteral) {
-                    sb.append(((StringLiteral) arg).getValue());
-                }
-            }
-            sb.append(")");
-            return sb.toString();
-        }
-        // All uppercase names are not fields, but utility methods.
-        else if (vl.getName().equals(vl.getName().toUpperCase())) {
-            StringBuilder sb = new StringBuilder(vl.getName());
+        // Any name that is full upper-case is considered a function call.
+        // These are generally defined in the spi file evaluation_helper.c.
+        // All should have a name prefix "plc4c_spi_evaluation_helper_".
+        if (vl.getName().equals(vl.getName().toUpperCase())) {
+            StringBuilder sb = new StringBuilder("plc4c_spi_evaluation_helper_" + vl.getName().toLowerCase());
             if (vl.getArgs() != null) {
                 sb.append("(");
                 boolean firstArg = true;
@@ -712,11 +464,12 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         final String name = vl.getName();
 
         // Try to find the type of the addressed property.
-        final Optional<TypeReference> propertyTypeOptional = getTypeReference((ComplexTypeDefinition) thisType, name);
+        final Optional<TypeReference> propertyTypeOptional =
+            getTypeReferenceForProperty((ComplexTypeDefinition) getThisTypeDefinition(), name);
 
         // If we couldn't find the type, we didn't find the property.
         if(!propertyTypeOptional.isPresent()) {
-            throw new RuntimeException("Could not find property with name '" + name + "' in type " + thisType.getName());
+            throw new RuntimeException("Could not find property with name '" + name + "' in type " + getThisTypeDefinition().getName());
         }
 
         final TypeReference propertyType = propertyTypeOptional.get();
@@ -730,7 +483,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         }
 
         // If it references a complex, type we need to get that type's definition first.
-        final TypeDefinition propertyTypeDefinition = types.get(((ComplexTypeReference) propertyType).getName());
+        final TypeDefinition propertyTypeDefinition = getTypeDefinitions().get(((ComplexTypeReference) propertyType).getName());
         // If we're not accessing any child property, no need to handle anything special.
         if(vl.getChild() == null) {
             return name;
@@ -738,57 +491,26 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         // If there is a child we need to check if this is a discriminator property.
         // As discriminator properties are not real properties, but saved in the static metadata
         // of a type, we need to generate a different access pattern.
-        final Optional<DiscriminatorField> discriminatorFieldOptional = ((ComplexTypeDefinition) propertyTypeDefinition).getFields().stream().filter(
-            curField -> curField instanceof DiscriminatorField).map(curField -> (DiscriminatorField) curField).filter(
-            discriminatorField -> discriminatorField.getName().equals(vl.getChild().getName())).findFirst();
-        // If child references a discriminator field of the type we found, we have to escape it.
-        if(discriminatorFieldOptional.isPresent()) {
-            return "plc4c_" + getCTypeName(propertyTypeDefinition.getName()) + "_get_discriminator(" + name +"->_type)." + vl.getChild().getName();
+        if(propertyTypeDefinition instanceof ComplexTypeDefinition) {
+            final Optional<DiscriminatorField> discriminatorFieldOptional = ((ComplexTypeDefinition) propertyTypeDefinition).getFields().stream().filter(
+                curField -> curField instanceof DiscriminatorField).map(curField -> (DiscriminatorField) curField).filter(
+                discriminatorField -> discriminatorField.getName().equals(vl.getChild().getName())).findFirst();
+            // If child references a discriminator field of the type we found, we have to escape it.
+            if (discriminatorFieldOptional.isPresent()) {
+                return "plc4c_" + getCTypeName(propertyTypeDefinition.getName()) + "_get_discriminator(" + name + "->_type)." + vl.getChild().getName();
+            }
+        }
+        // Handling enum properties in C is a little more tricky as we have to use the enum value
+        // and pass this to a function that then returns the desired property value.
+        else if(propertyTypeDefinition instanceof EnumTypeDefinition) {
+            EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) propertyTypeDefinition;
+            StringBuilder sb = new StringBuilder("plc4c_")
+                .append(getCTypeName(propertyTypeDefinition.getName()))
+                .append("_get_").append(camelCaseToSnakeCase(vl.getChild().getName()));
+            return sb.toString();
         }
         // Else ... generate a simple access path.
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-    }
-
-    private Optional<TypeReference> getTypeReference(ComplexTypeDefinition baseType, String propertyName) {
-        // If this is a built-in type, use that.
-        if(builtInFields.containsKey(propertyName)) {
-            return Optional.of(builtInFields.get(propertyName));
-        }
-        // Check if the expression root is referencing a field
-        final Optional<PropertyField> propertyFieldOptional = baseType.getFields().stream().filter(
-            field -> field instanceof PropertyField).map(field -> (PropertyField) field).filter(
-                propertyField -> propertyField.getName().equals(propertyName)).findFirst();
-        if(propertyFieldOptional.isPresent()) {
-            final PropertyField propertyField = propertyFieldOptional.get();
-            return Optional.of(propertyField.getType());
-        }
-        // Check if the expression is a ImplicitField
-        final Optional<ImplicitField> implicitFieldOptional = baseType.getFields().stream().filter(
-            field -> field instanceof ImplicitField).map(field -> (ImplicitField) field).filter(
-            implicitField -> implicitField.getName().equals(propertyName)).findFirst();
-        if(implicitFieldOptional.isPresent()) {
-            final ImplicitField implicitField = implicitFieldOptional.get();
-            return Optional.of(implicitField.getType());
-        }
-        // Check if the expression root is referencing an argument
-        if(baseType.getParserArguments() != null) {
-            final Optional<Argument> argumentOptional = Arrays.stream(baseType.getParserArguments()).filter(
-                argument -> argument.getName().equals(propertyName)).findFirst();
-            if (argumentOptional.isPresent()) {
-                final Argument argument = argumentOptional.get();
-                return Optional.of(argument.getType());
-            }
-        }
-        // Check if the expression is a DiscriminatorField
-        // This is a more theoretical case where the expression is referencing a discriminator value of the current type
-        final Optional<DiscriminatorField> discriminatorFieldOptional = baseType.getFields().stream().filter(
-            field -> field instanceof DiscriminatorField).map(field -> (DiscriminatorField) field).filter(
-                discriminatorField -> discriminatorField.getName().equals(propertyName)).findFirst();
-        if(discriminatorFieldOptional.isPresent()) {
-            final DiscriminatorField discriminatorField = discriminatorFieldOptional.get();
-            return Optional.of(discriminatorField.getType());
-        }
-        return Optional.empty();
     }
 
     private String toVariableSerializationExpression(Term term, Argument[] serialzerArguments) {
@@ -983,7 +705,7 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
     }
 
     public String getReservedValue(ReservedField reservedField) {
-        final String languageTypeName = getLanguageTypeName(reservedField.getType());
+        final String languageTypeName = getLanguageTypeNameForField(reservedField);
         if ("BigInteger".equals(languageTypeName)) {
             return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
         } else {
@@ -991,51 +713,8 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         }
     }
 
-    public SimpleTypeReference getEnumBaseType(TypeReference enumType) {
-        if (!(enumType instanceof ComplexTypeReference)) {
-            throw new RuntimeException("type reference for enum types must be of type complex type");
-        }
-        ComplexTypeReference complexType = (ComplexTypeReference) enumType;
-        EnumTypeDefinition enumTypeDefinition = (EnumTypeDefinition) types.get(complexType.getName());
-        return (SimpleTypeReference) enumTypeDefinition.getType();
-    }
-
-    public Collection<String> getIncludeTypesForHFiles() {
-        Set<String> imports = new TreeSet<>();
-        // Add all the complex types references in parser arguments.
-        if (thisType.getParserArguments() != null) {
-            for (Argument parserArgument : thisType.getParserArguments()) {
-                if (parserArgument.getType() instanceof ComplexTypeReference) {
-                    ComplexTypeReference complexTypeReference = (ComplexTypeReference) parserArgument.getType();
-                    imports.add(camelCaseToSnakeCase(complexTypeReference.getName()));
-                }
-            }
-        }
-        // Add all the complex types referenced in field declarations.
-        for (ComplexTypeReference complexTypeReferencesInField : getComplexTypeReferencesInFields()) {
-            imports.add(camelCaseToSnakeCase(complexTypeReferencesInField.getName()));
-        }
-        // If this is a discriminated type, add an import to the parent type.
-        if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            DiscriminatedComplexTypeDefinition discriminatedType = (DiscriminatedComplexTypeDefinition) thisType;
-            imports.add(camelCaseToSnakeCase(discriminatedType.getParentType().getName()));
-        }
-        return imports;
-    }
-
-    public Collection<String> getIncludeTypesForCFiles() {
-        List<String> imports = new LinkedList<>();
-        // Add a reference to the current types header file itself.
-        imports.add(camelCaseToSnakeCase(thisType.getName()));
-        return imports;
-    }
-
-    private String getVariableLiteralName(VariableLiteral variableLiteral) {
-        return variableLiteral.getName() + ((variableLiteral.getChild() != null) ?
-            "_" + getVariableLiteralName(variableLiteral.getChild()) : "");
-    }
-
-    private String getDiscriminatorName(Term discriminatorExpression) {
+    @Override
+    public String getDiscriminatorName(Term discriminatorExpression) {
         if(discriminatorExpression instanceof Literal) {
             Literal literal = (Literal) discriminatorExpression;
             if(literal instanceof NullLiteral) {
@@ -1064,83 +743,9 @@ public class CLanguageTemplateHelper implements FreemarkerLanguageTemplateHelper
         return "";
     }
 
-    private Optional<TypeReference> getDiscriminatorType(ComplexTypeDefinition parentType, Term disciminatorExpression) {
-        if (!(disciminatorExpression instanceof VariableLiteral)) {
-            throw new RuntimeException("Currently no arithmetic expressions are supported as discriminator expressions.");
-        }
-        VariableLiteral variableLiteral = (VariableLiteral) disciminatorExpression;
-        Optional<TypeReference> type = getTypeReference(parentType, variableLiteral.getName());
-        // If we found something but there's a "rest" left, we got to use the type we
-        // found in this level, get that type's definition and continue from there.
-        if (type.isPresent() && (variableLiteral.getChild() != null)) {
-            TypeReference typeReference = type.get();
-            if (typeReference instanceof ComplexTypeReference) {
-                ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-                final TypeDefinition typeDefinition = this.types.get(complexTypeReference.getName());
-                if (typeDefinition instanceof ComplexTypeDefinition) {
-                    return getDiscriminatorType((ComplexTypeDefinition) typeDefinition, variableLiteral.getChild());
-                }
-            }
-        }
-        return type;
-    }
-
-    public Map<String, TypeReference> getDiscriminatorTypes() {
-        // Get the parent type (Which contains the typeSwitch field)
-        ComplexTypeDefinition parentType;
-        if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            parentType = (ComplexTypeDefinition) thisType.getParentType();
-        } else {
-            parentType = (ComplexTypeDefinition) thisType;
-        }
-        // Get the typeSwitch field from that.
-        final SwitchField switchField = getSwitchField(parentType);
-        if (switchField != null) {
-            Map<String, TypeReference> discriminatorTypes = new TreeMap<>();
-            for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
-                // Get some symbolic name we can use.
-                String discriminatorName = getDiscriminatorName(discriminatorExpression);
-                Optional<TypeReference> discriminatorType = getDiscriminatorType(parentType, discriminatorExpression);
-                discriminatorTypes.put(discriminatorName, discriminatorType.orElse(null));
-            }
-            return discriminatorTypes;
-        }
-        return Collections.emptyMap();
-    }
-
-    public Map<String, Map<String, String>> getDiscriminatorValues() {
-        // Get the parent type (Which contains the typeSwitch field)
-        ComplexTypeDefinition parentType;
-        if (thisType instanceof DiscriminatedComplexTypeDefinition) {
-            parentType = (ComplexTypeDefinition) thisType.getParentType();
-        } else {
-            parentType = (ComplexTypeDefinition) thisType;
-        }
-        // Get the typeSwitch field from that.
-        final SwitchField switchField = getSwitchField(parentType);
-        if (switchField != null) {
-            // Get the symbolic names of all discriminators
-            String[] discriminatorNames = new String[switchField.getDiscriminatorExpressions().length];
-            for (int i = 0; i < switchField.getDiscriminatorExpressions().length; i++) {
-                discriminatorNames[i] = getDiscriminatorName(switchField.getDiscriminatorExpressions()[i]);
-            }
-            // Build a map containing the named discriminator values for every case of the typeSwitch.
-            Map<String, Map<String, String>> discriminatorTypes = new TreeMap<>();
-            for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
-                discriminatorTypes.put(switchCase.getName(), new TreeMap<>());
-                for (int i = 0; i < switchField.getDiscriminatorExpressions().length; i++) {
-                    String discriminatorValue;
-                    if (i < switchCase.getDiscriminatorValues().length) {
-                        discriminatorValue = switchCase.getDiscriminatorValues()[i];
-                    } else {
-                        discriminatorValue = null;
-                    }
-                    discriminatorTypes.get(switchCase.getName()).put(discriminatorNames[i], discriminatorValue);
-                }
-            }
-            return discriminatorTypes;
-        }
-        return Collections.emptyMap();
+    private String getVariableLiteralName(VariableLiteral variableLiteral) {
+        return variableLiteral.getName() + ((variableLiteral.getChild() != null) ?
+            "_" + getVariableLiteralName(variableLiteral.getChild()) : "");
     }
 
 }

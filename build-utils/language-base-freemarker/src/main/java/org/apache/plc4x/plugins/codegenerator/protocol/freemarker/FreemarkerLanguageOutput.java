@@ -64,7 +64,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 typeContext.put("languageName", languageName);
                 typeContext.put("protocolName", protocolName);
                 typeContext.put("outputFlavor", outputFlavor);
-                typeContext.put("helper", getHelper(types));
+                typeContext.put("helper", getHelper(null, protocolName, outputFlavor, types));
 
                 for(Template template : specTemplates) {
                     try {
@@ -85,7 +85,7 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
                 typeContext.put("outputFlavor", outputFlavor);
                 typeContext.put("typeName", typeEntry.getKey());
                 typeContext.put("type", typeEntry.getValue());
-                typeContext.put("helper", getHelper(types));
+                typeContext.put("helper", getHelper(typeEntry.getValue(), protocolName, outputFlavor, types));
 
                 // Depending on the type, get the corresponding list of templates.
                 List<Template> templateList;
@@ -175,6 +175,6 @@ public abstract class FreemarkerLanguageOutput implements LanguageOutput {
 
     protected abstract List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException;
 
-    protected abstract FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types);
+    protected abstract FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types);
 
 }

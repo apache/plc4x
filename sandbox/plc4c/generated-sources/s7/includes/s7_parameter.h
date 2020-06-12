@@ -25,8 +25,15 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "s7_parameter_user_data_item.h"
 #include "s7_var_request_parameter_item.h"
+#include "s7_parameter.h"
+#include "s7_parameter.h"
+#include "s7_parameter.h"
+#include "s7_var_request_parameter_item.h"
+#include "s7_parameter.h"
+#include "s7_parameter.h"
+#include "s7_parameter_user_data_item.h"
+#include "s7_parameter.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_parameter_discriminator {

@@ -50,7 +50,6 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_message* msg = malloc(sizeof(plc4c_s7_read_write_s7_message));
 
-
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
   if(protocolId != S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID) {
@@ -114,6 +113,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
     plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
     msg->payload = payload;
   }
+
 
   return OK;
 }

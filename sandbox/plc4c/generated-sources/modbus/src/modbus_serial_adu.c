@@ -31,7 +31,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_serial_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
 
-
   // Simple Field (transactionId)
   uint16_t transactionId = plc4c_spi_read_unsigned_int(buf, 16);
   msg->transaction_id = transactionId;
@@ -56,6 +55,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
   msg->pdu = pdu;
+
 
   return OK;
 }

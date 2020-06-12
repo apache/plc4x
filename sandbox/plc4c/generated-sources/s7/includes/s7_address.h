@@ -25,8 +25,9 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
-#include "memory_area.h"
+#include "s7_address.h"
 #include "transport_size.h"
+#include "memory_area.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_address_discriminator {

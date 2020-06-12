@@ -28,7 +28,6 @@ extern "C" {
 #include "data_transport_error_code.h"
 
 struct plc4c_s7_read_write_s7_var_payload_status_item {
-  /* This is an abstract type so this property saves the type of this typed union */
   /* Properties */
   plc4c_s7_read_write_data_transport_error_code return_code;
 };
