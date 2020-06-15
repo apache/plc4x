@@ -28,17 +28,17 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
   {/* s7_read_write_s7_parameter_read_var_request */
-   .messageType = 0x01, .parameterType = 0x04},
+   .parameterType = 0x04, .messageType = 0x01},
   {/* s7_read_write_s7_parameter_read_var_response */
-   .messageType = 0x03, .parameterType = 0x04},
+   .parameterType = 0x04, .messageType = 0x03},
   {/* s7_read_write_s7_parameter_setup_communication */
-   .messageType = -1, .parameterType = 0xF0},
+   .parameterType = 0xF0, .messageType = -1},
   {/* s7_read_write_s7_parameter_user_data */
-   .messageType = 0x07, .parameterType = 0x00},
+   .parameterType = 0x00, .messageType = 0x07},
   {/* s7_read_write_s7_parameter_write_var_request */
-   .messageType = 0x01, .parameterType = 0x05},
+   .parameterType = 0x05, .messageType = 0x01},
   {/* s7_read_write_s7_parameter_write_var_response */
-   .messageType = 0x03, .parameterType = 0x05}
+   .parameterType = 0x05, .messageType = 0x03}
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -53,6 +53,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
 
@@ -87,7 +88,6 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     plc4c_list* items;
     msg->s7_parameter_user_data_items = items;
   }
-
 
   return OK;
 }

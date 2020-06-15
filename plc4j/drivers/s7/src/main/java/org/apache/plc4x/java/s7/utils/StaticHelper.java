@@ -124,19 +124,19 @@ public class StaticHelper {
 
     }
 
-    public static String parseS7String(ReadBuffer io, String encoding) {
+    public static String parseS7String(ReadBuffer io, Object encoding) {
         try {
             // This is the maximum number of bytes a string can be long.
             short maxLength = io.readUnsignedShort(8);
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
             short totalStringLength = io.readShort(8);
-            return io.readString(8 * totalStringLength, encoding);
+            return io.readString(8 * totalStringLength, (String) encoding);
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public static void serializeS7String(WriteBuffer io, PlcValue value, String encoding) {
+    public static void serializeS7String(WriteBuffer io, PlcValue value, Object encoding) {
         // TODO: Need to implement the serialization or we can't write strings
         throw new PlcRuntimeException("Not implemented yet");
     }

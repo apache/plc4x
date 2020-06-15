@@ -26,16 +26,9 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 #include "cotp_packet.h"
-#include "cotp_packet.h"
-#include "cotp_packet.h"
+#include "s7_message.h"
 #include "cotp_parameter.h"
 #include "cotp_protocol_class.h"
-#include "cotp_protocol_class.h"
-#include "cotp_protocol_class.h"
-#include "s7_message.h"
-#include "cotp_packet.h"
-#include "cotp_packet.h"
-#include "cotp_packet.h"
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_cotp_packet_discriminator {

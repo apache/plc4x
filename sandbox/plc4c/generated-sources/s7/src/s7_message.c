@@ -50,6 +50,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_message* msg = malloc(sizeof(plc4c_s7_read_write_s7_message));
 
+
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
   if(protocolId != S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID) {
@@ -62,9 +63,9 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
-    uint16_t reserved = plc4c_spi_read_unsigned_int(buf, 16);
-    if(reserved != (uint16_t) 0x0000) {
-      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0000, reserved);
+    uint16_t _reserved = plc4c_spi_read_unsigned_int(buf, 16);
+    if(_reserved != 0x0000) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x0000, _reserved);
     }
   }
 
@@ -113,7 +114,6 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
     plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
     msg->payload = payload;
   }
-
 
   return OK;
 }

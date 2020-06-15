@@ -31,6 +31,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_s7_var_payload_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
 
+
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
   msg->return_code = returnCode;
@@ -61,7 +62,6 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
     // Just read the padding data and ignore it
     plc4c_spi_read_unsigned_short(buf, 8);
   }
-
 
   return OK;
 }

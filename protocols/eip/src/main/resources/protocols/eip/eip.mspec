@@ -97,8 +97,8 @@
                [reserved   uint    8   '0x24']   // setRequestPathLogicalInstanceSegment
                [reserved   uint    8   '0x01']   // setRequestPathInstance
                [reserved   uint    16  '0x9D05']   //Timeout 5s
-               [implicit   uint    16   'messageSize'   'lengthInBytes - 10 - 4']   //substract above and routing
-               [simple     CipService  'service' ['messageSize'] ]
+               [implicit   uint    16  'messageSize'   'lengthInBytes - 10 - 4']   //subtract above and routing
+               [simple     CipService  'unconnectedService' ['messageSize'] ]
                [const      uint    16  'route' '0x0001']
                [simple     int     8   'backPlane']
                [simple     int     8   'slot']

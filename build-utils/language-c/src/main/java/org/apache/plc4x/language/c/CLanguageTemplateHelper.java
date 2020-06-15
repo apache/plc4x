@@ -351,7 +351,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     @Override
-    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         return null;
     }
 
@@ -365,15 +365,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
 
 
-    public String toParseExpression(Term term, Argument[] parserArguments) {
-        return toExpression(term, term1 -> toVariableParseExpression(term1, parserArguments));
+    public String toParseExpression(Field field, Term term, Argument[] parserArguments) {
+        return toExpression(field, term, term1 -> toVariableParseExpression(field, term1, parserArguments));
     }
 
-    public String toSerializationExpression(Term term, Argument[] parserArguments) {
-        return toExpression(term, term1 -> toVariableSerializationExpression(term1, parserArguments));
+    public String toSerializationExpression(Field field, Term term, Argument[] parserArguments) {
+        return toExpression(field, term, term1 -> toVariableSerializationExpression(field, term1, parserArguments));
     }
 
-    private String toExpression(Term term, Function<Term, String> variableExpressionGenerator) {
+    private String toExpression(Field field, Term term, Function<Term, String> variableExpressionGenerator) {
         if (term == null) {
             return "";
         }
@@ -402,11 +402,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             Term a = ut.getA();
             switch (ut.getOperation()) {
                 case "!":
-                    return "!(" + toExpression(a, variableExpressionGenerator) + ")";
+                    return "!(" + toExpression(field, a, variableExpressionGenerator) + ")";
                 case "-":
-                    return "-(" + toExpression(a, variableExpressionGenerator) + ")";
+                    return "-(" + toExpression(field, a, variableExpressionGenerator) + ")";
                 case "()":
-                    return "(" + toExpression(a, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(field, a, variableExpressionGenerator) + ")";
                 default:
                     throw new RuntimeException("Unsupported unary operation type " + ut.getOperation());
             }
@@ -417,9 +417,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             String operation = bt.getOperation();
             switch (operation) {
                 case "^":
-                    return "Math.pow((" + toExpression(a, variableExpressionGenerator) + "), (" + toExpression(b, variableExpressionGenerator) + "))";
+                    return "Math.pow((" + toExpression(field, a, variableExpressionGenerator) + "), (" + toExpression(field, b, variableExpressionGenerator) + "))";
                 default:
-                    return "(" + toExpression(a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(b, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, b, variableExpressionGenerator) + ")";
             }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
@@ -427,7 +427,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                return "((" + toExpression(a, variableExpressionGenerator) + ") ? " + toExpression(b, variableExpressionGenerator) + " : " + toExpression(c, variableExpressionGenerator) + ")";
+                return "((" + toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -436,7 +436,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
-    public String toVariableParseExpression(Term term, Argument[] parserArguments) {
+    public String toVariableParseExpression(Field field, Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         // Any name that is full upper-case is considered a function call.
         // These are generally defined in the spi file evaluation_helper.c.
@@ -450,7 +450,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toParseExpression(arg, parserArguments));
+                    sb.append(toParseExpression(field, arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");
@@ -513,7 +513,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
     }
 
-    private String toVariableSerializationExpression(Term term, Argument[] serialzerArguments) {
+    private String toVariableSerializationExpression(Field field, Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
@@ -543,7 +543,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     }
                     if (isSerializerArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                    } /*else if (isTypeArg) {
+                    } else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -553,14 +553,22 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                                 break;
                             case "encoding":
-                                String encoding = ((StringTypeReference) field.getType()).getEncoding();
+                                if(!(field instanceof TypedField)) {
+                                    throw new RuntimeException("'encoding' only supported for typed fields.");
+                                }
+                                TypedField typedField = (TypedField) field;
+                                if(!(typedField.getType() instanceof StringTypeReference)) {
+                                    throw new RuntimeException("Can only access 'encoding' for string types.");
+                                }
+                                StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
+                                String encoding = stringTypeReference.getEncoding();
                                 // Cut off the single quotes.
                                 encoding = encoding.substring(1, encoding.length() - 1);
                                 sb.append("\"").append(encoding).append("\"");
                                 break;
                         }
-                    }*/ else {
-                        sb.append(toVariableSerializationExpression(va, null));
+                    } else {
+                        sb.append(toVariableSerializationExpression(field, va, null));
                     }
                 } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -614,7 +622,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         }
                         if (isSerializerArg) {
                             sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                        } /*else if (isTypeArg) {
+                        } else if (isTypeArg) {
                             String part = va.getChild().getName();
                             switch (part) {
                                 case "name":
@@ -624,14 +632,22 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                     sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
                                     break;
                                 case "encoding":
-                                    String encoding = ((StringTypeReference) field.getType()).getEncoding();
+                                    if(!(field instanceof TypedField)) {
+                                        throw new RuntimeException("'encoding' only supported for typed fields.");
+                                    }
+                                    TypedField typedField = (TypedField) field;
+                                    if(!(typedField.getType() instanceof StringTypeReference)) {
+                                        throw new RuntimeException("Can only access 'encoding' for string types.");
+                                    }
+                                    StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
+                                    String encoding = stringTypeReference.getEncoding();
                                     // Cut off the single quotes.
                                     encoding = encoding.substring(1, encoding.length() - 1);
                                     sb.append("\"").append(encoding).append("\"");
                                     break;
                             }
-                        }*/ else {
-                            sb.append(toVariableSerializationExpression(va, null));
+                        } else {
+                            sb.append(toVariableSerializationExpression(field, va, null));
                         }
                     } else if (arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
@@ -655,7 +671,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         if (isSerializerArg) {
             return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
-        } /*else if (isTypeArg) {
+        } else if (isTypeArg) {
             String part = vl.getChild().getName();
             switch (part) {
                 case "name":
@@ -663,14 +679,22 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 case "length":
                     return "\"" + ((SimpleTypeReference) field).getSizeInBits() + "\"";
                 case "encoding":
-                    String encoding = ((StringTypeReference) field.getType()).getEncoding();
+                    if(!(field instanceof TypedField)) {
+                        throw new RuntimeException("'encoding' only supported for typed fields.");
+                    }
+                    TypedField typedField = (TypedField) field;
+                    if(!(typedField.getType() instanceof StringTypeReference)) {
+                        throw new RuntimeException("Can only access 'encoding' for string types.");
+                    }
+                    StringTypeReference stringTypeReference = (StringTypeReference) typedField.getType();
+                    String encoding = stringTypeReference.getEncoding();
                     // Cut off the single quotes.
                     encoding = encoding.substring(1, encoding.length() - 1);
                     return "\"" + encoding + "\"";
                 default:
                     return "";
             }
-        }*/ else {
+        } else {
             return "_value." + toVariableExpressionRest(vl);
         }
     }
@@ -702,50 +726,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 return 0;
             }
         }
-    }
-
-    public String getReservedValue(ReservedField reservedField) {
-        final String languageTypeName = getLanguageTypeNameForField(reservedField);
-        if ("BigInteger".equals(languageTypeName)) {
-            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
-        } else {
-            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
-        }
-    }
-
-    @Override
-    public String getDiscriminatorName(Term discriminatorExpression) {
-        if(discriminatorExpression instanceof Literal) {
-            Literal literal = (Literal) discriminatorExpression;
-            if(literal instanceof NullLiteral) {
-                return "null";
-            } else if(literal instanceof BooleanLiteral) {
-                return Boolean.toString(((BooleanLiteral) literal).getValue());
-            } else if(literal instanceof NumericLiteral) {
-                return ((NumericLiteral) literal).getNumber().toString();
-            } else if(literal instanceof StringLiteral) {
-                return ((StringLiteral) literal).getValue();
-            } else if(literal instanceof VariableLiteral) {
-                VariableLiteral variableLiteral = (VariableLiteral) literal;
-                return getVariableLiteralName(variableLiteral);
-            }
-        } else if(discriminatorExpression instanceof UnaryTerm) {
-            UnaryTerm unaryTerm = (UnaryTerm) discriminatorExpression;
-            return getDiscriminatorName(unaryTerm.getA());
-        } else if(discriminatorExpression instanceof BinaryTerm) {
-            BinaryTerm binaryTerm = (BinaryTerm) discriminatorExpression;
-            return getDiscriminatorName(binaryTerm.getA()) + "_" + getDiscriminatorName(binaryTerm.getB());
-        } else if(discriminatorExpression instanceof TernaryTerm) {
-            TernaryTerm ternaryTerm = (TernaryTerm) discriminatorExpression;
-            return getDiscriminatorName(ternaryTerm.getA()) + "_" + getDiscriminatorName(ternaryTerm.getB())
-                + "_" + getDiscriminatorName(ternaryTerm.getC());
-        }
-        return "";
-    }
-
-    private String getVariableLiteralName(VariableLiteral variableLiteral) {
-        return variableLiteral.getName() + ((variableLiteral.getChild() != null) ?
-            "_" + getVariableLiteralName(variableLiteral.getChild()) : "");
     }
 
 }

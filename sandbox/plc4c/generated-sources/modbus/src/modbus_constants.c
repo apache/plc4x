@@ -30,13 +30,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_constants* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_constants));
+
   // Const Field (modbusTcpDefaultPort)
   uint16_t modbusTcpDefaultPort = plc4c_spi_read_unsigned_int(buf, 16);
   if(modbusTcpDefaultPort != MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + ModbusConstants.MODBUSTCPDEFAULTPORT + " but got " + modbusTcpDefaultPort);
   }
-
 
   return OK;
 }

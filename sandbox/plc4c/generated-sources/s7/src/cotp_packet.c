@@ -54,6 +54,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   // Pointer to the parsed data structure.
   plc4c_s7_read_write_cotp_packet* msg = malloc(sizeof(plc4c_s7_read_write_cotp_packet));
 
+
   // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t headerLength = plc4c_spi_read_unsigned_short(buf, 8);
 
@@ -134,7 +135,6 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
     plc4c_s7_read_write_s7_message_parse(buf, &payload);
     msg->payload = payload;
   }
-
 
   return OK;
 }

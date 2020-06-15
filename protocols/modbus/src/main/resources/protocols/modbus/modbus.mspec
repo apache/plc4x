@@ -56,8 +56,8 @@
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']
-    [implicit       bit         'error'     'DISCRIMINATOR_VALUES[0]']
-    [implicit       uint 7      'function'  'DISCRIMINATOR_VALUES[1]']
+    [discriminator bit         'error']
+    [discriminator uint 7      'function']
     [typeSwitch 'error','function','response'
         ['true'                     ModbusPDUError
             [simple     uint 8      'exceptionCode']

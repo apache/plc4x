@@ -28,77 +28,77 @@
 // enum constant to directly access a given types discriminator values)
 const plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_discriminators[] = {
   {/* modbus_read_write_modbus_pdu_diagnostic_request */
-   .error = false, .function = 0x08, .response = false},
+   .response = false, .function = 0x08, .error = false},
   {/* modbus_read_write_modbus_pdu_error */
-   .error = true, .function = -1, .response = -1},
+   .response = -1, .function = -1, .error = true},
   {/* modbus_read_write_modbus_pdu_get_com_event_log_request */
-   .error = false, .function = 0x0C, .response = false},
+   .response = false, .function = 0x0C, .error = false},
   {/* modbus_read_write_modbus_pdu_get_com_event_log_response */
-   .error = false, .function = 0x0C, .response = true},
+   .response = true, .function = 0x0C, .error = false},
   {/* modbus_read_write_modbus_pdu_mask_write_holding_register_request */
-   .error = false, .function = 0x16, .response = false},
+   .response = false, .function = 0x16, .error = false},
   {/* modbus_read_write_modbus_pdu_mask_write_holding_register_response */
-   .error = false, .function = 0x16, .response = true},
+   .response = true, .function = 0x16, .error = false},
   {/* modbus_read_write_modbus_pdu_read_coils_request */
-   .error = false, .function = 0x01, .response = false},
+   .response = false, .function = 0x01, .error = false},
   {/* modbus_read_write_modbus_pdu_read_coils_response */
-   .error = false, .function = 0x01, .response = true},
+   .response = true, .function = 0x01, .error = false},
   {/* modbus_read_write_modbus_pdu_read_device_identification_request */
-   .error = false, .function = 0x2B, .response = false},
+   .response = false, .function = 0x2B, .error = false},
   {/* modbus_read_write_modbus_pdu_read_device_identification_response */
-   .error = false, .function = 0x2B, .response = true},
+   .response = true, .function = 0x2B, .error = false},
   {/* modbus_read_write_modbus_pdu_read_discrete_inputs_request */
-   .error = false, .function = 0x02, .response = false},
+   .response = false, .function = 0x02, .error = false},
   {/* modbus_read_write_modbus_pdu_read_discrete_inputs_response */
-   .error = false, .function = 0x02, .response = true},
+   .response = true, .function = 0x02, .error = false},
   {/* modbus_read_write_modbus_pdu_read_exception_status_request */
-   .error = false, .function = 0x07, .response = false},
+   .response = false, .function = 0x07, .error = false},
   {/* modbus_read_write_modbus_pdu_read_exception_status_response */
-   .error = false, .function = 0x07, .response = true},
+   .response = true, .function = 0x07, .error = false},
   {/* modbus_read_write_modbus_pdu_read_fifo_queue_request */
-   .error = false, .function = 0x18, .response = false},
+   .response = false, .function = 0x18, .error = false},
   {/* modbus_read_write_modbus_pdu_read_fifo_queue_response */
-   .error = false, .function = 0x18, .response = true},
+   .response = true, .function = 0x18, .error = false},
   {/* modbus_read_write_modbus_pdu_read_file_record_request */
-   .error = false, .function = 0x14, .response = false},
+   .response = false, .function = 0x14, .error = false},
   {/* modbus_read_write_modbus_pdu_read_file_record_response */
-   .error = false, .function = 0x14, .response = true},
+   .response = true, .function = 0x14, .error = false},
   {/* modbus_read_write_modbus_pdu_read_holding_registers_request */
-   .error = false, .function = 0x03, .response = false},
+   .response = false, .function = 0x03, .error = false},
   {/* modbus_read_write_modbus_pdu_read_holding_registers_response */
-   .error = false, .function = 0x03, .response = true},
+   .response = true, .function = 0x03, .error = false},
   {/* modbus_read_write_modbus_pdu_read_input_registers_request */
-   .error = false, .function = 0x04, .response = false},
+   .response = false, .function = 0x04, .error = false},
   {/* modbus_read_write_modbus_pdu_read_input_registers_response */
-   .error = false, .function = 0x04, .response = true},
+   .response = true, .function = 0x04, .error = false},
   {/* modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request */
-   .error = false, .function = 0x17, .response = false},
+   .response = false, .function = 0x17, .error = false},
   {/* modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response */
-   .error = false, .function = 0x17, .response = true},
+   .response = true, .function = 0x17, .error = false},
   {/* modbus_read_write_modbus_pdu_report_server_id_request */
-   .error = false, .function = 0x11, .response = false},
+   .response = false, .function = 0x11, .error = false},
   {/* modbus_read_write_modbus_pdu_report_server_id_response */
-   .error = false, .function = 0x11, .response = true},
+   .response = true, .function = 0x11, .error = false},
   {/* modbus_read_write_modbus_pdu_write_file_record_request */
-   .error = false, .function = 0x15, .response = false},
+   .response = false, .function = 0x15, .error = false},
   {/* modbus_read_write_modbus_pdu_write_file_record_response */
-   .error = false, .function = 0x15, .response = true},
+   .response = true, .function = 0x15, .error = false},
   {/* modbus_read_write_modbus_pdu_write_multiple_coils_request */
-   .error = false, .function = 0x0F, .response = false},
+   .response = false, .function = 0x0F, .error = false},
   {/* modbus_read_write_modbus_pdu_write_multiple_coils_response */
-   .error = false, .function = 0x0F, .response = true},
+   .response = true, .function = 0x0F, .error = false},
   {/* modbus_read_write_modbus_pdu_write_multiple_holding_registers_request */
-   .error = false, .function = 0x10, .response = false},
+   .response = false, .function = 0x10, .error = false},
   {/* modbus_read_write_modbus_pdu_write_multiple_holding_registers_response */
-   .error = false, .function = 0x10, .response = true},
+   .response = true, .function = 0x10, .error = false},
   {/* modbus_read_write_modbus_pdu_write_single_coil_request */
-   .error = false, .function = 0x05, .response = false},
+   .response = false, .function = 0x05, .error = false},
   {/* modbus_read_write_modbus_pdu_write_single_coil_response */
-   .error = false, .function = 0x05, .response = true},
+   .response = true, .function = 0x05, .error = false},
   {/* modbus_read_write_modbus_pdu_write_single_register_request */
-   .error = false, .function = 0x06, .response = false},
+   .response = false, .function = 0x06, .error = false},
   {/* modbus_read_write_modbus_pdu_write_single_register_response */
-   .error = false, .function = 0x06, .response = true}
+   .response = true, .function = 0x06, .error = false}
 };
 
 // Function returning the discriminator values for a given type constant.
@@ -113,10 +113,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
 
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_pdu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu));
-  // Implicit Field (error) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+
+  // Discriminator Field (error) (Used as input to a switch field)
   bool error = plc4c_spi_read_bit(buf);
 
-  // Implicit Field (function) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  // Discriminator Field (function) (Used as input to a switch field)
   unsigned int function = plc4c_spi_read_unsigned_short(buf, 7);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -332,7 +333,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   } else 
   if((error == false) && (function == 0x2B) && (response == true)) { /* ModbusPDUReadDeviceIdentificationResponse */
   }
-
 
   return OK;
 }

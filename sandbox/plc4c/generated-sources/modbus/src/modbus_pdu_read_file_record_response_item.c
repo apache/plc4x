@@ -31,6 +31,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   // Pointer to the parsed data structure.
   plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
 
+
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t dataLength = plc4c_spi_read_unsigned_short(buf, 8);
 
@@ -48,7 +49,6 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
       plc4c_utils_list_insert_head_value(&data, plc4c_spi_read_unsigned_int(buf, 16));
     }
   }
-
 
   return OK;
 }

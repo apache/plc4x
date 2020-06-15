@@ -48,7 +48,7 @@ extern "C" {
 -->
 <#if helper.getComplexTypeReferences()?has_content>
     <#list helper.getComplexTypeReferences() as typeReference>
-#include "${helper.camelCaseToSnakeCase(typeReference.name)}.h"
+#include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
 

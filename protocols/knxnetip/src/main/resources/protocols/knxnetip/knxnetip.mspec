@@ -293,8 +293,8 @@
 ]
 
 [discriminatedType 'CEMIFrame'
-    [simple        bit          'standardFrame']
-    [simple        bit          'polling']
+    [discriminator bit          'standardFrame']
+    [discriminator bit          'polling']
     [simple        bit          'doNotRepeat']
     [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']

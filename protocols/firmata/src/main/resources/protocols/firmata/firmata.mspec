@@ -57,8 +57,8 @@
 ]
 
 [discriminatedType 'FirmataCommand' [bit 'response']
-    [discriminator uint 4 'command']
-    [typeSwitch 'command'
+    [discriminator uint 4 'commandCode']
+    [typeSwitch 'commandCode'
         ['0x0' FirmataCommandSysex
             [simple SysexCommand 'command' ['response']]
             [reserved uint 8 '0xF7']
