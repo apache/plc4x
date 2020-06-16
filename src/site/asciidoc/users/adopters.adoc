@@ -32,6 +32,8 @@ a|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200] |https://www.pra
 
 a|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200] |https://www.pragmaticindustries.de[pragmatic industries GmbH^,opts=nofollow] |(I)IoT / Industry 4.0 |PLC4X is an important part of our platform _Digital Cockpit_ which we develop in-house.
 
+a|image::users/companies/logo-industryfusion.png[if, 200, 200] |https://www.industry-fusion.com[IndustryFusion^,opts=nofollow] |IIoT / Industry 4.0 |In the End-2-End Industry 4.0 solution IndustryFusion we use PLC4X for brownfield-connectivity, i.e. the connectivity to existing machines on the shop floor.
+
 // TODO: Add your company in alphabetical order ...
 
 |===
