@@ -24,25 +24,25 @@
 #include "modbus_pdu_write_file_record_request_item.h"
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item** message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item));
+  (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item));
 
 
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->reference_type = referenceType;
+  (*_message)->reference_type = referenceType;
 
   // Simple Field (fileNumber)
   uint16_t fileNumber = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->file_number = fileNumber;
+  (*_message)->file_number = fileNumber;
 
   // Simple Field (recordNumber)
   uint16_t recordNumber = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->record_number = recordNumber;
+  (*_message)->record_number = recordNumber;
 
   // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t recordLength = plc4c_spi_read_unsigned_int(buf, 16);
@@ -54,9 +54,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
     uint8_t _recordDataLength = (recordLength) * (2);
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(buf) + _recordDataLength;
     while(plc4c_spi_read_get_pos(buf) < recordDataEndPos) {
-      plc4c_utils_list_insert_head_value(&recordData, plc4c_spi_read_unsigned_int(buf, 16));
+      uint16_t value = plc4c_spi_read_unsigned_int(buf, 16);
+      plc4c_utils_list_insert_head_value(&recordData, &value);
     }
   }
+  (*_message)->record_data = recordData;
 
   return OK;
 }

@@ -25,22 +25,7 @@
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.c.CLanguageTemplateHelper" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
 <#-- Declare the name and type of variables declared locally inside the template -->
-<#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
-<#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
-<#-- @ftlvariable name="constField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ConstField" -->
-<#-- @ftlvariable name="discriminatorField" type="org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField" -->
-<#-- @ftlvariable name="enumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.EnumField" -->
-<#-- @ftlvariable name="implicitField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField" -->
-<#-- @ftlvariable name="manualArrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField" -->
-<#-- @ftlvariable name="manualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualField" -->
-<#-- @ftlvariable name="optionalField" type="org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField" -->
-<#-- @ftlvariable name="paddingField" type="org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField" -->
-<#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
-<#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
-<#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
-<#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
-<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
-<#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
+<#-- @ftlvariable name="field" type="org.apache.plc4x.plugins.codegenerator.types.fields.NamedField" -->
 <#if !helper.isDiscriminatedChildTypeDefinition(type)>${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(type.name)}.h
 /*
   Licensed to the Apache Software Foundation (ASF) under one
@@ -110,11 +95,11 @@ plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeNam
     When using const fields, output the constant reference values
     as global const values so we can use them elsewhere.
 -->
-<#if type.constFields?has_content>
+<#if helper.getAllConstFields()?has_content>
 
 // Constant values.
-    <#list type.constFields as field>
-const ${helper.getLanguageTypeNameForField(field)} ${helper.getCTypeName(type.name)?upper_case}_${helper.camelCaseToSnakeCase(field.name)?upper_case} = ${field.referenceValue};
+    <#list helper.getAllConstFields() as parentType, constField>
+const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case} = ${constField.referenceValue};
     </#list>
 </#if>
 
@@ -133,15 +118,21 @@ struct plc4c_${helper.getCTypeName(type.name)} {
         <#list field.cases as case>
     struct { /* ${case.name} */
             <#list case.propertyFields as caseField>
-      ${helper.getLanguageTypeNameForField(caseField)}<#if !helper.isSimpleTypeReference(caseField.type)>*</#if> ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
+                <#if helper.isOptionalField(caseField)>
+      ${helper.getLanguageTypeNameForField(caseField)}* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
+                <#else>
+      ${helper.getLanguageTypeNameForField(caseField)} ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
+                </#if>
             </#list>
     };
         </#list>
   };
     <#elseif helper.isEnumField(field)>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)};
+    <#elseif helper.isOptionalField(field)>
+  ${helper.getLanguageTypeNameForField(field)}* ${helper.camelCaseToSnakeCase(field.name)};
     <#else>
-  ${helper.getLanguageTypeNameForField(field)}<#if !helper.isSimpleTypeReference(field.type)>*</#if> ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
+  ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
     </#if>
 </#list>
 };

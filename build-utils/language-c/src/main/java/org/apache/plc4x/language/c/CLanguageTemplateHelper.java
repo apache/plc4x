@@ -118,6 +118,46 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return getLanguageTypeNameForTypeReference(typeReference);
     }
 
+    public Map<ComplexTypeDefinition, ConstField> getAllConstFields() {
+        Map<ComplexTypeDefinition, ConstField> constFields = new HashMap<>();
+        ((ComplexTypeDefinition) getThisTypeDefinition()).getConstFields().forEach(
+            constField -> constFields.put((ComplexTypeDefinition) getThisTypeDefinition(), constField));
+        if(getSwitchField() != null) {
+            for (DiscriminatedComplexTypeDefinition switchCase : getSwitchField().getCases()) {
+                switchCase.getConstFields().forEach(
+                    constField -> constFields.put(switchCase, constField));
+            }
+        }
+        return constFields;
+    }
+
+    /**
+     * If a property references a complex type in an argument, we need to pass that as a pointer,
+     * same with optional fields.
+     *
+     * @param typeDefinition type that contains the property or attribute.
+     * @param propertyName name of the property or attribute
+     * @return true if the access needs to be using pointers
+     */
+    public boolean requiresPointerAccess(ComplexTypeDefinition typeDefinition, String propertyName) {
+        final Optional<NamedField> typeField = typeDefinition.getFields().stream().filter(field -> field instanceof NamedField).map(field -> (NamedField) field).filter(namedField -> namedField.getName().equals(propertyName)).findFirst();
+        // If the property name refers to a field, check if it's an optional field.
+        // If it is, pointer access is required, if not, it's not.
+        if(typeField.isPresent()) {
+            final NamedField namedField = typeField.get();
+            return namedField instanceof OptionalField;
+        }
+        final Optional<Argument> parserArgument = Arrays.stream(typeDefinition.getParserArguments()).filter(argument -> argument.getName().equals(propertyName)).findFirst();
+        // If the property name refers to a parser argument, as soon as it's a complex type,
+        // pointer access is required.
+        if(parserArgument.isPresent()) {
+            return parserArgument.get().getType() instanceof ComplexTypeReference;
+        }
+        // In all other cases, the property might be a built-in constant, so we don't need pointer
+        // access for any of these.
+        return false;
+    }
+
     /**
      * Converts a given type-reference into a concrete type in C
      * If it's a complex type, this is trivial, as the typename then follows the usual pattern.
@@ -365,15 +405,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
 
 
-    public String toParseExpression(Field field, Term term, Argument[] parserArguments) {
-        return toExpression(field, term, term1 -> toVariableParseExpression(field, term1, parserArguments));
+    public String toParseExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
+        return toExpression(baseType, field, term, term1 -> toVariableParseExpression(baseType, field, term1, parserArguments));
     }
 
-    public String toSerializationExpression(Field field, Term term, Argument[] parserArguments) {
-        return toExpression(field, term, term1 -> toVariableSerializationExpression(field, term1, parserArguments));
+    public String toSerializationExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
+        return toExpression(baseType, field, term, term1 -> toVariableSerializationExpression(baseType, field, term1, parserArguments));
     }
 
-    private String toExpression(Field field, Term term, Function<Term, String> variableExpressionGenerator) {
+    private String toExpression(ComplexTypeDefinition baseType, Field field, Term term, Function<Term, String> variableExpressionGenerator) {
         if (term == null) {
             return "";
         }
@@ -402,11 +442,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             Term a = ut.getA();
             switch (ut.getOperation()) {
                 case "!":
-                    return "!(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "!(" + toExpression(baseType, field, a, variableExpressionGenerator) + ")";
                 case "-":
-                    return "-(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "-(" + toExpression(baseType, field, a, variableExpressionGenerator) + ")";
                 case "()":
-                    return "(" + toExpression(field, a, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(baseType, field, a, variableExpressionGenerator) + ")";
                 default:
                     throw new RuntimeException("Unsupported unary operation type " + ut.getOperation());
             }
@@ -417,9 +457,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             String operation = bt.getOperation();
             switch (operation) {
                 case "^":
-                    return "Math.pow((" + toExpression(field, a, variableExpressionGenerator) + "), (" + toExpression(field, b, variableExpressionGenerator) + "))";
+                    return "Math.pow((" + toExpression(baseType, field, a, variableExpressionGenerator) + "), (" + toExpression(baseType, field, b, variableExpressionGenerator) + "))";
                 default:
-                    return "(" + toExpression(field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(field, b, variableExpressionGenerator) + ")";
+                    return "(" + toExpression(baseType, field, a, variableExpressionGenerator) + ") " + operation + " (" + toExpression(baseType, field, b, variableExpressionGenerator) + ")";
             }
         } else if (term instanceof TernaryTerm) {
             TernaryTerm tt = (TernaryTerm) term;
@@ -427,7 +467,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                return "((" + toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
+                return "((" + toExpression(baseType, field, a, variableExpressionGenerator) + ") ? " + toExpression(baseType, field, b, variableExpressionGenerator) + " : " + toExpression(baseType, field, c, variableExpressionGenerator) + ")";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -436,8 +476,45 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
-    public String toVariableParseExpression(Field field, Term term, Argument[] parserArguments) {
+    public String toVariableParseExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] parserArguments) {
         VariableLiteral vl = (VariableLiteral) term;
+        if("CAST".equals(vl.getName())) {
+
+            StringBuilder sb = new StringBuilder();
+            if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
+                throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            }
+            final VariableLiteral sourceTerm = (VariableLiteral) vl.getArgs().get(0);
+            final VariableLiteral typeTerm = (VariableLiteral) vl.getArgs().get(1);
+            ComplexTypeReference castTypeReference = typeTerm::getName;
+            final TypeDefinition castType = getTypeDefinitionForTypeReference(castTypeReference);
+            // If we're casting to a sub-type of a discriminated value, we got to cast to the parent
+            // type instead and add the name of the sub-type as prefix to the property we're tryging to
+            // access next.
+            String castToType;
+            String restExpression;
+            if(castType.getParentType() != null) {
+                castToType = castType.getParentType().getName();
+                if(vl.getChild() != null) {
+                    // Change the name of the property to contain the sub-type-prefix.
+                    restExpression = "." + camelCaseToSnakeCase(castType.getName()) + "_" + toVariableExpressionRest(vl.getChild());
+                } else {
+                    restExpression = "";
+                }
+            } else {
+                castToType = castType.getName();
+                if(vl.getChild() != null) {
+                    restExpression = "." + toVariableExpressionRest(vl.getChild());
+                } else {
+                    restExpression = "";
+                }
+            }
+            sb.append("((plc4c_").append(getCTypeName(castToType)).append(") (")
+                .append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "*" : "")
+                .append(toVariableParseExpression(baseType, field, sourceTerm, parserArguments)).append("))")
+                .append(restExpression);
+            return sb.toString();
+        }
         // Any name that is full upper-case is considered a function call.
         // These are generally defined in the spi file evaluation_helper.c.
         // All should have a name prefix "plc4c_spi_evaluation_helper_".
@@ -450,7 +527,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (!firstArg) {
                         sb.append(", ");
                     }
-                    sb.append(toParseExpression(field, arg, parserArguments));
+                    sb.append(toParseExpression(baseType, field, arg, parserArguments));
                     firstArg = false;
                 }
                 sb.append(")");
@@ -465,11 +542,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
         // Try to find the type of the addressed property.
         final Optional<TypeReference> propertyTypeOptional =
-            getTypeReferenceForProperty((ComplexTypeDefinition) getThisTypeDefinition(), name);
+            getTypeReferenceForProperty(baseType, name);
 
         // If we couldn't find the type, we didn't find the property.
         if(!propertyTypeOptional.isPresent()) {
-            throw new RuntimeException("Could not find property with name '" + name + "' in type " + getThisTypeDefinition().getName());
+            throw new RuntimeException("Could not find property with name '" + name + "' in type " + baseType.getName());
         }
 
         final TypeReference propertyType = propertyTypeOptional.get();
@@ -513,7 +590,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
     }
 
-    private String toVariableSerializationExpression(Field field, Term term, Argument[] serialzerArguments) {
+    private String toVariableSerializationExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] serialzerArguments) {
         VariableLiteral vl = (VariableLiteral) term;
         if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
@@ -568,7 +645,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 break;
                         }
                     } else {
-                        sb.append(toVariableSerializationExpression(field, va, null));
+                        sb.append(toVariableSerializationExpression(baseType, field, va, null));
                     }
                 } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
@@ -647,7 +724,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                     break;
                             }
                         } else {
-                            sb.append(toVariableSerializationExpression(field, va, null));
+                            sb.append(toVariableSerializationExpression(baseType, field, va, null));
                         }
                     } else if (arg instanceof StringLiteral) {
                         sb.append(((StringLiteral) arg).getValue());
@@ -700,7 +777,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     private String toVariableExpressionRest(VariableLiteral vl) {
-        return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+        return camelCaseToSnakeCase(vl.getName()) + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
             ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
     }
 

@@ -24,12 +24,12 @@
 #include "modbus_pdu_read_file_record_response_item.h"
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
+  (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
 
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->reference_type = referenceType;
+  (*_message)->reference_type = referenceType;
 
   // Array field (data)
   plc4c_list data;
@@ -46,9 +46,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
     uint8_t _dataLength = (dataLength) - (1);
     uint8_t dataEndPos = plc4c_spi_read_get_pos(buf) + _dataLength;
     while(plc4c_spi_read_get_pos(buf) < dataEndPos) {
-      plc4c_utils_list_insert_head_value(&data, plc4c_spi_read_unsigned_int(buf, 16));
+      uint16_t value = plc4c_spi_read_unsigned_int(buf, 16);
+      plc4c_utils_list_insert_head_value(&data, &value);
     }
   }
+  (*_message)->data = data;
 
   return OK;
 }

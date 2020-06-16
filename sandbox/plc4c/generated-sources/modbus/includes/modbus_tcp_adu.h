@@ -35,7 +35,7 @@ struct plc4c_modbus_read_write_modbus_tcp_adu {
   uint16_t transaction_identifier;
   uint16_t protocol_identifier;
   uint8_t unit_identifier;
-  plc4c_modbus_read_write_modbus_pdu* pdu;
+  plc4c_modbus_read_write_modbus_pdu pdu;
 };
 typedef struct plc4c_modbus_read_write_modbus_tcp_adu plc4c_modbus_read_write_modbus_tcp_adu;
 

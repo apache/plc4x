@@ -24,25 +24,25 @@
 #include "s7_var_payload_data_item.h"
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* buf, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* buf, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_s7_var_payload_data_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
 
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
-  msg->return_code = returnCode;
+  (*_message)->return_code = returnCode;
 
   // Enum field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
-  msg->transport_size = transportSize;
+  (*_message)->transport_size = transportSize;
 
   // Simple Field (dataLength)
   uint16_t dataLength = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->data_length = dataLength;
+  (*_message)->data_length = dataLength;
 
   // Array field (data)
   plc4c_list data;
@@ -53,14 +53,18 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
       
       int8_t value = plc4c_spi_read_byte(buf, 8);
       plc4c_utils_list_insert_head_value(&data, &value);
+      plc4c_utils_list_insert_head_value(&data, &value);
     }
   }
+  (*_message)->data = data;
 
-  // Padding Field (pad)
-  bool _padNeedsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(data)) % (2))) == (1)))));
-  if(_padNeedsPadding) {
-    // Just read the padding data and ignore it
-    plc4c_spi_read_unsigned_short(buf, 8);
+  // Padding Field (padding)
+  {
+    bool _needsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(data)) % (2))) == (1)))));
+    if(_needsPadding) {
+      // Just read the padding data and ignore it
+      plc4c_spi_read_unsigned_short(buf, 8);
+    }
   }
 
   return OK;

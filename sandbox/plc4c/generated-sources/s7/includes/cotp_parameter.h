@@ -52,7 +52,7 @@ struct plc4c_s7_read_write_cotp_parameter {
   /* Properties */
   union {
     struct { /* COTPParameterTpduSize */
-      plc4c_s7_read_write_cotp_tpdu_size* cotp_parameter_tpdu_size_tpdu_size;
+      plc4c_s7_read_write_cotp_tpdu_size cotp_parameter_tpdu_size_tpdu_size;
     };
     struct { /* COTPParameterCallingTsap */
       uint16_t cotp_parameter_calling_tsap_tsap_id;

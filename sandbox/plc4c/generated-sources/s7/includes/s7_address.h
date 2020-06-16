@@ -49,10 +49,10 @@ struct plc4c_s7_read_write_s7_address {
   /* Properties */
   union {
     struct { /* S7AddressAny */
-      plc4c_s7_read_write_transport_size* s7_address_any_transport_size;
+      plc4c_s7_read_write_transport_size s7_address_any_transport_size;
       uint16_t s7_address_any_number_of_elements;
       uint16_t s7_address_any_db_number;
-      plc4c_s7_read_write_memory_area* s7_address_any_area;
+      plc4c_s7_read_write_memory_area s7_address_any_area;
       uint16_t s7_address_any_byte_address;
       unsigned int s7_address_any_bit_address : 3;
     };

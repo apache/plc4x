@@ -37,20 +37,27 @@ plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_wr
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item** message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_s7_var_request_parameter_item* msg = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(itemType == 0x12) { /* S7VarRequestParameterItemAddress */
-    plc4c_s7_read_write_s7_address* address = NULL;
-    msg->s7_var_request_parameter_item_address_address = address;
+
+  // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t itemLength = plc4c_spi_read_unsigned_short(buf, 8);
+
+
+  // Simple Field (address)
+  plc4c_s7_read_write_s7_address address;
+  plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
+  (*_message)->s7_var_request_parameter_item_address_address = address;
   }
 
   return OK;

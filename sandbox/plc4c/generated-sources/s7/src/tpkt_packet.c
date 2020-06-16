@@ -24,19 +24,19 @@
 #include "tpkt_packet.h"
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** message) {
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_tpkt_packet* msg = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
 
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
   if(protocolId != S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + TPKTPacket.PROTOCOLID + " but got " + protocolId);
+    // throw new ParseException("Expected constant value " + S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID + " but got " + protocolId);
   }
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -51,9 +51,9 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   uint16_t len = plc4c_spi_read_unsigned_int(buf, 16);
 
   // Simple Field (payload)
-  plc4c_s7_read_write_cotp_packet* payload = NULL;
+  plc4c_s7_read_write_cotp_packet payload;
   plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), (void*) &payload);
-  msg->payload = payload;
+  (*_message)->payload = payload;
 
   return OK;
 }

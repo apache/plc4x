@@ -24,17 +24,17 @@
 #include "modbus_serial_adu.h"
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_modbus_read_write_modbus_serial_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
+  (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_serial_adu));
 
 
   // Simple Field (transactionId)
   uint16_t transactionId = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->transaction_id = transactionId;
+  (*_message)->transaction_id = transactionId;
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
@@ -46,16 +46,16 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (length)
   uint16_t length = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->length = length;
+  (*_message)->length = length;
 
   // Simple Field (address)
   uint8_t address = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->address = address;
+  (*_message)->address = address;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
+  plc4c_modbus_read_write_modbus_pdu pdu;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
-  msg->pdu = pdu;
+  (*_message)->pdu = pdu;
 
   return OK;
 }

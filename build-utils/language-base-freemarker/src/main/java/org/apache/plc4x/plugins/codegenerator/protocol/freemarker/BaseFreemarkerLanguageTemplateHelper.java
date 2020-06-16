@@ -65,6 +65,17 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
                 return 16;
             }
         });
+        builtInFields.put("lastItem", new SimpleTypeReference() {
+            @Override
+            public SimpleBaseType getBaseType() {
+                return SimpleBaseType.BIT;
+            }
+
+            @Override
+            public int getSizeInBits() {
+                return 1;
+            }
+        });
     }
 
     public BaseFreemarkerLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
@@ -209,8 +220,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
             return Optional.of(builtInFields.get(propertyName));
         }
         // Check if the expression root is referencing a field
-        final Optional<PropertyField> propertyFieldOptional = baseType.getFields().stream().filter(
-            field -> field instanceof PropertyField).map(field -> (PropertyField) field).filter(
+        final Optional<PropertyField> propertyFieldOptional = baseType.getPropertyFields().stream().filter(
             propertyField -> propertyField.getName().equals(propertyName)).findFirst();
         if(propertyFieldOptional.isPresent()) {
             final PropertyField propertyField = propertyFieldOptional.get();
@@ -278,6 +288,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public boolean isEnumField(Field field) {
         return field instanceof EnumField;
+    }
+
+    public boolean isOptionalField(Field field) {
+        return field instanceof OptionalField;
     }
 
     public boolean isSwitchField(Field field) {

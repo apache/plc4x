@@ -61,17 +61,17 @@ struct plc4c_s7_read_write_cotp_packet {
     struct { /* COTPPacketConnectionRequest */
       uint16_t cotp_packet_connection_request_destination_reference;
       uint16_t cotp_packet_connection_request_source_reference;
-      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_connection_request_protocol_class;
+      plc4c_s7_read_write_cotp_protocol_class cotp_packet_connection_request_protocol_class;
     };
     struct { /* COTPPacketConnectionResponse */
       uint16_t cotp_packet_connection_response_destination_reference;
       uint16_t cotp_packet_connection_response_source_reference;
-      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_connection_response_protocol_class;
+      plc4c_s7_read_write_cotp_protocol_class cotp_packet_connection_response_protocol_class;
     };
     struct { /* COTPPacketDisconnectRequest */
       uint16_t cotp_packet_disconnect_request_destination_reference;
       uint16_t cotp_packet_disconnect_request_source_reference;
-      plc4c_s7_read_write_cotp_protocol_class* cotp_packet_disconnect_request_protocol_class;
+      plc4c_s7_read_write_cotp_protocol_class cotp_packet_disconnect_request_protocol_class;
     };
     struct { /* COTPPacketDisconnectResponse */
       uint16_t cotp_packet_disconnect_response_destination_reference;
@@ -82,7 +82,7 @@ struct plc4c_s7_read_write_cotp_packet {
       uint8_t cotp_packet_tpdu_error_reject_cause;
     };
   };
-  plc4c_list* parameters;
+  plc4c_list parameters;
   plc4c_s7_read_write_s7_message* payload;
 };
 typedef struct plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet;

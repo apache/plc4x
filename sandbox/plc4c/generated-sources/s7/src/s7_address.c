@@ -37,35 +37,56 @@ plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_get_
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address** message) {
+plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_s7_address* msg = malloc(sizeof(plc4c_s7_read_write_s7_address));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_address));
 
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(addressType == 0x10) { /* S7AddressAny */
-    plc4c_s7_read_write_transport_size* transportSize = NULL;
-    msg->s7_address_any_transport_size = transportSize;
 
-    uint16_t numberOfElements = -1;
-    msg->s7_address_any_number_of_elements = numberOfElements;
+  // Enum field (transportSize)
+  plc4c_s7_read_write_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
+  (*_message)->s7_address_any_transport_size = transportSize;
 
-    uint16_t dbNumber = -1;
-    msg->s7_address_any_db_number = dbNumber;
 
-    plc4c_s7_read_write_memory_area* area = NULL;
-    msg->s7_address_any_area = area;
+  // Simple Field (numberOfElements)
+  uint16_t numberOfElements = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_address_any_number_of_elements = numberOfElements;
 
-    uint16_t byteAddress = -1;
-    msg->s7_address_any_byte_address = byteAddress;
 
-    unsigned int bitAddress = -1;
-    msg->s7_address_any_bit_address = bitAddress;
+  // Simple Field (dbNumber)
+  uint16_t dbNumber = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_address_any_db_number = dbNumber;
+
+
+  // Enum field (area)
+  plc4c_s7_read_write_memory_area area = plc4c_spi_read_byte(buf, 8);
+  (*_message)->s7_address_any_area = area;
+
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    unsigned int _reserved = plc4c_spi_read_unsigned_short(buf, 5);
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+    }
+  }
+
+
+  // Simple Field (byteAddress)
+  uint16_t byteAddress = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_address_any_byte_address = byteAddress;
+
+
+  // Simple Field (bitAddress)
+  unsigned int bitAddress = plc4c_spi_read_unsigned_byte(buf, 3);
+  (*_message)->s7_address_any_bit_address = bitAddress;
   }
 
   return OK;

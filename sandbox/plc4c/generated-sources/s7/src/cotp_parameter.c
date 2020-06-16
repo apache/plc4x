@@ -45,12 +45,12 @@ plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parame
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_cotp_parameter* msg = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
@@ -60,24 +60,44 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
-    plc4c_s7_read_write_cotp_tpdu_size* tpduSize = NULL;
-    msg->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
+
+  // Enum field (tpduSize)
+  plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_spi_read_byte(buf, 8);
+  (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
   } else 
   if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
-    uint16_t tsapId = -1;
-    msg->cotp_parameter_calling_tsap_tsap_id = tsapId;
+
+  // Simple Field (tsapId)
+  uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
   } else 
   if(parameterType == 0xC2) { /* COTPParameterCalledTsap */
-    uint16_t tsapId = -1;
-    msg->cotp_parameter_called_tsap_tsap_id = tsapId;
+
+  // Simple Field (tsapId)
+  uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
   } else 
   if(parameterType == 0xC3) { /* COTPParameterChecksum */
-    uint8_t crc = -1;
-    msg->cotp_parameter_checksum_crc = crc;
+
+  // Simple Field (crc)
+  uint8_t crc = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->cotp_parameter_checksum_crc = crc;
   } else 
   if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
-    plc4c_list data;
-    msg->cotp_parameter_disconnect_additional_information_data = data;
+
+  // Array field (data)
+  plc4c_list data;
+  {
+    // Count array
+    uint8_t itemCount = rest;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      
+      uint8_t value = plc4c_spi_read_unsigned_short(buf, 8);
+      plc4c_utils_list_insert_head_value(&data, &value);
+      plc4c_utils_list_insert_head_value(&data, &value);
+    }
+  }
+  (*_message)->cotp_parameter_disconnect_additional_information_data = data;
   }
 
   return OK;

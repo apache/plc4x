@@ -179,16 +179,16 @@ struct plc4c_modbus_read_write_modbus_pdu {
       plc4c_list modbus_pdu_read_fifo_queue_response_fifo_value;
     };
     struct { /* ModbusPDUReadFileRecordRequest */
-      plc4c_list* modbus_pdu_read_file_record_request_items;
+      plc4c_list modbus_pdu_read_file_record_request_items;
     };
     struct { /* ModbusPDUReadFileRecordResponse */
-      plc4c_list* modbus_pdu_read_file_record_response_items;
+      plc4c_list modbus_pdu_read_file_record_response_items;
     };
     struct { /* ModbusPDUWriteFileRecordRequest */
-      plc4c_list* modbus_pdu_write_file_record_request_items;
+      plc4c_list modbus_pdu_write_file_record_request_items;
     };
     struct { /* ModbusPDUWriteFileRecordResponse */
-      plc4c_list* modbus_pdu_write_file_record_response_items;
+      plc4c_list modbus_pdu_write_file_record_response_items;
     };
     struct { /* ModbusPDUReadExceptionStatusRequest */
     };

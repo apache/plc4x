@@ -52,9 +52,9 @@ struct plc4c_s7_read_write_s7_parameter_user_data_item {
       unsigned int s7_parameter_user_data_item_cpu_functions_cpu_function_group : 4;
       uint8_t s7_parameter_user_data_item_cpu_functions_cpu_subfunction;
       uint8_t s7_parameter_user_data_item_cpu_functions_sequence_number;
-      uint8_t s7_parameter_user_data_item_cpu_functions_data_unit_reference_number;
-      uint8_t s7_parameter_user_data_item_cpu_functions_last_data_unit;
-      uint16_t s7_parameter_user_data_item_cpu_functions_error_code;
+      uint8_t* s7_parameter_user_data_item_cpu_functions_data_unit_reference_number;
+      uint8_t* s7_parameter_user_data_item_cpu_functions_last_data_unit;
+      uint16_t* s7_parameter_user_data_item_cpu_functions_error_code;
     };
   };
 };

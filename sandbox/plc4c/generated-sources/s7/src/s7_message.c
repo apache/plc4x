@@ -43,19 +43,19 @@ plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message** message) {
+plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_s7_message* msg = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_message));
 
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
   if(protocolId != S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + S7Message.PROTOCOLID + " but got " + protocolId);
+    // throw new ParseException("Expected constant value " + S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID + " but got " + protocolId);
   }
 
   // Discriminator Field (messageType) (Used as input to a switch field)
@@ -71,7 +71,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
 
   // Simple Field (tpduReference)
   uint16_t tpduReference = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->tpdu_reference = tpduReference;
+  (*_message)->tpdu_reference = tpduReference;
 
   // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t parameterLength = plc4c_spi_read_unsigned_int(buf, 16);
@@ -83,18 +83,26 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   if(messageType == 0x01) { /* S7MessageRequest */
   } else 
   if(messageType == 0x02) { /* S7MessageResponse */
-    uint8_t errorClass = -1;
-    msg->s7_message_response_error_class = errorClass;
 
-    uint8_t errorCode = -1;
-    msg->s7_message_response_error_code = errorCode;
+  // Simple Field (errorClass)
+  uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_message_response_error_class = errorClass;
+
+
+  // Simple Field (errorCode)
+  uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_message_response_error_code = errorCode;
   } else 
   if(messageType == 0x03) { /* S7MessageResponseData */
-    uint8_t errorClass = -1;
-    msg->s7_message_response_data_error_class = errorClass;
 
-    uint8_t errorCode = -1;
-    msg->s7_message_response_data_error_code = errorCode;
+  // Simple Field (errorClass)
+  uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_message_response_data_error_class = errorClass;
+
+
+  // Simple Field (errorCode)
+  uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_message_response_data_error_code = errorCode;
   } else 
   if(messageType == 0x07) { /* S7MessageUserData */
   }
@@ -102,17 +110,23 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   // Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_parameter* parameter = NULL;
   if((parameterLength) > (0)) {
-    plc4c_s7_read_write_s7_parameter* parameter = NULL;
+    parameter = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+    if(parameter == NULL) {
+      return NO_MEMORY;
+    }
     plc4c_s7_read_write_s7_parameter_parse(buf, messageType, &parameter);
-    msg->parameter = parameter;
+    (*_message)->parameter = parameter;
   }
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_payload* payload = NULL;
   if((payloadLength) > (0)) {
-    plc4c_s7_read_write_s7_payload* payload = NULL;
+    payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
+    if(payload == NULL) {
+      return NO_MEMORY;
+    }
     plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
-    msg->payload = payload;
+    (*_message)->payload = payload;
   }
 
   return OK;

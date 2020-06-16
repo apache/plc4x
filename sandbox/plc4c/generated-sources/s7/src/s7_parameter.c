@@ -47,46 +47,116 @@ plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter** message) {
+plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_s7_parameter* msg = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xF0) { /* S7ParameterSetupCommunication */
-    uint16_t maxAmqCaller = -1;
-    msg->s7_parameter_setup_communication_max_amq_caller = maxAmqCaller;
 
-    uint16_t maxAmqCallee = -1;
-    msg->s7_parameter_setup_communication_max_amq_callee = maxAmqCallee;
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = plc4c_spi_read_unsigned_short(buf, 8);
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+    }
+  }
 
-    uint16_t pduLength = -1;
-    msg->s7_parameter_setup_communication_pdu_length = pduLength;
+
+  // Simple Field (maxAmqCaller)
+  uint16_t maxAmqCaller = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_parameter_setup_communication_max_amq_caller = maxAmqCaller;
+
+
+  // Simple Field (maxAmqCallee)
+  uint16_t maxAmqCallee = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_parameter_setup_communication_max_amq_callee = maxAmqCallee;
+
+
+  // Simple Field (pduLength)
+  uint16_t pduLength = plc4c_spi_read_unsigned_int(buf, 16);
+  (*_message)->s7_parameter_setup_communication_pdu_length = pduLength;
   } else 
   if((parameterType == 0x04) && (messageType == 0x01)) { /* S7ParameterReadVarRequest */
-    plc4c_list* items;
-    msg->s7_parameter_read_var_request_items = items;
+
+  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+
+
+  // Array field (items)
+  plc4c_list items;
+  {
+    // Count array
+    uint8_t itemCount = numItems;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      bool lastItem = curItem == (itemCount - 1);
+      plc4c_list* value = NULL;
+      plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &value);
+      plc4c_utils_list_insert_head_value(&items, value);
+      plc4c_utils_list_insert_head_value(&items, &value);
+    }
+  }
+  (*_message)->s7_parameter_read_var_request_items = items;
   } else 
   if((parameterType == 0x04) && (messageType == 0x03)) { /* S7ParameterReadVarResponse */
-    uint8_t numItems = -1;
-    msg->s7_parameter_read_var_response_num_items = numItems;
+
+  // Simple Field (numItems)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_parameter_read_var_response_num_items = numItems;
   } else 
   if((parameterType == 0x05) && (messageType == 0x01)) { /* S7ParameterWriteVarRequest */
-    plc4c_list* items;
-    msg->s7_parameter_write_var_request_items = items;
+
+  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+
+
+  // Array field (items)
+  plc4c_list items;
+  {
+    // Count array
+    uint8_t itemCount = numItems;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      bool lastItem = curItem == (itemCount - 1);
+      plc4c_list* value = NULL;
+      plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &value);
+      plc4c_utils_list_insert_head_value(&items, value);
+      plc4c_utils_list_insert_head_value(&items, &value);
+    }
+  }
+  (*_message)->s7_parameter_write_var_request_items = items;
   } else 
   if((parameterType == 0x05) && (messageType == 0x03)) { /* S7ParameterWriteVarResponse */
-    uint8_t numItems = -1;
-    msg->s7_parameter_write_var_response_num_items = numItems;
+
+  // Simple Field (numItems)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+  (*_message)->s7_parameter_write_var_response_num_items = numItems;
   } else 
   if((parameterType == 0x00) && (messageType == 0x07)) { /* S7ParameterUserData */
-    plc4c_list* items;
-    msg->s7_parameter_user_data_items = items;
+
+  // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  uint8_t numItems = plc4c_spi_read_unsigned_short(buf, 8);
+
+
+  // Array field (items)
+  plc4c_list items;
+  {
+    // Count array
+    uint8_t itemCount = numItems;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      bool lastItem = curItem == (itemCount - 1);
+      plc4c_list* value = NULL;
+      plc4c_s7_read_write_s7_parameter_user_data_item_parse(buf, (void*) &value);
+      plc4c_utils_list_insert_head_value(&items, value);
+      plc4c_utils_list_insert_head_value(&items, &value);
+    }
+  }
+  (*_message)->s7_parameter_user_data_items = items;
   }
 
   return OK;

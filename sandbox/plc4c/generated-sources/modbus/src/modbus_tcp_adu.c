@@ -24,23 +24,23 @@
 #include "modbus_tcp_adu.h"
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_modbus_read_write_modbus_tcp_adu* msg = malloc(sizeof(plc4c_modbus_read_write_modbus_tcp_adu));
+  (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_tcp_adu));
 
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->transaction_identifier = transactionIdentifier;
+  (*_message)->transaction_identifier = transactionIdentifier;
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = plc4c_spi_read_unsigned_int(buf, 16);
   if(protocolIdentifier != MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier);
+    // throw new ParseException("Expected constant value " + MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER + " but got " + protocolIdentifier);
   }
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -48,12 +48,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = plc4c_spi_read_unsigned_short(buf, 8);
-  msg->unit_identifier = unitIdentifier;
+  (*_message)->unit_identifier = unitIdentifier;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu* pdu = NULL;
+  plc4c_modbus_read_write_modbus_pdu pdu;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
-  msg->pdu = pdu;
+  (*_message)->pdu = pdu;
 
   return OK;
 }

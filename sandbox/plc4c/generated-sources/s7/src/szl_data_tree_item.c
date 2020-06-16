@@ -24,17 +24,17 @@
 #include "szl_data_tree_item.h"
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** message) {
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
   // Pointer to the parsed data structure.
-  plc4c_s7_read_write_szl_data_tree_item* msg = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
+  (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
 
 
   // Simple Field (itemIndex)
   uint16_t itemIndex = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->item_index = itemIndex;
+  (*_message)->item_index = itemIndex;
 
   // Array field (mlfb)
   plc4c_list mlfb;
@@ -45,20 +45,22 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
       
       int8_t value = plc4c_spi_read_byte(buf, 8);
       plc4c_utils_list_insert_head_value(&mlfb, &value);
+      plc4c_utils_list_insert_head_value(&mlfb, &value);
     }
   }
+  (*_message)->mlfb = mlfb;
 
   // Simple Field (moduleTypeId)
   uint16_t moduleTypeId = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->module_type_id = moduleTypeId;
+  (*_message)->module_type_id = moduleTypeId;
 
   // Simple Field (ausbg)
   uint16_t ausbg = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->ausbg = ausbg;
+  (*_message)->ausbg = ausbg;
 
   // Simple Field (ausbe)
   uint16_t ausbe = plc4c_spi_read_unsigned_int(buf, 16);
-  msg->ausbe = ausbe;
+  (*_message)->ausbe = ausbe;
 
   return OK;
 }
