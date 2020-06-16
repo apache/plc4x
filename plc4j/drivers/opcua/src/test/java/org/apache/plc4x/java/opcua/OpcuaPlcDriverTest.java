@@ -18,15 +18,22 @@
 */
 package org.apache.plc4x.java.opcua;
 
+import io.vavr.collection.List;
 import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.eclipse.milo.examples.server.ExampleServer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
 import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.OPCUA_URI_PATTERN;
@@ -64,15 +71,32 @@ public class OpcuaPlcDriverTest {
     private static final String VARIANT_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Variant";
     private static final String XML_ELEMENT_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/XmlElement";
     // Address of local milo server
-    String miloLocalAddress = "127.0.0.1:12686/milo";
+    private String miloLocalAddress = "127.0.0.1:12686/milo";
     //Tcp pattern of OPC UA
-    String opcPattern = "opcua:tcp://";
-    private ExampleServer exampleServer;
+    private String opcPattern = "opcua:tcp://";
+
+    private String paramSectionDivider = "?";
+    private String paramDivider = "&";
+
+    private String tcpConnectionAddress = opcPattern + miloLocalAddress;
+
+    private List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
+    private List<String> connectionStringCorruptedSet = List.of();
+
+    private String discoveryValidParamTrue = "discovery=true";
+    private String discoveryValidParamFalse = "discovery=false";
+    private String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private String discoveryCorruptedParamWronName = "diskovery=false";
+
+    List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
+    List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
+
+    private static ExampleServer exampleServer;
 
 
 
-    @BeforeEach
-    public void before() {
+    @BeforeAll
+    public static void setup() {
         try {
             exampleServer = new ExampleServer();
             exampleServer.startup().get();
@@ -81,8 +105,8 @@ public class OpcuaPlcDriverTest {
         }
     }
 
-    @AfterEach
-    public void after() {
+    @AfterAll
+    public static void tearDown() {
         try {
             exampleServer.shutdown().get();
         } catch (Exception e) {
@@ -91,10 +115,50 @@ public class OpcuaPlcDriverTest {
     }
 
     @Test
+    public void connectionNoParams(){
+
+        connectionStringValidSet.forEach(connectionAddress -> {
+                String connectionString = connectionAddress;
+                try {
+                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    assert opcuaConnection.isConnected();
+                    opcuaConnection.close();
+                    assert !opcuaConnection.isConnected();
+                } catch (PlcConnectionException e) {
+                    fail("Exception during connectionNoParams while connecting Test EXCEPTION: " + e.getMessage());
+                } catch (Exception e) {
+                    fail("Exception during connectionNoParams while closing Test EXCEPTION: " + e.getMessage());
+                }
+
+        });
+
+    }
+
+    @Test
+    public void connectionWithDiscoveryParam(){
+        connectionStringValidSet.forEach(connectionAddress -> {
+            discoveryParamValidSet.forEach(discoveryParam -> {
+                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+                try {
+                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    assert opcuaConnection.isConnected();
+                    opcuaConnection.close();
+                    assert !opcuaConnection.isConnected();
+                } catch (PlcConnectionException e) {
+                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+                } catch (Exception e) {
+                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+                }
+            });
+        });
+
+
+    }
+
+    @Test
     public void readVariables() {
         try {
-            OpcuaTcpPlcConnection opcuaConnection = (OpcuaTcpPlcConnection)
-                new PlcDriverManager().getConnection(opcPattern + miloLocalAddress);
+            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
@@ -116,7 +180,7 @@ public class OpcuaPlcDriverTest {
             builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
 
             PlcReadRequest request = builder.build();
-            PlcReadResponse response = opcuaConnection.read(request).get();
+            PlcReadResponse response = request.execute().get();
             assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
             assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
@@ -133,6 +197,56 @@ public class OpcuaPlcDriverTest {
             assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
 
             assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
+
+            opcuaConnection.close();
+            assert !opcuaConnection.isConnected();
+        } catch (Exception e) {
+            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void writeVariables() {
+        try {
+            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            assert opcuaConnection.isConnected();
+
+            PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
+            builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+//            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE);
+            builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
+            builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
+//            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE);
+            builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
+            builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
+            builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
+//            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE);
+            builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
+//            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE);
+//            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE);
+            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE, new BigInteger("1337"));
+//            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+
+//            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
+
+            PlcWriteRequest request = builder.build();
+            PlcWriteResponse response = request.execute().get();
+            assert response.getResponseCode("Bool").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("Byte").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Double").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Float").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("Int16").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Int32").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Int64").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("Integer").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("SByte").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("String").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("UInt16").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("UInt32").equals(PlcResponseCode.OK);
+            assert response.getResponseCode("UInt64").equals(PlcResponseCode.OK);
+//            assert response.getResponseCode("UInteger").equals(PlcResponseCode.OK);
+//
+//            assert response.getResponseCode("DoesNotExists").equals(PlcResponseCode.NOT_FOUND);
 
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
@@ -164,7 +278,7 @@ public class OpcuaPlcDriverTest {
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://254.254.254.254");
 
         assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://127.0.0.1&discovery=false");
-        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer&discovery=false");
+        assertMatching(OPCUA_URI_PATTERN, "opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false");
 
     }
 
