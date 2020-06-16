@@ -34,6 +34,8 @@ a|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200] |https://ww
 
 a|image::users/companies/logo-industryfusion.png[if, 200, 200] |https://www.industry-fusion.com[IndustryFusion^,opts=nofollow] |IIoT / Industry 4.0 |In the End-2-End Industry 4.0 solution IndustryFusion we use PLC4X for brownfield-connectivity, i.e. the connectivity to existing machines on the shop floor.
 
+a|image::users/companies/logo_unistuttgart_isw.png[isw, 723, 201] |https://www.industry-fusion.com[ISW University of Stuttgart^,opts=nofollow] |IIoT / Industry 4.0 / Research |We use PLC4X for our research projects because of its great potential for retrofitting scenarios, the simplicity of the API, an active community for broad platform support and the open source flexibility.
+
 // TODO: Add your company in alphabetical order ...
 
 |===
