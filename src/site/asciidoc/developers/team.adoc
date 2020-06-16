@@ -53,3 +53,11 @@ Engineer
 pragmatic industries GmbH
 
 Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]
+| *Matthias Milan Strljic*
+
+Research assistant
+
+ISW;
+University of Stuttgart
+
+Stuttgart |Research assistant and software engineer at the Institute for control engineering of machine tools and manufacturing units (ISW) of the university of stuttgart, research in the fields of automation technology + smart services + cloud manufacturing, my favourites are woodwork + knife sharpening + cigars, member of the PMC of PLC4X| a| image::team/mstrljic.jpg[mstrljic, 150, 150]
