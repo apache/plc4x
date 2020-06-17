@@ -140,12 +140,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
      * @return true if the access needs to be using pointers
      */
     public boolean requiresPointerAccess(ComplexTypeDefinition typeDefinition, String propertyName) {
-        final Optional<NamedField> typeField = typeDefinition.getFields().stream().filter(field -> field instanceof NamedField).map(field -> (NamedField) field).filter(namedField -> namedField.getName().equals(propertyName)).findFirst();
+        final Optional<NamedField> namedFieldOptional = typeDefinition.getFields().stream().filter(field -> field instanceof NamedField).map(field -> (NamedField) field).filter(namedField -> namedField.getName().equals(propertyName)).findFirst();
         // If the property name refers to a field, check if it's an optional field.
         // If it is, pointer access is required, if not, it's not.
-        if(typeField.isPresent()) {
-            final NamedField namedField = typeField.get();
-            return namedField instanceof OptionalField;
+        if(namedFieldOptional.isPresent()) {
+            final NamedField namedField = namedFieldOptional.get();
+            if(namedField instanceof TypedField) {
+                TypedField typedField = (TypedField) namedField;
+                return !(namedField instanceof EnumField) && (isComplexTypeReference(typedField.getType()));
+            }
+            return false;
         }
         final Optional<Argument> parserArgument = Arrays.stream(typeDefinition.getParserArguments()).filter(argument -> argument.getName().equals(propertyName)).findFirst();
         // If the property name refers to a parser argument, as soon as it's a complex type,
@@ -497,15 +501,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             } else {
                 sb.append(getCTypeName(castType.getName()));
             }
-            sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "*" : "").append(") (");
+            sb.append("*) (");
             sb.append(toVariableParseExpression(baseType, field, sourceTerm, parserArguments)).append("))");
             if(vl.getChild() != null) {
                 if(castType.getParentType() != null) {
                     // Change the name of the property to contain the sub-type-prefix.
-                    sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "->" : ".").append(camelCaseToSnakeCase(castType.getName())).append("_");
+                    sb.append("->").append(camelCaseToSnakeCase(castType.getName())).append("_");
                     appendVariableExpressionRest(sb, vl.getChild());
                 } else {
-                    sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "->" : ".");
+                    sb.append("->");
                     appendVariableExpressionRest(sb, vl.getChild());
                 }
             }
