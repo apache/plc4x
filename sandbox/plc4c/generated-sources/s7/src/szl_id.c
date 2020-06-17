@@ -30,6 +30,9 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_id));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Enum field (typeClass)

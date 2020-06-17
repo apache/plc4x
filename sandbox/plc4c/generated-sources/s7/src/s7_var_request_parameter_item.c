@@ -43,6 +43,9 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = plc4c_spi_read_unsigned_short(buf, 8);
@@ -56,7 +59,10 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Simple Field (address)
   plc4c_s7_read_write_s7_address* address;
-  plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
+  plc4c_return_code _res = plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->s7_var_request_parameter_item_address_address = address;
   }
 

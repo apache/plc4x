@@ -53,6 +53,9 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
@@ -100,7 +103,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_list* _value = NULL;
-      plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }
@@ -129,7 +135,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_list* _value = NULL;
-      plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_s7_read_write_s7_var_request_parameter_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }
@@ -158,7 +167,10 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_list* _value = NULL;
-      plc4c_s7_read_write_s7_parameter_user_data_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_s7_read_write_s7_parameter_user_data_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }

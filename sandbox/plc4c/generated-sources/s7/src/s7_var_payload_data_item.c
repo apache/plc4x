@@ -30,6 +30,9 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_data_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Enum field (returnCode)

@@ -30,6 +30,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

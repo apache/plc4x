@@ -113,6 +113,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
   // Discriminator Field (error) (Used as input to a switch field)
   bool error = plc4c_spi_read_bit(buf);
@@ -534,7 +537,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(buf) + _itemsLength;
     while(plc4c_spi_read_get_pos(buf) < itemsEndPos) {
       plc4c_list* _value = NULL;
-      plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }
@@ -557,7 +563,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(buf) + _itemsLength;
     while(plc4c_spi_read_get_pos(buf) < itemsEndPos) {
       plc4c_list* _value = NULL;
-      plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }
@@ -580,7 +589,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(buf) + _itemsLength;
     while(plc4c_spi_read_get_pos(buf) < itemsEndPos) {
       plc4c_list* _value = NULL;
-      plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }
@@ -603,7 +615,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     uint8_t itemsEndPos = plc4c_spi_read_get_pos(buf) + _itemsLength;
     while(plc4c_spi_read_get_pos(buf) < itemsEndPos) {
       plc4c_list* _value = NULL;
-      plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }

@@ -45,6 +45,9 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Enum field (returnCode)
@@ -60,7 +63,10 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (szlId)
   plc4c_s7_read_write_szl_id* szlId;
-  plc4c_s7_read_write_szl_id_parse(buf, (void*) &szlId);
+  plc4c_return_code _res = plc4c_s7_read_write_szl_id_parse(buf, (void*) &szlId);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->szl_id = szlId;
 
   // Simple Field (szlIndex)
@@ -95,7 +101,10 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_list* _value = NULL;
-      plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
+      plc4c_return_code _res = plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(items, _value);
     }
   }

@@ -30,6 +30,9 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Const Field (protocolId)
@@ -52,7 +55,10 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Simple Field (payload)
   plc4c_s7_read_write_cotp_packet* payload;
-  plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), (void*) &payload);
+  plc4c_return_code _res = plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), (void*) &payload);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->payload = payload;
 
   return OK;

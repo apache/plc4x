@@ -49,6 +49,9 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_message));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Const Field (protocolId)
@@ -114,7 +117,10 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
     if(parameter == NULL) {
       return NO_MEMORY;
     }
-    plc4c_s7_read_write_s7_parameter_parse(buf, messageType, &parameter);
+    plc4c_return_code _res = plc4c_s7_read_write_s7_parameter_parse(buf, messageType, &parameter);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->parameter = parameter;
   }
 
@@ -125,7 +131,10 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
     if(payload == NULL) {
       return NO_MEMORY;
     }
-    plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
+    plc4c_return_code _res = plc4c_s7_read_write_s7_payload_parse(buf, messageType, parameter, &payload);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->payload = payload;
   }
 

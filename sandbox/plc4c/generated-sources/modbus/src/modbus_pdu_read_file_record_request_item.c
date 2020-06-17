@@ -30,6 +30,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Simple Field (referenceType)

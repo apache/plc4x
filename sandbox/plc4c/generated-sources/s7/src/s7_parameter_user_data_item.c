@@ -43,6 +43,9 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_parameter_user_data_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = plc4c_spi_read_unsigned_short(buf, 8);

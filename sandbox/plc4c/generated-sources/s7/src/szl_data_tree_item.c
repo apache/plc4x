@@ -30,6 +30,9 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Pointer to the parsed data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
+  if(*_message == NULL) {
+    return NO_MEMORY;
+  }
 
 
   // Simple Field (itemIndex)
