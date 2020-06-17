@@ -34,6 +34,7 @@ import org.apache.plc4x.java.serial.connection.connection.SerialChannelFactory;
 import org.apache.plc4x.java.serial.connection.connection.SerialSocketAddress;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -73,6 +74,7 @@ public class AdsSerialPlcConnectionTest {
 
 
     @Test
+    @Ignore
     public void testRead() throws Exception {
         prepareSerialSimulator();
         PlcReadRequest request = SUT.readRequestBuilder().addItem("test", "0/0:BYTE").build();
