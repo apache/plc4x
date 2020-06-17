@@ -17,3 +17,4 @@
 # under the License.
 #
 org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver
+org.apache.plc4x.java.bacnetip.ActiveBacNetIpDriver

@@ -18,34 +18,29 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip;
 
-import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
-import org.apache.plc4x.java.bacnetip.protocol.PassiveBacNetIpProtocolLogic;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
+import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
-public class PassiveBacNetIpDriver extends AbstractBacNetIpDriver {
+public class ActiveBacNetIpDriver extends AbstractBacNetIpDriver {
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return PassiveBacNetIpConfiguration.class;
-    }
-
-    @Override
-    protected String getDefaultTransport() {
-        return "udp";
+        return BacNetIpConfiguration.class;
     }
 
     @Override
     protected boolean canRead() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean canWrite() {
-        return false;
+        return true;
     }
 
     @Override
@@ -54,13 +49,17 @@ public class PassiveBacNetIpDriver extends AbstractBacNetIpDriver {
     }
 
     @Override
+    public String getProtocolCode() {
+        return "bacnet-ip-active";
+    }
+
+    @Override
     protected ProtocolStackConfigurer<BVLC> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(BVLC.class, BVLCIO.class)
-            .withProtocol(PassiveBacNetIpProtocolLogic.class)
+            .withProtocol(BacNetIpProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .build();
     }
-
 
 }

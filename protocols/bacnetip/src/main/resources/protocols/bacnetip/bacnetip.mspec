@@ -316,20 +316,20 @@
         ['0x07' BACnetUnconfirmedServiceRequestWhoHas
             [const uint 8 'deviceInstanceLowLimitHeader' '0x0B']
             [simple uint 24 'deviceInstanceLowLimit']
+
             [const uint 8 'deviceInstanceHighLimitHeader' '0x1B']
             [simple uint 24 'deviceInstanceHighLimit']
+
             [const uint 8 'objectNameHeader' '0x3D']
             [implicit uint 8 'objectNameLength' 'COUNT(objectName) + 1']
+
             [simple uint 8 'objectNameCharacterSet']
             [array int 8 'objectName' length 'objectNameLength - 1']
         ]
         ['0x08' BACnetUnconfirmedServiceRequestWhoIs
-            [const uint 5 'deviceInstanceRangeLowLimitHeader' '0x01']
-            [simple uint 3 'deviceInstanceRangeLowLimitLength']
-            [array int 8 'deviceInstanceRangeLowLimit' count 'deviceInstanceRangeLowLimitLength']
-            [const uint 5 'deviceInstanceRangeHighLimitHeader' '0x03']
-            [simple uint 3 'deviceInstanceRangeHighLimitLength']
-            [array int 8 'deviceInstanceRangeHighLimit' count 'deviceInstanceRangeHighLimitLength']
+            [optional uint 5 'header'  'len > 12']
+            [optional BACnetDeviceInstanceRange 'low' 'header != null && == 0x01']
+            [optional BACnetDeviceInstanceRange 'high' 'header != null && == 0x03']
         ]
         ['0x09' BACnetUnconfirmedServiceRequestUTCTimeSynchronization
         ]
@@ -338,6 +338,11 @@
         ['0x0B' BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
         ]
     ]
+]
+
+[type 'BACnetDeviceInstanceRange'
+    [simple uint 3 'deviceInstanceRangeLowLimitLength']
+    [array int 8 'deviceInstanceRangeLowLimit' count 'deviceInstanceRangeLowLimitLength']
 ]
 
 [discriminatedType 'BACnetServiceAck'
