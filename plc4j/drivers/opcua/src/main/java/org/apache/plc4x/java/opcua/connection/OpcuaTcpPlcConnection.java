@@ -23,22 +23,46 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.*;
-import org.apache.plc4x.java.base.messages.items.*;
+import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcUnsubscriptionRequest;
+import org.apache.plc4x.java.base.messages.InternalPlcWriteRequest;
+import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBigIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultByteFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultDoubleFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultFloatFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultShortFieldItem;
+import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
+import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
 import org.eclipse.milo.opcua.sdk.client.api.identity.IdentityProvider;
 import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
-import org.eclipse.milo.opcua.sdk.client.api.identity.X509IdentityProvider;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
@@ -46,12 +70,22 @@ import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
-import org.eclipse.milo.opcua.stack.core.types.builtin.*;
+import org.eclipse.milo.opcua.stack.core.types.builtin.ByteString;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
+import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
+import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
+import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
+import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
+import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
-import org.eclipse.milo.opcua.stack.core.types.structured.*;
+import org.eclipse.milo.opcua.stack.core.types.structured.ApplicationDescription;
+import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
+import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateRequest;
+import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
+import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 import org.eclipse.milo.opcua.stack.core.util.CertificateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +99,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -281,16 +321,34 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             endpoint = noDiscoverEndpoint;
         }
 
+        X509Certificate clientCertificate = null;
+        if (this.certFile != null && !this.certFile.isEmpty()) {
+            logger.info("Trying to use given Certificate file {} as Client Cert", certFile);
+            try {
+                clientCertificate = CertificateUtil.decodeCertificate(Files.readAllBytes(new File(certFile).toPath()));
+            } catch (UaException | IOException e) {
+                throw new PlcRuntimeException("Unable to decode Client Certificate File " + certFile, e);
+            }
+        } else {
+            logger.info("Trying to use given Certificate file {} as Client Cert", certFile);
+            clientCertificate = loader.getClientCertificate();
+        }
+        logger.info("Client Certificate is {}", clientCertificate.toString());
 
-        OpcUaClientConfig config = OpcUaClientConfig.builder()
+        final OpcUaClientConfigBuilder builder = OpcUaClientConfig.builder()
             .setApplicationName(LocalizedText.english("eclipse milo opc-ua client of the apache PLC4X:PLC4J project"))
-            .setApplicationUri("urn:plc4x-client")
-            .setCertificate(loader.getClientCertificate())
-            .setKeyPair(loader.getClientKeyPair())
+            .setApplicationUri("urn:plc4x-driver-client")
+            .setCertificate(clientCertificate)
             .setEndpoint(endpoint)
             .setIdentityProvider(getIdentityProvider())
-            .setRequestTimeout(UInteger.valueOf(requestTimeout))
-            .build();
+            .setRequestTimeout(UInteger.valueOf(requestTimeout));
+
+        // Key Pair is only needed if Security Policy is set
+        if (securityPolicy != SecurityPolicy.None) {
+            builder.setKeyPair(loader.getClientKeyPair());
+        }
+
+        OpcUaClientConfig config = builder.build();
 
         try {
             this.client = OpcUaClient.create(config);
@@ -305,22 +363,6 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             throw new PlcConnectionException("Error while creation of the connection because of : " + e.getMessage(), e);
         }
     }
-
-//    private X509Certificate getClientCertificate(KeyStoreLoader loader) {
-//        if (this.certFile != null) {
-//            Path path = null;
-//            try {
-//                path = Paths.get(this.certFile);
-//                final X509Certificate x509Certificate = CertificateUtil.decodeCertificate(Files.readAllBytes(path));
-//                logger.info("Using Certificate given by certFile as Client Certificate");
-//                return x509Certificate;
-//            } catch (UaException | IOException e) {
-//                logger.warn("Unable to load given Certificate File {}", path != null ? path.toAbsolutePath().toString() : this.certFile, e);
-//            }
-//        }
-//        logger.info("Using self signed generated Client Certificate");
-//        return loader.getClientCertificate();
-//    }
 
     @Override
     public boolean isConnected() {

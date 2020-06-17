@@ -105,14 +105,13 @@ public class KeyStoreLoader {
             KeyPair keyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
 
             SelfSignedCertificateBuilder builder = new SelfSignedCertificateBuilder(keyPair)
-                .setCommonName("Eclipse Milo Example Client")
-                .setOrganization("digitalpetri")
+                .setCommonName("Apache PLC4X Driver Client")
+                .setOrganization("Apache Software Foundation")
                 .setOrganizationalUnit("dev")
-                .setLocalityName("Folsom")
-                .setStateName("CA")
+                .setLocalityName("")
+                .setStateName("DE")
                 .setCountryCode("US")
-//                .setApplicationUri("urn:eclipse:milo:examples:client")
-                .setApplicationUri("urn:plc4x-client")
+                .setApplicationUri("urn:plc4x-driver-client")
                 .addDnsName("localhost")
                 .addIpAddress("127.0.0.1");
 

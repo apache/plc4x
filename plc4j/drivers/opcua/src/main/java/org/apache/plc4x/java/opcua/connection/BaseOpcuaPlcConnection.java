@@ -66,10 +66,10 @@ public abstract class BaseOpcuaPlcConnection extends AbstractPlcConnection imple
                             password = paramValue;
                             logger.debug("Found Parameter 'password' with value {}", password);
                             break;
-//                        case "certFile":
-//                            certFile = paramValue;
-//                            logger.debug("Found Parameter 'certFile' with value {}", certFile);
-//                            break;
+                        case "certFile":
+                            certFile = paramValue;
+                            logger.debug("Found Parameter 'certFile' with value {}", certFile);
+                            break;
                         case "securityPolicy":
                             logger.debug("Got value for security policy: '{}', trying to parse", paramValue);
                             try {
