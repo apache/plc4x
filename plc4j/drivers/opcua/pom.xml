@@ -46,6 +46,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>27.0.1-jre</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
       <version>0.3.6</version>
@@ -92,7 +98,6 @@
   </dependencies>
 
 
-  <!--
   <build>
     <plugins>
       <plugin>
@@ -100,11 +105,11 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.eclipse.milo:sdk-client</usedDependency>
+            <usedDependency>org.bouncycastle:bcprov-jdk15on</usedDependency>
+            <usedDependency>org.bouncycastle:bcpkix-jdk15on</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  -->
 </project>
