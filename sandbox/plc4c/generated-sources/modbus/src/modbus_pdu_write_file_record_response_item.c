@@ -48,14 +48,17 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   uint16_t recordLength = plc4c_spi_read_unsigned_int(buf, 16);
 
   // Array field (recordData)
-  plc4c_list recordData;
+  plc4c_list* recordData = malloc(sizeof(plc4c_list));
+  if(recordData == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Length array
     uint8_t _recordDataLength = (recordLength) * (2);
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(buf) + _recordDataLength;
     while(plc4c_spi_read_get_pos(buf) < recordDataEndPos) {
-      uint16_t value = plc4c_spi_read_unsigned_int(buf, 16);
-      plc4c_utils_list_insert_head_value(&recordData, &value);
+      uint16_t _value = plc4c_spi_read_unsigned_int(buf, 16);
+      plc4c_utils_list_insert_head_value(recordData, &_value);
     }
   }
   (*_message)->record_data = recordData;

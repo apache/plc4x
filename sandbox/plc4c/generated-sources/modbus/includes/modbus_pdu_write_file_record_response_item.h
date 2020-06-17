@@ -31,7 +31,7 @@ struct plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item {
   uint8_t reference_type;
   uint16_t file_number;
   uint16_t record_number;
-  plc4c_list record_data;
+  plc4c_list* record_data;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item;
 

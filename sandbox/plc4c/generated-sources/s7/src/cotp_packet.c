@@ -146,15 +146,18 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   // Array field (parameters)
   curPos = plc4c_spi_read_get_pos(buf) - startPos;
-  plc4c_list parameters;
+  plc4c_list* parameters = malloc(sizeof(plc4c_list));
+  if(parameters == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Length array
     uint8_t _parametersLength = (((headerLength) + (1))) - (curPos);
     uint8_t parametersEndPos = plc4c_spi_read_get_pos(buf) + _parametersLength;
     while(plc4c_spi_read_get_pos(buf) < parametersEndPos) {
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_cotp_parameter_parse(buf, (((headerLength) + (1))) - (curPos), (void*) &value);
-      plc4c_utils_list_insert_head_value(&parameters, value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_cotp_parameter_parse(buf, (((headerLength) + (1))) - (curPos), (void*) &_value);
+      plc4c_utils_list_insert_head_value(parameters, _value);
       curPos = plc4c_spi_read_get_pos(buf) - startPos;
     }
   }

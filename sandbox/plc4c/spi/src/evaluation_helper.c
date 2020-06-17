@@ -30,7 +30,7 @@ double plc4c_spi_evaluation_helper_ceil(double a) {
   return ceil(a);
 }
 
-uint8_t plc4c_spi_evaluation_helper_count(plc4c_list a) {
-  return plc4c_utils_list_size(&a);
+uint8_t plc4c_spi_evaluation_helper_count(plc4c_list* a) {
+  return plc4c_utils_list_size(a);
 }
 

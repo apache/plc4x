@@ -95,14 +95,14 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_read_discrete_inputs_request_quantity;
     };
     struct { /* ModbusPDUReadDiscreteInputsResponse */
-      plc4c_list modbus_pdu_read_discrete_inputs_response_value;
+      plc4c_list* modbus_pdu_read_discrete_inputs_response_value;
     };
     struct { /* ModbusPDUReadCoilsRequest */
       uint16_t modbus_pdu_read_coils_request_starting_address;
       uint16_t modbus_pdu_read_coils_request_quantity;
     };
     struct { /* ModbusPDUReadCoilsResponse */
-      plc4c_list modbus_pdu_read_coils_response_value;
+      plc4c_list* modbus_pdu_read_coils_response_value;
     };
     struct { /* ModbusPDUWriteSingleCoilRequest */
       uint16_t modbus_pdu_write_single_coil_request_address;
@@ -115,7 +115,7 @@ struct plc4c_modbus_read_write_modbus_pdu {
     struct { /* ModbusPDUWriteMultipleCoilsRequest */
       uint16_t modbus_pdu_write_multiple_coils_request_starting_address;
       uint16_t modbus_pdu_write_multiple_coils_request_quantity;
-      plc4c_list modbus_pdu_write_multiple_coils_request_value;
+      plc4c_list* modbus_pdu_write_multiple_coils_request_value;
     };
     struct { /* ModbusPDUWriteMultipleCoilsResponse */
       uint16_t modbus_pdu_write_multiple_coils_response_starting_address;
@@ -126,14 +126,14 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_read_input_registers_request_quantity;
     };
     struct { /* ModbusPDUReadInputRegistersResponse */
-      plc4c_list modbus_pdu_read_input_registers_response_value;
+      plc4c_list* modbus_pdu_read_input_registers_response_value;
     };
     struct { /* ModbusPDUReadHoldingRegistersRequest */
       uint16_t modbus_pdu_read_holding_registers_request_starting_address;
       uint16_t modbus_pdu_read_holding_registers_request_quantity;
     };
     struct { /* ModbusPDUReadHoldingRegistersResponse */
-      plc4c_list modbus_pdu_read_holding_registers_response_value;
+      plc4c_list* modbus_pdu_read_holding_registers_response_value;
     };
     struct { /* ModbusPDUWriteSingleRegisterRequest */
       uint16_t modbus_pdu_write_single_register_request_address;
@@ -146,7 +146,7 @@ struct plc4c_modbus_read_write_modbus_pdu {
     struct { /* ModbusPDUWriteMultipleHoldingRegistersRequest */
       uint16_t modbus_pdu_write_multiple_holding_registers_request_starting_address;
       uint16_t modbus_pdu_write_multiple_holding_registers_request_quantity;
-      plc4c_list modbus_pdu_write_multiple_holding_registers_request_value;
+      plc4c_list* modbus_pdu_write_multiple_holding_registers_request_value;
     };
     struct { /* ModbusPDUWriteMultipleHoldingRegistersResponse */
       uint16_t modbus_pdu_write_multiple_holding_registers_response_starting_address;
@@ -157,10 +157,10 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_read_write_multiple_holding_registers_request_read_quantity;
       uint16_t modbus_pdu_read_write_multiple_holding_registers_request_write_starting_address;
       uint16_t modbus_pdu_read_write_multiple_holding_registers_request_write_quantity;
-      plc4c_list modbus_pdu_read_write_multiple_holding_registers_request_value;
+      plc4c_list* modbus_pdu_read_write_multiple_holding_registers_request_value;
     };
     struct { /* ModbusPDUReadWriteMultipleHoldingRegistersResponse */
-      plc4c_list modbus_pdu_read_write_multiple_holding_registers_response_value;
+      plc4c_list* modbus_pdu_read_write_multiple_holding_registers_response_value;
     };
     struct { /* ModbusPDUMaskWriteHoldingRegisterRequest */
       uint16_t modbus_pdu_mask_write_holding_register_request_reference_address;
@@ -176,19 +176,19 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_read_fifo_queue_request_fifo_pointer_address;
     };
     struct { /* ModbusPDUReadFifoQueueResponse */
-      plc4c_list modbus_pdu_read_fifo_queue_response_fifo_value;
+      plc4c_list* modbus_pdu_read_fifo_queue_response_fifo_value;
     };
     struct { /* ModbusPDUReadFileRecordRequest */
-      plc4c_list modbus_pdu_read_file_record_request_items;
+      plc4c_list* modbus_pdu_read_file_record_request_items;
     };
     struct { /* ModbusPDUReadFileRecordResponse */
-      plc4c_list modbus_pdu_read_file_record_response_items;
+      plc4c_list* modbus_pdu_read_file_record_response_items;
     };
     struct { /* ModbusPDUWriteFileRecordRequest */
-      plc4c_list modbus_pdu_write_file_record_request_items;
+      plc4c_list* modbus_pdu_write_file_record_request_items;
     };
     struct { /* ModbusPDUWriteFileRecordResponse */
-      plc4c_list modbus_pdu_write_file_record_response_items;
+      plc4c_list* modbus_pdu_write_file_record_response_items;
     };
     struct { /* ModbusPDUReadExceptionStatusRequest */
     };
@@ -205,12 +205,12 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint16_t modbus_pdu_get_com_event_log_response_status;
       uint16_t modbus_pdu_get_com_event_log_response_event_count;
       uint16_t modbus_pdu_get_com_event_log_response_message_count;
-      plc4c_list modbus_pdu_get_com_event_log_response_events;
+      plc4c_list* modbus_pdu_get_com_event_log_response_events;
     };
     struct { /* ModbusPDUReportServerIdRequest */
     };
     struct { /* ModbusPDUReportServerIdResponse */
-      plc4c_list modbus_pdu_report_server_id_response_value;
+      plc4c_list* modbus_pdu_report_server_id_response_value;
     };
     struct { /* ModbusPDUReadDeviceIdentificationRequest */
     };

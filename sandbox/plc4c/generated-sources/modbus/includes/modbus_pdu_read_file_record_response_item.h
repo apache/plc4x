@@ -29,7 +29,7 @@ extern "C" {
 struct plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item {
   /* Properties */
   uint8_t reference_type;
-  plc4c_list data;
+  plc4c_list* data;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item;
 

@@ -480,7 +480,6 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         VariableLiteral vl = (VariableLiteral) term;
         if("CAST".equals(vl.getName())) {
 
-            StringBuilder sb = new StringBuilder();
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
@@ -491,28 +490,25 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             // If we're casting to a sub-type of a discriminated value, we got to cast to the parent
             // type instead and add the name of the sub-type as prefix to the property we're tryging to
             // access next.
-            String castToType;
-            String restExpression;
+            StringBuilder sb = new StringBuilder();
+            sb.append("((plc4c_");
             if(castType.getParentType() != null) {
-                castToType = castType.getParentType().getName();
-                if(vl.getChild() != null) {
-                    // Change the name of the property to contain the sub-type-prefix.
-                    restExpression = "." + camelCaseToSnakeCase(castType.getName()) + "_" + toVariableExpressionRest(vl.getChild());
-                } else {
-                    restExpression = "";
-                }
+                sb.append(getCTypeName(castType.getParentType().getName()));
             } else {
-                castToType = castType.getName();
-                if(vl.getChild() != null) {
-                    restExpression = "." + toVariableExpressionRest(vl.getChild());
+                sb.append(getCTypeName(castType.getName()));
+            }
+            sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "*" : "").append(") (");
+            sb.append(toVariableParseExpression(baseType, field, sourceTerm, parserArguments)).append("))");
+            if(vl.getChild() != null) {
+                if(castType.getParentType() != null) {
+                    // Change the name of the property to contain the sub-type-prefix.
+                    sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "->" : ".").append(camelCaseToSnakeCase(castType.getName())).append("_");
+                    appendVariableExpressionRest(sb, vl.getChild());
                 } else {
-                    restExpression = "";
+                    sb.append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "->" : ".");
+                    appendVariableExpressionRest(sb, vl.getChild());
                 }
             }
-            sb.append("((plc4c_").append(getCTypeName(castToType)).append(") (")
-                .append(requiresPointerAccess(baseType, sourceTerm.getName()) ? "*" : "")
-                .append(toVariableParseExpression(baseType, field, sourceTerm, parserArguments)).append("))")
-                .append(restExpression);
             return sb.toString();
         }
         // Any name that is full upper-case is considered a function call.
@@ -535,7 +531,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             if (vl.getIndex() != VariableLiteral.NO_INDEX) {
                 sb.append("[").append(vl.getIndex()).append("]");
             }
-            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+            if(vl.getChild() != null) {
+                sb.append(".");
+                appendVariableExpressionRest(sb, vl.getChild());
+            }
+            return sb.toString();
         }
 
         final String name = vl.getName();
@@ -587,7 +587,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             return sb.toString();
         }
         // Else ... generate a simple access path.
-        return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+        StringBuilder sb = new StringBuilder(vl.getName());
+        if(vl.getChild() != null) {
+            sb.append(".");
+            appendVariableExpressionRest(sb, vl.getChild());
+        }
+        return sb.toString();
     }
 
     private String toVariableSerializationExpression(ComplexTypeDefinition baseType, Field field, Term term, Argument[] serialzerArguments) {
@@ -619,7 +624,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         }
                     }
                     if (isSerializerArg) {
-                        sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+                        sb.append(va.getName());
+                        if(va.getChild() != null) {
+                            sb.append(".");
+                            appendVariableExpressionRest(sb, va.getChild());
+                        }
                     } else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
@@ -698,7 +707,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             }
                         }
                         if (isSerializerArg) {
-                            sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+                            sb.append(va.getName());
+                            if(va.getChild() != null) {
+                                sb.append(".");
+                                appendVariableExpressionRest(sb, va.getChild());
+                            }
                         } else if (isTypeArg) {
                             String part = va.getChild().getName();
                             switch (part) {
@@ -747,7 +760,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
         if (isSerializerArg) {
-            return vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
+            StringBuilder sb = new StringBuilder(vl.getName());
+            if(vl.getChild() != null) {
+                sb.append(".");
+                appendVariableExpressionRest(sb, vl.getChild());
+            }
+            return sb.toString();
         } else if (isTypeArg) {
             String part = vl.getChild().getName();
             switch (part) {
@@ -772,13 +790,24 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "";
             }
         } else {
-            return "_value." + toVariableExpressionRest(vl);
+            StringBuilder sb = new StringBuilder("_value");
+            appendVariableExpressionRest(sb, vl);
+            return sb.toString();
         }
     }
 
-    private String toVariableExpressionRest(VariableLiteral vl) {
-        return camelCaseToSnakeCase(vl.getName()) + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
-            ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
+    private void appendVariableExpressionRest(StringBuilder sb, VariableLiteral vl) {
+        if(vl.isIndexed()) {
+            sb.insert(0, "plc4c_utils_list_get(");
+            sb.append(camelCaseToSnakeCase(vl.getName()));
+            sb.append(", ").append(vl.getIndex()).append(")");
+        } else {
+            sb.append(camelCaseToSnakeCase(vl.getName()));
+        }
+        if(vl.getChild() != null) {
+            sb.append(".");
+            appendVariableExpressionRest(sb, vl.getChild());
+        }
     }
 
     public int getNumBits(SimpleTypeReference simpleTypeReference) {

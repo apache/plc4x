@@ -55,16 +55,16 @@ struct plc4c_s7_read_write_s7_payload {
   /* Properties */
   union {
     struct { /* S7PayloadReadVarResponse */
-      plc4c_list s7_payload_read_var_response_items;
+      plc4c_list* s7_payload_read_var_response_items;
     };
     struct { /* S7PayloadWriteVarRequest */
-      plc4c_list s7_payload_write_var_request_items;
+      plc4c_list* s7_payload_write_var_request_items;
     };
     struct { /* S7PayloadWriteVarResponse */
-      plc4c_list s7_payload_write_var_response_items;
+      plc4c_list* s7_payload_write_var_response_items;
     };
     struct { /* S7PayloadUserData */
-      plc4c_list s7_payload_user_data_items;
+      plc4c_list* s7_payload_user_data_items;
     };
   };
 };

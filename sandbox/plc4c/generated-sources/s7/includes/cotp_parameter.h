@@ -64,7 +64,7 @@ struct plc4c_s7_read_write_cotp_parameter {
       uint8_t cotp_parameter_checksum_crc;
     };
     struct { /* COTPParameterDisconnectAdditionalInformation */
-      plc4c_list cotp_parameter_disconnect_additional_information_data;
+      plc4c_list* cotp_parameter_disconnect_additional_information_data;
     };
   };
 };

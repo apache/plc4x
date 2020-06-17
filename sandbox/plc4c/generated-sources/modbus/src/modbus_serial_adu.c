@@ -53,7 +53,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   (*_message)->address = address;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
   (*_message)->pdu = pdu;
 

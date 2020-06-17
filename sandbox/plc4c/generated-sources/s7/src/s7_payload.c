@@ -54,16 +54,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
 
   // Array field (items)
-  plc4c_list items;
+  plc4c_list* items = malloc(sizeof(plc4c_list));
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
-    uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter) (*parameter)).s7_parameter_read_var_response_num_items;
+    uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_read_var_response_num_items;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &value);
-      plc4c_utils_list_insert_head_value(&items, value);
-      plc4c_utils_list_insert_head_value(&items, &value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &_value);
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
   (*_message)->s7_payload_read_var_response_items = items;
@@ -71,16 +73,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
 
   // Array field (items)
-  plc4c_list items;
+  plc4c_list* items = malloc(sizeof(plc4c_list));
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
-    uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter) (*parameter)).s7_parameter_write_var_request_items);
+    uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_request_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &value);
-      plc4c_utils_list_insert_head_value(&items, value);
-      plc4c_utils_list_insert_head_value(&items, &value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &_value);
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
   (*_message)->s7_payload_write_var_request_items = items;
@@ -88,16 +92,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
 
   // Array field (items)
-  plc4c_list items;
+  plc4c_list* items = malloc(sizeof(plc4c_list));
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
-    uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter) (*parameter)).s7_parameter_write_var_response_num_items;
+    uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_response_num_items;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_s7_var_payload_status_item_parse(buf, (void*) &value);
-      plc4c_utils_list_insert_head_value(&items, value);
-      plc4c_utils_list_insert_head_value(&items, &value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_s7_var_payload_status_item_parse(buf, (void*) &_value);
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
   (*_message)->s7_payload_write_var_response_items = items;
@@ -105,16 +111,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
 
   // Array field (items)
-  plc4c_list items;
+  plc4c_list* items = malloc(sizeof(plc4c_list));
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
-    uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter) (*parameter)).s7_parameter_user_data_items);
+    uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_s7_payload_user_data_item_parse(buf, ((plc4c_s7_read_write_s7_parameter_user_data_item) (((plc4c_s7_read_write_s7_parameter) (*parameter)).s7_parameter_user_data_items[0])).s7_parameter_user_data_item_cpu_functions_cpu_function_type, (void*) &value);
-      plc4c_utils_list_insert_head_value(&items, value);
-      plc4c_utils_list_insert_head_value(&items, &value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_s7_payload_user_data_item_parse(buf, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_function_type, (void*) &_value);
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
   (*_message)->s7_payload_user_data_items = items;

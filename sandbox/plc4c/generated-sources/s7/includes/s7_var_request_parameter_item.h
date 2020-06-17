@@ -48,7 +48,7 @@ struct plc4c_s7_read_write_s7_var_request_parameter_item {
   /* Properties */
   union {
     struct { /* S7VarRequestParameterItemAddress */
-      plc4c_s7_read_write_s7_address s7_var_request_parameter_item_address_address;
+      plc4c_s7_read_write_s7_address* s7_var_request_parameter_item_address_address;
     };
   };
 };

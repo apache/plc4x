@@ -37,15 +37,17 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   (*_message)->item_index = itemIndex;
 
   // Array field (mlfb)
-  plc4c_list mlfb;
+  plc4c_list* mlfb = malloc(sizeof(plc4c_list));
+  if(mlfb == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
     uint8_t itemCount = 20;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
-      int8_t value = plc4c_spi_read_byte(buf, 8);
-      plc4c_utils_list_insert_head_value(&mlfb, &value);
-      plc4c_utils_list_insert_head_value(&mlfb, &value);
+      int8_t _value = plc4c_spi_read_byte(buf, 8);
+      plc4c_utils_list_insert_head_value(mlfb, &_value);
     }
   }
   (*_message)->mlfb = mlfb;

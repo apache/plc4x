@@ -55,7 +55,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
 
   // Simple Field (address)
-  plc4c_s7_read_write_s7_address address;
+  plc4c_s7_read_write_s7_address* address;
   plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
   (*_message)->s7_var_request_parameter_item_address_address = address;
   }

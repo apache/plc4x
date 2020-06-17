@@ -118,10 +118,10 @@ struct plc4c_${helper.getCTypeName(type.name)} {
         <#list field.cases as case>
     struct { /* ${case.name} */
             <#list case.propertyFields as caseField>
-                <#if helper.isOptionalField(caseField)>
-      ${helper.getLanguageTypeNameForField(caseField)}* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
-                <#else>
+                <#if (helper.isSimpleTypeReference(caseField.type) || helper.isEnumField(caseField)) && !helper.isOptionalField(caseField) && !helper.isArrayField(caseField) && !helper.isManualArrayField(caseField)>
       ${helper.getLanguageTypeNameForField(caseField)} ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)}${helper.getTypeSizeForField(caseField)}<#if field.loopType??>${helper.getLoopExpressionSuffix(caseField)}</#if>;
+                <#else>
+      ${helper.getLanguageTypeNameForField(caseField)}* ${helper.camelCaseToSnakeCase(case.name)}_${helper.camelCaseToSnakeCase(caseField.name)};
                 </#if>
             </#list>
     };
@@ -129,10 +129,10 @@ struct plc4c_${helper.getCTypeName(type.name)} {
   };
     <#elseif helper.isEnumField(field)>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)};
-    <#elseif helper.isOptionalField(field)>
-  ${helper.getLanguageTypeNameForField(field)}* ${helper.camelCaseToSnakeCase(field.name)};
-    <#else>
+    <#elseif (helper.isSimpleTypeReference(field.type) || helper.isEnumField(field)) && !helper.isOptionalField(field) && !helper.isArrayField(field) && !helper.isManualArrayField(field)>
   ${helper.getLanguageTypeNameForField(field)} ${helper.camelCaseToSnakeCase(field.name)}${helper.getTypeSizeForField(field)}<#if field.loopType??>${helper.getLoopExpressionSuffix(field)}</#if>;
+    <#else>
+  ${helper.getLanguageTypeNameForField(field)}* ${helper.camelCaseToSnakeCase(field.name)};
     </#if>
 </#list>
 };

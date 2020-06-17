@@ -286,16 +286,68 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return field instanceof AbstractField;
     }
 
+    public boolean isArrayField(Field field) {
+        return field instanceof ArrayField;
+    }
+
+    public boolean isChecksumField(Field field) {
+        return field instanceof ChecksumField;
+    }
+
+    public boolean isConstField(Field field) {
+        return field instanceof ConstField;
+    }
+
+    public boolean isDiscriminatorField(Field field) {
+        return field instanceof DiscriminatorField;
+    }
+
     public boolean isEnumField(Field field) {
         return field instanceof EnumField;
+    }
+
+    public boolean isImplicitField(Field field) {
+        return field instanceof ImplicitField;
+    }
+
+    public boolean isManualArrayField(Field field) {
+        return field instanceof ManualArrayField;
+    }
+
+    public boolean isNamedField(Field field) {
+        return field instanceof NamedField;
     }
 
     public boolean isOptionalField(Field field) {
         return field instanceof OptionalField;
     }
 
+    public boolean isPaddingField(Field field) {
+        return field instanceof PaddingField;
+    }
+
+    public boolean isPropertyField(Field field) {
+        return field instanceof PropertyField;
+    }
+
+    public boolean isReservedField(Field field) {
+        return field instanceof ReservedField;
+    }
+
+    public boolean isSimpleField(Field field) {
+        return field instanceof SimpleField;
+    }
+
     public boolean isSwitchField(Field field) {
         return field instanceof SwitchField;
+    }
+
+    public boolean isTypedField(Field field) {
+        return field instanceof TypedField;
+    }
+
+    public boolean isVirtualField(Field field) {
+        return field instanceof VirtualField;
     }
 
     public boolean isCountArrayField(Field field) {

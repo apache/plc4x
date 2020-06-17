@@ -51,7 +51,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
   (*_message)->unit_identifier = unitIdentifier;
 
   // Simple Field (pdu)
-  plc4c_modbus_read_write_modbus_pdu pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu;
   plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
   (*_message)->pdu = pdu;
 

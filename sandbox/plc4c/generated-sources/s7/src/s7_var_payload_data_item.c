@@ -45,15 +45,17 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   (*_message)->data_length = dataLength;
 
   // Array field (data)
-  plc4c_list data;
+  plc4c_list* data = malloc(sizeof(plc4c_list));
+  if(data == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
     uint8_t itemCount = ((plc4c_s7_read_write_data_transport_size_get_size_in_bits) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
-      int8_t value = plc4c_spi_read_byte(buf, 8);
-      plc4c_utils_list_insert_head_value(&data, &value);
-      plc4c_utils_list_insert_head_value(&data, &value);
+      int8_t _value = plc4c_spi_read_byte(buf, 8);
+      plc4c_utils_list_insert_head_value(data, &_value);
     }
   }
   (*_message)->data = data;

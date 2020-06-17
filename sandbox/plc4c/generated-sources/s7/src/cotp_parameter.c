@@ -86,15 +86,17 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
 
   // Array field (data)
-  plc4c_list data;
+  plc4c_list* data = malloc(sizeof(plc4c_list));
+  if(data == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
     uint8_t itemCount = rest;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
-      uint8_t value = plc4c_spi_read_unsigned_short(buf, 8);
-      plc4c_utils_list_insert_head_value(&data, &value);
-      plc4c_utils_list_insert_head_value(&data, &value);
+      uint8_t _value = plc4c_spi_read_unsigned_short(buf, 8);
+      plc4c_utils_list_insert_head_value(data, &_value);
     }
   }
   (*_message)->cotp_parameter_disconnect_additional_information_data = data;

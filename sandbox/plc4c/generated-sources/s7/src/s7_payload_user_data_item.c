@@ -59,7 +59,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   uint16_t dataLength = plc4c_spi_read_unsigned_int(buf, 16);
 
   // Simple Field (szlId)
-  plc4c_s7_read_write_szl_id szlId;
+  plc4c_s7_read_write_szl_id* szlId;
   plc4c_s7_read_write_szl_id_parse(buf, (void*) &szlId);
   (*_message)->szl_id = szlId;
 
@@ -85,16 +85,18 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 
   // Array field (items)
-  plc4c_list items;
+  plc4c_list* items = malloc(sizeof(plc4c_list));
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Count array
     uint8_t itemCount = szlItemCount;
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* value = NULL;
-      plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &value);
-      plc4c_utils_list_insert_head_value(&items, value);
-      plc4c_utils_list_insert_head_value(&items, &value);
+      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
   (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_items = items;

@@ -110,7 +110,10 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   curPos = plc4c_spi_read_get_pos(buf) - startPos;
             </#if>
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
-  plc4c_list ${arrayField.name};
+  plc4c_list* ${arrayField.name} = malloc(sizeof(plc4c_list));
+  if(${arrayField.name} == NULL) {
+    return NO_MEMORY;
+  }
   {
             <#if helper.isCountArrayField(field)>
     // Count array
@@ -119,15 +122,14 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
       <#if !helper.isSimpleTypeReference(arrayField.type)>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
                 <#if helper.isSimpleTypeReference(arrayField.type)>
-      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, &value);
+      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
+      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
                 <#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getLanguageTypeNameForField(field)}* value = NULL;
-      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &value);
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, value);
+      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
                 </#if>
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, &value);
     }
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#elseif helper.isLengthArrayField(field)>
@@ -137,13 +139,13 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
     while(plc4c_spi_read_get_pos(buf) < ${arrayField.name}EndPos) {
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
                 <#if helper.isSimpleTypeReference(arrayField.type)>
-      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, &value);
+      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
+      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
                 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getLanguageTypeNameForField(field)}* value = NULL;
-      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &value);
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, value);
+      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
                 </#if>
                 <#-- After parsing, update the current position, but only if it's needed -->
                 <#if arrayField.loopExpression.contains("curPos")>
@@ -156,13 +158,13 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
     while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, type.parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
                 <#if helper.isSimpleTypeReference(arrayField.type)>
-      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, &value);
+      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getReadBufferReadMethodCall(arrayField.type)};
+      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
                 <#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-      ${helper.getLanguageTypeNameForField(field)}* value = NULL;
-      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &value);
-      plc4c_utils_list_insert_head_value(&${arrayField.name}, value);
+      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+      plc4c_${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
+      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
                 </#if>
               <#-- After parsing, update the current position, but only if it's needed -->
               <#if arrayField.loopExpression.contains("curPos")>
@@ -229,7 +231,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
         <#case "manual">
             <#assign manualField = field>
 
-  // Manual Field (${manualField.name})
+  // Manual Field (${manualField.name})<#-- check if complex -->
   ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(baseType, manualField, manualField.parseExpression, type.parserArguments)});
   (*_message)-><@fieldName baseType=baseType field=manualField/> = ${manualField.name};
         <#break>
@@ -288,7 +290,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
   ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = ${helper.getReadBufferReadMethodCall(simpleField.type)};
             <#else>
             <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-  ${helper.getLanguageTypeNameForField(field)} ${simpleField.name};
+  ${helper.getLanguageTypeNameForField(field)}* ${simpleField.name};
   plc4c_${helper.getCTypeName(simpleField.type.name)}_parse(buf<#if simpleField.params?has_content>, <#list simpleField.params as parserTerm>${helper.toParseExpression(baseType, simpleField, parserTerm, type.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &${simpleField.name});
             </#if>
   (*_message)-><@fieldName baseType=baseType field=simpleField/> = ${simpleField.name};

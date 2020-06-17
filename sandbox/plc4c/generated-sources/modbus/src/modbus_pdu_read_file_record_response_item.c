@@ -40,14 +40,17 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   (*_message)->reference_type = referenceType;
 
   // Array field (data)
-  plc4c_list data;
+  plc4c_list* data = malloc(sizeof(plc4c_list));
+  if(data == NULL) {
+    return NO_MEMORY;
+  }
   {
     // Length array
     uint8_t _dataLength = (dataLength) - (1);
     uint8_t dataEndPos = plc4c_spi_read_get_pos(buf) + _dataLength;
     while(plc4c_spi_read_get_pos(buf) < dataEndPos) {
-      uint16_t value = plc4c_spi_read_unsigned_int(buf, 16);
-      plc4c_utils_list_insert_head_value(&data, &value);
+      uint16_t _value = plc4c_spi_read_unsigned_int(buf, 16);
+      plc4c_utils_list_insert_head_value(data, &_value);
     }
   }
   (*_message)->data = data;

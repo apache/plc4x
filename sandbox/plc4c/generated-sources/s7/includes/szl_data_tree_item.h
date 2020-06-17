@@ -29,7 +29,7 @@ extern "C" {
 struct plc4c_s7_read_write_szl_data_tree_item {
   /* Properties */
   uint16_t item_index;
-  int8_t mlfb[20];
+  int8_t* mlfb;
   uint16_t module_type_id;
   uint16_t ausbg;
   uint16_t ausbe;

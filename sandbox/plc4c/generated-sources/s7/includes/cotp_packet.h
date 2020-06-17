@@ -82,7 +82,7 @@ struct plc4c_s7_read_write_cotp_packet {
       uint8_t cotp_packet_tpdu_error_reject_cause;
     };
   };
-  plc4c_list parameters;
+  plc4c_list* parameters;
   plc4c_s7_read_write_s7_message* payload;
 };
 typedef struct plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet;
