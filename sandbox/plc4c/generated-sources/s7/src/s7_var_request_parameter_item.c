@@ -52,18 +52,20 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(itemType == 0x12) { /* S7VarRequestParameterItemAddress */
+                    
+    // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    uint8_t itemLength = plc4c_spi_read_unsigned_short(buf, 8);
 
-  // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  uint8_t itemLength = plc4c_spi_read_unsigned_short(buf, 8);
 
+                    
+    // Simple Field (address)
+    plc4c_s7_read_write_s7_address* address;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->s7_var_request_parameter_item_address_address = address;
 
-  // Simple Field (address)
-  plc4c_s7_read_write_s7_address* address;
-  plc4c_return_code _res = plc4c_s7_read_write_s7_address_parse(buf, (void*) &address);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->s7_var_request_parameter_item_address_address = address;
   }
 
   return OK;

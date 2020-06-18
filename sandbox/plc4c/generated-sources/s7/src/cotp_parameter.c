@@ -63,46 +63,52 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
+                    
+    // Enum field (tpduSize)
+    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_spi_read_byte(buf, 8);
+    (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
 
-  // Enum field (tpduSize)
-  plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_spi_read_byte(buf, 8);
-  (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
   } else 
   if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
+                    
+    // Simple Field (tsapId)
+    uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
 
-  // Simple Field (tsapId)
-  uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
   } else 
   if(parameterType == 0xC2) { /* COTPParameterCalledTsap */
+                    
+    // Simple Field (tsapId)
+    uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
 
-  // Simple Field (tsapId)
-  uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
   } else 
   if(parameterType == 0xC3) { /* COTPParameterChecksum */
+                    
+    // Simple Field (crc)
+    uint8_t crc = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->cotp_parameter_checksum_crc = crc;
 
-  // Simple Field (crc)
-  uint8_t crc = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->cotp_parameter_checksum_crc = crc;
   } else 
   if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
-
-  // Array field (data)
-  plc4c_list* data = malloc(sizeof(plc4c_list));
-  if(data == NULL) {
-    return NO_MEMORY;
-  }
-  {
-    // Count array
-    uint8_t itemCount = rest;
-    for(int curItem = 0; curItem < itemCount; curItem++) {
-      
-      uint8_t _value = plc4c_spi_read_unsigned_short(buf, 8);
-      plc4c_utils_list_insert_head_value(data, &_value);
+                    
+    // Array field (data)
+    plc4c_list* data = malloc(sizeof(plc4c_list));
+    if(data == NULL) {
+      return NO_MEMORY;
     }
-  }
-  (*_message)->cotp_parameter_disconnect_additional_information_data = data;
+    {
+      // Count array
+      uint8_t itemCount = rest;
+      for(int curItem = 0; curItem < itemCount; curItem++) {
+        
+                  
+        uint8_t _value = plc4c_spi_read_unsigned_short(buf, 8);
+        plc4c_utils_list_insert_head_value(data, &_value);
+      }
+    }
+    (*_message)->cotp_parameter_disconnect_additional_information_data = data;
+
   }
 
   return OK;

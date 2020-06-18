@@ -52,44 +52,51 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(addressType == 0x10) { /* S7AddressAny */
-
-  // Enum field (transportSize)
-  plc4c_s7_read_write_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
-  (*_message)->s7_address_any_transport_size = transportSize;
-
-
-  // Simple Field (numberOfElements)
-  uint16_t numberOfElements = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->s7_address_any_number_of_elements = numberOfElements;
+                    
+    // Enum field (transportSize)
+    plc4c_s7_read_write_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
+    (*_message)->s7_address_any_transport_size = transportSize;
 
 
-  // Simple Field (dbNumber)
-  uint16_t dbNumber = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->s7_address_any_db_number = dbNumber;
+                    
+    // Simple Field (numberOfElements)
+    uint16_t numberOfElements = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->s7_address_any_number_of_elements = numberOfElements;
 
 
-  // Enum field (area)
-  plc4c_s7_read_write_memory_area area = plc4c_spi_read_byte(buf, 8);
-  (*_message)->s7_address_any_area = area;
+                    
+    // Simple Field (dbNumber)
+    uint16_t dbNumber = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->s7_address_any_db_number = dbNumber;
 
 
-  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-  {
-    unsigned int _reserved = plc4c_spi_read_unsigned_short(buf, 5);
-    if(_reserved != 0x00) {
-      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+                    
+    // Enum field (area)
+    plc4c_s7_read_write_memory_area area = plc4c_spi_read_byte(buf, 8);
+    (*_message)->s7_address_any_area = area;
+
+
+                    
+    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+    {
+      unsigned int _reserved = plc4c_spi_read_unsigned_short(buf, 5);
+      if(_reserved != 0x00) {
+        printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+      }
     }
-  }
 
 
-  // Simple Field (byteAddress)
-  uint16_t byteAddress = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->s7_address_any_byte_address = byteAddress;
+                    
+    // Simple Field (byteAddress)
+    uint16_t byteAddress = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->s7_address_any_byte_address = byteAddress;
 
 
-  // Simple Field (bitAddress)
-  unsigned int bitAddress = plc4c_spi_read_unsigned_byte(buf, 3);
-  (*_message)->s7_address_any_bit_address = bitAddress;
+                    
+    // Simple Field (bitAddress)
+    unsigned int bitAddress = plc4c_spi_read_unsigned_byte(buf, 3);
+    (*_message)->s7_address_any_bit_address = bitAddress;
+
   }
 
   return OK;

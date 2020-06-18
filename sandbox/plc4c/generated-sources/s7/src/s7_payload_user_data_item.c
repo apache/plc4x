@@ -77,38 +77,41 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   if(cpuFunctionType == 0x04) { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
   } else 
   if(cpuFunctionType == 0x08) { /* S7PayloadUserDataItemCpuFunctionReadSzlResponse */
-
-  // Const Field (szlItemLength)
-  uint16_t szlItemLength = plc4c_spi_read_unsigned_int(buf, 16);
-  if(szlItemLength != S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH) {
-    return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH + " but got " + szlItemLength);
-  }
-
-
-  // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  uint16_t szlItemCount = plc4c_spi_read_unsigned_int(buf, 16);
-
-
-  // Array field (items)
-  plc4c_list* items = malloc(sizeof(plc4c_list));
-  if(items == NULL) {
-    return NO_MEMORY;
-  }
-  {
-    // Count array
-    uint8_t itemCount = szlItemCount;
-    for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
-      plc4c_list* _value = NULL;
-      plc4c_return_code _res = plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
-      if(_res != OK) {
-        return _res;
-      }
-      plc4c_utils_list_insert_head_value(items, _value);
+                    
+    // Const Field (szlItemLength)
+    uint16_t szlItemLength = plc4c_spi_read_unsigned_int(buf, 16);
+    if(szlItemLength != S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH) {
+      return PARSE_ERROR;
+      // throw new ParseException("Expected constant value " + S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH + " but got " + szlItemLength);
     }
-  }
-  (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_items = items;
+
+
+                    
+    // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    uint16_t szlItemCount = plc4c_spi_read_unsigned_int(buf, 16);
+
+
+                    
+    // Array field (items)
+    plc4c_list* items = malloc(sizeof(plc4c_list));
+    if(items == NULL) {
+      return NO_MEMORY;
+    }
+    {
+      // Count array
+      uint8_t itemCount = szlItemCount;
+      for(int curItem = 0; curItem < itemCount; curItem++) {
+        bool lastItem = curItem == (itemCount - 1);
+                          plc4c_list* _value = NULL;
+        plc4c_return_code _res = plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
+        if(_res != OK) {
+          return _res;
+        }
+        plc4c_utils_list_insert_head_value(items, _value);
+      }
+    }
+    (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_items = items;
+
   }
 
   return OK;

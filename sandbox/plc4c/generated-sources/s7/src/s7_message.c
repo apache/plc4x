@@ -86,26 +86,30 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   if(messageType == 0x01) { /* S7MessageRequest */
   } else 
   if(messageType == 0x02) { /* S7MessageResponse */
+                    
+    // Simple Field (errorClass)
+    uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->s7_message_response_error_class = errorClass;
 
-  // Simple Field (errorClass)
-  uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->s7_message_response_error_class = errorClass;
 
+                    
+    // Simple Field (errorCode)
+    uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->s7_message_response_error_code = errorCode;
 
-  // Simple Field (errorCode)
-  uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->s7_message_response_error_code = errorCode;
   } else 
   if(messageType == 0x03) { /* S7MessageResponseData */
+                    
+    // Simple Field (errorClass)
+    uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->s7_message_response_data_error_class = errorClass;
 
-  // Simple Field (errorClass)
-  uint8_t errorClass = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->s7_message_response_data_error_class = errorClass;
 
+                    
+    // Simple Field (errorCode)
+    uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->s7_message_response_data_error_code = errorCode;
 
-  // Simple Field (errorCode)
-  uint8_t errorCode = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->s7_message_response_data_error_code = errorCode;
   } else 
   if(messageType == 0x07) { /* S7MessageUserData */
   }

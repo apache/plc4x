@@ -66,85 +66,100 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(tpduCode == 0xF0) { /* COTPPacketData */
+                    
+    // Simple Field (eot)
+    bool eot = plc4c_spi_read_bit(buf);
+    (*_message)->cotp_packet_data_eot = eot;
 
-  // Simple Field (eot)
-  bool eot = plc4c_spi_read_bit(buf);
-  (*_message)->cotp_packet_data_eot = eot;
 
+                    
+    // Simple Field (tpduRef)
+    unsigned int tpduRef = plc4c_spi_read_unsigned_short(buf, 7);
+    (*_message)->cotp_packet_data_tpdu_ref = tpduRef;
 
-  // Simple Field (tpduRef)
-  unsigned int tpduRef = plc4c_spi_read_unsigned_short(buf, 7);
-  (*_message)->cotp_packet_data_tpdu_ref = tpduRef;
   } else 
   if(tpduCode == 0xE0) { /* COTPPacketConnectionRequest */
-
-  // Simple Field (destinationReference)
-  uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_connection_request_destination_reference = destinationReference;
-
-
-  // Simple Field (sourceReference)
-  uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_connection_request_source_reference = sourceReference;
+                    
+    // Simple Field (destinationReference)
+    uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_connection_request_destination_reference = destinationReference;
 
 
-  // Enum field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
-  (*_message)->cotp_packet_connection_request_protocol_class = protocolClass;
+                    
+    // Simple Field (sourceReference)
+    uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_connection_request_source_reference = sourceReference;
+
+
+                    
+    // Enum field (protocolClass)
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
+    (*_message)->cotp_packet_connection_request_protocol_class = protocolClass;
+
   } else 
   if(tpduCode == 0xD0) { /* COTPPacketConnectionResponse */
-
-  // Simple Field (destinationReference)
-  uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_connection_response_destination_reference = destinationReference;
-
-
-  // Simple Field (sourceReference)
-  uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_connection_response_source_reference = sourceReference;
+                    
+    // Simple Field (destinationReference)
+    uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_connection_response_destination_reference = destinationReference;
 
 
-  // Enum field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
-  (*_message)->cotp_packet_connection_response_protocol_class = protocolClass;
+                    
+    // Simple Field (sourceReference)
+    uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_connection_response_source_reference = sourceReference;
+
+
+                    
+    // Enum field (protocolClass)
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
+    (*_message)->cotp_packet_connection_response_protocol_class = protocolClass;
+
   } else 
   if(tpduCode == 0x80) { /* COTPPacketDisconnectRequest */
-
-  // Simple Field (destinationReference)
-  uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_disconnect_request_destination_reference = destinationReference;
-
-
-  // Simple Field (sourceReference)
-  uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_disconnect_request_source_reference = sourceReference;
+                    
+    // Simple Field (destinationReference)
+    uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_disconnect_request_destination_reference = destinationReference;
 
 
-  // Enum field (protocolClass)
-  plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
-  (*_message)->cotp_packet_disconnect_request_protocol_class = protocolClass;
+                    
+    // Simple Field (sourceReference)
+    uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_disconnect_request_source_reference = sourceReference;
+
+
+                    
+    // Enum field (protocolClass)
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_spi_read_byte(buf, 8);
+    (*_message)->cotp_packet_disconnect_request_protocol_class = protocolClass;
+
   } else 
   if(tpduCode == 0xC0) { /* COTPPacketDisconnectResponse */
+                    
+    // Simple Field (destinationReference)
+    uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_disconnect_response_destination_reference = destinationReference;
 
-  // Simple Field (destinationReference)
-  uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_disconnect_response_destination_reference = destinationReference;
 
+                    
+    // Simple Field (sourceReference)
+    uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_disconnect_response_source_reference = sourceReference;
 
-  // Simple Field (sourceReference)
-  uint16_t sourceReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_disconnect_response_source_reference = sourceReference;
   } else 
   if(tpduCode == 0x70) { /* COTPPacketTpduError */
+                    
+    // Simple Field (destinationReference)
+    uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
+    (*_message)->cotp_packet_tpdu_error_destination_reference = destinationReference;
 
-  // Simple Field (destinationReference)
-  uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
-  (*_message)->cotp_packet_tpdu_error_destination_reference = destinationReference;
 
+                    
+    // Simple Field (rejectCause)
+    uint8_t rejectCause = plc4c_spi_read_unsigned_short(buf, 8);
+    (*_message)->cotp_packet_tpdu_error_reject_cause = rejectCause;
 
-  // Simple Field (rejectCause)
-  uint8_t rejectCause = plc4c_spi_read_unsigned_short(buf, 8);
-  (*_message)->cotp_packet_tpdu_error_reject_cause = rejectCause;
   }
 
   // Array field (parameters)
