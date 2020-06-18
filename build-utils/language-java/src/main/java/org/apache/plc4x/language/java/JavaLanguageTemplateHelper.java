@@ -293,7 +293,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     @Override
-    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
                 return "io.writeBit((boolean) " + fieldName + ")";

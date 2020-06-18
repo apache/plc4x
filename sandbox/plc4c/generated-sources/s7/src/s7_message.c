@@ -145,6 +145,31 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_message* message) {
+plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_message* _message) {
+
+  // Const Field (protocolId)
+  plc4c_spi_write_unsigned_short(buf, 8, S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID);
+
+  // Discriminator Field (messageType)
+  plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_message_get_discriminator(_message->_type).messageType);
+
+  // Optional Field (parameter)
+  if(_message->parameter != NULL) {
+    plc4c_s7_read_write_s7_parameter* _value = (plc4c_s7_read_write_s7_parameter*) _message->parameter;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_parameter_serialize(buf, (void*) &_value);
+    if(_res != OK) {
+      return _res;
+    }
+  }
+
+  // Optional Field (payload)
+  if(_message->payload != NULL) {
+    plc4c_s7_read_write_s7_payload* _value = (plc4c_s7_read_write_s7_payload*) _message->payload;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_payload_serialize(buf, (void*) &_value);
+    if(_res != OK) {
+      return _res;
+    }
+  }
+
   return OK;
 }

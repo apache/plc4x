@@ -71,6 +71,10 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item* message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
+
+  // Discriminator Field (itemType)
+  plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(_message->_type).itemType);
+
   return OK;
 }

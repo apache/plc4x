@@ -202,6 +202,31 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet* message) {
+plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet* _message) {
+
+  // Discriminator Field (tpduCode)
+  plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
+
+  // Array field (parameters)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->parameters);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_cotp_parameter* _value = (plc4c_s7_read_write_cotp_parameter*) plc4c_utils_list_get_value(_message->parameters, curItem);
+      plc4c_return_code _res = plc4c_s7_read_write_cotp_parameter_serialize(buf, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+  // Optional Field (payload)
+  if(_message->payload != NULL) {
+    plc4c_s7_read_write_s7_message* _value = (plc4c_s7_read_write_s7_message*) _message->payload;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_message_serialize(buf, (void*) &_value);
+    if(_res != OK) {
+      return _res;
+    }
+  }
+
   return OK;
 }

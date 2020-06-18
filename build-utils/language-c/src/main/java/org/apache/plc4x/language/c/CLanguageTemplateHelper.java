@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.language.c;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
@@ -395,8 +394,58 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
     }
 
     @Override
-    public String getWriteBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
-        return null;
+    public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
+        switch (simpleTypeReference.getBaseType()) {
+            case BIT: {
+                return "plc4c_spi_write_bit(buf, " + fieldName + ")";
+            }
+            case UINT: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 4) {
+                    return "plc4c_spi_write_unsigned_byte(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return "plc4c_spi_write_unsigned_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return "plc4c_spi_write_unsigned_int(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return "plc4c_spi_write_unsigned_long(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                return "plc4c_spi_write_unsigned_big_integer(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+            }
+            case INT: {
+                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
+                if (integerTypeReference.getSizeInBits() <= 8) {
+                    return "plc4c_spi_write_byte(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 16) {
+                    return "plc4c_spi_write_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 32) {
+                    return "plc4c_spi_write_int(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "plc4c_spi_write_long(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+                return "plc4c_spi_write_big_integer(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+            }
+            case FLOAT: {
+                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
+                if (floatTypeReference.getSizeInBits() <= 32) {
+                    return "plc4c_spi_write_float(buf, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                } else {
+                    return "plc4c_spi_write_double(buf, " + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
+            }
+            case STRING: {
+                StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
+                return "plc4c_spi_write_string(buf, " + stringTypeReference.getSizeInBits() + ", \"" +
+                    stringTypeReference.getEncoding() + "\", " + fieldName + ")";
+            }
+        }
+        throw new RuntimeException("Unsupported type");
     }
 
     @Override

@@ -44,6 +44,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* _message) {
+
+  // Const Field (modbusTcpDefaultPort)
+  plc4c_spi_write_unsigned_int(buf, 16, MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT);
+
   return OK;
 }

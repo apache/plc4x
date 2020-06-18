@@ -76,6 +76,22 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
+
+  // Enum field (returnCode)
+  plc4c_spi_write_byte(buf, 8, _message->return_code);
+
+  // Enum field (transportSize)
+  plc4c_spi_write_byte(buf, 8, _message->transport_size);
+
+  // Array field (data)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->data);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->data, curItem);
+      plc4c_spi_write_byte(buf, 8, *_value);
+    }
+  }
+
   return OK;
 }

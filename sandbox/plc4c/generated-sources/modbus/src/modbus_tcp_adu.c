@@ -64,6 +64,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* _message) {
+
+  // Const Field (protocolIdentifier)
+  plc4c_spi_write_unsigned_int(buf, 16, MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER);
+
   return OK;
 }

@@ -414,7 +414,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
                 <#if helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type>
-                ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "element")};
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "element")};
                 <#else>
                     <#assign complexTypeReference = arrayField.type>
                 boolean lastItem = curItem == (itemCount - 1);
@@ -434,7 +434,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             // Create an array of all the bytes written in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
             _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
-            ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(_checksum)")};
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")};
         }
         <#break>
     <#case "const">
@@ -442,7 +442,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = constField.type>
 
         // Const Field (${constField.name})
-        ${helper.getWriteBufferReadMethodCall(simpleTypeReference, constField.referenceValue)};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
         <#break>
     <#case "discriminator">
         <#assign discriminatorField = field>
@@ -450,14 +450,14 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
         ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();
-        ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
         <#break>
     <#case "enum">
         <#assign enumField = field>
 
         // Enum field (${enumField.name})
         ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
-        ${helper.getWriteBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
         <#break>
     <#case "implicit">
         <#assign implicitField = field>
@@ -465,7 +465,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
         ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)});
-        ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(" + implicitField.name + ")")};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")};
         <#break>
     <#case "manualArray">
         <#assign manualArrayField = field>
@@ -492,7 +492,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             ${optionalField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${optionalField.name?cap_first}();
             <#if helper.isSimpleTypeReference(optionalField.type)>
                 <#assign simpleTypeReference = optionalField.type>
-            ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(" + optionalField.name + ")")};
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")")};
             <#else>
                 <#assign complexTypeReference = optionalField.type>
             ${complexTypeReference.name}IO.staticSerialize(io, ${optionalField.name});
@@ -508,7 +508,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             boolean _needsPadding = (boolean) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
             if(_needsPadding) {
                 ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
-                ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(_paddingValue)")};
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
             }
         }
         <#break>
@@ -517,7 +517,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign simpleTypeReference = reservedField.type>
 
         // Reserved Field (reserved)
-        ${helper.getWriteBufferReadMethodCall(simpleTypeReference, helper.getReservedValue(field))};
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))};
         <#break>
     <#case "simple">
         <#assign simpleField = field>
@@ -526,7 +526,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
         <#if helper.isSimpleTypeReference(simpleField.type)>
             <#assign simpleTypeReference = simpleField.type>
-            ${helper.getWriteBufferReadMethodCall(simpleTypeReference, "(" + simpleField.name + ")")};
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")};
         <#else>
             <#assign complexTypeReference = simpleField.type>
         ${complexTypeReference.name}IO.staticSerialize(io, ${simpleField.name});

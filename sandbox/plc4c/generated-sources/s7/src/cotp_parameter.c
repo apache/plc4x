@@ -114,6 +114,10 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter* message) {
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter* _message) {
+
+  // Discriminator Field (parameterType)
+  plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
+
   return OK;
 }

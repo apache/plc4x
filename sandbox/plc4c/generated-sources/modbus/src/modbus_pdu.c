@@ -798,6 +798,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu* _message) {
+
+  // Discriminator Field (error)
+  plc4c_spi_write_bit(buf, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).error);
+
+  // Discriminator Field (function)
+  plc4c_spi_write_unsigned_short(buf, 7, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).function);
+
   return OK;
 }

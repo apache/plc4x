@@ -117,6 +117,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload_user_data_item* message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+
+  // Enum field (returnCode)
+  plc4c_spi_write_byte(buf, 8, _message->return_code);
+
+  // Enum field (transportSize)
+  plc4c_spi_write_byte(buf, 8, _message->transport_size);
+
   return OK;
 }

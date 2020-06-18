@@ -258,12 +258,12 @@ public class ${type.name}IO {
                     <#break>
                     <#case "const">
             // Const Field (${field.name})
-            ${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)};
+            ${helper.getWriteBufferWriteMethodCall(field.type, field.referenceValue)};
                     <#break>
                     <#case "enum">
             // Enum field (${field.name})
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${field.name?cap_first}();
-            ${helper.getWriteBufferReadMethodCall(helper.getEnumBaseTypeReference(field.type), "(" + field.name + ".getValue())")};
+            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.type), "(" + field.name + ".getValue())")};
                     <#break>
                     <#case "manual">
             // Manual Field (${field.name})
@@ -271,7 +271,7 @@ public class ${type.name}IO {
                     <#break>
                     <#case "reserved">
             // Reserved Field
-            ${helper.getWriteBufferReadMethodCall(field.type, helper.getReservedValue(field))};
+            ${helper.getWriteBufferWriteMethodCall(field.type, helper.getReservedValue(field))};
                     <#break>
                     <#case "simple">
             // Simple Field (${field.name})
@@ -286,7 +286,7 @@ public class ${type.name}IO {
                             </#if>
                         </#if>
                         <#if helper.isSimpleTypeReference(field.type)>
-            ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")};
+            ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
                         <#else>
             ${field.type.name}IO.staticSerialize(io, ${field.name});
                         </#if>

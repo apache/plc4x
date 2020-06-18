@@ -54,6 +54,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* _message) {
+
   return OK;
 }

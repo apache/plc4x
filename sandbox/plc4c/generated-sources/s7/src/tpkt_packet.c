@@ -64,6 +64,10 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_tpkt_packet* message) {
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_tpkt_packet* _message) {
+
+  // Const Field (protocolId)
+  plc4c_spi_write_unsigned_short(buf, 8, S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID);
+
   return OK;
 }

@@ -61,6 +61,16 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _message) {
+
+  // Array field (data)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->data);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      uint16_t* _value = (uint16_t*) plc4c_utils_list_get_value(_message->data, curItem);
+      plc4c_spi_write_unsigned_int(buf, 16, *_value);
+    }
+  }
+
   return OK;
 }

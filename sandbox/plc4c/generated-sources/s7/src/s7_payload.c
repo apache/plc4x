@@ -150,6 +150,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload* message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload* _message) {
+
   return OK;
 }
