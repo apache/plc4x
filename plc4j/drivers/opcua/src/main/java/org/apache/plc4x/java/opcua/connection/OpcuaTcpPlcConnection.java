@@ -23,37 +23,13 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.base.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.base.messages.DefaultPlcSubscriptionResponse;
-import org.apache.plc4x.java.base.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.base.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcSubscriptionRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcUnsubscriptionRequest;
-import org.apache.plc4x.java.base.messages.InternalPlcWriteRequest;
-import org.apache.plc4x.java.base.messages.items.BaseDefaultFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultBigIntegerFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultBooleanFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultByteArrayFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultByteFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultDoubleFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultFloatFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultIntegerFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultLongFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultShortFieldItem;
-import org.apache.plc4x.java.base.messages.items.DefaultStringFieldItem;
+import org.apache.plc4x.java.base.messages.*;
+import org.apache.plc4x.java.base.messages.items.*;
 import org.apache.plc4x.java.base.model.SubscriptionPlcField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
@@ -70,22 +46,12 @@ import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
-import org.eclipse.milo.opcua.stack.core.types.builtin.ByteString;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
-import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
-import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
-import org.eclipse.milo.opcua.stack.core.types.builtin.QualifiedName;
-import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
-import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
+import org.eclipse.milo.opcua.stack.core.types.builtin.*;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
-import org.eclipse.milo.opcua.stack.core.types.structured.ApplicationDescription;
-import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
-import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateRequest;
-import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
-import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
+import org.eclipse.milo.opcua.stack.core.types.structured.*;
 import org.eclipse.milo.opcua.stack.core.util.CertificateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,13 +65,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -215,11 +175,19 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         List<EndpointDescription> endpoints = null;
         EndpointDescription endpoint = null;
 
+        String endpointUrl = getEndpointUrl(address, port, getSubPathOfParams(params) == null ? "" : getSubPathOfParams(params));
         try {
-            endpoints = DiscoveryClient.getEndpoints(getEndpointUrl(address, port, getSubPathOfParams(params) == null ? "" : getSubPathOfParams(params))).get();
+            logger.info("Trying Endpoint discovery on endpoint url {}", endpointUrl);
+            endpoints = DiscoveryClient.getEndpoints(endpointUrl).get();
             //TODO Exception should be handeled better when the Discovery-API of Milo is stable
         } catch (Exception ex) {
-            logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", getEndpointUrl(address, port, params));
+            // Helper for unopened port
+            if (ex.getMessage().contains("Connection refused")) {
+                throw new PlcConnectionException("Unable to discover Endpoint as Connection is Refused. Is the Port " + port + " Reachable on machine " + address + "?", ex);
+            }
+
+            // Regular handling
+            logger.info("Failed to discover Endpoint with enabled discovery. If the endpoint does not allow a correct discovery disable this option with the nDiscovery=true option. Failed Endpoint: {}", endpointUrl, ex);
 
             // try the explicit discovery endpoint as well
             String discoveryUrl = getEndpointUrl(address, port, getSubPathOfParams(params));
@@ -235,7 +203,11 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             } catch (InterruptedException | ExecutionException e) {
                 throw new PlcConnectionException("Unable to discover URL:" + discoveryUrl);
             }
+        }
 
+        logger.info("Available Endpoints:");
+        for (EndpointDescription ed : endpoints) {
+            logger.info("- {} [{}, {}]", ed.getEndpointUrl(), ed.getSecurityPolicyUri(), ed.getSecurityMode());
         }
 
         endpoint = endpoints.stream()
