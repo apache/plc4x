@@ -49,7 +49,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
   if(*_message == NULL) {
     return NO_MEMORY;

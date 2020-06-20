@@ -28,12 +28,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Simple Field (referenceType)
   uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
@@ -70,6 +69,24 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item* _message) {
+
+  // Simple Field (referenceType)
+  {
+    uint8_t _value = _message->reference_type;
+    plc4c_spi_write_unsigned_short(buf, 8, _value);
+  }
+
+  // Simple Field (fileNumber)
+  {
+    uint16_t _value = _message->file_number;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
+
+  // Simple Field (recordNumber)
+  {
+    uint16_t _value = _message->record_number;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
 
   // Array field (recordData)
   {

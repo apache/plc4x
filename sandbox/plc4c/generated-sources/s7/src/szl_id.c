@@ -28,12 +28,11 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_id));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Enum field (typeClass)
   plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_spi_read_byte(buf, 4);
@@ -54,6 +53,12 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* b
 
   // Enum field (typeClass)
   plc4c_spi_write_byte(buf, 4, _message->type_class);
+
+  // Simple Field (sublistExtract)
+  {
+    unsigned int _value = _message->sublist_extract;
+    plc4c_spi_write_unsigned_byte(buf, 4, _value);
+  }
 
   // Enum field (sublistList)
   plc4c_spi_write_byte(buf, 8, _message->sublist_list);

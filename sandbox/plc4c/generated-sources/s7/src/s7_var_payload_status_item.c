@@ -28,12 +28,11 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_status_item));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);

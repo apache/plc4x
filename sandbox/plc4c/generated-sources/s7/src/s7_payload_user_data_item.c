@@ -43,12 +43,11 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
@@ -124,6 +123,21 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
   // Enum field (transportSize)
   plc4c_spi_write_byte(buf, 8, _message->transport_size);
+
+  // Simple Field (szlId)
+  {
+    plc4c_s7_read_write_szl_id* _value = _message->szl_id;
+    plc4c_return_code _res = plc4c_s7_read_write_szl_id_serialize(buf, _value);
+    if(_res != OK) {
+      return _res;
+    }
+  }
+
+  // Simple Field (szlIndex)
+  {
+    uint16_t _value = _message->szl_index;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
 
   return OK;
 }

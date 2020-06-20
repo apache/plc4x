@@ -47,12 +47,11 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_message));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
@@ -153,10 +152,19 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
   // Discriminator Field (messageType)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_message_get_discriminator(_message->_type).messageType);
 
+  // Reserved Field
+  plc4c_spi_write_unsigned_int(buf, 16, 0x0000);
+
+  // Simple Field (tpduReference)
+  {
+    uint16_t _value = _message->tpdu_reference;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
+
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
-    plc4c_s7_read_write_s7_parameter* _value = (plc4c_s7_read_write_s7_parameter*) _message->parameter;
-    plc4c_return_code _res = plc4c_s7_read_write_s7_parameter_serialize(buf, (void*) &_value);
+    plc4c_s7_read_write_s7_parameter* _value = _message->parameter;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_parameter_serialize(buf, _value);
     if(_res != OK) {
       return _res;
     }
@@ -164,8 +172,8 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    plc4c_s7_read_write_s7_payload* _value = (plc4c_s7_read_write_s7_payload*) _message->payload;
-    plc4c_return_code _res = plc4c_s7_read_write_s7_payload_serialize(buf, (void*) &_value);
+    plc4c_s7_read_write_s7_payload* _value = _message->payload;
+    plc4c_return_code _res = plc4c_s7_read_write_s7_payload_serialize(buf, _value);
     if(_res != OK) {
       return _res;
     }

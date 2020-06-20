@@ -28,12 +28,11 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Simple Field (itemIndex)
   uint16_t itemIndex = plc4c_spi_read_unsigned_int(buf, 16);
@@ -73,6 +72,12 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* _message) {
 
+  // Simple Field (itemIndex)
+  {
+    uint16_t _value = _message->item_index;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
+
   // Array field (mlfb)
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->mlfb);
@@ -80,6 +85,24 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
       int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->mlfb, curItem);
       plc4c_spi_write_byte(buf, 8, *_value);
     }
+  }
+
+  // Simple Field (moduleTypeId)
+  {
+    uint16_t _value = _message->module_type_id;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
+
+  // Simple Field (ausbg)
+  {
+    uint16_t _value = _message->ausbg;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  }
+
+  // Simple Field (ausbe)
+  {
+    uint16_t _value = _message->ausbe;
+    plc4c_spi_write_unsigned_int(buf, 16, _value);
   }
 
   return OK;

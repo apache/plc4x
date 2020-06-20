@@ -28,12 +28,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t dataLength = plc4c_spi_read_unsigned_short(buf, 8);
@@ -62,6 +61,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _message) {
+
+  // Simple Field (referenceType)
+  {
+    uint8_t _value = _message->reference_type;
+    plc4c_spi_write_unsigned_short(buf, 8, _value);
+  }
 
   // Array field (data)
   {

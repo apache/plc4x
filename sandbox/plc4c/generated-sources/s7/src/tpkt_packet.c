@@ -28,12 +28,11 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
 
-  // Pointer to the parsed data structure.
+  // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
   if(*_message == NULL) {
     return NO_MEMORY;
   }
-
 
   // Const Field (protocolId)
   uint8_t protocolId = plc4c_spi_read_unsigned_short(buf, 8);
@@ -68,6 +67,18 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
 
   // Const Field (protocolId)
   plc4c_spi_write_unsigned_short(buf, 8, S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID);
+
+  // Reserved Field
+  plc4c_spi_write_unsigned_short(buf, 8, 0x00);
+
+  // Simple Field (payload)
+  {
+    plc4c_s7_read_write_cotp_packet* _value = _message->payload;
+    plc4c_return_code _res = plc4c_s7_read_write_cotp_packet_serialize(buf, _value);
+    if(_res != OK) {
+      return _res;
+    }
+  }
 
   return OK;
 }
