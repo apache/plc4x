@@ -71,6 +71,9 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
   // Reserved Field
   plc4c_spi_write_unsigned_short(buf, 8, 0x00);
 
+  // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_int(buf, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
+
   // Simple Field (payload)
   {
     plc4c_s7_read_write_cotp_packet* _value = _message->payload;
@@ -82,3 +85,12 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4c_s7_read_write_tpkt_packet* message) {
+  return plc4c_s7_read_write_tpkt_packet_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_tpkt_packet_length_in_bits(plc4c_s7_read_write_tpkt_packet* message) {
+  return 0;
+}
+

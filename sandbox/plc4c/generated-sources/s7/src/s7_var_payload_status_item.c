@@ -48,3 +48,12 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_s7_var_payload_status_item_length_in_bytes(plc4c_s7_read_write_s7_var_payload_status_item* message) {
+  return plc4c_s7_read_write_s7_var_payload_status_item_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_s7_var_payload_status_item_length_in_bits(plc4c_s7_read_write_s7_var_payload_status_item* message) {
+  return 0;
+}
+

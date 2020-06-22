@@ -203,6 +203,9 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
 plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet* _message) {
 
+  // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_short(buf, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(_message->payload) : 0))) + (1))));
+
   // Discriminator Field (tpduCode)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
 
@@ -210,6 +213,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->parameters);
     for(int curItem = 0; curItem < itemCount; curItem++) {
+      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_cotp_parameter* _value = (plc4c_s7_read_write_cotp_parameter*) plc4c_utils_list_get_value(_message->parameters, curItem);
       plc4c_return_code _res = plc4c_s7_read_write_cotp_parameter_serialize(buf, (void*) &_value);
       if(_res != OK) {
@@ -229,3 +233,12 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* message) {
+  return plc4c_s7_read_write_cotp_packet_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* message) {
+  return 0;
+}
+

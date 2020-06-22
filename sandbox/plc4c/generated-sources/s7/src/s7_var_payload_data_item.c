@@ -75,7 +75,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* _message, bool lastItem) {
 
   // Enum field (returnCode)
   plc4c_spi_write_byte(buf, 8, _message->return_code);
@@ -93,6 +93,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
+
       int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_byte(buf, 8, *_value);
     }
@@ -100,7 +101,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
 
   // Padding Field (padding)
   {
-    bool _needsPadding = (bool) ((plc4c_spi_read_has_more(buf, 8)) && ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(data)) % (2))) == (1)))));
+    bool _needsPadding = (bool) ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(_message->data)) % (2))) == (1))));
     if(_needsPadding) {
       // Just output the default padding data
       plc4c_spi_write_unsigned_short(buf, 8, 0);
@@ -109,3 +110,12 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bytes(plc4c_s7_read_write_s7_var_payload_data_item* message) {
+  return plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_read_write_s7_var_payload_data_item* message) {
+  return 0;
+}
+

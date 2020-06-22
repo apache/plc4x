@@ -161,6 +161,12 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
     plc4c_spi_write_unsigned_int(buf, 16, _value);
   }
 
+  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_int(buf, 16, (((_message->parameter) != (NULL)) ? plc4c_s7_read_write_s7_parameter_length_in_bytes(_message->parameter) : 0));
+
+  // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_int(buf, 16, (((_message->payload) != (NULL)) ? plc4c_s7_read_write_s7_payload_length_in_bytes(_message->payload) : 0));
+
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
     plc4c_s7_read_write_s7_parameter* _value = _message->parameter;
@@ -181,3 +187,12 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_s7_message_length_in_bytes(plc4c_s7_read_write_s7_message* message) {
+  return plc4c_s7_read_write_s7_message_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_message* message) {
+  return 0;
+}
+

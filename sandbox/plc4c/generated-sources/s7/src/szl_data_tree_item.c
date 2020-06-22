@@ -82,6 +82,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->mlfb);
     for(int curItem = 0; curItem < itemCount; curItem++) {
+
       int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->mlfb, curItem);
       plc4c_spi_write_byte(buf, 8, *_value);
     }
@@ -107,3 +108,12 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* message) {
+  return plc4c_s7_read_write_szl_data_tree_item_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* message) {
+  return 0;
+}
+

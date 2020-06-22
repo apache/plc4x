@@ -74,6 +74,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
   // Const Field (protocolIdentifier)
   plc4c_spi_write_unsigned_int(buf, 16, MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER);
 
+  // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_int(buf, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));
+
   // Simple Field (unitIdentifier)
   {
     uint8_t _value = _message->unit_identifier;
@@ -91,3 +94,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
 
   return OK;
 }
+
+uint8_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bytes(plc4c_modbus_read_write_modbus_tcp_adu* message) {
+  return plc4c_modbus_read_write_modbus_tcp_adu_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bits(plc4c_modbus_read_write_modbus_tcp_adu* message) {
+  return 0;
+}
+

@@ -71,6 +71,10 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
 plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload_user_data_item* message);
 
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* message);
+
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* message);
+
 #ifdef __cplusplus
 }
 #endif

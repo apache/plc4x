@@ -91,6 +91,10 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
 plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet* message);
 
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* message);
+
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* message);
+
 #ifdef __cplusplus
 }
 #endif

@@ -40,6 +40,10 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
 
 plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_id* message);
 
+uint8_t plc4c_s7_read_write_szl_id_length_in_bytes(plc4c_s7_read_write_szl_id* message);
+
+uint8_t plc4c_s7_read_write_szl_id_length_in_bits(plc4c_s7_read_write_szl_id* message);
+
 #ifdef __cplusplus
 }
 #endif

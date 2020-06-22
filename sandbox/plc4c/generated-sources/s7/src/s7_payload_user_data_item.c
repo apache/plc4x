@@ -124,6 +124,9 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   // Enum field (transportSize)
   plc4c_spi_write_byte(buf, 8, _message->transport_size);
 
+  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_int(buf, 16, (plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(_message)) - (4));
+
   // Simple Field (szlId)
   {
     plc4c_s7_read_write_szl_id* _value = _message->szl_id;
@@ -141,3 +144,12 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* message) {
+  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* message) {
+  return 0;
+}
+

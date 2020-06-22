@@ -472,7 +472,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
         if (term instanceof Literal) {
             if (term instanceof NullLiteral) {
-                return "null";
+                return "NULL";
             } else if (term instanceof BooleanLiteral) {
                 return Boolean.toString(((BooleanLiteral) term).getValue());
             } else if (term instanceof NumericLiteral) {
@@ -481,8 +481,24 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 return "\"" + ((StringLiteral) term).getValue() + "\"";
             } else if (term instanceof VariableLiteral) {
                 VariableLiteral variableLiteral = (VariableLiteral) term;
+                if(variableLiteral.contains("lengthInBytes")) {
+                    ComplexTypeDefinition lengthType;
+                    String lengthExpression;
+                    if(variableLiteral.getName().equals("lengthInBytes")) {
+                        lengthType = baseType;
+                        lengthExpression = "_message";
+                    } else {
+                        final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty(baseType, variableLiteral.getName());
+                        if(!typeReferenceForProperty.isPresent()) {
+                            throw new RuntimeException("Unknown type for property " + variableLiteral.getName());
+                        }
+                        lengthType = (ComplexTypeDefinition) getTypeDefinitionForTypeReference(typeReferenceForProperty.get());
+                        lengthExpression = variableExpressionGenerator.apply(term);
+                    }
+                    return "plc4c_" + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
+                }
                 // If this literal references an Enum type, then we have to output it differently.
-                if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                     return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
                 } else {
                     return variableExpressionGenerator.apply(term);
@@ -715,29 +731,9 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             sb.append(")");
             return sb.toString();
         }
-        // Discriminator values have to be handled a little differently.
-        /*else if(vl.getName().equals("DISCRIMINATOR_VALUES")) {
-            final String typeName = getLanguageTypeNameForSpecType(field.getType());
-            switch (typeName) {
-                case "byte":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).byteValue()";
-                case "short":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).shortValue()";
-                case "int":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).intValue()";
-                case "long":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).longValue()";
-                case "float":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).floatValue()";
-                case "double":
-                    return "((Number) _value.getDiscriminatorValues()[" + vl.getIndex() + "]).doubleValue()";
-                default:
-                    return "_value.getDiscriminatorValues()[" + vl.getIndex() + "]";
-            }
-        }*/
         // All uppercase names are not fields, but utility methods.
         else if (vl.getName().equals(vl.getName().toUpperCase())) {
-            StringBuilder sb = new StringBuilder(vl.getName());
+            StringBuilder sb = new StringBuilder("plc4c_spi_evaluation_helper_" + vl.getName().toLowerCase());
             if (vl.getArgs() != null) {
                 sb.append("(");
                 boolean firstArg = true;
@@ -842,7 +838,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "";
             }
         } else {
-            StringBuilder sb = new StringBuilder("_value");
+            StringBuilder sb = new StringBuilder("_message->");
             appendVariableExpressionRest(sb, vl);
             return sb.toString();
         }
@@ -856,7 +852,8 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         } else {
             sb.append(camelCaseToSnakeCase(vl.getName()));
         }
-        if(vl.getChild() != null) {
+        // Suppress any "lengthInBytes" properties as these are handled differently in C
+        if((vl.getChild() != null) && !vl.getChild().getName().equals("lengthInBytes")) {
             sb.append(".");
             appendVariableExpressionRest(sb, vl.getChild());
         }
@@ -884,6 +881,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 return 0;
             }
         }
+    }
+
+    public List<Argument> getSerializerArguments(Argument[] arguments) {
+        List<Argument> serializerArguments = new LinkedList<>();
+        if(arguments != null) {
+            for (Argument argument : arguments) {
+                if ("lastItem".equals(argument.getName())) {
+                    serializerArguments.add(argument);
+                }
+            }
+        }
+        return serializerArguments;
     }
 
 }

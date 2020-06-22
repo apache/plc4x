@@ -74,6 +74,10 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
 plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload* message);
 
+uint8_t plc4c_s7_read_write_s7_payload_length_in_bytes(plc4c_s7_read_write_s7_payload* message);
+
+uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_payload* message);
+
 #ifdef __cplusplus
 }
 #endif

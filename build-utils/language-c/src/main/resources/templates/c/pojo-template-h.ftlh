@@ -148,7 +148,11 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 <#--
     Define the serialize-method for elements of this tpye
 -->
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message);
+plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>);
+
+uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_${helper.getCTypeName(type.name)}* message);
+
+uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bits(plc4c_${helper.getCTypeName(type.name)}* message);
 
 #ifdef __cplusplus
 }

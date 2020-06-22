@@ -119,5 +119,17 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
 
+  // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_short(buf, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(_message)) - (2));
+
   return OK;
 }
+
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* message) {
+  return plc4c_s7_read_write_cotp_parameter_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* message) {
+  return 0;
+}
+

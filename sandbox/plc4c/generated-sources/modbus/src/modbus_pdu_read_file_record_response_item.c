@@ -62,6 +62,9 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _message) {
 
+  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  plc4c_spi_write_unsigned_short(buf, 8, (((plc4c_spi_evaluation_helper_count(_message->data)) * (2))) + (1));
+
   // Simple Field (referenceType)
   {
     uint8_t _value = _message->reference_type;
@@ -72,6 +75,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
+
       uint16_t* _value = (uint16_t*) plc4c_utils_list_get_value(_message->data, curItem);
       plc4c_spi_write_unsigned_int(buf, 16, *_value);
     }
@@ -79,3 +83,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   return OK;
 }
+
+uint8_t plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bytes(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message) {
+  return plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bits(message) / 8;
+}
+
+uint8_t plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bits(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message) {
+  return 0;
+}
+

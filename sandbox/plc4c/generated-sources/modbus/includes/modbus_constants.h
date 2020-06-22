@@ -39,6 +39,10 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* message);
 
+uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bytes(plc4c_modbus_read_write_modbus_constants* message);
+
+uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bits(plc4c_modbus_read_write_modbus_constants* message);
+
 #ifdef __cplusplus
 }
 #endif
