@@ -156,6 +156,78 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
 plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_payload* _message) {
 
+  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response: {
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_read_var_response_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_read_var_response_items, curItem);
+          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request: {
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_request_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_request_items, curItem);
+          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response: {
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_response_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_s7_read_write_s7_var_payload_status_item* _value = (plc4c_s7_read_write_s7_var_payload_status_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_response_items, curItem);
+          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_status_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data: {
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_s7_read_write_s7_payload_user_data_item* _value = (plc4c_s7_read_write_s7_payload_user_data_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_items, curItem);
+          plc4c_return_code _res = plc4c_s7_read_write_s7_payload_user_data_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+  }
+
   return OK;
 }
 
@@ -178,6 +250,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request: {
@@ -190,6 +263,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response: {
@@ -202,6 +276,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data: {
@@ -214,6 +289,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
           curElement = curElement->next;
         }
       }
+
       break;
     }
   }

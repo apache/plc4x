@@ -77,6 +77,26 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(pl
   // Discriminator Field (itemType)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(_message->_type).itemType);
 
+  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_var_request_parameter_item_type_s7_read_write_s7_var_request_parameter_item_address: {
+
+      // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_address_length_in_bytes(_message->s7_var_request_parameter_item_address_address));
+
+      // Simple Field (address)
+      {
+        plc4c_s7_read_write_s7_address* _value = _message->s7_var_request_parameter_item_address_address;
+        plc4c_return_code _res = plc4c_s7_read_write_s7_address_serialize(buf, _value);
+        if(_res != OK) {
+          return _res;
+        }
+      }
+
+      break;
+    }
+  }
+
   return OK;
 }
 
@@ -100,6 +120,7 @@ uint8_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(plc4c_s
 
       // Simple field (address)
       lengthInBits += plc4c_s7_read_write_s7_address_length_in_bits(_message->s7_var_request_parameter_item_address_address);
+
       break;
     }
   }

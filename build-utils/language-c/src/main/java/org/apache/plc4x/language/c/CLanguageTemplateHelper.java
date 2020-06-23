@@ -485,7 +485,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     ComplexTypeDefinition lengthType;
                     String lengthExpression;
                     if(variableLiteral.getName().equals("lengthInBytes")) {
-                        lengthType = baseType;
+                        lengthType = (baseType.getParentType() == null) ? baseType : (ComplexTypeDefinition) baseType.getParentType();
                         lengthExpression = "_message";
                     } else {
                         final Optional<TypeReference> typeReferenceForProperty = getTypeReferenceForProperty(baseType, variableLiteral.getName());
@@ -496,9 +496,10 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         lengthExpression = variableExpressionGenerator.apply(term);
                     }
                     return "plc4c_" + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
-                }
+                } else if (variableLiteral.getName().equals("lastItem")) {
+                    return "lastItem";
                 // If this literal references an Enum type, then we have to output it differently.
-                else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
+                } else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
                     return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
                 } else {
                     return variableExpressionGenerator.apply(term);
@@ -572,10 +573,10 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 if(castType.getParentType() != null) {
                     // Change the name of the property to contain the sub-type-prefix.
                     sb.append("->").append(camelCaseToSnakeCase(castType.getName())).append("_");
-                    appendVariableExpressionRest(sb, vl.getChild());
+                    appendVariableExpressionRest(sb, baseType, vl.getChild());
                 } else {
                     sb.append("->");
-                    appendVariableExpressionRest(sb, vl.getChild());
+                    appendVariableExpressionRest(sb, (ComplexTypeDefinition) castType, vl.getChild());
                 }
             }
             return sb.toString();
@@ -602,7 +603,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
             if(vl.getChild() != null) {
                 sb.append(".");
-                appendVariableExpressionRest(sb, vl.getChild());
+                appendVariableExpressionRest(sb, baseType, vl.getChild());
             }
             return sb.toString();
         }
@@ -658,7 +659,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         StringBuilder sb = new StringBuilder(vl.getName());
         if(vl.getChild() != null) {
             sb.append(".");
-            appendVariableExpressionRest(sb, vl.getChild());
+            appendVariableExpressionRest(sb, baseType, vl.getChild());
         }
         return sb.toString();
     }
@@ -695,7 +696,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                         sb.append(va.getName());
                         if(va.getChild() != null) {
                             sb.append(".");
-                            appendVariableExpressionRest(sb, va.getChild());
+                            appendVariableExpressionRest(sb, baseType, va.getChild());
                         }
                     } else if (isTypeArg) {
                         String part = va.getChild().getName();
@@ -758,7 +759,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             sb.append(va.getName());
                             if(va.getChild() != null) {
                                 sb.append(".");
-                                appendVariableExpressionRest(sb, va.getChild());
+                                appendVariableExpressionRest(sb, baseType, va.getChild());
                             }
                         } else if (isTypeArg) {
                             String part = va.getChild().getName();
@@ -811,7 +812,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             StringBuilder sb = new StringBuilder(vl.getName());
             if(vl.getChild() != null) {
                 sb.append(".");
-                appendVariableExpressionRest(sb, vl.getChild());
+                appendVariableExpressionRest(sb, baseType, vl.getChild());
             }
             return sb.toString();
         } else if (isTypeArg) {
@@ -839,12 +840,15 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         } else {
             StringBuilder sb = new StringBuilder("_message->");
-            appendVariableExpressionRest(sb, vl);
+            if(baseType != getThisTypeDefinition()) {
+                sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
+            }
+            appendVariableExpressionRest(sb, baseType, vl);
             return sb.toString();
         }
     }
 
-    private void appendVariableExpressionRest(StringBuilder sb, VariableLiteral vl) {
+    private void appendVariableExpressionRest(StringBuilder sb, ComplexTypeDefinition baseType, VariableLiteral vl) {
         if(vl.isIndexed()) {
             sb.insert(0, "plc4c_utils_list_get(");
             sb.append(camelCaseToSnakeCase(vl.getName()));
@@ -855,7 +859,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // Suppress any "lengthInBytes" properties as these are handled differently in C
         if((vl.getChild() != null) && !vl.getChild().getName().equals("lengthInBytes")) {
             sb.append(".");
-            appendVariableExpressionRest(sb, vl.getChild());
+            appendVariableExpressionRest(sb, baseType, vl.getChild());
         }
     }
 
@@ -899,6 +903,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
         return serializerArguments;
+    }
+
+    public List<Term> getSerializerTerms(Term[] terms) {
+        List<Term> serializerTerms = new LinkedList<>();
+        if(terms != null) {
+            for (Term term : terms) {
+                if (term.contains("lastItem")) {
+                    serializerTerms.add(term);
+                }
+            }
+        }
+        return serializerTerms;
     }
 
     public String getLengthInBitsFunctionNameForComplexTypedField(Field field) {

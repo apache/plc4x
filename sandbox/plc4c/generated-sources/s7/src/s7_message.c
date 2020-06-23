@@ -171,6 +171,50 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
   // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   plc4c_spi_write_unsigned_int(buf, 16, (((_message->payload) != (NULL)) ? plc4c_s7_read_write_s7_payload_length_in_bytes(_message->payload) : 0));
 
+  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response: {
+
+      // Simple Field (errorClass)
+      {
+        uint8_t _value = _message->s7_message_response_error_class;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      // Simple Field (errorCode)
+      {
+        uint8_t _value = _message->s7_message_response_error_code;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data: {
+
+      // Simple Field (errorClass)
+      {
+        uint8_t _value = _message->s7_message_response_data_error_class;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      // Simple Field (errorCode)
+      {
+        uint8_t _value = _message->s7_message_response_data_error_code;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data: {
+
+      break;
+    }
+  }
+
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
     plc4c_s7_read_write_s7_parameter* _value = _message->parameter;
@@ -220,6 +264,7 @@ uint8_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_mes
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {
     case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request: {
+
       break;
     }
     case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response: {
@@ -230,6 +275,7 @@ uint8_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_mes
 
       // Simple field (errorCode)
       lengthInBits += 8;
+
       break;
     }
     case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data: {
@@ -240,9 +286,11 @@ uint8_t plc4c_s7_read_write_s7_message_length_in_bits(plc4c_s7_read_write_s7_mes
 
       // Simple field (errorCode)
       lengthInBits += 8;
+
       break;
     }
     case plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data: {
+
       break;
     }
   }

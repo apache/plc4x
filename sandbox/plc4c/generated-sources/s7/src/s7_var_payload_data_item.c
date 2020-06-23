@@ -78,10 +78,16 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_data_item* _message, bool lastItem) {
 
   // Enum field (returnCode)
-  plc4c_spi_write_byte(buf, 8, _message->return_code);
+  {
+    int8_t _value = _message->return_code;
+    plc4c_spi_write_byte(buf, 8, _value);
+  }
 
   // Enum field (transportSize)
-  plc4c_spi_write_byte(buf, 8, _message->transport_size);
+  {
+    int8_t _value = _message->transport_size;
+    plc4c_spi_write_byte(buf, 8, _value);
+  }
 
   // Simple Field (dataLength)
   {

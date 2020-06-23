@@ -136,6 +136,65 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_serialize(plc4
   // Discriminator Field (itemType)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(_message->_type).itemType);
 
+  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_parameter_user_data_item_type_s7_read_write_s7_parameter_user_data_item_cpu_functions: {
+
+      // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, (plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bytes(_message)) - (2));
+
+      // Simple Field (method)
+      {
+        uint8_t _value = _message->s7_parameter_user_data_item_cpu_functions_method;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      // Simple Field (cpuFunctionType)
+      {
+        unsigned int _value = _message->s7_parameter_user_data_item_cpu_functions_cpu_function_type;
+        plc4c_spi_write_unsigned_byte(buf, 4, _value);
+      }
+
+      // Simple Field (cpuFunctionGroup)
+      {
+        unsigned int _value = _message->s7_parameter_user_data_item_cpu_functions_cpu_function_group;
+        plc4c_spi_write_unsigned_byte(buf, 4, _value);
+      }
+
+      // Simple Field (cpuSubfunction)
+      {
+        uint8_t _value = _message->s7_parameter_user_data_item_cpu_functions_cpu_subfunction;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      // Simple Field (sequenceNumber)
+      {
+        uint8_t _value = _message->s7_parameter_user_data_item_cpu_functions_sequence_number;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      // Optional Field (dataUnitReferenceNumber)
+      if(_message->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number != NULL) {
+        uint8_t* _value = _message->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number;
+        plc4c_spi_write_unsigned_short(buf, 8, *_value);
+      }
+
+      // Optional Field (lastDataUnit)
+      if(_message->s7_parameter_user_data_item_cpu_functions_last_data_unit != NULL) {
+        uint8_t* _value = _message->s7_parameter_user_data_item_cpu_functions_last_data_unit;
+        plc4c_spi_write_unsigned_short(buf, 8, *_value);
+      }
+
+      // Optional Field (errorCode)
+      if(_message->s7_parameter_user_data_item_cpu_functions_error_code != NULL) {
+        uint16_t* _value = _message->s7_parameter_user_data_item_cpu_functions_error_code;
+        plc4c_spi_write_unsigned_int(buf, 16, *_value);
+      }
+
+      break;
+    }
+  }
+
   return OK;
 }
 
@@ -193,6 +252,7 @@ uint8_t plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits(plc4c_s7_
       if(_message->s7_parameter_user_data_item_cpu_functions_error_code != NULL) {
         lengthInBits += 16;
       }
+
       break;
     }
   }

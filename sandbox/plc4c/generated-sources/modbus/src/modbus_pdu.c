@@ -842,6 +842,616 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
   // Discriminator Field (function)
   plc4c_spi_write_unsigned_short(buf, 7, plc4c_modbus_read_write_modbus_pdu_get_discriminator(_message->_type).function);
 
+  // Switch Field (Depending of the current type, serialize the sub-type elements)
+  switch(_message->_type) {
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_error: {
+
+      // Simple Field (exceptionCode)
+      {
+        uint8_t _value = _message->modbus_pdu_error_exception_code;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_discrete_inputs_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_discrete_inputs_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_discrete_inputs_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_discrete_inputs_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_discrete_inputs_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_discrete_inputs_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_discrete_inputs_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_coils_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_coils_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_coils_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_coils_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_coils_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_coils_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_coils_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_coil_request: {
+
+      // Simple Field (address)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_coil_request_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (value)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_coil_request_value;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_coil_response: {
+
+      // Simple Field (address)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_coil_response_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (value)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_coil_response_value;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_coils_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_coils_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_coils_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_write_multiple_coils_request_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_multiple_coils_request_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_coils_request_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_coils_response: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_coils_response_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_coils_response_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_input_registers_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_input_registers_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_input_registers_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_input_registers_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_input_registers_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_input_registers_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_input_registers_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_holding_registers_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_holding_registers_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_holding_registers_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_holding_registers_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_holding_registers_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_holding_registers_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_holding_registers_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_register_request: {
+
+      // Simple Field (address)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_register_request_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (value)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_register_request_value;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_register_response: {
+
+      // Simple Field (address)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_register_response_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (value)
+      {
+        uint16_t _value = _message->modbus_pdu_write_single_register_response_value;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_holding_registers_request_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_holding_registers_request_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_write_multiple_holding_registers_request_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_multiple_holding_registers_request_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_holding_registers_request_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_holding_registers_response: {
+
+      // Simple Field (startingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_holding_registers_response_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (quantity)
+      {
+        uint16_t _value = _message->modbus_pdu_write_multiple_holding_registers_response_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request: {
+
+      // Simple Field (readStartingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_write_multiple_holding_registers_request_read_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (readQuantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_write_multiple_holding_registers_request_read_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (writeStartingAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_write_multiple_holding_registers_request_write_starting_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (writeQuantity)
+      {
+        uint16_t _value = _message->modbus_pdu_read_write_multiple_holding_registers_request_write_quantity;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_write_multiple_holding_registers_request_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_request_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_request_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_write_multiple_holding_registers_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_mask_write_holding_register_request: {
+
+      // Simple Field (referenceAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_request_reference_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (andMask)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_request_and_mask;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (orMask)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_request_or_mask;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_mask_write_holding_register_response: {
+
+      // Simple Field (referenceAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_response_reference_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (andMask)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_response_and_mask;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (orMask)
+      {
+        uint16_t _value = _message->modbus_pdu_mask_write_holding_register_response_or_mask;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_fifo_queue_request: {
+
+      // Simple Field (fifoPointerAddress)
+      {
+        uint16_t _value = _message->modbus_pdu_read_fifo_queue_request_fifo_pointer_address;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_fifo_queue_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_int(buf, 16, (((plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_fifo_queue_response_fifo_value)) * (2))) + (2));
+
+      // Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_int(buf, 16, (((plc4c_spi_evaluation_helper_count(_message->modbus_pdu_read_fifo_queue_response_fifo_value)) * (2))) / (2));
+
+      // Array field (fifoValue)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_fifo_queue_response_fifo_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          uint16_t* _value = (uint16_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_fifo_queue_response_fifo_value, curItem);
+          plc4c_spi_write_unsigned_int(buf, 16, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_file_record_request: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_read_file_record_request_items));
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_file_record_request_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* _value = (plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item*) plc4c_utils_list_get_value(_message->modbus_pdu_read_file_record_request_items, curItem);
+          plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_file_record_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_read_file_record_response_items));
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_read_file_record_response_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* _value = (plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item*) plc4c_utils_list_get_value(_message->modbus_pdu_read_file_record_response_items, curItem);
+          plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_file_record_request: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_write_file_record_request_items));
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_file_record_request_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* _value = (plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item*) plc4c_utils_list_get_value(_message->modbus_pdu_write_file_record_request_items, curItem);
+          plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_file_record_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_array_size_in_bytes(_message->modbus_pdu_write_file_record_response_items));
+
+      // Array field (items)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_write_file_record_response_items);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+          bool lastItem = curItem == (itemCount - 1);
+          plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item* _value = (plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item*) plc4c_utils_list_get_value(_message->modbus_pdu_write_file_record_response_items, curItem);
+          plc4c_return_code _res = plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_serialize(buf, (void*) &_value);
+          if(_res != OK) {
+            return _res;
+          }
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_exception_status_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_exception_status_response: {
+
+      // Simple Field (value)
+      {
+        uint8_t _value = _message->modbus_pdu_read_exception_status_response_value;
+        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_diagnostic_request: {
+
+      // Simple Field (status)
+      {
+        uint16_t _value = _message->modbus_pdu_diagnostic_request_status;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (eventCount)
+      {
+        uint16_t _value = _message->modbus_pdu_diagnostic_request_event_count;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_get_com_event_log_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_get_com_event_log_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, (plc4c_spi_evaluation_helper_count(_message->modbus_pdu_get_com_event_log_response_events)) + (6));
+
+      // Simple Field (status)
+      {
+        uint16_t _value = _message->modbus_pdu_get_com_event_log_response_status;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (eventCount)
+      {
+        uint16_t _value = _message->modbus_pdu_get_com_event_log_response_event_count;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Simple Field (messageCount)
+      {
+        uint16_t _value = _message->modbus_pdu_get_com_event_log_response_message_count;
+        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      }
+
+      // Array field (events)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_get_com_event_log_response_events);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_get_com_event_log_response_events, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_report_server_id_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_report_server_id_response: {
+
+      // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+      plc4c_spi_write_unsigned_short(buf, 8, plc4c_spi_evaluation_helper_count(_message->modbus_pdu_report_server_id_response_value));
+
+      // Array field (value)
+      {
+        uint8_t itemCount = plc4c_utils_list_size(_message->modbus_pdu_report_server_id_response_value);
+        for(int curItem = 0; curItem < itemCount; curItem++) {
+
+          int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_report_server_id_response_value, curItem);
+          plc4c_spi_write_byte(buf, 8, *_value);
+        }
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_response: {
+
+      break;
+    }
+  }
+
   return OK;
 }
 
@@ -864,6 +1474,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (exceptionCode)
       lengthInBits += 8;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_discrete_inputs_request: {
@@ -874,6 +1485,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_discrete_inputs_response: {
@@ -884,6 +1496,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_discrete_inputs_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_coils_request: {
@@ -894,6 +1507,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_coils_response: {
@@ -904,6 +1518,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_coils_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_coil_request: {
@@ -914,6 +1529,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (value)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_coil_response: {
@@ -924,6 +1540,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (value)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_coils_request: {
@@ -942,6 +1559,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_write_multiple_coils_request_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_coils_response: {
@@ -952,6 +1570,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_input_registers_request: {
@@ -962,6 +1581,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_input_registers_response: {
@@ -972,6 +1592,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_input_registers_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_holding_registers_request: {
@@ -982,6 +1603,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_holding_registers_response: {
@@ -992,6 +1614,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_holding_registers_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_register_request: {
@@ -1002,6 +1625,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (value)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_single_register_response: {
@@ -1012,6 +1636,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (value)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_holding_registers_request: {
@@ -1030,6 +1655,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_write_multiple_holding_registers_request_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_multiple_holding_registers_response: {
@@ -1040,6 +1666,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (quantity)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_request: {
@@ -1066,6 +1693,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_request_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_write_multiple_holding_registers_response: {
@@ -1076,6 +1704,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_read_write_multiple_holding_registers_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_mask_write_holding_register_request: {
@@ -1090,6 +1719,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (orMask)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_mask_write_holding_register_response: {
@@ -1104,12 +1734,14 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (orMask)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_fifo_queue_request: {
 
       // Simple field (fifoPointerAddress)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_fifo_queue_response: {
@@ -1124,6 +1756,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 16 * plc4c_utils_list_size(_message->modbus_pdu_read_fifo_queue_response_fifo_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_file_record_request: {
@@ -1140,6 +1773,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_file_record_response: {
@@ -1156,6 +1790,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_file_record_request: {
@@ -1172,6 +1807,7 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_write_file_record_response: {
@@ -1188,15 +1824,18 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
           curElement = curElement->next;
         }
       }
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_exception_status_request: {
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_exception_status_response: {
 
       // Simple field (value)
       lengthInBits += 8;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_diagnostic_request: {
@@ -1207,9 +1846,11 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Simple field (eventCount)
       lengthInBits += 16;
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_get_com_event_log_request: {
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_get_com_event_log_response: {
@@ -1232,9 +1873,11 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_get_com_event_log_response_events);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_report_server_id_request: {
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_report_server_id_response: {
@@ -1245,12 +1888,15 @@ uint8_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_writ
 
       // Array field
       lengthInBits += 8 * plc4c_utils_list_size(_message->modbus_pdu_report_server_id_response_value);
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_request: {
+
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_modbus_read_write_modbus_pdu_read_device_identification_response: {
+
       break;
     }
   }

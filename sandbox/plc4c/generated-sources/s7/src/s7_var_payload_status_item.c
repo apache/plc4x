@@ -44,7 +44,10 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item* _message) {
 
   // Enum field (returnCode)
-  plc4c_spi_write_byte(buf, 8, _message->return_code);
+  {
+    int8_t _value = _message->return_code;
+    plc4c_spi_write_byte(buf, 8, _value);
+  }
 
   return OK;
 }

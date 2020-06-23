@@ -29,4 +29,6 @@ double plc4c_spi_evaluation_helper_ceil(double a);
 
 uint8_t plc4c_spi_evaluation_helper_count(plc4c_list* a);
 
+uint8_t plc4c_spi_evaluation_helper_array_size_in_bytes(plc4c_list* a);
+
 #endif  // PLC4C_SPI_EVALUATION_HELPER_H_

@@ -52,7 +52,10 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
 plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_id* _message) {
 
   // Enum field (typeClass)
-  plc4c_spi_write_byte(buf, 4, _message->type_class);
+  {
+    int _value = _message->type_class;
+    plc4c_spi_write_byte(buf, 4, _value);
+  }
 
   // Simple Field (sublistExtract)
   {
@@ -61,7 +64,10 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* b
   }
 
   // Enum field (sublistList)
-  plc4c_spi_write_byte(buf, 8, _message->sublist_list);
+  {
+    int8_t _value = _message->sublist_list;
+    plc4c_spi_write_byte(buf, 8, _value);
+  }
 
   return OK;
 }
