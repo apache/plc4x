@@ -93,6 +93,7 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
     <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !helper.isNonDiscriminatorField(discriminatorName)>
+    @JsonIgnore
     public ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} get${discriminatorName?cap_first}() {
         return <#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>;
     }

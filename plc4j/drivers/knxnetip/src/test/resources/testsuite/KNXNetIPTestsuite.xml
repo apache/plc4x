@@ -335,8 +335,6 @@
             </additionalInformation>
           </additionalInformation>
           <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData">
-            <standardFrame>true</standardFrame>
-            <polling>false</polling>
             <doNotRepeat>true</doNotRepeat>
             <priority>LOW</priority>
             <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
