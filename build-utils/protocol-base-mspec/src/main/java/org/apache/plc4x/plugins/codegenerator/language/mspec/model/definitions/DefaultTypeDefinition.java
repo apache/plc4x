@@ -20,8 +20,10 @@
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
 public abstract class DefaultTypeDefinition {
 
@@ -55,6 +57,10 @@ public abstract class DefaultTypeDefinition {
 
     public void setParentType(TypeDefinition parentType) {
         this.parentType = parentType;
+    }
+
+    public TypeReference getTypeReference() {
+        return new DefaultComplexTypeReference(getName());
     }
 
 }

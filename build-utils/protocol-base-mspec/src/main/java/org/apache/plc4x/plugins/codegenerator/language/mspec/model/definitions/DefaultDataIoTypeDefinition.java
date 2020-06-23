@@ -18,9 +18,11 @@ under the License.
 */
 package org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions;
 
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultComplexTypeReference;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.Argument;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.DataIoTypeDefinition;
 import org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField;
+import org.apache.plc4x.plugins.codegenerator.types.references.TypeReference;
 
 public class DefaultDataIoTypeDefinition extends DefaultTypeDefinition implements DataIoTypeDefinition {
 

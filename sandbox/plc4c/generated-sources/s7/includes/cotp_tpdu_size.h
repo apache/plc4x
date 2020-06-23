@@ -37,7 +37,7 @@ enum plc4c_s7_read_write_cotp_tpdu_size {
 typedef enum plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size;
 
 
-uint8_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
+uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
   switch(value) {
     case 7: { /* '0x07' */
       return 128;

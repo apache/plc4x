@@ -27,10 +27,23 @@ extern "C" {
 #include <plc4c/utils/list.h>
 #include "cotp_packet.h"
 
+// Constant values.
+const uint8_t S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID = 0x03;
+
 struct plc4c_s7_read_write_tpkt_packet {
-  plc4c_s7_read_write_cotp_packet payload;
+  /* Properties */
+  uint8_t protocol_id;
+  plc4c_s7_read_write_cotp_packet* payload;
 };
 typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;
+
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** message);
+
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_tpkt_packet* message);
+
+uint8_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4c_s7_read_write_tpkt_packet* message);
+
+uint8_t plc4c_s7_read_write_tpkt_packet_length_in_bits(plc4c_s7_read_write_tpkt_packet* message);
 
 #ifdef __cplusplus
 }

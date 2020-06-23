@@ -56,8 +56,8 @@
 ]
 
 [discriminatedType 'ModbusPDU' [bit 'response']
-    [implicit       bit         'error'     'DISCRIMINATOR_VALUES[0]']
-    [implicit       uint 7      'function'  'DISCRIMINATOR_VALUES[1]']
+    [discriminator bit         'error']
+    [discriminator uint 7      'function']
     [typeSwitch 'error','function','response'
         ['true'                     ModbusPDUError
             [simple     uint 8      'exceptionCode']
@@ -201,10 +201,10 @@
         ]
 
         ['false','0x08','false'     ModbusPDUDiagnosticRequest
-            // TODO: Implement the sub-request discriminated type [simple uint 8  'subfunction']
+            // TODO: Implement the sub-request discriminated type
         ]
         ['false','0x08','true'      ModbusPDUDiagnosticResponse
-            // TODO: Implement the sub-request discriminated type [simple uint 8  'subfunction']
+            // TODO: Implement the sub-request discriminated type
         ]
 
         ['false','0x0B','false'     ModbusPDUGetComEventCounterRequest

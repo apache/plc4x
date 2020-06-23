@@ -27,12 +27,25 @@ extern "C" {
 #include <plc4c/utils/list.h>
 #include "modbus_pdu.h"
 
+// Constant values.
+const uint16_t MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER = 0x0000;
+
 struct plc4c_modbus_read_write_modbus_tcp_adu {
+  /* Properties */
   uint16_t transaction_identifier;
+  uint16_t protocol_identifier;
   uint8_t unit_identifier;
-  plc4c_modbus_read_write_modbus_pdu pdu;
+  plc4c_modbus_read_write_modbus_pdu* pdu;
 };
 typedef struct plc4c_modbus_read_write_modbus_tcp_adu plc4c_modbus_read_write_modbus_tcp_adu;
+
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message);
+
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* message);
+
+uint8_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bytes(plc4c_modbus_read_write_modbus_tcp_adu* message);
+
+uint8_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bits(plc4c_modbus_read_write_modbus_tcp_adu* message);
 
 #ifdef __cplusplus
 }

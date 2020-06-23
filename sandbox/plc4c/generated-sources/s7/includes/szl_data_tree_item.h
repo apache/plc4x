@@ -27,13 +27,22 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_szl_data_tree_item {
+  /* Properties */
   uint16_t item_index;
-  int8_t mlfb[20];
+  plc4c_list* mlfb;
   uint16_t module_type_id;
   uint16_t ausbg;
   uint16_t ausbe;
 };
 typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
+
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** message);
+
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* message);
+
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* message);
+
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* message);
 
 #ifdef __cplusplus
 }

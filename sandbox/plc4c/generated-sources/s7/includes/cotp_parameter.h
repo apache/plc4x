@@ -25,21 +25,58 @@ extern "C" {
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/utils/list.h>
+#include "cotp_tpdu_size.h"
+#include "cotp_parameter.h"
 
-struct plc4c_s7_read_write_cotp_parameter {
-  plc4c_s7_read_write_cotp_parameter_type _type;
+// Structure used to contain the discriminator values for discriminated types using this as a parent
+struct plc4c_s7_read_write_cotp_parameter_discriminator {
+  uint8_t parameterType;
 };
-typedef struct plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter;
+typedef struct plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminator;
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_cotp_parameter_type {
-  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size = 0;
-  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap = 1;
-  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap = 2;
-  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum = 3;
-  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information = 4;
-}
+  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size = 0,
+  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap = 1,
+  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap = 2,
+  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum = 3,
+  plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information = 4};
 typedef enum plc4c_s7_read_write_cotp_parameter_type plc4c_s7_read_write_cotp_parameter_type;
+
+// Function to get the discriminator values for a given type.
+plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_get_discriminator(plc4c_s7_read_write_cotp_parameter_type type);
+
+struct plc4c_s7_read_write_cotp_parameter {
+  /* This is an abstract type so this property saves the type of this typed union */
+  plc4c_s7_read_write_cotp_parameter_type _type;
+  /* Properties */
+  union {
+    struct { /* COTPParameterTpduSize */
+      plc4c_s7_read_write_cotp_tpdu_size cotp_parameter_tpdu_size_tpdu_size;
+    };
+    struct { /* COTPParameterCallingTsap */
+      uint16_t cotp_parameter_calling_tsap_tsap_id;
+    };
+    struct { /* COTPParameterCalledTsap */
+      uint16_t cotp_parameter_called_tsap_tsap_id;
+    };
+    struct { /* COTPParameterChecksum */
+      uint8_t cotp_parameter_checksum_crc;
+    };
+    struct { /* COTPParameterDisconnectAdditionalInformation */
+      plc4c_list* cotp_parameter_disconnect_additional_information_data;
+    };
+  };
+};
+typedef struct plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter;
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** message);
+
+plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter* message);
+
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* message);
+
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* message);
 
 #ifdef __cplusplus
 }

@@ -27,10 +27,19 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 struct plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item {
+  /* Properties */
   uint8_t reference_type;
-  plc4c_list data;
+  plc4c_list* data;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item;
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** message);
+
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message);
+
+uint8_t plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bytes(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message);
+
+uint8_t plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_length_in_bits(plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item* message);
 
 #ifdef __cplusplus
 }

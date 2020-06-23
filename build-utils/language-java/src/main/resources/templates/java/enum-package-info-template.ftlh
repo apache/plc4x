@@ -16,6 +16,13 @@
   specific language governing permissions and limitations
   under the License.
 -->
+<#-- Prevent freemarker from escaping stuff -->
+<#outputformat "undefined">
+<#-- Declare the name and type of variables passed in to the template -->
+<#-- @ftlvariable name="languageName" type="java.lang.String" -->
+<#-- @ftlvariable name="protocolName" type="java.lang.String" -->
+<#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
 ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/package-info.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
@@ -37,3 +44,4 @@ ${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")
 */
 
 package ${helper.packageName(protocolName, languageName, outputFlavor)}.types;
+</#outputformat>

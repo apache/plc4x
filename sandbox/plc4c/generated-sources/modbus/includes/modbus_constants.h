@@ -26,9 +26,22 @@ extern "C" {
 #include <stdint.h>
 #include <plc4c/utils/list.h>
 
+// Constant values.
+const uint16_t MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT = 502;
+
 struct plc4c_modbus_read_write_modbus_constants {
+  /* Properties */
+  uint16_t modbus_tcp_default_port;
 };
 typedef struct plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants;
+
+plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** message);
+
+plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* message);
+
+uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bytes(plc4c_modbus_read_write_modbus_constants* message);
+
+uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bits(plc4c_modbus_read_write_modbus_constants* message);
 
 #ifdef __cplusplus
 }

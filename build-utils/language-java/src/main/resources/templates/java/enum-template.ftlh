@@ -17,7 +17,15 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/${typeName}.java
+<#-- Prevent freemarker from escaping stuff -->
+<#outputformat "undefined">
+<#-- Declare the name and type of variables passed in to the template -->
+<#-- @ftlvariable name="languageName" type="java.lang.String" -->
+<#-- @ftlvariable name="protocolName" type="java.lang.String" -->
+<#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/types/${type.name}.java
 /*
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
@@ -46,30 +54,30 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum ${typeName} {
+public enum ${type.name} {
 
 <#list type.enumValues as enumValue>
-${enumValue.name}((${helper.getLanguageTypeName(type.type, true)}) ${enumValue.value}<#if type.constantNames?has_content>, <#list type.constantNames as constantName>(${helper.getLanguageTypeName(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))?no_esc}<#sep>, </#sep></#list></#if>)<#sep>,
+${enumValue.name}((${helper.getLanguageTypeNameForTypeReference(type.type, true)}) ${enumValue.value}<#if type.constantNames?has_content>, <#list type.constantNames as constantName>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#sep>, </#sep></#list></#if>)<#sep>,
 </#sep></#list>;
 
-private static final Logger logger = LoggerFactory.getLogger(${typeName}.class);
+private static final Logger logger = LoggerFactory.getLogger(${type.name}.class);
 
-private static final Map<${helper.getLanguageTypeName(type.type, false)}, ${typeName}> map;
+private static final Map<${helper.getLanguageTypeNameForTypeReference(type.type, false)}, ${type.name}> map;
 static {
 map = new HashMap<>();
-for (${typeName} value : ${typeName}.values()) {
-map.put((${helper.getLanguageTypeName(type.type, true)}) value.getValue(), value);
+for (${type.name} value : ${type.name}.values()) {
+map.put((${helper.getLanguageTypeNameForTypeReference(type.type, true)}) value.getValue(), value);
 }
 }
 
-private ${helper.getLanguageTypeName(type.type, true)} value;
+private ${helper.getLanguageTypeNameForTypeReference(type.type, true)} value;
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-        private ${helper.getLanguageTypeName(type.getConstantType(constantName), true)} ${constantName};
+        private ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
     </#list>
 </#if>
 
-${typeName}(${helper.getLanguageTypeName(type.type, true)} value<#if type.constantNames?has_content>, <#list type.constantNames as constantName>${helper.getLanguageTypeName(type.getConstantType(constantName), true)} ${constantName}<#sep>, </#sep></#list></#if>) {
+${type.name}(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value<#if type.constantNames?has_content>, <#list type.constantNames as constantName>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName}<#sep>, </#sep></#list></#if>) {
 this.value = value;
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
@@ -78,23 +86,24 @@ this.value = value;
 </#if>
 }
 
-public ${helper.getLanguageTypeName(type.type, true)} getValue() {
+public ${helper.getLanguageTypeNameForTypeReference(type.type, true)} getValue() {
 return value;
 }
 
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-        public ${helper.getLanguageTypeName(type.getConstantType(constantName), true)} get${constantName?cap_first}() {
+        public ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} get${constantName?cap_first}() {
         return ${constantName};
         }
 
     </#list>
 </#if>
-public static ${typeName} valueOf(${helper.getLanguageTypeName(type.type, true)} value) {
+public static ${type.name} valueOf(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
 if (!map.containsKey(value)) {
-logger.error("No ${typeName} for value {}", value);
+logger.error("No ${type.name} for value {}", value);
 }
 return map.get(value);
 }
 
 }
+</#outputformat>

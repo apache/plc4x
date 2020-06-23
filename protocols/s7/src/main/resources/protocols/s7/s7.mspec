@@ -212,7 +212,7 @@
 // Payloads
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
-    [typeSwitch 'parameter.discriminatorValues[0]', 'messageType'
+    [typeSwitch 'parameter.parameterType', 'messageType'
         ['0x04','0x03' S7PayloadReadVarResponse
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems' ['lastItem']]
         ]
@@ -366,7 +366,7 @@
     ]
 ]
 
-[enum int 8 'COTPTpduSize' [uint 8 'sizeInBytes']
+[enum int 8 'COTPTpduSize' [uint 16 'sizeInBytes']
     ['0x07' SIZE_128 ['128']]
     ['0x08' SIZE_256 ['256']]
     ['0x09' SIZE_512 ['512']]

@@ -16,7 +16,33 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${typeName}IO.java
+<#-- Prevent freemarker from escaping stuff -->
+<#outputformat "undefined">
+<#-- Declare the name and type of variables passed in to the template -->
+<#-- @ftlvariable name="languageName" type="java.lang.String" -->
+<#-- @ftlvariable name="protocolName" type="java.lang.String" -->
+<#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
+<#-- @ftlvariable name="helper" type="org.apache.plc4x.language.java.JavaLanguageTemplateHelper" -->
+<#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.ComplexTypeDefinition" -->
+<#-- Declare the name and type of variables declared locally inside the template -->
+<#-- @ftlvariable name="typedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.TypedField" -->
+<#-- @ftlvariable name="arrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ArrayField" -->
+<#-- @ftlvariable name="checksumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ChecksumField" -->
+<#-- @ftlvariable name="constField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ConstField" -->
+<#-- @ftlvariable name="discriminatorField" type="org.apache.plc4x.plugins.codegenerator.types.fields.DiscriminatorField" -->
+<#-- @ftlvariable name="enumField" type="org.apache.plc4x.plugins.codegenerator.types.fields.EnumField" -->
+<#-- @ftlvariable name="implicitField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ImplicitField" -->
+<#-- @ftlvariable name="manualArrayField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualArrayField" -->
+<#-- @ftlvariable name="manualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ManualField" -->
+<#-- @ftlvariable name="optionalField" type="org.apache.plc4x.plugins.codegenerator.types.fields.OptionalField" -->
+<#-- @ftlvariable name="paddingField" type="org.apache.plc4x.plugins.codegenerator.types.fields.PaddingField" -->
+<#-- @ftlvariable name="reservedField" type="org.apache.plc4x.plugins.codegenerator.types.fields.ReservedField" -->
+<#-- @ftlvariable name="simpleField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SimpleField" -->
+<#-- @ftlvariable name="switchField" type="org.apache.plc4x.plugins.codegenerator.types.fields.SwitchField" -->
+<#-- @ftlvariable name="virtualField" type="org.apache.plc4x.plugins.codegenerator.types.fields.VirtualField" -->
+<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
+<#-- @ftlvariable name="complexTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.ComplexTypeReference" -->
+${helper.packageName(protocolName, languageName, outputFlavor)?replace(".", "/")}/io/${type.name}IO.java
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -41,7 +67,7 @@ package ${helper.packageName(protocolName, languageName, outputFlavor)}.io;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
-<#if helper.getComplexTypes(type)?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
+<#if helper.getComplexTypeReferences()?has_content>import ${helper.packageName(protocolName, languageName, outputFlavor)}.io.*;</#if>
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
@@ -56,110 +82,114 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<${typeName}, ${typeName}><#else>MessageInput<${typeName}></#if> {
+public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<${type.name}, ${type.name}><#else>MessageInput<${type.name}></#if> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(${typeName}IO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(${type.name}IO.class);
 
-<#if !helper.isDiscriminatedType(type)>
+<#-- The parse and serialize methods here are just proxies for forwardning the requests to static counterparts -->
+<#if !helper.isDiscriminatedChildTypeDefinition()>
     @Override
-    public ${typeName} parse(ReadBuffer io, Object... args) throws ParseException {
+    public ${type.name} parse(ReadBuffer io, Object... args) throws ParseException {
         <#if type.parserArguments?has_content>
         if((args == null) || (args.length != ${type.parserArguments?size})) {
             throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
         }
         <#list type.parserArguments as parserArgument>
-        if(!(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeName(parserArgument.type, false)})) {
-            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeName(parserArgument.type, false)} but was " + args[${parserArgument?index}].getClass().getName());
+        if(!(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)})) {
+            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} but was " + args[${parserArgument?index}].getClass().getName());
         }
-        ${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name} = (${helper.getLanguageTypeName(parserArgument.type, false)}) args[${parserArgument?index}];
+        ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
         </#list>
         </#if>
-        return ${typeName}IO.staticParse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+        return ${type.name}IO.staticParse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
     }
 
     <#if outputFlavor != "passive">
     @Override
-    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+    public void serialize(WriteBuffer io, ${type.name} value, Object... args) throws ParseException {
         <#if helper.getSerializerArguments(type.parserArguments)?has_content>
         if((args == null) || (args.length != ${type.parserArguments?size})) {
             throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
         }
         <#list helper.getSerializerArguments(type.parserArguments) as serializerArgument>
-        if(!(args[${serializerArgument?index}] instanceof ${helper.getLanguageTypeName(serializerArgument.type, false)})) {
-            throw new PlcRuntimeException("Argument ${serializerArgument?index} expected to be of type ${helper.getLanguageTypeName(serializerArgument.type, false)} but was " + args[${serializerArgument?index}].getClass().getName());
+        if(!(args[${serializerArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(serializerArgument.type, false)})) {
+            throw new PlcRuntimeException("Argument ${serializerArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(serializerArgument.type, false)} but was " + args[${serializerArgument?index}].getClass().getName());
         }
-        ${helper.getLanguageTypeName(serializerArgument.type, false)} ${serializerArgument.name} = (${helper.getLanguageTypeName(serializerArgument.type, false)}) args[${serializerArgument?index}];
+        ${helper.getLanguageTypeNameForTypeReference(serializerArgument.type, false)} ${serializerArgument.name} = (${helper.getLanguageTypeNameForTypeReference(serializerArgument.type, false)}) args[${serializerArgument?index}];
         </#list>
         </#if>
-        ${typeName}IO.staticSerialize(io, value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+        ${type.name}IO.staticSerialize(io, value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
     }
 
     </#if>
 <#else>
     @Override
-    public ${typeName} parse(ReadBuffer io, Object... args) throws ParseException {
-        return (${typeName}) new ${type.parentType.name}IO().parse(io, args);
+    public ${type.name} parse(ReadBuffer io, Object... args) throws ParseException {
+        return (${type.name}) new ${type.parentType.name}IO().parse(io, args);
     }
 
 <#if outputFlavor != "passive">
     @Override
-    public void serialize(WriteBuffer io, ${typeName} value, Object... args) throws ParseException {
+    public void serialize(WriteBuffer io, ${type.name} value, Object... args) throws ParseException {
         new ${type.parentType.name}IO().serialize(io, value, args);
     }
 
 </#if>
 </#if>
-    public static ${typeName}<#if helper.isDiscriminatedType(type)>Builder</#if> staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+<#-- Here come the actual parse and serialize methods that actually do the parsing and serlaizing -->
+    public static ${type.name}<#if helper.isDiscriminatedChildTypeDefinition()>Builder</#if> staticParse(ReadBuffer io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
         int curPos;
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
+        <#assign arrayField = field>
 
-        // Array field (${field.name})
+        // Array field (${arrayField.name})
         <#-- Only update curPos if the length expression uses it -->
-        <#if field.loopExpression.contains("curPos")>
+        <#if arrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
         </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
-        <#if helper.isCountArray(field)>
+        <#if helper.isCountArrayField(field)>
         // Count array
-        if(${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc} > Integer.MAX_VALUE) {
-            throw new ParseException("Array count of " + (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
+        if(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
+            throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
-        ${helper.getLanguageTypeNameForField( field)}[] ${field.name};
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name};
         {
-            int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc};
-            ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
+            int itemCount = (int) ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+            ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount];
             for(int curItem = 0; curItem < itemCount; curItem++) {
-                <#if !helper.isSimpleType(field.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
-                ${field.name}[curItem] = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>;
+                <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
+                <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
+                ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
             }
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-            <#if helper.isLengthArray(field)>
+            <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc};
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-        int ${field.name}EndPos = io.getPos() + _${field.name}Length;
-        while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+        int _${arrayField.name}Length = ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)};
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
+        int ${arrayField.name}EndPos = io.getPos() + _${arrayField.name}Length;
+        while(io.getPos() < ${arrayField.name}EndPos) {
+            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if field.loopExpression.contains("curPos")>
+            <#if arrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
         }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-            <#elseif helper.isTerminatedArray(field)>
+            <#elseif helper.isTerminatedArrayField(field)>
         // Terminated array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)?no_esc}))) {
-            _${field.name}List.add(<#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)?no_esc})<#sep>, </#sep></#list></#if>)</#if>);
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
+        while(!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}))) {
+            _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
 
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if field.loopExpression.contains("curPos")>
+            <#if arrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
         }
@@ -169,92 +199,102 @@ public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<$
                 type we have to iterate over it's elements and explicitly cast them.
                 Otherwise a simple toArray call is fine.
             -->
-            <#if helper.isSimpleType(field.type)>
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}List.size()];
-        for(int i = 0; i < _${field.name}List.size(); i++) {
-            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${field.name}List.get(i);
+            <#if helper.isSimpleTypeReference(arrayField.type)>
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${arrayField.name}List.size()];
+        for(int i = 0; i < _${arrayField.name}List.size(); i++) {
+            ${arrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${arrayField.name}List.get(i);
         }
             <#else>
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = _${field.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[0]);
+        ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)}[0]);
             </#if>
         </#if>
         <#break>
     <#case "checksum">
+        <#assign checksumField = field>
+        <#assign simpleTypeReference = checksumField.type>
 
-        // Checksum Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+        // Checksum Field (checksum)
         {
+            ${helper.getLanguageTypeNameForField(field)} checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
             // Create an array of all the bytes read in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-            ${helper.getLanguageTypeNameForField(field)} _${field.name}Ref = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.checksumExpression, type.parserArguments)});
-            if(${field.name} != _${field.name}Ref) {
-                throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X",_${field.name}Ref & 0xFFFF, ${field.name} & 0xFFFF));
+            ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+            checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
+            if(checksum != checksumRef) {
+                throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X", checksumRef & 0xFFFF, checksum & 0xFFFF));
             }
         }
         <#break>
     <#case "const">
+        <#assign constField = field>
+        <#assign simpleTypeReference = constField.type>
 
-        // Const Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-        if(${field.name} != ${typeName}.${field.name?upper_case}) {
-            throw new ParseException("Expected constant value " + ${typeName}.${field.name?upper_case} + " but got " + ${field.name});
+        // Const Field (${constField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+        if(${constField.name} != ${type.name}.${constField.name?upper_case}) {
+            throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name});
         }
         <#break>
-    <#case "enum">
-
-        // Enum field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseType(field.type))?no_esc});
-        <#break>
     <#case "discriminator">
+        <#assign discriminatorField = field>
+        <#assign simpleTypeReference = discriminatorField.type>
 
-        // Discriminator Field (${field.name}) (Used as input to a switch field)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
+        // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+        <#break>
+    <#case "enum">
+        <#assign enumField = field>
+
+        // Enum field (${enumField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
         <#break>
     <#case "implicit">
+        <#assign implicitField = field>
+        <#assign simpleTypeReference = implicitField.type>
 
-        // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
+        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
         <#break>
     <#case "manualArray">
+        <#assign manualArrayField = field>
 
-        // Manual Array Field (${field.name})
+        // Manual Array Field (${manualArrayField.name})
         <#-- Only update curPos if the length expression uses it -->
-        <#if field.loopExpression.contains("curPos")>
+        <#if manualArrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
         </#if>
         <#-- If this is a count array, we can directly initialize an array with the given size -->
-        <#if helper.isCountArray(field)>
+        <#if helper.isCountArrayField(field)>
         // Count array
-        int _${field.name}Count = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}Count];
-        for(int i = 0; i < _${field.name}Count; i++) {
-            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+        int _${manualArrayField.name}Count = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}Count];
+        for(int i = 0; i < _${manualArrayField.name}Count; i++) {
+            ${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)});
         }
         <#-- In all other cases do we have to work with a list, that is later converted to an array -->
         <#else>
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-            <#if helper.isLengthArray(field)>
+            <#if helper.isLengthArrayField(field)>
         // Length array
-        int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-        int ${field.name}EndPos = io.getPos() + _${field.name}Length;
-        while(io.getPos() < ${field.name}EndPos) {
-            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)}));
+        int _${manualArrayField.name}Length = ${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)};
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
+        int ${manualArrayField.name}EndPos = io.getPos() + _${manualArrayField.name}Length;
+        while(io.getPos() < ${manualArrayField.name}EndPos) {
+            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if field.loopExpression.contains("curPos")>
+            <#if manualArrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
         }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-            <#elseif helper.isTerminatedArray(field)>
+            <#elseif helper.isTerminatedArrayField(field)>
         // Terminated array
-        List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> _${field.name}List = new LinkedList<>();
-        while(!((boolean) (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}))) {
-            _${field.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)}));
+        List<${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}> _${manualArrayField.name}List = new LinkedList<>();
+        while(!((boolean) (${helper.toParseExpression(manualArrayField, manualArrayField.loopExpression, type.parserArguments)}))) {
+            _${manualArrayField.name}List.add((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, manualArrayField.parseExpression, type.parserArguments)}));
 
             <#-- After parsing, update the current position, but only if it's needed -->
-            <#if field.loopExpression.contains("curPos")>
+            <#if manualArrayField.loopExpression.contains("curPos")>
             curPos = io.getPos() - startPos;
             </#if>
         }
@@ -264,62 +304,72 @@ public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<$
                 type we have to iterate over it's elements and explicitly cast them.
                 Otherwise a simple toArray call is fine.
             -->
-            <#if helper.isSimpleType(field.type)>
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = new ${helper.getLanguageTypeNameForField(field)}[_${field.name}List.size()];
-        for(int i = 0; i < _${field.name}List.size(); i++) {
-            ${field.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${field.name}List.get(i);
+            <#if helper.isSimpleTypeReference(field.type)>
+        ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${manualArrayField.name}List.size()];
+        for(int i = 0; i < _${manualArrayField.name}List.size(); i++) {
+            ${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${manualArrayField.name}List.get(i);
         }
             <#else>
-        ${helper.getLanguageTypeNameForField(field)}[] ${field.name} = _${field.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[0]);
+        ${helper.getLanguageTypeNameForField(field)}[] ${manualArrayField.name} = _${manualArrayField.name}List.toArray(new ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)}[0]);
             </#if>
         </#if>
         <#break>
     <#case "manual">
+        <#assign manualField = field>
 
-        // Manual Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.parseExpression, type.parserArguments)});
+        // Manual Field (${manualField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${manualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)});
         <#break>
     <#case "optional">
+        <#assign optionalField = field>
 
-        // Optional Field (${field.name}) (Can be skipped, if a given expression evaluates to false)
-        <#if field.conditionExpression.contains("curPos")>
+        // Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
+        <#if optionalField.conditionExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
         </#if>
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
-        if(${helper.toParseExpression(field, field.conditionExpression, type.parserArguments)?no_esc}) {
-            ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
+        if(${helper.toParseExpression(optionalField, optionalField.conditionExpression, type.parserArguments)}) {
+            ${optionalField.name} = <#if helper.isSimpleTypeReference(optionalField.type)>${helper.getReadBufferReadMethodCall(optionalField.type)}<#else>${optionalField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(optionalField.type, parserArgument?index), true)}) (${helper.toParseExpression(optionalField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         }
         <#break>
     <#case "padding">
+        <#assign paddingField = field>
+        <#assign simpleTypeReference = paddingField.type>
 
-        // Padding Field (${field.name})
-        boolean _${field.name}NeedsPadding = (boolean) ((io.hasMore(${helper.getNumBits(field.type)})) && (${helper.toParseExpression(field, field.paddingCondition, type.parserArguments)?no_esc}));
-        if(_${field.name}NeedsPadding) {
-            // Just read the padding data and ignore it
-            ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
+        // Padding Field (padding)
+        {
+            boolean _needsPadding = (boolean) ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)}));
+            if(_needsPadding) {
+                // Just read the padding data and ignore it
+                ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+            }
         }
         <#break>
     <#case "reserved">
+        <#assign reservedField = field>
+        <#assign simpleTypeReference = reservedField.type>
 
         // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
         {
-            ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(field.type)?no_esc};
-            if(reserved != ${helper.getReservedValue(field)}) {
-                LOGGER.info("Expected constant value " + ${field.referenceValue} + " but got " + reserved + " for reserved field.");
+            ${helper.getLanguageTypeNameForField(field)} reserved = ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
+            if(reserved != ${helper.getReservedValue(reservedField)}) {
+                LOGGER.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.");
             }
         }
         <#break>
     <#case "simple">
+        <#assign simpleField = field>
 
-        // Simple Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = <#if helper.isSimpleType(field.type)>${helper.getReadBufferReadMethodCall(field.type)?no_esc}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getArgumentType(field.type, parserArgument?index)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+        // Simple Field (${simpleField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index), true)}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
         <#break>
     <#case "switch">
+        <#assign switchField = field>
 
         // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-        ${typeName}Builder builder = null;
-        <#list field.cases as case>
-        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toSwitchExpression(field.discriminatorNames[discriminatorValue?index])?no_esc}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
+        ${type.name}Builder builder = null;
+        <#list switchField.cases as case>
+        <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{
             builder = ${case.name}IO.staticParse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
         }<#sep> else </#sep>
         </#list>
@@ -329,169 +379,201 @@ public class ${typeName}IO implements <#if outputFlavor != "passive">MessageIO<$
         <#break>
 
     <#case "virtual">
+        <#assign virtualField = field>
 
         // Virtual field (Just declare a local variable so we can access it in the parser)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(field, field.valueExpression, type.parserArguments)});
+        ${helper.getLanguageTypeNameForField(field)} ${virtualField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)});
         <#break>
 </#switch>
 </#list>
 
         // Create the instance
-        <#if helper.isDiscriminatedType(type)>
-        return new ${typeName}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
-        <#elseif type.abstract>
+        <#if helper.isDiscriminatedChildTypeDefinition()>
+        return new ${type.name}Builder(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        <#elseif helper.isDiscriminatedParentTypeDefinition()>
         return builder.build(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         <#else>
-        return new ${typeName}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
+        return new ${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>);
         </#if>
     }
 
 <#if outputFlavor != "passive">
-    public static void staticSerialize(WriteBuffer io, ${typeName} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeName(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
+    public static void staticSerialize(WriteBuffer io, ${type.name} _value<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>) throws ParseException {
         int startPos = io.getPos();
 
 <#list type.fields as field>
 <#switch field.typeName>
     <#case "array">
+        <#assign arrayField = field>
+        <#assign simpleTypeReference = arrayField.type>
 
-        // Array Field (${field.name})
-        if(_value.get${field.name?cap_first}() != null) {
-            int itemCount = (int) _value.get${field.name?cap_first}().length;
+        // Array Field (${arrayField.name})
+        if(_value.get${arrayField.name?cap_first}() != null) {
+            int itemCount = (int) _value.get${arrayField.name?cap_first}().length;
             int curItem = 0;
-            for(${helper.getLanguageTypeNameForField(field)} element : _value.get${field.name?cap_first}()) {
-                <#if helper.isSimpleType(field.type)>
-                ${helper.getWriteBufferReadMethodCall(field.type, "element")?no_esc};
+            for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
+                <#if helper.isSimpleTypeReference(arrayField.type)>
+                    <#assign simpleTypeReference = arrayField.type>
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "element")};
                 <#else>
+                    <#assign complexTypeReference = arrayField.type>
                 boolean lastItem = curItem == (itemCount - 1);
-                ${field.type.name}IO.staticSerialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+                ${complexTypeReference.name}IO.staticSerialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
                 </#if>
                 curItem++;
             }
         }
         <#break>
     <#case "checksum">
+        <#assign checksumField = field>
+        <#assign simpleTypeReference = checksumField.type>
 
-        // Checksum Field (${field.name}) (Calculated)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForType(field.type)};
+        // Checksum Field (checksum) (Calculated)
         {
+            ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
             // Create an array of all the bytes written in this message element so far.
             byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.checksumExpression, type.parserArguments)?no_esc});
-            ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+            _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")};
         }
         <#break>
     <#case "const">
+        <#assign constField = field>
+        <#assign simpleTypeReference = constField.type>
 
-        // Const Field (${field.name})
-        ${helper.getWriteBufferReadMethodCall(field.type, field.referenceValue)?no_esc};
+        // Const Field (${constField.name})
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
         <#break>
     <#case "discriminator">
+        <#assign discriminatorField = field>
+        <#assign simpleTypeReference = discriminatorField.type>
 
-        // Discriminator Field (${field.name}) (Used as input to a switch field)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getDiscriminatorValues()[0];
-        ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
+        ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
         <#break>
     <#case "enum">
+        <#assign enumField = field>
 
-        // Enum field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${field.name?cap_first}();
-        ${helper.getWriteBufferReadMethodCall(helper.getEnumBaseType(field.type), "(" + field.name + ".getValue())")?no_esc};
+        // Enum field (${enumField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
+        ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
         <#break>
     <#case "implicit">
+        <#assign implicitField = field>
+        <#assign simpleTypeReference = implicitField.type>
 
-        // Implicit Field (${field.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.serializeExpression, type.parserArguments)?no_esc});
-        ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+        ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)});
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")};
         <#break>
     <#case "manualArray">
+        <#assign manualArrayField = field>
 
-        // Manual Array Field (${field.name})
-        if(_value.get${field.name?cap_first}() != null) {
-            for(${helper.getLanguageTypeNameForField(field)} element : _value.get${field.name?cap_first}()) {
-                ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)?no_esc};
+        // Manual Array Field (${manualArrayField.name})
+        if(_value.get${manualArrayField.name?cap_first}() != null) {
+            for(${helper.getLanguageTypeNameForField(field)} element : _value.get${manualArrayField.name?cap_first}()) {
+                ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)};
             }
         }
         <#break>
     <#case "manual">
+        <#assign manualField = field>
 
-        // Manual Field (${field.name})
-        ${helper.toSerializationExpression(field ,field.serializeExpression, type.parserArguments)?no_esc};
+        // Manual Field (${manualField.name})
+        ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)};
        <#break>
     <#case "optional">
+        <#assign optionalField = field>
 
-        // Optional Field (${field.name}) (Can be skipped, if the value is null)
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = null;
-        if(_value.get${field.name?cap_first}() != null) {
-            ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${field.name?cap_first}();
-            <#if helper.isSimpleType(field.type)>
-            ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
+        ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
+        if(_value.get${optionalField.name?cap_first}() != null) {
+            ${optionalField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${optionalField.name?cap_first}();
+            <#if helper.isSimpleTypeReference(optionalField.type)>
+                <#assign simpleTypeReference = optionalField.type>
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")")};
             <#else>
-            ${field.type.name}IO.staticSerialize(io, ${field.name});
+                <#assign complexTypeReference = optionalField.type>
+            ${complexTypeReference.name}IO.staticSerialize(io, ${optionalField.name});
             </#if>
         }
         <#break>
     <#case "padding">
+        <#assign paddingField = field>
+        <#assign simpleTypeReference = paddingField.type>
 
-        // Padding Field (${field.name})
-        boolean _${field.name}NeedsPadding = (boolean) (${helper.toSerializationExpression(field, field.paddingCondition, type.parserArguments)?no_esc});
-        if(_${field.name}NeedsPadding) {
-            ${helper.getLanguageTypeNameForField(field)} _${field.name}PaddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(field, field.paddingValue, type.parserArguments)?no_esc});
-            ${helper.getWriteBufferReadMethodCall(field.type, "(_" + field.name + "PaddingValue)")?no_esc};
+        // Padding Field (padding)
+        {
+            boolean _needsPadding = (boolean) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            if(_needsPadding) {
+                ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
+                ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
+            }
         }
         <#break>
     <#case "reserved">
+        <#assign reservedField = field>
+        <#assign simpleTypeReference = reservedField.type>
 
-        // Reserved Field
-        ${helper.getWriteBufferReadMethodCall(field.type, helper.getReservedValue(field))?no_esc};
+        // Reserved Field (reserved)
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))};
         <#break>
     <#case "simple">
+        <#assign simpleField = field>
 
-        // Simple Field (${field.name})
-        ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${field.name?cap_first}();
-        <#if helper.isSimpleType(field.type)>
-        ${helper.getWriteBufferReadMethodCall(field.type, "(" + field.name + ")")?no_esc};
+        // Simple Field (${simpleField.name})
+        ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
+        <#if helper.isSimpleTypeReference(simpleField.type)>
+            <#assign simpleTypeReference = simpleField.type>
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")};
         <#else>
-        ${field.type.name}IO.staticSerialize(io, ${field.name});
+            <#assign complexTypeReference = simpleField.type>
+        ${complexTypeReference.name}IO.staticSerialize(io, ${simpleField.name});
         </#if>
         <#break>
     <#case "switch">
+        <#assign switchField = field>
 
         // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
-        <#list field.cases as case>
+        <#list switchField.cases as case>
         if(_value instanceof ${case.name}) {
             ${case.name}IO.staticSerialize(io, (${case.name}) _value);
         }<#sep> else </#sep>
         </#list>
+        <#break>
+    <#case "virtual">
         <#break>
 </#switch>
 </#list>
     }
 </#if>
 
-<#if type.abstract>
-    public static interface ${typeName}Builder {
-        ${typeName} build(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>);
+<#if helper.isDiscriminatedParentTypeDefinition()>
+    public static interface ${type.name}Builder {
+        ${type.name} build(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>);
     }
 
 </#if>
-<#if helper.isDiscriminatedType(type)>
-    public static class ${typeName}Builder implements ${type.parentType.name}IO.${type.parentType.name}Builder {
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    public static class ${type.name}Builder implements ${type.parentType.name}IO.${type.parentType.name}Builder {
         <#if type.propertyFields?has_content>
         <#list type.propertyFields as field>
         private final ${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name};
         </#list>
         </#if>
 
-        public ${typeName}Builder(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+        public ${type.name}Builder(<#list type.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
             <#list type.propertyFields as field>
             this.${field.name} = ${field.name};
             </#list>
         }
 
-        public ${typeName} build(<#list type.parentType.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
-            return new ${typeName}(<#list type.getAllPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
+        public ${type.name} build(<#list type.parentType.propertyFields as field>${helper.getLanguageTypeNameForField(field)}<#if field.loopType??>[]</#if> ${field.name}<#sep>, </#sep></#list>) {
+            return new ${type.name}(<#list type.getAllPropertyFields() as field>${field.name}<#sep>, </#sep></#list>);
         }
     }
 
 </#if>
 }
+</#outputformat>

@@ -65,8 +65,8 @@ public class JavaLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types) {
-        return new JavaLanguageTemplateHelper(types);
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+        return new JavaLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
 
 }
