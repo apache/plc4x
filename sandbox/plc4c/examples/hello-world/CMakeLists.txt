@@ -24,4 +24,7 @@ file(GLOB sources "src/*.c")
 add_executable(plc4c-examples-hello-world ${sources} src/hello_world.c)
 
 target_link_libraries(plc4c-examples-hello-world
-        plc4c-spi plc4c-driver-simulated plc4c-transport-dummy)
+        plc4c-spi plc4c-driver-simulated
+        plc4c-transport-dummy
+        m
+)
