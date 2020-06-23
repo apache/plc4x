@@ -66,11 +66,22 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* b
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_szl_id_length_in_bytes(plc4c_s7_read_write_szl_id* message) {
-  return plc4c_s7_read_write_szl_id_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_szl_id_length_in_bytes(plc4c_s7_read_write_szl_id* _message) {
+  return plc4c_s7_read_write_szl_id_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_szl_id_length_in_bits(plc4c_s7_read_write_szl_id* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_szl_id_length_in_bits(plc4c_s7_read_write_szl_id* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Enum Field (typeClass)
+  lengthInBits += 4;
+
+  // Simple field (sublistExtract)
+  lengthInBits += 4;
+
+  // Enum Field (sublistList)
+  lengthInBits += 8;
+
+  return lengthInBits;
 }
 

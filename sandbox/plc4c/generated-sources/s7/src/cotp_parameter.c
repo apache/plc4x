@@ -63,6 +63,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
+    (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Enum field (tpduSize)
     plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_spi_read_byte(buf, 8);
@@ -70,6 +71,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   } else 
   if(parameterType == 0xC1) { /* COTPParameterCallingTsap */
+    (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap;
                     
     // Simple Field (tsapId)
     uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
@@ -77,6 +79,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   } else 
   if(parameterType == 0xC2) { /* COTPParameterCalledTsap */
+    (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap;
                     
     // Simple Field (tsapId)
     uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
@@ -84,6 +87,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   } else 
   if(parameterType == 0xC3) { /* COTPParameterChecksum */
+    (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum;
                     
     // Simple Field (crc)
     uint8_t crc = plc4c_spi_read_unsigned_short(buf, 8);
@@ -91,6 +95,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   } else 
   if(parameterType == 0xE0) { /* COTPParameterDisconnectAdditionalInformation */
+    (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information;
                     
     // Array field (data)
     plc4c_list* data = malloc(sizeof(plc4c_list));
@@ -125,11 +130,53 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* message) {
-  return plc4c_s7_read_write_cotp_parameter_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bytes(plc4c_s7_read_write_cotp_parameter* _message) {
+  return plc4c_s7_read_write_cotp_parameter_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4c_s7_read_write_cotp_parameter* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Discriminator Field (parameterType)
+  lengthInBits += 8;
+
+  // Implicit Field (parameterLength)
+  lengthInBits += 8;
+
+  // Depending of the current type, add the length of sub-type elements ...
+  switch(_message->_type) {
+    case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size: {
+
+      // Enum Field (tpduSize)
+      lengthInBits += 8;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap: {
+
+      // Simple field (tsapId)
+      lengthInBits += 16;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap: {
+
+      // Simple field (tsapId)
+      lengthInBits += 16;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum: {
+
+      // Simple field (crc)
+      lengthInBits += 8;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_disconnect_additional_information: {
+
+      // Array field
+      lengthInBits += 8 * plc4c_utils_list_size(_message->cotp_parameter_disconnect_additional_information_data);
+      break;
+    }
+  }
+
+  return lengthInBits;
 }
 

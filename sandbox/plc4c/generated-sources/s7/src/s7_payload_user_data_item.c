@@ -74,8 +74,10 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(cpuFunctionType == 0x04) { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request;
   } else 
   if(cpuFunctionType == 0x08) { /* S7PayloadUserDataItemCpuFunctionReadSzlResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response;
                     
     // Const Field (szlItemLength)
     uint16_t szlItemLength = plc4c_spi_read_unsigned_int(buf, 16);
@@ -145,11 +147,55 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* message) {
-  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Enum Field (returnCode)
+  lengthInBits += 8;
+
+  // Enum Field (transportSize)
+  lengthInBits += 8;
+
+  // Implicit Field (dataLength)
+  lengthInBits += 16;
+
+  // Simple field (szlId)
+  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(_message->szl_id);
+
+  // Simple field (szlIndex)
+  lengthInBits += 16;
+
+  // Depending of the current type, add the length of sub-type elements ...
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request: {
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
+
+      // Const Field (szlItemLength)
+      lengthInBits += 16;
+
+
+      // Implicit Field (szlItemCount)
+      lengthInBits += 16;
+
+
+      // Array field
+      if(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items != NULL) {
+        plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->head;
+        while (curElement != NULL) {
+          lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits((plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
+          curElement = curElement->next;
+        }
+      }
+      break;
+    }
+  }
+
+  return lengthInBits;
 }
 

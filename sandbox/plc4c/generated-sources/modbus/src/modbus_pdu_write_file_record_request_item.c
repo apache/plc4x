@@ -104,11 +104,28 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
   return OK;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bytes(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* message) {
-  return plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits(message) / 8;
+uint8_t plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bytes(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* _message) {
+  return plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* message) {
-  return 0;
+uint8_t plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item_length_in_bits(plc4c_modbus_read_write_modbus_pdu_write_file_record_request_item* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Simple field (referenceType)
+  lengthInBits += 8;
+
+  // Simple field (fileNumber)
+  lengthInBits += 16;
+
+  // Simple field (recordNumber)
+  lengthInBits += 16;
+
+  // Implicit Field (recordLength)
+  lengthInBits += 16;
+
+  // Array field
+  lengthInBits += 16 * plc4c_utils_list_size(_message->record_data);
+
+  return lengthInBits;
 }
 

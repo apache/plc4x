@@ -65,6 +65,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(tpduCode == 0xF0) { /* COTPPacketData */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_data;
                     
     // Simple Field (eot)
     bool eot = plc4c_spi_read_bit(buf);
@@ -78,6 +79,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   } else 
   if(tpduCode == 0xE0) { /* COTPPacketConnectionRequest */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_request;
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
@@ -97,6 +99,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   } else 
   if(tpduCode == 0xD0) { /* COTPPacketConnectionResponse */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_response;
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
@@ -116,6 +119,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   } else 
   if(tpduCode == 0x80) { /* COTPPacketDisconnectRequest */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_request;
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
@@ -135,6 +139,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   } else 
   if(tpduCode == 0xC0) { /* COTPPacketDisconnectResponse */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_response;
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
@@ -148,6 +153,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   } else 
   if(tpduCode == 0x70) { /* COTPPacketTpduError */
+    (*_message)->_type = plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_tpdu_error;
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = plc4c_spi_read_unsigned_int(buf, 16);
@@ -234,11 +240,109 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* message) {
-  return plc4c_s7_read_write_cotp_packet_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* _message) {
+  return plc4c_s7_read_write_cotp_packet_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Implicit Field (headerLength)
+  lengthInBits += 8;
+
+  // Discriminator Field (tpduCode)
+  lengthInBits += 8;
+
+  // Depending of the current type, add the length of sub-type elements ...
+  switch(_message->_type) {
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_data: {
+
+      // Simple field (eot)
+      lengthInBits += 1;
+
+
+      // Simple field (tpduRef)
+      lengthInBits += 7;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_request: {
+
+      // Simple field (destinationReference)
+      lengthInBits += 16;
+
+
+      // Simple field (sourceReference)
+      lengthInBits += 16;
+
+
+      // Enum Field (protocolClass)
+      lengthInBits += 8;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_connection_response: {
+
+      // Simple field (destinationReference)
+      lengthInBits += 16;
+
+
+      // Simple field (sourceReference)
+      lengthInBits += 16;
+
+
+      // Enum Field (protocolClass)
+      lengthInBits += 8;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_request: {
+
+      // Simple field (destinationReference)
+      lengthInBits += 16;
+
+
+      // Simple field (sourceReference)
+      lengthInBits += 16;
+
+
+      // Enum Field (protocolClass)
+      lengthInBits += 8;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_disconnect_response: {
+
+      // Simple field (destinationReference)
+      lengthInBits += 16;
+
+
+      // Simple field (sourceReference)
+      lengthInBits += 16;
+      break;
+    }
+    case plc4c_s7_read_write_cotp_packet_type_s7_read_write_cotp_packet_tpdu_error: {
+
+      // Simple field (destinationReference)
+      lengthInBits += 16;
+
+
+      // Simple field (rejectCause)
+      lengthInBits += 8;
+      break;
+    }
+  }
+
+  // Array field
+  if(_message->parameters != NULL) {
+    plc4c_list_element* curElement = _message->parameters->head;
+    while (curElement != NULL) {
+      lengthInBits += plc4c_s7_read_write_cotp_parameter_length_in_bits((plc4c_s7_read_write_cotp_parameter*) curElement->value);
+      curElement = curElement->next;
+    }
+  }
+
+  // Optional Field (payload)
+  if(_message->payload != NULL) {
+    lengthInBits += plc4c_s7_read_write_s7_message_length_in_bits(_message->payload);
+  }
+
+  return lengthInBits;
 }
 

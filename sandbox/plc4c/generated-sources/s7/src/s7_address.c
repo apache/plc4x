@@ -52,6 +52,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(addressType == 0x10) { /* S7AddressAny */
+    (*_message)->_type = plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any;
                     
     // Enum field (transportSize)
     plc4c_s7_read_write_transport_size transportSize = plc4c_spi_read_byte(buf, 8);
@@ -110,11 +111,50 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_address* message) {
-  return plc4c_s7_read_write_s7_address_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_s7_address_length_in_bytes(plc4c_s7_read_write_s7_address* _message) {
+  return plc4c_s7_read_write_s7_address_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_address* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_s7_address_length_in_bits(plc4c_s7_read_write_s7_address* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Discriminator Field (addressType)
+  lengthInBits += 8;
+
+  // Depending of the current type, add the length of sub-type elements ...
+  switch(_message->_type) {
+    case plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any: {
+
+      // Enum Field (transportSize)
+      lengthInBits += 8;
+
+
+      // Simple field (numberOfElements)
+      lengthInBits += 16;
+
+
+      // Simple field (dbNumber)
+      lengthInBits += 16;
+
+
+      // Enum Field (area)
+      lengthInBits += 8;
+
+
+      // Reserved Field (reserved)
+      lengthInBits += 5;
+
+
+      // Simple field (byteAddress)
+      lengthInBits += 16;
+
+
+      // Simple field (bitAddress)
+      lengthInBits += 3;
+      break;
+    }
+  }
+
+  return lengthInBits;
 }
 

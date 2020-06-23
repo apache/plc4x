@@ -883,6 +883,12 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         }
     }
 
+    /**
+     * Filters out the arguments that are user for serializiation.
+     *
+     * @param arguments list of all arguments.
+     * @return list of arguments that are used during serialization.
+     */
     public List<Argument> getSerializerArguments(Argument[] arguments) {
         List<Argument> serializerArguments = new LinkedList<>();
         if(arguments != null) {
@@ -893,6 +899,21 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         }
         return serializerArguments;
+    }
+
+    public String getLengthInBitsFunctionNameForComplexTypedField(Field field) {
+        if(field instanceof TypedField) {
+            TypedField typedField = (TypedField) field;
+            final TypeReference typeReference = typedField.getType();
+            if(typeReference instanceof ComplexTypeReference) {
+                ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
+                return "plc4c_" + getCTypeName(complexTypeReference.getName()) + "_length_in_bits";
+            } else {
+                throw new RuntimeException("lengthInBits functions only exist for complex types");
+            }
+        } else {
+            throw new RuntimeException("lengthInBits functions only exist for TypedFields");
+        }
     }
 
 }

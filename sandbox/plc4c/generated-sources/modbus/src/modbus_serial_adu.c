@@ -100,11 +100,28 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_
   return OK;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bytes(plc4c_modbus_read_write_modbus_serial_adu* message) {
-  return plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(message) / 8;
+uint8_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bytes(plc4c_modbus_read_write_modbus_serial_adu* _message) {
+  return plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(plc4c_modbus_read_write_modbus_serial_adu* message) {
-  return 0;
+uint8_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(plc4c_modbus_read_write_modbus_serial_adu* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Simple field (transactionId)
+  lengthInBits += 16;
+
+  // Reserved Field (reserved)
+  lengthInBits += 16;
+
+  // Simple field (length)
+  lengthInBits += 16;
+
+  // Simple field (address)
+  lengthInBits += 8;
+
+  // Simple field (pdu)
+  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message->pdu);
+
+  return lengthInBits;
 }
 

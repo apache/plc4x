@@ -109,11 +109,28 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* message) {
-  return plc4c_s7_read_write_szl_data_tree_item_length_in_bits(message) / 8;
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* _message) {
+  return plc4c_s7_read_write_szl_data_tree_item_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* message) {
-  return 0;
+uint8_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* _message) {
+  uint8_t lengthInBits = 0;
+
+  // Simple field (itemIndex)
+  lengthInBits += 16;
+
+  // Array field
+  lengthInBits += 8 * plc4c_utils_list_size(_message->mlfb);
+
+  // Simple field (moduleTypeId)
+  lengthInBits += 16;
+
+  // Simple field (ausbg)
+  lengthInBits += 16;
+
+  // Simple field (ausbe)
+  lengthInBits += 16;
+
+  return lengthInBits;
 }
 

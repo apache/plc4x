@@ -316,6 +316,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_b
 <#if indentContent>  </#if>  // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
             <#list switchField.cases as case>
 <#if indentContent>  </#if>  <#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue><#if case.discriminatorValues?size &gt; 1>(</#if>${helper.toVariableParseExpression(baseType, switchField, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#if case.discriminatorValues?size &gt; 1>)</#if><#sep> && </#sep></#list>) </#if>{ /* ${case.name} */
+<#if indentContent>  </#if>    (*_message)->_type = plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)};
                 <#list case.fields as caseField>
 <#if indentContent>  </#if>                    <@fieldParser baseType=case field=caseField indentContent=true/>
                     <#sep >
@@ -505,12 +506,147 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_wr
   return OK;
 }
 
-uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_${helper.getCTypeName(type.name)}* message) {
-  return plc4c_${helper.getCTypeName(type.name)}_length_in_bits(message) / 8;
+uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_${helper.getCTypeName(type.name)}* _message) {
+  return plc4c_${helper.getCTypeName(type.name)}_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bits(plc4c_${helper.getCTypeName(type.name)}* message) {
-  return 0;
+uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bits(plc4c_${helper.getCTypeName(type.name)}* _message) {
+    <#macro fieldSize baseType field indentContent>
+        <#switch field.typeName>
+            <#case "array">
+                <#assign arrayField = field>
+
+<#if indentContent>    </#if>  // Array field
+                <#if helper.isSimpleTypeReference(arrayField.type)>
+                    <#assign simpleTypeReference = arrayField.type>
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits} * plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
+                <#else>
+<#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=arrayField/> != NULL) {
+<#if indentContent>    </#if>    plc4c_list_element* curElement = _message-><@fieldName baseType=baseType field=arrayField/>->head;
+<#if indentContent>    </#if>    while (curElement != NULL) {
+<#if indentContent>    </#if>      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}((${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) curElement->value);
+<#if indentContent>    </#if>      curElement = curElement->next;
+<#if indentContent>    </#if>    }
+<#if indentContent>    </#if>  }
+                </#if>
+                <#break>
+            <#case "checksum">
+                <#assign checksumField = field>
+                <#assign simpleTypeReference = checksumField.type>
+
+<#if indentContent>    </#if>  // Checksum Field (checksum)
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#break>
+            <#case "const">
+                <#assign constField = field>
+                <#assign simpleTypeReference = constField.type>
+
+<#if indentContent>    </#if>  // Const Field (${constField.name})
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#break>
+            <#case "discriminator">
+                <#assign discriminatorField = field>
+                <#assign simpleTypeReference = discriminatorField.type>
+
+<#if indentContent>    </#if>  // Discriminator Field (${discriminatorField.name})
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#break>
+            <#case "enum">
+                <#assign enumField = field>
+
+<#if indentContent>    </#if>  // Enum Field (${enumField.name})
+<#if indentContent>    </#if>  lengthInBits += ${helper.getEnumBaseTypeReference(enumField.type).sizeInBits};
+                <#break>
+            <#case "implicit">
+                <#assign implicitField = field>
+                <#assign simpleTypeReference = implicitField.type>
+
+<#if indentContent>    </#if>  // Implicit Field (${implicitField.name})
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#break>
+            <#case "manualArray">
+                <#assign manualArrayField = field>
+
+<#if indentContent>    </#if>  // Manual Array Field (${manualArrayField.name})
+<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualArrayField, manualArrayField.lengthExpression, type.parserArguments)} * 8;
+                <#break>
+            <#case "manual">
+                <#assign manualField = field>
+
+<#if indentContent>    </#if>  // Manual Field (${manualField.name})
+<#if indentContent>    </#if>  lengthInBits += ${helper.toParseExpression(type, manualField, manualField.lengthExpression, type.parserArguments)} * 8;
+                <#break>
+            <#case "optional">
+                <#assign optionalField = field>
+
+<#if indentContent>    </#if>  // Optional Field (${optionalField.name})
+<#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=optionalField/> != NULL) {
+                <#if helper.isSimpleTypeReference(optionalField.type)>
+                    <#assign simpleTypeReference = optionalField.type>
+<#if indentContent>    </#if>    lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#else>
+<#if indentContent>    </#if>    lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(optionalField)}(_message-><@fieldName baseType=baseType field=optionalField/>);
+                </#if>
+<#if indentContent>    </#if>  }
+                <#break>
+            <#case "padding">
+                <#assign paddingField = field>
+                <#assign simpleTypeReference = paddingField.type>
+
+<#if indentContent>    </#if>  // Padding Field (padding)
+            <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
+<#if indentContent>    </#if>  if((bool) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})) {
+<#if indentContent>    </#if>    lengthInBits += ${simpleTypeReference.sizeInBits};
+<#if indentContent>    </#if>  }
+                <#break>
+            <#case "reserved">
+                <#assign reservedField = field>
+                <#assign simpleTypeReference = reservedField.type>
+
+<#if indentContent>    </#if>  // Reserved Field (reserved)
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#break>
+            <#case "simple">
+                <#assign simpleField = field>
+
+<#if indentContent>    </#if>  // Simple field (${simpleField.name})
+                <#if helper.isSimpleTypeReference(simpleField.type)>
+                    <#assign simpleTypeReference = simpleField.type>
+<#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits};
+                <#else>
+<#if indentContent>    </#if>  lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(simpleField)}(_message-><@fieldName baseType=baseType field=simpleField/>);
+                </#if>
+                <#break>
+            <#case "switch">
+                <#assign switchField = field>
+
+<#if indentContent>    </#if>  // Depending of the current type, add the length of sub-type elements ...
+<#if indentContent>    </#if>  switch(_message->_type) {
+            <#list switchField.cases as case>
+<#if indentContent>    </#if>    case plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(case.name)}: {
+                <#list case.fields as caseField>
+                    <@fieldSize baseType=case field=caseField indentContent=true/>
+                    <#sep >
+
+                </#list>
+<#if indentContent>    </#if>      break;
+<#if indentContent>    </#if>    }
+            </#list>
+<#if indentContent>    </#if>  }
+                <#break>
+            <#case "virtual">
+                <#assign virtualField = field>
+
+<#if indentContent>    </#if>  // A virtual field doesn't have any in- or output.
+                <#break>
+        </#switch>
+    </#macro>
+  uint8_t lengthInBits = 0;
+<#list type.fields as field>
+  <@fieldSize baseType=type field=field indentContent=false/>
+</#list>
+
+  return lengthInBits;
 }
 
 </#if>
