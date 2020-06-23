@@ -29,6 +29,7 @@ if (BUILD_PHASE STREQUAL test-compile)
     target_link_libraries(plc4c-spi-test
             plc4c-spi
             unity
+            m
             )
     add_test(NAME plc4c-spi-test COMMAND plc4c-spi-test)
 endif ()
