@@ -98,7 +98,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
         context.fireConnected();
 
         APDUUnconfirmedRequest apdu = new APDUUnconfirmedRequest(
-            new BACnetUnconfirmedServiceRequestWhoIs((short) 0x08, null, null)
+            new BACnetUnconfirmedServiceRequestWhoIs((byte) 0x00, new byte[0], (byte) 0x00, new byte[0])
         );
 
         BVLCOriginalBroadcastNPDU broadcastNPDU = new BVLCOriginalBroadcastNPDU(
