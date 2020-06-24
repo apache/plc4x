@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" bigEndian="true">
+
+  <name>BACnet structures</name>
+
+  <testcase>
+    <name>Whois Request</name>
+    <raw>080a07ae1a07ae</raw>
+    <root-type>BACnetUnconfirmedServiceRequest</root-type>
+    <parser-arguments>
+      <length>7</length>
+    </parser-arguments>
+    <xml>
+      <BACnetUnconfirmedServiceRequestWhoIs className="org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoIs">
+        <deviceInstanceRangeLowLimitLength>2</deviceInstanceRangeLowLimitLength>
+        <deviceInstanceRangeLowLimit>B64=</deviceInstanceRangeLowLimit>
+        <deviceInstanceRangeHighLimitLength>2</deviceInstanceRangeHighLimitLength>
+        <deviceInstanceRangeHighLimit>B64=</deviceInstanceRangeHighLimit>
+      </BACnetUnconfirmedServiceRequestWhoIs>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Whohas Request</name>
+    <raw>073d15040053004f004d00530032002d004e004100450058002f005300630068006500640075006c0065002e004b0061006c0065006e00640065007200200041004b0053004500200038002e00500072006f006700720061006d006d0065007200620061007200650020006d006f00640075006c00650072002e00440043004f002e00440043004f0035004600310031002e0044006100670042007600690031002d00310031002e004400610067004200760076</raw>
+    <root-type>BACnetUnconfirmedServiceRequest</root-type>
+    <parser-arguments>
+      <length>1000</length>
+    </parser-arguments>
+    <xml>
+      <BVLC className="org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas">
+      </BVLC>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Time Synchronization Request</name>
+    <raw>06a4770b1b03b40c0b3939</raw>
+    <root-type>BACnetUnconfirmedServiceRequest</root-type>
+    <parser-arguments>
+      <length>11</length>
+    </parser-arguments>
+    <xml>
+      <BACnetUnconfirmedServiceRequestTimeSynchronization className="org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestTimeSynchronization">
+      </BACnetUnconfirmedServiceRequestTimeSynchronization>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>BACnet IAmRequest</name>
+    <raw>001000c40200020f22040091002105</raw>
+    <root-type>BACnetUnconfirmedServiceRequest</root-type>
+    <parser-arguments>
+      <length>16</length>
+    </parser-arguments>
+    <xml>
+      <BACnetUnconfirmedServiceRequestIAm className="org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIAm">
+      </BACnetUnconfirmedServiceRequestIAm>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>I have response</name>
+    <raw>01c40200000bc403c000007100</raw>
+    <root-type>BACnetUnconfirmedServiceRequest</root-type>
+    <parser-arguments>
+      <length>13</length>
+    </parser-arguments>
+    <xml>
+      <BACnetUnconfirmedServiceRequestIHave className="org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestIHave">
+      </BACnetUnconfirmedServiceRequestIHave>
+    </xml>
+  </testcase>
+
+</test:testsuite>
