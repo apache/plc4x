@@ -24,19 +24,30 @@
 #include <plc4c/types.h>
 
 struct plc4c_spi_read_buffer {
-
+  // Pointer to the data itself
+  uint8_t* data;
+  // Total size of the data array.
+  uint16_t length;
+  // Current full byte position
+  uint16_t curPosByte;
+  // Current bit-position inside the current byte
+  unsigned int curPosBit : 4;
 };
 typedef struct plc4c_spi_read_buffer plc4c_spi_read_buffer;
+
+plc4c_return_code plc4c_spi_read_buffer_create(uint8_t* data, uint16_t length, plc4c_spi_read_buffer** buffer);
+
+void plc4c_spi_read_buffer_destroy(plc4c_spi_read_buffer* buffer);
 
 uint32_t plc4c_spi_read_get_pos(plc4c_spi_read_buffer* buf);
 
 uint32_t plc4c_spi_read_get_total_bytes(plc4c_spi_read_buffer* buf);
 
-bool plc4c_spi_read_has_more(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+bool plc4c_spi_read_has_more(plc4c_spi_read_buffer* buf, uint16_t num_bits);
 
-uint8_t* plc4c_spi_read_get_bytes(plc4c_spi_read_buffer* buf, uint32_t start_pos_in_bytes, uint32_t end_pos_in_bytes);
+plc4c_return_code plc4c_spi_read_get_bytes(plc4c_spi_read_buffer* buf, uint16_t start_pos_in_bytes, uint16_t end_pos_in_bytes, uint8_t** dest);
 
-uint8_t plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint32_t offset_in_bytes);
+uint8_t plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t offset_in_bytes);
 
 bool plc4c_spi_read_bit(plc4c_spi_read_buffer* buf);
 
