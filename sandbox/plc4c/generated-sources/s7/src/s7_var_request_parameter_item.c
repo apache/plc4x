@@ -98,7 +98,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(pl
       }
 
       // Simple Field (address)
-      _res = plc4c_s7_read_write_s7_address_serialize(buf, "_message->s7_var_request_parameter_item_address_address");
+      _res = plc4c_s7_read_write_s7_address_serialize(buf, _message->s7_var_request_parameter_item_address_address);
       if(_res != OK) {
         return _res;
       }

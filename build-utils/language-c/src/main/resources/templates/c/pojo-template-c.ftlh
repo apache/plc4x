@@ -483,7 +483,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_wr
             <#if helper.isSimpleTypeReference(optionalField.type)>
 <#if indentContent>    </#if>    _res= ${helper.getWriteBufferWriteMethodCall(optionalField.type, "_message->" + helper.getFieldName(baseType, optionalField))};
             <#else>
-<#if indentContent>    </#if>    _res = plc4c_${helper.getCTypeName(optionalField.type.name)}_serialize(buf, "_message-><@fieldName baseType=baseType field=optionalField/>");
+<#if indentContent>    </#if>    _res = plc4c_${helper.getCTypeName(optionalField.type.name)}_serialize(buf, _message-><@fieldName baseType=baseType field=optionalField/>);
             </#if>
 <#if indentContent>    </#if>    if(_res != OK) {
 <#if indentContent>    </#if>      return _res;
@@ -524,7 +524,7 @@ plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_wr
             <#if helper.isSimpleTypeReference(simpleField.type)>
 <#if indentContent>    </#if>  _res = ${helper.getWriteBufferWriteMethodCall(simpleField.type, "_message->" + helper.getFieldName(baseType, simpleField))};
             <#else>
-<#if indentContent>    </#if>  _res = plc4c_${helper.getCTypeName(simpleField.type.name)}_serialize(buf, "_message-><@fieldName baseType=baseType field=simpleField/>");
+<#if indentContent>    </#if>  _res = plc4c_${helper.getCTypeName(simpleField.type.name)}_serialize(buf, _message-><@fieldName baseType=baseType field=simpleField/>);
             </#if>
 <#if indentContent>    </#if>  if(_res != OK) {
 <#if indentContent>    </#if>    return _res;

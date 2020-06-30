@@ -268,7 +268,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   // Optional Field (parameter)
   if(_message->parameter != NULL) {
-    _res = plc4c_s7_read_write_s7_parameter_serialize(buf, "_message->parameter");
+    _res = plc4c_s7_read_write_s7_parameter_serialize(buf, _message->parameter);
     if(_res != OK) {
       return _res;
     }
@@ -276,7 +276,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    _res = plc4c_s7_read_write_s7_payload_serialize(buf, "_message->payload");
+    _res = plc4c_s7_read_write_s7_payload_serialize(buf, _message->payload);
     if(_res != OK) {
       return _res;
     }

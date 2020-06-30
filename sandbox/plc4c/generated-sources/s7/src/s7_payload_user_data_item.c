@@ -165,7 +165,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (szlId)
-  _res = plc4c_s7_read_write_szl_id_serialize(buf, "_message->szl_id");
+  _res = plc4c_s7_read_write_szl_id_serialize(buf, _message->szl_id);
   if(_res != OK) {
     return _res;
   }

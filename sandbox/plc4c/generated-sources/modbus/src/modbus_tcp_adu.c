@@ -105,7 +105,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
   }
 
   // Simple Field (pdu)
-  _res = plc4c_modbus_read_write_modbus_pdu_serialize(buf, "_message->pdu");
+  _res = plc4c_modbus_read_write_modbus_pdu_serialize(buf, _message->pdu);
   if(_res != OK) {
     return _res;
   }

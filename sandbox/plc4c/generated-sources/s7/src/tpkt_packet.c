@@ -95,7 +95,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
   }
 
   // Simple Field (payload)
-  _res = plc4c_s7_read_write_cotp_packet_serialize(buf, "_message->payload");
+  _res = plc4c_s7_read_write_cotp_packet_serialize(buf, _message->payload);
   if(_res != OK) {
     return _res;
   }
