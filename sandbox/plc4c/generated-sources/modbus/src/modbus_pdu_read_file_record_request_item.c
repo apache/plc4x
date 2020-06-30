@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item));
@@ -35,48 +36,65 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
   }
 
   // Simple Field (referenceType)
-  uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
+  uint8_t referenceType = 0;
+  _res = plc4c_spi_read_unsigned_short(buf, 8, &referenceType);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->reference_type = referenceType;
 
   // Simple Field (fileNumber)
-  uint16_t fileNumber = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t fileNumber = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &fileNumber);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->file_number = fileNumber;
 
   // Simple Field (recordNumber)
-  uint16_t recordNumber = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t recordNumber = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordNumber);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->record_number = recordNumber;
 
   // Simple Field (recordLength)
-  uint16_t recordLength = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t recordLength = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordLength);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->record_length = recordLength;
 
   return OK;
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_request_item* _message) {
+  plc4c_return_code _res = OK;
 
   // Simple Field (referenceType)
-  {
-    uint8_t _value = _message->reference_type;
-    plc4c_spi_write_unsigned_short(buf, 8, _value);
+  _res = plc4c_spi_write_unsigned_short(buf, 8, _message->reference_type);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (fileNumber)
-  {
-    uint16_t _value = _message->file_number;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->file_number);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (recordNumber)
-  {
-    uint16_t _value = _message->record_number;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->record_number);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (recordLength)
-  {
-    uint16_t _value = _message->record_length;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->record_length);
+  if(_res != OK) {
+    return _res;
   }
 
   return OK;

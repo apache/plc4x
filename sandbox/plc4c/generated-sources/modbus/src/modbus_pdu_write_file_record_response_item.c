@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item));
@@ -35,19 +36,35 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   }
 
   // Simple Field (referenceType)
-  uint8_t referenceType = plc4c_spi_read_unsigned_short(buf, 8);
+  uint8_t referenceType = 0;
+  _res = plc4c_spi_read_unsigned_short(buf, 8, &referenceType);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->reference_type = referenceType;
 
   // Simple Field (fileNumber)
-  uint16_t fileNumber = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t fileNumber = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &fileNumber);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->file_number = fileNumber;
 
   // Simple Field (recordNumber)
-  uint16_t recordNumber = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t recordNumber = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordNumber);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->record_number = recordNumber;
 
   // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  uint16_t recordLength = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t recordLength = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordLength);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Array field (recordData)
   plc4c_list* recordData = malloc(sizeof(plc4c_list));
@@ -59,7 +76,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     uint8_t _recordDataLength = (recordLength) * (2);
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(buf) + _recordDataLength;
     while(plc4c_spi_read_get_pos(buf) < recordDataEndPos) {
-      uint16_t _value = plc4c_spi_read_unsigned_int(buf, 16);
+      uint16_t _value = 0;
+      _res = plc4c_spi_read_unsigned_int(buf, 16, &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(recordData, &_value);
     }
   }
@@ -69,27 +90,31 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item* _message) {
+  plc4c_return_code _res = OK;
 
   // Simple Field (referenceType)
-  {
-    uint8_t _value = _message->reference_type;
-    plc4c_spi_write_unsigned_short(buf, 8, _value);
+  _res = plc4c_spi_write_unsigned_short(buf, 8, _message->reference_type);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (fileNumber)
-  {
-    uint16_t _value = _message->file_number;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->file_number);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (recordNumber)
-  {
-    uint16_t _value = _message->record_number;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->record_number);
+  if(_res != OK) {
+    return _res;
   }
 
   // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  plc4c_spi_write_unsigned_int(buf, 16, (((plc4c_spi_evaluation_helper_count(_message->record_data)) * (2))) / (2));
+  _res = plc4c_spi_write_unsigned_int(buf, 16, (((plc4c_spi_evaluation_helper_count(_message->record_data)) * (2))) / (2));
+  if(_res != OK) {
+    return _res;
+  }
 
   // Array field (recordData)
   {

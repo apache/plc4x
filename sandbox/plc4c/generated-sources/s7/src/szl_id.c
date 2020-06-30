@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_id** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_id));
@@ -35,38 +36,51 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, p
   }
 
   // Enum field (typeClass)
-  plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_spi_read_byte(buf, 4);
+  plc4c_s7_read_write_szl_module_type_class typeClass = NULL;
+  _res = plc4c_spi_read_byte(buf, 4, &typeClass);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->type_class = typeClass;
 
   // Simple Field (sublistExtract)
-  unsigned int sublistExtract = plc4c_spi_read_unsigned_byte(buf, 4);
+  unsigned int sublistExtract = 0;
+  _res = plc4c_spi_read_unsigned_byte(buf, 4, &sublistExtract);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->sublist_extract = sublistExtract;
 
   // Enum field (sublistList)
-  plc4c_s7_read_write_szl_sublist sublistList = plc4c_spi_read_byte(buf, 8);
+  plc4c_s7_read_write_szl_sublist sublistList = NULL;
+  _res = plc4c_spi_read_byte(buf, 8, &sublistList);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->sublist_list = sublistList;
 
   return OK;
 }
 
 plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_id* _message) {
+  plc4c_return_code _res = OK;
 
   // Enum field (typeClass)
-  {
-    int _value = _message->type_class;
-    plc4c_spi_write_byte(buf, 4, _value);
+  _res = plc4c_spi_write_byte(buf, 4, _message->type_class);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (sublistExtract)
-  {
-    unsigned int _value = _message->sublist_extract;
-    plc4c_spi_write_unsigned_byte(buf, 4, _value);
+  _res = plc4c_spi_write_unsigned_byte(buf, 4, _message->sublist_extract);
+  if(_res != OK) {
+    return _res;
   }
 
   // Enum field (sublistList)
-  {
-    int8_t _value = _message->sublist_list;
-    plc4c_spi_write_byte(buf, 8, _value);
+  _res = plc4c_spi_write_byte(buf, 8, _message->sublist_list);
+  if(_res != OK) {
+    return _res;
   }
 
   return OK;

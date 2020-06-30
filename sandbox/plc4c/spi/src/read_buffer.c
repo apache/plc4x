@@ -20,6 +20,8 @@
 #include <plc4c/spi/read_buffer.h>
 #include <string.h>
 
+uint8_t bit_mask[9] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
+
 plc4c_return_code plc4c_spi_read_buffer_create(uint8_t* data, uint16_t length, plc4c_spi_read_buffer** buffer) {
   *buffer = malloc(sizeof(plc4c_spi_read_buffer));
   if(*buffer == NULL) {
@@ -76,23 +78,24 @@ plc4c_return_code plc4c_spi_read_get_bytes(plc4c_spi_read_buffer* buf, uint16_t 
   return OK;
 }
 
-uint8_t plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t offset_in_bytes) {
+plc4c_return_code plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t offset_in_bytes, uint8_t* value) {
   if(buf == NULL) {
-    return 0;
+    return NULL_VALUE;
   }
   if(buf->curPosByte + offset_in_bytes > buf->length) {
-    return 0;
+    return OUT_OF_RANGE;
   }
-  return (*buf->data) + (buf->curPosByte + offset_in_bytes);
+  *value = (*buf->data) + (buf->curPosByte + offset_in_bytes);
+  return OK;
 }
 
-bool plc4c_spi_read_bit(plc4c_spi_read_buffer* buf) {
+plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value) {
   uint8_t cur_byte = (*buf->data) + buf->curPosByte;
   // We have to invert the position as bit 0 will be the first
   // (most significant bit).
   unsigned int bit_pos = ((unsigned int) 7) - buf->curPosBit;
   // Get the bit's value.
-  bool value = ((cur_byte >> bit_pos) & 1) != 0;
+  *value = ((cur_byte >> bit_pos) & 1) != 0;
   // If this was the last bit in this byte, move on to the next one.
   if(buf->curPosBit == 7) {
     buf->curPosByte++;
@@ -100,63 +103,89 @@ bool plc4c_spi_read_bit(plc4c_spi_read_buffer* buf) {
   } else {
     buf->curPosBit++;
   }
-  return value;
+  return OK;
 }
 
 // Unsigned Integers ...
 
-uint8_t plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint8_t* value) {
+  // If the bit-offset is currently 0, then we simply read a byte ...
+  if(buf->curPosBit == 0) {
+    uint8_t cur_byte = (*buf->data) + buf->curPosByte;
+    buf->curPosByte++;
+    return cur_byte;
+  } else {
+    uint8_t cur_byte = (*buf->data) + buf->curPosByte;
+    cur_byte = cur_byte << buf->curPosBit;
+    uint8_t next_byte = (*buf->data) + (buf->curPosByte + 1);
+    next_byte = next_byte >> buf->curPosBit;
+    uint8_t virtual_byte = cur_byte | next_byte;
+    buf->curPosByte++;
+    return virtual_byte;
+  }
 }
 
-uint16_t plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint16_t* value) {
+  // If the bit-offset is currently 0, then we simply read a byte ...
+  if(buf->curPosBit == 0) {
+    uint16_t cur_short = (*buf->data) + buf->curPosByte;
+    buf->curPosByte += 2;
+    return cur_short;
+  } else {
+    uint8_t cur_short = (*buf->data) + buf->curPosByte;
+    cur_short = cur_short << buf->curPosBit;
+    uint8_t next_byte = (*buf->data) + (buf->curPosByte + 1);
+    next_byte = next_byte >> buf->curPosBit;
+    uint8_t virtual_byte = cur_short | next_byte;
+    buf->curPosByte++;
+    return virtual_byte;
+  }
 }
 
-uint32_t plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint32_t* value) {
+  return OK;
 }
 
-uint64_t plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint64_t* value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
 /*uint128_t plc4c_spi_read_unsigned_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+  return OK;
 }*/
 
 // Signed Integers ...
 
-int8_t plc4c_spi_read_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, int8_t* value) {
+  return OK;
 }
 
-int16_t plc4c_spi_read_short(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, int16_t* value) {
+  return OK;
 }
 
-int32_t plc4c_spi_read_int(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, int32_t* value) {
+  return OK;
 }
 
-int64_t plc4c_spi_read_long(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, int64_t* value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
 /*int128_t plc4c_spi_read_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits);
- * return 0;
+ * return OK;
  * }*/
 
 // Floating Point Numbers ...
 
-float plc4c_spi_read_float(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_float(plc4c_spi_read_buffer* buf, uint8_t num_bits, float* value) {
+  return OK;
 }
 
-double plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
-  return 0;
+plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_bits, double* value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
@@ -164,6 +193,6 @@ double plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_bits) {
  * return 0;
  * } */
 
-char* plc4c_spi_read_string(plc4c_spi_read_buffer* buf, uint8_t num_bits, char* encoding) {
-  return NULL;
+plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf, uint8_t num_bits, char* encoding, char** value) {
+  return OK;
 }

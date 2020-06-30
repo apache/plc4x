@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_s7_var_payload_status_item));
@@ -35,18 +36,23 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
   }
 
   // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_spi_read_byte(buf, 8);
+  plc4c_s7_read_write_data_transport_error_code returnCode = NULL;
+  _res = plc4c_spi_read_byte(buf, 8, &returnCode);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->return_code = returnCode;
 
   return OK;
 }
 
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item* _message) {
+  plc4c_return_code _res = OK;
 
   // Enum field (returnCode)
-  {
-    int8_t _value = _message->return_code;
-    plc4c_spi_write_byte(buf, 8, _value);
+  _res = plc4c_spi_write_byte(buf, 8, _message->return_code);
+  if(_res != OK) {
+    return _res;
   }
 
   return OK;

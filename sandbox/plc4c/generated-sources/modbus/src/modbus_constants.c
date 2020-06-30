@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_modbus_read_write_modbus_constants));
@@ -35,7 +36,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
   }
 
   // Const Field (modbusTcpDefaultPort)
-  uint16_t modbusTcpDefaultPort = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t modbusTcpDefaultPort = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &modbusTcpDefaultPort);
+  if(_res != OK) {
+    return _res;
+  }
   if(modbusTcpDefaultPort != MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT + " but got " + modbusTcpDefaultPort);
@@ -45,6 +50,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 }
 
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* _message) {
+  plc4c_return_code _res = OK;
 
   // Const Field (modbusTcpDefaultPort)
   plc4c_spi_write_unsigned_int(buf, 16, MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT);

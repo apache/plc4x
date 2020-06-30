@@ -27,76 +27,76 @@ uint32_t plc4c_spi_write_get_pos(plc4c_spi_write_buffer* buf) {
   return 0;
 }
 
-uint8_t* plc4c_spi_write_get_bytes(plc4c_spi_write_buffer* buf, uint32_t start_pos_in_bytes, uint32_t end_pos_in_bytes) {
-  return NULL;
+plc4c_return_code plc4c_spi_write_get_bytes(plc4c_spi_write_buffer* buf, uint32_t start_pos_in_bytes, uint32_t end_pos_in_bytes, uint8_t** dest) {
+  return OK;
 }
 
-uint8_t plc4c_spi_write_peek_byte(plc4c_spi_write_buffer* buf, uint32_t offset_in_bytes) {
-  return 0;
+plc4c_return_code plc4c_spi_write_peek_byte(plc4c_spi_write_buffer* buf, uint32_t offset_in_bytes, uint8_t* value) {
+  return OK;
 }
 
-void plc4c_spi_write_bit(plc4c_spi_write_buffer* buf, bool value) {
-
+plc4c_return_code plc4c_spi_write_bit(plc4c_spi_write_buffer* buf, bool value) {
+  return OK;
 }
 
 // Unsigned Integers ...
 
-void plc4c_spi_write_unsigned_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint8_t value) {
-
+plc4c_return_code plc4c_spi_write_unsigned_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint8_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_unsigned_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint16_t value) {
-
+plc4c_return_code plc4c_spi_write_unsigned_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint16_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_unsigned_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint32_t value) {
-
+plc4c_return_code plc4c_spi_write_unsigned_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint32_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_unsigned_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint64_t value) {
-
+plc4c_return_code plc4c_spi_write_unsigned_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint64_t value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
-/*void plc4c_spi_write_unsigned_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint128_t value) {
+/*plc4c_return_code plc4c_spi_write_unsigned_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, uint128_t value) {
  * } */
 
 // Signed Integers ...
 
-void plc4c_spi_write_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, int8_t value) {
-
+plc4c_return_code plc4c_spi_write_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, int8_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, int16_t value) {
-
+plc4c_return_code plc4c_spi_write_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, int16_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, int32_t value) {
-
+plc4c_return_code plc4c_spi_write_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, int32_t value) {
+  return OK;
 }
 
-void plc4c_spi_write_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, int64_t value) {
-
+plc4c_return_code plc4c_spi_write_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, int64_t value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
-/*void plc4c_spi_write_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, int128_t) {
+/*plc4c_return_code plc4c_spi_write_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, int128_t) {
  * } */
 
 // Floating Point Numbers ...
 
-void plc4c_spi_write_float(plc4c_spi_write_buffer* buf, uint8_t num_bits, float value) {
-
+plc4c_return_code plc4c_spi_write_float(plc4c_spi_write_buffer* buf, uint8_t num_bits, float value) {
+  return OK;
 }
 
-void plc4c_spi_write_double(plc4c_spi_write_buffer* buf, uint8_t num_bits, double value) {
-
+plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf, uint8_t num_bits, double value) {
+  return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
 /*void plc4c_spi_write_big_decimal(plc4c_spi_write_buffer* buf, uint8_t num_bits, doubledouble value) {
  * } */
 
-void plc4c_spi_write_string(plc4c_spi_write_buffer* buf, uint8_t num_bits, char* encoding, char* value) {
+plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf, uint8_t num_bits, char* encoding, char* value) {
 
 }

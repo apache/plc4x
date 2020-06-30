@@ -113,7 +113,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
 
     public abstract String getLanguageTypeNameForTypeReference(TypeReference typeReference);
 
-    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference);
+    public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference) {
+        return getReadBufferReadMethodCall(simpleTypeReference, null);
+    }
+
+    public abstract String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString);
 
     public abstract String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName);
 

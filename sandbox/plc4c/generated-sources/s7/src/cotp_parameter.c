@@ -48,6 +48,7 @@ plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parame
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
@@ -56,17 +57,29 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
   }
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
-  uint8_t parameterType = plc4c_spi_read_unsigned_short(buf, 8);
+  uint8_t parameterType = 0;
+  _res = plc4c_spi_read_unsigned_short(buf, 8, &parameterType);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  uint8_t parameterLength = plc4c_spi_read_unsigned_short(buf, 8);
+  uint8_t parameterLength = 0;
+  _res = plc4c_spi_read_unsigned_short(buf, 8, &parameterLength);
+  if(_res != OK) {
+    return _res;
+  }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(parameterType == 0xC0) { /* COTPParameterTpduSize */
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Enum field (tpduSize)
-    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_spi_read_byte(buf, 8);
+    plc4c_s7_read_write_cotp_tpdu_size tpduSize = NULL;
+    _res = plc4c_spi_read_byte(buf, 8, &tpduSize);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->cotp_parameter_tpdu_size_tpdu_size = tpduSize;
 
   } else 
@@ -74,7 +87,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap;
                     
     // Simple Field (tsapId)
-    uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+    uint16_t tsapId = 0;
+    _res = plc4c_spi_read_unsigned_int(buf, 16, &tsapId);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->cotp_parameter_calling_tsap_tsap_id = tsapId;
 
   } else 
@@ -82,7 +99,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap;
                     
     // Simple Field (tsapId)
-    uint16_t tsapId = plc4c_spi_read_unsigned_int(buf, 16);
+    uint16_t tsapId = 0;
+    _res = plc4c_spi_read_unsigned_int(buf, 16, &tsapId);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->cotp_parameter_called_tsap_tsap_id = tsapId;
 
   } else 
@@ -90,7 +111,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum;
                     
     // Simple Field (crc)
-    uint8_t crc = plc4c_spi_read_unsigned_short(buf, 8);
+    uint8_t crc = 0;
+    _res = plc4c_spi_read_unsigned_short(buf, 8, &crc);
+    if(_res != OK) {
+      return _res;
+    }
     (*_message)->cotp_parameter_checksum_crc = crc;
 
   } else 
@@ -108,7 +133,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
                   
-        uint8_t _value = plc4c_spi_read_unsigned_short(buf, 8);
+        uint8_t _value = 0;
+        _res = plc4c_spi_read_unsigned_short(buf, 8, &_value);
+        if(_res != OK) {
+          return _res;
+        }
         plc4c_utils_list_insert_head_value(data, &_value);
       }
     }
@@ -120,21 +149,25 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 }
 
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_parameter* _message) {
+  plc4c_return_code _res = OK;
 
   // Discriminator Field (parameterType)
   plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_cotp_parameter_get_discriminator(_message->_type).parameterType);
 
   // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  plc4c_spi_write_unsigned_short(buf, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(_message)) - (2));
+  _res = plc4c_spi_write_unsigned_short(buf, 8, (plc4c_s7_read_write_cotp_parameter_length_in_bytes(_message)) - (2));
+  if(_res != OK) {
+    return _res;
+  }
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size: {
 
       // Enum field (tpduSize)
-      {
-        int8_t _value = _message->cotp_parameter_tpdu_size_tpdu_size;
-        plc4c_spi_write_byte(buf, 8, _value);
+      _res = plc4c_spi_write_byte(buf, 8, _message->cotp_parameter_tpdu_size_tpdu_size);
+      if(_res != OK) {
+        return _res;
       }
 
       break;
@@ -142,9 +175,9 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_calling_tsap: {
 
       // Simple Field (tsapId)
-      {
-        uint16_t _value = _message->cotp_parameter_calling_tsap_tsap_id;
-        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      _res = plc4c_spi_write_unsigned_int(buf, 16, _message->cotp_parameter_calling_tsap_tsap_id);
+      if(_res != OK) {
+        return _res;
       }
 
       break;
@@ -152,9 +185,9 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_called_tsap: {
 
       // Simple Field (tsapId)
-      {
-        uint16_t _value = _message->cotp_parameter_called_tsap_tsap_id;
-        plc4c_spi_write_unsigned_int(buf, 16, _value);
+      _res = plc4c_spi_write_unsigned_int(buf, 16, _message->cotp_parameter_called_tsap_tsap_id);
+      if(_res != OK) {
+        return _res;
       }
 
       break;
@@ -162,9 +195,9 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     case plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_checksum: {
 
       // Simple Field (crc)
-      {
-        uint8_t _value = _message->cotp_parameter_checksum_crc;
-        plc4c_spi_write_unsigned_short(buf, 8, _value);
+      _res = plc4c_spi_write_unsigned_short(buf, 8, _message->cotp_parameter_checksum_crc);
+      if(_res != OK) {
+        return _res;
       }
 
       break;

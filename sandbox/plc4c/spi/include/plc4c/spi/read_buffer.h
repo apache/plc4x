@@ -47,45 +47,45 @@ bool plc4c_spi_read_has_more(plc4c_spi_read_buffer* buf, uint16_t num_bits);
 
 plc4c_return_code plc4c_spi_read_get_bytes(plc4c_spi_read_buffer* buf, uint16_t start_pos_in_bytes, uint16_t end_pos_in_bytes, uint8_t** dest);
 
-uint8_t plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t offset_in_bytes);
+plc4c_return_code plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t offset_in_bytes, uint8_t* value);
 
-bool plc4c_spi_read_bit(plc4c_spi_read_buffer* buf);
+plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value);
 
 // Unsigned Integers ...
 
-uint8_t plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint8_t* value);
 
-uint16_t plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint16_t* value);
 
-uint32_t plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint32_t* value);
 
-uint64_t plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint64_t* value);
 
 // TODO: Not sure which type to use in this case ...
 //uint128_t plc4c_spi_read_unsigned_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits);
 
 // Signed Integers ...
 
-int8_t plc4c_spi_read_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, int8_t* value);
 
-int16_t plc4c_spi_read_short(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, int16_t* value);
 
-int32_t plc4c_spi_read_int(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, int32_t* value);
 
-int64_t plc4c_spi_read_long(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, int64_t* value);
 
 // TODO: Not sure which type to use in this case ...
 //int128_t plc4c_spi_read_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits);
 
 // Floating Point Numbers ...
 
-float plc4c_spi_read_float(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_float(plc4c_spi_read_buffer* buf, uint8_t num_bits, float* value);
 
-double plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf, uint8_t num_bits, double* value);
 
 // TODO: Not sure which type to use in this case ...
 //doubledouble plc4c_spi_read_big_decimal(plc4c_spi_read_buffer* buf, uint8_t num_bits);
 
-char* plc4c_spi_read_string(plc4c_spi_read_buffer* buf, uint8_t num_bits, char* encoding);
+plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf, uint8_t num_bits, char* encoding, char** value);
 
 #endif  // PLC4C_READ_BUFFER_H_

@@ -27,6 +27,7 @@
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
   uint16_t curPos;
+  plc4c_return_code _res = OK;
 
   // Allocate enough memory to contain this data structure.
   (*_message) = malloc(sizeof(plc4c_s7_read_write_szl_data_tree_item));
@@ -35,7 +36,11 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   }
 
   // Simple Field (itemIndex)
-  uint16_t itemIndex = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t itemIndex = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &itemIndex);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->item_index = itemIndex;
 
   // Array field (mlfb)
@@ -49,33 +54,50 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
                 
-      int8_t _value = plc4c_spi_read_byte(buf, 8);
+      int8_t _value = 0;
+      _res = plc4c_spi_read_byte(buf, 8, &_value);
+      if(_res != OK) {
+        return _res;
+      }
       plc4c_utils_list_insert_head_value(mlfb, &_value);
     }
   }
   (*_message)->mlfb = mlfb;
 
   // Simple Field (moduleTypeId)
-  uint16_t moduleTypeId = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t moduleTypeId = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &moduleTypeId);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->module_type_id = moduleTypeId;
 
   // Simple Field (ausbg)
-  uint16_t ausbg = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t ausbg = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &ausbg);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->ausbg = ausbg;
 
   // Simple Field (ausbe)
-  uint16_t ausbe = plc4c_spi_read_unsigned_int(buf, 16);
+  uint16_t ausbe = 0;
+  _res = plc4c_spi_read_unsigned_int(buf, 16, &ausbe);
+  if(_res != OK) {
+    return _res;
+  }
   (*_message)->ausbe = ausbe;
 
   return OK;
 }
 
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* _message) {
+  plc4c_return_code _res = OK;
 
   // Simple Field (itemIndex)
-  {
-    uint16_t _value = _message->item_index;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->item_index);
+  if(_res != OK) {
+    return _res;
   }
 
   // Array field (mlfb)
@@ -89,21 +111,21 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_wri
   }
 
   // Simple Field (moduleTypeId)
-  {
-    uint16_t _value = _message->module_type_id;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->module_type_id);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (ausbg)
-  {
-    uint16_t _value = _message->ausbg;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->ausbg);
+  if(_res != OK) {
+    return _res;
   }
 
   // Simple Field (ausbe)
-  {
-    uint16_t _value = _message->ausbe;
-    plc4c_spi_write_unsigned_int(buf, 16, _value);
+  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->ausbe);
+  if(_res != OK) {
+    return _res;
   }
 
   return OK;
