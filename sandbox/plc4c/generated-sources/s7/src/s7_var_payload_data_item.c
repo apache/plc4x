@@ -53,7 +53,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
 
   // Simple Field (dataLength)
   uint16_t dataLength = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &dataLength);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
@@ -86,7 +86,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
     if(_needsPadding) {
       // Just read the padding data and ignore it
       uint8_t _paddingValue = 0;
-      _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &_paddingValue);
+      _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &_paddingValue);
       if(_res != OK) {
         return _res;
       }
@@ -112,7 +112,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
   }
 
   // Simple Field (dataLength)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->data_length);
+  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->data_length);
   if(_res != OK) {
     return _res;
   }
@@ -132,7 +132,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
     bool _needsPadding = (bool) ((!(lastItem)) && (((((plc4c_spi_evaluation_helper_count(_message->data)) % (2))) == (1))));
     if(_needsPadding) {
       // Just output the default padding data
-      _res = plc4c_spi_write_unsigned_short(buf, 8, 0);
+      _res = plc4c_spi_write_unsigned_byte(buf, 8, 0);
       if(_res != OK) {
         return _res;
       }

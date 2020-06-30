@@ -27,13 +27,13 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_payload_discriminator plc4c_s7_read_write_s7_payload_discriminators[] = {
-  {/* s7_read_write_s7_payload_read_var_response */
+  {/* plc4c_s7_read_write_s7_payload_read_var_response */
    .parameterParameterType = 0x04, .messageType = 0x03},
-  {/* s7_read_write_s7_payload_user_data */
+  {/* plc4c_s7_read_write_s7_payload_user_data */
    .parameterParameterType = 0x00, .messageType = 0x07},
-  {/* s7_read_write_s7_payload_write_var_request */
+  {/* plc4c_s7_read_write_s7_payload_write_var_request */
    .parameterParameterType = 0x05, .messageType = 0x01},
-  {/* s7_read_write_s7_payload_write_var_response */
+  {/* plc4c_s7_read_write_s7_payload_write_var_response */
    .parameterParameterType = 0x05, .messageType = 0x03}
 };
 
@@ -56,7 +56,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x04) && (messageType == 0x03)) { /* S7PayloadReadVarResponse */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response;
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response;
                     
     // Array field (items)
     plc4c_list* items = malloc(sizeof(plc4c_list));
@@ -80,7 +80,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
   } else 
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x01)) { /* S7PayloadWriteVarRequest */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request;
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request;
                     
     // Array field (items)
     plc4c_list* items = malloc(sizeof(plc4c_list));
@@ -104,7 +104,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
   } else 
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x05) && (messageType == 0x03)) { /* S7PayloadWriteVarResponse */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response;
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response;
                     
     // Array field (items)
     plc4c_list* items = malloc(sizeof(plc4c_list));
@@ -128,7 +128,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
 
   } else 
   if((plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).parameterType == 0x00) && (messageType == 0x07)) { /* S7PayloadUserData */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data;
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data;
                     
     // Array field (items)
     plc4c_list* items = malloc(sizeof(plc4c_list));
@@ -160,7 +160,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
   switch(_message->_type) {
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response: {
 
       // Array field (items)
       {
@@ -168,7 +168,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_read_var_response_items, curItem);
-          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
+          _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
           if(_res != OK) {
             return _res;
           }
@@ -177,7 +177,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request: {
 
       // Array field (items)
       {
@@ -185,7 +185,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_request_items, curItem);
-          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
+          _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(buf, (void*) &_value, lastItem);
           if(_res != OK) {
             return _res;
           }
@@ -194,7 +194,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response: {
 
       // Array field (items)
       {
@@ -202,7 +202,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_var_payload_status_item* _value = (plc4c_s7_read_write_s7_var_payload_status_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_response_items, curItem);
-          plc4c_return_code _res = plc4c_s7_read_write_s7_var_payload_status_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_s7_var_payload_status_item_serialize(buf, (void*) &_value);
           if(_res != OK) {
             return _res;
           }
@@ -211,7 +211,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data: {
 
       // Array field (items)
       {
@@ -219,7 +219,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_payload_user_data_item* _value = (plc4c_s7_read_write_s7_payload_user_data_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_items, curItem);
-          plc4c_return_code _res = plc4c_s7_read_write_s7_payload_user_data_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_s7_payload_user_data_item_serialize(buf, (void*) &_value);
           if(_res != OK) {
             return _res;
           }
@@ -242,7 +242,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_read_var_response: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_read_var_response: {
 
       // Array field
       if(_message->s7_payload_read_var_response_items != NULL) {
@@ -255,7 +255,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_request: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_request: {
 
       // Array field
       if(_message->s7_payload_write_var_request_items != NULL) {
@@ -268,7 +268,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_write_var_response: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_write_var_response: {
 
       // Array field
       if(_message->s7_payload_write_var_response_items != NULL) {
@@ -281,7 +281,7 @@ uint8_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pay
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_type_s7_read_write_s7_payload_user_data: {
+    case plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data: {
 
       // Array field
       if(_message->s7_payload_user_data_items != NULL) {

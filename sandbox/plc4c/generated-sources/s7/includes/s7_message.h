@@ -37,17 +37,17 @@ typedef struct plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_message_type {
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_request = 0,
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response = 1,
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_response_data = 2,
-  plc4c_s7_read_write_s7_message_type_s7_read_write_s7_message_user_data = 3};
+  plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request = 0,
+  plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response = 1,
+  plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data = 2,
+  plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data = 3};
 typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_type;
 
 // Function to get the discriminator values for a given type.
 plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_discriminator(plc4c_s7_read_write_s7_message_type type);
 
 // Constant values.
-const uint8_t S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;
+const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;
 
 struct plc4c_s7_read_write_s7_message {
   /* This is an abstract type so this property saves the type of this typed union */

@@ -39,15 +39,15 @@ typedef struct plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_payload_user_data_item_type {
-  plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request = 0,
-  plc4c_s7_read_write_s7_payload_user_data_item_type_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response = 1};
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request = 0,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response = 1};
 typedef enum plc4c_s7_read_write_s7_payload_user_data_item_type plc4c_s7_read_write_s7_payload_user_data_item_type;
 
 // Function to get the discriminator values for a given type.
 plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_get_discriminator(plc4c_s7_read_write_s7_payload_user_data_item_type type);
 
 // Constant values.
-const uint16_t S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH = 28;
+const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH = 28;
 
 struct plc4c_s7_read_write_s7_payload_user_data_item {
   /* This is an abstract type so this property saves the type of this typed union */

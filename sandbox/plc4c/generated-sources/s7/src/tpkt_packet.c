@@ -37,19 +37,19 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Const Field (protocolId)
   uint8_t protocolId = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &protocolId);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &protocolId);
   if(_res != OK) {
     return _res;
   }
-  if(protocolId != S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID) {
+  if(protocolId != PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID + " but got " + protocolId);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID + " but got " + protocolId);
   }
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint8_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) _reserved);
+    _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
@@ -60,7 +60,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t len = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &len);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &len);
   if(_res != OK) {
     return _res;
   }
@@ -80,16 +80,16 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
   plc4c_return_code _res = OK;
 
   // Const Field (protocolId)
-  plc4c_spi_write_unsigned_short(buf, 8, S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID);
+  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID);
 
   // Reserved Field
-  _res = plc4c_spi_write_unsigned_short(buf, 8, 0x00);
+  _res = plc4c_spi_write_unsigned_byte(buf, 8, 0x00);
   if(_res != OK) {
     return _res;
   }
 
   // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
+  _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
   if(_res != OK) {
     return _res;
   }

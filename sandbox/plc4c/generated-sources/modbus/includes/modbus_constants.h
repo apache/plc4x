@@ -27,7 +27,7 @@ extern "C" {
 #include <plc4c/utils/list.h>
 
 // Constant values.
-const uint16_t MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT = 502;
+const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT = 502;
 
 struct plc4c_modbus_read_write_modbus_constants {
   /* Properties */

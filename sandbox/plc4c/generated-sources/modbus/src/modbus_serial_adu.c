@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (transactionId)
   uint16_t transactionId = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &transactionId);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &transactionId);
   if(_res != OK) {
     return _res;
   }
@@ -46,7 +46,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint16_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) _reserved);
+    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
@@ -57,7 +57,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (length)
   uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &length);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &length);
   if(_res != OK) {
     return _res;
   }
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (address)
   uint8_t address = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &address);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &address);
   if(_res != OK) {
     return _res;
   }
@@ -86,25 +86,25 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_
   plc4c_return_code _res = OK;
 
   // Simple Field (transactionId)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->transaction_id);
+  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->transaction_id);
   if(_res != OK) {
     return _res;
   }
 
   // Reserved Field
-  _res = plc4c_spi_write_unsigned_int(buf, 16, 0x0000);
+  _res = plc4c_spi_write_unsigned_short(buf, 16, 0x0000);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (length)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->length);
+  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->length);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (address)
-  _res = plc4c_spi_write_unsigned_short(buf, 8, _message->address);
+  _res = plc4c_spi_write_unsigned_byte(buf, 8, _message->address);
   if(_res != OK) {
     return _res;
   }

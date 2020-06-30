@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &transactionIdentifier);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &transactionIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -45,25 +45,25 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &protocolIdentifier);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &protocolIdentifier);
   if(_res != OK) {
     return _res;
   }
-  if(protocolIdentifier != MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER) {
+  if(protocolIdentifier != PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER + " but got " + protocolIdentifier);
+    // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER + " but got " + protocolIdentifier);
   }
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &length);
+  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &length);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &unitIdentifier);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &unitIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -84,22 +84,22 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
   plc4c_return_code _res = OK;
 
   // Simple Field (transactionIdentifier)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, _message->transaction_identifier);
+  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->transaction_identifier);
   if(_res != OK) {
     return _res;
   }
 
   // Const Field (protocolIdentifier)
-  plc4c_spi_write_unsigned_int(buf, 16, MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER);
+  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER);
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_int(buf, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));
+  _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (unitIdentifier)
-  _res = plc4c_spi_write_unsigned_short(buf, 8, _message->unit_identifier);
+  _res = plc4c_spi_write_unsigned_byte(buf, 8, _message->unit_identifier);
   if(_res != OK) {
     return _res;
   }

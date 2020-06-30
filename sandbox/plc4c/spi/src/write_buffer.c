@@ -98,5 +98,5 @@ plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf, uint8_t nu
  * } */
 
 plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf, uint8_t num_bits, char* encoding, char* value) {
-
+  return OK;
 }

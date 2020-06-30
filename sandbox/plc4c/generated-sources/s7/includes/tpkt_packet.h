@@ -28,7 +28,7 @@ extern "C" {
 #include "cotp_packet.h"
 
 // Constant values.
-const uint8_t S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID = 0x03;
+const uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID = 0x03;
 
 struct plc4c_s7_read_write_tpkt_packet {
   /* Properties */

@@ -28,7 +28,7 @@ extern "C" {
 #include "modbus_pdu.h"
 
 // Constant values.
-const uint16_t MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER = 0x0000;
+const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER = 0x0000;
 
 struct plc4c_modbus_read_write_modbus_tcp_adu {
   /* Properties */

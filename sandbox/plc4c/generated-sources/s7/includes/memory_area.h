@@ -42,7 +42,7 @@ typedef enum plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area;
 static const plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null;
 
 
-char * plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value) {
+char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value) {
   switch(value) {
     case 28: { /* '0x1C' */
       return "C";

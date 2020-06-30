@@ -36,7 +36,7 @@ typedef struct plc4c_s7_read_write_s7_var_request_parameter_item_discriminator p
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_var_request_parameter_item_type {
-  plc4c_s7_read_write_s7_var_request_parameter_item_type_s7_read_write_s7_var_request_parameter_item_address = 0};
+  plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address = 0};
 typedef enum plc4c_s7_read_write_s7_var_request_parameter_item_type plc4c_s7_read_write_s7_var_request_parameter_item_type;
 
 // Function to get the discriminator values for a given type.

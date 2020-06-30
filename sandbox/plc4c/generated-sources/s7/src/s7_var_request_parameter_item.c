@@ -27,7 +27,7 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_write_s7_var_request_parameter_item_discriminators[] = {
-  {/* s7_read_write_s7_var_request_parameter_item_address */
+  {/* plc4c_s7_read_write_s7_var_request_parameter_item_address */
    .itemType = 0x12}
 };
 
@@ -50,18 +50,18 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &itemType);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &itemType);
   if(_res != OK) {
     return _res;
   }
 
   // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
   if(itemType == 0x12) { /* S7VarRequestParameterItemAddress */
-    (*_message)->_type = plc4c_s7_read_write_s7_var_request_parameter_item_type_s7_read_write_s7_var_request_parameter_item_address;
+    (*_message)->_type = plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
                     
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t itemLength = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &itemLength);
+    _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &itemLength);
     if(_res != OK) {
       return _res;
     }
@@ -85,14 +85,14 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(pl
   plc4c_return_code _res = OK;
 
   // Discriminator Field (itemType)
-  plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(_message->_type).itemType);
+  plc4c_spi_write_unsigned_byte(buf, 8, plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(_message->_type).itemType);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
   switch(_message->_type) {
-    case plc4c_s7_read_write_s7_var_request_parameter_item_type_s7_read_write_s7_var_request_parameter_item_address: {
+    case plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address: {
 
       // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-      _res = plc4c_spi_write_unsigned_short(buf, 8, plc4c_s7_read_write_s7_address_length_in_bytes(_message->s7_var_request_parameter_item_address_address));
+      _res = plc4c_spi_write_unsigned_byte(buf, 8, plc4c_s7_read_write_s7_address_length_in_bytes(_message->s7_var_request_parameter_item_address_address));
       if(_res != OK) {
         return _res;
       }
@@ -122,7 +122,7 @@ uint8_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(plc4c_s
 
   // Depending of the current type, add the length of sub-type elements ...
   switch(_message->_type) {
-    case plc4c_s7_read_write_s7_var_request_parameter_item_type_s7_read_write_s7_var_request_parameter_item_address: {
+    case plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address: {
 
       // Implicit Field (itemLength)
       lengthInBits += 8;

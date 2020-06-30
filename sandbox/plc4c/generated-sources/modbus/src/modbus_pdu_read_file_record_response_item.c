@@ -37,14 +37,14 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t dataLength = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &dataLength);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (referenceType)
   uint8_t referenceType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &referenceType);
+  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &referenceType);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
     uint8_t dataEndPos = plc4c_spi_read_get_pos(buf) + _dataLength;
     while(plc4c_spi_read_get_pos(buf) < dataEndPos) {
       uint16_t _value = 0;
-      _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &_value);
+      _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -77,13 +77,13 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   plc4c_return_code _res = OK;
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(buf, 8, (((plc4c_spi_evaluation_helper_count(_message->data)) * (2))) + (1));
+  _res = plc4c_spi_write_unsigned_byte(buf, 8, (((plc4c_spi_evaluation_helper_count(_message->data)) * (2))) + (1));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (referenceType)
-  _res = plc4c_spi_write_unsigned_short(buf, 8, _message->reference_type);
+  _res = plc4c_spi_write_unsigned_byte(buf, 8, _message->reference_type);
   if(_res != OK) {
     return _res;
   }
@@ -94,7 +94,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
     for(int curItem = 0; curItem < itemCount; curItem++) {
 
       uint16_t* _value = (uint16_t*) plc4c_utils_list_get_value(_message->data, curItem);
-      plc4c_spi_write_unsigned_int(buf, 16, *_value);
+      plc4c_spi_write_unsigned_short(buf, 16, *_value);
     }
   }
 

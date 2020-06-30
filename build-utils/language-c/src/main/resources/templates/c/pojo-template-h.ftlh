@@ -45,8 +45,8 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
-#define PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
+#ifndef ${helper.getCTypeName(type.name)?upper_case}_H_
+#define ${helper.getCTypeName(type.name)?upper_case}_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,25 +71,25 @@ extern "C" {
 <#if helper.isDiscriminatedParentTypeDefinition(type)>
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
-struct plc4c_${helper.getCTypeName(type.name)}_discriminator {
+struct ${helper.getCTypeName(type.name)}_discriminator {
 <#if helper.getDiscriminatorTypes()?has_content>
     <#list helper.getDiscriminatorTypes()?keys as discriminatorName>
   ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} ${discriminatorName};
     </#list>
 </#if>
 };
-typedef struct plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_discriminator;
+typedef struct ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_discriminator;
 
 // Enum assigning each sub-type an individual id.
-enum plc4c_${helper.getCTypeName(type.name)}_type {
+enum ${helper.getCTypeName(type.name)}_type {
     <#list helper.getSubTypeDefinitions() as subtype>
-  plc4c_${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,
+  ${helper.getCTypeName(type.name)}_type_${helper.getCTypeName(subtype.name)} = ${subtype?index}<#sep>,
     </#list>
 };
-typedef enum plc4c_${helper.getCTypeName(type.name)}_type plc4c_${helper.getCTypeName(type.name)}_type;
+typedef enum ${helper.getCTypeName(type.name)}_type ${helper.getCTypeName(type.name)}_type;
 
 // Function to get the discriminator values for a given type.
-plc4c_${helper.getCTypeName(type.name)}_discriminator plc4c_${helper.getCTypeName(type.name)}_get_discriminator(plc4c_${helper.getCTypeName(type.name)}_type type);
+${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)}_get_discriminator(${helper.getCTypeName(type.name)}_type type);
 </#if>
 <#--
     When using const fields, output the constant reference values
@@ -106,10 +106,10 @@ const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(pa
 <#--
     Create the general data-structure for this type
 -->
-struct plc4c_${helper.getCTypeName(type.name)} {
+struct ${helper.getCTypeName(type.name)} {
 <#if helper.isDiscriminatedParentTypeDefinition(type)>
   /* This is an abstract type so this property saves the type of this typed union */
-  plc4c_${helper.getCTypeName(type.name)}_type _type;
+  ${helper.getCTypeName(type.name)}_type _type;
 </#if>
   /* Properties */
 <#list helper.getPropertyAndSwitchFields() as field>
@@ -138,28 +138,28 @@ struct plc4c_${helper.getCTypeName(type.name)} {
     </#if>
 </#list>
 };
-typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
+typedef struct ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)};
 
 // Create an empty NULL-struct
-static const plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)}_null;
+static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null;
 
 <#--
     Define the parse-method for elements of this tpye
 -->
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>plc4c_${helper.getCTypeName(type.name)}** message);
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** message);
 
 <#--
     Define the serialize-method for elements of this tpye
 -->
-plc4c_return_code plc4c_${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, plc4c_${helper.getCTypeName(type.name)}* message<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>);
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* buf, ${helper.getCTypeName(type.name)}* message<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)} ${parserArgument.name}<#sep>, </#sep></#list></#if>);
 
-uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bytes(plc4c_${helper.getCTypeName(type.name)}* message);
+uint8_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* message);
 
-uint8_t plc4c_${helper.getCTypeName(type.name)}_length_in_bits(plc4c_${helper.getCTypeName(type.name)}* message);
+uint8_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* message);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
+#endif  // ${helper.getCTypeName(type.name)?upper_case}_H_
 </#if>
 </#outputformat>

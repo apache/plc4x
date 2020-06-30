@@ -36,8 +36,8 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
   under the License.
 */
 
-#ifndef PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
-#define PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
+#ifndef ${helper.getCTypeName(type.name)?upper_case}_H_
+#define ${helper.getCTypeName(type.name)?upper_case}_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -55,16 +55,16 @@ extern "C" {
 <#--
     First output the enum itself together with it's constants
 -->
-enum plc4c_${helper.getCTypeName(type.name)} {
+enum ${helper.getCTypeName(type.name)} {
 <#list type.enumValues as enumValue>
-  plc4c_${helper.getCTypeName(type.name)}_${enumValue.name} = ${enumValue.value}<#sep>,
+  ${helper.getCTypeName(type.name)}_${enumValue.name} = ${enumValue.value}<#sep>,
 </#sep></#list>
 
 };
-typedef enum plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
+typedef enum ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)};
 
 // Create an empty NULL-struct
-static const plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)}_null;
+static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null;
 
 <#--
     If this enum also defines constant values, output one function for each.
@@ -74,7 +74,7 @@ static const plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
 
-${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} plc4c_${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(plc4c_${helper.getCTypeName(type.name)} value) {
+${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} ${helper.getCTypeName(type.name)}_get_${helper.camelCaseToSnakeCase(constantName)}(${helper.getCTypeName(type.name)} value) {
   switch(value) {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
     case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */
@@ -93,4 +93,4 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_${helper.getCTypeName(type.name)?upper_case}_H_
+#endif  // ${helper.getCTypeName(type.name)?upper_case}_H_

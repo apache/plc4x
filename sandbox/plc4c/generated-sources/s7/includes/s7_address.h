@@ -37,7 +37,7 @@ typedef struct plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_
 
 // Enum assigning each sub-type an individual id.
 enum plc4c_s7_read_write_s7_address_type {
-  plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any = 0};
+  plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any = 0};
 typedef enum plc4c_s7_read_write_s7_address_type plc4c_s7_read_write_s7_address_type;
 
 // Function to get the discriminator values for a given type.
