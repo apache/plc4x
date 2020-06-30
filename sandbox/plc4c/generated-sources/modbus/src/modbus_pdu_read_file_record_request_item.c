@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
 
   // Simple Field (referenceType)
   uint8_t referenceType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &referenceType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &referenceType);
   if(_res != OK) {
     return _res;
   }
@@ -45,7 +45,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
 
   // Simple Field (fileNumber)
   uint16_t fileNumber = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &fileNumber);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &fileNumber);
   if(_res != OK) {
     return _res;
   }
@@ -53,7 +53,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
 
   // Simple Field (recordNumber)
   uint16_t recordNumber = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordNumber);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &recordNumber);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_request_it
 
   // Simple Field (recordLength)
   uint16_t recordLength = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordLength);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &recordLength);
   if(_res != OK) {
     return _res;
   }

@@ -140,6 +140,9 @@ struct plc4c_${helper.getCTypeName(type.name)} {
 };
 typedef struct plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
 
+// Create an empty NULL-struct
+static const plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)}_null;
+
 <#--
     Define the parse-method for elements of this tpye
 -->

@@ -51,16 +51,16 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   }
 
   // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = NULL;
-  _res = plc4c_spi_read_byte(buf, 8, &returnCode);
+  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null;
+  _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &returnCode);
   if(_res != OK) {
     return _res;
   }
   (*_message)->return_code = returnCode;
 
   // Enum field (transportSize)
-  plc4c_s7_read_write_data_transport_size transportSize = NULL;
-  _res = plc4c_spi_read_byte(buf, 8, &transportSize);
+  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null;
+  _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &transportSize);
   if(_res != OK) {
     return _res;
   }
@@ -68,7 +68,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &dataLength);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
@@ -83,7 +83,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (szlIndex)
   uint16_t szlIndex = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &szlIndex);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &szlIndex);
   if(_res != OK) {
     return _res;
   }
@@ -98,7 +98,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
                     
     // Const Field (szlItemLength)
     uint16_t szlItemLength = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &szlItemLength);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &szlItemLength);
     if(_res != OK) {
       return _res;
     }
@@ -111,7 +111,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
                     
     // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint16_t szlItemCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &szlItemCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &szlItemCount);
     if(_res != OK) {
       return _res;
     }

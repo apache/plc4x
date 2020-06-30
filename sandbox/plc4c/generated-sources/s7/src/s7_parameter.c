@@ -60,7 +60,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &parameterType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &parameterType);
   if(_res != OK) {
     return _res;
   }
@@ -72,7 +72,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
       uint8_t _reserved = 0;
-      _res = plc4c_spi_read_unsigned_short(buf, 8, _reserved);
+      _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) _reserved);
       if(_res != OK) {
         return _res;
       }
@@ -85,7 +85,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Simple Field (maxAmqCaller)
     uint16_t maxAmqCaller = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &maxAmqCaller);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &maxAmqCaller);
     if(_res != OK) {
       return _res;
     }
@@ -95,7 +95,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Simple Field (maxAmqCallee)
     uint16_t maxAmqCallee = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &maxAmqCallee);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &maxAmqCallee);
     if(_res != OK) {
       return _res;
     }
@@ -105,7 +105,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Simple Field (pduLength)
     uint16_t pduLength = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &pduLength);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &pduLength);
     if(_res != OK) {
       return _res;
     }
@@ -117,7 +117,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t numItems = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &numItems);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &numItems);
     if(_res != OK) {
       return _res;
     }
@@ -150,7 +150,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Simple Field (numItems)
     uint8_t numItems = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &numItems);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &numItems);
     if(_res != OK) {
       return _res;
     }
@@ -162,7 +162,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t numItems = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &numItems);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &numItems);
     if(_res != OK) {
       return _res;
     }
@@ -195,7 +195,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Simple Field (numItems)
     uint8_t numItems = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &numItems);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &numItems);
     if(_res != OK) {
       return _res;
     }
@@ -207,7 +207,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
                     
     // Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t numItems = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &numItems);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &numItems);
     if(_res != OK) {
       return _res;
     }

@@ -63,6 +63,9 @@ enum plc4c_${helper.getCTypeName(type.name)} {
 };
 typedef enum plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)};
 
+// Create an empty NULL-struct
+static const plc4c_${helper.getCTypeName(type.name)} plc4c_${helper.getCTypeName(type.name)}_null;
+
 <#--
     If this enum also defines constant values, output one function for each.
     Each of these functions consist of a simple switch statement using the enum as switch-value

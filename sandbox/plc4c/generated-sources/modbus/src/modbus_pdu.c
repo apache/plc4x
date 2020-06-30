@@ -120,14 +120,14 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
 
   // Discriminator Field (error) (Used as input to a switch field)
   bool error = false;
-  _res = plc4c_spi_read_bit(buf, &error);
+  _res = plc4c_spi_read_bit(buf, (bool*) &error);
   if(_res != OK) {
     return _res;
   }
 
   // Discriminator Field (function) (Used as input to a switch field)
   unsigned int function = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 7, &function);
+  _res = plc4c_spi_read_unsigned_short(buf, 7, (uint16_t*) &function);
   if(_res != OK) {
     return _res;
   }
@@ -138,7 +138,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (exceptionCode)
     uint8_t exceptionCode = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &exceptionCode);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &exceptionCode);
     if(_res != OK) {
       return _res;
     }
@@ -150,7 +150,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -160,7 +160,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -172,7 +172,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -191,7 +191,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -206,7 +206,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -216,7 +216,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -228,7 +228,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -247,7 +247,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -262,7 +262,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (address)
     uint16_t address = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &address);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &address);
     if(_res != OK) {
       return _res;
     }
@@ -272,7 +272,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (value)
     uint16_t value = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &value);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &value);
     if(_res != OK) {
       return _res;
     }
@@ -284,7 +284,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (address)
     uint16_t address = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &address);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &address);
     if(_res != OK) {
       return _res;
     }
@@ -294,7 +294,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (value)
     uint16_t value = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &value);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &value);
     if(_res != OK) {
       return _res;
     }
@@ -306,7 +306,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -316,7 +316,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -326,7 +326,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -345,7 +345,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -360,7 +360,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -370,7 +370,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -382,7 +382,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -392,7 +392,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -404,7 +404,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -423,7 +423,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -438,7 +438,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -448,7 +448,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -460,7 +460,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -479,7 +479,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -494,7 +494,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (address)
     uint16_t address = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &address);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &address);
     if(_res != OK) {
       return _res;
     }
@@ -504,7 +504,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (value)
     uint16_t value = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &value);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &value);
     if(_res != OK) {
       return _res;
     }
@@ -516,7 +516,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (address)
     uint16_t address = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &address);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &address);
     if(_res != OK) {
       return _res;
     }
@@ -526,7 +526,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (value)
     uint16_t value = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &value);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &value);
     if(_res != OK) {
       return _res;
     }
@@ -538,7 +538,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -548,7 +548,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -558,7 +558,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -577,7 +577,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -592,7 +592,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (startingAddress)
     uint16_t startingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &startingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &startingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -602,7 +602,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (quantity)
     uint16_t quantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &quantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &quantity);
     if(_res != OK) {
       return _res;
     }
@@ -614,7 +614,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (readStartingAddress)
     uint16_t readStartingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &readStartingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &readStartingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -624,7 +624,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (readQuantity)
     uint16_t readQuantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &readQuantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &readQuantity);
     if(_res != OK) {
       return _res;
     }
@@ -634,7 +634,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (writeStartingAddress)
     uint16_t writeStartingAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &writeStartingAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &writeStartingAddress);
     if(_res != OK) {
       return _res;
     }
@@ -644,7 +644,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (writeQuantity)
     uint16_t writeQuantity = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &writeQuantity);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &writeQuantity);
     if(_res != OK) {
       return _res;
     }
@@ -654,7 +654,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -673,7 +673,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -688,7 +688,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -707,7 +707,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -722,7 +722,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (referenceAddress)
     uint16_t referenceAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &referenceAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &referenceAddress);
     if(_res != OK) {
       return _res;
     }
@@ -732,7 +732,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (andMask)
     uint16_t andMask = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &andMask);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &andMask);
     if(_res != OK) {
       return _res;
     }
@@ -742,7 +742,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (orMask)
     uint16_t orMask = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &orMask);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &orMask);
     if(_res != OK) {
       return _res;
     }
@@ -754,7 +754,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (referenceAddress)
     uint16_t referenceAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &referenceAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &referenceAddress);
     if(_res != OK) {
       return _res;
     }
@@ -764,7 +764,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (andMask)
     uint16_t andMask = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &andMask);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &andMask);
     if(_res != OK) {
       return _res;
     }
@@ -774,7 +774,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (orMask)
     uint16_t orMask = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &orMask);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &orMask);
     if(_res != OK) {
       return _res;
     }
@@ -786,7 +786,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (fifoPointerAddress)
     uint16_t fifoPointerAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &fifoPointerAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &fifoPointerAddress);
     if(_res != OK) {
       return _res;
     }
@@ -798,7 +798,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint16_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &byteCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -807,7 +807,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint16_t fifoCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &fifoCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &fifoCount);
     if(_res != OK) {
       return _res;
     }
@@ -826,7 +826,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         uint16_t _value = 0;
-        _res = plc4c_spi_read_unsigned_int(buf, 16, &_value);
+        _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -841,7 +841,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -874,7 +874,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -907,7 +907,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -940,7 +940,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -976,7 +976,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (value)
     uint8_t value = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &value);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &value);
     if(_res != OK) {
       return _res;
     }
@@ -988,7 +988,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (status)
     uint16_t status = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &status);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &status);
     if(_res != OK) {
       return _res;
     }
@@ -998,7 +998,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (eventCount)
     uint16_t eventCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &eventCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &eventCount);
     if(_res != OK) {
       return _res;
     }
@@ -1013,7 +1013,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -1022,7 +1022,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (status)
     uint16_t status = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &status);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &status);
     if(_res != OK) {
       return _res;
     }
@@ -1032,7 +1032,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (eventCount)
     uint16_t eventCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &eventCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &eventCount);
     if(_res != OK) {
       return _res;
     }
@@ -1042,7 +1042,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Simple Field (messageCount)
     uint16_t messageCount = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &messageCount);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &messageCount);
     if(_res != OK) {
       return _res;
     }
@@ -1062,7 +1062,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -1080,7 +1080,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
                     
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t byteCount = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &byteCount);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &byteCount);
     if(_res != OK) {
       return _res;
     }
@@ -1099,7 +1099,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, &_value);
+        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }

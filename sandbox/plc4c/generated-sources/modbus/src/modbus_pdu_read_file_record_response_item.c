@@ -37,14 +37,14 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
 
   // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t dataLength = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &dataLength);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (referenceType)
   uint8_t referenceType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &referenceType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &referenceType);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
     uint8_t dataEndPos = plc4c_spi_read_get_pos(buf) + _dataLength;
     while(plc4c_spi_read_get_pos(buf) < dataEndPos) {
       uint16_t _value = 0;
-      _res = plc4c_spi_read_unsigned_int(buf, 16, &_value);
+      _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &_value);
       if(_res != OK) {
         return _res;
       }

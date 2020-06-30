@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
 
   // Simple Field (referenceType)
   uint8_t referenceType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &referenceType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &referenceType);
   if(_res != OK) {
     return _res;
   }
@@ -45,7 +45,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
 
   // Simple Field (fileNumber)
   uint16_t fileNumber = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &fileNumber);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &fileNumber);
   if(_res != OK) {
     return _res;
   }
@@ -53,7 +53,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
 
   // Simple Field (recordNumber)
   uint16_t recordNumber = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordNumber);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &recordNumber);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
 
   // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t recordLength = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &recordLength);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &recordLength);
   if(_res != OK) {
     return _res;
   }
@@ -77,7 +77,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_request_i
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(buf) + _recordDataLength;
     while(plc4c_spi_read_get_pos(buf) < recordDataEndPos) {
       uint16_t _value = 0;
-      _res = plc4c_spi_read_unsigned_int(buf, 16, &_value);
+      _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &_value);
       if(_res != OK) {
         return _res;
       }

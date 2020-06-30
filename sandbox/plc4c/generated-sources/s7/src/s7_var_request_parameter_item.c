@@ -50,7 +50,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
 
   // Discriminator Field (itemType) (Used as input to a switch field)
   uint8_t itemType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &itemType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &itemType);
   if(_res != OK) {
     return _res;
   }
@@ -61,7 +61,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_
                     
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint8_t itemLength = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &itemLength);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &itemLength);
     if(_res != OK) {
       return _res;
     }

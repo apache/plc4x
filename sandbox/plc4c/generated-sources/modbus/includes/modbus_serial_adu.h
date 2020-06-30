@@ -36,6 +36,9 @@ struct plc4c_modbus_read_write_modbus_serial_adu {
 };
 typedef struct plc4c_modbus_read_write_modbus_serial_adu plc4c_modbus_read_write_modbus_serial_adu;
 
+// Create an empty NULL-struct
+static const plc4c_modbus_read_write_modbus_serial_adu plc4c_modbus_read_write_modbus_serial_adu_null;
+
 plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_serial_adu** message);
 
 plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_serial_adu* message);

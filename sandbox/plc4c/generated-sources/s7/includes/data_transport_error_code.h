@@ -35,6 +35,9 @@ enum plc4c_s7_read_write_data_transport_error_code {
 };
 typedef enum plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_null;
+
 
 #ifdef __cplusplus
 }

@@ -37,7 +37,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (itemIndex)
   uint16_t itemIndex = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &itemIndex);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &itemIndex);
   if(_res != OK) {
     return _res;
   }
@@ -55,7 +55,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
       
                 
       int8_t _value = 0;
-      _res = plc4c_spi_read_byte(buf, 8, &_value);
+      _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -66,7 +66,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (moduleTypeId)
   uint16_t moduleTypeId = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &moduleTypeId);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &moduleTypeId);
   if(_res != OK) {
     return _res;
   }
@@ -74,7 +74,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (ausbg)
   uint16_t ausbg = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &ausbg);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &ausbg);
   if(_res != OK) {
     return _res;
   }
@@ -82,7 +82,7 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
 
   // Simple Field (ausbe)
   uint16_t ausbe = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &ausbe);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &ausbe);
   if(_res != OK) {
     return _res;
   }

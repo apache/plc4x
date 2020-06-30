@@ -33,6 +33,9 @@ enum plc4c_s7_read_write_szl_module_type_class {
 };
 typedef enum plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_null;
+
 
 #ifdef __cplusplus
 }

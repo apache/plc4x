@@ -32,6 +32,9 @@ enum plc4c_s7_read_write_device_group {
 };
 typedef enum plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null;
+
 
 #ifdef __cplusplus
 }

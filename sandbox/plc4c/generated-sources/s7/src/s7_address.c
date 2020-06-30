@@ -50,7 +50,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
 
   // Discriminator Field (addressType) (Used as input to a switch field)
   uint8_t addressType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &addressType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &addressType);
   if(_res != OK) {
     return _res;
   }
@@ -60,8 +60,8 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
     (*_message)->_type = plc4c_s7_read_write_s7_address_type_s7_read_write_s7_address_any;
                     
     // Enum field (transportSize)
-    plc4c_s7_read_write_transport_size transportSize = NULL;
-    _res = plc4c_spi_read_byte(buf, 8, &transportSize);
+    plc4c_s7_read_write_transport_size transportSize = plc4c_s7_read_write_transport_size_null;
+    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &transportSize);
     if(_res != OK) {
       return _res;
     }
@@ -71,7 +71,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
                     
     // Simple Field (numberOfElements)
     uint16_t numberOfElements = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &numberOfElements);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &numberOfElements);
     if(_res != OK) {
       return _res;
     }
@@ -81,7 +81,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
                     
     // Simple Field (dbNumber)
     uint16_t dbNumber = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &dbNumber);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &dbNumber);
     if(_res != OK) {
       return _res;
     }
@@ -90,8 +90,8 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
 
                     
     // Enum field (area)
-    plc4c_s7_read_write_memory_area area = NULL;
-    _res = plc4c_spi_read_byte(buf, 8, &area);
+    plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null;
+    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &area);
     if(_res != OK) {
       return _res;
     }
@@ -102,7 +102,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
       unsigned int _reserved = 0;
-      _res = plc4c_spi_read_unsigned_short(buf, 5, _reserved);
+      _res = plc4c_spi_read_unsigned_short(buf, 5, (uint16_t*) _reserved);
       if(_res != OK) {
         return _res;
       }
@@ -115,7 +115,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
                     
     // Simple Field (byteAddress)
     uint16_t byteAddress = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &byteAddress);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &byteAddress);
     if(_res != OK) {
       return _res;
     }
@@ -125,7 +125,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
                     
     // Simple Field (bitAddress)
     unsigned int bitAddress = 0;
-    _res = plc4c_spi_read_unsigned_byte(buf, 3, &bitAddress);
+    _res = plc4c_spi_read_unsigned_byte(buf, 3, (uint8_t*) &bitAddress);
     if(_res != OK) {
       return _res;
     }

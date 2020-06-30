@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &transactionIdentifier);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &transactionIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -45,7 +45,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &protocolIdentifier);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &protocolIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -56,14 +56,14 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &length);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &length);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &unitIdentifier);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &unitIdentifier);
   if(_res != OK) {
     return _res;
   }

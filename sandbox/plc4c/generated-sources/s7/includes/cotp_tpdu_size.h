@@ -36,6 +36,9 @@ enum plc4c_s7_read_write_cotp_tpdu_size {
 };
 typedef enum plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null;
+
 
 uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
   switch(value) {

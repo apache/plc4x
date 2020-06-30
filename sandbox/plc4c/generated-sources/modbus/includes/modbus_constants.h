@@ -35,6 +35,9 @@ struct plc4c_modbus_read_write_modbus_constants {
 };
 typedef struct plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants;
 
+// Create an empty NULL-struct
+static const plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants_null;
+
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** message);
 
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* message);

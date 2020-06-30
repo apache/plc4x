@@ -48,6 +48,9 @@ enum plc4c_s7_read_write_szl_sublist {
 };
 typedef enum plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null;
+
 
 #ifdef __cplusplus
 }

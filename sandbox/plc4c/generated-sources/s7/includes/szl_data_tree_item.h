@@ -36,6 +36,9 @@ struct plc4c_s7_read_write_szl_data_tree_item {
 };
 typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item_null;
+
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** message);
 
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* message);

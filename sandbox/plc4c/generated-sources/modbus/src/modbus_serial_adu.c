@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (transactionId)
   uint16_t transactionId = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &transactionId);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &transactionId);
   if(_res != OK) {
     return _res;
   }
@@ -46,7 +46,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint16_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, _reserved);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) _reserved);
     if(_res != OK) {
       return _res;
     }
@@ -57,7 +57,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (length)
   uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &length);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &length);
   if(_res != OK) {
     return _res;
   }
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read
 
   // Simple Field (address)
   uint8_t address = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &address);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &address);
   if(_res != OK) {
     return _res;
   }

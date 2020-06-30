@@ -37,7 +37,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Const Field (protocolId)
   uint8_t protocolId = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &protocolId);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &protocolId);
   if(_res != OK) {
     return _res;
   }
@@ -49,7 +49,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint8_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, _reserved);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) _reserved);
     if(_res != OK) {
       return _res;
     }
@@ -60,7 +60,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t len = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &len);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &len);
   if(_res != OK) {
     return _res;
   }

@@ -36,8 +36,8 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
   }
 
   // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = NULL;
-  _res = plc4c_spi_read_byte(buf, 8, &returnCode);
+  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null;
+  _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &returnCode);
   if(_res != OK) {
     return _res;
   }

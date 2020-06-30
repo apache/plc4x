@@ -37,7 +37,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
 
   // Const Field (modbusTcpDefaultPort)
   uint16_t modbusTcpDefaultPort = 0;
-  _res = plc4c_spi_read_unsigned_int(buf, 16, &modbusTcpDefaultPort);
+  _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &modbusTcpDefaultPort);
   if(_res != OK) {
     return _res;
   }

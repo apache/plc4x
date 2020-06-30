@@ -55,6 +55,9 @@ enum plc4c_s7_read_write_transport_size {
 };
 typedef enum plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_null;
+
 
 bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_write_transport_size value) {
   switch(value) {

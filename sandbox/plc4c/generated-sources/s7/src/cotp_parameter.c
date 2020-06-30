@@ -58,14 +58,14 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
 
   // Discriminator Field (parameterType) (Used as input to a switch field)
   uint8_t parameterType = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &parameterType);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &parameterType);
   if(_res != OK) {
     return _res;
   }
 
   // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t parameterLength = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 8, &parameterLength);
+  _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &parameterLength);
   if(_res != OK) {
     return _res;
   }
@@ -75,8 +75,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Enum field (tpduSize)
-    plc4c_s7_read_write_cotp_tpdu_size tpduSize = NULL;
-    _res = plc4c_spi_read_byte(buf, 8, &tpduSize);
+    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size_null;
+    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &tpduSize);
     if(_res != OK) {
       return _res;
     }
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
                     
     // Simple Field (tsapId)
     uint16_t tsapId = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &tsapId);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &tsapId);
     if(_res != OK) {
       return _res;
     }
@@ -100,7 +100,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
                     
     // Simple Field (tsapId)
     uint16_t tsapId = 0;
-    _res = plc4c_spi_read_unsigned_int(buf, 16, &tsapId);
+    _res = plc4c_spi_read_unsigned_int(buf, 16, (uint32_t*) &tsapId);
     if(_res != OK) {
       return _res;
     }
@@ -112,7 +112,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
                     
     // Simple Field (crc)
     uint8_t crc = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 8, &crc);
+    _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &crc);
     if(_res != OK) {
       return _res;
     }
@@ -134,7 +134,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
         
                   
         uint8_t _value = 0;
-        _res = plc4c_spi_read_unsigned_short(buf, 8, &_value);
+        _res = plc4c_spi_read_unsigned_short(buf, 8, (uint16_t*) &_value);
         if(_res != OK) {
           return _res;
         }

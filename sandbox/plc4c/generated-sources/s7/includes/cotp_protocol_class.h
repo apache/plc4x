@@ -34,6 +34,9 @@ enum plc4c_s7_read_write_cotp_protocol_class {
 };
 typedef enum plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class;
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_null;
+
 
 #ifdef __cplusplus
 }
