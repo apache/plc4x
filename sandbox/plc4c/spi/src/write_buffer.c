@@ -63,24 +63,24 @@ plc4c_return_code plc4c_spi_write_unsigned_long(plc4c_spi_write_buffer* buf, uin
 
 // Signed Integers ...
 
-plc4c_return_code plc4c_spi_write_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, int8_t value) {
+plc4c_return_code plc4c_spi_write_signed_byte(plc4c_spi_write_buffer* buf, uint8_t num_bits, int8_t value) {
   return OK;
 }
 
-plc4c_return_code plc4c_spi_write_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, int16_t value) {
+plc4c_return_code plc4c_spi_write_signed_short(plc4c_spi_write_buffer* buf, uint8_t num_bits, int16_t value) {
   return OK;
 }
 
-plc4c_return_code plc4c_spi_write_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, int32_t value) {
+plc4c_return_code plc4c_spi_write_signed_int(plc4c_spi_write_buffer* buf, uint8_t num_bits, int32_t value) {
   return OK;
 }
 
-plc4c_return_code plc4c_spi_write_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, int64_t value) {
+plc4c_return_code plc4c_spi_write_signed_long(plc4c_spi_write_buffer* buf, uint8_t num_bits, int64_t value) {
   return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
-/*plc4c_return_code plc4c_spi_write_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, int128_t) {
+/*plc4c_return_code plc4c_spi_write_signed_big_integer(plc4c_spi_write_buffer* buf, uint8_t num_bits, int128_t) {
  * } */
 
 // Floating Point Numbers ...

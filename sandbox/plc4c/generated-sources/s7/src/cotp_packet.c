@@ -120,7 +120,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
-    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -152,7 +152,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
-    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -184,7 +184,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
-    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -321,7 +321,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_byte(buf, 8, _message->cotp_packet_connection_request_protocol_class);
+      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_connection_request_protocol_class);
       if(_res != OK) {
         return _res;
       }
@@ -343,7 +343,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_byte(buf, 8, _message->cotp_packet_connection_response_protocol_class);
+      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_connection_response_protocol_class);
       if(_res != OK) {
         return _res;
       }
@@ -365,7 +365,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_byte(buf, 8, _message->cotp_packet_disconnect_request_protocol_class);
+      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_disconnect_request_protocol_class);
       if(_res != OK) {
         return _res;
       }

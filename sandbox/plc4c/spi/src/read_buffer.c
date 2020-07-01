@@ -143,6 +143,9 @@ plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8
   if(buf->curPosByte >= (buf->length - 1)) {
     return OUT_OF_RANGE;
   }
+  if(buf == NULL) {
+    return NULL_VALUE;
+  }
   // If the bit-offset is currently 0 and we're reading
   // a full byte, go this shortcut.
   if((buf->curPosBit == 0) && (num_bits == 8)){
@@ -151,7 +154,7 @@ plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8
     return OK;
   }
   // in this case the current byte alone is enough to service this request.
-  else if((8 - buf->curPosBit) >= num_bits) {
+  else if((((unsigned int )8) - buf->curPosBit) >= num_bits) {
     *value = plc4c_spi_read_unsigned_byte_internal(plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0), num_bits, buf->curPosBit);
     if(buf->curPosBit + num_bits == 8) {
       buf->curPosByte++;
@@ -212,24 +215,24 @@ plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf, uint8
 
 // Signed Integers ...
 
-plc4c_return_code plc4c_spi_read_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, int8_t* value) {
+plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, int8_t* value) {
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*) value);
+}
+
+plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, int16_t* value) {
   return OK;
 }
 
-plc4c_return_code plc4c_spi_read_short(plc4c_spi_read_buffer* buf, uint8_t num_bits, int16_t* value) {
+plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, int32_t* value) {
   return OK;
 }
 
-plc4c_return_code plc4c_spi_read_int(plc4c_spi_read_buffer* buf, uint8_t num_bits, int32_t* value) {
-  return OK;
-}
-
-plc4c_return_code plc4c_spi_read_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, int64_t* value) {
+plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf, uint8_t num_bits, int64_t* value) {
   return OK;
 }
 
 // TODO: Not sure which type to use in this case ...
-/*int128_t plc4c_spi_read_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits);
+/*int128_t plc4c_spi_read_signed_big_integer(plc4c_spi_read_buffer* buf, uint8_t num_bits);
  * return OK;
  * }*/
 

@@ -191,7 +191,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -247,7 +247,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -345,7 +345,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -423,7 +423,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -479,7 +479,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -577,7 +577,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -673,7 +673,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -707,7 +707,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -1062,7 +1062,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -1099,7 +1099,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
         
                   
         int8_t _value = 0;
-        _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &_value);
+        _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &_value);
         if(_res != OK) {
           return _res;
         }
@@ -1170,7 +1170,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_discrete_inputs_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1206,7 +1206,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_coils_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1270,7 +1270,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_coils_request_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1322,7 +1322,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_input_registers_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1358,7 +1358,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_holding_registers_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1422,7 +1422,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_write_multiple_holding_registers_request_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1482,7 +1482,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_request_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1502,7 +1502,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_read_write_multiple_holding_registers_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1746,7 +1746,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_get_com_event_log_response_events, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 
@@ -1770,7 +1770,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
         for(int curItem = 0; curItem < itemCount; curItem++) {
 
           int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->modbus_pdu_report_server_id_response_value, curItem);
-          plc4c_spi_write_byte(buf, 8, *_value);
+          plc4c_spi_write_signed_byte(buf, 8, *_value);
         }
       }
 

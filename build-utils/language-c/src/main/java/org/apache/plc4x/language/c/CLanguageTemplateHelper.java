@@ -368,16 +368,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_read_byte(buf, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_byte(buf, " + integerTypeReference.getSizeInBits() + ", (int8_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_read_short(buf, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_short(buf, " + integerTypeReference.getSizeInBits() + ", (int16_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_read_int(buf, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_int(buf, " + integerTypeReference.getSizeInBits() + ", (int32_t*) " + valueString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_read_long(buf, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
+                    return "plc4c_spi_read_signed_long(buf, " + integerTypeReference.getSizeInBits() + ", (int64_t*) " + valueString + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:
@@ -420,16 +420,16 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "plc4c_spi_write_byte(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_byte(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "plc4c_spi_write_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_short(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "plc4c_spi_write_int(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_int(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "plc4c_spi_write_long(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                    return "plc4c_spi_write_signed_long(buf, " + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 throw new FreemarkerException("Unsupported signed integer type with " + integerTypeReference.getSizeInBits() + " bits");
             case FLOAT:

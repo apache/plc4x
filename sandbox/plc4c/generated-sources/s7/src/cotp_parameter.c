@@ -76,7 +76,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
                     
     // Enum field (tpduSize)
     plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size_null;
-    _res = plc4c_spi_read_byte(buf, 8, (int8_t*) &tpduSize);
+    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &tpduSize);
     if(_res != OK) {
       return _res;
     }
@@ -165,7 +165,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_serialize(plc4c_spi_write_b
     case plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size: {
 
       // Enum field (tpduSize)
-      _res = plc4c_spi_write_byte(buf, 8, _message->cotp_parameter_tpdu_size_tpdu_size);
+      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_parameter_tpdu_size_tpdu_size);
       if(_res != OK) {
         return _res;
       }
