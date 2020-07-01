@@ -285,10 +285,13 @@ void test_plc4c_spi_read_unsigned_byte(void) {
   test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 11);
   // Read part of a byte (finishes one byte)
   test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 10);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 7);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 5);
   // Read part of a byte (spans two bytes)
   read_buffer2->curPosByte = 0;
   read_buffer2->curPosBit = 5;
   test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 6, OK, 19);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 10);
   // Read more than a byte (results in error)
   read_buffer2->curPosByte = 0;
   read_buffer2->curPosBit = 5;
