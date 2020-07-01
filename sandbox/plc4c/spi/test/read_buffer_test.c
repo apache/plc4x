@@ -50,7 +50,7 @@ void test_plc4c_spi_read_buffer_create(void) {
   test_plc4c_spi_read_buffer_create_args(&data[0], 8, OK);
 }
 
-void test_plc4c_spi_read_buffer_get_total_bytes_args(
+void test_plc4c_spi_read_get_total_bytes_args(
     plc4c_spi_read_buffer* read_buffer, uint16_t expected_length) {
   printf("Running read_buffer get_total_bytes test. Expecting %d length",
          expected_length);
@@ -61,19 +61,19 @@ void test_plc4c_spi_read_buffer_get_total_bytes_args(
   printf(" -> OK\n");
 }
 
-void test_plc4c_spi_read_buffer_get_total_bytes(void) {
+void test_plc4c_spi_read_get_total_bytes(void) {
   // Prepare input data
   uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
   // Run test
-  test_plc4c_spi_read_buffer_get_total_bytes_args(read_buffer, 8);
+  test_plc4c_spi_read_get_total_bytes_args(read_buffer, 8);
 }
 
-void test_plc4c_spi_read_buffer_has_more_args(
-    plc4c_spi_read_buffer* read_buffer, uint16_t num_bytes,
-    bool expected_result) {
+void test_plc4c_spi_read_has_more_args(plc4c_spi_read_buffer* read_buffer,
+                                       uint16_t num_bytes,
+                                       bool expected_result) {
   printf(
       "Running read_buffer has_more test. Checking if %d bytes are available",
       num_bytes);
@@ -84,29 +84,30 @@ void test_plc4c_spi_read_buffer_has_more_args(
   printf(" -> OK\n");
 }
 
-void test_plc4c_spi_read_buffer_has_more(void) {
+void test_plc4c_spi_read_has_more(void) {
   // Prepare input data
   uint8_t data[] = {1, 2, 3, 4};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 4, &read_buffer);
 
   // Run test
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 0, true);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 1, true);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 4, true);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 14, true);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 31, true);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 32, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 0, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 1, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 4, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 14, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 31, true);
+  test_plc4c_spi_read_has_more_args(read_buffer, 32, true);
 
   // 4 bytes are 32 bits, so these should fail.
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 33, false);
-  test_plc4c_spi_read_buffer_has_more_args(read_buffer, 50, false);
+  test_plc4c_spi_read_has_more_args(read_buffer, 33, false);
+  test_plc4c_spi_read_has_more_args(read_buffer, 50, false);
 }
 
-void test_plc4c_spi_read_buffer_get_bytes_args(
-    plc4c_spi_read_buffer* read_buffer, uint16_t start_byte, uint16_t end_byte,
-    plc4c_return_code expected_return_code, const uint8_t* expected_bytes,
-    uint8_t expected_bytes_length) {
+void test_plc4c_spi_read_get_bytes_args(plc4c_spi_read_buffer* read_buffer,
+                                        uint16_t start_byte, uint16_t end_byte,
+                                        plc4c_return_code expected_return_code,
+                                        const uint8_t* expected_bytes,
+                                        uint8_t expected_bytes_length) {
   printf(
       "Running read_buffer get_bytes test. Checking if reading from %d to %d "
       "bytes gives the correct response",
@@ -131,7 +132,7 @@ void test_plc4c_spi_read_buffer_get_bytes_args(
   printf(" -> OK\n");
 }
 
-void test_plc4c_spi_read_buffer_get_bytes(void) {
+void test_plc4c_spi_read_get_bytes(void) {
   // Prepare input data
   uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
   plc4c_spi_read_buffer* read_buffer;
@@ -139,34 +140,29 @@ void test_plc4c_spi_read_buffer_get_bytes(void) {
 
   // Run test
   uint8_t result_data1[] = {1};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 0, 0, OK, result_data1,
-                                            1);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 0, 0, OK, result_data1, 1);
   uint8_t result_data2[] = {2};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 1, 1, OK, result_data2,
-                                            1);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 1, 1, OK, result_data2, 1);
   uint8_t result_data3[] = {2, 3};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 1, 2, OK, result_data3,
-                                            2);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 1, 2, OK, result_data3, 2);
   uint8_t result_data4[] = {4, 5, 6};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 3, 5, OK, result_data4,
-                                            3);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 3, 5, OK, result_data4, 3);
   uint8_t result_data5[] = {4, 5, 6, 7};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 3, 6, OK, result_data5,
-                                            4);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 3, 6, OK, result_data5, 4);
 
   // These should fail for various reasons ...
   uint8_t result_data6[] = {};
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 0, 10, OUT_OF_RANGE,
-                                            result_data6, 0);
-  test_plc4c_spi_read_buffer_get_bytes_args(read_buffer, 6, 3, INVALID_ARGUMENT,
-                                            result_data6, 0);
-  test_plc4c_spi_read_buffer_get_bytes_args(NULL, 0, 0, NULL_VALUE,
-                                            result_data6, 0);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 0, 10, OUT_OF_RANGE,
+                                     result_data6, 0);
+  test_plc4c_spi_read_get_bytes_args(read_buffer, 6, 3, INVALID_ARGUMENT,
+                                     result_data6, 0);
+  test_plc4c_spi_read_get_bytes_args(NULL, 0, 0, NULL_VALUE, result_data6, 0);
 }
 
-void test_plc4c_spi_read_buffer_peek_byte_args(
-    plc4c_spi_read_buffer* read_buffer, uint16_t peek_byte,
-    plc4c_return_code expected_return_code, uint8_t expected_value) {
+void test_plc4c_spi_read_peek_byte_args(plc4c_spi_read_buffer* read_buffer,
+                                        uint16_t peek_byte,
+                                        plc4c_return_code expected_return_code,
+                                        uint8_t expected_value) {
   printf(
       "Running read_buffer peek_byte test. Checking if peeking byte number %d "
       "gives the correct response",
@@ -182,27 +178,27 @@ void test_plc4c_spi_read_buffer_peek_byte_args(
   printf(" -> OK\n");
 }
 
-void test_plc4c_spi_read_buffer_peek_byte(void) {
+void test_plc4c_spi_read_peek_byte(void) {
   // Prepare input data
   uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
   // Run test
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 0, OK, 1);
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 4, OK, 5);
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 4, OK, 5);
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 6, OK, 7);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 0, OK, 1);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 4, OK, 5);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 4, OK, 5);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 6, OK, 7);
   // Bump the cur buffer position.
   read_buffer->curPosByte = 2;
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 2, OK, 5);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 2, OK, 5);
 
   // These should fail
-  test_plc4c_spi_read_buffer_peek_byte_args(read_buffer, 8, OUT_OF_RANGE, 0);
+  test_plc4c_spi_read_peek_byte_args(read_buffer, 8, OUT_OF_RANGE, 0);
 }
 
-void test_plc4c_spi_read_buffer_read_bit_args(
-    plc4c_spi_read_buffer* read_buffer, bool expected_value) {
+void test_plc4c_spi_read_read_bit_args(plc4c_spi_read_buffer* read_buffer,
+                                       bool expected_value) {
   printf(
       "Running read_buffer peek_byte test. Checking if reading a bit gives the "
       "correct response");
@@ -216,44 +212,95 @@ void test_plc4c_spi_read_buffer_read_bit_args(
   printf(" -> OK\n");
 }
 
-void test_plc4c_spi_read_buffer_read_bit(void) {
+void test_plc4c_spi_read_read_bit(void) {
   // Prepare input data
   uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
   // Run test
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, true);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, true);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, false);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, true);
-  test_plc4c_spi_read_buffer_read_bit_args(read_buffer, true);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, true);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, true);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, false);
+  test_plc4c_spi_read_read_bit_args(read_buffer, true);
+  test_plc4c_spi_read_read_bit_args(read_buffer, true);
+}
+
+void test_plc4c_spi_read_unsigned_byte_args(
+    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+    plc4c_return_code expected_return_code, uint8_t expected_value) {
+  printf("Running read_buffer read_unsigned_byte test.");
+
+  uint8_t value = 0;
+  plc4c_return_code result =
+      plc4c_spi_read_unsigned_byte(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_unsigned_byte(void) {
+  // Prepare input data
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  // Run test
+  // Read all the full bytes
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 1);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 2);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 3);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 4);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 5);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 6);
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OK, 7);
+  // Read a 9th byte (buffer only has 8) (results in error)
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer, 8, OUT_OF_RANGE, 0);
+  plc4c_spi_read_buffer_destroy(read_buffer);
+
+  uint8_t data2[] = {186, 117};
+  plc4c_spi_read_buffer* read_buffer2;
+  plc4c_spi_read_buffer_create(data2, 2, &read_buffer2);
+  // Read part of a byte (fits in one byte)
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 11);
+  // Read part of a byte (finishes one byte)
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 4, OK, 10);
+  // Read part of a byte (spans two bytes)
+  read_buffer2->curPosByte = 0;
+  read_buffer2->curPosBit = 5;
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 6, OK, 19);
+  // Read more than a byte (results in error)
+  read_buffer2->curPosByte = 0;
+  read_buffer2->curPosBit = 5;
+  test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 10, OUT_OF_RANGE, 0);
 }
 
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
-  test_plc4c_spi_read_buffer_get_total_bytes();
-  test_plc4c_spi_read_buffer_has_more();
-  test_plc4c_spi_read_buffer_get_bytes();
-  test_plc4c_spi_read_buffer_peek_byte();
-  test_plc4c_spi_read_buffer_read_bit();
+  test_plc4c_spi_read_get_total_bytes();
+  test_plc4c_spi_read_has_more();
+  test_plc4c_spi_read_get_bytes();
+  test_plc4c_spi_read_peek_byte();
+  test_plc4c_spi_read_read_bit();
+  test_plc4c_spi_read_unsigned_byte();
 }

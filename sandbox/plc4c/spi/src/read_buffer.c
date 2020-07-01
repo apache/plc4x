@@ -21,6 +21,33 @@
 #include <string.h>
 
 uint8_t bit_mask[9] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
+// This matrix contains constants for reading X bits starting with bit Y.
+static const uint8_t bit_matrix[8][8] = {
+    // Reading 1 bit
+    {128, 64, 32, 16, 8, 4, 2, 1},
+    // Reading 2 bits
+    {192, 96, 48, 24, 12, 6, 3, 0},
+    // Reading 3 bits
+    {224, 112, 56, 28, 14, 7, 0, 0},
+    // Reading 4 bits
+    {240, 120, 60, 30, 15, 0, 0, 0},
+    // Reading 5 bits
+    {248, 124, 62, 31, 0, 0, 0, 0},
+    // Reading 6 bits
+    {252, 126, 63, 0, 0, 0, 0, 0},
+    // Reading 7 bits
+    {254, 127, 0, 0, 0, 0, 0, 0},
+    // Reading 8 bits
+    {255, 0, 0, 0, 0, 0, 0, 0}
+};
+uint8_t plc4c_spi_read_unsigned_byte_internal(uint8_t data, uint8_t num_bits, uint8_t from_bit) {
+  return (data & bit_matrix[num_bits - 1][from_bit]) >> (((unsigned int) 8) - (from_bit + num_bits));
+}
+uint8_t plc4c_spi_read_unsigned_byte_get_byte_internal(plc4c_spi_read_buffer* buf, uint8_t offset) {
+  uint8_t value = 0;
+  plc4c_spi_read_peek_byte(buf, offset, &value);
+  return value;
+}
 
 plc4c_return_code plc4c_spi_read_buffer_create(uint8_t* data, uint16_t length, plc4c_spi_read_buffer** buffer) {
   *buffer = malloc(sizeof(plc4c_spi_read_buffer));
@@ -85,7 +112,7 @@ plc4c_return_code plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf, uint16_t 
   if(buf->curPosByte + offset_in_bytes > buf->length) {
     return OUT_OF_RANGE;
   }
-  *value = (*buf->data) + (buf->curPosByte + offset_in_bytes);
+  *value = *(buf->data + (buf->curPosByte + offset_in_bytes));
   return OK;
 }
 
@@ -109,19 +136,47 @@ plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value) {
 // Unsigned Integers ...
 
 plc4c_return_code plc4c_spi_read_unsigned_byte(plc4c_spi_read_buffer* buf, uint8_t num_bits, uint8_t* value) {
-  // If the bit-offset is currently 0, then we simply read a byte ...
-  if(buf->curPosBit == 0) {
-    uint8_t cur_byte = (*buf->data) + buf->curPosByte;
+  // If more than 8 bits are requested, return an error.
+  if(num_bits > 8) {
+    return OUT_OF_RANGE;
+  }
+  if(buf->curPosByte >= (buf->length - 1)) {
+    return OUT_OF_RANGE;
+  }
+  // If the bit-offset is currently 0 and we're reading
+  // a full byte, go this shortcut.
+  if((buf->curPosBit == 0) && (num_bits == 8)){
+    *value = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
     buf->curPosByte++;
-    return cur_byte;
-  } else {
-    uint8_t cur_byte = (*buf->data) + buf->curPosByte;
-    cur_byte = cur_byte << buf->curPosBit;
-    uint8_t next_byte = (*buf->data) + (buf->curPosByte + 1);
-    next_byte = next_byte >> buf->curPosBit;
-    uint8_t virtual_byte = cur_byte | next_byte;
-    buf->curPosByte++;
-    return virtual_byte;
+    return OK;
+  }
+  // in this case the current byte alone is enough to service this request.
+  else if((8 - buf->curPosBit) >= num_bits) {
+    *value = plc4c_spi_read_unsigned_byte_internal(plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0), num_bits, buf->curPosBit);
+    if(buf->curPosBit + num_bits == 8) {
+      buf->curPosByte++;
+      buf->curPosBit = 0;
+    } else {
+      buf->curPosBit += num_bits;
+    }
+    return OK;
+  }
+  // In this case we also need the following byte.
+  else {
+    // Read the remaining bits of the first byte
+    uint8_t cur_byte = plc4c_spi_read_unsigned_byte_internal(plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0), 8 - buf->curPosBit, buf->curPosBit);
+    // Shift the result left by the amount of bits in the second byte
+    uint8_t num_bits_remaining = num_bits - (8 - buf->curPosBit);
+    cur_byte = cur_byte << num_bits_remaining;
+    // Read the remaining bits from the second byte
+    uint8_t next_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 1);
+    next_byte = plc4c_spi_read_unsigned_byte_internal(next_byte, num_bits_remaining, 0);;
+    // Bring the two parts together to assemble the resulting value
+    *value = cur_byte | next_byte;
+    // Update the buffer position
+    buf->curPosByte = buf->curPosByte + ((buf->curPosBit + num_bits) / 8);
+    buf->curPosBit = (buf->curPosBit + num_bits) % 8;
+    return OK;
   }
 }
 
