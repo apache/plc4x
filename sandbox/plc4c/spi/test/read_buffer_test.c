@@ -134,7 +134,7 @@ void test_plc4c_spi_read_get_bytes_args(plc4c_spi_read_buffer* read_buffer,
 
 void test_plc4c_spi_read_get_bytes(void) {
   // Prepare input data
-  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
@@ -180,7 +180,7 @@ void test_plc4c_spi_read_peek_byte_args(plc4c_spi_read_buffer* read_buffer,
 
 void test_plc4c_spi_read_peek_byte(void) {
   // Prepare input data
-  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
@@ -214,7 +214,7 @@ void test_plc4c_spi_read_read_bit_args(plc4c_spi_read_buffer* read_buffer,
 
 void test_plc4c_spi_read_read_bit(void) {
   // Prepare input data
-  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
 
@@ -262,7 +262,7 @@ void test_plc4c_spi_read_unsigned_byte_args(
 
 void test_plc4c_spi_read_unsigned_byte(void) {
   // Prepare input data
-  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7};
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
   plc4c_spi_read_buffer* read_buffer;
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
   // Run test
@@ -298,6 +298,100 @@ void test_plc4c_spi_read_unsigned_byte(void) {
   test_plc4c_spi_read_unsigned_byte_args(read_buffer2, 10, OUT_OF_RANGE, 0);
 }
 
+void test_plc4c_spi_read_unsigned_short_args(
+    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+    plc4c_return_code expected_return_code, uint16_t expected_value) {
+  printf("Running read_buffer read_unsigned_short test.");
+
+  uint16_t value = 0;
+  plc4c_return_code result =
+      plc4c_spi_read_unsigned_short(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_unsigned_short(void) {
+  // Prepare input data
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  // Run test
+  // Read all the full short
+  test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+  test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 772);
+  test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 1286);
+  test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 1800);
+
+  // TODO: Add more tests
+  //read_buffer->curPosByte = 0;
+  //read_buffer->curPosBit = 3;
+  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+}
+
+void test_plc4c_spi_read_unsigned_int_args(
+    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+    plc4c_return_code expected_return_code, uint32_t expected_value) {
+  printf("Running read_buffer read_unsigned_int test.");
+
+  uint32_t value = 0;
+  plc4c_return_code result =
+      plc4c_spi_read_unsigned_int(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_unsigned_int(void) {
+  // Prepare input data
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  // Run test
+  // Read all the full short
+  test_plc4c_spi_read_unsigned_int_args(read_buffer, 32, OK, 16909060);
+  test_plc4c_spi_read_unsigned_int_args(read_buffer, 32, OK, 84281096);
+
+  // TODO: Add more tests
+  //read_buffer->curPosByte = 0;
+  //read_buffer->curPosBit = 3;
+  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+}
+
+void test_plc4c_spi_read_unsigned_long_args(
+    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+    plc4c_return_code expected_return_code, uint64_t expected_value) {
+  printf("Running read_buffer read_unsigned_long test.");
+
+  uint64_t value = 0;
+  plc4c_return_code result =
+      plc4c_spi_read_unsigned_long(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_unsigned_long(void) {
+  // Prepare input data
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  // Run test
+  // Read all the full long
+  test_plc4c_spi_read_unsigned_long_args(read_buffer, 64, OK, 72623859790382856);
+
+  // TODO: Add more tests
+  //read_buffer->curPosByte = 0;
+  //read_buffer->curPosBit = 3;
+  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+}
+
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
   test_plc4c_spi_read_get_total_bytes();
@@ -306,4 +400,7 @@ void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_peek_byte();
   test_plc4c_spi_read_read_bit();
   test_plc4c_spi_read_unsigned_byte();
+  test_plc4c_spi_read_unsigned_short();
+  test_plc4c_spi_read_unsigned_int();
+  test_plc4c_spi_read_unsigned_long();
 }
