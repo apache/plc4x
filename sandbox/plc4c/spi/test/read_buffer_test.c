@@ -325,10 +325,9 @@ void test_plc4c_spi_read_unsigned_short(void) {
   test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 1286);
   test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 1800);
 
-  // TODO: Add more tests
-  //read_buffer->curPosByte = 0;
-  //read_buffer->curPosBit = 3;
-  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_short_args(read_buffer, 14, OK, 516);
 }
 
 void test_plc4c_spi_read_unsigned_int_args(

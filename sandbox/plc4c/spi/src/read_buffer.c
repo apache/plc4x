@@ -20,6 +20,11 @@
 #include <plc4c/spi/read_buffer.h>
 #include <string.h>
 
+// As we're doing some operations where byte-order is important, we need this
+// little helper to find out if we're on a big- or little-endian machine.
+const int i = 1;
+#define plc4c_is_bigendian() (((char)&i) == 0)
+
 uint8_t bit_mask[9] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 // This matrix contains constants for reading X bits starting with bit Y.
 static const uint8_t bit_matrix[8][8] = {
@@ -63,16 +68,20 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     if (buf->curPosByte >= (buf->length - 1)) {
       return OUT_OF_RANGE;
     }
+
     // Find how many full bytes we'll be reading.
     uint8_t num_bytes = num_bits / 8;
+    // If this is little endian, go to the end of the range.
+    if (!plc4c_is_bigendian()) {
+      value = value + (num_bytes - 1);
+    }
     // Read each of these.
-    for(int i = 0; i < num_bytes; i++) {
-      // If we simply fill in the bytes it seems the result is
-      // the wrong way around. So we have to fill the bytes in
-      // inverse order.
-      *(value + ((num_bytes - 1) - i)) = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
+    for (int i = 0; i < num_bytes; i++) {
+      *value = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
       // Move the read-pointer to the next byte.
       buf->curPosByte++;
+      // Move the write-pointer to the next byte.
+      value = plc4c_is_bigendian() ? value + 1 : value - 1;
     }
     return OK;
   }
@@ -83,8 +92,8 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
       return OUT_OF_RANGE;
     }
     *value = plc4c_spi_read_unsigned_byte_internal(
-        plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0),
-        num_bits, buf->curPosBit);
+        plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0), num_bits,
+        buf->curPosBit);
     if (buf->curPosBit + num_bits == 8) {
       buf->curPosByte++;
       buf->curPosBit = 0;
@@ -96,11 +105,16 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
   // In this case we also need more than one following byte.
   else {
+    uint8_t* original_value = value;
     // Find out how many bytes we need to read
-    uint8_t num_bytes = ((buf->curPosBit + num_bits) / 8) +
-                        (((buf->curPosBit + num_bits) % 8 == 0) ? 0 : 1);
+    uint8_t num_bytes = ((buf->curPosBit + num_bits) / 8) -
+                        (((buf->curPosBit + num_bits) % 8 == 0) ? 1 : 0);
     if ((buf->curPosByte + num_bytes) > buf->length) {
       return OUT_OF_RANGE;
+    }
+    // If this is little endian, go to the end of the range.
+    if (!plc4c_is_bigendian()) {
+      value = value + (num_bytes - 1);
     }
     // Find out how many of the bits will be read from the first byte
     // It's actually just the rest of the byte as we checked if it all fits
@@ -114,30 +128,32 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     // All other bytes in-between will just read all 8 bits.
 
     // Read the bits of the first byte
-    uint8_t cur_byte = plc4c_spi_read_unsigned_byte_internal(
+    uint8_t part_first_byte = plc4c_spi_read_unsigned_byte_internal(
         plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0),
         num_bits_first_byte, buf->curPosBit);
     buf->curPosByte++;
     // Shift the result left by the amount of bits in the last byte
-    *value = cur_byte << num_bits_last_byte;
+    *value = part_first_byte << num_bits_last_byte;
 
     // For each of the following bytes.
-    for (int i = 1; i < num_bytes; i++) {
+    for (int i = 0; i < num_bytes; i++) {
       // Get the next full byte.
-      cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
-      // Add the first part of the next byte to the end of the last one.
-      *value = *value | plc4c_spi_read_unsigned_byte_internal(
-                            cur_byte, num_bits_last_byte, 0);
+      uint8_t cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
+      // Get the rest of the bits that belong to the previous byte.
+      uint8_t rest_previous_byte = plc4c_spi_read_unsigned_byte_internal(
+          cur_byte, num_bits_last_byte, 0);
+      // Add that to the end of the last one
+      *value = *value | rest_previous_byte;
+      // If this is not the last byte ... continue
       if (i < (num_bits / 8)) {
-        buf->curPosByte++;
-        // Move to the next byte.
-        value++;
+        // Set value to the next address.
+        value = plc4c_is_bigendian() ? value + 1 : value - 1;
         // Initialize the first part of the following byte with the rest of the
         // next byte.
-        *(value + i) =
-            plc4c_spi_read_unsigned_byte_internal(
-                cur_byte, (8 - num_bits_last_byte), num_bits_last_byte)
-            << num_bits_last_byte;
+        *value = plc4c_spi_read_unsigned_byte_internal(
+                     cur_byte, (8 - num_bits_last_byte), num_bits_last_byte)
+                 << num_bits_last_byte;
+        buf->curPosByte++;
       }
     }
 
@@ -258,10 +274,11 @@ plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Get the bits.
-  plc4c_return_code res = plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
+  plc4c_return_code res =
+      plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if(res == OK) {
-    if(num_bits <= 8) {
+  if (res == OK) {
+    if (num_bits <= 8) {
       *value = *value >> 8;
     }
   }
@@ -276,14 +293,15 @@ plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Get the bits.
-  plc4c_return_code res = plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
+  plc4c_return_code res =
+      plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if(res == OK) {
-    if(num_bits <= 8) {
+  if (res == OK) {
+    if (num_bits <= 8) {
       *value = *value >> 24;
-    } else if(num_bits <= 16) {
+    } else if (num_bits <= 16) {
       *value = *value >> 16;
-    } else if(num_bits <= 24) {
+    } else if (num_bits <= 24) {
       *value = *value >> 8;
     }
   }
@@ -298,22 +316,23 @@ plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf,
     return OUT_OF_RANGE;
   }
   // Get the bits.
-  plc4c_return_code res = plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
+  plc4c_return_code res =
+      plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if(res == OK) {
-    if(num_bits <= 8) {
+  if (res == OK) {
+    if (num_bits <= 8) {
       *value = *value >> 56;
-    } else if(num_bits <= 16) {
+    } else if (num_bits <= 16) {
       *value = *value >> 48;
-    } else if(num_bits <= 24) {
+    } else if (num_bits <= 24) {
       *value = *value >> 40;
-    } else if(num_bits <= 32) {
+    } else if (num_bits <= 32) {
       *value = *value >> 32;
-    } else if(num_bits <= 40) {
+    } else if (num_bits <= 40) {
       *value = *value >> 24;
-    } else if(num_bits <= 48) {
+    } else if (num_bits <= 48) {
       *value = *value >> 16;
-    } else if(num_bits <= 56) {
+    } else if (num_bits <= 56) {
       *value = *value >> 8;
     }
   }
@@ -329,23 +348,23 @@ uint8_t num_bits) { return OK;
 
 plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int8_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*) value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*)value);
 }
 
 plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf,
                                               uint8_t num_bits,
                                               int16_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint16_t*) value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint16_t*)value);
 }
 
 plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf,
                                             uint8_t num_bits, int32_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint32_t*) value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint32_t*)value);
 }
 
 plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int64_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint64_t*) value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint64_t*)value);
 }
 
 // TODO: Not sure which type to use in this case ...
