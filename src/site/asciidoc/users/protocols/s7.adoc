@@ -46,8 +46,8 @@
 
 |Compatible Transports:
 2+| - `tcp` (Default Port: 102)
-- `raw-socket`
-- `pcap-replay`
+//- `raw-socket`
+//- `pcap-replay`
 
 3+|Supported Operations
 
@@ -59,10 +59,10 @@
 | `write`
 | Only supported with `tcp` transport.
 
-|
-| `subscribe`
-| Generally supported with `tcp` transport with S7 devices of types: `S7 300`, `S7 400`, `S7 1500` (active and passive).
-With `raw-socket` and `pcap-replay` supported on all devices (passive).
+//|
+//| `subscribe`
+//| Generally supported with `tcp` transport with S7 devices of types: `S7 300`, `S7 400`, `S7 1500` (active and passive).
+//With `raw-socket` and `pcap-replay` supported on all devices (passive).
 
 3+|Options
 
