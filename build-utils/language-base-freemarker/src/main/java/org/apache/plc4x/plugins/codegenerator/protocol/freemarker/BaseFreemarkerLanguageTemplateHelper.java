@@ -713,4 +713,45 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         throw new RuntimeException("Only complex type references supported here.");
     }
 
+    /**
+     * Filters out the arguments that are user for serializiation.
+     *
+     * @param arguments list of all arguments.
+     * @return list of arguments that are used during serialization.
+     */
+    public List<Argument> getSerializerArguments(Argument[] arguments) {
+        List<Argument> serializerArguments = new LinkedList<>();
+        if(arguments != null) {
+            for (Argument argument : arguments) {
+                if ("lastItem".equals(argument.getName())) {
+                    serializerArguments.add(argument);
+                }
+            }
+        }
+        return serializerArguments;
+    }
+
+    public List<Term> getSerializerTerms(Term[] terms) {
+        List<Term> serializerTerms = new LinkedList<>();
+        if(terms != null) {
+            for (Term term : terms) {
+                if (term.contains("lastItem")) {
+                    serializerTerms.add(term);
+                }
+            }
+        }
+        return serializerTerms;
+    }
+
+    public boolean hasLastItemTerm(Term[] terms) {
+        if(terms != null) {
+            for (Term term : terms) {
+                if (term.contains("lastItem")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

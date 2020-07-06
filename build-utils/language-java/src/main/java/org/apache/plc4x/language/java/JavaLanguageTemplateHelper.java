@@ -787,39 +787,4 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return valueString;
     }
 
-    public List<Argument> getSerializerArguments(Argument[] arguments) {
-        List<Argument> serializerArguments = new LinkedList<>();
-        if(arguments != null) {
-            for (Argument argument : arguments) {
-                if ("lastItem".equals(argument.getName())) {
-                    serializerArguments.add(argument);
-                }
-            }
-        }
-        return serializerArguments;
-    }
-
-    public boolean hasLastItemTerm(Term[] terms) {
-        if(terms != null) {
-            for (Term term : terms) {
-                if (term.contains("lastItem")) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public List<Term> getSerializerTerms(Term[] terms) {
-        List<Term> serializerTerms = new LinkedList<>();
-        if(terms != null) {
-            for (Term term : terms) {
-                if (term.contains("lastItem")) {
-                    serializerTerms.add(term);
-                }
-            }
-        }
-        return serializerTerms;
-    }
-
 }
