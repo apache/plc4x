@@ -105,55 +105,81 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
   // In this case we also need more than one following byte.
   else {
+    // TODO: For debugging ...
     uint8_t* original_value = value;
-    // Find out how many bytes we need to read
-    uint8_t num_bytes = ((buf->curPosBit + num_bits) / 8) -
-                        (((buf->curPosBit + num_bits) % 8 == 0) ? 1 : 0);
-    if ((buf->curPosByte + num_bytes) > buf->length) {
+
+    // Find out how many bytes we need to read.
+    uint8_t num_bytes_to_read = ((buf->curPosBit + num_bits) / 8) + 1;
+    // Find out how many byte we need to write in the output.
+    uint8_t num_bytes_to_write = (num_bits / 8) + ((num_bits % 8 != 0) ? 1 : 0);
+    // Do a quick range check for the input
+    // (for the output, the calling function is responsible)
+    if ((buf->curPosByte + num_bytes_to_read) > buf->length) {
       return OUT_OF_RANGE;
     }
-    // If this is little endian, go to the end of the range.
+
+    // If this is little endian, go to the end of the range as in this
+    // case we have to fill the result from the back to the front.
     if (!plc4c_is_bigendian()) {
-      value = value + (num_bytes - 1);
+      value = value + (num_bytes_to_write - 1);
     }
+
     // Find out how many of the bits will be read from the first byte
     // It's actually just the rest of the byte as we checked if it all fits
     // in one byte in the else-block before.
     uint8_t num_bits_first_byte = 8 - buf->curPosBit;
     // Having read the bits from the first byte, see how many bits will
-    // have to be read in the last byte.
-    // (This will also be the number of bits that everything needs to be
-    // shifted left)
+    // have to be read in the last byte (If we are finishing at a byte border,
+    // the last byte will have 0 bits read).
     uint8_t num_bits_last_byte = (num_bits - num_bits_first_byte) % 8;
-    // All other bytes in-between will just read all 8 bits.
+    // All in-between will obviously have all 8 bits read.
 
     // Read the bits of the first byte
-    uint8_t part_first_byte = plc4c_spi_read_unsigned_byte_internal(
-        plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0),
-        num_bits_first_byte, buf->curPosBit);
-    buf->curPosByte++;
-    // Shift the result left by the amount of bits in the last byte
-    *value = part_first_byte << num_bits_last_byte;
-
+    uint8_t cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
+    uint8_t high_level_part = plc4c_spi_read_unsigned_byte_internal(
+        cur_byte, num_bits_first_byte, buf->curPosBit);
     // For each of the following bytes.
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 1; i < num_bytes_to_read; i++) {
+      // Shift the high level part by the amount of bits in the last byte
+      *value = high_level_part << num_bits_last_byte;
+
+      // We're done with this input byte, move on to the next one.
+      buf->curPosByte++;
+
       // Get the next full byte.
-      uint8_t cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
-      // Get the rest of the bits that belong to the previous byte.
-      uint8_t rest_previous_byte = plc4c_spi_read_unsigned_byte_internal(
-          cur_byte, num_bits_last_byte, 0);
-      // Add that to the end of the last one
-      *value = *value | rest_previous_byte;
-      // If this is not the last byte ... continue
-      if (i < (num_bits / 8)) {
-        // Set value to the next address.
+      cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
+
+      // Add the remaining bits of the current output byte.
+      if (num_bits_last_byte != 0) {
+        // Get the rest of the bits that belong to the previous byte.
+        uint8_t low_level_part = plc4c_spi_read_unsigned_byte_internal(
+            cur_byte, num_bits_last_byte, 0);
+        // Add that to the end of the current output byte.
+        *value = *value | low_level_part;
+
+        // Here, we're finished reading the current output byte, so
+        // move the output pointer to the next byte.
         value = plc4c_is_bigendian() ? value + 1 : value - 1;
-        // Initialize the first part of the following byte with the rest of the
-        // next byte.
-        *value = plc4c_spi_read_unsigned_byte_internal(
-                     cur_byte, (8 - num_bits_last_byte), num_bits_last_byte)
-                 << num_bits_last_byte;
-        buf->curPosByte++;
+
+        // The remaining parts of this byte will become the highest level
+        // part of the next byte.
+        high_level_part = plc4c_spi_read_unsigned_byte_internal(
+            cur_byte, 8 - num_bits_last_byte, num_bits_last_byte);
+      }
+      // If this value happens to end at the end of a byte, there are no
+      // remaining bits, so we can simply pass the current byte along.
+      else {
+        // In this case the last byte would contain 0 bits,
+        // so we just abort here
+        if(i == (num_bytes_to_read - 1)) {
+          break;
+        }
+        // Here, we're finished reading the current output byte, so
+        // move the output pointer to the next byte.
+        value = plc4c_is_bigendian() ? value + 1 : value - 1;
+
+        // Effectively this complete byte will become the next output byte.
+        high_level_part = cur_byte;
       }
     }
 
