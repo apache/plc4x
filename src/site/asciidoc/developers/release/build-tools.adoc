@@ -36,7 +36,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `rel/{current-short-version}`.
+So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `release/{current-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -45,14 +45,14 @@ This can and should be automated by the `maven-release-plugin`.
 Per default the plugin will ask for the working copy version during the build execution.
 This is the version the `develop` branch will be changed to.
 
-   mvn release:branch -DbranchName=rel/code-generation/{minor-version}
+   mvn release:branch -DbranchName=release/code-generation/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{project.version}` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -DbranchName=rel/code-generation/{current-short-version}
+   mvn release:branch -DbranchName=release/code-generation/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -66,7 +66,7 @@ Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `rel/code-generation/{current-short-version}` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `release/code-generation/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
