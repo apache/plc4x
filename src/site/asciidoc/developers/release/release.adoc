@@ -54,7 +54,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Add the version to the DOAP file on `develop`
 * [ ] Update Download site
 * [ ] Update Jira
-* [ ] Merge back release version to `master` branch
+* [ ] Merge back release version to `release` branch
 * [ ] Send announce email
 
 === Preparing your system for being able to release
@@ -477,14 +477,14 @@ Please add the just released version to the top of the versions.
 
 This file is needed for Apache's tooling to automatically keep track of project release activity and we use this internally too to automatically update the documentation to always reference the latest released version automatically.
 
-=== Merge back release version to master branch
+=== Merge back release version to `release` branch
 
-The master branch should always point to the last released version.
+The `release` branch should always point to the last released version.
 This has to be done with git
 
 [subs="verbatim,attributes"]
 ----
-git checkout master
+git checkout release
 git merge release/{current-full-version}
 ----
 

@@ -358,14 +358,14 @@ This will move all artifacts into the Apache release repository and delete the s
 
 All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
 
-=== Merge back release version to master branch
+=== Merge back release version to `release` branch
 
-The master branch should always point to the last released version.
+The `release branch should always point to the last released version.
 This has to be done with git
 
 [subs="verbatim,attributes"]
 ----
-git checkout master
+git checkout release
 git merge release/{current-full-version}
 ----
 
