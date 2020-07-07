@@ -105,7 +105,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
   // In this case we also need more than one following byte.
   else {
-    // TODO: For debugging ...
+    // TODO: For debugging ... (Just that I can see the values in the debugger)
     uint8_t* original_value = value;
 
     // Find out how many bytes we need to read.
@@ -136,6 +136,22 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
     // Read the bits of the first byte
     uint8_t cur_byte = plc4c_spi_read_unsigned_byte_get_byte_internal(buf, 0);
+
+    // In the case that the number of bits read from the first and last
+    // byte are more than 8, we gotta put that excess data into it's own
+    // output byte.
+    if(num_bits_first_byte + num_bits_last_byte > 8) {
+      uint8_t excess_bits = num_bits_first_byte + num_bits_last_byte - 8;
+      *value = plc4c_spi_read_unsigned_byte_internal(
+          cur_byte, excess_bits, buf->curPosBit);
+      // Move on to the next output byte
+      value = plc4c_is_bigendian() ? value + 1 : value - 1;
+      // Update the read-pointer.
+      buf->curPosBit += excess_bits;
+      // Change the number of bits read, as we already read some.
+      num_bits_first_byte = num_bits_first_byte - excess_bits;
+    }
+
     uint8_t high_level_part = plc4c_spi_read_unsigned_byte_internal(
         cur_byte, num_bits_first_byte, buf->curPosBit);
     // For each of the following bytes.
@@ -303,7 +319,7 @@ plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if (res == OK) {
+  if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 8;
     }
@@ -322,7 +338,7 @@ plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if (res == OK) {
+  if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 24;
     } else if (num_bits <= 16) {
@@ -345,7 +361,7 @@ plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if (res == OK) {
+  if ((res == OK) && plc4c_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 56;
     } else if (num_bits <= 16) {

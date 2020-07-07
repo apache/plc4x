@@ -334,6 +334,21 @@ void test_plc4c_spi_read_unsigned_short(void) {
   read_buffer->curPosByte = 0;
   read_buffer->curPosBit = 1;
   test_plc4c_spi_read_unsigned_short_args("Short starting at bit 1 but beading full last byte", read_buffer, 15, OK, 258);
+
+  // Read only fractions of a short
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 0;
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 2 byte", read_buffer, 2, OK, 0);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 4 byte", read_buffer, 4, OK, 0);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 6 byte", read_buffer, 6, OK, 16);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 8 byte", read_buffer, 8, OK, 32);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 10 byte", read_buffer, 10, OK, 193);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 12 byte", read_buffer, 12, OK, 20);
+  test_plc4c_spi_read_unsigned_short_args("Short only reading 14 byte", read_buffer, 14, OK, 1543);
+
+  // We only have 8 bytes, so with this we would exceed the range.
+  test_plc4c_spi_read_unsigned_short_args("Try to read mode bytes than the buffer has available", read_buffer, 16, OUT_OF_RANGE, 0);
+  test_plc4c_spi_read_unsigned_short_args("Try to read too many bytes for a short", read_buffer, 18, OUT_OF_RANGE, 0);
 }
 
 void test_plc4c_spi_read_unsigned_int_args(
