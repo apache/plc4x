@@ -205,6 +205,20 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
   }
 }
 
+bool plc4c_spi_read_buffer_is_negative_internal(uint8_t num_bits, int8_t value) {
+  int8_t tmp_value = value >> (num_bits - 1);
+  return (tmp_value & 1) != 0;
+}
+
+plc4c_return_code plc4c_spi_fill_sign_internal(uint8_t num_bits, int8_t* value) {
+  if(plc4c_spi_read_buffer_is_negative_internal(num_bits, *value)) {
+    // Set all bits above {num_bits} to 1
+    int8_t tmp_value = *value;
+    tmp_value = tmp_value | (255 & bit_matrix[num_bits][0]);
+    *value = tmp_value;
+  }
+}
+
 plc4c_return_code plc4c_spi_read_buffer_create(uint8_t* data, uint16_t length,
                                                plc4c_spi_read_buffer** buffer) {
   *buffer = malloc(sizeof(plc4c_spi_read_buffer));
@@ -390,23 +404,25 @@ uint8_t num_bits) { return OK;
 
 plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int8_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*)value);
+  plc4c_return_code res = plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*) value);
+  plc4c_spi_fill_sign_internal(num_bits, value);
+  return res;
 }
 
 plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf,
                                               uint8_t num_bits,
                                               int16_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint16_t*)value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint16_t*) value);
 }
 
 plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf,
                                             uint8_t num_bits, int32_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint32_t*)value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint32_t*) value);
 }
 
 plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int64_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint64_t*)value);
+  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint64_t*) value);
 }
 
 // TODO: Not sure which type to use in this case ...

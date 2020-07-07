@@ -354,7 +354,7 @@ void test_plc4c_spi_read_unsigned_short(void) {
 void test_plc4c_spi_read_unsigned_int_args(char* message,
     plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
     plc4c_return_code expected_return_code, uint32_t expected_value) {
-  printf("Running read_buffer read_unsigned_int test.");
+  printf("Running read_buffer read_unsigned_int test: %s", message);
 
   uint32_t value = 0;
   plc4c_return_code result =
@@ -409,7 +409,7 @@ void test_plc4c_spi_read_unsigned_int(void) {
 void test_plc4c_spi_read_unsigned_long_args(char* message,
     plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
     plc4c_return_code expected_return_code, uint64_t expected_value) {
-  printf("Running read_buffer read_unsigned_long test.");
+  printf("Running read_buffer read_unsigned_long test: %s", message);
 
   uint64_t value = 0;
   plc4c_return_code result =
@@ -441,6 +441,61 @@ void test_plc4c_spi_read_unsigned_long(void) {
   test_plc4c_spi_read_unsigned_long_args("Full long starting at bit 3", read_buffer, 61, OK, 72623859790382856);
 }
 
+
+void test_plc4c_spi_read_signed_byte_args(char* message,
+                                            plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+                                            plc4c_return_code expected_return_code, int8_t expected_value) {
+  printf("Running read_buffer read_signed_byte test: %s", message);
+
+  int8_t value = -1;
+  plc4c_return_code result =
+      plc4c_spi_read_signed_byte(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_signed_byte(void) {
+  // Prepare input data
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  // Run test
+  // Read all the full bytes
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 1", read_buffer, 8, OK, 1);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 2", read_buffer, 8, OK, 2);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 3", read_buffer, 8, OK, 3);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 4", read_buffer, 8, OK, 4);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 5", read_buffer, 8, OK, 5);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 6", read_buffer, 8, OK, 6);
+  test_plc4c_spi_read_signed_byte_args("Simple full signed byte 7", read_buffer, 8, OK, 7);
+  // Read a 9th byte (buffer only has 8) (results in error)
+//  test_plc4c_spi_read_signed_byte_args("Exceed read-buffer size", read_buffer, 8, OUT_OF_RANGE, -1);
+  plc4c_spi_read_buffer_destroy(read_buffer);
+
+  uint8_t data2[] = {186, 117};
+  plc4c_spi_read_buffer* read_buffer2;
+  plc4c_spi_read_buffer_create(data2, 2, &read_buffer2);
+  // Read part of a byte (fits in one byte)
+  test_plc4c_spi_read_signed_byte_args("Simple 4 bits of signed byte", read_buffer2, 4, OK, -5);
+  // Read part of a byte (finishes one byte)
+  test_plc4c_spi_read_signed_byte_args("Simple 4 bits of signed byte, finishing rest of first byte", read_buffer2, 4, OK, -6);
+  test_plc4c_spi_read_signed_byte_args("Simple 4 bits of signed byte", read_buffer2, 4, OK, 7);
+  test_plc4c_spi_read_signed_byte_args("Simple 4 bits of signed byte", read_buffer2, 4, OK, 5);
+  // Read part of a byte (spans two bytes)
+  read_buffer2->curPosByte = 0;
+  read_buffer2->curPosBit = 5;
+  test_plc4c_spi_read_signed_byte_args("Simple 6 bits of signed byte starting at bit 5 (flowing over to next byte)", read_buffer2, 6, OK, 19);
+  test_plc4c_spi_read_signed_byte_args("Simple 4 bits of signed byte starting at bit 3", read_buffer2, 4, OK, -6);
+  // Read more than a byte (results in error)
+  read_buffer2->curPosByte = 0;
+  read_buffer2->curPosBit = 5;
+  test_plc4c_spi_read_signed_byte_args("Exceed read-buffer size (Part 2)", read_buffer2, 10, OUT_OF_RANGE, -1);
+}
+
+
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
   test_plc4c_spi_read_get_total_bytes();
@@ -452,4 +507,5 @@ void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_unsigned_short();
   test_plc4c_spi_read_unsigned_int();
   test_plc4c_spi_read_unsigned_long();
+  test_plc4c_spi_read_signed_byte();
 }
