@@ -351,7 +351,7 @@ void test_plc4c_spi_read_unsigned_short(void) {
   test_plc4c_spi_read_unsigned_short_args("Try to read too many bytes for a short", read_buffer, 18, OUT_OF_RANGE, 0);
 }
 
-void test_plc4c_spi_read_unsigned_int_args(
+void test_plc4c_spi_read_unsigned_int_args(char* message,
     plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
     plc4c_return_code expected_return_code, uint32_t expected_value) {
   printf("Running read_buffer read_unsigned_int test.");
@@ -373,16 +373,40 @@ void test_plc4c_spi_read_unsigned_int(void) {
   plc4c_spi_read_buffer_create(data, 8, &read_buffer);
   // Run test
   // Read all the full short
-  test_plc4c_spi_read_unsigned_int_args(read_buffer, 32, OK, 16909060);
-  test_plc4c_spi_read_unsigned_int_args(read_buffer, 32, OK, 84281096);
+  test_plc4c_spi_read_unsigned_int_args("Simple full int 1", read_buffer, 32, OK, 16909060);
+  test_plc4c_spi_read_unsigned_int_args("Simple full int 1", read_buffer, 32, OK, 84281096);
 
-  // TODO: Add more tests
-  //read_buffer->curPosByte = 0;
-  //read_buffer->curPosBit = 3;
-  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+  // Read a full int starting somewhere in between.
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Full int starting at bit 3", read_buffer, 32, OK, 135272480);
+
+  // Read an int starting somewhere in between but ending at a full byte.
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Full int starting at bit 3", read_buffer, 29, OK, 16909060);
+
+  // Read a full int starting somewhere in between.
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 5, OK, 1);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 7, OK, 1);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 9, OK, 3);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 15, OK, 514);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 16, OK, 33539);
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 17, OK, 4128);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 26, OK, 12648769);
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 30, OK, 33818120);
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 31, OK, 67636240);
 }
 
-void test_plc4c_spi_read_unsigned_long_args(
+void test_plc4c_spi_read_unsigned_long_args(char* message,
     plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
     plc4c_return_code expected_return_code, uint64_t expected_value) {
   printf("Running read_buffer read_unsigned_long test.");
@@ -399,17 +423,22 @@ void test_plc4c_spi_read_unsigned_long_args(
 
 void test_plc4c_spi_read_unsigned_long(void) {
   // Prepare input data
-  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  uint8_t data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   plc4c_spi_read_buffer* read_buffer;
-  plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+  plc4c_spi_read_buffer_create(data, 9, &read_buffer);
   // Run test
   // Read all the full long
-  test_plc4c_spi_read_unsigned_long_args(read_buffer, 64, OK, 72623859790382856);
+  test_plc4c_spi_read_unsigned_long_args("Simple full long", read_buffer, 64, OK, 72623859790382856);
 
-  // TODO: Add more tests
-  //read_buffer->curPosByte = 0;
-  //read_buffer->curPosBit = 3;
-  //test_plc4c_spi_read_unsigned_short_args(read_buffer, 16, OK, 258);
+  // Read a full long starting somewhere in between.
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_long_args("Full long starting at bit 3", read_buffer, 64, OK, 580990878323062848);
+
+  // Read a long starting somewhere in between but ending at a full byte.
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 3;
+  test_plc4c_spi_read_unsigned_long_args("Full long starting at bit 3", read_buffer, 61, OK, 72623859790382856);
 }
 
 void test_plc4c_spi_read_buffer(void) {
