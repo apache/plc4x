@@ -37,6 +37,7 @@
 
   <modules>
     <module>code-gen</module>
+    <module>discovery</module>
     <module>plc-simulator</module>
 
     <module>test-java-amsads-driver</module>
