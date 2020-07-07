@@ -1,5 +1,25 @@
 ==============================================================
-Apache PLC4X 0.7.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.8.0-SNAPSHOT
+==============================================================
+
+This is an ordinary PLC4X release, containing changes that
+accumulated over time. It doesn't have an explicit focus on
+a particular topic.
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+PLC4X-206   When writing short values exceptions are thrown
+while preparing the write request.
+
+==============================================================
+Apache PLC4X 0.7.0
 ==============================================================
 
 This version is the first after a major refactoring of the driver
@@ -47,7 +67,7 @@ PLC4X-192   Support for conversion of complex connection string
             parameters
 
 ==============================================================
-(Unreleased) Apache PLC4X 0.6.0-SNAPSHOT
+Apache PLC4X 0.6.0
 ==============================================================
 
 This is the last release of PLC4X with the "handwritten" drivers.
