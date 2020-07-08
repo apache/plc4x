@@ -526,7 +526,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     return "lastItem";
                 // If this literal references an Enum type, then we have to output it differently.
                 } else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
-                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
+                    return getCTypeName(variableLiteral.getName()) + "_" + variableLiteral.getChild().getName();
                 } else {
                     return variableExpressionGenerator.apply(term);
                 }
@@ -863,9 +863,28 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         } else {
             StringBuilder sb = new StringBuilder("_message->");
+            // If this is a property of a sub-type, add the sub-type name to the property.
             if(baseType != getThisTypeDefinition()) {
                 sb.append(camelCaseToSnakeCase(baseType.getName())).append("_");
             }
+
+            // If this expression references enum constants we need to do things differently
+            final Optional<TypeReference> typeReferenceForProperty =
+                getTypeReferenceForProperty(baseType, vl.getName());
+            if(typeReferenceForProperty.isPresent()) {
+                final TypeReference typeReference = typeReferenceForProperty.get();
+                if(typeReference instanceof ComplexTypeReference) {
+                    final TypeDefinition typeDefinitionForTypeReference =
+                        getTypeDefinitionForTypeReference(typeReference);
+                    if ((typeDefinitionForTypeReference instanceof EnumTypeDefinition) && (vl.getChild() != null)){
+                        sb.append(camelCaseToSnakeCase(vl.getName()));
+                        return getCTypeName(typeDefinitionForTypeReference.getName()) +
+                            "_get_" + camelCaseToSnakeCase(vl.getChild().getName()) +
+                            "(" + sb.toString() + ")";
+                    }
+                }
+            }
+            // If it wasn't an enum, treat it as a normal property.
             appendVariableExpressionRest(sb, baseType, vl);
             return sb.toString();
         }

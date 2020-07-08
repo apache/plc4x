@@ -265,7 +265,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                             byte[] data = new byte[2];
                                                             data[0] = (byte) (shortValue & 0xff);
                                                             data[1] = (byte) ((shortValue >> 8) & 0xff);
-                                                            payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, 8 * data.length, data);
+                                                            payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data);
                                                             break;
                                                         }
                                                         default: {
@@ -281,7 +281,7 @@ public class S7Step7ServerAdapter extends ChannelInboundHandlerAdapter {
                                                         addressAny.getNumberOfElements() : addressAny.getTransportSize().getSizeInBytes() * 8;
                                                     final BitSet bitSet = toBitSet(context.getDigitalInputs(), ioNumber, numElements);
                                                     final byte[] data = Arrays.copyOf(bitSet.toByteArray(), (numElements + 7) / 8);
-                                                    payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, 8 * data.length, data);
+                                                    payloadItems[i] = new S7VarPayloadDataItem(DataTransportErrorCode.OK, DataTransportSize.BYTE_WORD_DWORD, data);
                                                     break;
                                                 }
                                             }

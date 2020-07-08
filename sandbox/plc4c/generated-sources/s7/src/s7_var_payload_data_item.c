@@ -51,13 +51,12 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
   (*_message)->transport_size = transportSize;
 
-  // Simple Field (dataLength)
+  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t dataLength = 0;
   _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->data_length = dataLength;
 
   // Array field (data)
   plc4c_list* data = malloc(sizeof(plc4c_list));
@@ -111,8 +110,8 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4c_s
     return _res;
   }
 
-  // Simple Field (dataLength)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->data_length);
+  // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+  _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_spi_evaluation_helper_count(_message->data)) * ((((((_message->transport_size) == (plc4c_s7_read_write_data_transport_size_BIT))) ? 1 : (((plc4c_s7_read_write_data_transport_size_get_size_in_bits(_message->transport_size)) ? 8 : 1))))));
   if(_res != OK) {
     return _res;
   }
@@ -155,7 +154,7 @@ uint8_t plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4c_s7_rea
   // Enum Field (transportSize)
   lengthInBits += 8;
 
-  // Simple field (dataLength)
+  // Implicit Field (dataLength)
   lengthInBits += 16;
 
   // Array field

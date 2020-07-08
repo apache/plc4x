@@ -270,7 +270,6 @@
                   <items className="org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem">
                     <returnCode>OK</returnCode>
                     <transportSize>BIT</transportSize>
-                    <dataLength>1</dataLength>
                     <data>AQ==</data>
                   </items>
                 </items>

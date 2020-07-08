@@ -431,12 +431,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     private S7VarPayloadDataItem serializePlcValue(S7Field field, PlcValue plcValue) {
         try {
-            DataTransportSize transportSize = (field.getDataType().getDataProtocolId() == 1) ?
-                DataTransportSize.BIT : DataTransportSize.BYTE_WORD_DWORD;
+            DataTransportSize transportSize = field.getDataType().getDataTransportSize();
             WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, field.getDataType().getDataProtocolId());
             if(writeBuffer != null) {
                 byte[] data = writeBuffer.getData();
-                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data.length, data);
+                return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
             }
         } catch (ParseException e) {
             logger.warn(String.format("Error serializing field item of type: '%s'", field.getDataType().name()), e);

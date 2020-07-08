@@ -364,13 +364,13 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
     case 5: { /* '0x05' */
-      return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
+      return plc4c_s7_read_write_data_transport_size_INTEGER;
     }
     case 6: { /* '0x06' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
     case 7: { /* '0x07' */
-      return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
+      return plc4c_s7_read_write_data_transport_size_INTEGER;
     }
     case 8: { /* '0x08' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;

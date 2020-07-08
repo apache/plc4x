@@ -230,11 +230,11 @@
 
 // This is actually not quite correct as depending pon the transportSize the length is either defined in bits or bytes.
 [type 'S7VarPayloadDataItem' [bit 'lastItem']
-    [enum    DataTransportErrorCode 'returnCode']
-    [enum    DataTransportSize      'transportSize']
-    [simple  uint 16                'dataLength']
-    [array   int  8                 'data' count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
-    [padding uint 8                 'pad' '0x00' '!lastItem && ((COUNT(data) % 2) == 1)']
+    [enum     DataTransportErrorCode 'returnCode']
+    [enum     DataTransportSize      'transportSize']
+    [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
+    [array    int  8                 'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
+    [padding  uint 8                 'pad'        '0x00' '!lastItem && ((COUNT(data) % 2) == 1)']
 ]
 
 [type 'S7VarPayloadStatusItem'
@@ -410,13 +410,13 @@
 
     // Integer values
     // INT and UINT moved out of order as the enum constant INT needs to be generated before it's used in java
-    ['0x05' INT              ['W'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '23'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x05' UINT             ['W'              , '2'                 , 'TransportSize.INT'     , 'DataTransportSize.BYTE_WORD_DWORD'  , '24'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x05' INT              ['W'              , '2'                 , 'null'                  , 'DataTransportSize.INTEGER'          , '23'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x05' UINT             ['W'              , '2'                 , 'TransportSize.INT'     , 'DataTransportSize.INTEGER'          , '24'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     // ...
     ['0x02' SINT             ['B'              , '1'                 , 'TransportSize.INT'     , 'DataTransportSize.BYTE_WORD_DWORD'  , '21'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     ['0x02' USINT            ['B'              , '1'                 , 'TransportSize.INT'     , 'DataTransportSize.BYTE_WORD_DWORD'  , '22'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x07' DINT             ['D'              , '4'                 , 'TransportSize.INT'     , 'DataTransportSize.BYTE_WORD_DWORD'  , '25'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x07' UDINT            ['D'              , '4'                 , 'TransportSize.INT'     , 'DataTransportSize.BYTE_WORD_DWORD'  , '26'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x07' DINT             ['D'              , '4'                 , 'TransportSize.INT'     , 'DataTransportSize.INTEGER'          , '25'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x07' UDINT            ['D'              , '4'                 , 'TransportSize.INT'     , 'DataTransportSize.INTEGER'          , '26'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     ['0x00' LINT             ['X'              , '8'                 , 'TransportSize.INT'     , 'null'                               , '27'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
     ['0x00' ULINT            ['X'              , '16'                , 'TransportSize.INT'     , 'null'                               , '28'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
 
