@@ -152,7 +152,10 @@ public abstract class BaseOptimizer {
             }
 
             // As soon as all sub-futures are done, merge the individual responses back to one big response.
-            CompletableFuture.allOf(subFutures.values().toArray(new CompletableFuture[0])).thenApply(aVoid -> {
+            CompletableFuture.allOf(subFutures.values().toArray(new CompletableFuture[0])).handle((aVoid, t) -> {
+                if (t != null) {
+                    parentFuture.completeExceptionally(t);
+                }
                 Map<PlcRequest, Either<PlcResponse, Exception>> results = new HashMap<>();
                 for (Map.Entry<PlcRequest, CompletableFuture<PlcResponse>> subFutureEntry : subFutures.entrySet()) {
                     PlcRequest subRequest = subFutureEntry.getKey();

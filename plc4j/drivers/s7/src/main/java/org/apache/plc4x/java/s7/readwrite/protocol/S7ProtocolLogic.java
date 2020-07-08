@@ -59,7 +59,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 /**
@@ -69,11 +72,12 @@ import java.util.stream.IntStream;
  */
 public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(S7ProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private S7DriverContext s7DriverContext;
+    private final Logger logger = LoggerFactory.getLogger(S7ProtocolLogic.class);
     private final AtomicInteger tpduGenerator = new AtomicInteger(10);
+
+    private S7DriverContext s7DriverContext;
     private RequestTransactionManager tm;
 
     @Override
@@ -91,35 +95,50 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
-        // Only the TCP transport supports login.
-        if(!context.isPassive()) {
-            LOGGER.info("S7 Driver running in ACTIVE mode.");
-            LOGGER.debug("Sending COTP Connection Request");
-            // Open the session on ISO Transport Protocol first.
-            TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(
-                s7DriverContext.getCalledTsapId(), s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
+        if (context.isPassive()) {
+            logger.info("S7 Driver running in PASSIVE mode.");
+            s7DriverContext.setPassiveMode(true);
+            // No login required, just confirm that we're connected.
+            context.fireConnected();
+            return;
+        }
 
-            context.sendRequest(packet)
-                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
-                .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
-                .handle(cotpPacketConnectionResponse -> {
-                    LOGGER.debug("Got COTP Connection Response");
-                    LOGGER.debug("Sending S7 Connection Request");
-                    context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
-                        .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                        .unwrap(TPKTPacket::getPayload)
-                        .only(COTPPacketData.class)
-                        .unwrap(COTPPacket::getPayload)
-                        .only(S7MessageResponseData.class)
-                        .unwrap(S7Message::getParameter)
-                        .only(S7ParameterSetupCommunication.class)
-                        .handle(setupCommunication -> {
-                            LOGGER.debug("Got S7 Connection Response");
-                            // Save some data from the response.
-                            s7DriverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
-                            s7DriverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
-                            s7DriverContext.setPduSize(setupCommunication.getPduLength());
+        // Only the TCP transport supports login.
+        logger.info("S7 Driver running in ACTIVE mode.");
+        logger.debug("Sending COTP Connection Request");
+        // Open the session on ISO Transport Protocol first.
+        TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(
+            s7DriverContext.getCalledTsapId(), s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
+
+        context.sendRequest(packet)
+            .onTimeout(e -> {
+                logger.warn("Timeout during Connection establishing, closing channel...");
+                context.getChannel().close();
+            })
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
+            .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
+            .handle(cotpPacketConnectionResponse -> {
+                logger.debug("Got COTP Connection Response");
+                logger.debug("Sending S7 Connection Request");
+                context.sendRequest(createS7ConnectionRequest(cotpPacketConnectionResponse))
+                    .onTimeout(e -> {
+                        logger.warn("Timeout during Connection establishing, closing channel...");
+                        context.getChannel().close();
+                    })
+                    .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                    .unwrap(TPKTPacket::getPayload)
+                    .only(COTPPacketData.class)
+                    .unwrap(COTPPacket::getPayload)
+                    .only(S7MessageResponseData.class)
+                    .unwrap(S7Message::getParameter)
+                    .only(S7ParameterSetupCommunication.class)
+                    .handle(setupCommunication -> {
+                        logger.debug("Got S7 Connection Response");
+                        // Save some data from the response.
+                        s7DriverContext.setMaxAmqCaller(setupCommunication.getMaxAmqCaller());
+                        s7DriverContext.setMaxAmqCallee(setupCommunication.getMaxAmqCallee());
+                        s7DriverContext.setPduSize(setupCommunication.getPduLength());
 
                             // Update the number of concurrent requests to the negotiated number.
                             // I have never seen anything else than equal values for caller and
@@ -136,32 +155,27 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 return;
                             }
 
-                            // Prepare a message to request the remote to identify itself.
-                            LOGGER.debug("Sending S7 Identification Request");
-                            TPKTPacket tpktPacket = createIdentifyRemoteMessage();
-                            context.sendRequest(tpktPacket)
-                                .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                                .check(p -> p.getPayload() instanceof COTPPacketData)
-                                .unwrap(p -> ((COTPPacketData) p.getPayload()))
-                                .check(p -> p.getPayload() instanceof S7MessageUserData)
-                                .unwrap(p -> ((S7MessageUserData) p.getPayload()))
-                                .check(p -> p.getPayload() instanceof S7PayloadUserData)
-                                .handle(messageUserData -> {
-                                    LOGGER.debug("Got S7 Identification Response");
-                                    S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
-                                    extractControllerTypeAndFireConnected(context, payloadUserData);
-                                });
-                        });
-                });
-        }
-        // This usually when we're running a passive mode river.
-        else {
-            LOGGER.info("S7 Driver running in PASSIVE mode.");
-            s7DriverContext.setPassiveMode(true);
-
-            // No login required, just confirm that we're connected.
-            context.fireConnected();
-        }
+                        // Prepare a message to request the remote to identify itself.
+                        logger.debug("Sending S7 Identification Request");
+                        TPKTPacket tpktPacket = createIdentifyRemoteMessage();
+                        context.sendRequest(tpktPacket)
+                            .onTimeout(e -> {
+                                logger.warn("Timeout during Connection establishing, closing channel...");
+                                context.getChannel().close();
+                            })
+                            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+                            .check(p -> p.getPayload() instanceof COTPPacketData)
+                            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                            .check(p -> p.getPayload() instanceof S7MessageUserData)
+                            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+                            .check(p -> p.getPayload() instanceof S7PayloadUserData)
+                            .handle(messageUserData -> {
+                                logger.debug("Got S7 Identification Response");
+                                S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
+                                extractControllerTypeAndFireConnected(context, payloadUserData);
+                            });
+                    });
+            });
     }
 
     @Override
@@ -216,9 +230,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> (COTPPacketData) p.getPayload())
             .check(p -> p.getPayload()  != null)
@@ -259,9 +273,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(tpktPacket)
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .onTimeout(future::completeExceptionally)
-            .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> p.getPayload() instanceof COTPPacketData)
             .unwrap(p -> ((COTPPacketData) p.getPayload()))
             .unwrap(COTPPacket::getPayload)
@@ -270,12 +284,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 try {
                     future.complete(((PlcWriteResponse) decodeWriteResponse(p, writeRequest)));
                 } catch (PlcProtocolException e) {
-                    LOGGER.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
+                    logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
                 }
                 // Finish the request-transaction.
                 transaction.endRequest();
             }));
         return future;
+    }
+
+    /**
+     * This method is only called when there is no Response Handler.
+     */
+    @Override
+    protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
+        throw new IllegalStateException("This should not happen!");
     }
 
     @Override
@@ -304,14 +326,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private TPKTPacket createIdentifyRemoteMessage() {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1,
-            new S7ParameterUserData(new S7ParameterUserDataItem[]{
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
                 new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-            }),
-            new S7PayloadUserData(new S7PayloadUserDataItem[]{
+            }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
                 new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-            })
-        );
+            }));
         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
         return new TPKTPacket(cotpPacketData);
     }
@@ -325,13 +344,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 COTPParameterCallingTsap cotpParameterCallingTsap = (COTPParameterCallingTsap) parameter;
                 if(cotpParameterCallingTsap.getTsapId() != s7DriverContext.getCallingTsapId()) {
                     s7DriverContext.setCallingTsapId(cotpParameterCallingTsap.getTsapId());
-                    LOGGER.warn(String.format("Switching calling TSAP id to '%s'", s7DriverContext.getCallingTsapId()));
+                    logger.warn("Switching calling TSAP id to '{}'", s7DriverContext.getCallingTsapId());
                 }
             } else if (parameter instanceof COTPParameterTpduSize) {
                 COTPParameterTpduSize cotpParameterTpduSize = (COTPParameterTpduSize) parameter;
                 s7DriverContext.setCotpTpduSize(cotpParameterTpduSize.getTpduSize());
             } else {
-                LOGGER.warn(String.format("Got unknown parameter type '%s'", parameter.getClass().getName()));
+                logger.warn("Got unknown parameter type '{}'", parameter.getClass().getName());
             }
         }
 
@@ -373,7 +392,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         if((errorClass != 0) || (errorCode != 0)) {
             // This is usually the case if PUT/GET wasn't enabled on the PLC
             if((errorClass == 129) && (errorCode == 4)) {
-                LOGGER.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String fieldName : plcReadRequest.getFieldNames()) {
                     ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
@@ -381,7 +400,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 }
                 return new DefaultPlcReadResponse(plcReadRequest, values);
             } else {
-                LOGGER.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
+                logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
                     "We probably need to implement explicit handling for this, so please file a bug-report " +
                     "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
                     "containing a capture of the communication.",
@@ -448,14 +467,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         if((errorClass != 0) || (errorCode != 0)) {
             // This is usually the case if PUT/GET wasn't enabled on the PLC
             if((errorClass == 129) && (errorCode == 4)) {
-                LOGGER.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
                     "that PUT/GET is not enabled on the PLC.");
                 for (String fieldName : plcWriteRequest.getFieldNames()) {
                     responses.put(fieldName, PlcResponseCode.ACCESS_DENIED);
                 }
                 return new DefaultPlcWriteResponse(plcWriteRequest, responses);
             } else {
-                LOGGER.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
+                logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
                         "We probably need to implement explicit handling for this, so please file a bug-report " +
                         "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
                         "containing a capture of the communication.",
@@ -502,7 +521,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
             }
         } catch (ParseException e) {
-            LOGGER.warn(String.format("Error serializing field item of type: '%s'", field.getDataType().name()), e);
+            logger.warn("Error serializing field item of type: '{}'", field.getDataType().name(), e);
         }
         return null;
     }
@@ -521,14 +540,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
                             stringLength);
                     } catch (ParseException e) {
-                        LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);
+                        logger.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
                 return IEC61131ValueHandler.of(resultItems);
             }
         } catch (ParseException e) {
-            LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
+            logger.warn("Error parsing field item of type: '{}'", field.getDataType().name(), e);
         }
         return null;
     }
@@ -578,8 +597,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             case "4":
                 return S7ControllerType.S7_400;
             default:
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info(String.format("Looking up unknown article number %s", articleNumber));
+                if (logger.isInfoEnabled()) {
+                    logger.info("Looking up unknown article number {}", articleNumber);
                 }
                 return S7ControllerType.ANY;
         }
@@ -617,6 +636,32 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         return new S7AddressAny(transportSize, numElements, s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
+    }
+
+    /**
+     * A generic purpose error handler which terminates transaction and calls back given future with error message.
+     */
+    static class TransactionErrorCallback<T, E extends Throwable> implements Consumer<TimeoutException>, BiConsumer<TPKTPacket, E> {
+
+        private final CompletableFuture<T> future;
+        private final RequestTransactionManager.RequestTransaction transaction;
+
+        TransactionErrorCallback(CompletableFuture<T> future, RequestTransactionManager.RequestTransaction transaction) {
+            this.future = future;
+            this.transaction = transaction;
+        }
+
+        @Override
+        public void accept(TimeoutException e) {
+            transaction.endRequest();
+            future.completeExceptionally(e);
+        }
+
+        @Override
+        public void accept(TPKTPacket tpktPacket, E e) {
+            transaction.endRequest();
+            future.completeExceptionally(e);
+        }
     }
 
 }
