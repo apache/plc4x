@@ -441,7 +441,6 @@ void test_plc4c_spi_read_unsigned_long(void) {
   test_plc4c_spi_read_unsigned_long_args("Full long starting at bit 3", read_buffer, 61, OK, 72623859790382856);
 }
 
-
 void test_plc4c_spi_read_signed_byte_args(char* message,
                                             plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
                                             plc4c_return_code expected_return_code, int8_t expected_value) {
@@ -495,6 +494,46 @@ void test_plc4c_spi_read_signed_byte(void) {
   test_plc4c_spi_read_signed_byte_args("Exceed read-buffer size (Part 2)", read_buffer2, 10, OUT_OF_RANGE, -1);
 }
 
+void test_plc4c_spi_read_signed_short_args(char* message,
+                                          plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+                                          plc4c_return_code expected_return_code, int16_t expected_value) {
+  printf("Running read_buffer read_signed_byte test: %s", message);
+
+  int16_t value = -1;
+  plc4c_return_code result =
+      plc4c_spi_read_signed_short(read_buffer, num_bits, &value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+  TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_signed_short(void) {
+  // Prepare input data
+  uint8_t data[] = {255, 214, 3};
+  plc4c_spi_read_buffer* read_buffer;
+  plc4c_spi_read_buffer_create(data, 3, &read_buffer);
+  // Run test
+  // Read all the full bytes
+  test_plc4c_spi_read_signed_short_args("Simple full signed short 1", read_buffer, 16, OK, -42);
+
+  // Read the only part of a short (having to fill up 1s)
+  read_buffer->curPosByte = 0;
+  read_buffer->curPosBit = 4;
+  test_plc4c_spi_read_signed_short_args("Simple 12 bit signed short", read_buffer, 12, OK, -42);
+
+  // Read an even shorter part of a short (having to fill up even more 1s)
+  read_buffer->curPosByte = 1;
+  read_buffer->curPosBit = 1;
+  test_plc4c_spi_read_signed_short_args("Simple 7 bit signed short", read_buffer, 7, OK, -42);
+
+  // Read an even shorter part of a short (This time however the value should
+  // be positive and hence the higher level byte should be filled with 0s)
+  read_buffer->curPosByte = 1;
+  read_buffer->curPosBit = 2;
+  test_plc4c_spi_read_signed_short_args("Simple 6 bit signed short", read_buffer, 6, OK, 22);
+}
 
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
@@ -508,4 +547,5 @@ void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_unsigned_int();
   test_plc4c_spi_read_unsigned_long();
   test_plc4c_spi_read_signed_byte();
+  test_plc4c_spi_read_signed_short();
 }

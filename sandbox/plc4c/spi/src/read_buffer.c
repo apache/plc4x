@@ -206,17 +206,29 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 }
 
 bool plc4c_spi_read_buffer_is_negative_internal(uint8_t num_bits, int8_t value) {
-  int8_t tmp_value = value >> (num_bits - 1);
+  int8_t tmp_value = value >> num_bits;
   return (tmp_value & 1) != 0;
 }
 
-plc4c_return_code plc4c_spi_fill_sign_internal(uint8_t num_bits, int8_t* value) {
-  if(plc4c_spi_read_buffer_is_negative_internal(num_bits, *value)) {
+bool plc4c_spi_fill_sign_internal(uint8_t num_bits, int8_t* value) {
+  // Find out how many bytes the value has.
+  uint8_t num_bytes_total = (num_bits / 8) + ((num_bits % 8 != 0) ? 1 : 0);
+
+  // If this is big endian, go to the highest level byte.
+  if (!plc4c_is_bigendian()) {
+    value = value + (num_bytes_total - 1);
+  }
+
+  if(plc4c_spi_read_buffer_is_negative_internal((num_bits - 1) % 8, *value)) {
     // Set all bits above {num_bits} to 1
     int8_t tmp_value = *value;
-    tmp_value = tmp_value | (255 & bit_matrix[num_bits][0]);
+    if(num_bits % 8 != 0) {
+      tmp_value = tmp_value | bit_matrix[7 - (num_bits % 8)][0];
+    }
     *value = tmp_value;
+    return true;
   }
+  return false;
 }
 
 plc4c_return_code plc4c_spi_read_buffer_create(uint8_t* data, uint16_t length,
@@ -405,24 +417,100 @@ uint8_t num_bits) { return OK;
 plc4c_return_code plc4c_spi_read_signed_byte(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int8_t* value) {
   plc4c_return_code res = plc4c_spi_read_unsigned_byte(buf, num_bits, (uint8_t*) value);
-  plc4c_spi_fill_sign_internal(num_bits, value);
+  if(res == OK) {
+    plc4c_spi_fill_sign_internal(num_bits, value);
+  }
   return res;
 }
 
 plc4c_return_code plc4c_spi_read_signed_short(plc4c_spi_read_buffer* buf,
                                               uint8_t num_bits,
                                               int16_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint16_t*) value);
+  plc4c_return_code res = plc4c_spi_read_unsigned_short(buf, num_bits, (uint16_t*) value);
+  if(res == OK) {
+    if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
+      // Potentially fill all higher level bytes with 255
+      if(num_bits <= 8) {
+        *value = *value | 65280;
+      }
+    } else {
+      // Potentially fill all higher level bytes with 0
+      if(num_bits <= 8) {
+        *value = *value & 255;
+      }
+    }
+  }
+  return res;
 }
 
 plc4c_return_code plc4c_spi_read_signed_int(plc4c_spi_read_buffer* buf,
                                             uint8_t num_bits, int32_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint32_t*) value);
+  plc4c_return_code res = plc4c_spi_read_unsigned_int(buf, num_bits, (uint32_t*) value);
+  if(res == OK) {
+    if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
+      // Potentially fill all higher level bytes with 255
+      if(num_bits <= 8) {
+        *value = *value | 4294967040;
+      } else if(num_bits <= 16) {
+        *value = *value | 4294901760;
+      } else if(num_bits <= 24) {
+        *value = *value | 4278190080;
+      }
+    } else {
+      // Potentially fill all higher level bytes with 0
+      if(num_bits <= 8) {
+        *value = *value & 255;
+      } else if(num_bits <= 16) {
+        *value = *value & 65535;
+      } else if(num_bits <= 24) {
+        *value = *value & 16777215;
+      }
+    }
+  }
+  return res;
 }
 
 plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf,
                                              uint8_t num_bits, int64_t* value) {
-  return plc4c_spi_read_unsigned_byte(buf, num_bits, (uint64_t*) value);
+  plc4c_return_code res = plc4c_spi_read_unsigned_long(buf, num_bits, (uint64_t*) value);
+  if(res == OK) {
+    if(plc4c_spi_fill_sign_internal(num_bits, (int8_t*) value)) {
+      // Potentially fill all higher level bytes with 255
+      if(num_bits <= 8) {
+        *value = *value | 18446744073709551360;
+      } else if(num_bits <= 16) {
+        *value = *value | 18446744073709486080;
+      } else if(num_bits <= 24) {
+        *value = *value | 18446744073692774400;
+      } else if(num_bits <= 32) {
+        *value = *value | 18446744069414584320;
+      } else if(num_bits <= 40) {
+        *value = *value | 18446742974197923840;
+      } else if(num_bits <= 48) {
+        *value = *value | 18446462598732840960;
+      } else if(num_bits <= 56) {
+        *value = *value | 18374686479671623680;
+      }
+    } else {
+      // Potentially fill all higher level bytes with 0
+      if(num_bits <= 8) {
+        *value = *value & 255;
+      } else if(num_bits <= 16) {
+        *value = *value & 65535;
+      } else if(num_bits <= 24) {
+        *value = *value & 16777215;
+      } else if(num_bits <= 32) {
+        *value = *value & 4294967295;
+      } else if(num_bits <= 40) {
+        *value = *value & 1099511627775;
+      } else if(num_bits <= 48) {
+        *value = *value & 281474976710655;
+      } else if(num_bits <= 56) {
+        *value = *value & 72057594037927935;
+      }
+    }
+  }
+  return res;
 }
 
 // TODO: Not sure which type to use in this case ...
