@@ -20,8 +20,6 @@ package org.apache.plc4x.java.knxnetip.protocol;
 
 import io.netty.channel.socket.DatagramChannel;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;

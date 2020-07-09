@@ -21,6 +21,8 @@ package org.apache.plc4x.java.knxnetip.configuration;
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
@@ -37,6 +39,14 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @IntDefaultValue(3)
     public int groupAddressType = 3;
 
+    @ConfigurationParameter("replay-speed-factor")
+    @FloatDefaultValue(1.0f)
+    public float replaySpeedFactor = 1.0f;
+
+    @ConfigurationParameter("loop")
+    @BooleanDefaultValue(false)
+    public boolean loop = false;
+
     public String getKnxprojFilePath() {
         return knxprojFilePath;
     }
@@ -51,6 +61,24 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
 
     public void setGroupAddressType(int groupAddressType) {
         this.groupAddressType = groupAddressType;
+    }
+
+    @Override
+    public float getReplaySpeedFactor() {
+        return replaySpeedFactor;
+    }
+
+    public void setReplaySpeedFactor(float replaySpeedFactor) {
+        this.replaySpeedFactor = replaySpeedFactor;
+    }
+
+    @Override
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
     }
 
     @Override
