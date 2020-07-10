@@ -32,6 +32,10 @@
   <name>PLC4J: Driver: OPC UA</name>
   <description>Implementation of a PLC4X driver able to speak with devices using the OPC UA protocol.</description>
 
+  <properties>
+    <milo.version>0.4.1</milo.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -54,22 +58,22 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
-      <version>0.3.6</version>
+      <version>${milo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
-      <version>0.3.6</version>
+      <version>${milo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
-      <version>0.3.6</version>
+      <version>${milo.version}</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>server-examples</artifactId>
-      <version>0.3.6</version>
+      <version>${milo.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

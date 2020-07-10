@@ -121,7 +121,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     }
 
     public static BaseDefaultFieldItem encodeFieldItem(DataValue value) {
-        NodeId typeNode = value.getValue().getDataType().get();
+        ExpandedNodeId typeNode = value.getValue().getDataType().get();
         Object objValue = value.getValue().getValue();
 
         if (typeNode.equals(Identifiers.Boolean)) {
