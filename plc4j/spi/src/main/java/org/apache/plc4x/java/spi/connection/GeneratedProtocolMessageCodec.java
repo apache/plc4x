@@ -53,10 +53,9 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
 
     @Override
     protected void removeRestOfCorruptPackage(ByteBuf byteBuf) {
-        if (this.corruptPackageRemover == null) {
-            throw new IllegalStateException("This Implementation does not support Corrupt Package Removal!");
+        if (this.corruptPackageRemover != null) {
+            this.corruptPackageRemover.accept(byteBuf);
         }
-        this.corruptPackageRemover.accept(byteBuf);
     }
 
 }
