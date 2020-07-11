@@ -21,6 +21,99 @@
 
   <name>KNXNet/IP</name>
 
+  <!--testcase>
+    <name>Causes Failure 1</name>
+    <raw>0610042000180404ce002b0703010404025002bab8b838bb</raw>
+    Raw CEMI Frame: bab8b838bb
+    Raw CEMI Frame: ba
+
+    Decoded as Extended Frame Format:
+    group address: true
+    hop count: 3
+    extended frame format: 8 (1 0 0 0)
+    source address: 11/8/56
+
+    <raw>061004200018047ddf002b07030104040207029f9c9c9cdc</raw>
+    Raw CEMI Frame: 9f9c9c9cdc
+    Control Field: 9f
+
+    Differences from normal:
+    Repeat: True
+    Last two reserved bits are true
+    <root-type>KNXNetIPMessage</root-type>
+    <xml>
+      <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
+        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
+          <communicationChannelId>125</communicationChannelId>
+          <sequenceCounter>223</sequenceCounter>
+        </tunnelingRequestDataBlock>
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
+          <additionalInformationLength>7</additionalInformationLength>
+          <additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
+              <frameErrorFlag>false</frameErrorFlag>
+              <bitErrorFlag>false</bitErrorFlag>
+              <parityErrorFlag>false</parityErrorFlag>
+              <unknownFlag>false</unknownFlag>
+              <lostFlag>false</lostFlag>
+              <sequenceNumber>4</sequenceNumber>
+            </additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp">
+              <relativeTimestamp className="org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp">
+                <timestamp>1794</timestamp>
+              </relativeTimestamp>
+            </additionalInformation>
+          </additionalInformation>
+          <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData">
+            <doNotRepeat>false</doNotRepeat>
+            <priority>LOW</priority>
+            <error>true</error>
+          </cemiFrame>
+        </cemi>
+      </TunnelingRequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Causes Failure 2</name>
+    <raw>0610042000180401c2002b0703010304025601bab8b838bb</raw>
+    Raw CEMI Frame: bab8b838bb
+    Control Field: ba
+    First of the last two reserved bits is true
+    <root-type>KNXNetIPMessage</root-type>
+    <xml>
+      <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
+        <tunnelingRequestDataBlock className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequestDataBlock">
+          <communicationChannelId>1</communicationChannelId>
+          <sequenceCounter>194</sequenceCounter>
+        </tunnelingRequestDataBlock>
+        <cemi className="org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd">
+          <additionalInformationLength>7</additionalInformationLength>
+          <additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo">
+              <frameErrorFlag>false</frameErrorFlag>
+              <bitErrorFlag>false</bitErrorFlag>
+              <parityErrorFlag>false</parityErrorFlag>
+              <unknownFlag>false</unknownFlag>
+              <lostFlag>false</lostFlag>
+              <sequenceNumber>3</sequenceNumber>
+            </additionalInformation>
+            <additionalInformation className="org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp">
+              <relativeTimestamp className="org.apache.plc4x.java.knxnetip.readwrite.RelativeTimestamp">
+                <timestamp>22017</timestamp>
+              </relativeTimestamp>
+            </additionalInformation>
+          </additionalInformation>
+          <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData">
+            <doNotRepeat>true</doNotRepeat>
+            <priority>URGENT</priority>
+            <error>false</error>
+          </cemiFrame>
+        </cemi>
+      </TunnelingRequest>
+    </xml>
+  </testcase-->
+
   <testcase>
     <name>Search Request</name>
     <raw>06100201000e0801c0a82a46ef8e</raw>
@@ -310,6 +403,10 @@
   <testcase>
     <name>Tunneling Request</name>
     <raw>06100420001c046b00002b0703010504024502bc360a1e0ce100810d</raw>
+    <!--
+    Raw CEMI Frame: bc360a1e0ce100810d
+    Control Field: bc
+    -->
     <root-type>KNXNetIPMessage</root-type>
     <xml>
       <TunnelingRequest className="org.apache.plc4x.java.knxnetip.readwrite.TunnelingRequest">
@@ -335,8 +432,10 @@
             </additionalInformation>
           </additionalInformation>
           <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData">
-            <doNotRepeat>true</doNotRepeat>
+            <repeated>true</repeated>
             <priority>LOW</priority>
+            <acknowledgeRequested>false</acknowledgeRequested>
+            <error>false</error>
             <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
               <mainGroup>3</mainGroup>
               <middleGroup>6</middleGroup>
@@ -346,7 +445,8 @@
             <groupAddress>true</groupAddress>
             <hopCount>6</hopCount>
             <dataLength>1</dataLength>
-            <tpci>0</tpci>
+            <tcpi>UNNUMBERED_DATA_PACKET</tcpi>
+            <counter>0</counter>
             <apci>GROUP_VALUE_WRITE_PDU</apci>
             <dataFirstByte>1</dataFirstByte>
             <data></data>

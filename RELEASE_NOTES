@@ -17,9 +17,11 @@ Bug Fixes
 
 PLC4X-206   When writing short values exceptions are thrown
             while preparing the write request.
-PLC4X-208   [S7] When trying to write to a S7 device and writing
-            is not explicitly enabled, the PLC will respond with
-            an error code
+PLC4X-209   [S7] When writing INT and DINT values the Write
+            operation fails with an internal error
+PLC4X-210   [KNX] When running a KNX Tunneling Subscription
+            for a longer time there are packets that kill
+            the connection
 
 ==============================================================
 Apache PLC4X 0.7.0

@@ -230,6 +230,7 @@
     ]
 ]
 
+/* The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" */
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
@@ -243,6 +244,9 @@
         ['0x25' CEMIPollDataCon
         ]
         ['0x29' CEMIDataInd
+            [simple uint 8                    'additionalInformationLength']
+            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple CEMIDataIndFrame          'cemiFrame']
         ]
         ['0x2B' CEMIBusmonInd
             [simple uint 8                    'additionalInformationLength']
@@ -277,7 +281,7 @@
     [discriminator uint 8 'additionalInformationType']
     [typeSwitch 'additionalInformationType'
         ['0x03' CEMIAdditionalInformationBusmonitorInfo
-            [implicit  uint 8 'len' '1']
+            [const     uint 8 'len' '1']
             [simple    bit    'frameErrorFlag']
             [simple    bit    'bitErrorFlag']
             [simple    bit    'parityErrorFlag']
@@ -286,19 +290,43 @@
             [simple    uint 3 'sequenceNumber']
         ]
         ['0x04' CEMIAdditionalInformationRelativeTimestamp
-            [implicit uint 8            'len' '2']
+            [const    uint 8            'len' '2']
             [simple   RelativeTimestamp 'relativeTimestamp']
         ]
     ]
 ]
 
+[type 'CEMIDataIndFrame'
+    [simple        bit          'standardFrame']
+    [simple        bit          'polling']
+    [simple        bit          'notRepeated']
+    [simple        bit          'notAckFrame']
+    [enum          CEMIPriority 'priority']
+    [simple        bit          'acknowledgeRequested']
+    [simple        bit          'error']
+    [simple        bit          'groupDestinationAddress']
+    [simple        uint 3       'hopCount']
+    [simple        uint 4       'extendedFrameFormat']
+    [simple        KNXAddress   'sourceAddress']
+    [array         int 8        'destinationAddress' count '2']
+    [simple        uint 8       'dataLength']
+    [enum          TPCI         'tcpi']
+    [simple        uint 4       'counter']
+    [enum          APCI         'apci']
+    [simple        int 6        'dataFirstByte']
+    [array         int 8        'data' count 'dataLength - 1']
+]
+
+/* The CEMI part is described in the document "03_06_03 EMI_IMI v01.03.03 AS" Page 73
+"03_02_02 Communication Medium TP1 v01.02.02 AS" Page 27 */
 [discriminatedType 'CEMIFrame'
     [discriminator bit          'standardFrame']
     [discriminator bit          'polling']
-    [simple        bit          'doNotRepeat']
+    [simple        bit          'repeated']
     [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
-    [reserved      uint 2       '0x0']
+    [simple        bit          'acknowledgeRequested']
+    [simple        bit          'error']
     [typeSwitch 'notAckFrame','standardFrame','polling'
         ['false' CEMIFrameAck
         ]
@@ -308,11 +336,14 @@
             [simple   bit             'groupAddress']
             [simple   uint 3          'hopCount']
             [simple   uint 4          'dataLength']
-            [simple   uint 6          'tpci']
+            [enum     TPCI            'tcpi']
+            [simple   uint 4          'counter']
             [enum     APCI            'apci']
             [simple   int 6           'dataFirstByte']
             [array    int 8           'data' count 'dataLength - 1']
             [simple   uint 8          'crc']
+        ]
+        ['true','true','true' CEMIFramePollingData
         ]
         ['true','false','false' CEMIFrameDataExt
             [simple   bit             'groupAddress']
@@ -321,13 +352,12 @@
             [simple   KNXAddress      'sourceAddress']
             [array    int 8           'destinationAddress' count '2']
             [simple   uint 8          'dataLength']
-            [simple   uint 6          'tpci']
+            [enum     TPCI            'tcpi']
+            [simple   uint 4          'counter']
             [enum     APCI            'apci']
             [simple   int 6           'dataFirstByte']
             [array    int 8           'data' count 'dataLength - 1']
             [simple   uint 8          'crc']
-        ]
-        ['true','true','true' CEMIFramePollingData
         ]
         ['true','false','true' CEMIFramePollingDataExt
         ]
@@ -519,10 +549,29 @@
     ['0x02' IPV4_TCP]
 ]
 
+/*
+ The mode in which the connection should be established:
+ TUNNEL_LINK_LAYER: The gateway assigns a unique KNX address to the client.
+                    The client can then actively participate in communicating
+                    with other KNX devices.
+ TUNNEL_RAW:        The gateway will just pass along the packets and not
+                    automatically generate Ack frames for the packets it
+                    receives for a given client.
+ TUNNEL_BUSMONITOR: The client becomes a passive participant and all frames
+                    on the KNX bus get forwarded to the client. Only one
+                    Busmonitor connection is allowed at any given time.
+*/
 [enum uint 8 'KnxLayer'
     ['0x02' TUNNEL_LINK_LAYER]
     ['0x04' TUNNEL_RAW]
     ['0x80' TUNNEL_BUSMONITOR]
+]
+
+[enum uint 2 'TPCI'
+    ['0x0' UNNUMBERED_DATA_PACKET]
+    ['0x1' UNNUMBERED]
+    ['0x2' NUMBERED_DATA_PACKET]
+    ['0x3' NUMBERED_CONTROL_DATA]
 ]
 
 [enum uint 4 'APCI'

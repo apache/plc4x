@@ -50,6 +50,7 @@ import org.apache.plc4x.java.knxnetip.readwrite.types.HostProtocolCode;
 import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
 import org.apache.plc4x.java.knxnetip.readwrite.types.Status;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
@@ -80,10 +81,12 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     private IPAddress localIPAddress;
     private int localPort;
     private short communicationChannelId;
+    private KNXAddress clientKnxAddress;
 
     private Timer connectionStateTimer;
 
     private byte groupAddressType;
+    private KnxLayer tunnelConnectionType;
     private Ets5Model ets5Model;
 
     private Map<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> consumers = new ConcurrentHashMap<>();
@@ -103,6 +106,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         } else {
             groupAddressType = (byte) configuration.groupAddressType;
         }
+        tunnelConnectionType = KnxLayer.valueOf("TUNNEL_" + configuration.getConnectionType());
     }
 
     @Override
@@ -146,7 +150,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                         ConnectionRequest connectionRequest = new ConnectionRequest(
                             new HPAIDiscoveryEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
                             new HPAIDataEndpoint(HostProtocolCode.IPV4_UDP, localIPAddress, localPort),
-                            new ConnectionRequestInformationTunnelConnection(KnxLayer.TUNNEL_BUSMONITOR));
+                            new ConnectionRequestInformationTunnelConnection(tunnelConnectionType));
                         LOGGER.info("Sending KNXnet/IP Connection Request.");
                         context.sendRequest(connectionRequest)
                             .expectResponse(KNXNetIPMessage.class, Duration.ofMillis(1000))
@@ -162,8 +166,15 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                 // Check if everything went well.
                                 Status status = connectionResponse.getStatus();
                                 if (status == Status.NO_ERROR) {
-                                    LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d'", gatewayName,
-                                        gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(), gatewayAddress.getSubGroup()));
+                                    final ConnectionResponseDataBlockTunnelConnection tunnelConnectionDataBlock =
+                                        (ConnectionResponseDataBlockTunnelConnection) connectionResponse.getConnectionResponseDataBlock();
+                                    // Save the KNX Address the Gateway assigned to this connection.
+                                    clientKnxAddress = tunnelConnectionDataBlock.getKnxAddress();
+
+                                    LOGGER.info(String.format("Successfully connected to KNXnet/IP Gateway '%s' with KNX address '%d.%d.%d' got assigned client KNX address '%d.%d.%d'", gatewayName,
+                                        gatewayAddress.getMainGroup(), gatewayAddress.getMiddleGroup(),
+                                        gatewayAddress.getSubGroup(), clientKnxAddress.getMainGroup(),
+                                        clientKnxAddress.getMiddleGroup(), clientKnxAddress.getSubGroup()));
 
                                     // Send an event that connection setup is complete.
                                     context.fireConnected();
@@ -253,70 +264,20 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             // Only if the communication channel id match, do anything with the request.
             // In case of a passive-mode driver we'll simply accept all communication ids.
             if(passiveMode || (curCommunicationChannelId == communicationChannelId)) {
-                if(tunnelingRequest.getCemi() instanceof CEMIBusmonInd) {
+                // Data packets received from a link layer tunneling connection.
+                if(tunnelingRequest.getCemi() instanceof CEMIDataInd) {
+                    CEMIDataInd dataInd = (CEMIDataInd) tunnelingRequest.getCemi();
+                    final CEMIDataIndFrame cemiDataFrame = dataInd.getCemiFrame();
+                    processCemiData(cemiDataFrame.getSourceAddress(), cemiDataFrame.getDestinationAddress(),
+                        cemiDataFrame.getDataFirstByte(), cemiDataFrame.getData());
+                }
+                // Data packets received from a busmonitor tunneling connection.
+                else if(tunnelingRequest.getCemi() instanceof CEMIBusmonInd) {
                     CEMIBusmonInd busmonInd = (CEMIBusmonInd) tunnelingRequest.getCemi();
                     if (busmonInd.getCemiFrame() instanceof CEMIFrameData) {
                         CEMIFrameData cemiDataFrame = (CEMIFrameData) busmonInd.getCemiFrame();
-
-                        // The first byte is actually just 6 bit long, but we'll treat it as a full one.
-                        // So here we create a byte array containing the first and all the following bytes.
-                        byte[] payload = new byte[1 + cemiDataFrame.getData().length];
-                        payload[0] = cemiDataFrame.getDataFirstByte();
-                        System.arraycopy(cemiDataFrame.getData(), 0, payload, 1, cemiDataFrame.getData().length);
-
-                        final KNXAddress sourceAddress = cemiDataFrame.getSourceAddress();
-                        final byte[] destinationGroupAddress = cemiDataFrame.getDestinationAddress();
-
-                        // Decode the group address depending on the project settings.
-                        ReadBuffer addressBuffer = new ReadBuffer(destinationGroupAddress);
-                        final KNXGroupAddress knxGroupAddress =
-                            KNXGroupAddressIO.staticParse(addressBuffer, groupAddressType);
-                        final String destinationAddress = toString(knxGroupAddress);
-
-                        // If there is an ETS5 model provided, continue decoding the payload.
-                        if (ets5Model != null) {
-                            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
-
-                            if ((groupAddress != null) && (groupAddress.getType() != null)) {
-                                LOGGER.info(String.format("Message from: '%s' to: '%s'",
-                                    toString(sourceAddress), destinationAddress));
-
-                                // Parse the payload depending on the type of the group-address.
-                                ReadBuffer rawDataReader = new ReadBuffer(payload);
-                                final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
-                                    groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
-
-                                // Assemble the plc4x return data-structure.
-                                Map<String, PlcValue> dataPointMap = new HashMap<>();
-                                dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
-                                dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
-                                if (groupAddress.getFunction() != null) {
-                                    dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
-                                    dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
-                                } else {
-                                    dataPointMap.put("location", null);
-                                    dataPointMap.put("function", null);
-                                }
-                                dataPointMap.put("description", new PlcString(groupAddress.getName()));
-                                dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
-                                dataPointMap.put("value", value);
-                                final PlcStruct dataPoint = new PlcStruct(dataPointMap);
-
-                                // Send the data-structure.
-                                publishEvent(groupAddress, dataPoint);
-                            } else {
-                                LOGGER.warn(
-                                    String.format("Message from: '%s' to unknown group address: '%s'%n payload: '%s'",
-                                        toString(sourceAddress), destinationAddress, Hex.encodeHexString(payload)));
-                            }
-                        }
-                        // Else just output the raw payload.
-                        else {
-                            LOGGER.info(String.format("Raw Message: '%s' to: '%s'%n payload: '%s'",
-                                KnxNetIpProtocolLogic.toString(sourceAddress), destinationAddress,
-                                Hex.encodeHexString(payload))
-                            );
-                        }
+                        processCemiData(cemiDataFrame.getSourceAddress(), cemiDataFrame.getDestinationAddress(),
+                            cemiDataFrame.getDataFirstByte(), cemiDataFrame.getData());
                     }
                 }
 
@@ -326,6 +287,66 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                     new TunnelingResponseDataBlock(communicationChannelId, sequenceCounter, Status.NO_ERROR));
                 context.sendToWire(tunnelingResponse);
             }
+        }
+    }
+
+    protected void processCemiData(KNXAddress sourceAddress, byte[] destinationGroupAddress,
+                                   byte firstByte, byte[] restBytes) throws ParseException {
+        // The first byte is actually just 6 bit long, but we'll treat it as a full one.
+        // So here we create a byte array containing the first and all the following bytes.
+        byte[] payload = new byte[1 + restBytes.length];
+        payload[0] = firstByte;
+        System.arraycopy(restBytes, 0, payload, 1, restBytes.length);
+
+        // Decode the group address depending on the project settings.
+        ReadBuffer addressBuffer = new ReadBuffer(destinationGroupAddress);
+        final KNXGroupAddress knxGroupAddress =
+            KNXGroupAddressIO.staticParse(addressBuffer, groupAddressType);
+        final String destinationAddress = toString(knxGroupAddress);
+
+        // If there is an ETS5 model provided, continue decoding the payload.
+        if (ets5Model != null) {
+            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
+
+            if ((groupAddress != null) && (groupAddress.getType() != null)) {
+                LOGGER.info(String.format("Message from: '%s' to: '%s'",
+                    toString(sourceAddress), destinationAddress));
+
+                // Parse the payload depending on the type of the group-address.
+                ReadBuffer rawDataReader = new ReadBuffer(payload);
+                final PlcValue value = KnxDatapointIO.staticParse(rawDataReader,
+                    groupAddress.getType().getMainType(), groupAddress.getType().getSubType());
+
+                // Assemble the plc4x return data-structure.
+                Map<String, PlcValue> dataPointMap = new HashMap<>();
+                dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
+                dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
+                if (groupAddress.getFunction() != null) {
+                    dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
+                    dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
+                } else {
+                    dataPointMap.put("location", null);
+                    dataPointMap.put("function", null);
+                }
+                dataPointMap.put("description", new PlcString(groupAddress.getName()));
+                dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
+                dataPointMap.put("value", value);
+                final PlcStruct dataPoint = new PlcStruct(dataPointMap);
+
+                // Send the data-structure.
+                publishEvent(groupAddress, dataPoint);
+            } else {
+                LOGGER.warn(
+                    String.format("Message from: '%s' to unknown group address: '%s'%n payload: '%s'",
+                        toString(sourceAddress), destinationAddress, Hex.encodeHexString(payload)));
+            }
+        }
+        // Else just output the raw payload.
+        else {
+            LOGGER.info(String.format("Raw Message: '%s' to: '%s'%n payload: '%s'",
+                KnxNetIpProtocolLogic.toString(sourceAddress), destinationAddress,
+                Hex.encodeHexString(payload))
+            );
         }
     }
 
