@@ -49,9 +49,14 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    @SuppressWarnings("all")
     public boolean isBoolean() {
-        // TODO: Implement ...
-        return super.isBoolean();
+        try {
+            Boolean.parseBoolean(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -62,9 +67,14 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    @SuppressWarnings("all")
     public boolean isByte() {
-        // TODO: Implement ...
-        return super.isByte();
+        try {
+            Byte.parseByte(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -75,9 +85,14 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    @SuppressWarnings("all")
     public boolean isShort() {
-        // TODO: Implement ...
-        return super.isShort();
+        try {
+            Short.parseShort(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -89,8 +104,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isInteger() {
-        // TODO: Implement ...
-        return super.isInteger();
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -102,8 +121,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isLong() {
-        // TODO: Implement ...
-        return super.isLong();
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -115,8 +138,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isBigInteger() {
-        // TODO: Implement ...
-        return super.isBigInteger();
+        try {
+            new BigInteger(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -128,8 +155,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isFloat() {
-        // TODO: Implement ...
-        return super.isFloat();
+        try {
+            Float.parseFloat(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -141,8 +172,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isDouble() {
-        // TODO: Implement ...
-        return super.isDouble();
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -154,8 +189,12 @@ public class PlcString extends PlcSimpleValue<String> {
     @Override
     @JsonIgnore
     public boolean isBigDecimal() {
-        // TODO: Implement ...
-        return super.isBigDecimal();
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
