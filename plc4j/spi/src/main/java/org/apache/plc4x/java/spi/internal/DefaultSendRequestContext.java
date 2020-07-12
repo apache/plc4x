@@ -98,7 +98,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
     }
 
     @Override
-    public <E extends Throwable> ConversationContext.SendRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
+    public ConversationContext.SendRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
         if (this.onTimeoutConsumer != null) {
             throw new ConversationContext.PlcWiringException("can't handle multiple timeout consumers");
         }
@@ -126,7 +126,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultSendRequestContext<R>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultSendRequestContext<>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
     @Override

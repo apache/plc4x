@@ -68,17 +68,6 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     }
 
     @Override
-    public ConversationContext.ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-        this.timeout = timeout;
-        if (expectClazz != null) {
-            throw new ConversationContext.PlcWiringException("can't expect class of type " + clazz + " as we already expecting clazz of type " + expectClazz);
-        }
-        expectClazz = clazz;
-        commands.addLast(Either.right(clazz::isInstance));
-        return this;
-    }
-
-    @Override
     public ConversationContext.ExpectRequestContext<T> check(Predicate<T> checker) {
         commands.addLast(Either.right(checker));
         return this;
@@ -94,7 +83,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     }
 
     @Override
-    public <E extends Throwable> ConversationContext.ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
+    public ConversationContext.ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
         if (this.onTimeoutConsumer != null) {
             throw new ConversationContext.PlcWiringException("can't handle multiple timeout consumers");
         }
@@ -122,7 +111,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultExpectRequestContext<R>(commands, timeout, finisher, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultExpectRequestContext<>(commands, timeout, finisher, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
 }

@@ -49,7 +49,7 @@ public interface ConversationContext<T> {
 
         void handle(Consumer<T> packetConsumer);
 
-        <E extends Throwable> SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
+        SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
         <E extends Throwable> SendRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
 
@@ -58,40 +58,19 @@ public interface ConversationContext<T> {
         <R> SendRequestContext<R> only(Class<R> clazz);
     }
 
-    ExpectRequestContext expectRequest(Class<T> clazz, Duration timeout);
+    ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout);
 
     interface ExpectRequestContext<T> {
-
-        ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout);
 
         ExpectRequestContext<T> check(Predicate<T> checker);
 
         void handle(Consumer<T> packetConsumer);
 
-        <E extends Throwable> ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
+        ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
         <E extends Throwable> ExpectRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
 
         <R> ExpectRequestContext<R> unwrap(Function<T, R> unwrapper);
-    }
-
-    class PlcCompletionException extends PlcRuntimeException {
-
-        public PlcCompletionException(String message) {
-            super(message);
-        }
-
-        public PlcCompletionException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public PlcCompletionException(Throwable cause) {
-            super(cause);
-        }
-
-        public PlcCompletionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-            super(message, cause, enableSuppression, writableStackTrace);
-        }
     }
 
     class PlcWiringException extends PlcRuntimeException {
@@ -99,4 +78,5 @@ public interface ConversationContext<T> {
             super(message);
         }
     }
+
 }
