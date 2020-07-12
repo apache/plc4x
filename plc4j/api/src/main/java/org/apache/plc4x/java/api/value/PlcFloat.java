@@ -54,7 +54,7 @@ public class PlcFloat extends PlcSimpleValue<Float> {
     @Override
     @JsonIgnore
     public boolean isByte() {
-        return true;
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class PlcFloat extends PlcSimpleValue<Float> {
     @Override
     @JsonIgnore
     public boolean isShort() {
-        return true;
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class PlcFloat extends PlcSimpleValue<Float> {
     @Override
     @JsonIgnore
     public boolean isInteger() {
-        return true;
+        return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PlcFloat extends PlcSimpleValue<Float> {
     @Override
     @JsonIgnore
     public boolean isLong() {
-        return true;
+        return (value != null) && (value <= Long.MAX_VALUE) && (value >= Long.MIN_VALUE);
     }
 
     @Override

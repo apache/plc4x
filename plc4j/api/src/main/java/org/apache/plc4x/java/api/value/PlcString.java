@@ -24,6 +24,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcString extends PlcSimpleValue<String> {
 
@@ -46,20 +49,61 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    public boolean isBoolean() {
+        // TODO: Implement ...
+        return super.isBoolean();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean getBoolean() {
         return Boolean.parseBoolean(value);
     }
 
     @Override
     @JsonIgnore
-    public double getDouble() {
-        return Double.parseDouble(value);
+    public boolean isByte() {
+        // TODO: Implement ...
+        return super.isByte();
     }
 
     @Override
     @JsonIgnore
-    public float getFloat() {
-        return Float.parseFloat(value);
+    public byte getByte() {
+        return Byte.parseByte(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isShort() {
+        // TODO: Implement ...
+        return super.isShort();
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return Short.parseShort(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        // TODO: Implement ...
+        return super.isInteger();
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        // TODO: Implement ...
+        return super.isLong();
     }
 
     @Override
@@ -70,8 +114,54 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
-    public int getInteger() {
-        return Integer.parseInt(value);
+    public boolean isBigInteger() {
+        // TODO: Implement ...
+        return super.isBigInteger();
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return new BigInteger(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        // TODO: Implement ...
+        return super.isFloat();
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return Float.parseFloat(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        // TODO: Implement ...
+        return super.isDouble();
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return Double.parseDouble(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        // TODO: Implement ...
+        return super.isBigDecimal();
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return new BigDecimal(value);
     }
 
     @Override

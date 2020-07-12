@@ -30,22 +30,6 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcInteger extends PlcSimpleValue<Integer> {
 
-    public PlcInteger(Byte value) {
-        super(value.intValue(), true);
-    }
-
-    public PlcInteger(byte value) {
-        super(((Byte) value).intValue(), false);
-    }
-
-    public PlcInteger(Short value) {
-        super(value.intValue(), true);
-    }
-
-    public PlcInteger(short value) {
-        super(((Short) value).intValue(), false);
-    }
-
     public PlcInteger(Integer value) {
         super(value, true);
     }
@@ -70,7 +54,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
     @Override
     @JsonIgnore
     public boolean isByte() {
-        return true;
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override
@@ -82,7 +66,7 @@ public class PlcInteger extends PlcSimpleValue<Integer> {
     @Override
     @JsonIgnore
     public boolean isShort() {
-        return true;
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
     }
 
     @Override
