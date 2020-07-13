@@ -252,20 +252,6 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     }
 
     @Override
-    public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
-        CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
-        DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
-
-        // Split up each item in the read request into a separate KNX read request.
-        for (String fieldName : request.getFieldNames()) {
-            final KnxNetIpField field = (KnxNetIpField) request.getField(fieldName);
-            byte[] destinationAddress = toKnxAddressData(field);
-            // TODO: Implement
-        }
-        return future;
-    }
-
-    @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
