@@ -68,8 +68,9 @@ public abstract class BaseOptimizer {
                                                      Map<PlcRequest, Either<PlcResponse, Exception>> writeResponses) {
         Map<String, PlcResponseCode> fields = new HashMap<>();
         for (Map.Entry<PlcRequest, Either<PlcResponse, Exception>> requestsEntries : writeResponses.entrySet()) {
+            PlcWriteRequest subWriteRequest = (PlcWriteRequest) requestsEntries.getKey();
             Either<PlcResponse, Exception> writeResponse = requestsEntries.getValue();
-            for (String fieldName : writeRequest.getFieldNames()) {
+            for (String fieldName : subWriteRequest.getFieldNames()) {
                 if (writeResponse.isLeft()) {
                     PlcWriteResponse subWriteResponse = (PlcWriteResponse) writeResponse.getLeft();
                     fields.put(fieldName, subWriteResponse.getResponseCode(fieldName));
