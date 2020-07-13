@@ -52,6 +52,10 @@
 3+|Supported Operations
 
 |
+| `write`
+| Only supported with `tcp` transport.
+
+|
 | `subscribe`
 |
 
@@ -91,9 +95,11 @@ KNX Addresses usually have one of the following structures:
 
 Depending on the `group-address-type` configured in the connection string or defined in the knxproj-file configured by the `knxproj-file-path` connection string parameter, the corresponding address pattern has to be used.
 
-However, each segment allows using of the wildcard character `*`.
+However, when subscribing for events, each segment allows using of the wildcard character `*`.
 If the addresses used in the KNX installation are structured, this way it is possible to, for example (depending on the scheme used):
 
 - Collect all information for a given level of your building: `1/*/*`
 - Collect all information for a given room: `2/4/*`
 - Collect all information about heating in all rooms: `*/*/50`
+
+NOTE: Don't use wildcards when explicitly reading or writing data, this is only supported when subscribing to events.

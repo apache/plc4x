@@ -9,6 +9,8 @@ a particular topic.
 New Features
 ------------
 
+The KNXnet/IP Driver now supports writing of values.
+
 Incompatible changes
 --------------------
 
@@ -22,6 +24,11 @@ PLC4X-209   [S7] When writing INT and DINT values the Write
 PLC4X-210   [KNX] When running a KNX Tunneling Subscription
             for a longer time there are packets that kill
             the connection
+PLC4X-211   PlcValues seem to always return "true" on the
+            isXYZ" checks.
+PLC4X-212   When writing multiple values in one request the
+            item status is not correctly set
+
 
 ==============================================================
 Apache PLC4X 0.7.0

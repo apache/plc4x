@@ -270,8 +270,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
-        // Split up each item in the write request into a separate KNX write request.
-        for (String fieldName : request.getFieldNames()) {
+        // As the KNX driver is using the SingleFieldOptimizer, each request here will have
+        // only one item.
+        final Optional<String> first = request.getFieldNames().stream().findFirst();
+        if (first.isPresent()) {
+            String fieldName = first.get();
             final KnxNetIpField field = (KnxNetIpField) request.getField(fieldName);
             byte[] destinationAddress = toKnxAddressData(field);
             if(sequenceCounter.get() == Short.MAX_VALUE) {
@@ -355,51 +358,42 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 new CEMIDataReq((short) 0, new CEMIAdditionalInformation[0],
                     new CEMIDataFrame(true, false, true, true, CEMIPriority.LOW, false, false, true, (byte) 6,
                         (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        (short) ((data != null) ? data.length + 1 : 1), TPCI.UNNUMBERED_DATA_PACKET, (byte) 0, APCI.GROUP_VALUE_WRITE_PDU,
-                        dataFirstByte, data)
+                        (short) ((data != null) ? data.length + 1 : 1), TPCI.UNNUMBERED_DATA_PACKET, (byte) 0,
+                        APCI.GROUP_VALUE_WRITE_PDU, dataFirstByte, data)
                 ));
 
             // Start a new request-transaction (Is ended in the response-handler)
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            // As as soon as we send the request, the Ack as well as the response packets are
-            // sent, we need to register for the response first.
-            final ConversationContext.ExpectRequestContext<TunnelingRequest> responseContext = context.expectRequest(KNXNetIPMessage.class, REQUEST_TIMEOUT)
-                .onTimeout(future::completeExceptionally)
-                .onError((tr, e) -> future.completeExceptionally(e))
-                .check(tr -> tr instanceof TunnelingRequest)
-                .unwrap(tr -> ((TunnelingRequest) tr))
-                .check(tr -> (tr.getTunnelingRequestDataBlock().getCommunicationChannelId() == communicationChannelId) &&
-                    (tr.getTunnelingRequestDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter()));
-            responseContext.handle(tr -> {
-                    System.out.println(tr);
-                    // TODO: Extract the data from the message ...
-//                                future.complete();
-
-                    // TODO: Send Ack back.
-                // Finish the request-transaction.
-                transaction.endRequest();
-                });
             // Start a new request-transaction (Is ended in the response-handler)
             transaction.submit(() -> context.sendRequest(knxRequest)
                 .expectResponse(KNXNetIPMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
-                .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof TunnelingResponse)
-                .unwrap(p -> ((TunnelingResponse) p))
-                .check(p -> (p.getTunnelingResponseDataBlock().getCommunicationChannelId() == communicationChannelId) &&
-                    (p.getTunnelingResponseDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter()))
-                .handle(p -> {
-                    if(p.getTunnelingResponseDataBlock().getStatus() != Status.NO_ERROR) {
-                        // Only if the status was ok, will be expecting a response.
-                        // So if it wasn't ok, we can cancel the handler for the response.
-//                        responseContext.cancel();
-                        // TODO: Handle the error-code and give a fitting PLC4X return code back.
-                        // If the problem is something like an invalid address, then instead of
-                        // completing exceptionally, set a PLC4X return code for the given item.
-//                        future.completeExceptionally();
-                        // Finish the request-transaction.
-                        transaction.endRequest();
-                    }
+                .onError((tr, e) -> future.completeExceptionally(e))
+                // Technically this is not 100% correct, as actually an Ack would be received
+                // which is instantly followed by this request. However the Ack was always OK
+                // no matter what I threw at the Gateway, so we'll make the code a lot simpler
+                // and assume the Request is the response to our request.
+                .check(tr -> tr instanceof TunnelingRequest)
+                .unwrap(tr -> ((TunnelingRequest) tr))
+                .check(tr -> tr.getCemi() instanceof CEMIDataCon)
+                .check(tr -> (tr.getTunnelingRequestDataBlock().getCommunicationChannelId() == communicationChannelId) &&
+                    (tr.getTunnelingRequestDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter()))
+                .handle(tr -> {
+                    // In this case all wen't well.
+                    PlcResponseCode responseCode = PlcResponseCode.OK;
+                    // Prepare the response.
+                    PlcWriteResponse response = new DefaultPlcWriteResponse(request,
+                        Collections.singletonMap(fieldName, responseCode));
+
+                    future.complete(response);
+
+                    // Send Ack back.
+                    TunnelingResponse ack = new TunnelingResponse(new TunnelingResponseDataBlock(communicationChannelId,
+                        tr.getTunnelingRequestDataBlock().getSequenceCounter(), Status.NO_ERROR));
+                    transaction.submit(() -> context.sendToWire(ack));
+
+                    // Finish the request-transaction.
+                    transaction.endRequest();
                 }));
         }
         return future;
@@ -441,6 +435,10 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                         Status.NO_ERROR));
                 context.sendToWire(tunnelingResponse);
             }
+        } else if(msg instanceof TunnelingResponse) {
+            // This is just handling of all the Ack messages that might come in for any read- or
+            // write requests. Usually this is just OK (I haven't managed to fake a message to cause
+            // something else than an OK)
         }
     }
 

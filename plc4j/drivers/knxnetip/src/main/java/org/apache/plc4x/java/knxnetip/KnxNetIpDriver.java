@@ -31,6 +31,8 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 
 import java.util.function.ToIntFunction;
 
@@ -71,6 +73,11 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
         return KnxNetIpConfiguration.class;
+    }
+
+    @Override
+    protected BaseOptimizer getOptimizer() {
+        return new SingleFieldOptimizer();
     }
 
     @Override
