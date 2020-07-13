@@ -234,31 +234,40 @@
 [discriminatedType 'CEMI' [uint 8 'size']
     [discriminator uint 8 'messageCode']
     [typeSwitch 'messageCode'
-        ['0x10' CEMIRawReq
-        ]
         ['0x11' CEMIDataReq
+            [simple uint 8                    'additionalInformationLength']
+            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple CEMIDataFrame             'cemiDataFrame']
         ]
-        ['0x13' CEMIPollDataReq
-        ]
-
-        ['0x25' CEMIPollDataCon
+        ['0x2E' CEMIDataCon
+            [simple uint 8                    'additionalInformationLength']
+            [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
+            [simple CEMIDataFrame             'cemiDataFrame']
         ]
         ['0x29' CEMIDataInd
             [simple uint 8                    'additionalInformationLength']
             [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
-            [simple CEMIDataIndFrame          'cemiFrame']
+            [simple CEMIDataFrame             'cemiDataFrame']
         ]
+
+        ['0x10' CEMIRawReq
+        ]
+        ['0x2F' CEMIRawCon
+        ]
+        ['0x2D' CEMIRawInd
+        ]
+
+        ['0x13' CEMIPollDataReq
+        ]
+        ['0x25' CEMIPollDataCon
+        ]
+
         ['0x2B' CEMIBusmonInd
             [simple uint 8                    'additionalInformationLength']
             [array  CEMIAdditionalInformation 'additionalInformation' length 'additionalInformationLength']
             [simple CEMIFrame                 'cemiFrame']
         ]
-        ['0x2D' CEMIRawInd
-        ]
-        ['0x2E' CEMIDataCon
-        ]
-        ['0x2F' CEMIRawCon
-        ]
+
         ['0xFC' CEMIMPropReadReq
             [simple uint 16 'interfaceObjectType']
             [simple uint  8 'objectInstance']
@@ -296,7 +305,7 @@
     ]
 ]
 
-[type 'CEMIDataIndFrame'
+[type 'CEMIDataFrame'
     [simple        bit          'standardFrame']
     [simple        bit          'polling']
     [simple        bit          'notRepeated']
