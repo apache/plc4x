@@ -19,6 +19,7 @@
 
 #include <plc4c/spi/read_buffer.h>
 #include <string.h>
+#include <math.h>
 
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
@@ -114,7 +115,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     uint8_t num_bytes_to_write = (num_bits / 8) + ((num_bits % 8 != 0) ? 1 : 0);
     // Do a quick range check for the input
     // (for the output, the calling function is responsible)
-    if ((buf->curPosByte + num_bytes_to_read) > buf->length) {
+    if ((buf->curPosByte + num_bytes_to_read - ((((buf->curPosBit + num_bits) % 8) == 0) ? 1 : 0)) > buf->length) {
       return OUT_OF_RANGE;
     }
 
@@ -522,11 +523,62 @@ plc4c_return_code plc4c_spi_read_signed_long(plc4c_spi_read_buffer* buf,
 
 plc4c_return_code plc4c_spi_read_float(plc4c_spi_read_buffer* buf,
                                        uint8_t num_bits, float* value) {
+  if(num_bits == 16) {
+      // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+      bool sign = false;
+      plc4c_return_code res = plc4c_spi_read_bit(buf, &sign);
+      if(res != OK) {
+        return res;
+      }
+      uint8_t exponent = 0;
+      res = plc4c_spi_read_unsigned_byte(buf, 5, &exponent);
+      if(res != OK) {
+        return res;
+      }
+      uint16_t fraction = 0;
+      res = plc4c_spi_read_unsigned_short(buf, 10, &fraction);
+      if(res != OK) {
+        return res;
+      }
+
+      if((exponent >= 1) && (exponent <= 30)) {
+        *value = (sign ? (float) 1 : (float) -1) * ((float) (2 ^ (exponent - 15))) * ((float) (1 + (fraction / 10)));
+      } else if(exponent == 0) {
+        if (fraction == 0) {
+          *value = 0.0f;
+        } else {
+          *value = (sign ? (float) 1 : (float) -1) * ((float) (2 ^ (-14))) * ((float) (fraction / 10));
+        }
+      } else if(exponent == 31) {
+        if (fraction == 0) {
+          *value = sign ? INFINITY : -INFINITY;
+        } else {
+          *value = NAN;
+        }
+      } else {
+        return INVALID_ARGUMENT;
+      }
+  } else if(num_bits == 32) {
+      plc4c_return_code res = plc4c_spi_read_unsigned_int(buf, 32, (uint32_t*) value);
+      if(res != OK) {
+          return res;
+      }
+  } else {
+      return INVALID_ARGUMENT;
+  }
   return OK;
 }
 
 plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf,
                                         uint8_t num_bits, double* value) {
+  if(num_bits == 64) {
+    plc4c_return_code res = plc4c_spi_read_unsigned_long(buf, 64, (uint64_t*) value);
+    if(res != OK) {
+      return res;
+    }
+  } else {
+    return INVALID_ARGUMENT;
+  }
   return OK;
 }
 

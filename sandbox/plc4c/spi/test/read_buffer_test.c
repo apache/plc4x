@@ -647,6 +647,62 @@ void test_plc4c_spi_read_signed_long(void) {
   test_plc4c_spi_read_signed_long_args("Simple 6 bit signed long", read_buffer, 6, OK, 22);
 }
 
+void test_plc4c_spi_read_float_args(char* message,
+                                    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+                                    plc4c_return_code expected_return_code, float expected_value) {
+    printf("Running read_buffer read_float test: %s", message);
+
+    float value = -1;
+    plc4c_return_code result =
+            plc4c_spi_read_float(read_buffer, num_bits, &value);
+
+    TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+    TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+    printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_float(void) {
+    // Prepare input data
+    uint8_t data[] = {0x40, 0x49, 0x0f, 0xdb};
+    plc4c_spi_read_buffer* read_buffer;
+    plc4c_spi_read_buffer_create(data, 4, &read_buffer);
+    // Run test
+    // Read all the full bytes
+    test_plc4c_spi_read_float_args("Simple 16 bit float 1", read_buffer, 16, OK, -24);
+    test_plc4c_spi_read_float_args("Simple 16 bit float 2", read_buffer, 16, OK, 990);
+    // Read the only part of a long (having to fill up 1s)
+    read_buffer->curPosByte = 0;
+    read_buffer->curPosBit = 0;
+    test_plc4c_spi_read_float_args("Simple 32 bit float", read_buffer, 32, OK, 3.14159274);
+    // Read the only part of a long (having to fill up 1s)
+}
+
+void test_plc4c_spi_read_double_args(char* message,
+                                    plc4c_spi_read_buffer* read_buffer, uint8_t num_bits,
+                                    plc4c_return_code expected_return_code, double expected_value) {
+    printf("Running read_buffer read_double test: %s", message);
+
+    double value = -1;
+    plc4c_return_code result =
+            plc4c_spi_read_double(read_buffer, num_bits, &value);
+
+    TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+    TEST_ASSERT_EQUAL_INT(expected_value, value);
+
+    printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_double(void) {
+    // Prepare input data
+    uint8_t data[] = {0x40, 0x09, 0x21, 0xfb, 0x54, 0x44, 0x2d, 0x18};
+    plc4c_spi_read_buffer* read_buffer;
+    plc4c_spi_read_buffer_create(data, 8, &read_buffer);
+    test_plc4c_spi_read_double_args("Simple 64 bit float", read_buffer, 64, OK, 3.1415926535897931);
+    // Read the only part of a long (having to fill up 1s)
+}
+
+
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
   test_plc4c_spi_read_get_total_bytes();
@@ -665,4 +721,7 @@ void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_signed_short();
   test_plc4c_spi_read_signed_int();
   test_plc4c_spi_read_signed_long();
+
+  test_plc4c_spi_read_float();
+  test_plc4c_spi_read_double();
 }
