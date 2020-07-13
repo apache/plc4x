@@ -123,6 +123,13 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         for (Iterator<HandlerRegistration> iter = this.registeredHandlers.iterator(); iter.hasNext(); ) {
             HandlerRegistration registration = iter.next();
             // Check if the handler can still be used or should be removed
+            // Was cancelled?
+            if (registration.isCancelled()) {
+                logger.debug("Removing {} as it was cancelled!", registration);
+                iter.remove();
+                continue;
+            }
+            // Timeout?
             if (registration.getTimeout().isBefore(Instant.now())) {
                 logger.debug("Removing {} as its timed out (was set till {})", registration, registration.getTimeout());
                 iter.remove();
@@ -152,6 +159,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 this.registeredHandlers.remove(registration);
                 Consumer handler = registration.getPacketConsumer();
                 handler.accept(instance);
+                // Confirm that it was handled!
+                registration.confirmHandled();
                 return;
             }
         }

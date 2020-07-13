@@ -47,7 +47,7 @@ public interface ConversationContext<T> {
 
         SendRequestContext<T> check(Predicate<T> checker);
 
-        void handle(Consumer<T> packetConsumer);
+        ContextHandler handle(Consumer<T> packetConsumer);
 
         SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
@@ -64,7 +64,7 @@ public interface ConversationContext<T> {
 
         ExpectRequestContext<T> check(Predicate<T> checker);
 
-        void handle(Consumer<T> packetConsumer);
+        ContextHandler handle(Consumer<T> packetConsumer);
 
         ExpectRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
@@ -77,6 +77,14 @@ public interface ConversationContext<T> {
         public PlcWiringException(String message) {
             super(message);
         }
+    }
+
+    interface ContextHandler {
+
+        boolean isDone();
+
+        void cancel();
+
     }
 
 }

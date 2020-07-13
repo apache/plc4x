@@ -48,6 +48,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     protected BiConsumer<?, ? extends Throwable> errorConsumer;
 
     protected Duration timeout;
+    private HandlerRegistration registration;
 
     public DefaultExpectRequestContext(Consumer<HandlerRegistration> finisher, Class<T> expectClazz, Duration timeout, ConversationContext context) {
         this.finisher = finisher;
@@ -74,12 +75,14 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
     }
 
     @Override
-    public void handle(Consumer<T> packetConsumer) {
+    public ConversationContext.ContextHandler handle(Consumer<T> packetConsumer) {
         if (this.packetConsumer != null) {
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        finisher.accept(new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout)));
+        registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout));
+        finisher.accept(registration);
+        return new DefaultContextHandler(registration::hasHandled, registration::cancel);
     }
 
     @Override
