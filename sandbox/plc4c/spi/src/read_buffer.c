@@ -23,8 +23,8 @@
 
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
-const int i = 1;
-#define plc4c_is_bigendian() (((char)&i) == 0)
+const int hurz = 1;
+#define plc4c_is_bigendian() (((char)&hurz) == 0)
 
 uint8_t bit_mask[9] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 // This matrix contains constants for reading X bits starting with bit Y.
@@ -590,5 +590,21 @@ plc4c_return_code plc4c_spi_read_double(plc4c_spi_read_buffer* buf,
 plc4c_return_code plc4c_spi_read_string(plc4c_spi_read_buffer* buf,
                                         uint8_t num_bits, char* encoding,
                                         char** value) {
+  // Right now we only support utf-8.
+  if(strcmp(encoding,"UTF-8") != 0) {
+      return INVALID_ARGUMENT;
+  }
+
+  // Allocate enough chars to contain the string and add one for the termination character.
+  char* str = malloc(sizeof(char) * ((num_bits / 8) + 1));
+  char* cur_str = str;
+  // Read all the bytes one by one.
+  for(int i = 0; (i < (num_bits / 8)) && plc4c_spi_read_has_more(buf, 8); i++) {
+    plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) cur_str);
+      cur_str++;
+  }
+  // Terminate the string.
+  cur_str = '\0';
+  *value = str;
   return OK;
 }

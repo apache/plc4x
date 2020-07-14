@@ -702,6 +702,29 @@ void test_plc4c_spi_read_double(void) {
     // Read the only part of a long (having to fill up 1s)
 }
 
+void test_plc4c_spi_read_string_args(char* message,
+                                     plc4c_spi_read_buffer* read_buffer, uint8_t num_bits, char* encoding,
+                                     plc4c_return_code expected_return_code, char* expected_value) {
+    printf("Running read_buffer read_string test: %s", message);
+
+    char* value = NULL;
+    plc4c_return_code result =
+            plc4c_spi_read_string(read_buffer, num_bits, encoding, &value);
+
+    TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+    TEST_ASSERT_EQUAL_STRING(expected_value, value);
+
+    printf(" -> OK\n");
+}
+
+void test_plc4c_spi_read_string(void) {
+    // Prepare input data
+    uint8_t data[] = {0x48, 0x75, 0x72, 0x7a};
+    plc4c_spi_read_buffer* read_buffer;
+    plc4c_spi_read_buffer_create(data, 32, &read_buffer);
+    test_plc4c_spi_read_string_args("Simple 32 bit string (4 chars)", read_buffer, 32, "UTF-8", OK, "Hurz");
+    // Read the only part of a long (having to fill up 1s)
+}
 
 void test_plc4c_spi_read_buffer(void) {
   test_plc4c_spi_read_buffer_create();
@@ -724,4 +747,6 @@ void test_plc4c_spi_read_buffer(void) {
 
   test_plc4c_spi_read_float();
   test_plc4c_spi_read_double();
+
+  test_plc4c_spi_read_string();
 }
