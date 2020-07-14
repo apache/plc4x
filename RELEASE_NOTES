@@ -28,6 +28,11 @@ PLC4X-211   PlcValues seem to always return "true" on the
             isXYZ" checks.
 PLC4X-212   When writing multiple values in one request the
             item status is not correctly set
+PLC4X-215   Drivers using the BaseOptimizer
+            (SingleFieldOptimizer) don't handle error responses
+            gracefully
+PLC4X-213   [Modbus] The Modbus driver doesn't handle error
+            responses gracefully
 
 
 ==============================================================

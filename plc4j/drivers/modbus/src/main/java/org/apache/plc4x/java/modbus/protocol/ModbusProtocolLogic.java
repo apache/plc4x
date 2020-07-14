@@ -19,10 +19,7 @@ under the License.
 package org.apache.plc4x.java.modbus.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcBoolean;
@@ -108,12 +105,39 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     // Try to decode the response data based on the corresponding request.
                     PlcValue plcValue = null;
                     PlcResponseCode responseCode;
-                    try {
-                        plcValue = toPlcValue(requestPdu, responsePdu);
-                        responseCode = PlcResponseCode.OK;
-                    } catch (ParseException e) {
-                        // Add an error response code ...
-                        responseCode = PlcResponseCode.INTERNAL_ERROR;
+                    // Check if the response was an error response.
+                    if (responsePdu instanceof ModbusPDUError) {
+                        ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
+                        switch (errorResponse.getExceptionCode()) {
+                            case 1:
+                                // This implies the received function code is not supported.
+                                responseCode = PlcResponseCode.UNSUPPORTED;
+                                break;
+                            case 2:
+                                responseCode = PlcResponseCode.INVALID_ADDRESS;
+                                break;
+                            case 3:
+                                responseCode = PlcResponseCode.INVALID_DATA;
+                                break;
+                            case 4:
+                                responseCode = PlcResponseCode.REMOTE_ERROR;
+                                break;
+                            case 6:
+                                responseCode = PlcResponseCode.REMOTE_BUSY;
+                                break;
+                            default:
+                                // This generally implies that something wen't wrong which we didn't anticipate.
+                                responseCode = PlcResponseCode.INTERNAL_ERROR;
+                                break;
+                        }
+                    } else {
+                        try {
+                            plcValue = toPlcValue(requestPdu, responsePdu);
+                            responseCode = PlcResponseCode.OK;
+                        } catch (ParseException e) {
+                            // Add an error response code ...
+                            responseCode = PlcResponseCode.INTERNAL_ERROR;
+                        }
                     }
 
                     // Prepare the response.
@@ -215,21 +239,24 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response) throws ParseException {
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
             if (!(response instanceof ModbusPDUReadDiscreteInputsResponse)) {
-                throw new PlcRuntimeException("Unexpected response type ModbusPDUReadDiscreteInputsResponse");
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadDiscreteInputsResponse, but got " + response.getClass().getName());
             }
             ModbusPDUReadDiscreteInputsRequest req = (ModbusPDUReadDiscreteInputsRequest) request;
             ModbusPDUReadDiscreteInputsResponse resp = (ModbusPDUReadDiscreteInputsResponse) response;
             return readBooleanList(req.getQuantity(), resp.getValue());
         } else if (request instanceof ModbusPDUReadCoilsRequest) {
             if (!(response instanceof ModbusPDUReadCoilsResponse)) {
-                throw new PlcRuntimeException("Unexpected response type ModbusPDUReadCoilsResponse");
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadCoilsResponse, but got " + response.getClass().getName());
             }
             ModbusPDUReadCoilsRequest req = (ModbusPDUReadCoilsRequest) request;
             ModbusPDUReadCoilsResponse resp = (ModbusPDUReadCoilsResponse) response;
             return readBooleanList(req.getQuantity(), resp.getValue());
         } else if (request instanceof ModbusPDUReadInputRegistersRequest) {
             if (!(response instanceof ModbusPDUReadInputRegistersResponse)) {
-                throw new PlcRuntimeException("Unexpected response type ModbusPDUReadInputRegistersResponse");
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadInputRegistersResponse, but got " + response.getClass().getName());
             }
             ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
@@ -237,7 +264,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             return DataItemIO.staticParse(io, (short) 2, (short) req.getQuantity());
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
-                throw new PlcRuntimeException("Unexpected response type ModbusPDUReadHoldingRegistersResponse");
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadHoldingRegistersResponse, but got " + response.getClass().getName());
             }
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
