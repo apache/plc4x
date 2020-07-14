@@ -49,9 +49,10 @@ public abstract class BaseOptimizer {
             for (String fieldName : curRequest.getFieldNames()) {
                 if (readResponse.isLeft()) {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
-                    fields.put(fieldName,
-                        new ResponseItem<>(subReadResponse.getResponseCode(fieldName),
-                            subReadResponse.getAsPlcValue().getValue(fieldName)));
+                    PlcResponseCode responseCode = subReadResponse.getResponseCode(fieldName);
+                    PlcValue value = (responseCode == PlcResponseCode.OK) ?
+                        subReadResponse.getAsPlcValue().getValue(fieldName) : null;
+                    fields.put(fieldName, new ResponseItem<>(responseCode, value));
                 } else {
                     fields.put(fieldName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
