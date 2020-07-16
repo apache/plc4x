@@ -18,15 +18,10 @@
  */
 package org.apache.plc4x.java.examples.integration.iotdb;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import org.apache.edgent.function.Supplier;
 import org.apache.edgent.providers.direct.DirectProvider;
 import org.apache.edgent.topology.TStream;
 import org.apache.edgent.topology.Topology;
-import org.apache.iotdb.jdbc.IoTDBSQLException;
 import org.apache.plc4x.edgent.PlcConnectionAdapter;
 import org.apache.plc4x.edgent.PlcFunctions;
 import org.slf4j.Logger;
@@ -40,19 +35,13 @@ import java.util.concurrent.TimeUnit;
  * modified according to hello-integration-edgent
  *
  * arguments example:
- * --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:BYTE  --polling-interval 1000
+ * --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:Integer  --polling-interval 1000
  * --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi
  * --iotdb-device d1 --iotdb-datatype INT32
  */
 public class PlcLogger {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcLogger.class);
-
-    //IoTDB JDBC connection
-    static Connection connection;
-
-    //IoTDB JDBC Statement
-    static Statement statement;
 
     //Time series ID
     static String timeSeries;
@@ -62,6 +51,12 @@ public class PlcLogger {
 
     //sensor ID
     static String sensor;
+
+    static String dataType;
+
+    static IIoTDBWriter ioTDBWriter = null;
+
+    static boolean useJDBC = true;
 
     public static void main(String[] args) throws Exception {
         CliOptions options = CliOptions.fromArgs(args);
@@ -74,21 +69,27 @@ public class PlcLogger {
         deviceId = String.format("root.%s.%s", options.getStorageGroup(), options.getDevice());
         sensor = options.getFieldAddress().replace("/", "_").replace(":", "_");
         timeSeries = String.format("%s.%s", deviceId, sensor);
+        dataType = options.getDevice();
 
         // Get IoTDB connection
-        Class.forName("org.apache.iotdb.jdbc.IoTDBDriver");
-        connection = DriverManager.getConnection("jdbc:iotdb://" + options.getIotdbIpPort()+"/",
-            options.getUser(), options.getPassword());
-        statement = connection.createStatement();
+        if (useJDBC) {
+            ioTDBWriter = new IoTDBWriterWithJDBC(options.getIotdbIpPort(), options.getUser(), options.getPassword());
+        } else {
+            ioTDBWriter = new IoTDBWriterWithSession(options.getIotdbIpPort(), options.getUser(), options.getPassword());
+        }
 
         //as we do not know whether the storage group is created or not, we can init the storage
         // group in force.
-        try {
-            statement.execute("SET STORAGE GROUP TO root." + options.getStorageGroup());
-        } catch (IoTDBSQLException e) {
-            //from v0.9.0, you can use the error code to check whether the sg exists.
-            LOGGER.error(e.getMessage());
-        }
+        //from v0.9.0 on, IoTDB can automatically create storage group if you enable the parameter
+        //`enable_auto_create_schema` and set the suitable `default_storage_group_level`.
+        // If so, this method can be ignored.
+        ioTDBWriter.initStorageGroup("root." + options.getStorageGroup());
+
+        //register the time series. from v0.9.0 on, IoTDB can automatically create timeseries
+        //if you enable the parameter `enable_auto_create_schema`.
+        //But if you want to explicitly define the series data type, you have to call the method.
+
+        //ioTDBWriter.createTimeseries(timeSeries, dataType);
 
         // Get a plc connection.
         try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(options.getConnectionString())) {
@@ -98,34 +99,19 @@ public class PlcLogger {
 
             // Define the event stream.
             // 1) PLC4X source generating a stream of bytes.
-            Supplier<Byte> plcSupplier = PlcFunctions.byteSupplier(plcAdapter,
+            Supplier<Integer> plcSupplier = PlcFunctions.integerSupplier(plcAdapter,
                 options.getFieldAddress());
             // 2) Use polling to get an item from the byte-stream in regular intervals.
-            TStream<Byte> source = top.poll(plcSupplier, options.getPollingInterval(),
+            TStream<Integer> source = top.poll(plcSupplier, options.getPollingInterval(),
                 TimeUnit.MILLISECONDS);
             // 3) Output the events in the stream to IoTDB.
-            source.peek(PlcLogger::storeData);
-
+            source.peek(value -> ioTDBWriter.writeData(deviceId, sensor, System.currentTimeMillis(), value));
             // Submit the topology and hereby start the event streams.
             dp.submit(top);
         }
         //close IoTDB client.
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOGGER.error("Error shutting down.", e);
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(ioTDBWriter::close));
     }
 
-    private static void storeData(Byte x) {
-        try {
-            statement.execute(String.format("insert into %s  (timestamp, %s) values (%d, %s)",
-                deviceId, sensor, System.currentTimeMillis(), x + ""));
-        } catch (SQLException e) {
-            LOGGER.error("Error storing data.", e);
-        }
-    }
 
 }

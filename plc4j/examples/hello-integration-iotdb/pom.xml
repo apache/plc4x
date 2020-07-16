@@ -68,11 +68,29 @@
       <artifactId>logback-classic</artifactId>
     </dependency>
 
-    <!-- iotdb -->
+    <!-- iotdb JDBC driver-->
     <dependency>
       <groupId>org.apache.iotdb</groupId>
       <artifactId>iotdb-jdbc</artifactId>
-      <version>0.9.3</version>
+      <version>0.10.0</version>
+    </dependency>
+
+    <!-- iotdb session SDK driver-->
+    <dependency>
+      <groupId>org.apache.iotdb</groupId>
+      <artifactId>iotdb-session</artifactId>
+      <version>0.10.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.25</version>
     </dependency>
   </dependencies>
 
