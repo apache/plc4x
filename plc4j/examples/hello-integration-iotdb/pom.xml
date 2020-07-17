@@ -32,8 +32,24 @@
   <description>Application using Edgent to output PLC data to the IoTDB.</description>
 
   <properties>
+    <iotdb.version>0.10.0</iotdb.version>
+
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -63,34 +79,44 @@
       <artifactId>commons-cli</artifactId>
       <version>1.4</version>
     </dependency>
+
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
+      <groupId>org.apache.iotdb</groupId>
+      <artifactId>tsfile</artifactId>
+      <version>${iotdb.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.iotdb</groupId>
+      <artifactId>service-rpc</artifactId>
+      <version>${iotdb.version}</version>
     </dependency>
 
     <!-- iotdb JDBC driver-->
     <dependency>
       <groupId>org.apache.iotdb</groupId>
       <artifactId>iotdb-jdbc</artifactId>
-      <version>0.10.0</version>
+      <version>${iotdb.version}</version>
     </dependency>
 
     <!-- iotdb session SDK driver-->
     <dependency>
       <groupId>org.apache.iotdb</groupId>
       <artifactId>iotdb-session</artifactId>
-      <version>0.10.0</version>
+      <version>${iotdb.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <artifactId>log4j-over-slf4j</artifactId>
       <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
 
