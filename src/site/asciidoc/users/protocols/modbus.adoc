@@ -103,9 +103,9 @@ Here come the syntax descriptions of these addresses (Each address can reference
 |===
 |Name |Address Syntax |Description |Bit-Size
 
-|Discrete Input   |`discrete-input:{start-address}` or `discrete-input:{start-address}[{count}]`   |Read-only Boolean input value, usually representing a binary input to the PLC |1
-|Input Register   |`input-register:{start-address}` or `input-register:{start-address}[{count}]`   |Read-only Short input value, usually representing an analog input to the PLC  |16
-|Coil             |`coil:{start-address}` or `coil:{start-address}[{count}]`             |Read/Write Boolean value, usually representing a binary output from the PLC   |1
-|Holding Register |`holding-register:{start-address}` or `holding-register:{start-address}[{count}]` |Read/Write Short value, usually representing an analog output from the PLC    |16
+|Discrete Input   |`discrete-input:{start-address}` or `discrete-input:{start-address}[{count}]` or `1{start-address}` or `1{start-address}[{count}]` or `1x{start-address}` or `1x{start-address}[{count}]`   |Read-only Boolean input value, usually representing a binary input to the PLC |1
+|Input Register   |`input-register:{start-address}` or `input-register:{start-address}[{count}]` or `3{start-address}` or `3{start-address}[{count}]` or `3x{start-address}` or `3x{start-address}[{count}]`   |Read-only Short input value, usually representing an analog input to the PLC  |16
+|Coil             |`coil:{start-address}` or `coil:{start-address}[{count}]` or `0{start-address}` or `0{start-address}[{count}]` or `0x{start-address}` or `0x{start-address}[{count}]`             |Read/Write Boolean value, usually representing a binary output from the PLC   |1
+|Holding Register |`holding-register:{start-address}` or `holding-register:{start-address}[{count}]` or `4{start-address}` or `4{start-address}[{count}]` or `4x{start-address}` or `4x{start-address}[{count}]` |Read/Write Short value, usually representing an analog output from the PLC    |16
 
 |===

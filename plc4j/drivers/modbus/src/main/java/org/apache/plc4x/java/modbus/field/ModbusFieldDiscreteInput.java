@@ -26,21 +26,42 @@ import java.util.regex.Pattern;
 public class ModbusFieldDiscreteInput extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("discrete-input:" + ModbusField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("1" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("1x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
     public ModbusFieldDiscreteInput(int address, Integer quantity) {
         super(address, quantity);
     }
 
-    public static ModbusFieldDiscreteInput of(String addressString) throws PlcInvalidFieldException {
+    public static boolean matches(String addressString) {
+        return ADDRESS_PATTERN.matcher(addressString).matches() ||
+            ADDRESS_SHORTER_PATTERN.matcher(addressString).matches() ||
+            ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
+    }
+
+    public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
-        if (!matcher.matches()) {
-            throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
+        if (matcher.matches()) {
+          return matcher;
         }
-        int address = Integer.parseInt(matcher.group("address"));
+        matcher = ADDRESS_SHORT_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        }
+        matcher = ADDRESS_SHORTER_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        } else {
+          throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
+        }
+    }
+
+    public static ModbusFieldDiscreteInput of(String addressString) {
+        Matcher matcher = getMatcher(addressString);
+        int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
         return new ModbusFieldDiscreteInput(address, quantity);
     }
-
 }
