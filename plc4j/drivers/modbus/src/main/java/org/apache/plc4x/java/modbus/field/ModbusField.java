@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
 public abstract class ModbusField implements PlcField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?");
-    protected static final int protocolAddressOffset = 1;
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})(\\[(?<quantity>\\d+)])?");
+    protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
@@ -52,8 +53,8 @@ public abstract class ModbusField implements PlcField {
 
     protected ModbusField(int address, Integer quantity) {
         this.address = address;
-        if ((this.address + protocolAddressOffset) <= 0) {
-            throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + protocolAddressOffset));
+        if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
+            throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
         }
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {

@@ -26,8 +26,8 @@ import java.util.regex.Pattern;
 public class ModbusFieldInputRegister extends ModbusField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("input-register:" + ModbusField.ADDRESS_PATTERN);
-    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("3" + ModbusField.ADDRESS_PATTERN);
-    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("3x" + ModbusField.ADDRESS_PATTERN);
+    public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("3" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
+    public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("3x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
     protected ModbusFieldInputRegister(int address, Integer quantity) {
         super(address, quantity);
@@ -40,23 +40,24 @@ public class ModbusFieldInputRegister extends ModbusField {
     }
 
     public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
-        Matcher matcher;
-        if (ADDRESS_PATTERN.matcher(addressString).matches()) {
-          matcher = ADDRESS_PATTERN.matcher(addressString);
-        } else if (ADDRESS_SHORT_PATTERN.matcher(addressString).matches()) {
-          matcher = ADDRESS_SHORT_PATTERN.matcher(addressString);
-        } else if (ADDRESS_SHORTER_PATTERN.matcher(addressString).matches()) {
-          matcher = ADDRESS_SHORTER_PATTERN.matcher(addressString);
-        } else {
-          throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
+        Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
         }
-        return matcher;
+        matcher = ADDRESS_SHORT_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        }
+        matcher = ADDRESS_SHORTER_PATTERN.matcher(addressString);
+        if (matcher.matches()) {
+          return matcher;
+        }
+        throw new PlcInvalidFieldException(addressString, ADDRESS_PATTERN);
     }
 
-    public static ModbusFieldInputRegister of(String addressString) throws PlcInvalidFieldException {
+    public static ModbusFieldInputRegister of(String addressString) {
         Matcher matcher = getMatcher(addressString);
-        matcher.find();
-        int address = Integer.parseInt(matcher.group("address")) - protocolAddressOffset;
+        int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
