@@ -56,7 +56,7 @@ public class PlcLogger {
 
     static IIoTDBWriter ioTDBWriter = null;
 
-    static boolean useJDBC = true;
+    static boolean useJDBC;
 
     public static void main(String[] args) throws Exception {
         CliOptions options = CliOptions.fromArgs(args);
@@ -65,7 +65,7 @@ public class PlcLogger {
             // Could not parse.
             System.exit(1);
         }
-
+        useJDBC = options.isUseJDBC();
         deviceId = String.format("root.%s.%s", options.getStorageGroup(), options.getDevice());
         sensor = options.getFieldAddress().replace("/", "_").replace(":", "_");
         timeSeries = String.format("%s.%s", deviceId, sensor);

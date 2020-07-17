@@ -39,7 +39,7 @@ to collect data using PLC4x and then writing data to IoTDB.
 
 To run the java example, some arguments are needed:
 
-e.g., `java -jar .....  --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:Integer  --polling-interval 1000 --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi --iotdb-device d1 --iotdb-datatype INT32`
+e.g., `java -jar .....  --connection-string simulated://127.0.0.1 --field-address RANDOM/foo:Integer  --polling-interval 1000 --iotdb-address 127.0.0.1:6667 --iotdb-user-name root --iotdb-user-password root --iotdb-sg mi --iotdb-device d1 --iotdb-datatype INT32 --use-jdbc false`
 
 Then PLC4x will collect data from a simulated PLC device, which generate random integer per 1 second.
 IoTDB's address is 127.0.0.1 and the port is 6667. The data will be stored in device `root.m1.d1`, and the measurement name is RANDOM_foo_Integer.
