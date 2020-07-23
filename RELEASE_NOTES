@@ -38,6 +38,9 @@ PLC4X-213   [Modbus] The Modbus driver doesn't handle error
             responses gracefully
 PLC4X-214   [Modbus] Holding register addresses have an offset
             of 1 (Not reading the correct address)
+PLC4X-218   [Scraper] After stopping the scraper still the
+            statistics are logged and the application doesn't
+            terminate
 
 
 ==============================================================
