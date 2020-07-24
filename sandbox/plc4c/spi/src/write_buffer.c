@@ -383,12 +383,33 @@ plc4c_return_code plc4c_spi_write_signed_long(plc4c_spi_write_buffer* buf,
 
 plc4c_return_code plc4c_spi_write_float(plc4c_spi_write_buffer* buf,
                                         uint8_t num_bits, float value) {
-  return OK;
+  // Half precision floats (16 bit) are currently not implemented.
+  if(num_bits != 32) {
+    return NOT_IMPLEMENTED;
+  }
+  // Use this little helper to convert the 32 bit
+  // float into a 32 bit unsigned int.
+  union {
+    float f;
+    uint32_t u;
+  } helper;
+  helper.f = value;
+  return plc4c_spi_write_unsigned_int(buf, num_bits, helper.u);
 }
 
 plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf,
                                          uint8_t num_bits, double value) {
-  return OK;
+  if(num_bits != 64) {
+    return NOT_IMPLEMENTED;
+  }
+  // Use this little helper to convert the 64 bit
+  // float into a 64 bit unsigned int.
+  union {
+    double d;
+    uint64_t u;
+  } helper;
+  helper.d = value;
+  return plc4c_spi_write_unsigned_long(buf, num_bits, (uint64_t) helper.u);
 }
 
 // TODO: Not sure which type to use in this case ...

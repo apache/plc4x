@@ -809,6 +809,53 @@ void test_plc4c_spi_write_signed_long(void) {
   plc4c_spi_write_buffer_destroy(write_buffer);
 }
 
+void test_plc4c_spi_write_float_args(char* message,
+                                    plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                    plc4c_return_code expected_return_code, float value) {
+  printf("Running write_buffer write_float test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_float(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_float(void) {
+  // Prepare input data
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_spi_write_buffer_create(4, &write_buffer);
+  test_plc4c_spi_write_float_args("Simple 32 bit float", write_buffer, 32, OK, 3.14159274);
+  uint8_t expected_data[] = {0x40, 0x49, 0x0f, 0xdb};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
+void test_plc4c_spi_write_double_args(char* message,
+                                     plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                     plc4c_return_code expected_return_code, double value) {
+  printf("Running write_buffer write_double test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_double(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_double(void) {
+  // Prepare input data
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  test_plc4c_spi_write_double_args("Simple 64 bit float", write_buffer, 64, OK, 3.1415926535897931);
+  uint8_t expected_data[] = {0x40, 0x09, 0x21, 0xfb, 0x54, 0x44, 0x2d, 0x18};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
+
 void test_plc4c_spi_write_buffer(void) {
   test_plc4c_spi_write_buffer_create();
 
@@ -823,4 +870,7 @@ void test_plc4c_spi_write_buffer(void) {
   test_plc4c_spi_write_signed_short();
   test_plc4c_spi_write_signed_int();
   test_plc4c_spi_write_signed_long();
+
+  test_plc4c_spi_write_float();
+  test_plc4c_spi_write_double();
 }
