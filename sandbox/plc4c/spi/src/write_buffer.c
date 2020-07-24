@@ -420,5 +420,14 @@ plc4c_return_code plc4c_spi_write_double(plc4c_spi_write_buffer* buf,
 plc4c_return_code plc4c_spi_write_string(plc4c_spi_write_buffer* buf,
                                          uint8_t num_bits, char* encoding,
                                          char* value) {
+  // Right now we only support utf-8.
+  if(strcmp(encoding,"UTF-8") != 0) {
+    return INVALID_ARGUMENT;
+  }
+  // Simply output the bytes to the buffer.
+  for(int i = 0; (i < (num_bits / 8)); i++) {
+    plc4c_spi_write_unsigned_byte(buf, 8, (uint8_t*) *value);
+    value++;
+  }
   return OK;
 }
