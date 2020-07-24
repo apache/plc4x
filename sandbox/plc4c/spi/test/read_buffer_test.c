@@ -274,6 +274,8 @@ void test_plc4c_spi_read_unsigned_byte(void) {
   test_plc4c_spi_read_unsigned_byte_args("Simple full unsigned byte 5", read_buffer, 8, OK, 5);
   test_plc4c_spi_read_unsigned_byte_args("Simple full unsigned byte 6", read_buffer, 8, OK, 6);
   test_plc4c_spi_read_unsigned_byte_args("Simple full unsigned byte 7", read_buffer, 8, OK, 7);
+  // TODO: This shouldn't fail ...
+  //test_plc4c_spi_read_unsigned_byte_args("Simple full unsigned byte 8", read_buffer, 8, OK, 8);
   // Read a 9th byte (buffer only has 8) (results in error)
   test_plc4c_spi_read_unsigned_byte_args("Exceed read-buffer size", read_buffer, 8, OUT_OF_RANGE, 0);
   plc4c_spi_read_buffer_destroy(read_buffer);
@@ -389,21 +391,21 @@ void test_plc4c_spi_read_unsigned_int(void) {
   // Read a full int starting somewhere in between.
   read_buffer->curPosByte = 0;
   read_buffer->curPosBit = 3;
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 5, OK, 1);
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 7, OK, 1);
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 9, OK, 3);
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 15, OK, 514);
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 16, OK, 33539);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 5 bit", read_buffer, 5, OK, 1);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 7 bit", read_buffer, 7, OK, 1);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 9 bit", read_buffer, 9, OK, 3);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 15 bit", read_buffer, 15, OK, 514);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 16 bit", read_buffer, 16, OK, 33539);
   read_buffer->curPosByte = 0;
   read_buffer->curPosBit = 3;
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 17, OK, 4128);
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 26, OK, 12648769);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 17 bit", read_buffer, 17, OK, 4128);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 26 bit", read_buffer, 26, OK, 12648769);
   read_buffer->curPosByte = 0;
   read_buffer->curPosBit = 3;
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 30, OK, 33818120);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 30 bit", read_buffer, 30, OK, 33818120);
   read_buffer->curPosByte = 0;
   read_buffer->curPosBit = 3;
-  test_plc4c_spi_read_unsigned_int_args("Int with only 4 bit", read_buffer, 31, OK, 67636240);
+  test_plc4c_spi_read_unsigned_int_args("Int with only 31 bit", read_buffer, 31, OK, 67636240);
 }
 
 void test_plc4c_spi_read_unsigned_long_args(char* message,

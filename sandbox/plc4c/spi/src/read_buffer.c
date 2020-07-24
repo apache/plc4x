@@ -23,12 +23,11 @@
 
 // As we're doing some operations where byte-order is important, we need this
 // little helper to find out if we're on a big- or little-endian machine.
-const int hurz = 1;
-#define plc4c_is_bigendian() (((char)&hurz) == 0)
+const int read_hurz = 1;
+#define plc4c_read_is_bigendian() (((char) &read_hurz) == 0)
 
-uint8_t bit_mask[9] = {0, 1, 3, 7, 15, 31, 63, 127, 255};
 // This matrix contains constants for reading X bits starting with bit Y.
-static const uint8_t bit_matrix[8][8] = {
+static const uint8_t read_bit_matrix[8][8] = {
     // Reading 1 bit
     {128, 64, 32, 16, 8, 4, 2, 1},
     // Reading 2 bits
@@ -48,8 +47,8 @@ static const uint8_t bit_matrix[8][8] = {
 
 uint8_t plc4c_spi_read_unsigned_byte_internal(uint8_t data, uint8_t num_bits,
                                               uint8_t from_bit) {
-  return (data & bit_matrix[num_bits - 1][from_bit]) >>
-         (((unsigned int)8) - (from_bit + num_bits));
+  return (data & read_bit_matrix[num_bits - 1][from_bit]) >>
+         (((unsigned int) 8) - (from_bit + num_bits));
 }
 
 uint8_t plc4c_spi_read_unsigned_byte_get_byte_internal(
@@ -73,7 +72,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
     // Find how many full bytes we'll be reading.
     uint8_t num_bytes = num_bits / 8;
     // If this is little endian, go to the end of the range.
-    if (!plc4c_is_bigendian()) {
+    if (!plc4c_read_is_bigendian()) {
       value = value + (num_bytes - 1);
     }
     // Read each of these.
@@ -82,7 +81,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
       // Move the read-pointer to the next byte.
       buf->curPosByte++;
       // Move the write-pointer to the next byte.
-      value = plc4c_is_bigendian() ? value + 1 : value - 1;
+      value = plc4c_read_is_bigendian() ? value + 1 : value - 1;
     }
     return OK;
   }
@@ -121,7 +120,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
     // If this is little endian, go to the end of the range as in this
     // case we have to fill the result from the back to the front.
-    if (!plc4c_is_bigendian()) {
+    if (!plc4c_read_is_bigendian()) {
       value = value + (num_bytes_to_write - 1);
     }
 
@@ -146,7 +145,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
       *value = plc4c_spi_read_unsigned_byte_internal(
           cur_byte, excess_bits, buf->curPosBit);
       // Move on to the next output byte
-      value = plc4c_is_bigendian() ? value + 1 : value - 1;
+      value = plc4c_read_is_bigendian() ? value + 1 : value - 1;
       // Update the read-pointer.
       buf->curPosBit += excess_bits;
       // Change the number of bits read, as we already read some.
@@ -176,7 +175,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
 
         // Here, we're finished reading the current output byte, so
         // move the output pointer to the next byte.
-        value = plc4c_is_bigendian() ? value + 1 : value - 1;
+        value = plc4c_read_is_bigendian() ? value + 1 : value - 1;
 
         // The remaining parts of this byte will become the highest level
         // part of the next byte.
@@ -193,7 +192,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
         }
         // Here, we're finished reading the current output byte, so
         // move the output pointer to the next byte.
-        value = plc4c_is_bigendian() ? value + 1 : value - 1;
+        value = plc4c_read_is_bigendian() ? value + 1 : value - 1;
 
         // Effectively this complete byte will become the next output byte.
         high_level_part = cur_byte;
@@ -216,7 +215,7 @@ bool plc4c_spi_fill_sign_internal(uint8_t num_bits, int8_t* value) {
   uint8_t num_bytes_total = (num_bits / 8) + ((num_bits % 8 != 0) ? 1 : 0);
 
   // If this is big endian, go to the highest level byte.
-  if (!plc4c_is_bigendian()) {
+  if (!plc4c_read_is_bigendian()) {
     value = value + (num_bytes_total - 1);
   }
 
@@ -224,7 +223,7 @@ bool plc4c_spi_fill_sign_internal(uint8_t num_bits, int8_t* value) {
     // Set all bits above {num_bits} to 1
     int8_t tmp_value = *value;
     if(num_bits % 8 != 0) {
-      tmp_value = tmp_value | bit_matrix[7 - (num_bits % 8)][0];
+      tmp_value = tmp_value | read_bit_matrix[7 - (num_bits % 8)][0];
     }
     *value = tmp_value;
     return true;
@@ -313,7 +312,7 @@ plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value) {
   // Get the bit's value.
   *value = ((cur_byte >> bit_pos) & 1) != 0;
   // If this was the last bit in this byte, move on to the next one.
-  if (buf->curPosBit == 7) {
+  if (buf->curPosBit == (unsigned int) 7) {
     buf->curPosByte++;
     buf->curPosBit = 0;
   } else {
@@ -346,7 +345,7 @@ plc4c_return_code plc4c_spi_read_unsigned_short(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if ((res == OK) && plc4c_is_bigendian()) {
+  if ((res == OK) && plc4c_read_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 8;
     }
@@ -365,7 +364,7 @@ plc4c_return_code plc4c_spi_read_unsigned_int(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if ((res == OK) && plc4c_is_bigendian()) {
+  if ((res == OK) && plc4c_read_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 24;
     } else if (num_bits <= 16) {
@@ -388,7 +387,7 @@ plc4c_return_code plc4c_spi_read_unsigned_long(plc4c_spi_read_buffer* buf,
   plc4c_return_code res =
       plc4c_spi_read_unsigned_bits_internal(buf, num_bits, value);
   // Shift the bits to the right position.
-  if ((res == OK) && plc4c_is_bigendian()) {
+  if ((res == OK) && plc4c_read_is_bigendian()) {
     if (num_bits <= 8) {
       *value = *value >> 56;
     } else if (num_bits <= 16) {

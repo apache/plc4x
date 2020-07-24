@@ -24,17 +24,26 @@
 #include <plc4c/types.h>
 
 struct plc4c_spi_write_buffer {
-
+  // Pointer to the data itself
+  uint8_t* data;
+  // Total size of the data array.
+  uint16_t length;
+  // Current full byte position
+  uint16_t curPosByte;
+  // Current bit-position inside the current byte
+  unsigned int curPosBit : 4;
 };
 typedef struct plc4c_spi_write_buffer plc4c_spi_write_buffer;
+
+plc4c_return_code plc4c_spi_write_buffer_create(uint16_t length, plc4c_spi_write_buffer** buffer);
+
+void plc4c_spi_write_buffer_destroy(plc4c_spi_write_buffer* buffer);
 
 uint8_t* plc4c_spi_write_get_data(plc4c_spi_write_buffer* buf);
 
 uint32_t plc4c_spi_write_get_pos(plc4c_spi_write_buffer* buf);
 
-plc4c_return_code plc4c_spi_write_get_bytes(plc4c_spi_write_buffer* buf, uint32_t start_pos_in_bytes, uint32_t end_pos_in_bytes, uint8_t** dest);
-
-plc4c_return_code plc4c_spi_write_peek_byte(plc4c_spi_write_buffer* buf, uint32_t offset_in_bytes, uint8_t* value);
+plc4c_return_code plc4c_spi_write_get_bytes(plc4c_spi_write_buffer* buf, uint16_t start_pos_in_bytes, uint16_t end_pos_in_bytes, uint8_t** dest);
 
 plc4c_return_code plc4c_spi_write_bit(plc4c_spi_write_buffer* buf, bool value);
 
