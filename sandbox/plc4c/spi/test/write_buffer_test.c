@@ -475,6 +475,340 @@ void test_plc4c_spi_write_unsigned_long(void) {
   plc4c_spi_write_buffer_destroy(write_buffer);
 }
 
+void test_plc4c_spi_write_signed_byte_args(char* message,
+                                          plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                          plc4c_return_code expected_return_code, int8_t value) {
+  printf("Running write_buffer write_signed_byte test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_signed_byte(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_signed_byte(void) {
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  // Write all the full bytes
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 1", write_buffer, 8, OK, 1);
+  TEST_ASSERT_EQUAL_UINT8(1, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 2", write_buffer, 8, OK, 2);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 3", write_buffer, 8, OK, 3);
+  TEST_ASSERT_EQUAL_UINT8(3, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 4", write_buffer, 8, OK, 4);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 5", write_buffer, 8, OK, 5);
+  TEST_ASSERT_EQUAL_UINT8(5, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 6", write_buffer, 8, OK, 6);
+  TEST_ASSERT_EQUAL_UINT8(6, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 7", write_buffer, 8, OK, 7);
+  TEST_ASSERT_EQUAL_UINT8(7, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple full signed byte 8", write_buffer, 8, OK, 8);
+  TEST_ASSERT_EQUAL_UINT8(8, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data[] = {1, 2, 3, 4, 5, 6, 7, 8};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 8);
+
+  // Write a 9th byte (buffer only has 8) (results in error)
+  test_plc4c_spi_write_signed_byte_args("Exceed write-buffer size", write_buffer, 8, OUT_OF_RANGE, -1);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  // write part of a byte (fits in one byte)
+  test_plc4c_spi_write_signed_byte_args("Simple 4 bits of signed byte", write_buffer, 4, OK, -5);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosBit);
+  // write part of a byte (finishes one byte)
+  test_plc4c_spi_write_signed_byte_args("Simple 4 bits of signed byte, finishing rest of first byte", write_buffer, 4, OK, -6);
+  TEST_ASSERT_EQUAL_UINT8(1, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple 4 bits of signed byte", write_buffer, 4, OK, 7);
+  TEST_ASSERT_EQUAL_UINT8(1, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple 4 bits of signed byte", write_buffer, 4, OK, 5);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_2[] = {186, 117};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_2, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write part of a byte (spans two bytes)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 0;
+  write_buffer->curPosBit = 5;
+  test_plc4c_spi_write_signed_byte_args("Simple 6 bits of signed byte starting at bit 5 (flowing over to next byte)", write_buffer, 6, OK, 19);
+  TEST_ASSERT_EQUAL_UINT8(1, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(3, write_buffer->curPosBit);
+  test_plc4c_spi_write_signed_byte_args("Simple 4 bits of signed byte starting at bit 3", write_buffer, 4, OK, -6);
+  TEST_ASSERT_EQUAL_UINT8(1, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(7, write_buffer->curPosBit);
+  uint8_t expected_data_3[] = {2, 116};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_3, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write more than a byte (results in error)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  test_plc4c_spi_write_signed_byte_args("Exceed write-buffer size (Part 2)", write_buffer, 10, OUT_OF_RANGE, -1);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
+void test_plc4c_spi_write_signed_short_args(char* message,
+                                           plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                           plc4c_return_code expected_return_code, int16_t value) {
+  printf("Running write_buffer write_signed_byte test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_signed_short(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_signed_short(void) {
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_spi_write_buffer_create(2, &write_buffer);
+  // write all the full bytes
+  test_plc4c_spi_write_signed_short_args("Simple full signed short 1", write_buffer, 16, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data[] = {255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a short (having to fill up 1s)
+  plc4c_spi_write_buffer_create(2, &write_buffer);
+  write_buffer->curPosByte = 0;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_short_args("Simple 12 bit signed short", write_buffer, 12, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_2[] = {15, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_2, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a short (having to fill up even more 1s)
+  plc4c_spi_write_buffer_create(2, &write_buffer);
+  write_buffer->curPosByte = 1;
+  write_buffer->curPosBit = 1;
+  test_plc4c_spi_write_signed_short_args("Simple 7 bit signed short", write_buffer, 7, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_3[] = {0, 86};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_3, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a short (This time however the value should
+  // be positive and hence the higher level byte should be filled with 0s)
+  plc4c_spi_write_buffer_create(2, &write_buffer);
+  write_buffer->curPosByte = 1;
+  write_buffer->curPosBit = 2;
+  test_plc4c_spi_write_signed_short_args("Simple 6 bit signed short", write_buffer, 6, OK, 22);
+  TEST_ASSERT_EQUAL_UINT8(2, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_4[] = {0, 22};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_4, write_buffer, 2);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
+void test_plc4c_spi_write_signed_int_args(char* message,
+                                         plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                         plc4c_return_code expected_return_code, int32_t value) {
+  printf("Running write_buffer write_signed_byte test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_signed_int(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_signed_int(void) {
+  plc4c_spi_write_buffer* write_buffer;
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  // write all the full bytes
+  test_plc4c_spi_write_signed_int_args("Simple full signed int", write_buffer, 32, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data[] = {255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a int (having to fill up 1s)
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  write_buffer->curPosByte = 0;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_int_args("Simple 28 bit signed int", write_buffer, 28, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_2[] = {15, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_2, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a int (having to fill up 1s)
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  write_buffer->curPosByte = 1;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_int_args("Simple 20 bit signed int", write_buffer, 20, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_3[] = {0, 15, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_3, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a int (having to fill up 1s)
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  write_buffer->curPosByte = 2;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_int_args("Simple 12 bit signed int", write_buffer, 12, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_4[] = {0, 0, 15, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_4, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a int (having to fill up even more 1s)
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  write_buffer->curPosByte = 3;
+  write_buffer->curPosBit = 1;
+  test_plc4c_spi_write_signed_int_args("Simple 7 bit signed int", write_buffer, 7, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_5[] = {0, 0, 0, 86};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_5, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a int (This time however the value should
+  // be positive and hence the higher level byte should be filled with 0s)
+  plc4c_spi_write_buffer_create(5, &write_buffer);
+  write_buffer->curPosByte = 3;
+  write_buffer->curPosBit = 2;
+  test_plc4c_spi_write_signed_int_args("Simple 6 bit signed int", write_buffer, 6, OK, 22);
+  TEST_ASSERT_EQUAL_UINT8(4, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data_6[] = {0, 0, 0, 22};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_6, write_buffer, 4);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
+void test_plc4c_spi_write_signed_long_args(char* message,
+                                          plc4c_spi_write_buffer* write_buffer, uint8_t num_bits,
+                                          plc4c_return_code expected_return_code, int64_t value) {
+  printf("Running write_buffer write_signed_byte test: %s", message);
+
+  plc4c_return_code result =
+      plc4c_spi_write_signed_long(write_buffer, num_bits, value);
+
+  TEST_ASSERT_EQUAL_INT(expected_return_code, result);
+
+  printf(" -> OK\n");
+}
+
+void test_plc4c_spi_write_signed_long(void) {
+  plc4c_spi_write_buffer* write_buffer;
+  // write all the full bytes
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  test_plc4c_spi_write_signed_long_args("Simple full signed long", write_buffer, 64, OK, -42);
+  TEST_ASSERT_EQUAL_UINT8(8, write_buffer->curPosByte);
+  TEST_ASSERT_EQUAL_UINT8(0, write_buffer->curPosBit);
+  uint8_t expected_data[] = {255, 255, 255, 255, 255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 0;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 60 bit signed long", write_buffer, 60, OK, -42);
+  uint8_t expected_data_2[] = {15, 255, 255, 255, 255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_2, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 1;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 52 bit signed long", write_buffer, 52, OK, -42);
+  uint8_t expected_data_3[] = {0, 15, 255, 255, 255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_3, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 2;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 44 bit signed long", write_buffer, 44, OK, -42);
+  uint8_t expected_data_4[] = {0, 0, 15, 255, 255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_4, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 3;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 36 bit signed long", write_buffer, 36, OK, -42);
+  uint8_t expected_data_5[] = {0, 0, 0, 15, 255, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_5, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 4;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 28 bit signed long", write_buffer, 28, OK, -42);
+  uint8_t expected_data_6[] = {0, 0, 0, 0, 15, 255, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_6, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 5;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 20 bit signed long", write_buffer, 20, OK, -42);
+  uint8_t expected_data_7[] = {0, 0, 0, 0, 0, 15, 255, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_7, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write the only part of a long (having to fill up 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 6;
+  write_buffer->curPosBit = 4;
+  test_plc4c_spi_write_signed_long_args("Simple 12 bit signed long", write_buffer, 12, OK, -42);
+  uint8_t expected_data_8[] = {0, 0, 0, 0, 0, 0, 15, 214};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_8, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a long (having to fill up even more 1s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 7;
+  write_buffer->curPosBit = 1;
+  test_plc4c_spi_write_signed_long_args("Simple 7 bit signed long", write_buffer, 7, OK, -42);
+  uint8_t expected_data_9[] = {0, 0, 0, 0, 0, 0, 0, 86};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_9, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+
+  // write an even shorter part of a long (This time however the value should
+  // be positive and hence the higher level bytes should be filled with 0s)
+  plc4c_spi_write_buffer_create(8, &write_buffer);
+  write_buffer->curPosByte = 7;
+  write_buffer->curPosBit = 2;
+  test_plc4c_spi_write_signed_long_args("Simple 6 bit signed long", write_buffer, 6, OK, 22);
+  uint8_t expected_data_10[] = {0, 0, 0, 0, 0, 0, 0, 22};
+  internal_assert_arrays_equal((uint8_t*) &expected_data_10, write_buffer, 8);
+  plc4c_spi_write_buffer_destroy(write_buffer);
+}
+
 void test_plc4c_spi_write_buffer(void) {
   test_plc4c_spi_write_buffer_create();
 
@@ -484,4 +818,9 @@ void test_plc4c_spi_write_buffer(void) {
   test_plc4c_spi_write_unsigned_short();
   test_plc4c_spi_write_unsigned_int();
   test_plc4c_spi_write_unsigned_long();
+
+  test_plc4c_spi_write_signed_byte();
+  test_plc4c_spi_write_signed_short();
+  test_plc4c_spi_write_signed_int();
+  test_plc4c_spi_write_signed_long();
 }

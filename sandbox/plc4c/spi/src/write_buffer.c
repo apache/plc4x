@@ -361,17 +361,17 @@ plc4c_return_code plc4c_spi_write_signed_byte(plc4c_spi_write_buffer* buf,
 plc4c_return_code plc4c_spi_write_signed_short(plc4c_spi_write_buffer* buf,
                                                uint8_t num_bits,
                                                int16_t value) {
-  return plc4c_spi_write_unsigned_short(buf, num_bits, (uint8_t) value);
+  return plc4c_spi_write_unsigned_short(buf, num_bits, (uint16_t) value);
 }
 
 plc4c_return_code plc4c_spi_write_signed_int(plc4c_spi_write_buffer* buf,
                                              uint8_t num_bits, int32_t value) {
-  return plc4c_spi_write_unsigned_int(buf, num_bits, (uint8_t) value);
+  return plc4c_spi_write_unsigned_int(buf, num_bits, (uint32_t) value);
 }
 
 plc4c_return_code plc4c_spi_write_signed_long(plc4c_spi_write_buffer* buf,
                                               uint8_t num_bits, int64_t value) {
-  return plc4c_spi_write_unsigned_long(buf, num_bits, (uint8_t) value);
+  return plc4c_spi_write_unsigned_long(buf, num_bits, (uint64_t) value);
 }
 
 // TODO: Not sure which type to use in this case ...
