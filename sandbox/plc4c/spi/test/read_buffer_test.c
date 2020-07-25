@@ -21,6 +21,11 @@
 #include <stdlib.h>
 #include <unity.h>
 
+// As we're doing some operations where byte-order is important, we need this
+// little helper to find out if we're on a big- or little-endian machine.
+const int read_test_hurz = 1;
+#define plc4c_read_test_is_bigendian() (((char) &read_test_hurz) == 0)
+
 void test_plc4c_spi_read_buffer_create_args(
     uint8_t* data, uint16_t length, plc4c_return_code expected_return_code) {
   printf("Running read_buffer create test with %d, expecting return code %d",
@@ -729,6 +734,8 @@ void test_plc4c_spi_read_string(void) {
 }
 
 void test_plc4c_spi_read_buffer(void) {
+  printf("Test being run in %s", (plc4c_read_test_is_bigendian() ? "Big Endian" : "Little Endian"));
+
   test_plc4c_spi_read_buffer_create();
   test_plc4c_spi_read_get_total_bytes();
   test_plc4c_spi_read_has_more();
