@@ -46,16 +46,17 @@ void test_plc4c_spi_write_buffer_create_args(
     TEST_ASSERT_NULL(write_buffer);
   } else {
     TEST_ASSERT_NOT_NULL(write_buffer);
-    free(write_buffer);
-  }
 
-  // Check all bytes are 0-initialized
-  uint8_t* data = plc4c_spi_write_get_data(write_buffer);
-  for(int i = 0; i < length; i++) {
-    if(*data != 0) {
-      TEST_FAIL_MESSAGE("Data array not 0-initialized");
+    // Check all bytes are 0-initialized
+    uint8_t* data = plc4c_spi_write_get_data(write_buffer);
+    for(int i = 0; i < length; i++) {
+      if(*data != 0) {
+        TEST_FAIL_MESSAGE("Data array not 0-initialized");
+      }
+      data++;
     }
-    data++;
+
+    free(write_buffer);
   }
 
   printf(" -> OK\n");
