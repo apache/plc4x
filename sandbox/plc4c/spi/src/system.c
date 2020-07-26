@@ -25,6 +25,13 @@
 #include "plc4c/spi/system_private.h"
 #include "plc4c/spi/types_private.h"
 
+// As we're doing some operations where byte-order is important, we need this
+// little helper to find out if we're on a big- or little-endian machine.
+const int hurz = 1;
+bool plc4c_is_bigendian() {
+  return (((char) &hurz) == 0);
+}
+
 static void delete_driver_list_element(plc4c_list_element *driver_element) {
   plc4c_driver *driver = (plc4c_driver *)driver_element->value;
   // plc4c_driver_destroy(driver);

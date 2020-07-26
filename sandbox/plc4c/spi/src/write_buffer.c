@@ -17,13 +17,9 @@
  * under the License.
  */
 
+#include <plc4c/spi/system_private.h>
 #include <plc4c/spi/write_buffer.h>
 #include <string.h>
-
-// As we're doing some operations where byte-order is important, we need this
-// little helper to find out if we're on a big- or little-endian machine.
-const int write_hurz = 1;
-#define plc4c_write_is_bigendian() (((char)&write_hurz) == 0)
 
 // This matrix contains constants for reading X bits starting with bit Y.
 static const uint8_t write_bit_matrix[8][8] = {
@@ -80,7 +76,7 @@ plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
     // Find how many full bytes we'll be writing.
     uint8_t num_bytes = num_bits / 8;
     // If this is little endian, go to the end of the range.
-    if (!plc4c_write_is_bigendian()) {
+    if (!plc4c_is_bigendian()) {
       value = value + (num_bytes - 1);
     }
     // Write each of these.
@@ -88,7 +84,7 @@ plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
       plc4c_spi_write_put_byte_internal(buf, 0, *value);
       // Move the write-pointer to the next byte.
       buf->curPosByte++;
-      value = plc4c_write_is_bigendian() ? value + 1 : value - 1;
+      value = plc4c_is_bigendian() ? value + 1 : value - 1;
     }
     return OK;
   }
@@ -139,7 +135,7 @@ plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
 
     // If this is little endian, go to the end of the range of the read input,
     // as in this case we have to read the value from the back to the front.
-    if (!plc4c_write_is_bigendian()) {
+    if (!plc4c_is_bigendian()) {
       value = value + (num_read_bytes - 1);
     }
 
@@ -163,7 +159,7 @@ plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
                                              *value);
 
       // Move to the next byte in the input.
-      value = plc4c_write_is_bigendian() ? value + 1 : value - 1;
+      value = plc4c_is_bigendian() ? value + 1 : value - 1;
 
       // Update the read-pointer.
       buf->curPosBit += num_read_bits_first_byte;
@@ -210,7 +206,7 @@ plc4c_return_code plc4c_spi_write_unsigned_bits_internal(
 
         if (num_bits > 0) {
           // Move to the next byte in the input.
-          value = plc4c_write_is_bigendian() ? value + 1 : value - 1;
+          value = plc4c_is_bigendian() ? value + 1 : value - 1;
         }
       }
     }
