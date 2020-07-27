@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_COTP_PROTOCOL_CLASS_H_
 #define PLC4C_S7_READ_WRITE_COTP_PROTOCOL_CLASS_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_cotp_protocol_class {
   plc4c_s7_read_write_cotp_protocol_class_CLASS_0 = 0x00,
@@ -34,11 +36,12 @@ enum plc4c_s7_read_write_cotp_protocol_class {
 };
 typedef enum plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_null();
 
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_COTP_PROTOCOL_CLASS_H_

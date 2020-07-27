@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "cotp_parameter.h"
 
@@ -27,22 +25,30 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_discriminators[] = {
-  {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
-   .parameterType = 0xC2},
+  {/* plc4c_s7_read_write_cotp_parameter_tpdu_size */
+   .parameterType = 0xC0},
   {/* plc4c_s7_read_write_cotp_parameter_calling_tsap */
    .parameterType = 0xC1},
+  {/* plc4c_s7_read_write_cotp_parameter_called_tsap */
+   .parameterType = 0xC2},
   {/* plc4c_s7_read_write_cotp_parameter_checksum */
    .parameterType = 0xC3},
   {/* plc4c_s7_read_write_cotp_parameter_disconnect_additional_information */
-   .parameterType = 0xE0},
-  {/* plc4c_s7_read_write_cotp_parameter_tpdu_size */
-   .parameterType = 0xC0}
+   .parameterType = 0xE0}
 };
 
 // Function returning the discriminator values for a given type constant.
 plc4c_s7_read_write_cotp_parameter_discriminator plc4c_s7_read_write_cotp_parameter_get_discriminator(plc4c_s7_read_write_cotp_parameter_type type) {
   return plc4c_s7_read_write_cotp_parameter_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter_null_const;
+
+plc4c_s7_read_write_cotp_parameter plc4c_s7_read_write_cotp_parameter_null() {
+  return plc4c_s7_read_write_cotp_parameter_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t rest, plc4c_s7_read_write_cotp_parameter** _message) {
@@ -75,7 +81,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_tpdu_size;
                     
     // Enum field (tpduSize)
-    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size_null;
+    plc4c_s7_read_write_cotp_tpdu_size tpduSize = plc4c_s7_read_write_cotp_tpdu_size_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &tpduSize);
     if(_res != OK) {
       return _res;
@@ -123,7 +129,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
     (*_message)->_type = plc4c_s7_read_write_cotp_parameter_type_plc4c_s7_read_write_cotp_parameter_disconnect_additional_information;
                     
     // Array field (data)
-    plc4c_list* data = malloc(sizeof(plc4c_list));
+    plc4c_list* data = NULL;
+    plc4c_utils_list_create(&data);
     if(data == NULL) {
       return NO_MEMORY;
     }

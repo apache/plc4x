@@ -18,10 +18,15 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "modbus_constants.h"
+
+
+// Constant values.
+static const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT_const = 502;
+uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT() {
+  return PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT_const;
+}
 
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** _message) {
@@ -41,7 +46,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_
   if(_res != OK) {
     return _res;
   }
-  if(modbusTcpDefaultPort != PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT) {
+  if(modbusTcpDefaultPort != PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT()) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT + " but got " + modbusTcpDefaultPort);
   }
@@ -53,7 +58,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_w
   plc4c_return_code _res = OK;
 
   // Const Field (modbusTcpDefaultPort)
-  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT);
+  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT());
 
   return OK;
 }

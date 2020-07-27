@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_parameter.h"
 
@@ -27,24 +25,32 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_discriminators[] = {
+  {/* plc4c_s7_read_write_s7_parameter_setup_communication */
+   .parameterType = 0xF0, .messageType = -1},
   {/* plc4c_s7_read_write_s7_parameter_read_var_request */
    .parameterType = 0x04, .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_parameter_read_var_response */
    .parameterType = 0x04, .messageType = 0x03},
-  {/* plc4c_s7_read_write_s7_parameter_setup_communication */
-   .parameterType = 0xF0, .messageType = -1},
-  {/* plc4c_s7_read_write_s7_parameter_user_data */
-   .parameterType = 0x00, .messageType = 0x07},
   {/* plc4c_s7_read_write_s7_parameter_write_var_request */
    .parameterType = 0x05, .messageType = 0x01},
   {/* plc4c_s7_read_write_s7_parameter_write_var_response */
-   .parameterType = 0x05, .messageType = 0x03}
+   .parameterType = 0x05, .messageType = 0x03},
+  {/* plc4c_s7_read_write_s7_parameter_user_data */
+   .parameterType = 0x00, .messageType = 0x07}
 };
 
 // Function returning the discriminator values for a given type constant.
 plc4c_s7_read_write_s7_parameter_discriminator plc4c_s7_read_write_s7_parameter_get_discriminator(plc4c_s7_read_write_s7_parameter_type type) {
   return plc4c_s7_read_write_s7_parameter_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter_null_const;
+
+plc4c_s7_read_write_s7_parameter plc4c_s7_read_write_s7_parameter_null() {
+  return plc4c_s7_read_write_s7_parameter_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* buf, uint8_t messageType, plc4c_s7_read_write_s7_parameter** _message) {
@@ -125,7 +131,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
                     
     // Array field (items)
-    plc4c_list* items = malloc(sizeof(plc4c_list));
+    plc4c_list* items = NULL;
+    plc4c_utils_list_create(&items);
     if(items == NULL) {
       return NO_MEMORY;
     }
@@ -170,7 +177,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
                     
     // Array field (items)
-    plc4c_list* items = malloc(sizeof(plc4c_list));
+    plc4c_list* items = NULL;
+    plc4c_utils_list_create(&items);
     if(items == NULL) {
       return NO_MEMORY;
     }
@@ -215,7 +223,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_parse(plc4c_spi_read_buffer* 
 
                     
     // Array field (items)
-    plc4c_list* items = malloc(sizeof(plc4c_list));
+    plc4c_list* items = NULL;
+    plc4c_utils_list_create(&items);
     if(items == NULL) {
       return NO_MEMORY;
     }
@@ -289,7 +298,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_var_request_parameter_item* _value = (plc4c_s7_read_write_s7_var_request_parameter_item*) plc4c_utils_list_get_value(_message->s7_parameter_read_var_request_items, curItem);
-          _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(buf, (void*) _value);
           if(_res != OK) {
             return _res;
           }
@@ -322,7 +331,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_var_request_parameter_item* _value = (plc4c_s7_read_write_s7_var_request_parameter_item*) plc4c_utils_list_get_value(_message->s7_parameter_write_var_request_items, curItem);
-          _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_s7_var_request_parameter_item_serialize(buf, (void*) _value);
           if(_res != OK) {
             return _res;
           }
@@ -355,7 +364,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_serialize(plc4c_spi_write_buf
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_s7_parameter_user_data_item* _value = (plc4c_s7_read_write_s7_parameter_user_data_item*) plc4c_utils_list_get_value(_message->s7_parameter_user_data_items, curItem);
-          _res = plc4c_s7_read_write_s7_parameter_user_data_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_s7_parameter_user_data_item_serialize(buf, (void*) _value);
           if(_res != OK) {
             return _res;
           }
@@ -408,7 +417,7 @@ uint8_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_p
 
       // Array field
       if(_message->s7_parameter_read_var_request_items != NULL) {
-        plc4c_list_element* curElement = _message->s7_parameter_read_var_request_items->head;
+        plc4c_list_element* curElement = _message->s7_parameter_read_var_request_items->tail;
         while (curElement != NULL) {
           lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits((plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
           curElement = curElement->next;
@@ -432,7 +441,7 @@ uint8_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_p
 
       // Array field
       if(_message->s7_parameter_write_var_request_items != NULL) {
-        plc4c_list_element* curElement = _message->s7_parameter_write_var_request_items->head;
+        plc4c_list_element* curElement = _message->s7_parameter_write_var_request_items->tail;
         while (curElement != NULL) {
           lengthInBits += plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits((plc4c_s7_read_write_s7_var_request_parameter_item*) curElement->value);
           curElement = curElement->next;
@@ -456,7 +465,7 @@ uint8_t plc4c_s7_read_write_s7_parameter_length_in_bits(plc4c_s7_read_write_s7_p
 
       // Array field
       if(_message->s7_parameter_user_data_items != NULL) {
-        plc4c_list_element* curElement = _message->s7_parameter_user_data_items->head;
+        plc4c_list_element* curElement = _message->s7_parameter_user_data_items->tail;
         while (curElement != NULL) {
           lengthInBits += plc4c_s7_read_write_s7_parameter_user_data_item_length_in_bits((plc4c_s7_read_write_s7_parameter_user_data_item*) curElement->value);
           curElement = curElement->next;

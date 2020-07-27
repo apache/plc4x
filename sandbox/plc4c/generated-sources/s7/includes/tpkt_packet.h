@@ -18,17 +18,21 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_TPKT_PACKET_H_
 #define PLC4C_S7_READ_WRITE_TPKT_PACKET_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <plc4c/utils/list.h>
+#include "cotp_packet.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <plc4c/utils/list.h>
-#include "cotp_packet.h"
 
 // Constant values.
-const uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID = 0x03;
+uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID();
 
 struct plc4c_s7_read_write_tpkt_packet {
   /* Properties */
@@ -38,7 +42,7 @@ struct plc4c_s7_read_write_tpkt_packet {
 typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet_null;
+plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet_null();
 
 plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** message);
 

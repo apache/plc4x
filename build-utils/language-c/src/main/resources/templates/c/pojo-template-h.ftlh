@@ -47,12 +47,11 @@
 */
 #ifndef ${helper.getCTypeName(type.name)?upper_case}_H_
 #define ${helper.getCTypeName(type.name)?upper_case}_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
@@ -62,6 +61,11 @@ extern "C" {
 #include "${helper.camelCaseToSnakeCase(typeReference)}.h"
     </#list>
 </#if>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 <#--
     Abstract types only occur as parents in the case of discriminated types.
     As C doesn't have any form of polymorph type-system, we need to save the type information in the
@@ -99,7 +103,7 @@ ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)
 
 // Constant values.
     <#list helper.getAllConstFields() as parentType, constField>
-const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case} = ${constField.referenceValue};
+${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}();
     </#list>
 </#if>
 
@@ -141,7 +145,7 @@ struct ${helper.getCTypeName(type.name)} {
 typedef struct ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)};
 
 // Create an empty NULL-struct
-static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null;
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 
 <#--
     Define the parse-method for elements of this tpye

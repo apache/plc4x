@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_DATA_TRANSPORT_SIZE_H_
 #define PLC4C_S7_READ_WRITE_DATA_TRANSPORT_SIZE_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_data_transport_size {
   plc4c_s7_read_write_data_transport_size_NULL = 0x00,
@@ -36,40 +38,14 @@ enum plc4c_s7_read_write_data_transport_size {
 };
 typedef enum plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_null();
 
 
-bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value) {
-  switch(value) {
-    case 0: { /* '0x00' */
-      return false;
-    }
-    case 3: { /* '0x03' */
-      return true;
-    }
-    case 4: { /* '0x04' */
-      return true;
-    }
-    case 5: { /* '0x05' */
-      return true;
-    }
-    case 6: { /* '0x06' */
-      return false;
-    }
-    case 7: { /* '0x07' */
-      return false;
-    }
-    case 9: { /* '0x09' */
-      return false;
-    }
-    default: {
-      return 0;
-    }
-  }
-}
+bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_DATA_TRANSPORT_SIZE_H_

@@ -18,10 +18,15 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "tpkt_packet.h"
+
+
+// Constant values.
+static const uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID_const = 0x03;
+uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID() {
+  return PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID_const;
+}
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** _message) {
@@ -41,7 +46,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   if(_res != OK) {
     return _res;
   }
-  if(protocolId != PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID) {
+  if(protocolId != PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID()) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID + " but got " + protocolId);
   }
@@ -80,7 +85,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buff
   plc4c_return_code _res = OK;
 
   // Const Field (protocolId)
-  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID);
+  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID());
 
   // Reserved Field
   _res = plc4c_spi_write_unsigned_byte(buf, 8, 0x00);

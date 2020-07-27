@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_DATA_TRANSPORT_ERROR_CODE_H_
 #define PLC4C_S7_READ_WRITE_DATA_TRANSPORT_ERROR_CODE_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_data_transport_error_code {
   plc4c_s7_read_write_data_transport_error_code_RESERVED = 0x00,
@@ -35,11 +37,12 @@ enum plc4c_s7_read_write_data_transport_error_code {
 };
 typedef enum plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_null();
 
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_DATA_TRANSPORT_ERROR_CODE_H_

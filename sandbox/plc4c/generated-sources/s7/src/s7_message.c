@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_message.h"
 
@@ -42,6 +40,20 @@ plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_
   return plc4c_s7_read_write_s7_message_discriminators[type];
 }
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message_null_const;
+
+plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message_null() {
+  return plc4c_s7_read_write_s7_message_null_const;
+}
+
+
+// Constant values.
+static const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID_const = 0x32;
+uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID() {
+  return PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID_const;
+}
+
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
@@ -60,7 +72,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
   if(_res != OK) {
     return _res;
   }
-  if(protocolId != PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID) {
+  if(protocolId != PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID()) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID + " but got " + protocolId);
   }
@@ -170,6 +182,8 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
       return _res;
     }
     (*_message)->parameter = parameter;
+  } else {
+    (*_message)->parameter = NULL;
   }
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
@@ -184,6 +198,8 @@ plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* bu
       return _res;
     }
     (*_message)->payload = payload;
+  } else {
+    (*_message)->payload = NULL;
   }
 
   return OK;
@@ -193,7 +209,7 @@ plc4c_return_code plc4c_s7_read_write_s7_message_serialize(plc4c_spi_write_buffe
   plc4c_return_code _res = OK;
 
   // Const Field (protocolId)
-  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID);
+  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID());
 
   // Discriminator Field (messageType)
   plc4c_spi_write_unsigned_byte(buf, 8, plc4c_s7_read_write_s7_message_get_discriminator(_message->_type).messageType);

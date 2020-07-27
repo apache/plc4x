@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_parameter_user_data_item.h"
 
@@ -35,6 +33,14 @@ const plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_rea
 plc4c_s7_read_write_s7_parameter_user_data_item_discriminator plc4c_s7_read_write_s7_parameter_user_data_item_get_discriminator(plc4c_s7_read_write_s7_parameter_user_data_item_type type) {
   return plc4c_s7_read_write_s7_parameter_user_data_item_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_parameter_user_data_item plc4c_s7_read_write_s7_parameter_user_data_item_null_const;
+
+plc4c_s7_read_write_s7_parameter_user_data_item plc4c_s7_read_write_s7_parameter_user_data_item_null() {
+  return plc4c_s7_read_write_s7_parameter_user_data_item_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_parameter_user_data_item** _message) {
@@ -131,6 +137,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return _res;
       }
       (*_message)->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number = dataUnitReferenceNumber;
+    } else {
+      (*_message)->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number = NULL;
     }
 
 
@@ -148,6 +156,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return _res;
       }
       (*_message)->s7_parameter_user_data_item_cpu_functions_last_data_unit = lastDataUnit;
+    } else {
+      (*_message)->s7_parameter_user_data_item_cpu_functions_last_data_unit = NULL;
     }
 
 
@@ -165,6 +175,8 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return _res;
       }
       (*_message)->s7_parameter_user_data_item_cpu_functions_error_code = errorCode;
+    } else {
+      (*_message)->s7_parameter_user_data_item_cpu_functions_error_code = NULL;
     }
 
   }

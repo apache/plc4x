@@ -18,10 +18,15 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "modbus_tcp_adu.h"
+
+
+// Constant values.
+static const uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER_const = 0x0000;
+uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
+  return PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER_const;
+}
 
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** _message) {
@@ -49,7 +54,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
   if(_res != OK) {
     return _res;
   }
-  if(protocolIdentifier != PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER) {
+  if(protocolIdentifier != PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER()) {
     return PARSE_ERROR;
     // throw new ParseException("Expected constant value " + PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER + " but got " + protocolIdentifier);
   }
@@ -90,7 +95,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_wri
   }
 
   // Const Field (protocolIdentifier)
-  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER);
+  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));

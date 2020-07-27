@@ -62,8 +62,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "${helper.camelCaseToSnakeCase(type.name)}.h"
 
@@ -87,7 +85,25 @@ ${helper.getCTypeName(type.name)}_discriminator ${helper.getCTypeName(type.name)
   return ${helper.getCTypeName(type.name)}_discriminators[type];
 }
 
+// Create an empty NULL-struct
+static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null_const;
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
+  return ${helper.getCTypeName(type.name)}_null_const;
+}
+
 </#if>
+<#if helper.getAllConstFields()?has_content>
+
+// Constant values.
+    <#list helper.getAllConstFields() as parentType, constField>
+static const ${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const = ${constField.referenceValue};
+${helper.getLanguageTypeNameForField(constField)} ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}() {
+  return ${helper.getCTypeName(parentType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}_const;
+}
+    </#list>
+</#if>
+
 // Parse function.
 plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* buf, <#if type.parserArguments?has_content><#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#if !helper.isSimpleTypeReference(parserArgument.type)>*</#if> ${parserArgument.name}<#sep>, </#list>, </#if>${helper.getCTypeName(type.name)}** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
@@ -111,7 +127,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  curPos = plc4c_spi_read_get_pos(buf) - startPos;
             </#if>
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
-<#if indentContent>  </#if>  plc4c_list* ${arrayField.name} = malloc(sizeof(plc4c_list));
+<#if indentContent>  </#if>  plc4c_list* ${arrayField.name} = NULL;
+<#if indentContent>  </#if>  plc4c_utils_list_create(&${arrayField.name});
 <#if indentContent>  </#if>  if(${arrayField.name} == NULL) {
 <#if indentContent>  </#if>    return NO_MEMORY;
 <#if indentContent>  </#if>  }
@@ -227,7 +244,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>  if(_res != OK) {
 <#if indentContent>  </#if>    return _res;
 <#if indentContent>  </#if>  }
-<#if indentContent>  </#if>  if(${constField.name} != ${helper.getCTypeName(baseType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}) {
+<#if indentContent>  </#if>  if(${constField.name} != ${helper.getCTypeName(baseType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case}()) {
 <#if indentContent>  </#if>    return PARSE_ERROR;
 <#if indentContent>  </#if>    // throw new ParseException("Expected constant value " + ${helper.getCTypeName(baseType.name)?upper_case}_${helper.camelCaseToSnakeCase(constField.name)?upper_case} + " but got " + ${constField.name});
 <#if indentContent>  </#if>  }
@@ -300,6 +317,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>      return _res;
 <#if indentContent>  </#if>    }
 <#if indentContent>  </#if>    (*_message)-><@fieldName baseType=baseType field=optionalField/> = ${optionalField.name};
+<#if indentContent>  </#if>  } else {
+<#if indentContent>  </#if>    (*_message)-><@fieldName baseType=baseType field=optionalField/> = NULL;
 <#if indentContent>  </#if>  }
             <#break>
         <#case "padding">
@@ -400,7 +419,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>    </#if>      ${helper.getWriteBufferWriteMethodCall(arrayField.type, "*_value")};
             <#else>
-<#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(buf, (void*) &_value<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>);
+<#if indentContent>    </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_serialize(buf, (void*) _value<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as serializerTerm>${helper.toSerializationExpression(baseType, field, serializerTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>);
 <#if indentContent>    </#if>      if(_res != OK) {
 <#if indentContent>    </#if>        return _res;
 <#if indentContent>    </#if>      }
@@ -429,7 +448,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
             <#assign simpleTypeReference = constField.type>
 
 <#if indentContent>    </#if>  // Const Field (${constField.name})
-<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case)};
+<#if indentContent>    </#if>  ${helper.getWriteBufferWriteMethodCall(constField.type, helper.getCTypeName(baseType.name)?upper_case + "_" + helper.camelCaseToSnakeCase(constField.name)?upper_case + "()")};
             <#break>
         <#case "discriminator">
             <#assign discriminatorField = field>
@@ -571,7 +590,7 @@ uint8_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(t
 <#if indentContent>    </#if>  lengthInBits += ${simpleTypeReference.sizeInBits} * plc4c_utils_list_size(_message-><@fieldName baseType=baseType field=arrayField/>);
                 <#else>
 <#if indentContent>    </#if>  if(_message-><@fieldName baseType=baseType field=arrayField/> != NULL) {
-<#if indentContent>    </#if>    plc4c_list_element* curElement = _message-><@fieldName baseType=baseType field=arrayField/>->head;
+<#if indentContent>    </#if>    plc4c_list_element* curElement = _message-><@fieldName baseType=baseType field=arrayField/>->tail;
 <#if indentContent>    </#if>    while (curElement != NULL) {
 <#if indentContent>    </#if>      lengthInBits += ${helper.getLengthInBitsFunctionNameForComplexTypedField(arrayField)}((${helper.getLanguageTypeNameForTypeReference(arrayField.type)}*) curElement->value);
 <#if indentContent>    </#if>      curElement = curElement->next;

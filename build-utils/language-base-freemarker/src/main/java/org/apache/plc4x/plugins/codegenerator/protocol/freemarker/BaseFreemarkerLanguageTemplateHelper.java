@@ -658,7 +658,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         if (type instanceof DiscriminatedComplexTypeDefinition) {
             DiscriminatedComplexTypeDefinition switchType = (DiscriminatedComplexTypeDefinition) type;
             final List<String> discriminatorNames = getDiscriminatorNames();
-            final Map<String, String> discriminatorValues = new HashMap<>();
+            final Map<String, String> discriminatorValues = new LinkedHashMap<>();
             for (int i = 0; i < discriminatorNames.size(); i++) {
                 String discriminatorValue;
                 if (i < switchType.getDiscriminatorValues().length) {
@@ -689,7 +689,7 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         final SwitchField switchField = getSwitchField(parentType);
         if (switchField != null) {
             // Build a map containing the named discriminator values for every case of the typeSwitch.
-            Map<String, Map<String, String>> discriminatorTypes = new TreeMap<>();
+            Map<String, Map<String, String>> discriminatorTypes = new LinkedHashMap<>();
             for (DiscriminatedComplexTypeDefinition switchCase : switchField.getCases()) {
                 discriminatorTypes.put(switchCase.getName(), getDiscriminatorValues(switchCase));
             }

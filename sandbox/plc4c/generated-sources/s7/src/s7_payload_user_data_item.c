@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_payload_user_data_item.h"
 
@@ -38,6 +36,20 @@ plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_
   return plc4c_s7_read_write_s7_payload_user_data_item_discriminators[type];
 }
 
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_payload_user_data_item plc4c_s7_read_write_s7_payload_user_data_item_null_const;
+
+plc4c_s7_read_write_s7_payload_user_data_item plc4c_s7_read_write_s7_payload_user_data_item_null() {
+  return plc4c_s7_read_write_s7_payload_user_data_item_null_const;
+}
+
+
+// Constant values.
+static const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const = 28;
+uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const;
+}
+
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* buf, unsigned int cpuFunctionType, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(buf);
@@ -51,7 +63,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   }
 
   // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null;
+  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
   _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &returnCode);
   if(_res != OK) {
     return _res;
@@ -59,7 +71,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
   (*_message)->return_code = returnCode;
 
   // Enum field (transportSize)
-  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null;
+  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null();
   _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &transportSize);
   if(_res != OK) {
     return _res;
@@ -102,7 +114,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     if(_res != OK) {
       return _res;
     }
-    if(szlItemLength != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH) {
+    if(szlItemLength != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH()) {
       return PARSE_ERROR;
       // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH + " but got " + szlItemLength);
     }
@@ -119,7 +131,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
                     
     // Array field (items)
-    plc4c_list* items = malloc(sizeof(plc4c_list));
+    plc4c_list* items = NULL;
+    plc4c_utils_list_create(&items);
     if(items == NULL) {
       return NO_MEMORY;
     }
@@ -185,7 +198,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
 
       // Const Field (szlItemLength)
-      plc4c_spi_write_unsigned_short(buf, 16, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH);
+      plc4c_spi_write_unsigned_short(buf, 16, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH());
 
       // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
       _res = plc4c_spi_write_unsigned_short(buf, 16, plc4c_spi_evaluation_helper_count(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items));
@@ -199,7 +212,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
         for(int curItem = 0; curItem < itemCount; curItem++) {
           bool lastItem = curItem == (itemCount - 1);
           plc4c_s7_read_write_szl_data_tree_item* _value = (plc4c_s7_read_write_szl_data_tree_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
-          _res = plc4c_s7_read_write_szl_data_tree_item_serialize(buf, (void*) &_value);
+          _res = plc4c_s7_read_write_szl_data_tree_item_serialize(buf, (void*) _value);
           if(_res != OK) {
             return _res;
           }
@@ -253,7 +266,7 @@ uint8_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_re
 
       // Array field
       if(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items != NULL) {
-        plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->head;
+        plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->tail;
         while (curElement != NULL) {
           lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits((plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
           curElement = curElement->next;

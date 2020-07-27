@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_address.h"
 
@@ -35,6 +33,14 @@ const plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_addres
 plc4c_s7_read_write_s7_address_discriminator plc4c_s7_read_write_s7_address_get_discriminator(plc4c_s7_read_write_s7_address_type type) {
   return plc4c_s7_read_write_s7_address_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address_null_const;
+
+plc4c_s7_read_write_s7_address plc4c_s7_read_write_s7_address_null() {
+  return plc4c_s7_read_write_s7_address_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_address** _message) {
@@ -60,7 +66,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
     (*_message)->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
                     
     // Enum field (transportSize)
-    plc4c_s7_read_write_transport_size transportSize = plc4c_s7_read_write_transport_size_null;
+    plc4c_s7_read_write_transport_size transportSize = plc4c_s7_read_write_transport_size_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &transportSize);
     if(_res != OK) {
       return _res;
@@ -90,7 +96,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* bu
 
                     
     // Enum field (area)
-    plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null;
+    plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &area);
     if(_res != OK) {
       return _res;

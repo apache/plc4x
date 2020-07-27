@@ -61,7 +61,7 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
   // If the bit-offset is currently 0 and we're reading
   // a full byte, go this shortcut.
   if ((buf->curPosBit == 0) && (num_bits % 8 == 0)) {
-    if (buf->curPosByte >= (buf->length - 1)) {
+    if (buf->curPosByte > (buf->length - 1)) {
       return OUT_OF_RANGE;
     }
 

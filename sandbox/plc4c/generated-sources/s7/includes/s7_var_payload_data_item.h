@@ -18,15 +18,19 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_S7_VAR_PAYLOAD_DATA_ITEM_H_
 #define PLC4C_S7_READ_WRITE_S7_VAR_PAYLOAD_DATA_ITEM_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <plc4c/utils/list.h>
+#include "data_transport_error_code.h"
+#include "data_transport_size.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <plc4c/utils/list.h>
-#include "data_transport_error_code.h"
-#include "data_transport_size.h"
 
 struct plc4c_s7_read_write_s7_var_payload_data_item {
   /* Properties */
@@ -37,7 +41,7 @@ struct plc4c_s7_read_write_s7_var_payload_data_item {
 typedef struct plc4c_s7_read_write_s7_var_payload_data_item plc4c_s7_read_write_s7_var_payload_data_item;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_s7_var_payload_data_item plc4c_s7_read_write_s7_var_payload_data_item_null;
+plc4c_s7_read_write_s7_var_payload_data_item plc4c_s7_read_write_s7_var_payload_data_item_null();
 
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* buf, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** message);
 

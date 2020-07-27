@@ -18,16 +18,20 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_S7_MESSAGE_H_
 #define PLC4C_S7_READ_WRITE_S7_MESSAGE_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
 #include "s7_message.h"
 #include "s7_parameter.h"
 #include "s7_payload.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_s7_message_discriminator {
@@ -47,7 +51,7 @@ typedef enum plc4c_s7_read_write_s7_message_type plc4c_s7_read_write_s7_message_
 plc4c_s7_read_write_s7_message_discriminator plc4c_s7_read_write_s7_message_get_discriminator(plc4c_s7_read_write_s7_message_type type);
 
 // Constant values.
-const uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID = 0x32;
+uint8_t PLC4C_S7_READ_WRITE_S7_MESSAGE_PROTOCOL_ID();
 
 struct plc4c_s7_read_write_s7_message {
   /* This is an abstract type so this property saves the type of this typed union */
@@ -75,7 +79,7 @@ struct plc4c_s7_read_write_s7_message {
 typedef struct plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message_null;
+plc4c_s7_read_write_s7_message plc4c_s7_read_write_s7_message_null();
 
 plc4c_return_code plc4c_s7_read_write_s7_message_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_message** message);
 

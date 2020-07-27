@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_SZL_SUBLIST_H_
 #define PLC4C_S7_READ_WRITE_SZL_SUBLIST_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_szl_sublist {
   plc4c_s7_read_write_szl_sublist_MODULE_IDENTIFICATION = 0x11,
@@ -48,11 +50,12 @@ enum plc4c_s7_read_write_szl_sublist {
 };
 typedef enum plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null();
 
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_SZL_SUBLIST_H_

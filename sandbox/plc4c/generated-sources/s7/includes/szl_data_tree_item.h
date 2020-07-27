@@ -18,13 +18,17 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
 #define PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <plc4c/utils/list.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <plc4c/utils/list.h>
 
 struct plc4c_s7_read_write_szl_data_tree_item {
   /* Properties */
@@ -37,7 +41,7 @@ struct plc4c_s7_read_write_szl_data_tree_item {
 typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item_null;
+plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item_null();
 
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** message);
 

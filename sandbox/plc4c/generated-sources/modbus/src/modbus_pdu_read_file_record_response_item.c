@@ -18,10 +18,9 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "modbus_pdu_read_file_record_response_item.h"
+
 
 // Parse function.
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_pdu_read_file_record_response_item** _message) {
@@ -51,7 +50,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_read_file_record_response_i
   (*_message)->reference_type = referenceType;
 
   // Array field (data)
-  plc4c_list* data = malloc(sizeof(plc4c_list));
+  plc4c_list* data = NULL;
+  plc4c_utils_list_create(&data);
   if(data == NULL) {
     return NO_MEMORY;
   }

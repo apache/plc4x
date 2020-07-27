@@ -475,7 +475,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             }
         } else {
             ComplexTypeReference complexTypeReference = (ComplexTypeReference) typeReference;
-            return getCTypeName(complexTypeReference.getName()) + "_null";
+            return getCTypeName(complexTypeReference.getName()) + "_null()";
         }
     }
 
@@ -892,7 +892,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private void appendVariableExpressionRest(StringBuilder sb, ComplexTypeDefinition baseType, VariableLiteral vl) {
         if(vl.isIndexed()) {
-            sb.insert(0, "plc4c_utils_list_get(");
+            sb.insert(0, "plc4c_utils_list_get_value(");
             sb.append(camelCaseToSnakeCase(vl.getName()));
             sb.append(", ").append(vl.getIndex()).append(")");
         } else {

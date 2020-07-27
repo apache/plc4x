@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_
 #define PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_device_group {
   plc4c_s7_read_write_device_group_PG_OR_PC = 0x01,
@@ -32,11 +34,12 @@ enum plc4c_s7_read_write_device_group {
 };
 typedef enum plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null();
 
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_DEVICE_GROUP_H_

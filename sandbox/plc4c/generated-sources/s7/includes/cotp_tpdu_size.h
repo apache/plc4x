@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_COTP_TPDU_SIZE_H_
 #define PLC4C_S7_READ_WRITE_COTP_TPDU_SIZE_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_cotp_tpdu_size {
   plc4c_s7_read_write_cotp_tpdu_size_SIZE_128 = 0x07,
@@ -36,40 +38,14 @@ enum plc4c_s7_read_write_cotp_tpdu_size {
 };
 typedef enum plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null();
 
 
-uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
-  switch(value) {
-    case 7: { /* '0x07' */
-      return 128;
-    }
-    case 8: { /* '0x08' */
-      return 256;
-    }
-    case 9: { /* '0x09' */
-      return 512;
-    }
-    case 10: { /* '0x0a' */
-      return 1024;
-    }
-    case 11: { /* '0x0b' */
-      return 2048;
-    }
-    case 12: { /* '0x0c' */
-      return 4096;
-    }
-    case 13: { /* '0x0d' */
-      return 8192;
-    }
-    default: {
-      return 0;
-    }
-  }
-}
+uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_COTP_TPDU_SIZE_H_

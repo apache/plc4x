@@ -18,10 +18,9 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_var_payload_data_item.h"
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_read_buffer* buf, bool lastItem, plc4c_s7_read_write_s7_var_payload_data_item** _message) {
@@ -36,7 +35,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
 
   // Enum field (returnCode)
-  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null;
+  plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
   _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &returnCode);
   if(_res != OK) {
     return _res;
@@ -44,7 +43,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   (*_message)->return_code = returnCode;
 
   // Enum field (transportSize)
-  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null;
+  plc4c_s7_read_write_data_transport_size transportSize = plc4c_s7_read_write_data_transport_size_null();
   _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &transportSize);
   if(_res != OK) {
     return _res;
@@ -59,7 +58,8 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
   }
 
   // Array field (data)
-  plc4c_list* data = malloc(sizeof(plc4c_list));
+  plc4c_list* data = NULL;
+  plc4c_utils_list_create(&data);
   if(data == NULL) {
     return NO_MEMORY;
   }

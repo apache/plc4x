@@ -17,30 +17,13 @@
   under the License.
 */
 
-#ifndef PLC4C_S7_READ_WRITE_SZL_MODULE_TYPE_CLASS_H_
-#define PLC4C_S7_READ_WRITE_SZL_MODULE_TYPE_CLASS_H_
-
-#include <stdbool.h>
-#include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-enum plc4c_s7_read_write_szl_module_type_class {
-  plc4c_s7_read_write_szl_module_type_class_CPU = 0x0,
-  plc4c_s7_read_write_szl_module_type_class_IM = 0x4,
-  plc4c_s7_read_write_szl_module_type_class_FM = 0x8,
-  plc4c_s7_read_write_szl_module_type_class_CP = 0xC
-};
-typedef enum plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class;
-
-// Get an empty NULL-struct
-plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_null();
+#include "device_group.h"
 
 
-#ifdef __cplusplus
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null_const;
+
+plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null() {
+  return plc4c_s7_read_write_device_group_null_const;
 }
-#endif
 
-#endif  // PLC4C_S7_READ_WRITE_SZL_MODULE_TYPE_CLASS_H_

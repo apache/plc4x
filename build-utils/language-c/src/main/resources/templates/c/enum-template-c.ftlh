@@ -16,7 +16,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
-${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.h
+${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(typeName)}.c
 /*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -36,13 +36,8 @@ ${helper.getIncludesDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase
   under the License.
 */
 
-#ifndef ${helper.getCTypeName(type.name)?upper_case}_H_
-#define ${helper.getCTypeName(type.name)?upper_case}_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "${helper.camelCaseToSnakeCase(typeName)}.h"
 
-#include <stdbool.h>
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
 -->
@@ -52,19 +47,12 @@ extern "C" {
     </#list>
 </#if>
 
-<#--
-    First output the enum itself together with it's constants
--->
-enum ${helper.getCTypeName(type.name)} {
-<#list type.enumValues as enumValue>
-  ${helper.getCTypeName(type.name)}_${enumValue.name} = ${enumValue.value}<#sep>,
-</#sep></#list>
-
-};
-typedef enum ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)};
-
 // Create an empty NULL-struct
-static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null;
+static const ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null_const;
+
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
+  return ${helper.getCTypeName(type.name)}_null_const;
+}
 
 <#--
     If this enum also defines constant values, output one function for each.
@@ -89,8 +77,3 @@ ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))
 }
     </#list>
 </#if>
-
-#ifdef __cplusplus
-}
-#endif
-#endif  // ${helper.getCTypeName(type.name)?upper_case}_H_

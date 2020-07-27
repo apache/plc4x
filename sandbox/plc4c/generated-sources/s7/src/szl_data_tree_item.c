@@ -18,10 +18,9 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "szl_data_tree_item.h"
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** _message) {
@@ -44,7 +43,8 @@ plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_bu
   (*_message)->item_index = itemIndex;
 
   // Array field (mlfb)
-  plc4c_list* mlfb = malloc(sizeof(plc4c_list));
+  plc4c_list* mlfb = NULL;
+  plc4c_utils_list_create(&mlfb);
   if(mlfb == NULL) {
     return NO_MEMORY;
   }

@@ -18,17 +18,21 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_COTP_PACKET_H_
 #define PLC4C_S7_READ_WRITE_COTP_PACKET_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
 #include "cotp_packet.h"
 #include "s7_message.h"
 #include "cotp_parameter.h"
 #include "cotp_protocol_class.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_s7_read_write_cotp_packet_discriminator {
@@ -88,7 +92,7 @@ struct plc4c_s7_read_write_cotp_packet {
 typedef struct plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null;
+plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null();
 
 plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* buf, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** message);
 

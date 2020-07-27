@@ -18,15 +18,19 @@
 */
 #ifndef PLC4C_S7_READ_WRITE_SZL_ID_H_
 #define PLC4C_S7_READ_WRITE_SZL_ID_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <plc4c/utils/list.h>
+#include "szl_module_type_class.h"
+#include "szl_sublist.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <plc4c/utils/list.h>
-#include "szl_module_type_class.h"
-#include "szl_sublist.h"
 
 struct plc4c_s7_read_write_szl_id {
   /* Properties */
@@ -37,7 +41,7 @@ struct plc4c_s7_read_write_szl_id {
 typedef struct plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id;
 
 // Create an empty NULL-struct
-static const plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id_null;
+plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id_null();
 
 plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_id** message);
 

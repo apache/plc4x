@@ -827,7 +827,7 @@ void test_plc4c_spi_write_float(void) {
   // Prepare input data
   plc4c_spi_write_buffer* write_buffer;
   plc4c_spi_write_buffer_create(4, &write_buffer);
-  test_plc4c_spi_write_float_args("Simple 32 bit float", write_buffer, 32, OK, 3.14159274);
+  test_plc4c_spi_write_float_args("Simple 32 bit float", write_buffer, 32, OK, (float) 3.14159274);
   uint8_t expected_data[] = {0x40, 0x49, 0x0f, 0xdb};
   internal_assert_arrays_equal((uint8_t*) &expected_data, write_buffer, 4);
   plc4c_spi_write_buffer_destroy(write_buffer);

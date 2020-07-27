@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "cotp_packet.h"
 
@@ -27,12 +25,12 @@
 // (The order is identical to the enum constants so we can use the
 // enum constant to directly access a given types discriminator values)
 const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_discriminators[] = {
+  {/* plc4c_s7_read_write_cotp_packet_data */
+   .tpduCode = 0xF0},
   {/* plc4c_s7_read_write_cotp_packet_connection_request */
    .tpduCode = 0xE0},
   {/* plc4c_s7_read_write_cotp_packet_connection_response */
    .tpduCode = 0xD0},
-  {/* plc4c_s7_read_write_cotp_packet_data */
-   .tpduCode = 0xF0},
   {/* plc4c_s7_read_write_cotp_packet_disconnect_request */
    .tpduCode = 0x80},
   {/* plc4c_s7_read_write_cotp_packet_disconnect_response */
@@ -45,6 +43,14 @@ const plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_pac
 plc4c_s7_read_write_cotp_packet_discriminator plc4c_s7_read_write_cotp_packet_get_discriminator(plc4c_s7_read_write_cotp_packet_type type) {
   return plc4c_s7_read_write_cotp_packet_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null_const;
+
+plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null() {
+  return plc4c_s7_read_write_cotp_packet_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* buf, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
@@ -119,7 +125,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
                     
     // Enum field (protocolClass)
-    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
@@ -151,7 +157,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
                     
     // Enum field (protocolClass)
-    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
@@ -183,7 +189,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
                     
     // Enum field (protocolClass)
-    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null;
+    plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
     _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
@@ -238,7 +244,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   // Array field (parameters)
   curPos = plc4c_spi_read_get_pos(buf) - startPos;
-  plc4c_list* parameters = malloc(sizeof(plc4c_list));
+  plc4c_list* parameters = NULL;
+  plc4c_utils_list_create(&parameters);
   if(parameters == NULL) {
     return NO_MEMORY;
   }
@@ -271,6 +278,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
       return _res;
     }
     (*_message)->payload = payload;
+  } else {
+    (*_message)->payload = NULL;
   }
 
   return OK;
@@ -412,7 +421,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_cotp_parameter* _value = (plc4c_s7_read_write_cotp_parameter*) plc4c_utils_list_get_value(_message->parameters, curItem);
-      _res = plc4c_s7_read_write_cotp_parameter_serialize(buf, (void*) &_value);
+      _res = plc4c_s7_read_write_cotp_parameter_serialize(buf, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -527,7 +536,7 @@ uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_
 
   // Array field
   if(_message->parameters != NULL) {
-    plc4c_list_element* curElement = _message->parameters->head;
+    plc4c_list_element* curElement = _message->parameters->tail;
     while (curElement != NULL) {
       lengthInBits += plc4c_s7_read_write_cotp_parameter_length_in_bits((plc4c_s7_read_write_cotp_parameter*) curElement->value);
       curElement = curElement->next;

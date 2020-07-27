@@ -19,11 +19,13 @@
 
 #ifndef PLC4C_S7_READ_WRITE_MEMORY_AREA_H_
 #define PLC4C_S7_READ_WRITE_MEMORY_AREA_H_
+
+#include <stdbool.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdbool.h>
 
 enum plc4c_s7_read_write_memory_area {
   plc4c_s7_read_write_memory_area_COUNTERS = 0x1C,
@@ -38,46 +40,14 @@ enum plc4c_s7_read_write_memory_area {
 };
 typedef enum plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area;
 
-// Create an empty NULL-struct
-static const plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null;
+// Get an empty NULL-struct
+plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null();
 
 
-char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value) {
-  switch(value) {
-    case 28: { /* '0x1C' */
-      return "C";
-    }
-    case 29: { /* '0x1D' */
-      return "T";
-    }
-    case 128: { /* '0x80' */
-      return "D";
-    }
-    case 129: { /* '0x81' */
-      return "I";
-    }
-    case 130: { /* '0x82' */
-      return "Q";
-    }
-    case 131: { /* '0x83' */
-      return "M";
-    }
-    case 132: { /* '0x84' */
-      return "DB";
-    }
-    case 133: { /* '0x85' */
-      return "DBI";
-    }
-    case 134: { /* '0x86' */
-      return "LD";
-    }
-    default: {
-      return 0;
-    }
-  }
-}
+char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value);
 
 #ifdef __cplusplus
 }
 #endif
+
 #endif  // PLC4C_S7_READ_WRITE_MEMORY_AREA_H_

@@ -18,8 +18,6 @@
 */
 
 #include <stdio.h>
-#include <plc4c/spi/read_buffer.h>
-#include <plc4c/spi/write_buffer.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include "s7_var_request_parameter_item.h"
 
@@ -35,6 +33,14 @@ const plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_r
 plc4c_s7_read_write_s7_var_request_parameter_item_discriminator plc4c_s7_read_write_s7_var_request_parameter_item_get_discriminator(plc4c_s7_read_write_s7_var_request_parameter_item_type type) {
   return plc4c_s7_read_write_s7_var_request_parameter_item_discriminators[type];
 }
+
+// Create an empty NULL-struct
+static const plc4c_s7_read_write_s7_var_request_parameter_item plc4c_s7_read_write_s7_var_request_parameter_item_null_const;
+
+plc4c_s7_read_write_s7_var_request_parameter_item plc4c_s7_read_write_s7_var_request_parameter_item_null() {
+  return plc4c_s7_read_write_s7_var_request_parameter_item_null_const;
+}
+
 
 // Parse function.
 plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_request_parameter_item** _message) {

@@ -18,18 +18,22 @@
 */
 #ifndef PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_H_
 #define PLC4C_MODBUS_READ_WRITE_MODBUS_PDU_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
 #include "modbus_pdu_write_file_record_request_item.h"
 #include "modbus_pdu_read_file_record_request_item.h"
 #include "modbus_pdu_read_file_record_response_item.h"
 #include "modbus_pdu_write_file_record_response_item.h"
 #include "modbus_pdu.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_modbus_read_write_modbus_pdu_discriminator {
@@ -221,7 +225,7 @@ struct plc4c_modbus_read_write_modbus_pdu {
 typedef struct plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu;
 
 // Create an empty NULL-struct
-static const plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu_null;
+plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu_null();
 
 plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu** message);
 
