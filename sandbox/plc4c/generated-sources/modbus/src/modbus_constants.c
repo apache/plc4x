@@ -63,12 +63,12 @@ plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_w
   return OK;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bytes(plc4c_modbus_read_write_modbus_constants* _message) {
+uint16_t plc4c_modbus_read_write_modbus_constants_length_in_bytes(plc4c_modbus_read_write_modbus_constants* _message) {
   return plc4c_modbus_read_write_modbus_constants_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_modbus_read_write_modbus_constants_length_in_bits(plc4c_modbus_read_write_modbus_constants* _message) {
-  uint8_t lengthInBits = 0;
+uint16_t plc4c_modbus_read_write_modbus_constants_length_in_bits(plc4c_modbus_read_write_modbus_constants* _message) {
+  uint16_t lengthInBits = 0;
 
   // Const Field (modbusTcpDefaultPort)
   lengthInBits += 16;

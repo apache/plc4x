@@ -301,7 +301,7 @@ plc4c_return_code plc4c_spi_read_peek_byte(plc4c_spi_read_buffer* buf,
 }
 
 plc4c_return_code plc4c_spi_read_bit(plc4c_spi_read_buffer* buf, bool* value) {
-  uint8_t cur_byte = (*buf->data) + buf->curPosByte;
+  uint8_t cur_byte = *(buf->data + buf->curPosByte);
   // We have to invert the position as bit 0 will be the first
   // (most significant bit).
   unsigned int bit_pos = ((unsigned int)7) - buf->curPosBit;

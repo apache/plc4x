@@ -439,12 +439,12 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   return OK;
 }
 
-uint8_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* _message) {
+uint16_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* _message) {
   return plc4c_s7_read_write_cotp_packet_length_in_bits(_message) / 8;
 }
 
-uint8_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* _message) {
-  uint8_t lengthInBits = 0;
+uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* _message) {
+  uint16_t lengthInBits = 0;
 
   // Implicit Field (headerLength)
   lengthInBits += 8;

@@ -140,12 +140,12 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>      <#if !helper.isSimpleTypeReference(arrayField.type)>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>                <#if helper.isSimpleTypeReference(arrayField.type)>
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
-<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value")};
+<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}));
+<#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "_value")};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
-<#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
+<#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
                 <#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
@@ -574,11 +574,11 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
   return OK;
 }
 
-uint8_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* _message) {
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* _message) {
   return ${helper.getCTypeName(type.name)}_length_in_bits(_message) / 8;
 }
 
-uint8_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
     <#macro fieldSize baseType field indentContent>
         <#switch field.typeName>
             <#case "array">
@@ -710,7 +710,7 @@ uint8_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(t
                 <#break>
         </#switch>
     </#macro>
-  uint8_t lengthInBits = 0;
+  uint16_t lengthInBits = 0;
 <#list type.fields as field>
   <@fieldSize baseType=type field=field indentContent=false/>
 </#list>
