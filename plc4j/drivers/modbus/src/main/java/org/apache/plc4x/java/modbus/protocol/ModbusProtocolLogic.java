@@ -31,6 +31,7 @@ import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
 import org.apache.plc4x.java.modbus.field.ModbusFieldDiscreteInput;
 import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.field.ModbusFieldInputRegister;
+import org.apache.plc4x.java.modbus.field.ModbusExtendedRegister;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -44,6 +45,7 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -59,6 +61,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private short unitIdentifier;
     private RequestTransactionManager tm;
     private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(10);
+    private final static int FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH = 2;
+    private final static int FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH = 10000;
 
     @Override
     public void setConfiguration(ModbusConfiguration configuration) {
@@ -219,6 +223,30 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         } else if(field instanceof ModbusFieldHoldingRegister) {
             ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;
             return new ModbusPDUReadHoldingRegistersRequest(holdingRegister.getAddress(), holdingRegister.getQuantity());
+        } else if(field instanceof ModbusExtendedRegister) {
+            ModbusExtendedRegister extendedRegister = (ModbusExtendedRegister) field;
+            int group1_address = extendedRegister.getAddress() % 10000;
+            int group2_address = 0;
+            int group1_quantity, group2_quantity;
+            short group1_file_number = (short) (Math.floor(extendedRegister.getAddress() / 10000) + 1);
+            short group2_file_number;
+            ModbusPDUReadFileRecordRequestItem[] itemArray;
+
+            if ((group1_address + extendedRegister.getQuantity()) < FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) {
+              //If reuqest doesn't span file records, use a single group
+              group1_quantity = extendedRegister.getQuantity();
+              ModbusPDUReadFileRecordRequestItem group1 = new ModbusPDUReadFileRecordRequestItem((short) 6, group1_file_number, group1_address, group1_quantity);
+              itemArray = new ModbusPDUReadFileRecordRequestItem[] {group1};
+            } else {
+              //If it doesn span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
+              group1_quantity = FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH - group1_address;
+              group2_quantity = extendedRegister.getQuantity() - group1_quantity;
+              group2_file_number = (short) (group1_file_number + 1);
+              ModbusPDUReadFileRecordRequestItem group1 = new ModbusPDUReadFileRecordRequestItem((short) 6, group1_file_number, group1_address, group1_quantity);
+              ModbusPDUReadFileRecordRequestItem group2 = new ModbusPDUReadFileRecordRequestItem((short) 6, group2_file_number, group2_address, group2_quantity);
+              itemArray = new ModbusPDUReadFileRecordRequestItem[] {group1, group2};
+            }
+            return new ModbusPDUReadFileRecordRequest(itemArray);
         }
         throw new PlcRuntimeException("Unsupported read field type " + field.getClass().getName());
     }
@@ -271,6 +299,30 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
             return DataItemIO.staticParse(io, (short) 2, (short) req.getQuantity());
+        } else if (request instanceof ModbusPDUReadFileRecordRequest) {
+            if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
+                throw new PlcRuntimeException("Unexpected response type. " +
+                    "Expected ModbusPDUReadFileRecordResponse, but got " + response.getClass().getName());
+            }
+            ModbusPDUReadFileRecordRequest req = (ModbusPDUReadFileRecordRequest) request;
+            ModbusPDUReadFileRecordResponse resp = (ModbusPDUReadFileRecordResponse) response;
+            ReadBuffer io;
+            short dataLength;
+
+            if (resp.getItems().length == 2 && resp.getItems().length == req.getItems().length) {
+              //If request was split over file records, two groups in reponse should be received.
+              io = new ReadBuffer(ArrayUtils.addAll(resp.getItems()[0].getData(), resp.getItems()[1].getData()));
+              dataLength = (short) (resp.getItems()[0].getLengthInBytes() + resp.getItems()[1].getLengthInBytes() - (2 * FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH));
+            } else if (resp.getItems().length == 1 && resp.getItems().length == req.getItems().length) {
+              //If request was within a single file record, one group should be received.
+              io = new ReadBuffer(resp.getItems()[0].getData());
+              dataLength = (short) (resp.getItems()[0].getLengthInBytes() - FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH);
+            } else {
+              throw new PlcRuntimeException("Unexpected number of groups in response. " +
+                  "Expected " + req.getItems().length + ", but got " + resp.getItems().length);
+            }
+
+            return DataItemIO.staticParse(io, (short) 2, (short) ((dataLength)/2));
         }
         return null;
     }
