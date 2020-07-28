@@ -20,7 +20,6 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.socket.DatagramChannel;
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -132,7 +131,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         // Only the TCP transport supports login.
-        if(context.getChannel() instanceof DatagramChannel) {
+        if(!"PcapReplayChannel".equals(context.getChannel().getClass().getName())) {
             LOGGER.info("S7 Driver running in ACTIVE mode.");
             LOGGER.debug("Sending COTP Connection Request");
             // Open the session on ISO Transport Protocol first.
