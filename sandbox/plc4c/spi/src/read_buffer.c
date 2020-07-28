@@ -57,6 +57,10 @@ plc4c_return_code plc4c_spi_read_unsigned_bits_internal(
   if (buf == NULL) {
     return NULL_VALUE;
   }
+  // Check if there are enough bytes in total left.
+  if (!plc4c_spi_read_has_more(buf, num_bits)) {
+    return OUT_OF_RANGE;
+  }
 
   // If the bit-offset is currently 0 and we're reading
   // a full byte, go this shortcut.

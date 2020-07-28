@@ -21,12 +21,18 @@
 #include "plc4c/spi/read_buffer.h"
 #include "tpkt_packet.h"
 
-void internal_assert_arrays_equal(const uint8_t* expected_array,
+void internal_assert_arrays_equal(uint8_t* expected_array,
                                   plc4c_spi_write_buffer* write_buffer,
                                   uint8_t num_bytes) {
   for (int i = 0; i < num_bytes; i++) {
     uint8_t expected_value = *(expected_array + i);
     uint8_t actual_value = *(write_buffer->data + i);
+    // Needed for debugging on remote machines: Output the entire arrays content.
+    if(expected_value != actual_value) {
+      for(int j = 0; j < num_bytes; j++) {
+        printf("E=%02X %s A=%02X", expected_value, (*(expected_array + j) !=  *(write_buffer->data + j) ? "!=" : "=="), actual_value);
+      }
+    }
     TEST_ASSERT_EQUAL_UINT8_MESSAGE(expected_value, actual_value, "Byte arrays differ");
   }
 }
@@ -217,8 +223,7 @@ int main(void) {
   RUN_TEST(parse_s7_communication_setup_request);
   RUN_TEST(parse_s7_communication_setup_response);
   RUN_TEST(parse_s7_read_plc_type_request);
-  // TODO: This seems to fail only when being run from Maven
-  //RUN_TEST(parse_s7_read_plc_type_response);
+  RUN_TEST(parse_s7_read_plc_type_response);
   RUN_TEST(parse_s7_read_request);
   RUN_TEST(parse_s7_read_response);
   RUN_TEST(parse_s7_read_error_response);

@@ -349,8 +349,7 @@ void test_plc4c_spi_read_unsigned_short(void) {
   test_plc4c_spi_read_unsigned_short_args("Short only reading 14 bits", read_buffer, 14, OK, 1543);
 
   // We only have 8 bytes, so with this we would exceed the range.
-  // TODO: This should fail ...
-  //test_plc4c_spi_read_unsigned_short_args("Try to read mode bytes than the buffer has available", read_buffer, 16, OUT_OF_RANGE, 0);
+  test_plc4c_spi_read_unsigned_short_args("Try to read mode bytes than the buffer has available", read_buffer, 16, OUT_OF_RANGE, 0);
   test_plc4c_spi_read_unsigned_short_args("Try to read too many bytes for a short", read_buffer, 18, OUT_OF_RANGE, 0);
 }
 
