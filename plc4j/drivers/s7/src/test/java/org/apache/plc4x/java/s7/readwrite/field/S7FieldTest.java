@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.s7.readwrite.field;
 
-import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
 import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.junit.jupiter.api.Assertions;
