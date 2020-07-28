@@ -21,11 +21,18 @@ package org.apache.plc4x.java.s7.readwrite.field;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.s7.readwrite.S7Address;
+import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
+import org.apache.plc4x.java.s7.readwrite.io.S7AddressIO;
 import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,6 +54,8 @@ public class S7Field implements PlcField {
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
+    private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
+        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
 
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
@@ -102,7 +111,8 @@ public class S7Field implements PlcField {
     public static boolean matches(String fieldString) {
         return DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
             ADDRESS_PATTERN.matcher(fieldString).matches() ||
-            DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches();
+            DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
+            PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
     /**
@@ -218,6 +228,26 @@ public class S7Field implements PlcField {
             }
             numElements = calcNumberOfElementsForIndividualTypes(numElements,dataType);
             return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        } else if (PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            matcher = PLC_PROXY_ADDRESS_PATTERN.matcher(fieldString);
+
+            assert matcher.matches();
+
+            try {
+                byte[] addressData = Hex.decodeHex(fieldString.replaceAll("[-]", ""));
+                ReadBuffer rb = new ReadBuffer(addressData);
+                final S7Address s7Address = S7AddressIO.staticParse(rb);
+                if (s7Address instanceof S7AddressAny) {
+                    S7AddressAny s7AddressAny = (S7AddressAny) s7Address;
+                    return new S7Field(s7AddressAny.getTransportSize(), s7AddressAny.getArea(),
+                        s7AddressAny.getDbNumber(), s7AddressAny.getByteAddress(),
+                        s7AddressAny.getBitAddress(), s7AddressAny.getNumberOfElements());
+                } else {
+                    throw new PlcInvalidFieldException("Unsupported address type.");
+                }
+            } catch (ParseException | DecoderException e) {
+                throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+            }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }

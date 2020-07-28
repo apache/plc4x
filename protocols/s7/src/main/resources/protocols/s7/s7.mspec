@@ -422,7 +422,7 @@
 
     // Floating point values
     ['0x08' REAL             ['D'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '31'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x00' LREAL            ['X'              , '8'                 , 'TransportSize.REAL'    , 'null'                               , '32'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'false'             ]]
+    ['0x30' LREAL            ['X'              , '8'                 , 'TransportSize.REAL'    , 'null'                               , '32'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'false'             ]]
 
     // Characters and Strings
     ['0x03' CHAR             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '41'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
