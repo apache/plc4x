@@ -47,6 +47,9 @@ public class S7Field implements PlcField {
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
         Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
+    private static final Pattern SIMOTION_ADDRESS_PATTERN =
+        Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
+
     private static final String DATA_TYPE = "dataType";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
     private static final String BLOCK_NUMBER = "blockNumber";
@@ -98,7 +101,8 @@ public class S7Field implements PlcField {
     public static boolean matches(String fieldString) {
         return DATA_BLOCK_ADDRESS_PATTERN.matcher(fieldString).matches() ||
             ADDRESS_PATTERN.matcher(fieldString).matches() ||
-            DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches();
+            DATA_BLOCK_SHORT_PATTERN.matcher(fieldString).matches() ||
+            SIMOTION_ADDRESS_PATTERN.matcher(fieldString).matches();
     }
 
     /**
@@ -215,6 +219,29 @@ public class S7Field implements PlcField {
             }
             numElements = calcNumberOfElementsForIndividualTypes(numElements, dataType);
             return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
+        } else if (SIMOTION_ADDRESS_PATTERN.matcher(fieldString).matches()) {
+            matcher = SIMOTION_ADDRESS_PATTERN.matcher(fieldString);
+
+            boolean matches = matcher.matches();
+            assert matches;
+
+            try {
+                byte[] addressData = Hex.decodeHex(fieldString.replaceAll("[-]", ""));
+                ReadBuffer rb = new ReadBuffer(addressData);
+                // Read out values according to definition in mspec
+                final TransportSize transportSize = TransportSize.valueOf(rb.readByte(8));
+                final short numberOfElements = rb.readShort(16);
+                final short dbNumber = rb.readShort(16);
+                final MemoryArea memoryArea = MemoryArea.valueOf(rb.readByte(8));
+                assert 0x00 == rb.readByte(5);
+                final short byteAddress = rb.readShort(16);
+                final byte bitAddress = rb.readByte(3);
+
+                return new S7Field(transportSize, memoryArea, dbNumber, byteAddress, bitAddress,
+                    numberOfElements);
+            } catch (ParseException | DecoderException e) {
+                throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
+            }
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
     }
