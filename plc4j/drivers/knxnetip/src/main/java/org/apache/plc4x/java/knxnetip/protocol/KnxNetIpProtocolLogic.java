@@ -91,7 +91,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
     @Override
     public void onConnect(ConversationContext<KNXNetIPMessage> context) {
         // Only the UDP transport supports login.
-        if(context.getChannel() instanceof DatagramChannel) {
+        if(!context.isPassive()) {
             LOGGER.info("KNX Driver running in ACTIVE mode.");
             knxNetIpDriverContext.setPassiveMode(false);
 

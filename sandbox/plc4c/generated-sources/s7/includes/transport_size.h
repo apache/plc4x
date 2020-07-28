@@ -44,7 +44,7 @@ enum plc4c_s7_read_write_transport_size {
   plc4c_s7_read_write_transport_size_LINT = 0x00,
   plc4c_s7_read_write_transport_size_ULINT = 0x00,
   plc4c_s7_read_write_transport_size_REAL = 0x08,
-  plc4c_s7_read_write_transport_size_LREAL = 0x00,
+  plc4c_s7_read_write_transport_size_LREAL = 0x30,
   plc4c_s7_read_write_transport_size_CHAR = 0x03,
   plc4c_s7_read_write_transport_size_WCHAR = 0x13,
   plc4c_s7_read_write_transport_size_STRING = 0x03,

@@ -18,7 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.PassiveBacNetIpDriver;
+import org.apache.plc4x.java.bacnetip.BacNetIpDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
@@ -28,7 +28,7 @@ import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 
-public class PassiveBacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
+public class BacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
@@ -79,7 +79,7 @@ public class PassiveBacNetIpConfiguration implements Configuration, UdpTransport
 
     @Override
     public int getDefaultPort() {
-        return PassiveBacNetIpDriver.BACNET_IP_PORT;
+        return BacNetIpDriver.BACNET_IP_PORT;
     }
 
     @Override

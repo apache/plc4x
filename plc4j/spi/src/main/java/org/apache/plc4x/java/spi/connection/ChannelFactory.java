@@ -27,6 +27,8 @@ public interface ChannelFactory {
 
     Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException;
 
+    boolean isPassive();
+
     /** Possibility to add an initial Layer to the Pipeline */
     default void initializePipeline(ChannelPipeline pipeline) {
         // Intentionally do Nothing

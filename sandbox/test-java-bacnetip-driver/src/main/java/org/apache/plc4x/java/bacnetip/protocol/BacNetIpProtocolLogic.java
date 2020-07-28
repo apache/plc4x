@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.ede.EdeParser;
 import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
@@ -56,16 +56,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
-public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements HasConfiguration<PassiveBacNetIpConfiguration>, PlcSubscriber {
+public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements HasConfiguration<BacNetIpConfiguration>, PlcSubscriber {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PassiveBacNetIpProtocolLogic.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BacNetIpProtocolLogic.class);
 
     private EdeModel edeModel;
 
     private Map<Integer, Consumer<PlcSubscriptionEvent>> consumerIdMap = new ConcurrentHashMap<>();
 
     @Override
-    public void setConfiguration(PassiveBacNetIpConfiguration configuration) {
+    public void setConfiguration(BacNetIpConfiguration configuration) {
         if (configuration.getEdeFilePath() != null) {
             File edeFile = new File(configuration.getEdeFilePath());
             if (edeFile.exists() && edeFile.isFile()) {
@@ -91,7 +91,11 @@ public class PassiveBacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implem
 
     @Override
     public void onConnect(ConversationContext<BVLC> context) {
-        context.fireConnected();
+        if(context.isPassive()) {
+            context.fireConnected();
+        } else {
+            throw new PlcRuntimeException("Active connections not yet supported");
+        }
     }
 
     @Override

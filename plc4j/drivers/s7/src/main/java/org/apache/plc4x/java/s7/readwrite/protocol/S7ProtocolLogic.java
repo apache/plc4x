@@ -131,7 +131,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         // Only the TCP transport supports login.
-        if(!"PcapReplayChannel".equals(context.getChannel().getClass().getName())) {
+        if(!context.isPassive()) {
             LOGGER.info("S7 Driver running in ACTIVE mode.");
             LOGGER.debug("Sending COTP Connection Request");
             // Open the session on ISO Transport Protocol first.

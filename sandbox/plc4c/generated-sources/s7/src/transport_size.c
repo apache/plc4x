@@ -65,6 +65,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_writ
     case 19: { /* '0x13' */
       return false;
     }
+    case 48: { /* '0x30' */
+      return false;
+    }
     default: {
       return 0;
     }
@@ -105,6 +108,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_
     }
     case 19: { /* '0x13' */
       return true;
+    }
+    case 48: { /* '0x30' */
+      return false;
     }
     default: {
       return 0;
@@ -147,6 +153,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_in_bytes(plc4c_s7_read_write
     case 19: { /* '0x13' */
       return 2;
     }
+    case 48: { /* '0x30' */
+      return 8;
+    }
     default: {
       return 0;
     }
@@ -186,6 +195,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_400(plc4c_s7_read_writ
       return true;
     }
     case 19: { /* '0x13' */
+      return false;
+    }
+    case 48: { /* '0x30' */
       return false;
     }
     default: {
@@ -229,6 +241,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1200(plc4c_s7_read_wri
     case 19: { /* '0x13' */
       return true;
     }
+    case 48: { /* '0x30' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -268,6 +283,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_code(plc4c_s7_read_write_tra
       return 'X';
     }
     case 19: { /* '0x13' */
+      return 'X';
+    }
+    case 48: { /* '0x30' */
       return 'X';
     }
     default: {
@@ -311,6 +329,9 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1500(plc4c_s7_read_wri
     case 19: { /* '0x13' */
       return true;
     }
+    case 48: { /* '0x30' */
+      return true;
+    }
     default: {
       return 0;
     }
@@ -350,6 +371,9 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
       return -1;
     }
     case 19: { /* '0x13' */
+      return -1;
+    }
+    case 48: { /* '0x30' */
       return -1;
     }
     default: {
@@ -393,6 +417,9 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_t
     case 19: { /* '0x13' */
       return -1;
     }
+    case 48: { /* '0x30' */
+      return plc4c_s7_read_write_transport_size_REAL;
+    }
     default: {
       return 0;
     }
@@ -433,6 +460,9 @@ uint8_t plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_wr
     }
     case 19: { /* '0x13' */
       return 42;
+    }
+    case 48: { /* '0x30' */
+      return 32;
     }
     default: {
       return 0;

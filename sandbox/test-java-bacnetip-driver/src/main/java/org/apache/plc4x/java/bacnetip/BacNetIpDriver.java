@@ -20,9 +20,9 @@ package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.bacnetip.configuration.PassiveBacNetIpConfiguration;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
-import org.apache.plc4x.java.bacnetip.protocol.PassiveBacNetIpProtocolLogic;
+import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.bacnetip.readwrite.io.BVLCIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
 @Component(service = PlcDriver.class, immediate = true)
-public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
+public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     public static final int BACNET_IP_PORT = 47808;
 
@@ -51,7 +51,7 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return PassiveBacNetIpConfiguration.class;
+        return BacNetIpConfiguration.class;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PassiveBacNetIpDriver extends GeneratedDriverBase<BVLC> {
     @Override
     protected ProtocolStackConfigurer<BVLC> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(BVLC.class, BVLCIO.class)
-            .withProtocol(PassiveBacNetIpProtocolLogic.class)
+            .withProtocol(BacNetIpProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .build();

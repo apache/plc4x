@@ -33,6 +33,8 @@ public interface ConversationContext<T> {
 
     Channel getChannel();
 
+    boolean isPassive();
+
     void sendToWire(T msg);
 
     void fireConnected();
