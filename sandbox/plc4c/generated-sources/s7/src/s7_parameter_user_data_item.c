@@ -132,7 +132,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return NO_MEMORY;
       }
       *dataUnitReferenceNumber = 0;
-      _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &dataUnitReferenceNumber);
+      _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) dataUnitReferenceNumber);
       if(_res != OK) {
         return _res;
       }
@@ -151,7 +151,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return NO_MEMORY;
       }
       *lastDataUnit = 0;
-      _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &lastDataUnit);
+      _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) lastDataUnit);
       if(_res != OK) {
         return _res;
       }
@@ -170,7 +170,7 @@ plc4c_return_code plc4c_s7_read_write_s7_parameter_user_data_item_parse(plc4c_sp
         return NO_MEMORY;
       }
       *errorCode = 0;
-      _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &errorCode);
+      _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) errorCode);
       if(_res != OK) {
         return _res;
       }

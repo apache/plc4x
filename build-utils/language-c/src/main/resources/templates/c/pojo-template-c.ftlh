@@ -309,7 +309,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    }
         <#if helper.isSimpleTypeReference(optionalField.type)>
 <#if indentContent>  </#if>    *${optionalField.name} = ${helper.getNullValueForTypeReference(optionalField.type)};
-<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, "&" + optionalField.name)};
+<#if indentContent>  </#if>    _res = ${helper.getReadBufferReadMethodCall(optionalField.type, optionalField.name)};
         <#else>
 <#if indentContent>  </#if>    _res = ${helper.getCTypeName(optionalField.type.name)}_parse(buf<#if optionalField.params?has_content>, <#list optionalField.params as parserTerm>${helper.toParseExpression(baseType, optionalField, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, &${optionalField.name});
         </#if>
