@@ -97,7 +97,13 @@ Output (Read/Write):
 - Coil (Boolean / 1 bit)
 - Holding Register (Short / 16 bit)
 
-Reading Extended Registers is iplemented (Short / 16 bit)
+Extended Registers (6x) - Function Code 20 - (Short / 16 bit)
+
+These are able to be referenced as a continuous data area 600000 - 699999. Internally this is converted to the file number/register format. File number 1 corresponds to the first 10000 registers (600000 - 609999), file number 2 the next 10000 (610000 - 619999) and so on.
+
+Note unlike the other areas this area starts at address 0.
+
+At the moment this implementation only supports reading the extended memory area.
 
 Here come the syntax descriptions of these addresses (Each address can reference either a single item or an array):
 
