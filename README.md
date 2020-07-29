@@ -84,7 +84,7 @@ Currently the project is configured to require the following software:
 1. Java 8 JDK: For running Maven in general as well as compiling the Java and Scala modules `JAVA_HOME` configured to
  point to that.
 2. libpcap/WinPcap for raw socket tests in Java or use of `passive-mode` drivers
-3. (Optional) Graphwiz: For generating the graphs in the documentation (http://www.graphviz.org/)
+3. (Optional) [https://www.graphviz.org/](Graphviz): For generating the graphs in the documentation
 4. Git (even when working on the source distribution)
 
 With this setup you will be able to build the Java part of PLC4X excluding the "proxy" drivers and servers.
