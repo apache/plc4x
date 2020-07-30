@@ -247,7 +247,7 @@
 ]
 
 [type 'ModbusPDUReadFileRecordResponseItem'
-    [simple   uint 8     'dataLength']
+    [implicit   uint 8     'dataLength'     '(COUNT(data) * 2) + 1']
     [simple     uint 8     'referenceType']
     [array      int 8    'data'           length  'dataLength - 1']
 ]
