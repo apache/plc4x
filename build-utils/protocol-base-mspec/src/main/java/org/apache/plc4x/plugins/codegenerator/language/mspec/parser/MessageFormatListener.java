@@ -343,15 +343,8 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
-        // Add all the arguments from the parent type.
-        if(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext) {
-            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
-                parserArguments.addAll(Arrays.asList(getParserArguments(
-                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
-            }
-        }
-        // For dataIo there is one level less to navigate.
-        else {
+        // For DataIO types, add all the arguments from the parent type.
+        if(!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)) {
             if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
                 parserArguments.addAll(Arrays.asList(getParserArguments(
                     ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));

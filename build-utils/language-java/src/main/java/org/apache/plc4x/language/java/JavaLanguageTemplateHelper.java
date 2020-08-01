@@ -444,7 +444,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 VariableLiteral variableLiteral = (VariableLiteral) term;
                 // If this literal references an Enum type, then we have to output it differently.
                 if(getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
-                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName();
+                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName() +
+                        ((variableLiteral.getChild().getChild() != null) ?
+                            "." + toVariableExpressionRest(variableLiteral.getChild().getChild()) : "");
                 } else {
                     return variableExpressionGenerator.apply(term);
                 }
