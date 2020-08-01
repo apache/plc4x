@@ -16,14 +16,14 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.connection;
+package org.apache.plc4x.java.amsads.attic.connection;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.field.DirectAdsField;
 import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.model.*;
-import org.apache.plc4x.java.amsads.protocol.Plc4x2AdsProtocol;
+import org.apache.plc4x.java.amsads.attic.protocol.Plc4x2AdsProtocol;
 import org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder;
 import org.apache.plc4x.java.amsads.readwrite.*;
 import org.apache.plc4x.java.amsads.types.AdsDataType;

@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol;
+package org.apache.plc4x.java.amsads.attic.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -25,7 +25,6 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.AmsTCPPacket;
-import org.apache.plc4x.java.amsads.readwrite.AmsTcpHeader;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsTCPPacketIO;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -55,9 +54,9 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
 
         WriteBuffer writeBuffer = new WriteBuffer(amsPacketSer.getLengthInBytes(), true);
         try {
-            AmsTCPPacketIO.staticSerialize(writeBuffer, new AmsTCPPacket(new AmsTcpHeader(amsPacketSer.getLengthInBytes()), amsPacketSer));
+            AmsTCPPacketIO.staticSerialize(writeBuffer, new AmsTCPPacket(amsPacketSer));
         } catch (ParseException e) {
-            throw new AdsException(amsPacketSer.getAmsHeader().getInvokeId(), e);
+            throw new AdsException(amsPacketSer.getInvokeId(), e);
         }
         out.add(writeBuffer.getData());
     }
@@ -82,7 +81,7 @@ public class Payload2TcpProtocol extends MessageToMessageCodec<ByteBuf, ByteBuf>
                 try {
                     AmsPacketIO.staticSerialize(writeBuffer, amsPacket);
                 } catch (ParseException e) {
-                    throw new AdsException(amsPacket.getAmsHeader().getInvokeId(), e);
+                    throw new AdsException(amsPacket.getInvokeId(), e);
                 }
                 out.add(writeBuffer.getData());
             } catch (Exception e) {

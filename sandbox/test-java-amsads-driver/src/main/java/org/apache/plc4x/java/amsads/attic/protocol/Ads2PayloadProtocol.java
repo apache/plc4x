@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol;
+package org.apache.plc4x.java.amsads.attic.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -56,7 +56,7 @@ public class Ads2PayloadProtocol extends MessageToMessageCodec<ByteBuf, AmsPacke
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws AdsException {
         LOGGER.trace("(<--OUT): {}, {}, {}", channelHandlerContext, amsPacket, out);
-        Long invokeId = amsPacket.getAmsHeader().getInvokeId();
+        Long invokeId = amsPacket.getInvokeId();
         if (invokeId != 0L) {
             requests.put(invokeId, amsPacket);
         }

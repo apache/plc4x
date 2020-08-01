@@ -16,11 +16,10 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol;
+package org.apache.plc4x.java.amsads.attic.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.amsads.types.AdsDataType;
 import org.apache.plc4x.java.amsads.field.AdsField;
 import org.apache.plc4x.java.amsads.field.DirectAdsField;
@@ -168,8 +167,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
             throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, plcValues);
         }
-        AdsWriteRequest data = new AdsWriteRequest(indexGroup, indexOffset, bytes.length, bytes);
-        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), data.getLength(), 0, invokeId), data);
+        AdsWriteRequest data = new AdsWriteRequest(indexGroup, indexOffset, bytes);
+        AmsPacket amsPacket = new AmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_WRITE, new State(false, false, false, false, false, false, true, false, false), 0, invokeId, data);
         LOGGER.debug("encoded write request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);
@@ -200,8 +199,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         AdsDataType adsDataType = directAdsField.getAdsDataType();
         int numberOfElements = directAdsField.getNumberOfElements();
         int readLength = adsDataType.getTargetByteSize() * numberOfElements;
-        AdsReadRequest data = new AdsReadRequest(indexGroup, indexOffset, readLength);
-        AmsPacket amsPacket = new AmsPacket(new AmsHeader(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), data.getLength(), 0, invokeId), data);
+        AdsReadWriteRequest data = new AdsReadWriteRequest(indexGroup, indexOffset, readLength, new AdsReadRequest[0], new byte[0]);
+        AmsPacket amsPacket = new AmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), 0, invokeId, data);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);
         requests.put(invokeId, msg);
@@ -215,19 +214,19 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         AmsPacket amsPacket = (AmsPacket) plcProprietaryRequest.getProprietaryRequest();
         LOGGER.debug("encoded proprietary request {}", amsPacket);
         out.add(amsPacket);
-        requests.put(amsPacket.getAmsHeader().getInvokeId(), msg);
+        requests.put(amsPacket.getInvokeId(), msg);
     }
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, AmsPacket amsPacket, List<Object> out) throws Exception {
         LOGGER.trace("(-->IN): {}, {}, {}", channelHandlerContext, amsPacket, out);
-        ADSData data = amsPacket.getData();
+        AdsData data = amsPacket.getData();
         if (data instanceof AdsDeviceNotificationRequest) {
             LOGGER.debug("Received notification {}", amsPacket);
             handleAdsDeviceNotificationRequest((AdsDeviceNotificationRequest) data);
             return;
         }
-        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requests.remove(amsPacket.getAmsHeader().getInvokeId());
+        PlcRequestContainer<InternalPlcRequest, InternalPlcResponse> plcRequestContainer = requests.remove(amsPacket.getInvokeId());
         if (plcRequestContainer == null) {
             LOGGER.info("Unmapped packet received {}", amsPacket);
             return;

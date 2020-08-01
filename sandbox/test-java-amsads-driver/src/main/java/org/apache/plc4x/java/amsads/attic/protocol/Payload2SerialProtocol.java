@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol;
+package org.apache.plc4x.java.amsads.attic.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -78,7 +78,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
         try {
             AmsSerialFrameIO.staticSerialize(writeBuffer, amsSerialFrame);
         } catch (ParseException e) {
-            throw new AdsException(amsPacketSer.getAmsHeader().getInvokeId(), e);
+            throw new AdsException(amsPacketSer.getInvokeId(), e);
         }
         out.add(writeBuffer.getData());
     }
@@ -103,7 +103,7 @@ public class Payload2SerialProtocol extends MessageToMessageCodec<ByteBuf, ByteB
                 try {
                     AmsPacketIO.staticSerialize(writeBuffer, amsPacket);
                 } catch (ParseException e) {
-                    throw new AdsException(amsPacket.getAmsHeader().getInvokeId(), e);
+                    throw new AdsException(amsPacket.getInvokeId(), e);
                 }
                 out.add(writeBuffer.getData());
             } catch (Exception e) {

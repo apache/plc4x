@@ -18,20 +18,15 @@
  */
 package org.apache.plc4x.java.amsads;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.amsads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.protocol.AdsProtocolLogic;
-import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * Implementation of the ADS protocol, based on:
@@ -42,9 +37,6 @@ import java.util.stream.Stream;
 public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
 
     public static final int TCP_PORT = 48898;
-
-    public static final Pattern AMS_NET_ID_PATTERN =
-        Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 
     @Override
     public String getProtocolCode() {
@@ -76,15 +68,6 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
         return SingleProtocolStackConfigurer.builder(AmsPacket.class, AmsPacketIO.class)
             .withProtocol(AdsProtocolLogic.class)
             .build();
-    }
-
-    public static AmsNetId AmsNetIdOf(String address) {
-        if (!AMS_NET_ID_PATTERN.matcher(address).matches()) {
-            throw new IllegalArgumentException(address + " must match " + AMS_NET_ID_PATTERN);
-        }
-        String[] split = address.split("\\.");
-        short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
-        return new AmsNetId(shorts[5], shorts[4], shorts[3], shorts[2], shorts[1], shorts[0]);
     }
 
 }

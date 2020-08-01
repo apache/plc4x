@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.connection;
+package org.apache.plc4x.java.amsads.attic.connection;
 
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 

@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.java.amsads.configuration;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.amsads.AMSADSPlcDriver;
 import org.apache.plc4x.java.amsads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -25,10 +26,17 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
 public class AdsConfiguration implements Configuration, TcpTransportConfiguration, SerialTransportConfiguration {
+
+    public static final Pattern AMS_NET_ID_PATTERN =
+        Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 
     @Required
     @ConfigurationParameter
@@ -47,6 +55,14 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
     @Required
     @ConfigurationParameter
     protected int sourceAmsPort;
+
+    @ConfigurationParameter("timeout-symbolic-address-resolution")
+    @IntDefaultValue(1000)
+    protected int timeoutSymbolicAddressResolution;
+
+    @ConfigurationParameter("timeout-request")
+    @IntDefaultValue(2000)
+    protected int timeoutRequest;
 
     public AmsNetId getTargetAmsNetId() {
         return targetAmsNetId;
@@ -80,6 +96,22 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         this.sourceAmsPort = sourceAmsPort;
     }
 
+    public int getTimeoutSymbolicAddressResolution() {
+        return timeoutSymbolicAddressResolution;
+    }
+
+    public void setTimeoutSymbolicAddressResolution(int timeoutSymbolicAddressResolution) {
+        this.timeoutSymbolicAddressResolution = timeoutSymbolicAddressResolution;
+    }
+
+    public int getTimeoutRequest() {
+        return timeoutRequest;
+    }
+
+    public void setTimeoutRequest(int timeoutRequest) {
+        this.timeoutRequest = timeoutRequest;
+    }
+
     @Override
     public int getDefaultPort() {
         return AMSADSPlcDriver.TCP_PORT;
@@ -99,7 +131,17 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
 
         @Override
         public AmsNetId convert(String value) {
-            return AMSADSPlcDriver.AmsNetIdOf(value);
+            return amsNetIdOf(value);
         }
     }
+
+    public static AmsNetId amsNetIdOf(String address) {
+        if (!AMS_NET_ID_PATTERN.matcher(address).matches()) {
+            throw new IllegalArgumentException(address + " must match " + AMS_NET_ID_PATTERN);
+        }
+        String[] split = address.split("\\.");
+        short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
+        return new AmsNetId(shorts[5], shorts[4], shorts[3], shorts[2], shorts[1], shorts[0]);
+    }
+
 }

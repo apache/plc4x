@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.connection;
+package org.apache.plc4x.java.amsads.attic.connection;
 
 import io.netty.channel.ChannelFuture;
 import org.apache.commons.configuration2.Configuration;
@@ -147,7 +147,8 @@ public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection
                 0xF003L,
                 0L,
                 4L,
-                symbolicAdsFieldInternal.getSymbolicField().getBytes().length,
+                // TODO: Implement the items ...
+                null,
                 symbolicAdsFieldInternal.getSymbolicField().getBytes()
             );
 
@@ -189,7 +190,6 @@ public abstract class AdsAbstractPlcConnection extends DefaultNettyPlcConnection
                 return new AdsWriteRequest(
                     0xF006L,
                     0L,
-                    bytes.length,
                     bytes
                 );
             })
