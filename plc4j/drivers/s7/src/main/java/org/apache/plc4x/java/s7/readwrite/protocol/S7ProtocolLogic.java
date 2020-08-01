@@ -221,7 +221,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
     }
 
-    /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadRespoonse */
+    /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse */
     private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<S7MessageResponseData> response) {
         return response
             .thenApply(p -> {

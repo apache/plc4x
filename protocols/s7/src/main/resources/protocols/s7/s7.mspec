@@ -84,7 +84,7 @@
         ['0xC3' COTPParameterChecksum
             [simple uint 8 'crc']
         ]
-        ['0xE0' COTPParameterDisconnectAdditionalInformation
+        ['0xE0' COTPParameterDisconnectAdditionalInformation [uint 8 'rest']
             [array  uint 8 'data' count 'rest']
         ]
     ]
@@ -213,16 +213,16 @@
 
 [discriminatedType 'S7Payload' [uint 8 'messageType', S7Parameter 'parameter']
     [typeSwitch 'parameter.parameterType', 'messageType'
-        ['0x04','0x03' S7PayloadReadVarResponse
+        ['0x04','0x03' S7PayloadReadVarResponse [S7Parameter 'parameter']
             [array S7VarPayloadDataItem 'items' count 'CAST(parameter, S7ParameterReadVarResponse).numItems' ['lastItem']]
         ]
-        ['0x05','0x01' S7PayloadWriteVarRequest
+        ['0x05','0x01' S7PayloadWriteVarRequest [S7Parameter 'parameter']
             [array S7VarPayloadDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterWriteVarRequest).items)' ['lastItem']]
         ]
-        ['0x05','0x03' S7PayloadWriteVarResponse
+        ['0x05','0x03' S7PayloadWriteVarResponse [S7Parameter 'parameter']
             [array S7VarPayloadStatusItem 'items' count 'CAST(parameter, S7ParameterWriteVarResponse).numItems']
         ]
-        ['0x00','0x07' S7PayloadUserData
+        ['0x00','0x07' S7PayloadUserData [S7Parameter 'parameter']
             [array S7PayloadUserDataItem 'items' count 'COUNT(CAST(parameter, S7ParameterUserData).items)' ['CAST(CAST(parameter, S7ParameterUserData).items[0], S7ParameterUserDataItemCPUFunctions).cpuFunctionType']]
         ]
     ]

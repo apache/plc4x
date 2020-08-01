@@ -22,19 +22,14 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'AmsTCPPacket'
-    // The ams - tcp to be sent.
-    [simple AmsTcpHeader 'amsTcpHeader']
-    // The AMS packet to be sent.
-    [simple AmsPacket    'userdata'    ]
-]
-
-// AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
-[type 'AmsTcpHeader'
+    // AMS/TCP Header	6 bytes	contains the tcpLength of the data packet.
     // These bytes must be set to 0.
-    [reserved   uint       16       '0x0000' ]
+    [reserved   uint       16       '0x0000'                            ]
     // This array contains the length of the data packet.
     // It consists of the AMS-Header and the enclosed ADS data. The unit is bytes.
-    [simple     uint       32       'length']
+    [implicit   uint       32       'length'  'userdata.lengthInBytes'  ]
+    // The AMS packet to be sent.
+    [simple AmsPacket    'userdata'                                     ]
 ]
 
 ////////////////////////////////////////////////////////////////
@@ -59,7 +54,7 @@
     [simple     int          8  'fragmentNumber'     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'length'     ]
+    [simple     int          8  'length'             ]
     [simple     uint        16  'crc'                ]
 ]
 
@@ -85,7 +80,7 @@
     [simple     int          8  'fragmentNumber'     ]
     // The max. length of the AMS packet to be sent is 255. If larger AMS packets are to be sent then they have to be
     // fragmented (not published at the moment).
-    [simple     int          8  'length'     ]
+    [simple     int          8  'length'             ]
     // The AMS packet to be sent.
     [simple AmsPacket           'userdata'           ]
     [simple     uint        16  'crc'                ]
@@ -117,12 +112,7 @@
 ////////////////////////////////////////////////////////////////
 
 [type 'AmsPacket'
-    [simple     AmsHeader  'amsHeader'                                                            ]
-    [simple     ADSData    'data'   ['amsHeader.commandId', 'amsHeader.state.response']              ]
-]
-
-// AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
-[type 'AmsHeader'
+    // AMS Header	32 bytes	The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
     // This is the AmsNetId of the station, for which the packet is intended. Remarks see below.
     [simple     AmsNetId        'targetAmsNetId'                            ]
     // This is the AmsPort of the station, for which the packet is intended.
@@ -136,12 +126,14 @@
     // 2 bytes.
     [simple     State           'state'                                     ]
     // 4 bytes	Size of the data range. The unit is byte.
-    [simple     uint        32  'length'                                ]
+    [implicit   uint        32  'length'   'data.lengthInBytes'             ]
     // 4 bytes	AMS error number. See ADS Return Codes.
     [simple     uint        32  'errorCode'                                 ]
     // free usable field of 4 bytes
     // 4 bytes	Free usable 32 bit array. Usually this array serves to send an Id. This Id makes is possible to assign a received response to a request, which was sent before.
     [simple      uint        32  'invokeId'                                 ]
+    // The payload
+    [simple     AdsData    'data'   ['commandId', 'state.response']         ]
 ]
 
 [enum uint 16 'CommandId'
@@ -158,8 +150,6 @@
 ]
 
 [type 'State'
-    [simple     bit 'broadcast'             ]
-    [reserved   int 7 '0x0'                 ]
     [simple     bit 'initCommand'           ]
     [simple     bit 'updCommand'            ]
     [simple     bit 'timestampAdded'        ]
@@ -168,6 +158,8 @@
     [simple     bit 'adsCommand'            ]
     [simple     bit 'noReturn'              ]
     [simple     bit 'response'              ]
+    [simple     bit 'broadcast'             ]
+    [reserved   int 7 '0x0'                 ]
 ]
 
 // It is not only possible to exchange data between TwinCAT modules on one PC, it is even possible to do so by ADS
@@ -198,10 +190,12 @@
     [simple     uint        8   'octet6'            ]
 ]
 
-[discriminatedType 'ADSData' [CommandId 'commandId', bit 'response']
+[discriminatedType 'AdsData' [CommandId 'commandId', bit 'response']
     [typeSwitch 'commandId', 'response'
-        ['CommandId.INVALID', 'true' AdsInvalidResponse]
         ['CommandId.INVALID', 'false' AdsInvalidRequest]
+        ['CommandId.INVALID', 'true' AdsInvalidResponse]
+
+        ['CommandId.ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
         ['CommandId.ADS_READ_DEVICE_INFO', 'true' AdsReadDeviceInfoResponse
             // 4 bytes	ADS error number.
             [simple uint 32 'result']
@@ -214,15 +208,7 @@
             // Name	16 bytes	Name of ADS device
             [array int 8  'device' count '16']
         ]
-        ['CommandId.ADS_READ_DEVICE_INFO', 'false' AdsReadDeviceInfoRequest]
-        ['CommandId.ADS_READ', 'true' AdsReadResponse
-            // 4 bytes	ADS error number
-            [simple uint 32 'result']
-            // 4 bytes	Length of data which are supplied back.
-            [simple uint 32 'length']
-            // n bytes	Data which are supplied back.
-            [array int 8 'data' count 'length']
-        ]
+
         ['CommandId.ADS_READ', 'false' AdsReadRequest
             // 4 bytes	Index Group of the data which should be read.
             [simple uint 32 'indexGroup']
@@ -231,20 +217,31 @@
             // 4 bytes	Length of the data (in bytes) which should be read.
             [simple uint 32 'length']
         ]
-        ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
+        ['CommandId.ADS_READ', 'true' AdsReadResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
+            // 4 bytes	Length of data which are supplied back.
+            [implicit uint 32 'length' 'COUNT(data)']
+            // n bytes	Data which are supplied back.
+            [array int 8 'data' count 'length']
         ]
+
         ['CommandId.ADS_WRITE', 'false' AdsWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
             // 4 bytes	Index Offset of the data which should be written.
             [simple uint 32 'indexOffset']
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [simple uint 32 'length']
+            [implicit uint 32 'length' 'COUNT(data)']
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'length']
         ]
+        ['CommandId.ADS_WRITE', 'true' AdsWriteResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+        ]
+
+        ['CommandId.ADS_READ_STATE', 'false' AdsReadStateRequest]
         ['CommandId.ADS_READ_STATE', 'true' AdsReadStateResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
@@ -253,27 +250,22 @@
             // 2 bytes	New device status.
             [simple uint 16 'deviceState']
         ]
-        ['CommandId.ADS_READ_STATE', 'false' AdsReadStateRequest]
-        ['CommandId.ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
-            // 4 bytes	ADS error number
-            [simple uint 32 'result']
-        ]
+
         ['CommandId.ADS_WRITE_CONTROL', 'false' AdsWriteControlRequest
             // 2 bytes	New ADS status (see data type ADSSTATE of the ADS-DLL).
             [simple uint 16 'adsState']
             // 2 bytes	New device status.
             [simple uint 16 'deviceState']
             // 4 bytes	Length of data in byte.
-            [simple uint 32 'length']
+            [implicit uint 32 'length' 'COUNT(data)']
             // n bytes	Additional data which are sent to the ADS device
             [array int 8 'data' count 'length']
         ]
-        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
+        ['CommandId.ADS_WRITE_CONTROL', 'true' AdsWriteControlResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
-            // 4 bytes	Handle of notification
-            [simple uint 32 'notificationHandle']
         ]
+
         ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'false' AdsAddDeviceNotificationRequest
             // 4 bytes	Index Group of the data, which should be sent per notification.
             [simple uint 32 'indexGroup']
@@ -291,15 +283,22 @@
             // 16bytes	Must be set to 0
             [reserved   uint       128       '0x0000' ]
         ]
-        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
+        ['CommandId.ADS_ADD_DEVICE_NOTIFICATION', 'true' AdsAddDeviceNotificationResponse
             // 4 bytes	ADS error number
             [simple uint 32 'result']
+            // 4 bytes	Handle of notification
+            [simple uint 32 'notificationHandle']
         ]
+
         ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'false' AdsDeleteDeviceNotificationRequest
             // 4 bytes	Handle of notification
             [simple uint 32 'notificationHandle']
         ]
-        ['CommandId.ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
+        ['CommandId.ADS_DELETE_DEVICE_NOTIFICATION', 'true' AdsDeleteDeviceNotificationResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+        ]
+
         ['CommandId.ADS_DEVICE_NOTIFICATION', 'false' AdsDeviceNotificationRequest
             // 4 bytes	Size of data in byte.
             [simple uint 32 'length']
@@ -308,14 +307,8 @@
             // n bytes	Array with elements of type AdsStampHeader.
             [array AdsStampHeader 'adsStampHeaders' count 'stamps']
         ]
-        ['CommandId.ADS_READ_WRITE', 'true' AdsReadWriteResponse
-            // 4 bytes	ADS error number
-            [simple uint 32 'result']
-            // 4 bytes	Length of data in byte.
-            [simple uint 32 'length']
-            // n bytes	Additional data which are sent to the ADS device
-            [array int 8 'data' count 'length']
-        ]
+        ['CommandId.ADS_DEVICE_NOTIFICATION', 'true' AdsDeviceNotificationResponse]
+
         ['CommandId.ADS_READ_WRITE', 'false' AdsReadWriteRequest
             // 4 bytes	Index Group of the data which should be written.
             [simple uint 32 'indexGroup']
@@ -324,9 +317,19 @@
             // 4 bytes	Length of data in bytes, which should be read.
             [simple uint 32 'readLength']
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [simple uint 32 'writeLength']
+            [implicit uint 32 'writeLength' '(COUNT(items) * 12) + COUNT(data)']
+            // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements.
+            [array  AdsReadRequest 'items' COUNT '(indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) ? indexOffset : 0']
             // n bytes	Data which are written in the ADS device.
-            [array int 8 'data' count 'writeLength']
+            [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
+        ]
+        ['CommandId.ADS_READ_WRITE', 'true' AdsReadWriteResponse
+            // 4 bytes	ADS error number
+            [simple uint 32 'result']
+            // 4 bytes	Length of data in byte.
+            [implicit uint 32 'length'  'COUNT(data)']
+            // n bytes Additional data which are sent to the ADS device
+            [array int 8 'data' count 'length']
         ]
     ]
 ]
@@ -347,4 +350,37 @@
     [simple uint 32 'sampleSize']
     // n Bytes	Data
     [array int 8 'data' count 'sampleSize']
+]
+
+[enum uint 16 'ReservedIndexGroups'
+    ['0xF000' ADSIGRP_SYMTAB]
+    ['0xF001' ADSIGRP_SYMNAME]
+    ['0xF002' ADSIGRP_SYMVAL]
+    ['0xF003' ADSIGRP_SYM_HNDBYNAME]
+    ['0xF004' ADSIGRP_SYM_VALBYNAME]
+    ['0xF005' ADSIGRP_SYM_VALBYHND]
+    ['0xF006' ADSIGRP_SYM_RELEASEHND]
+    ['0xF007' ADSIGRP_SYM_INFOBYNAME]
+    ['0xF008' ADSIGRP_SYM_VERSION]
+    ['0xF009' ADSIGRP_SYM_INFOBYNAMEEX]
+    ['0xF00A' ADSIGRP_SYM_DOWNLOAD]
+    ['0xF00B' ADSIGRP_SYM_UPLOAD]
+    ['0xF00C' ADSIGRP_SYM_UPLOADINFO]
+    ['0xF010' ADSIGRP_SYMNOTE]
+    ['0xF020' ADSIGRP_IOIMAGE_RWIB]
+    ['0xF021' ADSIGRP_IOIMAGE_RWIX]
+    ['0xF025' ADSIGRP_IOIMAGE_RISIZE]
+    ['0xF030' ADSIGRP_IOIMAGE_RWOB]
+    ['0xF031' ADSIGRP_IOIMAGE_RWOX]
+    ['0xF035' ADSIGRP_IOIMAGE_RWOSIZE]
+    ['0xF040' ADSIGRP_IOIMAGE_CLEARI]
+    ['0xF050' ADSIGRP_IOIMAGE_CLEARO]
+    ['0xF060' ADSIGRP_IOIMAGE_RWIOB]
+    ['0xF080' ADSIGRP_MULTIPLE_READ]
+    ['0xF081' ADSIGRP_MULTIPLE_WRITE]
+    ['0xF082' ADSIGRP_MULTIPLE_GET_HANDLE]
+    ['0xF083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
+    ['0xF100' ADSIGRP_DEVICE_DATA]
+    ['0x0000' ADSIOFFS_DEVDATA_ADSSTATE]
+    ['0x0002' ADSIOFFS_DEVDATA_DEVSTATE]
 ]
