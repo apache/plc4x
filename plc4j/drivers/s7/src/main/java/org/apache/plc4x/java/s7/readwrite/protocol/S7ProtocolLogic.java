@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.s7.readwrite.COTPPacket;
 import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionRequest;
 import org.apache.plc4x.java.s7.readwrite.COTPPacketConnectionResponse;
@@ -100,6 +101,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -458,7 +461,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private PlcValue parsePlcValue(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
-            return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
+            if (field.getNumElements() == 1) {
+                return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
+            } else {
+                // Fetch all
+                final PlcValue[] resultItems = IntStream.range(0, field.getNumElements()).mapToObj(i -> {
+                    try {
+                        return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
+                    } catch (ParseException e) {
+                        LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);
+                    }
+                    return null;
+                }).toArray(PlcValue[]::new);
+                return PlcValues.of(resultItems);
+            }
         } catch (ParseException e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
         }
