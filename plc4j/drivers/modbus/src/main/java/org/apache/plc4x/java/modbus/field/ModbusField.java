@@ -48,6 +48,9 @@ public abstract class ModbusField implements PlcField {
         if(ModbusFieldInputRegister.matches(addressString)) {
             return ModbusFieldInputRegister.of(addressString);
         }
+        if(ModbusExtendedRegister.matches(addressString)) {
+            return ModbusExtendedRegister.of(addressString);
+        }
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 

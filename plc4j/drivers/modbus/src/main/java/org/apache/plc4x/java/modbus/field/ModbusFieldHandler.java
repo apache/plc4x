@@ -40,6 +40,8 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
             return ModbusFieldInputRegister.of(fieldQuery);
         } else if (ModbusFieldCoil.matches(fieldQuery)) {
             return ModbusFieldCoil.of(fieldQuery);
+        } else if (ModbusExtendedRegister.matches(fieldQuery)) {
+            return ModbusExtendedRegister.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }
