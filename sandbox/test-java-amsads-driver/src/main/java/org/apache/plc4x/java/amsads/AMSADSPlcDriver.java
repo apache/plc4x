@@ -45,7 +45,17 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
 
     @Override
     public String getProtocolName() {
-        return "Beckhoff Twincat ADS";
+        return "Beckhoff TwinCat ADS";
+    }
+
+    @Override
+    protected boolean canRead() {
+        return true;
+    }
+
+    @Override
+    protected boolean canWrite() {
+        return true;
     }
 
     @Override
@@ -67,6 +77,7 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
     protected ProtocolStackConfigurer<AmsPacket> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(AmsPacket.class, AmsPacketIO.class)
             .withProtocol(AdsProtocolLogic.class)
+            .littleEndian()
             .build();
     }
 

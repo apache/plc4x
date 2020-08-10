@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.types;
+package org.apache.plc4x.java.amsads.attic.types;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -37,8 +37,9 @@ import java.util.stream.IntStream;
  * @see <a href="https://infosys.beckhoff.com/english.php?content=../content/1033/tcplccontrol/html/tcplcctrl_plc_data_types_overview.htm&id">TwinCAT PLC Control: Data Types</a>
  */
 public enum AdsDataType {
-    // TODO: maybe this are just types for the plc ide and can be removed
-    // https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
+    // System-Manager versions of the IEC61131-3 datatypes.
+    // See: https://infosys.beckhoff.com/english.php?content=../content/1033/tcsystemmanager/basics/TcSysMgr_DatatypeComparison.htm&id=
+    // For mapping
     BIT(0, 1, 8),
     BIT8((short) 0x00, (short) 0xFF, 8),
     BITARR8((short) 0x00, (short) 0xFF, 8),

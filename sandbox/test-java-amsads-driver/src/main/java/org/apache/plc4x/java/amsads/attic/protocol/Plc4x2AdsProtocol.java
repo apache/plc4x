@@ -20,12 +20,12 @@ package org.apache.plc4x.java.amsads.attic.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.amsads.types.AdsDataType;
 import org.apache.plc4x.java.amsads.field.AdsField;
 import org.apache.plc4x.java.amsads.field.DirectAdsField;
 import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
-import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
+import org.apache.plc4x.java.amsads.attic.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.*;
+import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.amsads.readwrite.types.CommandId;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
@@ -53,8 +53,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder.decodeData;
-import static org.apache.plc4x.java.amsads.protocol.util.LittleEndianEncoder.encodeData;
+import static org.apache.plc4x.java.amsads.attic.protocol.util.LittleEndianDecoder.decodeData;
 
 @Deprecated
 public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcRequestContainer<InternalPlcRequest, InternalPlcResponse>> {
@@ -160,9 +159,9 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
             plcValues[0] = plcValue.getObject();
         }
 
-        byte[] bytes = encodeData(directAdsField.getAdsDataType(), plcValues);
+        byte[] bytes = null;//encodeData(directAdsField.getAdsDataType(), plcValues);
         int bytesToBeWritten = bytes.length;
-        int maxTheoreticalSize = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
+        int maxTheoreticalSize = directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements();
         if (bytesToBeWritten > maxTheoreticalSize) {
             LOGGER.debug("Requested AdsDatatype {} is exceeded by number of bytes {}. Limit {}.", directAdsField.getAdsDataType(), bytesToBeWritten, maxTheoreticalSize);
             throw new PlcProtocolPayloadTooBigException("ADS", maxTheoreticalSize, bytesToBeWritten, plcValues);
@@ -198,8 +197,8 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         long indexOffset = directAdsField.getIndexOffset();
         AdsDataType adsDataType = directAdsField.getAdsDataType();
         int numberOfElements = directAdsField.getNumberOfElements();
-        int readLength = adsDataType.getTargetByteSize() * numberOfElements;
-        AdsReadWriteRequest data = new AdsReadWriteRequest(indexGroup, indexOffset, readLength, new AdsReadRequest[0], new byte[0]);
+        int readLength = adsDataType.getNumBytes() * numberOfElements;
+        AdsReadWriteRequest data = new AdsReadWriteRequest(indexGroup, indexOffset, readLength, new AdsReadWriteRequest[0], new byte[0]);
         AmsPacket amsPacket = new AmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), 0, invokeId, data);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);

@@ -22,6 +22,7 @@ import org.apache.plc4x.java.amsads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.amsads.field.DirectAdsField;
 import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
 import org.apache.plc4x.java.amsads.readwrite.*;
+import org.apache.plc4x.java.amsads.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.amsads.readwrite.types.CommandId;
 import org.apache.plc4x.java.amsads.readwrite.types.ReservedIndexGroups;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -29,32 +30,42 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
+import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
+import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements HasConfiguration<AdsConfiguration> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdsProtocolLogic.class);
+
     private AdsConfiguration configuration;
     public static final State DEFAULT_COMMAND_STATE = new State(
-        false, false, false, false, false, false, true, false, false);
+        false, false, false, false, false, true, false, false, false);
 
     private ConversationContext<AmsPacket> adsDriverContext;
-    private static final AtomicLong invokeIdGenerator = new AtomicLong(0);
+    private final AtomicLong invokeIdGenerator = new AtomicLong(1);
     private RequestTransactionManager tm;
 
     private ConcurrentHashMap<SymbolicAdsField, DirectAdsField> symbolicFieldMapping;
-    private ConcurrentHashMap<SymbolicAdsField, CompletableFuture<DirectAdsField>> pendingResolutionRequests;
+    private ConcurrentHashMap<SymbolicAdsField, CompletableFuture<Void>> pendingResolutionRequests;
 
     public AdsProtocolLogic() {
         symbolicFieldMapping = new ConcurrentHashMap<>();
@@ -104,7 +115,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
         final List<DirectAdsField> directAdsFields = getDirectAddresses(readRequest.getFields());
 
         // Depending on the number of fields, use a single item request or a sum-request
-        if(directAdsFields.size() == 1) {
+        if (directAdsFields.size() == 1) {
             // Do a normal (single item) ADS Read Request
             return singleRead(readRequest, directAdsFields.get(0));
         } else {
@@ -116,7 +127,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     protected CompletableFuture<PlcReadResponse> singleRead(PlcReadRequest readRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
-        int size = directAdsField.getAdsDataType().getTargetByteSize() * directAdsField.getNumberOfElements();
+        int size = directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements();
         AdsData adsData = new AdsReadRequest(directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), size);
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
@@ -146,17 +157,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
         // Calculate the size of all fields together.
         int size = 0;
 
-        // TODO: Add the items ...
-        List<AdsReadRequest> items = new ArrayList<>(directAdsFields.size());
-
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AdsData adsData = new AdsReadWriteRequest(
             ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), size,
-            items.toArray(new AdsReadRequest[0]), new byte[0]);
+            directAdsFields.stream().map(directAdsField -> new AdsReadWriteRequest(
+                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), directAdsField.getNumberOfElements(),
+                new AdsReadWriteRequest[0], new byte[0])).toArray(AdsReadWriteRequest[]::new), new byte[0]);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -177,8 +187,77 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     }
 
     protected PlcReadResponse convertToPlc4xReadResponse(PlcReadRequest readRequest, AdsData adsData) {
+        ReadBuffer readBuffer = null;
+        Map<String, PlcResponseCode> responseCodes = new HashMap<>();
+        if (adsData instanceof AdsReadResponse) {
+            AdsReadResponse adsReadResponse = (AdsReadResponse) adsData;
+            readBuffer = new ReadBuffer(adsReadResponse.getData());
+            responseCodes.put(readRequest.getFieldNames().stream().findFirst().orElse(""),
+                parsePlcResponseCode(adsReadResponse.getResult()));
+        } else if (adsData instanceof AdsReadWriteResponse) {
+            AdsReadWriteResponse adsReadWriteResponse = (AdsReadWriteResponse) adsData;
+            readBuffer = new ReadBuffer(adsReadWriteResponse.getData());
+            // When parsing a multi-item response, the error codes of each items come
+            // in sequence and then come the values.
+            for (String fieldName : readRequest.getFieldNames()) {
+                try {
+                    final long result = readBuffer.readUnsignedLong(32);
+                    responseCodes.put(fieldName, parsePlcResponseCode(result));
+                } catch (ParseException e) {
+                    responseCodes.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
+                }
+            }
+        }
+        if(readBuffer != null) {
+            Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+            for (String fieldName : readRequest.getFieldNames()) {
+                DirectAdsField directAdsField = (DirectAdsField) readRequest.getField(fieldName);
+                // If the response-code was anything but OK, we don't need to parse the payload.
+                if(responseCodes.get(fieldName) != PlcResponseCode.OK) {
+                    values.put(fieldName, new ResponseItem<>(responseCodes.get(fieldName), null));
+                }
+                // If the response-code was ok, parse the data returned.
+                else {
+                    values.put(fieldName, parsePlcValue(directAdsField, readBuffer));
+                }
+            }
+            return new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, values);
+        }
         return null;
     }
+
+    private PlcResponseCode parsePlcResponseCode(long adsResult) {
+            if (adsResult == 0L) {
+                return PlcResponseCode.OK;
+            } else {
+                // TODO: Implement this a little more ...
+                return PlcResponseCode.INTERNAL_ERROR;
+            }
+    }
+
+    private ResponseItem<PlcValue> parsePlcValue(DirectAdsField field, ReadBuffer readBuffer) {
+        try {
+            if (field.getNumberOfElements() == 1) {
+                return new ResponseItem<>(PlcResponseCode.OK,
+                    DataItemIO.staticParse(readBuffer, field.getAdsDataType()));
+            } else {
+                // Fetch all
+                final PlcValue[] resultItems = IntStream.range(0, field.getNumberOfElements()).mapToObj(i -> {
+                    try {
+                        return DataItemIO.staticParse(readBuffer, field.getAdsDataType());
+                    } catch (ParseException e) {
+                        LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getAdsDataType(), i, e);
+                    }
+                    return null;
+                }).toArray(PlcValue[]::new);
+                return new ResponseItem<>(PlcResponseCode.OK, PlcValues.of(resultItems));
+            }
+        } catch (ParseException e) {
+            LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getAdsDataType()), e);
+            return new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
+        }
+    }
+
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
@@ -199,34 +278,43 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
 
         // Find out for which of these symbolic addresses no resolution has been initiated.
         final List<SymbolicAdsField> symbolicFieldsNeedingResolution = referencedSymbolicFields.stream()
-            .filter(symbolicAdsField -> symbolicFieldMapping.containsKey(symbolicAdsField))
+            .filter(symbolicAdsField -> !symbolicFieldMapping.containsKey(symbolicAdsField))
             .collect(Collectors.toList());
 
         // If there are unresolved symbolic addresses, initiate the resolution
-        if(!symbolicFieldsNeedingResolution.isEmpty()) {
-            // If a previous request initiated a resolution request, join that resolutions future instead.
-            // If not, initiate a new resolution request.
-            final CompletableFuture<Void> resolutionComplete =
-                CompletableFuture.allOf(symbolicFieldsNeedingResolution.stream().map(symbolicAdsField -> {
-                    if (pendingResolutionRequests.containsKey(symbolicAdsField)) {
-                        return pendingResolutionRequests.get(symbolicAdsField);
-                    } else {
-                        // Initiate a new resolution-request and add that to the pending resolution requests.
-                        CompletableFuture<DirectAdsField> internalResolutionFuture =
-                            resolveSymbolicAddress(symbolicAdsField);
-                        // Create a second future which will be completed as soon as the resolution result has
-                        // been added to the map.
-                        CompletableFuture<DirectAdsField> resolutionFuture = new CompletableFuture<>();
-                        // Make sure the resolved address is added to the mapping.
-                        internalResolutionFuture.thenAccept(directAdsField -> {
-                            symbolicFieldMapping.put(symbolicAdsField, directAdsField);
-                            // Now we can tell the other waiting processes about the result.
-                            resolutionFuture.complete(directAdsField);
-                        });
-                        return resolutionFuture;
+        if (!symbolicFieldsNeedingResolution.isEmpty()) {
+            // Get a list of symbolic addresses for which no resolution request has been sent yet
+            // (A parallel request initiated a bit earlier might have already initiated a resolution
+            // which has not yet been completed)
+            final List<SymbolicAdsField> requiredResolutionFields =
+                symbolicFieldsNeedingResolution.stream().filter(symbolicAdsField ->
+                    !pendingResolutionRequests.containsKey(symbolicAdsField)).collect(Collectors.toList());
+            // If there are fields for which no resolution request has been sent yet,
+            // send a request.
+            if (!requiredResolutionFields.isEmpty()) {
+                CompletableFuture<Void> resolutionFuture;
+                // Create a future which will be completed as soon as the
+                // resolution result has been added to the map.
+                if (requiredResolutionFields.size() == 1) {
+                    SymbolicAdsField symbolicAdsField = requiredResolutionFields.get(0);
+                    resolutionFuture = resolveSymbolicAddress(requiredResolutionFields.get(0));
+                    pendingResolutionRequests.put(symbolicAdsField, resolutionFuture);
+                } else {
+                    resolutionFuture = resolveSymbolicAddresses(requiredResolutionFields);
+                    for (SymbolicAdsField symbolicAdsField : requiredResolutionFields) {
+                        pendingResolutionRequests.put(symbolicAdsField, resolutionFuture);
                     }
-                }).toArray(CompletableFuture[]::new));
-            // Wait for the resolution to finish.
+                }
+            }
+
+            // Create a global future which is completed as soon as all sub-futures for this request are completed.
+            final CompletableFuture<Void> resolutionComplete =
+                CompletableFuture.allOf(symbolicFieldsNeedingResolution.stream()
+                    .map(symbolicAdsField -> pendingResolutionRequests.get(symbolicAdsField))
+                    .toArray(CompletableFuture[]::new));
+
+            // BLOCKING: Wait for the resolution to finish.
+            // TODO: Make this asynchronous ...
             try {
                 resolutionComplete.get(configuration.getTimeoutSymbolicAddressResolution(), TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
@@ -238,7 +326,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
 
         // So here all fields should be resolved so we can continue normally.
         return fields.stream().map(plcField -> {
-            if(plcField instanceof SymbolicAdsField) {
+            if (plcField instanceof SymbolicAdsField) {
                 return symbolicFieldMapping.get(plcField);
             } else {
                 return (DirectAdsField) plcField;
@@ -246,8 +334,114 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
         }).collect(Collectors.toList());
     }
 
-    protected CompletableFuture<DirectAdsField> resolveSymbolicAddress(SymbolicAdsField symbolicAdsField) {
-        return null;
+    protected CompletableFuture<Void> resolveSymbolicAddress(SymbolicAdsField symbolicAdsField) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        // TODO: Instead of using 4 we need the size of the expected response
+        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0, 4, null,
+            getNullByteTerminatedArray(symbolicAdsField.getSymbolicField()));
+        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+            CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(amsPacket)
+            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(AmsPacket::getData)
+            .check(adsDataResponse -> adsDataResponse instanceof AdsReadWriteResponse)
+            .unwrap(adsDataResponse -> (AdsReadWriteResponse) adsDataResponse)
+            .handle(responseAdsData -> {
+                ReadBuffer readBuffer = new ReadBuffer(responseAdsData.getData());
+                try {
+                    // This should be 0 in the success case.
+                    long returnCode = readBuffer.readLong(32);
+                    // This is always 4
+                    long itemLength = readBuffer.readLong(32);
+                    // Get the handle from the response.
+                    long handle = readBuffer.readLong(32);
+                    if (returnCode == 0) {
+                        DirectAdsField directAdsField = new DirectAdsField(ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(),
+                            handle, symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
+                        symbolicFieldMapping.put(symbolicAdsField, directAdsField);
+                        future.complete(null);
+                    } else {
+                        // TODO: Handle the case of unsuccessful resolution ..
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }));
+        return future;
+    }
+
+    protected CompletableFuture<Void> resolveSymbolicAddresses(List<SymbolicAdsField> symbolicAdsFields) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        // TODO: Instead of using 4 we need the size of the expected response
+        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_MULTIPLE_GET_HANDLE.getValue(),
+            symbolicAdsFields.size(), 4, symbolicAdsFields.stream().map(symbolicAdsField ->
+            new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0, 4, null,
+                getNullByteTerminatedArray(symbolicAdsField.getSymbolicField()))).toArray(AdsReadWriteRequest[]::new), null);
+        AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
+            configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
+            CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(amsPacket)
+            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(AmsPacket::getData)
+            .check(adsDataResponse -> adsDataResponse instanceof AdsReadWriteResponse)
+            .unwrap(adsDataResponse -> (AdsReadWriteResponse) adsDataResponse)
+            .handle(responseAdsData -> {
+                ReadBuffer readBuffer = new ReadBuffer(responseAdsData.getData());
+                Map<SymbolicAdsField, Long> returnCodes = new HashMap<>();
+                symbolicAdsFields.forEach(symbolicAdsField -> {
+                    try {
+                        // This should be 0 in the success case.
+                        long returnCode = readBuffer.readLong(32);
+                        // This is always 4
+                        long itemLength = readBuffer.readLong(32);
+
+                        returnCodes.put(symbolicAdsField, returnCode);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+                symbolicAdsFields.forEach(symbolicAdsField -> {
+                    try {
+                        if (returnCodes.get(symbolicAdsField) == 0) {
+                            // Read the handle.
+                            long handle = readBuffer.readLong(32);
+
+                            DirectAdsField directAdsField = new DirectAdsField(
+                                ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                                symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
+                            symbolicFieldMapping.put(symbolicAdsField, directAdsField);
+                        } else {
+                            // TODO: Handle the case of unsuccessful resolution ..
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+                future.complete(null);
+            }));
+        return future;
+    }
+
+    protected byte[] getNullByteTerminatedArray(String value) {
+        byte[] valueBytes = value.getBytes();
+        byte[] nullTerminatedBytes = new byte[valueBytes.length + 1];
+        System.arraycopy(valueBytes, 0, nullTerminatedBytes, 0, valueBytes.length);
+        return nullTerminatedBytes;
     }
 
 }

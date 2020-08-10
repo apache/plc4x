@@ -22,11 +22,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.field.DirectAdsField;
 import org.apache.plc4x.java.amsads.field.SymbolicAdsField;
-import org.apache.plc4x.java.amsads.model.*;
 import org.apache.plc4x.java.amsads.attic.protocol.Plc4x2AdsProtocol;
-import org.apache.plc4x.java.amsads.protocol.util.LittleEndianDecoder;
+import org.apache.plc4x.java.amsads.attic.protocol.util.LittleEndianDecoder;
+import org.apache.plc4x.java.amsads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.amsads.readwrite.*;
-import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
@@ -46,7 +46,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -200,7 +203,7 @@ public class AdsTcpPlcConnection extends AdsAbstractPlcConnection implements Plc
                 AdsAddDeviceNotificationRequest adsAddDeviceNotificationRequest = new AdsAddDeviceNotificationRequest(
                     indexGroup,
                     indexOffset,
-                    adsDataType.getTargetByteSize() * (long) numberOfElements,
+                    adsDataType.getNumBytes() * (long) numberOfElements,
                     transmissionMode,
                     cycleTime + 1,
                     cycleTime

@@ -16,13 +16,13 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol.util;
+package org.apache.plc4x.java.amsads.attic.protocol.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.value.*;
 
@@ -410,7 +410,7 @@ public class LittleEndianDecoder {
                     return new PlcList(values);
                 }
             }
-            case TIME: {
+/*            case TIME: {
                 LinkedList<Long> values = new LinkedList<>();
                 while (wrappedBuffer.isReadable()) {
                     long aByte = wrappedBuffer.readUnsignedIntLE();
@@ -480,7 +480,7 @@ public class LittleEndianDecoder {
             case SUB_RANGE_DATA_TYPE: {
                 throw new NotImplementedException("not implemented yet " + adsDataType);
             }
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcUnsupportedDataTypeException("Unsupported adsDataType " + adsDataType);
         }

@@ -319,7 +319,7 @@
             // 4 bytes	Length of the data (in bytes) which should be written.
             [implicit uint 32 'writeLength' '(COUNT(items) * 12) + COUNT(data)']
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements.
-            [array  AdsReadRequest 'items' COUNT '(indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) ? indexOffset : 0']
+            [array  AdsReadWriteRequest 'items' COUNT '(indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) ? indexOffset : 0']
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
@@ -350,6 +350,182 @@
     [simple uint 32 'sampleSize']
     // n Bytes	Data
     [array int 8 'data' count 'sampleSize']
+]
+
+[dataIo 'DataItem' [AdsDataType 'adsDataType']
+    [typeSwitch 'adsDataType'
+        // -----------------------------------------
+        // Bit
+        // -----------------------------------------
+        ['AdsDataType.BOOL' Boolean
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+        ]
+        ['AdsDataType.BIT' Boolean
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+        ]
+        ['AdsDataType.BIT8' Boolean
+            [reserved uint 7 '0x00']
+            [simple   bit    'value']
+        ]
+
+        // -----------------------------------------
+        // Bit-strings
+        // -----------------------------------------
+        // 1 byte
+        ['AdsDataType.BYTE' List
+            [array bit 'value' count '8']
+        ]
+        ['AdsDataType.BITARR8' List
+            [array bit 'value' count '8']
+        ]
+        // 2 byte (16 bit)
+        ['AdsDataType.WORD' List
+            [array bit 'value' count '16']
+        ]
+        ['AdsDataType.BITARR16' List
+            [array bit 'value' count '16']
+        ]
+        // 4 byte (32 bit)
+        ['AdsDataType.DWORD' List
+            [array bit 'value' count '32']
+        ]
+        ['AdsDataType.BITARR32' List
+            [array bit 'value' count '32']
+        ]
+
+        // -----------------------------------------
+        // Integers
+        // -----------------------------------------
+        // 8 bit:
+        ['AdsDataType.SINT' Integer
+            [simple int 8 'value']
+        ]
+        ['AdsDataType.INT8' Integer
+            [simple int 8 'value']
+        ]
+        ['AdsDataType.USINT' Integer
+            [simple uint 8 'value']
+        ]
+        ['AdsDataType.UINT8' Integer
+            [simple uint 8 'value']
+        ]
+        // 16 bit:
+        ['AdsDataType.INT' Integer
+            [simple int 16 'value']
+        ]
+        ['AdsDataType.INT16' Integer
+            [simple int 16 'value']
+        ]
+        ['AdsDataType.UINT' Integer
+            [simple uint 16 'value']
+        ]
+        ['AdsDataType.UINT16' Integer
+            [simple uint 16 'value']
+        ]
+        // 32 bit:
+        ['AdsDataType.DINT' Integer
+            [simple int 32 'value']
+        ]
+        ['AdsDataType.INT32' Integer
+            [simple int 32 'value']
+        ]
+        ['AdsDataType.UDINT' Long
+            [simple uint 32 'value']
+        ]
+        ['AdsDataType.UINT32' Long
+            [simple uint 32 'value']
+        ]
+        // 64 bit:
+        ['AdsDataType.LINT' Long
+            [simple int 64 'value']
+        ]
+        ['AdsDataType.INT64' Long
+            [simple int 64 'value']
+        ]
+        ['AdsDataType.ULINT' BigInteger
+            [simple uint 64 'value']
+        ]
+        ['AdsDataType.UINT64' BigInteger
+            [simple uint 64 'value']
+        ]
+
+        // -----------------------------------------
+        // Floating point values
+        // -----------------------------------------
+        ['AdsDataType.REAL' Float
+            [simple float 8.23  'value']
+        ]
+        ['AdsDataType.FLOAT' Float
+            [simple float 8.23  'value']
+        ]
+        ['AdsDataType.LREAL' Double
+            [simple float 11.52 'value']
+        ]
+        ['AdsDataType.DOUBLE' Double
+            [simple float 11.52 'value']
+        ]
+
+        // -----------------------------------------
+        // Characters & Strings
+        // -----------------------------------------
+        ['AdsDataType.STRING' String
+//            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.amsads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.amsads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
+        ]
+    ]
+]
+
+[enum 'AdsDataType' [uint 8 'numBytes']
+    [BOOL       ['1']]
+    [BIT        ['1']]
+    [BIT8       ['1']]
+    // -----------------------------------------
+    // Bit-strings
+    // -----------------------------------------
+    // 1 byte
+    [BYTE       ['1']]
+    [BITARR8    ['1']]
+    // 2 byte (16 bit)
+    [WORD       ['2']]
+    [BITARR16   ['2']]
+    // 4 byte (32 bit)
+    [DWORD      ['4']]
+    [BITARR32   ['4']]
+    // -----------------------------------------
+    // Integers
+    // -----------------------------------------
+    // 8 bit:
+    [SINT       ['1']]
+    [INT8       ['1']]
+    [USINT      ['1']]
+    [UINT8      ['1']]
+    // 16 bit:
+    [INT        ['2']]
+    [INT16      ['2']]
+    [UINT       ['2']]
+    [UINT16     ['2']]
+    // 32 bit:
+    [DINT       ['4']]
+    [INT32      ['4']]
+    [UDINT      ['4']]
+    [UINT32     ['4']]
+    // 64 bit:
+    [LINT       ['8']]
+    [INT64      ['8']]
+    [ULINT      ['8']]
+    [UINT64     ['8']]
+    // -----------------------------------------
+    // Floating point values
+    // -----------------------------------------
+    [REAL       ['4']]
+    [FLOAT      ['4']]
+    [LREAL      ['8']]
+    [DOUBLE     ['8']]
+    // -----------------------------------------
+    // Characters & Strings
+    // -----------------------------------------
+    [STRING     ['9']]
 ]
 
 [enum uint 16 'ReservedIndexGroups'

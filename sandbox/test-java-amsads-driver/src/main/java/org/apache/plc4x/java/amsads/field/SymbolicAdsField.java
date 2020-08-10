@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.amsads.field;
 
-import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.util.Objects;

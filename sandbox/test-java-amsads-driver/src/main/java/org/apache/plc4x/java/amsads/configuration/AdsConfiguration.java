@@ -141,7 +141,7 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         }
         String[] split = address.split("\\.");
         short[] shorts = ArrayUtils.toPrimitive(Stream.of(split).map(Integer::parseInt).map(Integer::shortValue).toArray(Short[]::new));
-        return new AmsNetId(shorts[5], shorts[4], shorts[3], shorts[2], shorts[1], shorts[0]);
+        return new AmsNetId(shorts[0], shorts[1], shorts[2], shorts[3], shorts[4], shorts[5]);
     }
 
 }

@@ -16,7 +16,17 @@
  specific language governing permissions and limitations
  under the License.
  */
-/**
- * This package contains utils regarding endianess and crc digest.
- */
-package org.apache.plc4x.java.amsads.protocol.util;
+
+package org.apache.plc4x.java.amsads.attic.protocol.exception;
+
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+
+public class AdsProtocolOverflowException extends PlcRuntimeException {
+    public AdsProtocolOverflowException(Class<?> clazz, long length) {
+        super("Overflow in datatype " + clazz + " length: " + length);
+    }
+
+    public AdsProtocolOverflowException(String constantName, long expectedLength, long actualLength) {
+        super("Overflow of " + constantName + ": " + expectedLength + ". Actual " + actualLength + "bytes.");
+    }
+}

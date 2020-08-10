@@ -22,9 +22,9 @@ package org.apache.plc4x.protocol.amsads;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class AmsAdsSerializerParserTest extends ParserSerializerTestsuiteRunner {
+public class AdsSerializerParserTest extends ParserSerializerTestsuiteRunner {
 
-    public AmsAdsSerializerParserTest() {
+    public AdsSerializerParserTest() {
         super("/testsuite/AdsParserSerializerTest.xml");
     }
 

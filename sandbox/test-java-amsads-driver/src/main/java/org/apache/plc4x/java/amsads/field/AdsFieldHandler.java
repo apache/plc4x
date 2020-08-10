@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.amsads.field;
 
-import org.apache.plc4x.java.amsads.types.AdsDataType;
+import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
@@ -87,7 +87,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -98,7 +98,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeBoolean(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -138,7 +138,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -149,7 +149,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeInteger(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -189,7 +189,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -200,7 +200,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeInteger(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -240,7 +240,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -251,7 +251,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeInteger(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -291,7 +291,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -302,7 +302,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeInteger(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -342,7 +342,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -353,7 +353,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeInteger(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -393,7 +393,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -404,7 +404,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeFloatingPoint(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -444,7 +444,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -455,7 +455,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeFloatingPoint(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -495,7 +495,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -506,7 +506,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalEncodeString(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -546,7 +546,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -557,7 +557,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalTimeTemporal(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -597,7 +597,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -608,7 +608,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalDateTemporal(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -648,7 +648,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case REAL:
             case LREAL:
             case STRING:
-            case TIME:
+            /*case TIME:
             case TIME_OF_DAY:
             case DATE:
             case DATE_AND_TIME:
@@ -659,7 +659,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case ALIAS:
             case SUB_RANGE_DATA_TYPE:
                 return internalDateTimeTemporal(field, values);
-            case UNKNOWN:
+            case UNKNOWN:*/
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + adsField.getAdsDataType().name());
         }
@@ -777,9 +777,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 }
 
                 Number value = (Number) values[i];
-                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+/*                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
                     throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
-                }
+                }*/
                 longValues[i] = value.longValue();
             }
             if(longValues.length == 1) {
@@ -801,9 +801,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                         "Value of type " + values[i].getClass().getName() +
                             " is not assignable to " + adsField.getAdsDataType().name() + " fields.");
                 }
-                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
+/*                if (!adsField.getAdsDataType().withinBounds(value.doubleValue())) {
                     throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsField.getAdsDataType());
-                }
+                }*/
                 bigIntegerValues[i] = value.toBigInteger();
             }
             if(bigIntegerValues.length == 1) {
@@ -843,9 +843,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 }
 
                 Number value = (Number) values[i];
-                if (!adsDataType.withinBounds(value.doubleValue())) {
+/*                if (!adsDataType.withinBounds(value.doubleValue())) {
                     throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsDataType);
-                }
+                }*/
             }
             if(floatingPointValues.length == 1) {
                 return new PlcDouble(floatingPointValues[0]);
@@ -857,11 +857,11 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             for (int i = 0; i < values.length; i++) {
                 if (values[i] instanceof Double) {
                     Double aDouble = (Double) values[i];
-                    if (!adsDataType.withinBounds(aDouble)) {
+/*                    if (!adsDataType.withinBounds(aDouble)) {
                         throw new IllegalArgumentException(
                             "Value of " + aDouble + " exceeds allowed minimum for type "
                                 + adsDataType.name() + " (min " + adsDataType.getLowerBound() + "/max +" + adsDataType.getUpperBound() + ")");
-                    }
+                    }*/
                     floatingPointValues[i] = aDouble.floatValue();
                 } else if (values[i] instanceof Float) {
                     floatingPointValues[i] = (Float) values[i];
@@ -872,9 +872,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 }
 
                 Number value = (Number) values[i];
-                if (!adsDataType.withinBounds(value.doubleValue())) {
+/*                if (!adsDataType.withinBounds(value.doubleValue())) {
                     throw new IllegalArgumentException("Value " + values[i] + " ist not within bounds of " + adsDataType);
-                }
+                }*/
             }
             if(floatingPointValues.length == 1) {
                 return new PlcFloat(floatingPointValues[0]);
@@ -886,7 +886,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
 
     private PlcValue internalEncodeString(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
-        Number maxLength = adsField.getAdsDataType().getUpperBound();
+//        Number maxLength = adsField.getAdsDataType().getUpperBound();
         //boolean encoding16Bit;
         switch (adsField.getAdsDataType()) {
             case STRING:
@@ -900,11 +900,11 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
         for (Object value : values) {
             if (value instanceof String) {
                 String stringValue = (String) value;
-                if (stringValue.length() > maxLength.intValue()) {
+/*                if (stringValue.length() > maxLength.intValue()) {
                     throw new IllegalArgumentException(
                         "String length " + stringValue.length() + " exceeds allowed maximum for type "
                             + adsField.getAdsDataType().name() + " (max " + maxLength + ")");
-                }
+                }*/
                 stringValues.add(stringValue);
             }
             // All other types just translate to max one String character.
@@ -970,16 +970,16 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
     private PlcValue internalTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
-            case TIME:
+/*            case TIME:
             case DATE:
             case DATE_AND_TIME:
-                break;
+                break;*/
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
         }
         // TODO: support other types
-        List<LocalTime> localTimeValues = Arrays.stream(values)
+        /*List<LocalTime> localTimeValues = Arrays.stream(values)
             .filter(LocalTime.class::isInstance)
             .map(LocalTime.class::cast)
             .collect(Collectors.toList());
@@ -987,22 +987,22 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             return new PlcTime(localTimeValues.get(0));
         } else {
             return new PlcList(localTimeValues);
-        }
+        }*/
     }
 
     private PlcValue internalDateTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         switch (adsField.getAdsDataType()) {
-            case TIME:
+/*            case TIME:
             case DATE:
             case DATE_AND_TIME:
-                break;
+                break;*/
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
         }
         // TODO: support other types
-        List<LocalDate> localDateValues = Arrays.stream(values)
+        /*List<LocalDate> localDateValues = Arrays.stream(values)
             .filter(LocalDate.class::isInstance)
             .map(LocalDate.class::cast)
             .collect(Collectors.toList());
@@ -1010,14 +1010,14 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             return new PlcDate(localDateValues.get(0));
         } else {
             return new PlcList(localDateValues);
-        }
+        }*/
     }
 
     private PlcValue internalDateTimeTemporal(PlcField field, Object[] values) {
         AdsField adsField = (AdsField) field;
         Class<? extends PlcValue> fieldType;
         switch (adsField.getAdsDataType()) {
-            case TIME:
+/*            case TIME:
                 fieldType = PlcTime.class;
                 break;
             case DATE:
@@ -1025,12 +1025,12 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 break;
             case DATE_AND_TIME:
                 fieldType = PlcDateTime.class;
-                break;
+                break;*/
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign temporal values to " + adsField.getAdsDataType().name() + " fields.");
         }
-        if(values.length == 1) {
+        /*if(values.length == 1) {
             // TODO: add type conversion
             if (fieldType == PlcTime.class) {
                 return new PlcTime((LocalTime) values[0]);
@@ -1041,7 +1041,6 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             }
         } else {
             return new PlcList(Arrays.asList(values));
-        }
-
+        }*/
     }
 }

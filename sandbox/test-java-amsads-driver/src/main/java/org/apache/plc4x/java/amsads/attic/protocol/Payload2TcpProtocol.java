@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageCodec;
-import org.apache.plc4x.java.amsads.protocol.exception.AdsException;
+import org.apache.plc4x.java.amsads.attic.protocol.exception.AdsException;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;

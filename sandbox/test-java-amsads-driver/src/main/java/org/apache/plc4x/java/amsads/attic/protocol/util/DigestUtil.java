@@ -16,17 +16,31 @@
  specific language governing permissions and limitations
  under the License.
  */
+package org.apache.plc4x.java.amsads.attic.protocol.util;
 
-package org.apache.plc4x.java.amsads.protocol.exception;
+import com.github.snksoft.crc.CRC;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+public class DigestUtil {
 
-public class AdsProtocolOverflowException extends PlcRuntimeException {
-    public AdsProtocolOverflowException(Class<?> clazz, long length) {
-        super("Overflow in datatype " + clazz + " length: " + length);
+    public static final CRC.Parameters CRC16 = CRC.Parameters.CRC16;
+
+    public static final CRC.Parameters CRC16_ADS = new CRC.Parameters(
+        CRC16.getWidth(),
+        CRC16.getPolynomial(),
+        0xFFFF,
+        CRC16.isReflectIn(),
+        CRC16.isReflectOut(),
+        CRC16.getFinalXor());
+
+    private static CRC crc = new CRC(CRC16_ADS);
+
+    private DigestUtil() {
+        // Utility class
     }
 
-    public AdsProtocolOverflowException(String constantName, long expectedLength, long actualLength) {
-        super("Overflow of " + constantName + ": " + expectedLength + ". Actual " + actualLength + "bytes.");
+    public static int calculateCrc16(byte[] bytes) {
+        short finalCrc = (short) crc.calculateCRC(bytes);
+        return Short.toUnsignedInt(Short.reverseBytes(finalCrc));
     }
+
 }

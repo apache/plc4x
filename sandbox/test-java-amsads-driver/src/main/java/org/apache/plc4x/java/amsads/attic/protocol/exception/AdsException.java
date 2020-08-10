@@ -16,7 +16,7 @@
  specific language governing permissions and limitations
  under the License.
  */
-package org.apache.plc4x.java.amsads.protocol.exception;
+package org.apache.plc4x.java.amsads.attic.protocol.exception;
 
 import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 
