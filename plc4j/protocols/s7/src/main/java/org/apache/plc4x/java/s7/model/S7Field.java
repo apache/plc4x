@@ -229,13 +229,17 @@ public class S7Field implements PlcField {
                 byte[] addressData = Hex.decodeHex(fieldString.replaceAll("[-]", ""));
                 ReadBuffer rb = new ReadBuffer(addressData);
                 // Read out values according to definition in mspec
-                final TransportSize transportSize = TransportSize.valueOf(rb.readByte(8));
-                final short numberOfElements = rb.readShort(16);
-                final short dbNumber = rb.readShort(16);
-                final MemoryArea memoryArea = MemoryArea.valueOf(rb.readByte(8));
-                assert 0x00 == rb.readByte(5);
-                final short byteAddress = rb.readShort(16);
-                final byte bitAddress = rb.readByte(3);
+                final short resvd = rb.readUnsignedShort(8);
+                if (0x10 != resvd) {
+                    throw new PlcInvalidFieldException("Unsupported Field Type to parse!");
+                }
+                final TransportSize transportSize = TransportSize.valueOf((byte)rb.readUnsignedShort(8));
+                final short numberOfElements = (short)rb.readUnsignedInt(16);
+                final short dbNumber = (short)rb.readUnsignedInt(16);
+                final MemoryArea memoryArea = MemoryArea.valueOf((byte)rb.readUnsignedShort(8));
+                assert 0x00 == rb.readUnsignedShort(5);
+                final short byteAddress = (short)rb.readUnsignedInt(16);
+                final byte bitAddress = (byte)rb.readUnsignedShort(3);
 
                 return new S7Field(transportSize, memoryArea, dbNumber, byteAddress, bitAddress,
                     numberOfElements);

@@ -19,12 +19,14 @@ under the License.
 
 package org.apache.plc4x.java.s7.model;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
 import org.apache.plc4x.test.FastTests;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -34,7 +36,10 @@ import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class S7FieldTests {
 
@@ -104,5 +109,23 @@ class S7FieldTests {
         S7Field field = S7Field.of("%DB56.DBB100:SINT[25]");
 
         assertEquals(25, field.getNumElements());
+    }
+
+    @Test
+    public void testSimotionAddres() {
+        final S7Field s7Field = S7Field.of("10-01-00-01-00-2D-84-00-00-08");
+        Assertions.assertEquals(TransportSize.BOOL, s7Field.getDataType());
+        Assertions.assertEquals(1, s7Field.getNumElements());
+        Assertions.assertEquals(45, s7Field.getBlockNumber());
+        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Field.getMemoryArea());
+        Assertions.assertEquals(1, s7Field.getByteOffset());
+        Assertions.assertEquals(0, s7Field.getBitOffset());
+    }
+
+    @Test
+    public void testSimotionAddres_wrongMemoryArea_fails() {
+        assertThrows(PlcInvalidFieldException.class, () -> {
+            final S7Field s7Field = S7Field.of("A0-01-00-01-00-2D-84-00-00-08");
+        });
     }
 }
