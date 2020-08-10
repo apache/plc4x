@@ -53,7 +53,11 @@ class S7FieldTests {
             Arguments.of("%DB1:38.1:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 1,  38, 1),
             Arguments.of("%DB1:8.0:REAL",   TransportSize.REAL,  MemoryArea.DATA_BLOCKS, 1,  8, 0),
             Arguments.of("%DB400:8.0:REAL",   TransportSize.REAL,  MemoryArea.DATA_BLOCKS, 400,  8, 0),
-            Arguments.of("%DB444:14.0:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 444,  14, 0)/*,
+            Arguments.of("%DB444:14.0:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 444,  14, 0),
+            // Simotion
+            Arguments.of("10-01-00-01-00-2D-84-00-00-08", TransportSize.BOOL, MemoryArea.DATA_BLOCKS, 45, 1, 0),
+            Arguments.of("10-08-00-01-00-2D-84-00-00-80", TransportSize.REAL, MemoryArea.DATA_BLOCKS, 45, 16, 0)
+            /*,
             // Not quite sure about how Data Block addresses look like, in my TIA portal they all have the prefix "DB".
             Arguments.of("%DB3.DX4.1:BOOL",     S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 3,  4,  1),
             Arguments.of("%DB3.DB4:INT",        S7DataType.INT,   MemoryArea.DATA_BLOCKS, 3,  4,  0),
@@ -109,17 +113,6 @@ class S7FieldTests {
         S7Field field = S7Field.of("%DB56.DBB100:SINT[25]");
 
         assertEquals(25, field.getNumElements());
-    }
-
-    @Test
-    public void testSimotionAddres() {
-        final S7Field s7Field = S7Field.of("10-01-00-01-00-2D-84-00-00-08");
-        Assertions.assertEquals(TransportSize.BOOL, s7Field.getDataType());
-        Assertions.assertEquals(1, s7Field.getNumElements());
-        Assertions.assertEquals(45, s7Field.getBlockNumber());
-        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Field.getMemoryArea());
-        Assertions.assertEquals(1, s7Field.getByteOffset());
-        Assertions.assertEquals(0, s7Field.getBitOffset());
     }
 
     @Test
