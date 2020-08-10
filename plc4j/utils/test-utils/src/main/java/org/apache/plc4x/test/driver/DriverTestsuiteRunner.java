@@ -25,6 +25,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -179,6 +180,8 @@ public class DriverTestsuiteRunner {
         final PlcConnection plcConnection = testsuite.getConnection();
         final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(testsuite);
         final boolean bigEndian = testsuite.isBigEndian();
+        // Be sure this is reset, just in case a previous testcase failed.
+        responseFuture = null;
         if(!testsuite.getSetupSteps().isEmpty()) {
             LOGGER.info("Running setup steps");
             for (TestStep setupStep : testsuite.getSetupSteps()) {
@@ -224,7 +227,10 @@ public class DriverTestsuiteRunner {
                     validateMessage(payload, data, bigEndian);
                     break;
                 }
-                case INCOMING_PLC_BYTES:
+                case INCOMING_PLC_BYTES: {
+                    // TODO: Implement
+                    throw new NotImplementedException("incoming-plc-bytes not implemented yet");
+                }
                 case INCOMING_PLC_MESSAGE: {
                     // Get a byte representation of the incoming message.
                     final byte[] data = getBytesFromXml(payload, bigEndian);
@@ -251,6 +257,7 @@ public class DriverTestsuiteRunner {
                         responseFuture = plc4xRequest.execute();
                     } else if(request instanceof TestWriteRequest) {
                         // TODO: Implement ...
+                        throw new NotImplementedException("api-write-request not implemented yet");
                     }
                     break;
                 }
@@ -260,8 +267,10 @@ public class DriverTestsuiteRunner {
                     }
                     try {
                         final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
+                        // Reset the future.
+                        responseFuture = null;
                         final String serializedResponse = mapper.writeValueAsString(plcResponse);
-                        // TODO: Implement ...
+                        validateApiMessage(payload, serializedResponse);
                     } catch(Exception e) {
                         throw new DriverTestsuiteException("Got no response within 1000ms.");
                     }
@@ -334,7 +343,7 @@ public class DriverTestsuiteRunner {
 
     private byte[] getOutboundBytes(Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
         ByteBuf byteBuf = null;
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             byteBuf = embeddedChannel.readOutbound();
             if(byteBuf != null) {
                 break;
@@ -342,7 +351,7 @@ public class DriverTestsuiteRunner {
             delay(10);
         }
         if(byteBuf == null) {
-            throw new DriverTestsuiteException("No outbound message available within 100ms");
+            throw new DriverTestsuiteException("No outbound message available within 1000ms");
         }
         final byte[] data = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(data);
@@ -390,6 +399,15 @@ public class DriverTestsuiteRunner {
             }
         } catch (ParseException | IllegalAccessException | JsonProcessingException | InstantiationException e) {
             throw new DriverTestsuiteException("Error parsing message", e);
+        }
+    }
+
+    private void validateApiMessage(Element referenceXml, String apiMessage) throws DriverTestsuiteException {
+        final String referenceXmlString = referenceXml.asXML();
+        final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(apiMessage).ignoreComments().ignoreWhitespace().build();
+        if (diff.hasDifferences()) {
+            LOGGER.warn(apiMessage);
+            throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
         }
     }
 
