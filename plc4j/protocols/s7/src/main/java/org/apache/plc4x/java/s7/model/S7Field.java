@@ -236,10 +236,10 @@ public class S7Field implements PlcField {
                 final TransportSize transportSize = TransportSize.valueOf((byte)rb.readUnsignedShort(8));
                 final short numberOfElements = (short)rb.readUnsignedInt(16);
                 final short dbNumber = (short)rb.readUnsignedInt(16);
-                final MemoryArea memoryArea = MemoryArea.valueOf((byte)rb.readUnsignedShort(8));
+                final MemoryArea memoryArea = MemoryArea.valueOf(rb.readByte(8));
                 assert 0x00 == rb.readUnsignedShort(5);
                 final short byteAddress = (short)rb.readUnsignedInt(16);
-                final byte bitAddress = (byte)rb.readUnsignedShort(3);
+                final byte bitAddress = rb.readUnsignedByte(3);
 
                 return new S7Field(transportSize, memoryArea, dbNumber, byteAddress, bitAddress,
                     numberOfElements);
