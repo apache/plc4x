@@ -56,7 +56,8 @@ class S7FieldTests {
             Arguments.of("%DB444:14.0:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 444,  14, 0),
             // Simotion
             Arguments.of("10-01-00-01-00-2D-84-00-00-08", TransportSize.BOOL, MemoryArea.DATA_BLOCKS, 45, 1, 0),
-            Arguments.of("10-08-00-01-00-2D-84-00-00-80", TransportSize.REAL, MemoryArea.DATA_BLOCKS, 45, 16, 0)
+            Arguments.of("10-08-00-01-00-2D-84-00-00-80", TransportSize.REAL, MemoryArea.DATA_BLOCKS, 45, 16, 0),
+            Arguments.of("10-07-00-01-00-98-84-00-06-C0", TransportSize.UDINT, MemoryArea.DATA_BLOCKS, 152, 216, 0)
             /*,
             // Not quite sure about how Data Block addresses look like, in my TIA portal they all have the prefix "DB".
             Arguments.of("%DB3.DX4.1:BOOL",     S7DataType.BOOL,  MemoryArea.DATA_BLOCKS, 3,  4,  1),
