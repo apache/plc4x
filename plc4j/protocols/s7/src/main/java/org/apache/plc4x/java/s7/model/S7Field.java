@@ -18,11 +18,15 @@ under the License.
 */
 package org.apache.plc4x.java.s7.model;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.s7.netty.model.types.MemoryArea;
 import org.apache.plc4x.java.s7.netty.model.types.TransportSize;
+import org.apache.plc4x.java.utils.ParseException;
+import org.apache.plc4x.java.utils.ReadBuffer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -202,14 +206,14 @@ public class S7Field implements PlcField {
             short bitOffset = 0;
             if(matcher.group(BIT_OFFSET) != null) {
                 bitOffset = Short.parseShort(matcher.group(BIT_OFFSET));
-            } else if(dataType == TransportSize.BOOL) {
+            } else if (dataType == TransportSize.BOOL) {
                 throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
             }
             int numElements = 1;
-            if(matcher.group(NUM_ELEMENTS) != null) {
+            if (matcher.group(NUM_ELEMENTS) != null) {
                 numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
             }
-            numElements = calcNumberOfElementsForIndividualTypes(numElements,dataType);
+            numElements = calcNumberOfElementsForIndividualTypes(numElements, dataType);
             return new S7Field(dataType, memoryArea, blockNumber, byteOffset, bitOffset, numElements);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + fieldString);
