@@ -46,7 +46,7 @@ public class GeneratedProtocolMessageCodec<BASE_PACKET_CLASS extends Message> ex
     @Override
     protected int getPacketSize(ByteBuf byteBuf) {
         if (this.packetSizeEstimator == null) {
-            return -1;
+            return byteBuf.readableBytes();
         }
         return packetSizeEstimator.applyAsInt(byteBuf);
     }
