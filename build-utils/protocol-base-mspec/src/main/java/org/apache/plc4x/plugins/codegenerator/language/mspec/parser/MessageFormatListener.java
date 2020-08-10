@@ -91,7 +91,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
         // Handle enum types.
         if (ctx.enumValues != null) {
-            TypeReference type = getTypeReference(ctx.type);
+            TypeReference type = (ctx.type != null) ? getTypeReference(ctx.type) : null;
             EnumValue[] enumValues = getEnumValues();
             DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, enumValues,
                 parserArguments, null);
@@ -382,7 +382,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterEnumValueDefinition(MSpecParser.EnumValueDefinitionContext ctx) {
-        String value = unquoteString(ctx.valueExpression.getText());
+        String value = (ctx.valueExpression != null) ? unquoteString(ctx.valueExpression.getText()) : null;
         String name = ctx.name.getText();
         Map<String, String> constants = null;
         if (ctx.constantValueExpressions != null) {

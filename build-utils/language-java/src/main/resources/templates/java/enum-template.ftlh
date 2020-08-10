@@ -57,53 +57,59 @@ import java.util.Map;
 public enum ${type.name} {
 
 <#list type.enumValues as enumValue>
-${enumValue.name}((${helper.getLanguageTypeNameForTypeReference(type.type, true)}) ${enumValue.value}<#if type.constantNames?has_content>, <#list type.constantNames as constantName>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#sep>, </#sep></#list></#if>)<#sep>,
+    ${enumValue.name}(<#if type.type?has_content>(${helper.getLanguageTypeNameForTypeReference(type.type, true)}) ${enumValue.value}</#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName>(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}) ${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName))}<#sep>, </#sep></#list></#if>)<#sep>,
 </#sep></#list>;
 
-private static final Logger logger = LoggerFactory.getLogger(${type.name}.class);
+<#if type.type?has_content>
+    private static final Logger logger = LoggerFactory.getLogger(${type.name}.class);
 
-private static final Map<${helper.getLanguageTypeNameForTypeReference(type.type, false)}, ${type.name}> map;
-static {
-map = new HashMap<>();
-for (${type.name} value : ${type.name}.values()) {
-map.put((${helper.getLanguageTypeNameForTypeReference(type.type, true)}) value.getValue(), value);
-}
-}
+    private static final Map<${helper.getLanguageTypeNameForTypeReference(type.type, false)}, ${type.name}> map;
+    static {
+        map = new HashMap<>();
+        for (${type.name} value : ${type.name}.values()) {
+            map.put((${helper.getLanguageTypeNameForTypeReference(type.type, true)}) value.getValue(), value);
+        }
+    }
 
-private ${helper.getLanguageTypeNameForTypeReference(type.type, true)} value;
+    private ${helper.getLanguageTypeNameForTypeReference(type.type, true)} value;
+</#if>
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
         private ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
     </#list>
 </#if>
 
-${type.name}(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value<#if type.constantNames?has_content>, <#list type.constantNames as constantName>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName}<#sep>, </#sep></#list></#if>) {
-this.value = value;
+    ${type.name}(<#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type, true)} value</#if><#if type.constantNames?has_content><#if type.type?has_content>, </#if><#list type.constantNames as constantName>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName}<#sep>, </#sep></#list></#if>) {
+<#if type.type?has_content>        this.value = value;</#if>
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
         this.${constantName} = ${constantName};
     </#list>
 </#if>
-}
+    }
 
-public ${helper.getLanguageTypeNameForTypeReference(type.type, true)} getValue() {
-return value;
-}
+<#if type.type?has_content>
+    public ${helper.getLanguageTypeNameForTypeReference(type.type, true)} getValue() {
+        return value;
+    }
+</#if>
 
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-        public ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} get${constantName?cap_first}() {
+    public ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} get${constantName?cap_first}() {
         return ${constantName};
-        }
+    }
 
     </#list>
 </#if>
-public static ${type.name} valueOf(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
-if (!map.containsKey(value)) {
-logger.error("No ${type.name} for value {}", value);
-}
-return map.get(value);
-}
+<#if type.type?has_content>
+    public static ${type.name} valueOf(${helper.getLanguageTypeNameForTypeReference(type.type, true)} value) {
+        if (!map.containsKey(value)) {
+            logger.error("No ${type.name} for value {}", value);
+        }
+        return map.get(value);
+    }
+</#if>
 
 }
 </#outputformat>
