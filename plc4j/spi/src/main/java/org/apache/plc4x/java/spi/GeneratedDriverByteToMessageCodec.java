@@ -33,7 +33,7 @@ import java.util.List;
 
 public abstract class GeneratedDriverByteToMessageCodec<T extends Message> extends ByteToMessageCodec<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
     private final boolean bigEndian;
     private final Object[] parserArgs;
@@ -47,16 +47,20 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
         WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
-        io.serialize(buffer, packet);
+        try {
+            io.serialize(buffer, packet);
+        } catch (Exception e) {
+            LOGGER.warn("Error encoding package [{}]: {}", packet, e.getMessage(), e);
+        }
         byteBuf.writeBytes(buffer.getData());
-        logger.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+        LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
-        logger.trace("Receiving bytes, trying to decode Message...");
+    protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) {
+        LOGGER.trace("Receiving bytes, trying to decode Message...");
         // As long as there is data available, continue checking the content.
         while(byteBuf.readableBytes() > 0) {
             byte[] bytes = null;
@@ -85,8 +89,8 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 }
             } catch (Exception e) {
                 if(bytes != null) {
-                    logger.warn("Error decoding package with content [" + Hex.encodeHexString(bytes) + "]: "
-                        + e.getMessage(), e);
+                    LOGGER.warn("Error decoding package with content [{}]: {}",
+                        Hex.encodeHexString(bytes), e.getMessage(), e);
                 }
                 // Just remove any trailing junk ... if there is any.
                 removeRestOfCorruptPackage(byteBuf);
@@ -94,8 +98,8 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
         }
     }
 
-    abstract protected int getPacketSize(ByteBuf byteBuf);
+    protected abstract int getPacketSize(ByteBuf byteBuf);
 
-    abstract protected void removeRestOfCorruptPackage(ByteBuf byteBuf);
+    protected abstract void removeRestOfCorruptPackage(ByteBuf byteBuf);
 
 }
