@@ -20,6 +20,7 @@ package org.apache.plc4x.java.examples.hellowebservice;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -32,12 +33,14 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.PlcStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -114,12 +117,14 @@ public class HelloWebservice {
 
         private final String webserviceUrl;
         private final Gson gson;
+        private final DateTimeFormatter formatter;
 
         public ValueChangeHandler(String webserviceUrl) {
             this.webserviceUrl = webserviceUrl;
             GsonBuilder gsonBuilder = new GsonBuilder();
             gsonBuilder.setPrettyPrinting();
             gson = gsonBuilder.create();
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ssZ");
         }
 
         @Override
@@ -128,15 +133,24 @@ public class HelloWebservice {
             // Iterate over all the fields in this event and then simply output
             // them to the console in a JSON format.
             for (String fieldName : plcSubscriptionEvent.getFieldNames()) {
-                final PlcValue plcValue = plcSubscriptionEvent.getPlcValue(fieldName);
+                final PlcStruct plcValue = (PlcStruct) plcSubscriptionEvent.getPlcValue(fieldName);
 
-                // Simply convert the event into a JSON object.
-                String jsonString = gson.toJson(plcValue);
+                // Create a JSON object that fits the structure of my remote webservice.
+                JsonObject output = new JsonObject();
+                output.addProperty("time", ZonedDateTime.now().format(formatter));
+                output.addProperty("device-id", plcValue.getValue("sourceAddress").getString());
+                output.addProperty("target-id", plcValue.getValue("targetAddress").getString());
+                output.addProperty("type", plcValue.getValue("description").getString());
+                output.addProperty("category", plcValue.getValue("function").getString());
+                JsonObject data = new JsonObject();
+                data.addProperty("unit-of-measurement", plcValue.getValue("unitOfMeasurement").getString());
+                data.addProperty("value", plcValue.getValue("value").getString());
+                output.add("data", data);
 
                 // Send the the json payload to the remote webservice.
                 HttpPost post = new HttpPost(webserviceUrl);
                 try {
-                    post.setEntity(new StringEntity(jsonString));
+                    post.setEntity(new StringEntity(gson.toJson(output)));
                 } catch (UnsupportedEncodingException e) {
                     logger.error("Error encoding json string entity", e);
                 }
