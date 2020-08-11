@@ -395,6 +395,7 @@ public class DriverTestsuiteRunner {
             final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
             if (diff.hasDifferences()) {
                 LOGGER.warn(xmlString);
+                LOGGER.warn(diff.toString());
                 throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
             }
         } catch (ParseException | IllegalAccessException | JsonProcessingException | InstantiationException e) {
