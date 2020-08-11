@@ -292,7 +292,6 @@
               <byteOffset>0</byteOffset>
               <bitOffset>0</bitOffset>
               <numElements>1</numElements>
-              <defaultJavaType>java.lang.Boolean</defaultJavaType>
             </hurz>
           </request>
           <hurz>
@@ -303,7 +302,6 @@
           </hurz>
         </DefaultPlcReadResponse>
       </api-response>
-      <delay>1000</delay>
     </steps>
   </testcase>
 
