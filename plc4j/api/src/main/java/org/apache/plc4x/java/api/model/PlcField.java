@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -47,6 +48,7 @@ public interface PlcField {
      * <b>This method should always return the BOXED type for primitives. E.g. not bool.class but Boolean.class</b>
      * @return Either specific type or Object.class if no specific type is known.
      */
+    @JsonIgnore
     default Class<?> getDefaultJavaType() {
         return Object.class;
     }

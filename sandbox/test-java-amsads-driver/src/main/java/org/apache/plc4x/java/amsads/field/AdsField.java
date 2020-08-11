@@ -21,7 +21,10 @@ package org.apache.plc4x.java.amsads.field;
 import org.apache.plc4x.java.amsads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.model.PlcField;
 
-@FunctionalInterface
 public interface AdsField extends PlcField {
+
     AdsDataType getAdsDataType();
+
+    int getNumberOfElements();
+
 }
