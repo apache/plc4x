@@ -106,7 +106,7 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
         @Override
         public Plc4xProtocolBase<AmsPacket> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive) {
             final Plc4xProtocolBase<AmsPacket> protocolBase = delegate.configurePipeline(configuration, pipeline, passive);
-            final Iterator<Map.Entry<String, ChannelHandler>> iterator = pipeline.iterator();
+            Iterator<Map.Entry<String, ChannelHandler>> iterator = pipeline.iterator();
             while (iterator.hasNext()) {
                 final Map.Entry<String, ChannelHandler> entry = iterator.next();
                 final Class<? extends ChannelHandler> aClass = entry.getValue().getClass();
@@ -128,6 +128,16 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
                     });
                 }
 
+            }
+
+            // After
+            System.out.println("After");
+            iterator = pipeline.iterator();
+            while (iterator.hasNext()) {
+                final Map.Entry<String, ChannelHandler> entry = iterator.next();
+                final Class<? extends ChannelHandler> aClass = entry.getValue().getClass();
+
+                System.out.println(aClass);
             }
             return protocolBase;
         }
