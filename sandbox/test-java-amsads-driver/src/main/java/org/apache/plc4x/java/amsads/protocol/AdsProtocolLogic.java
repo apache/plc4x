@@ -39,6 +39,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
@@ -53,7 +54,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements HasConfiguration<AdsConfiguration> {
+public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements HasConfiguration<AdsConfiguration> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdsProtocolLogic.class);
 
@@ -61,7 +62,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     public static final State DEFAULT_COMMAND_STATE = new State(
         false, false, false, false, false, true, false, false, false);
 
-    private ConversationContext<AmsPacket> adsDriverContext;
+    private ConversationContext<AmsTCPPacket> adsDriverContext;
     private final AtomicLong invokeIdGenerator = new AtomicLong(1);
     private RequestTransactionManager tm;
 
@@ -86,24 +87,24 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     }
 
     @Override
-    public void setContext(ConversationContext<AmsPacket> context) {
+    public void setContext(ConversationContext<AmsTCPPacket> context) {
         super.setContext(context);
         adsDriverContext = context;
     }
 
     @Override
-    public void close(ConversationContext<AmsPacket> context) {
+    public void close(ConversationContext<AmsTCPPacket> context) {
 
     }
 
     @Override
-    public void onConnect(ConversationContext<AmsPacket> context) {
+    public void onConnect(ConversationContext<AmsTCPPacket> context) {
         // AMS/ADS doesn't know a concept of a connect.
         context.fireConnected();
     }
 
     @Override
-    public void onDisconnect(ConversationContext<AmsPacket> context) {
+    public void onDisconnect(ConversationContext<AmsTCPPacket> context) {
         super.onDisconnect(context);
         // TODO: Here we have to clean up all of the handles this connection acquired.
     }
@@ -175,19 +176,25 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsPacket)
-            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(AmsPacket::getData)
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> (AdsReadResponse) response.getUserdata().getData())
             .handle(responseAdsData -> {
-                final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
-                // Convert the response from the PLC into a PLC4X Response ...
-                future.complete(plcReadResponse);
+                if(responseAdsData.getResult() == 0) {
+                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
+                    // Convert the response from the PLC into a PLC4X Response ...
+                    future.complete(plcReadResponse);
+                } else {
+                    // TODO: Implement this correctly.
+                    future.completeExceptionally(new PlcException("Error"));
+                }
                 // Finish the request-transaction.
                 transaction.endRequest();
             }));
@@ -198,31 +205,40 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
 
         // Calculate the size of all fields together.
-        int size = 0;
+        // Calculate the expected size of the response data.
+        long expectedResponseDataSize = directAdsFields.stream().mapToLong(
+            field -> (field.getAdsDataType().getNumBytes() * field.getNumberOfElements()) + 4).sum();
 
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AdsData adsData = new AdsReadWriteRequest(
-            ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), size,
-            directAdsFields.stream().map(directAdsField -> new AdsReadWriteRequest(
-                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(), directAdsField.getNumberOfElements(),
-                new AdsReadWriteRequest[0], new byte[0])).toArray(AdsReadWriteRequest[]::new), new byte[0]);
+            ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), directAdsFields.size(), expectedResponseDataSize,
+            directAdsFields.stream().map(directAdsField -> new AdsMultiRequestItemRead(
+                directAdsField.getIndexGroup(), directAdsField.getIndexOffset(),
+                (directAdsField.getAdsDataType().getNumBytes() * directAdsField.getNumberOfElements())))
+                .toArray(AdsMultiRequestItem[]::new), null);
 
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsPacket)
-            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(AmsPacket::getData)
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> (AdsReadWriteResponse) response.getUserdata().getData())
             .handle(responseAdsData -> {
-                final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
-                // Convert the response from the PLC into a PLC4X Response ...
-                future.complete(plcReadResponse);
+                if(responseAdsData.getResult() == 0) {
+                    final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, responseAdsData);
+                    // Convert the response from the PLC into a PLC4X Response ...
+                    future.complete(plcReadResponse);
+                } else {
+                    // TODO: Implement this correctly.
+                    future.completeExceptionally(new PlcException("Error"));
+                }
                 // Finish the request-transaction.
                 transaction.endRequest();
             }));
@@ -308,7 +324,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     }
 
     @Override
-    protected void decode(ConversationContext<AmsPacket> context, AmsPacket msg) throws Exception {
+    protected void decode(ConversationContext<AmsTCPPacket> context, AmsTCPPacket msg) throws Exception {
         super.decode(context, msg);
     }
 
@@ -384,21 +400,22 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     protected CompletableFuture<Void> resolveSingleSymbolicAddress(SymbolicAdsField symbolicAdsField) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        // TODO: Instead of using 4 we need the size of the expected response
-        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0, 4, null,
+        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
+            symbolicAdsField.getAdsDataType().getNumBytes() * symbolicAdsField.getNumberOfElements(), null,
             getNullByteTerminatedArray(symbolicAdsField.getSymbolicField()));
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsPacket)
-            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(AmsPacket::getData)
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> response.getUserdata().getData())
             .check(adsDataResponse -> adsDataResponse instanceof AdsReadWriteResponse)
             .unwrap(adsDataResponse -> (AdsReadWriteResponse) adsDataResponse)
             .handle(responseAdsData -> {
@@ -423,23 +440,29 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
     protected CompletableFuture<Void> resolveMultipleSymbolicAddresses(List<SymbolicAdsField> symbolicAdsFields) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        // TODO: Instead of using 4 we need the size of the expected response
-        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_MULTIPLE_GET_HANDLE.getValue(),
-            symbolicAdsFields.size(), 4, symbolicAdsFields.stream().map(symbolicAdsField ->
-            new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0, 4, null,
-                getNullByteTerminatedArray(symbolicAdsField.getSymbolicField()))).toArray(AdsReadWriteRequest[]::new), null);
+        // The expected response for every symbolic address is 12 bytes (8 bytes header and 4 bytes for the handle)
+        long expectedResponseDataSize = symbolicAdsFields.size() * 12;
+        // Concatenate the string part of each symbolic address into one concattenated string and get the bytes.
+        byte[] addressData = symbolicAdsFields.stream().map(
+            SymbolicAdsField::getSymbolicField).collect(Collectors.joining("")).getBytes();
+        AdsData adsData = new AdsReadWriteRequest(ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.getValue(),
+            symbolicAdsFields.size(), expectedResponseDataSize, symbolicAdsFields.stream().map(symbolicAdsField ->
+            new AdsMultiRequestItemReadWrite(ReservedIndexGroups.ADSIGRP_SYM_HNDBYNAME.getValue(), 0,
+                4, symbolicAdsField.getSymbolicField().length())
+        ).toArray(AdsMultiRequestItem[]::new), addressData);
         AmsPacket amsPacket = new AmsPacket(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             CommandId.ADS_READ_WRITE, DEFAULT_COMMAND_STATE, 0, invokeIdGenerator.getAndIncrement(), adsData);
+        AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(amsPacket)
-            .expectResponse(AmsPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+        transaction.submit(() -> context.sendRequest(amsTCPPacket)
+            .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(AmsPacket::getData)
+            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
+            .unwrap(response -> response.getUserdata().getData())
             .check(adsDataResponse -> adsDataResponse instanceof AdsReadWriteResponse)
             .unwrap(adsDataResponse -> (AdsReadWriteResponse) adsDataResponse)
             .handle(responseAdsData -> {
@@ -449,9 +472,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
                 symbolicAdsFields.forEach(symbolicAdsField -> {
                     try {
                         // This should be 0 in the success case.
-                        long returnCode = readBuffer.readLong(32);
+                        long returnCode = readBuffer.readUnsignedLong(32);
                         // This is always 4
-                        long itemLength = readBuffer.readLong(32);
+                        long itemLength = readBuffer.readUnsignedLong(32);
 
                         returnCodes.put(symbolicAdsField, returnCode);
                     } catch (ParseException e) {
@@ -463,7 +486,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsPacket> implements Ha
                     try {
                         if (returnCodes.get(symbolicAdsField) == 0) {
                             // Read the handle.
-                            long handle = readBuffer.readLong(32);
+                            long handle = readBuffer.readUnsignedLong(32);
 
                             DirectAdsField directAdsField = new DirectAdsField(
                                 ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,

@@ -317,9 +317,9 @@
             // 4 bytes	Length of data in bytes, which should be read.
             [simple uint 32 'readLength']
             // 4 bytes	Length of the data (in bytes) which should be written.
-            [implicit uint 32 'writeLength' '(COUNT(items) * 12) + COUNT(data)']
+            [implicit uint 32 'writeLength' '(COUNT(items) * ((indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.value) ? 16 : 12)) + COUNT(data)']
             // Only if the indexGroup implies a sum-read response, will the indexOffset indicate the number of elements.
-            [array  AdsReadWriteRequest 'items' COUNT '(indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) ? indexOffset : 0']
+            [array  AdsMultiRequestItem 'items' COUNT '((indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.value) || (indexGroup == ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE.value)) ? indexOffset : 0' ['indexGroup']]
             // n bytes	Data which are written in the ADS device.
             [array int 8 'data' count 'writeLength - (COUNT(items) * 12)']
         ]
@@ -330,6 +330,40 @@
             [implicit uint 32 'length'  'COUNT(data)']
             // n bytes Additional data which are sent to the ADS device
             [array int 8 'data' count 'length']
+        ]
+    ]
+]
+
+[discriminatedType 'AdsMultiRequestItem' [uint 32 'indexGroup']
+    [typeSwitch 'indexGroup'
+        // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ
+        ['61568L' AdsMultiRequestItemRead
+            // 4 bytes	Index Group of the data which should be written.
+            [simple uint 32 'itemIndexGroup']
+            // 4 bytes	Index Offset of the data which should be written.
+            [simple uint 32 'itemIndexOffset']
+            // 4 bytes	Length of data in bytes, which should be read.
+            [simple uint 32 'itemReadLength']
+        ]
+        // ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE
+        ['61569L' AdsMultiRequestItemWrite
+            // 4 bytes	Index Group of the data which should be written.
+            [simple uint 32 'itemIndexGroup']
+            // 4 bytes	Index Offset of the data which should be written.
+            [simple uint 32 'itemIndexOffset']
+            // 4 bytes	Length of the data (in bytes) which should be written.
+            [simple uint 32 'itemWriteLength']
+        ]
+        // ReservedIndexGroups.ADSIGRP_MULTIPLE_READ_WRITE
+        ['61570L' AdsMultiRequestItemReadWrite
+            // 4 bytes	Index Group of the data which should be written.
+            [simple uint 32 'itemIndexGroup']
+            // 4 bytes	Index Offset of the data which should be written.
+            [simple uint 32 'itemIndexOffset']
+            // 4 bytes	Length of data in bytes, which should be read.
+            [simple uint 32 'itemReadLength']
+            // 4 bytes	Length of the data (in bytes) which should be written.
+            [simple uint 32 'itemWriteLength']
         ]
     ]
 ]
@@ -528,35 +562,35 @@
     [STRING     ['9']]
 ]
 
-[enum uint 16 'ReservedIndexGroups'
-    ['0xF000' ADSIGRP_SYMTAB]
-    ['0xF001' ADSIGRP_SYMNAME]
-    ['0xF002' ADSIGRP_SYMVAL]
-    ['0xF003' ADSIGRP_SYM_HNDBYNAME]
-    ['0xF004' ADSIGRP_SYM_VALBYNAME]
-    ['0xF005' ADSIGRP_SYM_VALBYHND]
-    ['0xF006' ADSIGRP_SYM_RELEASEHND]
-    ['0xF007' ADSIGRP_SYM_INFOBYNAME]
-    ['0xF008' ADSIGRP_SYM_VERSION]
-    ['0xF009' ADSIGRP_SYM_INFOBYNAMEEX]
-    ['0xF00A' ADSIGRP_SYM_DOWNLOAD]
-    ['0xF00B' ADSIGRP_SYM_UPLOAD]
-    ['0xF00C' ADSIGRP_SYM_UPLOADINFO]
-    ['0xF010' ADSIGRP_SYMNOTE]
-    ['0xF020' ADSIGRP_IOIMAGE_RWIB]
-    ['0xF021' ADSIGRP_IOIMAGE_RWIX]
-    ['0xF025' ADSIGRP_IOIMAGE_RISIZE]
-    ['0xF030' ADSIGRP_IOIMAGE_RWOB]
-    ['0xF031' ADSIGRP_IOIMAGE_RWOX]
-    ['0xF035' ADSIGRP_IOIMAGE_RWOSIZE]
-    ['0xF040' ADSIGRP_IOIMAGE_CLEARI]
-    ['0xF050' ADSIGRP_IOIMAGE_CLEARO]
-    ['0xF060' ADSIGRP_IOIMAGE_RWIOB]
-    ['0xF080' ADSIGRP_MULTIPLE_READ]
-    ['0xF081' ADSIGRP_MULTIPLE_WRITE]
-    ['0xF082' ADSIGRP_MULTIPLE_GET_HANDLE]
-    ['0xF083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
-    ['0xF100' ADSIGRP_DEVICE_DATA]
-    ['0x0000' ADSIOFFS_DEVDATA_ADSSTATE]
-    ['0x0002' ADSIOFFS_DEVDATA_DEVSTATE]
+[enum uint 32 'ReservedIndexGroups'
+    ['0x0000F000' ADSIGRP_SYMTAB]
+    ['0x0000F001' ADSIGRP_SYMNAME]
+    ['0x0000F002' ADSIGRP_SYMVAL]
+    ['0x0000F003' ADSIGRP_SYM_HNDBYNAME]
+    ['0x0000F004' ADSIGRP_SYM_VALBYNAME]
+    ['0x0000F005' ADSIGRP_SYM_VALBYHND]
+    ['0x0000F006' ADSIGRP_SYM_RELEASEHND]
+    ['0x0000F007' ADSIGRP_SYM_INFOBYNAME]
+    ['0x0000F008' ADSIGRP_SYM_VERSION]
+    ['0x0000F009' ADSIGRP_SYM_INFOBYNAMEEX]
+    ['0x0000F00A' ADSIGRP_SYM_DOWNLOAD]
+    ['0x0000F00B' ADSIGRP_SYM_UPLOAD]
+    ['0x0000F00C' ADSIGRP_SYM_UPLOADINFO]
+    ['0x0000F010' ADSIGRP_SYMNOTE]
+    ['0x0000F020' ADSIGRP_IOIMAGE_RWIB]
+    ['0x0000F021' ADSIGRP_IOIMAGE_RWIX]
+    ['0x0000F025' ADSIGRP_IOIMAGE_RISIZE]
+    ['0x0000F030' ADSIGRP_IOIMAGE_RWOB]
+    ['0x0000F031' ADSIGRP_IOIMAGE_RWOX]
+    ['0x0000F035' ADSIGRP_IOIMAGE_RWOSIZE]
+    ['0x0000F040' ADSIGRP_IOIMAGE_CLEARI]
+    ['0x0000F050' ADSIGRP_IOIMAGE_CLEARO]
+    ['0x0000F060' ADSIGRP_IOIMAGE_RWIOB]
+    ['0x0000F080' ADSIGRP_MULTIPLE_READ]
+    ['0x0000F081' ADSIGRP_MULTIPLE_WRITE]
+    ['0x0000F082' ADSIGRP_MULTIPLE_READ_WRITE]
+    ['0x0000F083' ADSIGRP_MULTIPLE_RELEASE_HANDLE]
+    ['0x0000F100' ADSIGRP_DEVICE_DATA]
+    ['0x00000000' ADSIOFFS_DEVDATA_ADSSTATE]
+    ['0x00000002' ADSIOFFS_DEVDATA_DEVSTATE]
 ]

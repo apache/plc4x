@@ -48,14 +48,14 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
 
     @Override
     protected void encode(ChannelHandlerContext ctx, T packet, ByteBuf byteBuf) {
-        WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
         try {
+            WriteBuffer buffer = new WriteBuffer(packet.getLengthInBytes(), !bigEndian);
             io.serialize(buffer, packet);
+            byteBuf.writeBytes(buffer.getData());
+            LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
         } catch (Exception e) {
             LOGGER.warn("Error encoding package [{}]: {}", packet, e.getMessage(), e);
         }
-        byteBuf.writeBytes(buffer.getData());
-        LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
     }
 
     @Override

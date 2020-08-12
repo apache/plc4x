@@ -198,7 +198,7 @@ public class Plc4x2AdsProtocol extends MessageToMessageCodec<AmsPacket, PlcReque
         AdsDataType adsDataType = directAdsField.getAdsDataType();
         int numberOfElements = directAdsField.getNumberOfElements();
         int readLength = adsDataType.getNumBytes() * numberOfElements;
-        AdsReadWriteRequest data = new AdsReadWriteRequest(indexGroup, indexOffset, readLength, new AdsReadWriteRequest[0], new byte[0]);
+        AdsReadWriteRequest data = new AdsReadWriteRequest(indexGroup, indexOffset, readLength, null, null);
         AmsPacket amsPacket = new AmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, CommandId.ADS_READ, new State(false, false, false, false, false, false, true, false, false), 0, invokeId, data);
         LOGGER.debug("encoded read request {}", amsPacket);
         out.add(amsPacket);

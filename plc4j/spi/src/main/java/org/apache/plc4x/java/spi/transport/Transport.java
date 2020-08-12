@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.java.spi.transport;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 
 public interface Transport {

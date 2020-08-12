@@ -175,16 +175,16 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
         <#assign arrayField = field>
 
         // Array field
+        if(${arrayField.name} != null) {
         <#if helper.isSimpleTypeReference(arrayField.type)>
             <#assign simpleTypeReference = arrayField.type>
-        lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
+            lengthInBits += ${simpleTypeReference.sizeInBits} * ${arrayField.name}.length;
         <#else>
-        if(${arrayField.name} != null) {
             for(Message element : ${arrayField.name}) {
                 lengthInBits += element.getLengthInBits();
             }
-        }
         </#if>
+        }
         <#break>
     <#case "checksum">
         <#assign checksumField = field>
