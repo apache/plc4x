@@ -18,15 +18,21 @@
  */
 package org.apache.plc4x.java.amsads;
 
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.amsads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Implementation of the ADS protocol, based on:
@@ -75,10 +81,36 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
 
     @Override
     protected ProtocolStackConfigurer<AmsPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(AmsPacket.class, AmsPacketIO.class)
-            .withProtocol(AdsProtocolLogic.class)
-            .littleEndian()
-            .build();
+        return new AdsSwitchingStackConfigurer(
+            SingleProtocolStackConfigurer.builder(AmsPacket.class, AmsPacketIO.class)
+                .withProtocol(AdsProtocolLogic.class)
+                .littleEndian()
+                .build());
+    }
+
+    /**
+     * Custom Configurer for Switch TCP / Serial.
+     */
+    static class AdsSwitchingStackConfigurer implements ProtocolStackConfigurer<AmsPacket> {
+
+        private final ProtocolStackConfigurer<AmsPacket> delegate;
+
+        public AdsSwitchingStackConfigurer(ProtocolStackConfigurer<AmsPacket> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Plc4xProtocolBase<AmsPacket> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive) {
+            final Plc4xProtocolBase<AmsPacket> protocolBase = delegate.configurePipeline(configuration, pipeline, passive);
+            final Iterator<Map.Entry<String, ChannelHandler>> iterator = pipeline.iterator();
+            while (iterator.hasNext()) {
+                final Map.Entry<String, ChannelHandler> entry = iterator.next();
+                final Class<? extends ChannelHandler> aClass = entry.getValue().getClass();
+
+                System.out.println(aClass);
+            }
+            return protocolBase;
+        }
     }
 
 }
