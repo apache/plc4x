@@ -28,6 +28,7 @@ import org.apache.plc4x.java.amsads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
 import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
+import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -113,7 +114,7 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
 
                 System.out.println(aClass);
 
-                if (entry.getValue() instanceof GeneratedDriverByteToMessageCodec) {
+                if (entry.getValue() instanceof Plc4xNettyWrapper) {
                     // Found handler
                     pipeline.addBefore(entry.getKey(), "idempotent-layer", new MessageToMessageCodec() {
                         @Override
