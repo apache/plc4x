@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.amsads;
 
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.amsads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.amsads.field.AdsFieldHandler;
 import org.apache.plc4x.java.amsads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.amsads.readwrite.AmsPacket;
 import org.apache.plc4x.java.amsads.readwrite.io.AmsPacketIO;
+import org.apache.plc4x.java.spi.GeneratedDriverByteToMessageCodec;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -32,6 +35,7 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,6 +112,22 @@ public class AMSADSPlcDriver extends GeneratedDriverBase<AmsPacket> {
                 final Class<? extends ChannelHandler> aClass = entry.getValue().getClass();
 
                 System.out.println(aClass);
+
+                if (entry.getValue() instanceof GeneratedDriverByteToMessageCodec) {
+                    // Found handler
+                    pipeline.addBefore(entry.getKey(), "idempotent-layer", new MessageToMessageCodec() {
+                        @Override
+                        protected void decode(ChannelHandlerContext channelHandlerContext, Object o, List list) throws Exception {
+                            list.add(o);
+                        }
+
+                        @Override
+                        protected void encode(ChannelHandlerContext channelHandlerContext, Object o, List list) throws Exception {
+                            list.add(o);
+                        }
+                    });
+                }
+
             }
             return protocolBase;
         }
