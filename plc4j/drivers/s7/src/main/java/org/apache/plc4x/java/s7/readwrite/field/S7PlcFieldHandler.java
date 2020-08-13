@@ -248,17 +248,6 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
 
     private PlcValue internalEncodeBoolean(PlcField field, Object[] values) {
         S7Field s7Field = (S7Field) field;
-        switch (s7Field.getDataType()) {
-            case BOOL:
-            case BYTE:
-            case WORD:
-            case DWORD:
-            case LWORD:
-                break;
-            default:
-                throw new IllegalArgumentException(
-                    "Cannot assign boolean values to " + s7Field.getDataType().name() + " fields.");
-        }
         List<Boolean> booleanValues = new LinkedList<>();
         for (Object value : values) {
             if (value instanceof Boolean) {

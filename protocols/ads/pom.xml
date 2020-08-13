@@ -8,7 +8,7 @@
   "License"); you may not use this file except in compliance
   with the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing,
   software distributed under the License is distributed on an
@@ -23,28 +23,21 @@
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j</artifactId>
+    <artifactId>plc4x-protocols</artifactId>
     <version>0.8.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>plc4j-drivers</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>plc4x-protocols-ads</artifactId>
 
-  <name>PLC4J: Drivers</name>
-  <description>Wrapper project for all PLC4J driver implementations.</description>
+  <name>Protocols: ADS</name>
+  <description>Base protocol specifications for the ADS protocol</description>
 
-  <modules>
-    <module>ab-eth</module>
-    <module>ads</module>
-    <module>eip</module>
-    <module>firmata</module>
-    <module>knxnetip</module>
-    <module>mock</module>
-    <module>modbus</module>
-    <module>s7</module>
-	  <module>opcua</module>
-
-    <module>simulated</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-protocol-base-mspec</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
 
 </project>
