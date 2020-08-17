@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.Objects;
 import java.util.Queue;
@@ -173,7 +174,8 @@ public class RequestTransactionManager {
         }
 
         public void submit(Runnable operation) {
-            this.setOperation(operation);
+            logger.trace("Submission of transaction {}", transactionId);
+            this.setOperation(new TransactionOperation(transactionId, operation));
             this.parent.submit(this);
         }
 
@@ -189,6 +191,25 @@ public class RequestTransactionManager {
         public int hashCode() {
             return Objects.hash(transactionId);
         }
+
     }
 
+    static class TransactionOperation implements Runnable {
+        private final int transactionId;
+        private final Runnable delegate;
+
+        public TransactionOperation(int transactionId, Runnable delegate) {
+            this.transactionId = transactionId;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void run() {
+            try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
+                logger.trace("Start execution of transaction {}", transactionId);
+                delegate.run();
+                logger.trace("Completed execution of transaction {}", transactionId);
+            }
+        }
+    }
 }

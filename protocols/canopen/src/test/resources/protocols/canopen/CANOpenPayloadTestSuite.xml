@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd">
+
+  <name>Tests of CANopen frames payload.</name>
+
+
+  <testcase>
+    <name>Time synchronization, payload: A017BD805034</name>
+    <!--
+    Initial test payload was A017BD835034, however it does not align with CANOpen spec or mapping on our side is wrong
+    -->
+    <raw>A017BD805034</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TIME</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenTimeSynchronization className="org.apache.plc4x.java.canopen.readwrite.CANOpenTimeSynchronization">
+        <timeOfDay className="org.apache.plc4x.java.canopen.readwrite.CANOpenTime">
+          <millis>3631939850</millis>
+          <days>13392</days>
+        </timeOfDay>
+      </CANOpenTimeSynchronization>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Time synchronization, payload: 7019BE805034</name>
+    <!--
+    Initial test payload was 7019BE835034, however it does not align with CANOpen spec or mapping on our side is wrong
+    -->
+    <raw>7019BE805034</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TIME</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenTimeSynchronization className="org.apache.plc4x.java.canopen.readwrite.CANOpenTimeSynchronization">
+        <timeOfDay className="org.apache.plc4x.java.canopen.readwrite.CANOpenTime">
+          <millis>3902472455</millis>
+          <days>13392</days>
+        </timeOfDay>
+      </CANOpenTimeSynchronization>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 00</name>
+    <raw>00</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenHeartbeatPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenHeartbeatPayload">
+        <state>BOOTED_UP</state>
+      </CANOpenHeartbeatPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 7F</name>
+    <raw>7F</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenHeartbeatPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenHeartbeatPayload">
+        <state>PRE_OPERATIONAL</state>
+      </CANOpenHeartbeatPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Network heartbeat, payload: 05</name>
+    <raw>05</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>HEARTBEAT</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenHeartbeatPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenHeartbeatPayload">
+        <state>OPERATIONAL</state>
+      </CANOpenHeartbeatPayload>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO request, payload: 4317100000000000</name>
+    <raw>4317100000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>INITIATE_UPLOAD</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponse">
+          <expedited>true</expedited>
+          <indicated>true</indicated>
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>4119</index>
+            <subindex>0</subindex>
+          </address>
+          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
+            <data>AAAAAA==</data>
+          </payload>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO request, payload: 00171000A00F0000</name>
+    <raw>00171000A00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>SEGMENT_DOWNLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentDownloadRequest">
+          <toggle>false</toggle>
+          <last>false</last>
+          <data>FxAAoA8AAA==</data>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO write request, payload: 2B171000D00F0000</name>
+    <raw>2B171000D00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDORequest className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDORequest">
+        <command>INITIATE_DOWNLOAD</command>
+        <request className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateDownloadRequest">
+          <expedited>true</expedited>
+          <indicated>true</indicated>
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>4119</index>
+            <subindex>0</subindex>
+          </address>
+          <payload className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadResponse">
+            <data>0A8=</data>
+          </payload>
+        </request>
+      </CANOpenSDORequest>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>SDO write result, payload: 60171000A00F0000</name>
+    <raw>00171000A00F0000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>SEGMENT_UPLOAD</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse">
+          <toggle>false</toggle>
+          <last>false</last>
+          <data>FxAAoA8AAA==</data>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <!-- samples -->
+  <testcase>
+    <name>SDO response, payload: 6000200000000000</name>
+    <raw>6000200000000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_SDO</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenSDOResponse className="org.apache.plc4x.java.canopen.readwrite.CANOpenSDOResponse">
+        <command>INITIATE_DOWNLOAD</command>
+        <response className="org.apache.plc4x.java.canopen.readwrite.SDOInitiateDownloadResponse">
+          <address className="org.apache.plc4x.java.canopen.readwrite.IndexAddress">
+            <index>8192</index>
+            <subindex>0</subindex>
+          </address>
+        </response>
+      </CANOpenSDOResponse>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>PDO, payload: 7856341200000000</name>
+    <raw>7856341200000000</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>RECEIVE_PDO_1</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPDOPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDOPayload">
+        <pdo className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDO">
+          <data>eFY0EgAAAAA=</data>
+        </pdo>
+      </CANOpenPDOPayload>
+    </xml>
+  </testcase>
+
+
+  <testcase>
+    <name>PDO, payload: F9013E014C015C01</name>
+    <raw>F9013E014C015C01</raw>
+    <root-type>CANOpenPayload</root-type>
+    <parser-arguments>
+      <arg1>TRANSMIT_PDO_1</arg1>
+    </parser-arguments>
+    <xml>
+      <CANOpenPDOPayload className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDOPayload">
+        <pdo className="org.apache.plc4x.java.canopen.readwrite.CANOpenPDO">
+          <data>+QE+AUwBXAE=</data>
+        </pdo>
+      </CANOpenPDOPayload>
+    </xml>
+  </testcase>
+
+</test:testsuite>
