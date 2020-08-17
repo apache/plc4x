@@ -61,6 +61,7 @@
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
         <item name="BACnet/IP" href="users/protocols/bacnetip.html"/>
+        <item name="CANopen" href="users/protocols/canopen.html"/>
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
         <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>

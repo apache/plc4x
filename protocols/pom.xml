@@ -37,6 +37,7 @@
     <module>ab-eth</module>
     <module>ads</module>
     <module>bacnetip</module>
+    <module>canopen</module>
     <module>df1</module>
     <module>eip</module>
     <module>firmata</module>

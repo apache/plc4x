@@ -120,14 +120,22 @@ public class ${type.name}IO {
                             <#if helper.isLengthArrayField(field)>
             // Length array
             int _${field.name}Length = ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-            List<${helper.getNonPrimitiveLanguageTypeNameForField(field)}> ${field.name} = new LinkedList<>();
             int ${field.name}EndPos = io.getPos() + _${field.name}Length;
+            List<PlcValue> value = new LinkedList<>();
             while(io.getPos() < ${field.name}EndPos) {
-                ${field.name}.add(<#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
-                <#-- After parsing, update the current position, but only if it's needed -->
-                                <#if field.loopExpression.contains("curPos")>
-                curPos = io.getPos() - startPos;
-                                </#if>
+                value.add(
+                <#if helper.isSimpleTypeReference(field.type)>
+                    new ${helper.getPlcValueTypeForTypeReference(field.type)}(${helper.getReadBufferReadMethodCall(field.type)})
+                <#else>${field.type.name}IO.staticParse(io
+                    <#if field.params?has_content>,
+                        <#list field.params as parserArgument>
+                            (${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})
+                            <#sep>, </#sep>
+                        </#list>
+                    </#if>
+                    )
+                </#if>
+                );
             }
             <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                             <#elseif helper.isTerminatedArrayField(field)>

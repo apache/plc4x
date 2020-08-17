@@ -1,0 +1,214 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+:imagesdir: ../../images/users/protocols
+:icons: font
+
+== CANopen
+=== CAN in Automation
+
+CANopen is a specific protocol built on top of CAN bus.
+
+[cols="2,2a,5a"]
+|===
+|Name |Value |Description
+
+|Code
+2+|`canopen`
+
+|Name
+2+|CANopen (based on CAN 2.0A) - client side
+
+|Maven Dependency
+2+|
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-canopen</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+
+|Default Transport:
+2+|`socketcan`
+
+|Compatible Transports:
+2+| - `socketcan`
+
+3+|Supported Operations
+
+| CANopen PDO
+| `read` / `write`
+| PDO messages are broadcasted to the bus and have to be mapped at application layer.
+
+| CANopen SDO
+| `read` / `write`
+| SDO are request/response conversations. Both read and write path is supported.
+
+|
+| `subscribe`
+| - Receiving PDO messages requires construction of valid subscription.
+- It is possible to subscribe to CANopen NMT messages.
+
+3+|Options
+
+|
+| `heartbeat`
+| Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.
+
+|
+| `nodeId`
+| CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.
+
+|
+| `request-timeout`
+| Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.
+|===
+
+=== More details on the driver
+
+CAN, despite (or due) to its popularity has ambiguous meaning.
+There are multiple articles and sources which attempts to give introduction, yet very few of them is consistent between each other.
+
+There are two dominant formats of frames - CAN 2.0A and 2.0B:
+
+- CAN 2.0A uses 11 bit identifier and up to 8 bytes of data.
+- CAN 2.0B uses 29 bit identifier and up to 64 bytes of data.
+
+To make things worse with introduction of CAN FD amount of combinations increased even more.
+Double check frame format as this integration supports CANopen and does not support CANopen FD.
+
+Further reading on CAN flavors:
+https://en.wikipedia.org/wiki/CAN_bus[https://en.wikipedia.org/wiki/CAN_bus]
+
+Default transport used with this protocol is socketcan.
+Currently, only 2.0A format (up to 8 bytes of data) is supported.
+
+Implemented driver supports currently socketcan transport.
+Change of transport requires code modifications and injection of new "transport" type which will encode CANopen payloads to specific frame format.
+
+Socketcan seems to be most widespread way to access CAN bus.
+It also masks different hardware variants which might come with their own drivers.
+
+The CANopen specification defines Object Dictionary (OD).
+This driver does honor OD structure through usage of index and sub index for addressing fields.
+It does not ship Electronic Data Sheet (EDS) parser leaving it for applications who wish to utilize it.
+
+=== Address Format
+
+CANopen specification defines several groups of addresses dedicated to certain kind of operations.
+Critical services and message exchanges related with them have lower identifiers making them wining eventual bus access.
+
+The array size block is necessary only if application expect same value several times.
+If SDO returns for example 4 values of UNSIGNED8 it can be declared as `<service>:<nodeId>:UNSIGNED8[4]` for PDO.
+Equivalent for SDO is `<service>:<nodeId>:<index>/<subindex>:UNSIGNED8[4]`.
+
+[cols="1,1a,1a,2a"]
+|===
+|Service | Format |Supported operations |Description
+
+| SDO
+| SDO:nodeId:index/subindex:type[arraySize]
+| - `read`
+- `write`
+| SDO is for request/response communication.
+Both expedited and segmented modes are supported.
+No support for block transfer.
+
+Transfer kind is automatically determined based on payload length.
+All numeric values - ndodeId, index, subindex can be specified using hexadecimal notation (ie. `0xA`).
+
+| PDO
+|
+ - TRANSMIT_PDO_1:nodeId:type[arraySize]
+ - RECEIVE_PDO_1:nodeId:type[arraySize]
+ - TRANSMIT_PDO_2:nodeId:type[arraySize]
+ - RECEIVE_PDO_2:nodeId:type[arraySize]
+ - TRANSMIT_PDO_3:nodeId:type[arraySize]
+ - RECEIVE_PDO_3:nodeId:type[arraySize]
+ - TRANSMIT_PDO_4:nodeId:type[arraySize]
+ - RECEIVE_PDO_4:nodeId:type[arraySize]
+| - `subscribe`
+- `write`
+| PDO is an asynchronous operation hence receiving of it requires subscription.
+Check Apache PLC4X API documentation for more detailed example of how to use subscriptions API.
+Subscriber will be notified with value mapped to type defined in field syntax.
+
+| NMT
+| - NMT
+- NMT:nodeId
+| - `subscribe`
+| NMT messages are sent using CAN node ID `0`.
+They have the highest priority on the bus.
+Messages of this kind indicate operating state of an node (booted, operational).
+
+Subscriptions to this service receive structure with two fields: `node` (USINT) and `state` (USINT).
+If subscription sets `nodeId` to 0 it will receive state updates for all bus participants.
+
+| HEARTBEAT
+| - HEARTBEAT
+- HEARTBEAT:nodeId
+| - `subscribe`
+| HEARTBEAT messages have the lowest priority on the bus.
+They have the highest priority on the bus.
+Messages of this kind indicate operating state of an node (booted, operational).
+
+Subscriptions to this service receive structure with two fields: `node` (USINT) and `state` (USINT).
+If subscription sets `nodeId` to 0 it will receive state updates for all bus participants.
+
+|===
+
+Below table contains type mapping defined in CANopen specification.
+
+[cols="2,2,2"]
+|===
+|CANopen Type        |Length (in bits)| PLC4X Type
+| BOOLEAN            |        1 | BOOL
+| UNSIGNED8          |        8 | USINT
+| UNSIGNED16         |       16 | UINT
+| UNSIGNED24         |       24 | UDINT
+| UNSIGNED32         |       32 | UDINT
+| UNSIGNED40         |       40 | ULINT
+| UNSIGNED48         |       48 | ULINT
+| UNSIGNED56         |       56 | ULINT
+| UNSIGNED64         |       64 | ULINT
+| INTEGER8           |        8 | SINT
+| INTEGER16          |       16 | INT
+| INTEGER24          |       24 | DINT
+| INTEGER32          |       32 | DINT
+| INTEGER40          |       40 | LINT
+| INTEGER48          |       48 | LINT
+| INTEGER56          |       56 | LINT
+| INTEGER64          |       64 | LINT
+| REAL32             |       32 | REAL
+| REAL64             |       64 | LREAL
+| RECORD             | 8 * size | BYTE
+| OCTET_STRING       | 8 * size | STRING (UTF-8)
+| VISIBLE_STRING     | 8 * size | STRING (UTF-8)
+| TIME_OF_DAY     2+^| unsupported
+| TIME_DIFFERENCE 2+^| unsupported
+| UNICODE_STRING     | 8 * size | STRING (UTF-8)
+|===
+
+All string types are decoded using UTF-8 encoding regardless of their kind (octet, visible, unicode).
+In case if device returns text using different encoding it is recommended to use `RECORD` type and construct text manually above PLC4X.
+
+The size in case of variable length structures is automatically assumed to full length of SDO answer.
+In case of writing length of field can be ommited.
+For example request `write(SDO:1:2/3:RECORD, payload)` will try to write whole payload to specified address.
+Same applies to responses sent by devies as requester often might not know full length of reply payload.
+
+
