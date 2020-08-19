@@ -27,3 +27,7 @@ plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_cl
   return plc4c_s7_read_write_szl_module_type_class_null_const;
 }
 
+int plc4c_s7_read_write_szl_module_type_class_num_values() {
+  return 4;
+}
+

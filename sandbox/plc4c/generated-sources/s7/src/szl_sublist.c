@@ -27,3 +27,7 @@ plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null() {
   return plc4c_s7_read_write_szl_sublist_null_const;
 }
 
+int plc4c_s7_read_write_szl_sublist_num_values() {
+  return 19;
+}
+

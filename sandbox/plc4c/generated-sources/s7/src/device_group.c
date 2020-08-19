@@ -27,3 +27,7 @@ plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null() {
   return plc4c_s7_read_write_device_group_null_const;
 }
 
+int plc4c_s7_read_write_device_group_num_values() {
+  return 3;
+}
+

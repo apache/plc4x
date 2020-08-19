@@ -27,3 +27,7 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
   return plc4c_s7_read_write_data_transport_error_code_null_const;
 }
 
+int plc4c_s7_read_write_data_transport_error_code_num_values() {
+  return 6;
+}
+

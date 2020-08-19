@@ -27,6 +27,10 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
   return plc4c_s7_read_write_data_transport_size_null_const;
 }
 
+int plc4c_s7_read_write_data_transport_size_num_values() {
+  return 7;
+}
+
 
 bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value) {
   switch(value) {

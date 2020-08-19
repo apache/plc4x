@@ -27,3 +27,7 @@ plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_
   return plc4c_s7_read_write_cotp_protocol_class_null_const;
 }
 
+int plc4c_s7_read_write_cotp_protocol_class_num_values() {
+  return 5;
+}
+

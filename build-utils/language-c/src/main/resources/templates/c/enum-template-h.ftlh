@@ -68,6 +68,8 @@ typedef enum ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}
 // Get an empty NULL-struct
 ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null();
 
+int ${helper.getCTypeName(type.name)}_num_values();
+
 <#--
     If this enum also defines constant values, output one function for each.
     Each of these functions consist of a simple switch statement using the enum as switch-value

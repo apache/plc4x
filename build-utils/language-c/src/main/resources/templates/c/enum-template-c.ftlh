@@ -54,6 +54,10 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
   return ${helper.getCTypeName(type.name)}_null_const;
 }
 
+int ${helper.getCTypeName(type.name)}_num_values() {
+  return ${type.enumValues?size};
+}
+
 <#--
     If this enum also defines constant values, output one function for each.
     Each of these functions consist of a simple switch statement using the enum as switch-value

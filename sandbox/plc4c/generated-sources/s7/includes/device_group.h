@@ -37,6 +37,8 @@ typedef enum plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group;
 // Get an empty NULL-struct
 plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null();
 
+int plc4c_s7_read_write_device_group_num_values();
+
 
 #ifdef __cplusplus
 }

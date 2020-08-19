@@ -20,6 +20,7 @@
 #include <plc4c/utils/list.h>
 
 void plc4c_utils_list_create(plc4c_list **list) {
+  // TODO: Add a NULL-Check ...
   plc4c_list *new_list = malloc(sizeof(plc4c_list));
   new_list->head = NULL;
   new_list->tail = NULL;

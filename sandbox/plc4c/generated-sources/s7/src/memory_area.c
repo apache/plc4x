@@ -27,6 +27,10 @@ plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null() {
   return plc4c_s7_read_write_memory_area_null_const;
 }
 
+int plc4c_s7_read_write_memory_area_num_values() {
+  return 9;
+}
+
 
 char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value) {
   switch(value) {

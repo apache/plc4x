@@ -27,6 +27,10 @@ plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null() {
   return plc4c_s7_read_write_cotp_tpdu_size_null_const;
 }
 
+int plc4c_s7_read_write_cotp_tpdu_size_num_values() {
+  return 7;
+}
+
 
 uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
   switch(value) {
