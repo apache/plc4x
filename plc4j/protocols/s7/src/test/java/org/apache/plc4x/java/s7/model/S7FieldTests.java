@@ -56,6 +56,7 @@ class S7FieldTests {
             Arguments.of("%DB444:14.0:BOOL",   TransportSize.BOOL,  MemoryArea.DATA_BLOCKS, 444,  14, 0),
             // Simotion
             Arguments.of("10-01-00-01-00-2D-84-00-00-08", TransportSize.BOOL, MemoryArea.DATA_BLOCKS, 45, 1, 0),
+            Arguments.of("%DB45:16.0:REAL", TransportSize.REAL, MemoryArea.DATA_BLOCKS, 45, 16, 0),
             Arguments.of("10-08-00-01-00-2D-84-00-00-80", TransportSize.REAL, MemoryArea.DATA_BLOCKS, 45, 16, 0),
             Arguments.of("10-07-00-01-00-98-84-00-06-C0", TransportSize.UDINT, MemoryArea.DATA_BLOCKS, 152, 216, 0)
             /*,
@@ -121,5 +122,13 @@ class S7FieldTests {
         assertThrows(PlcInvalidFieldException.class, () -> {
             final S7Field s7Field = S7Field.of("A0-01-00-01-00-2D-84-00-00-08");
         });
+    }
+
+    @Test
+    void testSimotionadressEqualsRegularAdress() {
+        S7Field simotion = S7Field.of("10-08-00-01-00-2D-84-00-00-80");
+        S7Field regular = S7Field.of("%DB45:16.0:REAL");
+
+        assertEquals(regular, simotion);
     }
 }
