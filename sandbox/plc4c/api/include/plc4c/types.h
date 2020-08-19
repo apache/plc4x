@@ -48,6 +48,8 @@ typedef enum plc4c_return_code {
   NO_TRANSPORT_AVAILABLE,
   UNKNOWN_TRANSPORT,
 
+  ALREADY_CONNECTED,
+
   PARSE_ERROR,
 
   UNKNOWN_ERROR,

@@ -23,6 +23,40 @@ extern "C" {
 #endif
 
 #include <plc4c/types.h>
+#include <stdint.h>
+
+enum plc4c_driver_s7_controller_type {
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY = 0,
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_300 = 1,
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_400 = 2,
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_1200 = 3,
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_1500 = 4,
+  PLC4C_DRIVER_S7_CONTROLLER_TYPE_LOGO = 5
+};
+typedef enum plc4c_driver_s7_controller_type plc4c_driver_s7_controller_type;
+
+enum plc4c_driver_s7_device_group {
+  PLC4C_DRIVER_S7_DEVICE_GROUP_PG_OR_PC = 1,
+  PLC4C_DRIVER_S7_DEVICE_GROUP_OS = 2,
+  PLC4C_DRIVER_S7_DEVICE_GROUP_OTHERS = 3
+};
+typedef enum plc4c_driver_s7_device_group plc4c_driver_s7_device_group;
+
+struct plc4c_driver_s7_config {
+  uint8_t local_rack;
+  uint8_t local_slot;
+  uint8_t remote_rack;
+  uint8_t remote_slot;
+  uint16_t calling_tsap_id;
+  uint16_t called_tsap_id;
+  uint16_t cotp_tpdu_size;
+  uint16_t pdu_size;
+  uint8_t max_amq_caller;
+  uint8_t max_amq_callee;
+  plc4c_driver_s7_controller_type controller_type;
+};
+typedef struct plc4c_driver_s7_config plc4c_driver_s7_config;
+
 
 plc4c_driver *plc4c_driver_s7_create();
 

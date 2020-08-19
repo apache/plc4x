@@ -17,8 +17,12 @@
  * under the License.
  */
 #include <plc4c/driver_simulated.h>
+#include <plc4c/driver_s7.h>
+#include <plc4c/driver_modbus.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/transport_dummy.h>
+#include <plc4c/transport_tcp.h>
+#include <plc4c/transport_serial.h>
 #include <plc4c/utils/list.h>
 #include <stdio.h>
 #include <string.h>
@@ -91,7 +95,21 @@ int main() {
   plc4c_driver *simulated_driver = plc4c_driver_simulated_create();
   result = plc4c_system_add_driver(system, simulated_driver);
   if (result != OK) {
-    printf("FAILED\n");
+    printf("FAILED adding simulated driver\n");
+    return -1;
+  }
+  printf("Registering driver for the 's7' protocol ... ");
+  plc4c_driver *s7_driver = plc4c_driver_s7_create();
+  result = plc4c_system_add_driver(system, s7_driver);
+  if (result != OK) {
+    printf("FAILED adding s7 driver\n");
+    return -1;
+  }
+  printf("Registering driver for the 'modbus' protocol ... ");
+  plc4c_driver *modbus_driver = plc4c_driver_modbus_create();
+  result = plc4c_system_add_driver(system, modbus_driver);
+  if (result != OK) {
+    printf("FAILED adding modbus driver\n");
     return -1;
   }
   printf("SUCCESS\n");
@@ -100,7 +118,19 @@ int main() {
   plc4c_transport *dummy_transport = plc4c_transport_dummy_create();
   result = plc4c_system_add_transport(system, dummy_transport);
   if (result != OK) {
-    printf("FAILED\n");
+    printf("FAILED adding dummy transport\n");
+    return -1;
+  }
+  plc4c_transport *tcp_transport = plc4c_transport_tcp_create();
+  result = plc4c_system_add_transport(system, tcp_transport);
+  if (result != OK) {
+    printf("FAILED adding tcp transport\n");
+    return -1;
+  }
+  plc4c_transport *serial_transport = plc4c_transport_serial_create();
+  result = plc4c_system_add_transport(system, serial_transport);
+  if (result != OK) {
+    printf("FAILED adding serial transport\n");
     return -1;
   }
   printf("SUCCESS\n");
@@ -122,8 +152,8 @@ int main() {
 
   // Establish connections to remote devices
   // you may or may not care about the connection handle
-  printf("Connecting to 'simulated://foo' ... ");
-  result = plc4c_system_connect(system, "simulated://foo", &connection);
+  printf("Connecting to 's7:tcp://192.168.23.30' ... ");
+  result = plc4c_system_connect(system, "s7:tcp://192.168.23.30", &connection);
   if (result != OK) {
     printf("FAILED\n");
     return -1;

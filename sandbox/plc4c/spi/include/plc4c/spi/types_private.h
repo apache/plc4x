@@ -25,6 +25,9 @@
 #include <plc4c/utils/list.h>
 #include <plc4c/utils/queue.h>
 
+#include "read_buffer.h"
+#include "write_buffer.h"
+
 typedef struct plc4c_item_t plc4c_item;
 typedef struct plc4c_driver_list_item_t plc4c_driver_list_item;
 typedef struct plc4c_transport_list_item_t plc4c_transport_list_item;
@@ -80,6 +83,29 @@ typedef void (*plc4c_connect_free_subscription_response_function)(
 typedef void (*plc4c_connect_free_unsubscription_response_function)(
     plc4c_unsubscription_response *response);
 
+// TODO: Implement the argument.
+typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);
+
+// TODO: Implement the argument.
+typedef plc4c_return_code (*plc4c_transport_close_function)(void* config);
+
+typedef plc4c_return_code (*plc4c_transport_send_message_function)(
+    plc4c_spi_write_buffer* message);
+
+// Helper function that tells the transport what to do with the current input
+// on positive return value: a read-buffer with given number of bytes is
+// returned. RESPONSE_ACCEPT_INCOMPLETE or 0: Currently not enough data is
+// or this content is not applicable for the current task. Don't consume
+// anything and potentially re-check next time. If however the value is negative
+// the buffer seems to contain corrupt data, clean up by skipping the number of
+// bytes you get by making the negative value a positive and not returning any
+// read-buffer.
+typedef int16_t (*accept_message_function)(
+    uint8_t* data, uint8_t length);
+
+typedef plc4c_return_code (*plc4c_transport_select_message_function)(
+    accept_message_function accept_message, plc4c_spi_read_buffer** message);
+
 struct plc4c_system_t {
   /* drivers */
   plc4c_list *driver_list;
@@ -129,10 +155,22 @@ struct plc4c_driver_list_item_t {
   plc4c_driver_list_item *next;
 };
 
+struct plc4c_transport_message_t {
+  int length;
+  uint8_t data[];
+};
+
 struct plc4c_transport_t {
   char *transport_code;
+  char* transport_name;
 
-  // TODO: add the send and receive function references here ...
+  plc4c_transport_open_function open;
+  plc4c_transport_close_function close;
+  plc4c_transport_send_message_function send_message;
+  // Function that uses a function passed in to see if a given system-task
+  // will be able to consume the current content of the transports input
+  // buffer.
+  plc4c_transport_select_message_function select_message;
 };
 
 struct plc4c_transport_list_item_t {
@@ -146,6 +184,7 @@ struct plc4c_connection_t {
   char *transport_code;
   char *transport_connect_information;
   char *parameters;
+  void *configuration;
 
   bool connected;
   // Internal flag indicating the connection should be disconnected
