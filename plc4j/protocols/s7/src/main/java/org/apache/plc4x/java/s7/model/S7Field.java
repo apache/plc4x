@@ -31,6 +31,7 @@ import org.apache.plc4x.java.utils.ReadBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -294,6 +295,24 @@ public class S7Field implements PlcField {
         }
         return numElements;
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        S7Field s7Field = (S7Field) o;
+        return getBlockNumber() == s7Field.getBlockNumber() &&
+            getByteOffset() == s7Field.getByteOffset() &&
+            getBitOffset() == s7Field.getBitOffset() &&
+            getNumElements() == s7Field.getNumElements() &&
+            getDataType() == s7Field.getDataType() &&
+            getMemoryArea() == s7Field.getMemoryArea();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDataType(), getMemoryArea(), getBlockNumber(), getByteOffset(), getBitOffset(), getNumElements());
     }
 
     @Override
