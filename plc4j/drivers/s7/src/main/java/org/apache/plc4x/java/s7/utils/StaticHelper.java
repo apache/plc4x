@@ -19,7 +19,6 @@ under the License.
 package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
@@ -43,7 +42,7 @@ public class StaticHelper {
     }
 
     public static void serializeTiaTime(WriteBuffer io, PlcValue value) {
-
+        throw new NotImplementedException("Serializing TIME not implemented");
     }
 
     public static LocalTime parseS5Time(ReadBuffer io) {
@@ -57,20 +56,21 @@ public class StaticHelper {
     }
 
     public static void serializeS5Time(WriteBuffer io, PlcValue value) {
+        throw new NotImplementedException("Serializing S5TIME not implemented");
 
     }
 
     public static LocalTime parseTiaLTime(ReadBuffer io) {
-        throw new NotImplementedException("LTime not implemented");
+        throw new NotImplementedException("LTIME not implemented");
     }
 
     public static void serializeTiaLTime(WriteBuffer io, PlcValue value) {
-
+        throw new NotImplementedException("Serializing LTIME not implemented");
     }
 
     public static LocalTime parseTiaTimeOfDay(ReadBuffer io) {
         try {
-            int millisSinceMidnight = io.readUnsignedInt(32);
+            long millisSinceMidnight = io.readUnsignedLong(32);
             return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
                 millisSinceMidnight, ChronoUnit.MILLIS);
         } catch (ParseException e) {
@@ -79,12 +79,12 @@ public class StaticHelper {
     }
 
     public static void serializeTiaTimeOfDay(WriteBuffer io, PlcValue value) {
-
+        throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
     public static LocalDate parseTiaDate(ReadBuffer io) {
         try {
-            int daysSince1990 = io.readUnsignedShort(16);
+            int daysSince1990 = io.readUnsignedInt(16);
             return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
         } catch (ParseException e) {
             return null;
@@ -92,64 +92,49 @@ public class StaticHelper {
     }
 
     public static void serializeTiaDate(WriteBuffer io, PlcValue value) {
-
+        throw new NotImplementedException("Serializing DATE not implemented");
     }
 
     public static LocalDateTime parseTiaDateTime(ReadBuffer io) {
         try {
-            int year = convertByteToBcd(io.readByte(8));
-            int month = convertByteToBcd(io.readByte(8));
-            int day = convertByteToBcd(io.readByte(8));
-            int hour = convertByteToBcd(io.readByte(8));
-            int minute = convertByteToBcd(io.readByte(8));
-            int second = convertByteToBcd(io.readByte(8));
-            //skip the last 2 bytes no information present
+            int year = io.readUnsignedInt(16);
+            int month = io.readUnsignedInt(8);
+            int day = io.readUnsignedInt(8);
+            // Skip day-of-week
             io.readByte(8);
-            io.readByte(8);
+            int hour = io.readByte(8);
+            int minute = io.readByte(8);
+            int second = io.readByte(8);
+            int nanosecond = io.readUnsignedInt(24);
 
-            //data-type ranges from 1990 up to 2089
-            if (year >= 90) {
-                year += 1900;
-            } else {
-                year += 2000;
-            }
-
-            return LocalDateTime.of(year, month, day, hour, minute, second);
-        } catch (ParseException e) {
+            return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
+        } catch (Exception e) {
             return null;
         }
     }
 
     public static void serializeTiaDateTime(WriteBuffer io, PlcValue value) {
-
+        throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     }
 
-    public static String parseS7String(ReadBuffer io, Object encoding) {
+    public static String parseS7String(ReadBuffer io, int stringLength, Object encoding) {
         try {
             // This is the maximum number of bytes a string can be long.
             short maxLength = io.readUnsignedShort(8);
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
             short totalStringLength = io.readShort(8);
-            return io.readString(8 * totalStringLength, (String) encoding);
+            // Read the full size of the string.
+            String str = io.readString(stringLength * 8, (String) encoding);
+            // Cut off the parts that don't belong to it.
+            return str.substring(0, totalStringLength);
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public static void serializeS7String(WriteBuffer io, PlcValue value, Object encoding) {
+    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {
         // TODO: Need to implement the serialization or we can't write strings
-        throw new PlcRuntimeException("Not implemented yet");
-    }
-
-    /**
-     * converts incoming byte to an integer regarding used BCD format
-     *
-     * @param incomingByte
-     * @return converted BCD number
-     */
-    private static int convertByteToBcd(byte incomingByte) {
-        int dec = (incomingByte >> 4) * 10;
-        return dec + (incomingByte & 0x0f);
+        throw new NotImplementedException("Serializing STRING not implemented");
     }
 
 }

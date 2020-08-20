@@ -258,7 +258,7 @@
     ]
 ]
 
-[dataIo 'DataItem' [uint 8 'dataProtocolId']
+[dataIo 'DataItem' [uint 8 'dataProtocolId', int 32 'stringLength']
     [typeSwitch 'dataProtocolId'
         // -----------------------------------------
         // Bit
@@ -338,10 +338,10 @@
         ['42' String
         ]
         ['43' String
-            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, _type.encoding)' '_value.length + 2']
+            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
         ]
         ['44' String
-            [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, _type.encoding)' '(_value.length * 2) + 2']
+            [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '(_value.length * 2) + 2']
         ]
 
         // -----------------------------------------
@@ -350,17 +350,20 @@
         ['51' Time
             [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTime", io, _value)' '4']
         ]
-        // TODO: Check if this is really 8 bytes
         ['52' Time
+            [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS5Time", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS5Time", io, _value)' '4']
+        ]
+        // TODO: Check if this is really 8 bytes
+        ['53' Time
             [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaLTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaLTime", io, _value)' '8']
         ]
-        ['53' Date
+        ['54' Date
             [manual date 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDate", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDate", io, _value)' '2']
         ]
-        ['54' Time
+        ['55' Time
             [manual time 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaTimeOfDay", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaTimeOfDay", io, _value)' '4']
         ]
-        ['55' DateTime
+        ['56' DateTime
             [manual dateTime 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseTiaDateTime", io)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeTiaDateTime", io, _value)' '8']
         ]
     ]
@@ -430,12 +433,13 @@
     ['0x03' STRING           ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '43'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x00' WSTRING          ['X'              , '1'                 , 'null'                  , 'null'                               , '44'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
 
-    // Dates and time values
+    // Dates and time values (Please note that we seem to have to reqite queries for these types to reading bytes or we'll get "Data type not supported" errors)
     ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , '51'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x00' LTIME            ['X'              , '8'                 , 'TransportSize.TIME'    , 'null'                               , '52'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
-    ['0x02' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '53'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x02' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '54'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x02' DATE_AND_TIME    ['X'              , '8'                 , 'null'                  , 'null'                               , '55'                   , 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
+    ['0x0C' S5TIME           ['X'              , '4'                 , 'null'                  , 'null'                               , '52'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' LTIME            ['X'              , '8'                 , 'TransportSize.TIME'    , 'null'                               , '53'                   , 'false'               , 'false'               , 'false'                , 'true'                 , 'false'             ]]
+    ['0x09' DATE             ['X'              , '2'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '54'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x0A' TIME_OF_DAY      ['X'              , '4'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '55'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x0F' DATE_AND_TIME    ['X'              , '12'                , 'null'                  , 'null'                               , '56'                   , 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
 [enum int 8 'MemoryArea'             [string 24 'utf8' 'shortName']
@@ -497,6 +501,3 @@
     ['0xA0' DIAGNOSTIC_BUFFER]
     ['0xB1' MODULE_DIAGNOSTIC_DATA]
 ]
-
-
-

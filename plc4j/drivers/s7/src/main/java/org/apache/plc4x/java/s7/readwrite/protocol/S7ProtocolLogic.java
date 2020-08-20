@@ -68,14 +68,9 @@ import org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem;
 import org.apache.plc4x.java.s7.readwrite.SzlId;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
 import org.apache.plc4x.java.s7.readwrite.io.DataItemIO;
-import org.apache.plc4x.java.s7.readwrite.types.COTPProtocolClass;
-import org.apache.plc4x.java.s7.readwrite.types.COTPTpduSize;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportErrorCode;
-import org.apache.plc4x.java.s7.readwrite.types.DataTransportSize;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
-import org.apache.plc4x.java.s7.readwrite.types.SzlModuleTypeClass;
-import org.apache.plc4x.java.s7.readwrite.types.SzlSublist;
+import org.apache.plc4x.java.s7.readwrite.types.*;
 import org.apache.plc4x.java.s7.readwrite.field.S7Field;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -447,7 +442,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private S7VarPayloadDataItem serializePlcValue(S7Field field, PlcValue plcValue) {
         try {
             DataTransportSize transportSize = field.getDataType().getDataTransportSize();
-            WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, field.getDataType().getDataProtocolId());
+            int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
+            WriteBuffer writeBuffer = DataItemIO.staticSerialize(plcValue, field.getDataType().getDataProtocolId(),
+                stringLength);
             if(writeBuffer != null) {
                 byte[] data = writeBuffer.getData();
                 return new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, data);
@@ -461,13 +458,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     private PlcValue parsePlcValue(S7Field field, ByteBuf data) {
         ReadBuffer readBuffer = new ReadBuffer(data.array());
         try {
+            int stringLength = (field instanceof S7StringField) ? ((S7StringField) field).getStringLength() : 254;
             if (field.getNumElements() == 1) {
-                return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
+                return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
+                    stringLength);
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, field.getNumElements()).mapToObj(i -> {
                     try {
-                        return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId());
+                        return DataItemIO.staticParse(readBuffer, field.getDataType().getDataProtocolId(),
+                            stringLength);
                     } catch (ParseException e) {
                         LOGGER.warn("Error parsing field item of type: '{}' (at position {}})", field.getDataType().name(), i, e);
                     }
@@ -544,7 +544,22 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             throw new PlcRuntimeException("Unsupported address type " + field.getClass().getName());
         }
         S7Field s7Field = (S7Field) field;
-        return new S7AddressAny(s7Field.getDataType(), s7Field.getNumElements(), s7Field.getBlockNumber(),
+        TransportSize transportSize = s7Field.getDataType();
+        int numElements = s7Field.getNumElements();
+        // For these date-types we have to convert the requests to simple byte-array requests
+        // As otherwise the S7 will deny them with "Data type not supported" replies.
+        if((transportSize == TransportSize.TIME) || (transportSize == TransportSize.S5TIME) ||
+            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
+            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
+            numElements = numElements * transportSize.getSizeInBytes();
+            transportSize = TransportSize.BYTE;
+        }
+        if(transportSize == TransportSize.STRING) {
+            transportSize = TransportSize.CHAR;
+            int stringLength = ((S7StringField) s7Field).getStringLength();
+            numElements = numElements * (stringLength + 2);
+        }
+        return new S7AddressAny(transportSize, numElements, s7Field.getBlockNumber(),
             s7Field.getMemoryArea(), s7Field.getByteOffset(), s7Field.getBitOffset());
     }
 
