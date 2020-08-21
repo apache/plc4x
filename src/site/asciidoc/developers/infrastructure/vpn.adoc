@@ -37,7 +37,7 @@ This VPN gateway is listening on port `vpn.plc4x.apache.org` on port `444` and s
         address = "X.X.X.0/28"
 
         vpn.plc4x.a.o [address = "217.110.130.19"];
-        plc4x-vm.a.o [address = "62.210.60.247"];
+        plc4x-vm2.a.o [address = "62.210.60.247"];
         committer-a;
         committer-b;
       }
@@ -56,7 +56,7 @@ This VPN gateway is listening on port `vpn.plc4x.apache.org` on port `444` and s
 }
 ....
 
-Note the PLC4X Project VM and Jenkins build node `plc4x-vm.apache.org` also dials in to the `plc4x-iot-lab` network.
+Note the PLC4X Project VM and Jenkins build node `plc4x-vm2.apache.org` also dials in to the `plc4x-iot-lab` network.
 
 === PLCs
 
