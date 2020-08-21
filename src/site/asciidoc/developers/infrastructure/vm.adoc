@@ -58,7 +58,7 @@ Using SSH we should now be able to login to the VM.
 
 Be sure to use the username matching your Apache ID or the login will fail.
 
-If all wen't well you should now be able to login to the machine using your apache user.
+If all went well you should now be able to login to the machine using your apache user.
 
 === Doing things as `root`
 
