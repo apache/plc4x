@@ -53,8 +53,11 @@ typedef enum plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist;
 // Get an empty NULL-struct
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null();
 
+plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_of(char* value_string);
+
 int plc4c_s7_read_write_szl_sublist_num_values();
 
+plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_for_index(int index);
 
 #ifdef __cplusplus
 }

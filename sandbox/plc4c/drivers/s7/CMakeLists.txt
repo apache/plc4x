@@ -32,6 +32,7 @@ target_link_libraries(plc4c-driver-s7
 
 if (BUILD_PHASE STREQUAL test-compile)
     add_executable(plc4c-driver-s7-test
+            test/s7_address_parser_test.c
             test/s7_test.c
             )
     target_link_libraries(plc4c-driver-s7-test

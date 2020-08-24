@@ -43,8 +43,11 @@ typedef enum plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area;
 // Get an empty NULL-struct
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null();
 
+plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_of(char* value_string);
+
 int plc4c_s7_read_write_memory_area_num_values();
 
+plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_for_index(int index);
 
 char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value);
 

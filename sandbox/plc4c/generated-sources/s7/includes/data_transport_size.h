@@ -41,8 +41,11 @@ typedef enum plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_tr
 // Get an empty NULL-struct
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_null();
 
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_of(char* value_string);
+
 int plc4c_s7_read_write_data_transport_size_num_values();
 
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_for_index(int index);
 
 bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value);
 

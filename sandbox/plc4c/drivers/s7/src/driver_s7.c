@@ -18,12 +18,15 @@
 */
 
 #include <cotp_protocol_class.h>
+#include <ctype.h>
 #include <plc4c/driver_s7.h>
 #include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
 #include <tpkt_packet.h>
+
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 // State definitions
 enum plc4c_driver_s7_connect_states {
@@ -107,9 +110,10 @@ uint16_t plc4c_driver_s7_encode_tsap_id(
 }
 
 uint16_t plc4c_driver_s7_get_nearest_matching_tpdu_size(uint16_t pdu_size) {
-  for(int i = 0; i < plc4c_s7_read_write_cotp_tpdu_size_num_values(); i++) {
-    uint16_t cur_value = plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(i);
-    if(cur_value >= pdu_size) {
+  for (int i = 0; i < plc4c_s7_read_write_cotp_tpdu_size_num_values(); i++) {
+    uint16_t cur_value =
+        plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(i);
+    if (cur_value >= pdu_size) {
       return cur_value;
     }
   }
@@ -135,6 +139,30 @@ plc4c_driver_s7_controller_type decode_controller_type(char* article_number) {
     default:
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;
   }
+}
+
+uint8_t decode_hex_char(char c) {
+  if (('0' <= c) && (c <= '9')) {
+    return c - 48;
+  }
+  if (('A' <= c) && (c <= 'D')) {
+    return c - 55;
+  }
+  return -1;
+}
+
+plc4c_return_code decode_byte(char* from_ptr, char* to_ptr, uint8_t* value) {
+  if (to_ptr - from_ptr != 2) {
+    return INTERNAL_ERROR;
+  }
+
+  uint8_t first_char = decode_hex_char(*from_ptr);
+  uint8_t second_char = decode_hex_char(*(from_ptr + 1));
+  if ((first_char == -1) || (second_char == -1)) {
+    return INTERNAL_ERROR;
+  }
+  *value = (first_char << 4) | second_char;
+  return OK;
 }
 
 plc4c_return_code send_packet(plc4c_connection* connection,
@@ -173,8 +201,7 @@ plc4c_return_code receive_packet(plc4c_connection* connection,
 
   // Parse the given data.
   *packet = NULL;
-  return_code = plc4c_s7_read_write_tpkt_packet_parse(
-      read_buffer, packet);
+  return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }
@@ -197,6 +224,8 @@ plc4c_return_code createS7ReadRequest(
 plc4c_return_code createS7WriteRequest(
     plc4c_write_request* write_request,
     plc4c_s7_read_write_tpkt_packet** s7_write_request_packet);
+plc4c_return_code parseAddress(
+    char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item);
 
 /**
  * State machine function for establishing a connection to a remote S7 device.
@@ -240,14 +269,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       plc4c_s7_read_write_tpkt_packet* cotp_connect_request_packet;
       plc4c_return_code return_code = createCOTPConnectionRequest(
           configuration, &cotp_connect_request_packet);
-      if(return_code != OK) {
+      if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(
-          connection, cotp_connect_request_packet);
-      if(return_code != OK) {
+      return_code = send_packet(connection, cotp_connect_request_packet);
+      if (return_code != OK) {
         return return_code;
       }
 
@@ -258,12 +286,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_COTP_CONNECT_RESPONSE: {
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* cotp_connect_response_packet;
-      plc4c_return_code return_code = receive_packet(connection, &cotp_connect_response_packet);
+      plc4c_return_code return_code =
+          receive_packet(connection, &cotp_connect_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
-      if(return_code == UNFINISHED) {
+      if (return_code == UNFINISHED) {
         return OK;
-      } else if(return_code != OK) {
+      } else if (return_code != OK) {
         return return_code;
       }
 
@@ -310,16 +339,15 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     // Send a S7 connection request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST: {
       plc4c_s7_read_write_tpkt_packet* s7_connect_request_packet;
-      plc4c_return_code return_code = createS7ConnectionRequest(
-          configuration, &s7_connect_request_packet);
-      if(return_code != OK) {
+      plc4c_return_code return_code =
+          createS7ConnectionRequest(configuration, &s7_connect_request_packet);
+      if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(
-          connection, s7_connect_request_packet);
-      if(return_code != OK) {
+      return_code = send_packet(connection, s7_connect_request_packet);
+      if (return_code != OK) {
         return return_code;
       }
 
@@ -330,13 +358,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_CONNECT_RESPONSE: {
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_connect_response_packet;
-      plc4c_return_code return_code = receive_packet(
-          connection, &s7_connect_response_packet);
+      plc4c_return_code return_code =
+          receive_packet(connection, &s7_connect_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
-      if(return_code == UNFINISHED) {
+      if (return_code == UNFINISHED) {
         return OK;
-      } else if(return_code != OK) {
+      } else if (return_code != OK) {
         return return_code;
       }
 
@@ -380,16 +408,15 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     // Send a S7 identification request.
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_IDENTIFICATION_REQUEST: {
       plc4c_s7_read_write_tpkt_packet* s7_identify_remote_request_packet;
-      plc4c_return_code return_code = createS7IdentifyRemoteRequest(
-          &s7_identify_remote_request_packet);
-      if(return_code != OK) {
+      plc4c_return_code return_code =
+          createS7IdentifyRemoteRequest(&s7_identify_remote_request_packet);
+      if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(
-          connection, s7_identify_remote_request_packet);
-      if(return_code != OK) {
+      return_code = send_packet(connection, s7_identify_remote_request_packet);
+      if (return_code != OK) {
         return return_code;
       }
 
@@ -401,13 +428,13 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_RECEIVE_S7_IDENTIFICATION_RESPONSE: {
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_identify_remote_response_packet;
-      plc4c_return_code return_code = receive_packet(
-          connection, &s7_identify_remote_response_packet);
+      plc4c_return_code return_code =
+          receive_packet(connection, &s7_identify_remote_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
-      if(return_code == UNFINISHED) {
+      if (return_code == UNFINISHED) {
         return OK;
-      } else if(return_code != OK) {
+      } else if (return_code != OK) {
         return return_code;
       }
 
@@ -420,7 +447,8 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
           plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data) {
         return INTERNAL_ERROR;
       }
-      if (s7_identify_remote_response_packet->payload->payload->payload->_type !=
+      if (s7_identify_remote_response_packet->payload->payload->payload
+              ->_type !=
           plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data) {
         return INTERNAL_ERROR;
       }
@@ -515,7 +543,7 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
     return INTERNAL_ERROR;
   }
   plc4c_read_request* read_request = read_request_execution->read_request;
-  if(read_request == NULL) {
+  if (read_request == NULL) {
     return INTERNAL_ERROR;
   }
   plc4c_connection* connection = task->context;
@@ -530,13 +558,13 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
       plc4c_s7_read_write_tpkt_packet* s7_read_request_packet;
       plc4c_return_code return_code =
           createS7ReadRequest(read_request, &s7_read_request_packet);
-      if(return_code != OK) {
+      if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
       return_code = send_packet(connection, s7_read_request_packet);
-      if(return_code != OK) {
+      if (return_code != OK) {
         return return_code;
       }
 
@@ -546,13 +574,13 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
     case PLC4C_DRIVER_S7_READ_FINISHED: {
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_read_response_packet;
-      plc4c_return_code return_code = receive_packet(
-          connection, &s7_read_response_packet);
+      plc4c_return_code return_code =
+          receive_packet(connection, &s7_read_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
-      if(return_code == UNFINISHED) {
+      if (return_code == UNFINISHED) {
         return OK;
-      } else if(return_code != OK) {
+      } else if (return_code != OK) {
         return return_code;
       }
 
@@ -572,7 +600,7 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
     return INTERNAL_ERROR;
   }
   plc4c_write_request* write_request = write_request_execution->write_request;
-  if(write_request == NULL) {
+  if (write_request == NULL) {
     return INTERNAL_ERROR;
   }
   plc4c_connection* connection = task->context;
@@ -587,13 +615,13 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
       plc4c_s7_read_write_tpkt_packet* s7_write_request_packet;
       plc4c_return_code return_code =
           createS7WriteRequest(write_request, &s7_write_request_packet);
-      if(return_code != OK) {
+      if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
       return_code = send_packet(connection, s7_write_request_packet);
-      if(return_code != OK) {
+      if (return_code != OK) {
         return return_code;
       }
 
@@ -603,13 +631,13 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
     case PLC4C_DRIVER_S7_WRITE_FINISHED: {
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_write_response_packet;
-      plc4c_return_code return_code = receive_packet(
-          connection, &s7_write_response_packet);
+      plc4c_return_code return_code =
+          receive_packet(connection, &s7_write_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
-      if(return_code == UNFINISHED) {
+      if (return_code == UNFINISHED) {
         return OK;
-      } else if(return_code != OK) {
+      } else if (return_code != OK) {
         return return_code;
       }
 
@@ -743,16 +771,17 @@ plc4c_return_code createCOTPConnectionRequest(
   }
   (*cotp_connect_request_packet)->payload->_type =
       plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_request;
-  (*cotp_connect_request_packet)->payload
-      ->cotp_packet_connection_request_destination_reference = 0x0000;
-  (*cotp_connect_request_packet)->payload
-      ->cotp_packet_connection_request_source_reference = 0x000F;
-  (*cotp_connect_request_packet)->payload
-      ->cotp_packet_connection_request_protocol_class =
+  (*cotp_connect_request_packet)
+      ->payload->cotp_packet_connection_request_destination_reference = 0x0000;
+  (*cotp_connect_request_packet)
+      ->payload->cotp_packet_connection_request_source_reference = 0x000F;
+  (*cotp_connect_request_packet)
+      ->payload->cotp_packet_connection_request_protocol_class =
       plc4c_s7_read_write_cotp_protocol_class_CLASS_0;
 
   // Add the COTP parameters: Called TSAP, Calling TSAP and TPDU Size.
-  plc4c_utils_list_create(&((*cotp_connect_request_packet)->payload->parameters));
+  plc4c_utils_list_create(
+      &((*cotp_connect_request_packet)->payload->parameters));
   plc4c_s7_read_write_cotp_parameter* called_tsap_parameter =
       malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
   if (called_tsap_parameter == NULL) {
@@ -764,7 +793,8 @@ plc4c_return_code createCOTPConnectionRequest(
       configuration->called_tsap_id;
 
   plc4c_utils_list_insert_head_value(
-      (*cotp_connect_request_packet)->payload->parameters, called_tsap_parameter);
+      (*cotp_connect_request_packet)->payload->parameters,
+      called_tsap_parameter);
   plc4c_s7_read_write_cotp_parameter* calling_tsap_parameter =
       malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
   if (calling_tsap_parameter == NULL) {
@@ -776,7 +806,8 @@ plc4c_return_code createCOTPConnectionRequest(
       configuration->calling_tsap_id;
 
   plc4c_utils_list_insert_head_value(
-      (*cotp_connect_request_packet)->payload->parameters, calling_tsap_parameter);
+      (*cotp_connect_request_packet)->payload->parameters,
+      calling_tsap_parameter);
   plc4c_s7_read_write_cotp_parameter* tpdu_size_parameter =
       malloc(sizeof(plc4c_s7_read_write_cotp_parameter));
   if (tpdu_size_parameter == NULL) {
@@ -828,22 +859,23 @@ plc4c_return_code createS7ConnectionRequest(
   }
   (*s7_connect_request_packet)->payload->payload->parameter->_type =
       plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_setup_communication;
-  (*s7_connect_request_packet)->payload->payload->parameter
+  (*s7_connect_request_packet)
+      ->payload->payload->parameter
       ->s7_parameter_setup_communication_max_amq_callee =
       configuration->max_amq_callee;
-  (*s7_connect_request_packet)->payload->payload->parameter
+  (*s7_connect_request_packet)
+      ->payload->payload->parameter
       ->s7_parameter_setup_communication_max_amq_caller =
       configuration->max_amq_caller;
-  (*s7_connect_request_packet)->payload->payload->parameter
-      ->s7_parameter_setup_communication_pdu_length =
-      configuration->pdu_size;
+  (*s7_connect_request_packet)
+      ->payload->payload->parameter
+      ->s7_parameter_setup_communication_pdu_length = configuration->pdu_size;
 
   return OK;
 }
 
 plc4c_return_code createS7IdentifyRemoteRequest(
     plc4c_s7_read_write_tpkt_packet** s7_identify_remote_request_packet) {
-
   *s7_identify_remote_request_packet =
       malloc(sizeof(plc4c_s7_read_write_tpkt_packet));
   if (*s7_identify_remote_request_packet == NULL) {
@@ -877,42 +909,40 @@ plc4c_return_code createS7IdentifyRemoteRequest(
       plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data;
 
   plc4c_utils_list_create(
-      &((*s7_identify_remote_request_packet)->payload->payload->parameter
-          ->s7_parameter_user_data_items));
+      &((*s7_identify_remote_request_packet)
+            ->payload->payload->parameter->s7_parameter_user_data_items));
   plc4c_s7_read_write_s7_parameter_user_data_item* parameter_item =
       malloc(sizeof(plc4c_s7_read_write_s7_parameter_user_data_item));
   parameter_item->_type =
       plc4c_s7_read_write_s7_parameter_user_data_item_type_plc4c_s7_read_write_s7_parameter_user_data_item_cpu_functions;
   parameter_item->s7_parameter_user_data_item_cpu_functions_method = 0x11;
-  parameter_item
-      ->s7_parameter_user_data_item_cpu_functions_cpu_function_type = 0x4;
-  parameter_item
-      ->s7_parameter_user_data_item_cpu_functions_cpu_function_group = 0x4;
-  parameter_item
-      ->s7_parameter_user_data_item_cpu_functions_cpu_subfunction = 0x01;
-  parameter_item
-      ->s7_parameter_user_data_item_cpu_functions_sequence_number = 0x00;
+  parameter_item->s7_parameter_user_data_item_cpu_functions_cpu_function_type =
+      0x4;
+  parameter_item->s7_parameter_user_data_item_cpu_functions_cpu_function_group =
+      0x4;
+  parameter_item->s7_parameter_user_data_item_cpu_functions_cpu_subfunction =
+      0x01;
+  parameter_item->s7_parameter_user_data_item_cpu_functions_sequence_number =
+      0x00;
   parameter_item
       ->s7_parameter_user_data_item_cpu_functions_data_unit_reference_number =
       NULL;
   parameter_item->s7_parameter_user_data_item_cpu_functions_last_data_unit =
       NULL;
-  parameter_item->s7_parameter_user_data_item_cpu_functions_error_code =
-      NULL;
+  parameter_item->s7_parameter_user_data_item_cpu_functions_error_code = NULL;
   plc4c_utils_list_insert_head_value(
-      (*s7_identify_remote_request_packet)->payload->payload->parameter
-          ->s7_parameter_user_data_items,
+      (*s7_identify_remote_request_packet)
+          ->payload->payload->parameter->s7_parameter_user_data_items,
       parameter_item);
 
   plc4c_utils_list_create(
-      &((*s7_identify_remote_request_packet)->payload->payload->payload
-          ->s7_payload_user_data_items));
+      &((*s7_identify_remote_request_packet)
+            ->payload->payload->payload->s7_payload_user_data_items));
   plc4c_s7_read_write_s7_payload_user_data_item* payload_item =
       malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
   payload_item->_type =
       plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request;
-  payload_item->return_code =
-      plc4c_s7_read_write_data_transport_error_code_OK;
+  payload_item->return_code = plc4c_s7_read_write_data_transport_error_code_OK;
   payload_item->transport_size =
       plc4c_s7_read_write_data_transport_size_OCTET_STRING;
   payload_item->szl_index = 0x0000;
@@ -929,11 +959,11 @@ plc4c_return_code createS7IdentifyRemoteRequest(
   return OK;
 }
 
-plc4c_return_code createS7ReadRequest(plc4c_read_request* read_request,
+plc4c_return_code createS7ReadRequest(
+    plc4c_read_request* read_request,
     plc4c_s7_read_write_tpkt_packet** s7_read_request_packet) {
-
   *s7_read_request_packet = malloc(sizeof(s7_read_request_packet));
-  if(*s7_read_request_packet == NULL) {
+  if (*s7_read_request_packet == NULL) {
     return NO_MEMORY;
   }
 
@@ -953,37 +983,287 @@ plc4c_return_code createS7ReadRequest(plc4c_read_request* read_request,
   (*s7_read_request_packet)->payload->payload->parameter->_type =
       plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
   plc4c_utils_list_create(
-      &(*s7_read_request_packet)->payload->payload->parameter->s7_parameter_read_var_request_items);
+      &(*s7_read_request_packet)
+           ->payload->payload->parameter->s7_parameter_read_var_request_items);
 
   plc4c_list_element* item = read_request->items->tail;
-  while(item != NULL) {
+  while (item != NULL) {
+    // Get the item address from the API request.
+    char* itemAddress = item->value;
 
+    // Create the item ...
+    plc4c_s7_read_write_s7_var_request_parameter_item* request_item;
+    plc4c_return_code return_code = parseAddress(itemAddress, &request_item);
+    if (return_code != OK) {
+      return return_code;
+    }
 
-    // TODO: Create the item ...
-    plc4c_s7_read_write_s7_var_request_parameter_item* request_item =
-        malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
-    request_item->_type =
-        plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
-    request_item->s7_var_request_parameter_item_address_address =
-        malloc(sizeof(plc4c_s7_read_write_s7_address));
-    request_item->s7_var_request_parameter_item_address_address->_type =
-        plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
-    /*request_item->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
-    request_item->s7_var_request_parameter_item_address_address->s7_address_any_area;
-    request_item->s7_var_request_parameter_item_address_address->s7_address_any_db_number;
-    request_item->s7_var_request_parameter_item_address_address->s7_address_any_byte_address;
-    request_item->s7_var_request_parameter_item_address_address->s7_address_any_bit_address;
-    request_item->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;*/
-
+    // Add the new item to the request.
     plc4c_utils_list_insert_head_value(
-        (*s7_read_request_packet)->payload->payload->parameter->s7_parameter_read_var_request_items, request_item);
+        (*s7_read_request_packet)
+            ->payload->payload->parameter->s7_parameter_read_var_request_items,
+        request_item);
+
     item = item->next;
   }
 
   return OK;
 }
 
-plc4c_return_code createS7WriteRequest(plc4c_write_request* write_request,
+plc4c_return_code parseAddress(
+    char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item) {
+  uint8_t string_length;
+
+  *item = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+  (*item)->_type =
+      plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
+
+  // Java Regexp:
+  // ADDRESS_PATTERN =
+  // ^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\[(?<numElements>\d+)])?
+  // DATA_BLOCK_ADDRESS_PATTERN =
+  // ^%DB(?<blockNumber>\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\[(?<numElements>\d+)])?
+  // DATA_BLOCK_SHORT_PATTERN =
+  // ^%DB(?<blockNumber>\d{1,5}).(?<byteOffset>\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\[(?<numElements>\d+)])?
+  // DATA_BLOCK_STRING_ADDRESS_PATTERN =
+  // ^%DB(?<blockNumber>\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\d{1,7}):STRING\((?<stringLength>\d{1,3})\)(\[(?<numElements>\d+)])?
+  // DATA_BLOCK_STRING_SHORT_PATTERN =
+  // ^%DB(?<blockNumber>\d{1,5}):(?<byteOffset>\d{1,7}):STRING\((?<stringLength>\d{1,3})\)(\[(?<numElements>\d+)])?
+
+  // PLC_PROXY_ADDRESS_PATTERN =
+  // [0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}
+  //
+  // Parser logic
+  char* cur_pos = address;
+  char* last_pos = address;
+  // - Does it start with "%"?
+  if (*cur_pos == '%') {
+    cur_pos++;
+
+    char* memory_area = NULL;
+    char* block_number = NULL;
+    char* transfer_size_code = NULL;
+    char* byte_offset = NULL;
+    char* bit_offset = NULL;
+    char* data_type = NULL;
+    char* string_length = NULL;
+    char* num_elements = NULL;
+
+    ////////////////////////////////////////////////////////////////////////////
+    // First extract the different parts of the address
+    ////////////////////////////////////////////////////////////////////////////
+
+    if (!isalpha(*cur_pos)) {
+      return INVALID_ADDRESS;
+    }
+
+    last_pos = cur_pos;
+    while (isalpha(*cur_pos)) {
+      cur_pos++;
+    }
+    int len = cur_pos - last_pos;
+    memory_area = malloc(sizeof(char) * (len + 1));
+    strncpy(memory_area, last_pos, len);
+    //*(memory_area + len + 1) = '/0';
+
+    // If it's a DB-block, get the block_number
+    if (strcmp(memory_area, "DB") == 0) {
+      last_pos = cur_pos;
+      while (isdigit(*cur_pos)) {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      block_number = malloc(sizeof(char) * (len + 1));
+      strncpy(block_number, last_pos, len);
+
+      // Skip the "."
+      cur_pos++;
+    }
+
+    // If the next is not a digit it might be DB, DB{transferSizeCode}
+    // or {transferSizeCode}
+    if (!isdigit(*cur_pos)) {
+      last_pos = cur_pos;
+      while (!isdigit(*cur_pos)) {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      // If it's at least 2 digits long, it's DB{transferSizeCode} or
+      // "DB". So we get rid of the "DB" prefix, as this has no value for us.
+      if (len >= 2) {
+        last_pos += 2;
+      }
+      // If it's 1 or 3 long it contains a "transferSizeCode", which is just
+      // one char long.
+      if ((len == 1) || (len == 3)) {
+        transfer_size_code = malloc(sizeof(char) * 2);
+        *transfer_size_code = *last_pos;
+        *(transfer_size_code + 1) = '\0';
+      }
+    }
+
+    // Next comes the byte_offset
+    last_pos = cur_pos;
+    while (isdigit(*cur_pos)) {
+      cur_pos++;
+    }
+    len = cur_pos - last_pos;
+    byte_offset = malloc(sizeof(char) * (len + 1));
+    strncpy(byte_offset, last_pos, len);
+
+    // Parse the bit_offset
+    if (*cur_pos == '.') {
+      cur_pos++;
+      // Next comes the byte_offset
+      last_pos = cur_pos;
+      while (isdigit(*cur_pos)) {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      bit_offset = malloc(sizeof(char) * (len + 1));
+      strncpy(bit_offset, last_pos, len);
+    }
+
+    // Skip the ":" char.
+    cur_pos++;
+
+    // Next comes the data_type
+    last_pos = cur_pos;
+    while (isalpha(*cur_pos)) {
+      cur_pos++;
+    }
+    len = cur_pos - last_pos;
+    data_type = malloc(sizeof(char) * (len + 1));
+    strncpy(data_type, last_pos, len);
+
+    if ((*cur_pos == '(') && (strcmp(data_type, "STRING"))) {
+      // Next comes the string_length
+      last_pos = cur_pos;
+      while (isalpha(*cur_pos)) {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      string_length = malloc(sizeof(char) * (len + 1));
+      strncpy(string_length, last_pos, len);
+
+      // Skip the ")"
+      cur_pos++;
+    }
+
+    if (*cur_pos == '[') {
+      // Next comes the num_elements
+      cur_pos++;
+      last_pos = cur_pos;
+      while (isdigit(*cur_pos)) {
+        cur_pos++;
+      }
+      len = cur_pos - last_pos;
+      num_elements = malloc(sizeof(char) * (len + 1));
+      strncpy(num_elements, last_pos, len);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Now parse the contents.
+    ////////////////////////////////////////////////////////////////////////////
+
+    plc4c_s7_read_write_s7_address* any_address = malloc(sizeof(plc4c_s7_read_write_s7_address));
+
+    for(int i = 0; i < plc4c_s7_read_write_memory_area_num_values(); i++) {
+      plc4c_s7_read_write_memory_area ma = plc4c_s7_read_write_memory_area_value_for_index(i);
+      if(strcmp(plc4c_s7_read_write_memory_area_get_short_name(ma), memory_area) == 0) {
+        any_address->s7_address_any_area = ma;
+        break;
+      }
+    }
+
+    if (block_number != NULL) {
+      any_address->s7_address_any_db_number = strtol(block_number, 0, 10);
+    } else {
+      any_address->s7_address_any_db_number = 0;
+    }
+
+    any_address->s7_address_any_byte_address = strtol(byte_offset, 0, 10);
+
+    if (bit_offset != NULL) {
+      any_address->s7_address_any_bit_address = strtol(bit_offset, 0, 10);
+    } else {
+      any_address->s7_address_any_bit_address = 0;
+    }
+
+    any_address->s7_address_any_transport_size =
+        plc4c_s7_read_write_transport_size_value_of(data_type);
+
+    if (num_elements != NULL) {
+      any_address->s7_address_any_number_of_elements =
+          strtol(num_elements, 0, 10);
+    } else {
+      any_address->s7_address_any_number_of_elements = 1;
+    }
+
+    if (any_address->s7_address_any_transport_size ==
+         plc4c_s7_read_write_transport_size_STRING) {
+      if (string_length != NULL) {
+        any_address->s7_address_any_number_of_elements =
+            strtol(string_length, 0, 10) *
+                any_address->s7_address_any_number_of_elements;
+      } else if (any_address->s7_address_any_transport_size ==
+                 plc4c_s7_read_write_transport_size_STRING) {
+        any_address->s7_address_any_number_of_elements =
+            254 * any_address->s7_address_any_number_of_elements;
+      }
+    }
+
+    // Check the optional transport size code.
+    if(transfer_size_code != NULL) {
+      if(plc4c_s7_read_write_transport_size_get_size_code(any_address->s7_address_any_transport_size) != *transfer_size_code) {
+        return INVALID_ADDRESS;
+      }
+    }
+
+    (*item)->s7_var_request_parameter_item_address_address = any_address;
+  }
+  // - Else -> PLC_PROXY_ADDRESS_PATTERN
+  else {
+    //   - parse the sequence of 2 digit Hex numbers into an array of 10 bytes
+    uint8_t* raw_data = malloc(sizeof(uint8_t) * 10);
+    if (raw_data == NULL) {
+      return NO_MEMORY;
+    }
+    cur_pos += 2;
+    for (int i = 0; i < 10; i++) {
+      plc4c_return_code return_code =
+          decode_byte(last_pos, cur_pos, raw_data + i);
+      if (return_code != OK) {
+        return return_code;
+      }
+      if (i < 9) {
+        if (*cur_pos != '-') {
+          return INVALID_ADDRESS;
+        }
+        // Move to the next segment.
+        last_pos += 3;
+        cur_pos += 3;
+      }
+    }
+    //   - create a plc4c_spi_read_buffer from the 10 byte array
+    plc4c_spi_read_buffer* read_buffer;
+    plc4c_return_code return_code =
+        plc4c_spi_read_buffer_create(raw_data, 10, &read_buffer);
+    if (return_code != OK) {
+      return return_code;
+    }
+    //   - plc4c_s7_read_write_s7_var_request_parameter_item_parse function to
+    //   parse the byte array
+    //   - directly add the resulting struct to the request
+    plc4c_s7_read_write_s7_address_parse(
+        read_buffer, &(*item)->s7_var_request_parameter_item_address_address);
+  }
+
+  return OK;
+}
+
+plc4c_return_code createS7WriteRequest(
+    plc4c_write_request* write_request,
     plc4c_s7_read_write_tpkt_packet** s7_write_request_packet) {
   return OK;
 }

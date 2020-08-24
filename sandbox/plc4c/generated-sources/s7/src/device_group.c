@@ -18,6 +18,7 @@
 */
 
 #include "device_group.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,7 +28,36 @@ plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_null() {
   return plc4c_s7_read_write_device_group_null_const;
 }
 
+plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_value_of(char* value_string) {
+    if(strcmp(value_string, "PG_OR_PC") == 0) {
+        return 0x01;
+    }
+    if(strcmp(value_string, "OS") == 0) {
+        return 0x02;
+    }
+    if(strcmp(value_string, "OTHERS") == 0) {
+        return 0x03;
+    }
+    return -1;
+}
+
 int plc4c_s7_read_write_device_group_num_values() {
   return 3;
 }
 
+plc4c_s7_read_write_device_group plc4c_s7_read_write_device_group_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x01;
+      }
+      case 1: {
+        return 0x02;
+      }
+      case 2: {
+        return 0x03;
+      }
+      default: {
+        return -1;
+      }
+    }
+}

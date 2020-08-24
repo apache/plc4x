@@ -18,6 +18,7 @@
 */
 
 #include "data_transport_error_code.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,7 +28,54 @@ plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport
   return plc4c_s7_read_write_data_transport_error_code_null_const;
 }
 
+plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_of(char* value_string) {
+    if(strcmp(value_string, "RESERVED") == 0) {
+        return 0x00;
+    }
+    if(strcmp(value_string, "ACCESS_DENIED") == 0) {
+        return 0x03;
+    }
+    if(strcmp(value_string, "INVALID_ADDRESS") == 0) {
+        return 0x05;
+    }
+    if(strcmp(value_string, "DATA_TYPE_NOT_SUPPORTED") == 0) {
+        return 0x06;
+    }
+    if(strcmp(value_string, "NOT_FOUND") == 0) {
+        return 0x0A;
+    }
+    if(strcmp(value_string, "OK") == 0) {
+        return 0xFF;
+    }
+    return -1;
+}
+
 int plc4c_s7_read_write_data_transport_error_code_num_values() {
   return 6;
 }
 
+plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x00;
+      }
+      case 1: {
+        return 0x03;
+      }
+      case 2: {
+        return 0x05;
+      }
+      case 3: {
+        return 0x06;
+      }
+      case 4: {
+        return 0x0A;
+      }
+      case 5: {
+        return 0xFF;
+      }
+      default: {
+        return -1;
+      }
+    }
+}

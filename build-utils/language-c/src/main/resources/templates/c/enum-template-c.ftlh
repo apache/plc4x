@@ -37,6 +37,7 @@ ${helper.getSourceDirectory()?replace(".", "/")}/${helper.camelCaseToSnakeCase(t
 */
 
 #include "${helper.camelCaseToSnakeCase(typeName)}.h"
+#include <string.h>
 
 <#--
     Add any import statements for partent-types, complex types used in properties or parser arguments.
@@ -54,15 +55,36 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
   return ${helper.getCTypeName(type.name)}_null_const;
 }
 
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_of(char* value_string) {
+<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+    if(strcmp(value_string, "${enumValue.name}") == 0) {
+        return ${enumValue.value};
+    }
+</#list>
+    return -1;
+}
+
 int ${helper.getCTypeName(type.name)}_num_values() {
   return ${type.enumValues?size};
 }
 
-<#--
-    If this enum also defines constant values, output one function for each.
-    Each of these functions consist of a simple switch statement using the enum as switch-value
-    returning the constant for a given enum value.
--->
+${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_value_for_index(int index) {
+    switch(index) {
+    <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+      case ${enumValue?index}: {
+        return ${enumValue.value};
+      }
+    </#list>
+      default: {
+        return -1;
+      }
+    }
+}
+    <#--
+        If this enum also defines constant values, output one function for each.
+        Each of these functions consist of a simple switch statement using the enum as switch-value
+        returning the constant for a given enum value.
+    -->
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
 

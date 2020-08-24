@@ -18,6 +18,7 @@
 */
 
 #include "szl_module_type_class.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,7 +28,42 @@ plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_cl
   return plc4c_s7_read_write_szl_module_type_class_null_const;
 }
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_of(char* value_string) {
+    if(strcmp(value_string, "CPU") == 0) {
+        return 0x0;
+    }
+    if(strcmp(value_string, "IM") == 0) {
+        return 0x4;
+    }
+    if(strcmp(value_string, "FM") == 0) {
+        return 0x8;
+    }
+    if(strcmp(value_string, "CP") == 0) {
+        return 0xC;
+    }
+    return -1;
+}
+
 int plc4c_s7_read_write_szl_module_type_class_num_values() {
   return 4;
 }
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x0;
+      }
+      case 1: {
+        return 0x4;
+      }
+      case 2: {
+        return 0x8;
+      }
+      case 3: {
+        return 0xC;
+      }
+      default: {
+        return -1;
+      }
+    }
+}

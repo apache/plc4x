@@ -18,6 +18,7 @@
 */
 
 #include "cotp_tpdu_size.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,10 +28,63 @@ plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_null() {
   return plc4c_s7_read_write_cotp_tpdu_size_null_const;
 }
 
+plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_of(char* value_string) {
+    if(strcmp(value_string, "SIZE_128") == 0) {
+        return 0x07;
+    }
+    if(strcmp(value_string, "SIZE_256") == 0) {
+        return 0x08;
+    }
+    if(strcmp(value_string, "SIZE_512") == 0) {
+        return 0x09;
+    }
+    if(strcmp(value_string, "SIZE_1024") == 0) {
+        return 0x0a;
+    }
+    if(strcmp(value_string, "SIZE_2048") == 0) {
+        return 0x0b;
+    }
+    if(strcmp(value_string, "SIZE_4096") == 0) {
+        return 0x0c;
+    }
+    if(strcmp(value_string, "SIZE_8192") == 0) {
+        return 0x0d;
+    }
+    return -1;
+}
+
 int plc4c_s7_read_write_cotp_tpdu_size_num_values() {
   return 7;
 }
 
+plc4c_s7_read_write_cotp_tpdu_size plc4c_s7_read_write_cotp_tpdu_size_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x07;
+      }
+      case 1: {
+        return 0x08;
+      }
+      case 2: {
+        return 0x09;
+      }
+      case 3: {
+        return 0x0a;
+      }
+      case 4: {
+        return 0x0b;
+      }
+      case 5: {
+        return 0x0c;
+      }
+      case 6: {
+        return 0x0d;
+      }
+      default: {
+        return -1;
+      }
+    }
+}
 
 uint16_t plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(plc4c_s7_read_write_cotp_tpdu_size value) {
   switch(value) {

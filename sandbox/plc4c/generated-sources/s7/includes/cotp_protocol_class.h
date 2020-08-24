@@ -39,8 +39,11 @@ typedef enum plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_pr
 // Get an empty NULL-struct
 plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_null();
 
+plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_of(char* value_string);
+
 int plc4c_s7_read_write_cotp_protocol_class_num_values();
 
+plc4c_s7_read_write_cotp_protocol_class plc4c_s7_read_write_cotp_protocol_class_value_for_index(int index);
 
 #ifdef __cplusplus
 }

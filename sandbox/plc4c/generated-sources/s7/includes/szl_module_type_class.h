@@ -38,8 +38,11 @@ typedef enum plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_m
 // Get an empty NULL-struct
 plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_null();
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_of(char* value_string);
+
 int plc4c_s7_read_write_szl_module_type_class_num_values();
 
+plc4c_s7_read_write_szl_module_type_class plc4c_s7_read_write_szl_module_type_class_value_for_index(int index);
 
 #ifdef __cplusplus
 }

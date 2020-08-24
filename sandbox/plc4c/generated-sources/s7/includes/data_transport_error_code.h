@@ -40,8 +40,11 @@ typedef enum plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_d
 // Get an empty NULL-struct
 plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_null();
 
+plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_of(char* value_string);
+
 int plc4c_s7_read_write_data_transport_error_code_num_values();
 
+plc4c_s7_read_write_data_transport_error_code plc4c_s7_read_write_data_transport_error_code_value_for_index(int index);
 
 #ifdef __cplusplus
 }
