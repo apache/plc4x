@@ -132,6 +132,10 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
         // Close channel
         channel.close().awaitUninterruptibly();
+
+        // Shutdown the Worker Group
+        channelFactory.closeEventLoopForChannel(channel);
+
         channel = null;
         connected = false;
     }

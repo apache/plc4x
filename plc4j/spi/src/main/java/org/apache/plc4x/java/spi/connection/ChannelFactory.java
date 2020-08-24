@@ -34,6 +34,9 @@ public interface ChannelFactory {
         // Intentionally do Nothing
     }
 
-    //void ping() throws PlcException;
+    default void closeEventLoopForChannel(Channel channel) {
+        // By default do nothing for compatibility
+        // Extending classes should implement their logic here
+    }
 
 }
