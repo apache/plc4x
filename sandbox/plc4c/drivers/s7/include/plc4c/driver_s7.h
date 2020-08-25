@@ -54,6 +54,8 @@ struct plc4c_driver_s7_config {
   uint8_t max_amq_caller;
   uint8_t max_amq_callee;
   plc4c_driver_s7_controller_type controller_type;
+
+  uint16_t pdu_id;
 };
 typedef struct plc4c_driver_s7_config plc4c_driver_s7_config;
 

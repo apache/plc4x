@@ -101,7 +101,7 @@ typedef plc4c_return_code (*plc4c_transport_send_message_function)(
 // bytes you get by making the negative value a positive and not returning any
 // read-buffer.
 typedef int16_t (*accept_message_function)(
-    uint8_t* data, uint8_t length);
+    uint8_t* data, uint16_t length);
 
 typedef plc4c_return_code (*plc4c_transport_select_message_function)(
     accept_message_function accept_message, plc4c_spi_read_buffer** message);

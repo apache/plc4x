@@ -25,6 +25,12 @@ file(GLOB generatedSources "${PLC4C_ROOT_DIR}/generated-sources/s7/src/*.c")
 
 add_library(plc4c-driver-s7
         src/driver_s7.c
+        src/driver_s7_encode_decode.c
+        src/driver_s7_packets.c
+        src/driver_s7_sm_connect.c
+        src/driver_s7_sm_disconnect.c
+        src/driver_s7_sm_read.c
+        src/driver_s7_sm_write.c
         ${generatedSources})
 
 target_link_libraries(plc4c-driver-s7
