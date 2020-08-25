@@ -27,10 +27,10 @@ extern "C" {
 #include "tpkt_packet.h"
 #include "plc4c/driver_s7.h"
 
-plc4c_return_code send_packet(plc4c_connection* connection,
-                              plc4c_s7_read_write_tpkt_packet* packet);
-plc4c_return_code receive_packet(plc4c_connection* connection,
-                                 plc4c_s7_read_write_tpkt_packet** packet);
+plc4c_return_code plc4c_driver_s7_send_packet(
+    plc4c_connection* connection, plc4c_s7_read_write_tpkt_packet* packet);
+plc4c_return_code plc4c_driver_s7_receive_packet(
+    plc4c_connection* connection, plc4c_s7_read_write_tpkt_packet** packet);
 
 plc4c_return_code createCOTPConnectionRequest(
     plc4c_driver_s7_config* configuration,

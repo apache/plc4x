@@ -89,7 +89,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(connection, cotp_connect_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, cotp_connect_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -102,7 +102,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* cotp_connect_response_packet;
       plc4c_return_code return_code =
-          receive_packet(connection, &cotp_connect_response_packet);
+          plc4c_driver_s7_receive_packet(connection, &cotp_connect_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -162,7 +162,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(connection, s7_connect_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, s7_connect_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -175,7 +175,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_connect_response_packet;
       plc4c_return_code return_code =
-          receive_packet(connection, &s7_connect_response_packet);
+          plc4c_driver_s7_receive_packet(connection, &s7_connect_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {
@@ -231,7 +231,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(connection, s7_identify_remote_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, s7_identify_remote_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -245,7 +245,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_identify_remote_response_packet;
       plc4c_return_code return_code =
-          receive_packet(connection, &s7_identify_remote_response_packet);
+          plc4c_driver_s7_receive_packet(connection, &s7_identify_remote_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {

@@ -50,8 +50,6 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
 
   switch (task->state_id) {
     case PLC4C_DRIVER_S7_WRITE_INIT: {
-      task->completed = true;
-
       plc4c_s7_read_write_tpkt_packet* s7_write_request_packet;
       plc4c_return_code return_code =
           createS7WriteRequest(write_request, &s7_write_request_packet);
@@ -60,7 +58,7 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
       }
 
       // Send the packet to the remote.
-      return_code = send_packet(connection, s7_write_request_packet);
+      return_code = plc4c_driver_s7_send_packet(connection, s7_write_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -72,7 +70,7 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
       // Read a response packet.
       plc4c_s7_read_write_tpkt_packet* s7_write_response_packet;
       plc4c_return_code return_code =
-          receive_packet(connection, &s7_write_response_packet);
+          plc4c_driver_s7_receive_packet(connection, &s7_write_response_packet);
       // If we haven't read enough to process a full message, just try again
       // next time.
       if (return_code == UNFINISHED) {

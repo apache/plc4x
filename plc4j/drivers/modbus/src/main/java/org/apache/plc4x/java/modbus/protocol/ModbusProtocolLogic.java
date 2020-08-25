@@ -233,12 +233,12 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadFileRecordRequestItem[] itemArray;
 
             if ((group1_address + extendedRegister.getQuantity()) < FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) {
-              //If reuqest doesn't span file records, use a single group
+              //If request doesn't span file records, use a single group
               group1_quantity = extendedRegister.getQuantity();
               ModbusPDUReadFileRecordRequestItem group1 = new ModbusPDUReadFileRecordRequestItem((short) 6, group1_file_number, group1_address, group1_quantity);
               itemArray = new ModbusPDUReadFileRecordRequestItem[] {group1};
             } else {
-              //If it doesn span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
+              //If it doesn't span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
               group1_quantity = FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH - group1_address;
               group2_quantity = extendedRegister.getQuantity() - group1_quantity;
               group2_file_number = (short) (group1_file_number + 1);

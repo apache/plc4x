@@ -34,3 +34,7 @@ uint8_t plc4c_spi_evaluation_helper_count(plc4c_list* a) {
   return plc4c_utils_list_size(a);
 }
 
+uint8_t plc4c_spi_evaluation_helper_array_size_in_bytes(plc4c_list* a) {
+  // TODO: This sort of can't work in C as we don't have the type information ...
+  return 0;
+}

@@ -21,6 +21,8 @@
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
+#include "plc4c/driver_modbus_packets.h"
+#include "modbus_tcp_adu.h"
 
 enum plc4c_driver_modbus_write_states {
   PLC4C_DRIVER_MODBUS_WRITE_INIT,
@@ -29,7 +31,61 @@ enum plc4c_driver_modbus_write_states {
 
 plc4c_return_code plc4c_driver_modbus_write_machine_function(
     plc4c_system_task* task) {
+  plc4c_write_request_execution* write_request_execution = task->context;
+  if (write_request_execution == NULL) {
+    return INTERNAL_ERROR;
+  }
+  plc4c_write_request* write_request = write_request_execution->write_request;
+  if (write_request == NULL) {
+    return INTERNAL_ERROR;
+  }
+  plc4c_connection* connection = task->context;
+  if (connection == NULL) {
+    return INTERNAL_ERROR;
+  }
 
+  switch (task->state_id) {
+    case PLC4C_DRIVER_MODBUS_WRITE_INIT: {
+      plc4c_modbus_read_write_modbus_tcp_adu* modbus_write_request_packet;
+      plc4c_return_code return_code =
+          createModbusWriteRequest(write_request, &modbus_write_request_packet);
+      if (return_code != OK) {
+        return return_code;
+      }
+
+      // Send the packet to the remote.
+      return_code = plc4c_driver_modbus_send_packet(
+          connection, modbus_write_request_packet);
+      if (return_code != OK) {
+        return return_code;
+      }
+
+      task->state_id = PLC4C_DRIVER_MODBUS_WRITE_FINISHED;
+      break;
+    }
+    case PLC4C_DRIVER_MODBUS_WRITE_FINISHED: {
+      // Read a response packet.
+      plc4c_modbus_read_write_modbus_tcp_adu* modbus_write_response_packet;
+      plc4c_return_code return_code =
+          plc4c_driver_modbus_receive_packet(
+              connection, &modbus_write_response_packet);
+      // If we haven't read enough to process a full message, just try again
+      // next time.
+      if (return_code == UNFINISHED) {
+        return OK;
+      } else if (return_code != OK) {
+        return return_code;
+      }
+
+      // TODO: Check the response ...
+      // TODO: Decode the return codes in the response ...
+      // TODO: Return the results to the API ...
+
+      task->completed = true;
+      break;
+    }
+  }
+  return OK;
 }
 
 plc4c_return_code plc4c_driver_modbus_write_function(

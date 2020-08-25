@@ -22,6 +22,23 @@
 extern "C" {
 #endif
 
+#include <plc4c/types.h>
+#include "modbus_tcp_adu.h"
+
+plc4c_return_code plc4c_driver_modbus_send_packet(
+    plc4c_connection* connection,
+    plc4c_modbus_read_write_modbus_tcp_adu* packet);
+plc4c_return_code plc4c_driver_modbus_receive_packet(
+    plc4c_connection* connection,
+    plc4c_modbus_read_write_modbus_tcp_adu** packet);
+
+plc4c_return_code createModbusReadRequest(
+    plc4c_read_request* read_request,
+    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet);
+plc4c_return_code createModbusWriteRequest(
+    plc4c_write_request* write_request,
+    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet);
+
 #ifdef __cplusplus
 }
 #endif

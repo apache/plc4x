@@ -84,7 +84,7 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
   return 0;
 }
 
-plc4c_return_code send_packet(plc4c_connection* connection,
+plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
                               plc4c_s7_read_write_tpkt_packet* packet) {
   // Get the size required to contain the serialized form of this packet.
   uint16_t packet_size =
@@ -108,7 +108,7 @@ plc4c_return_code send_packet(plc4c_connection* connection,
   return OK;
 }
 
-plc4c_return_code receive_packet(plc4c_connection* connection,
+plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
                                  plc4c_s7_read_write_tpkt_packet** packet) {
   // Check with the transport if there is a packet available.
   // If it is, get a read_buffer for reading it.

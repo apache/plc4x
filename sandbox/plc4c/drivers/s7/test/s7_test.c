@@ -39,7 +39,7 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
   }
 }
 
-void internal_parse_serialize_test(const uint8_t* payload,
+void internal_parse_serialize_test(uint8_t* payload,
                                    uint8_t payload_size) {
   // Create a new read_buffer instance
   plc4c_spi_read_buffer* read_buffer;
