@@ -182,6 +182,32 @@ public class S7Field implements PlcField {
                 throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
                     "' doesn't match specified data type '" + dataType.name() + "'");
             }
+            if ((dataType != TransportSize.BOOL) && bitOffset != 0) {
+                throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
+            }
+
+            return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
+        } else if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
+            TransportSize dataType = TransportSize.STRING;
+            int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
+            MemoryArea memoryArea = getMemoryAreaForShortName(matcher.group(MEMORY_AREA));
+            Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
+            int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
+            byte bitOffset = 0;
+            if (matcher.group(BIT_OFFSET) != null) {
+                bitOffset = Byte.parseByte(matcher.group(BIT_OFFSET));
+            } else if (dataType == TransportSize.BOOL) {
+                throw new PlcInvalidFieldException("Expected bit offset for BOOL parameters.");
+            }
+            int numElements = 1;
+            if (matcher.group(NUM_ELEMENTS) != null) {
+                numElements = Integer.parseInt(matcher.group(NUM_ELEMENTS));
+            }
+
+            if ((transferSizeCode != null) && (dataType.getSizeCode() != transferSizeCode)) {
+                throw new PlcInvalidFieldException("Transfer size code '" + transferSizeCode +
+                    "' doesn't match specified data type '" + dataType.name() + "'");
+            }
 
             return new S7Field(dataType, memoryArea, (short) 0, byteOffset, bitOffset, numElements);
         } else if ((matcher = DATA_BLOCK_STRING_ADDRESS_PATTERN.matcher(fieldString)).matches()) {
@@ -265,6 +291,11 @@ public class S7Field implements PlcField {
                 final S7Address s7Address = S7AddressIO.staticParse(rb);
                 if (s7Address instanceof S7AddressAny) {
                     S7AddressAny s7AddressAny = (S7AddressAny) s7Address;
+
+                    if ((s7AddressAny.getTransportSize() != TransportSize.BOOL) && s7AddressAny.getBitAddress() != 0) {
+                        throw new PlcInvalidFieldException("A bit offset other than 0 is only supported for type BOOL");
+                    }
+
                     return new S7Field(s7AddressAny.getTransportSize(), s7AddressAny.getArea(),
                         s7AddressAny.getDbNumber(), s7AddressAny.getByteAddress(),
                         s7AddressAny.getBitAddress(), s7AddressAny.getNumberOfElements());
