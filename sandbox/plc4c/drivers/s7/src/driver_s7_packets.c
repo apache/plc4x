@@ -27,6 +27,16 @@
 
 #include "plc4c/driver_s7_encode_decode.h"
 
+/**
+ * Function used by the driver to tell the transport if there is a full
+ * packet the driver can operate on available.
+ *
+ * @param buffer_data pointer to the buffer
+ * @param buffer_length length of the buffer
+ * @return positive integer = length of the packet, 0 = not enough,
+ * try again later, negative integer = remove the given amount of bytes
+ * from the buffer.
+ */
 int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
                                                 uint16_t buffer_length) {
   // If the packet doesn't start with 0x03, it's a corrupt package.
@@ -100,24 +110,34 @@ plc4c_return_code send_packet(plc4c_connection* connection,
 
 plc4c_return_code receive_packet(plc4c_connection* connection,
                                  plc4c_s7_read_write_tpkt_packet** packet) {
-  // Get a response from the transport.
+  // Check with the transport if there is a packet available.
+  // If it is, get a read_buffer for reading it.
   plc4c_spi_read_buffer* read_buffer;
   plc4c_return_code return_code = connection->transport->select_message(
       plc4c_driver_s7_select_message_function, &read_buffer);
+  // OK is only returned if a packet is available.
   if (return_code != OK) {
     return return_code;
   }
 
-  // Parse the given data.
+  // Parse the packet by consuming the read_buffer data.
   *packet = NULL;
   return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }
 
+  // In this case a packet was available and parsed.
   return OK;
 }
 
+/**
+ * Create a COTP connection request packet.
+ *
+ * @param configuration configuration of the current connection.
+ * @param plc4c_s7_read_write_tpkt_packet COTP connection-request (return)
+ * @return OK, if the packet was correctly prepared, otherwise not-OK.
+ */
 plc4c_return_code createCOTPConnectionRequest(
     plc4c_driver_s7_config* configuration,
     plc4c_s7_read_write_tpkt_packet** cotp_connect_request_packet) {
@@ -189,6 +209,13 @@ plc4c_return_code createCOTPConnectionRequest(
   return OK;
 }
 
+/**
+ * Create a S7 connection request packet.
+ *
+ * @param configuration configuration of the current connection.
+ * @param plc4c_s7_read_write_tpkt_packet S7 connection-request (return)
+ * @return OK, if the packet was correctly prepared, otherwise not-OK.
+ */
 plc4c_return_code createS7ConnectionRequest(
     plc4c_driver_s7_config* configuration,
     plc4c_s7_read_write_tpkt_packet** s7_connect_request_packet) {
@@ -236,6 +263,13 @@ plc4c_return_code createS7ConnectionRequest(
   return OK;
 }
 
+/**
+ * Create a S7 identify remote request packet
+ *
+ * @param configuration configuration of the current connection.
+ * @param plc4c_s7_read_write_tpkt_packet S7 identify remote request (return)
+ * @return OK, if the packet was correctly prepared, otherwise not-OK.
+ */
 plc4c_return_code createS7IdentifyRemoteRequest(
     plc4c_s7_read_write_tpkt_packet** s7_identify_remote_request_packet) {
   *s7_identify_remote_request_packet =
@@ -321,6 +355,13 @@ plc4c_return_code createS7IdentifyRemoteRequest(
   return OK;
 }
 
+/**
+ * Create a S7 read request packet
+ *
+ * @param configuration configuration of the current connection.
+ * @param plc4c_s7_read_write_tpkt_packet S7 read request (return)
+ * @return OK, if the packet was correctly prepared, otherwise not-OK.
+ */
 plc4c_return_code createS7ReadRequest(
     plc4c_read_request* read_request,
     plc4c_s7_read_write_tpkt_packet** s7_read_request_packet) {
@@ -375,6 +416,13 @@ plc4c_return_code createS7ReadRequest(
   return OK;
 }
 
+/**
+ * Create a S7 write request packet
+ *
+ * @param configuration configuration of the current connection.
+ * @param plc4c_s7_read_write_tpkt_packet S7 write request (return)
+ * @return OK, if the packet was correctly prepared, otherwise not-OK.
+ */
 plc4c_return_code createS7WriteRequest(
     plc4c_write_request* write_request,
     plc4c_s7_read_write_tpkt_packet** s7_write_request_packet) {
