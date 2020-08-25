@@ -17,94 +17,7 @@
   under the License.
 */
 
-#include <plc4c/driver_modbus.h>
-#include <plc4c/plc4c.h>
-#include <plc4c/spi/types_private.h>
-#include <stdlib.h>
-#include <string.h>
-
-enum plc4c_driver_modbus_disconnect_states {
-  PLC4C_DRIVER_MODBUS_DISCONNECT_INIT,
-  PLC4C_DRIVER_MODBUS_DISCONNECT_WAIT_TASKS_FINISHED,
-  PLC4C_DRIVER_MODBUS_DISCONNECT_FINISHED
-};
-
-
-plc4c_return_code plc4c_driver_modbus_connect_machine_function(
-    plc4c_system_task *task) {
-  plc4c_connection *connection = task->context;
-  if (connection == NULL) {
-    return INTERNAL_ERROR;
-  }
-  if (plc4c_connection_get_connected(connection)) {
-    return ALREADY_CONNECTED;
-  }
-  plc4c_connection_set_connected(connection, true);
-  task->completed = true;
-  return OK;
-}
-
-plc4c_return_code plc4c_driver_modbus_disconnect_machine_function(
-    plc4c_system_task *task) {
-  plc4c_connection *connection = task->context;
-  if (connection == NULL) {
-    return INTERNAL_ERROR;
-  }
-
-  switch (task->state_id) {
-    case PLC4C_DRIVER_MODBUS_DISCONNECT_INIT: {
-      plc4c_connection_set_disconnect(connection, true);
-      task->state_id = PLC4C_DRIVER_MODBUS_DISCONNECT_WAIT_TASKS_FINISHED;
-      break;
-    }
-    case PLC4C_DRIVER_MODBUS_DISCONNECT_WAIT_TASKS_FINISHED: {
-      // The disconnect system-task also counts.
-      if (plc4c_connection_get_running_tasks_count(connection) == 1) {
-        plc4c_connection_set_connected(connection, false);
-        task->completed = true;
-        task->state_id = PLC4C_DRIVER_MODBUS_DISCONNECT_FINISHED;
-      }
-      break;
-    }
-    case PLC4C_DRIVER_MODBUS_DISCONNECT_FINISHED: {
-      // Do nothing
-      break;
-    }
-    default: {
-      return INTERNAL_ERROR;
-    }
-  }
-  return OK;
-}
-
-plc4c_return_code plc4c_driver_modbus_connect_function(
-    plc4c_connection *connection, plc4c_system_task **task) {
-  plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-  // There's nothing to do here, so no need for a state-machine.
-  new_task->state_id = -1;
-  new_task->state_machine_function =
-      &plc4c_driver_modbus_connect_machine_function;
-  new_task->completed = false;
-  new_task->context = connection;
-  new_task->connection = connection;
-  *task = new_task;
-  return OK;
-}
-
-plc4c_return_code plc4c_driver_modbus_disconnect_function(
-    plc4c_connection *connection, plc4c_system_task **task) {
-  plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
-  new_task->state_id = PLC4C_DRIVER_MODBUS_DISCONNECT_INIT;
-  new_task->state_machine_function =
-      &plc4c_driver_modbus_disconnect_machine_function;
-  new_task->completed = false;
-  new_task->context = connection;
-  new_task->connection = connection;
-  *task = new_task;
-  return OK;
-}
-
-
+#include "plc4c/driver_modbus_sm.h"
 
 plc4c_driver *plc4c_driver_modbus_create() {
   plc4c_driver *driver = (plc4c_driver *)malloc(sizeof(plc4c_driver));
@@ -114,12 +27,12 @@ plc4c_driver *plc4c_driver_modbus_create() {
   driver->parse_address_function = NULL;
   driver->connect_function = &plc4c_driver_modbus_connect_function;
   driver->disconnect_function = &plc4c_driver_modbus_disconnect_function;
-  driver->read_function = NULL;
-  driver->write_function = NULL;
+  driver->read_function = &plc4c_driver_modbus_read_function;
+  driver->write_function = &plc4c_driver_modbus_write_function;
   driver->subscribe_function = NULL;
   driver->unsubscribe_function = NULL;
-  driver->free_read_response_function = NULL;
-  driver->free_write_response_function = NULL;
+  driver->free_read_response_function = &plc4c_driver_modbus_free_read_response;
+  driver->free_write_response_function = &plc4c_driver_modbus_free_write_response;
   driver->free_subscription_response_function = NULL;
   driver->free_unsubscription_response_function = NULL;
   return driver;

@@ -17,10 +17,6 @@
   under the License.
 */
 
-#include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-#include "plc4c/driver_s7.h"
 #include "plc4c/driver_s7_sm.h"
 
 plc4c_driver* plc4c_driver_s7_create() {
