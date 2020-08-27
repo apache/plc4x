@@ -209,6 +209,8 @@ public class ParserSerializerTestsuiteRunner {
                                 argValues[i] = Double.parseDouble(parameterValue);
                             } else if (parameterType == String.class) {
                                 argValues[i] = parameterValue;
+                            } else if (Enum.class.isAssignableFrom(parameterType)) {
+                                argValues[i] = Enum.valueOf((Class<? extends Enum>) parameterType, parameterValue);
                             } else {
                                 throw new ParseException("Currently unsupported parameter type");
                             }
