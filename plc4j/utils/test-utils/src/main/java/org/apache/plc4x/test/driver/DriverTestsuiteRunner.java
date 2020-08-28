@@ -266,7 +266,7 @@ public class DriverTestsuiteRunner {
                         throw new DriverTestsuiteException("No response expected.");
                     }
                     try {
-                        final PlcResponse plcResponse = responseFuture.get(1000, TimeUnit.MILLISECONDS);
+                        final PlcResponse plcResponse = responseFuture.get(5000, TimeUnit.MILLISECONDS);
                         // Reset the future.
                         responseFuture = null;
                         final String serializedResponse = mapper.writeValueAsString(plcResponse);
