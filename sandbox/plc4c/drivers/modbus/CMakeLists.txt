@@ -25,6 +25,7 @@ file(GLOB generatedSources "${PLC4C_ROOT_DIR}/generated-sources/modbus/src/*.c")
 
 add_library(plc4c-driver-modbus
         src/driver_modbus.c
+        src/driver_modbus_encode_decode.c
         src/driver_modbus_packets.c
         src/driver_modbus_sm_connect.c
         src/driver_modbus_sm_disconnect.c

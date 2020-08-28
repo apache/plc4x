@@ -23,7 +23,7 @@
 
 #include "plc4c/spi/read_buffer.h"
 
-plc4c_return_code parseAddress(char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item);
+plc4c_return_code plc4c_driver_s7_encode_address(char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item);
 
 void internal_parse_addresses_test(
     char* address, plc4c_return_code return_code,
@@ -33,7 +33,8 @@ void internal_parse_addresses_test(
 
   // Call the parser ...
   plc4c_s7_read_write_s7_var_request_parameter_item* item;
-  plc4c_return_code act_return_code = parseAddress(address, &item);
+  plc4c_return_code act_return_code =
+      plc4c_driver_s7_encode_address(address, &item);
 
   // Check the result ...
   if(act_return_code != OK) {

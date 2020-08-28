@@ -82,8 +82,9 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_SEND_COTP_CONNECT_REQUEST: {
       // Get a COTP connection response for the settings in the config.
       plc4c_s7_read_write_tpkt_packet* cotp_connect_request_packet;
-      plc4c_return_code return_code = createCOTPConnectionRequest(
-          configuration, &cotp_connect_request_packet);
+      plc4c_return_code return_code =
+          plc4c_driver_s7_create_cotp_connection_request(
+              configuration, &cotp_connect_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -156,7 +157,8 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST: {
       plc4c_s7_read_write_tpkt_packet* s7_connect_request_packet;
       plc4c_return_code return_code =
-          createS7ConnectionRequest(configuration, &s7_connect_request_packet);
+          plc4c_driver_s7_create_s7_connection_request(
+              configuration, &s7_connect_request_packet);
       if (return_code != OK) {
         return return_code;
       }
@@ -225,13 +227,15 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
     case PLC4C_DRIVER_S7_CONNECT_SEND_S7_IDENTIFICATION_REQUEST: {
       plc4c_s7_read_write_tpkt_packet* s7_identify_remote_request_packet;
       plc4c_return_code return_code =
-          createS7IdentifyRemoteRequest(&s7_identify_remote_request_packet);
+          plc4c_driver_s7_create_s7_identify_remote_request(
+              &s7_identify_remote_request_packet);
       if (return_code != OK) {
         return return_code;
       }
 
       // Send the packet to the remote.
-      return_code = plc4c_driver_s7_send_packet(connection, s7_identify_remote_request_packet);
+      return_code = plc4c_driver_s7_send_packet(
+          connection, s7_identify_remote_request_packet);
       if (return_code != OK) {
         return return_code;
       }

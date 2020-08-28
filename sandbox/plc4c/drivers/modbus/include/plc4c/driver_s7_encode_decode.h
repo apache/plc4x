@@ -16,30 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#ifndef PLC4C_DRIVER_MODBUS_PACKETS_H_
-#define PLC4C_DRIVER_MODBUS_PACKETS_H_
+#ifndef PLC4C_DRIVER_MODBUS_ENCODE_DECODE_H_
+#define PLC4C_DRIVER_MODBUS_ENCODE_DECODE_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include <stdlib.h>
+
 #include <plc4c/types.h>
-#include "modbus_tcp_adu.h"
+#include <modbus_pdu.h>
 
-plc4c_return_code plc4c_driver_modbus_send_packet(
-    plc4c_connection* connection,
-    plc4c_modbus_read_write_modbus_tcp_adu* packet);
-plc4c_return_code plc4c_driver_modbus_receive_packet(
-    plc4c_connection* connection,
-    plc4c_modbus_read_write_modbus_tcp_adu** packet);
-
-plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
-    plc4c_read_request* read_request,
-    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet);
-plc4c_return_code plc4c_driver_modbus_create_modbus_write_request(
-    plc4c_write_request* write_request,
-    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet);
+plc4c_return_code plc4c_driver_modbus_encode_address(
+    char* address, plc4c_modbus_read_write_modbus_pdu** item);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_DRIVER_MODBUS_PACKETS_H_
+#endif  // PLC4C_DRIVER_MODBUS_ENCODE_DECODE_H_

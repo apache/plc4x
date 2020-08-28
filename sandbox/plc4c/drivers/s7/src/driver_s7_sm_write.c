@@ -52,7 +52,8 @@ plc4c_return_code plc4c_driver_s7_write_machine_function(
     case PLC4C_DRIVER_S7_WRITE_INIT: {
       plc4c_s7_read_write_tpkt_packet* s7_write_request_packet;
       plc4c_return_code return_code =
-          createS7WriteRequest(write_request, &s7_write_request_packet);
+          plc4c_driver_s7_create_s7_write_request(
+              write_request, &s7_write_request_packet);
       if (return_code != OK) {
         return return_code;
       }

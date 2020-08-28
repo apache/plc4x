@@ -48,7 +48,8 @@ plc4c_return_code plc4c_driver_modbus_write_machine_function(
     case PLC4C_DRIVER_MODBUS_WRITE_INIT: {
       plc4c_modbus_read_write_modbus_tcp_adu* modbus_write_request_packet;
       plc4c_return_code return_code =
-          createModbusWriteRequest(write_request, &modbus_write_request_packet);
+          plc4c_driver_modbus_create_modbus_write_request(
+              write_request, &modbus_write_request_packet);
       if (return_code != OK) {
         return return_code;
       }

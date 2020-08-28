@@ -21,8 +21,10 @@
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
-#include "plc4c/driver_modbus.h"
+
 #include "modbus_tcp_adu.h"
+#include "plc4c/driver_modbus.h"
+#include "plc4c/driver_s7_encode_decode.h"
 
 /**
  * Function used by the driver to tell the transport if there is a full
@@ -97,16 +99,36 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(plc4c_connection* connectio
   return OK;
 }
 
-plc4c_return_code createModbusReadRequest(
+plc4c_return_code plc4c_driver_modbus_create_modbus_read_request(
     plc4c_read_request* read_request,
-    plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet) {
+    plc4c_list** modbus_read_request_packets) {
+  // Initialize the packet list.
+  plc4c_utils_list_create(modbus_read_request_packets);
 
-  // TODO: Implement this ...
+  // For every item in the request, create a separate packet.
+  plc4c_list_element* item = read_request->items->tail;
+  while (item != NULL) {
+    // Get the item address from the API request.
+    char* itemAddress = item->value;
 
+    // Create a packet from the current item.
+    plc4c_modbus_read_write_modbus_pdu* packet;
+    plc4c_return_code result = plc4c_driver_modbus_encode_address(
+        itemAddress, &packet);
+    if(result != OK) {
+      return result;
+    }
+
+    // Add the packet to the list of packets.
+    plc4c_utils_list_insert_head_value(*modbus_read_request_packets, packet);
+
+    // Proceed with the next item.
+    item = item->next;
+  }
   return OK;
 }
 
-plc4c_return_code createModbusWriteRequest(
+plc4c_return_code plc4c_driver_modbus_create_modbus_write_request(
     plc4c_write_request* write_request,
     plc4c_modbus_read_write_modbus_tcp_adu** modbus_read_request_packet) {
 

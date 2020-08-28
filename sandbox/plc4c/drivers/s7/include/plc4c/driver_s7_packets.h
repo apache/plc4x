@@ -32,22 +32,20 @@ plc4c_return_code plc4c_driver_s7_send_packet(
 plc4c_return_code plc4c_driver_s7_receive_packet(
     plc4c_connection* connection, plc4c_s7_read_write_tpkt_packet** packet);
 
-plc4c_return_code createCOTPConnectionRequest(
+plc4c_return_code plc4c_driver_s7_create_cotp_connection_request(
     plc4c_driver_s7_config* configuration,
     plc4c_s7_read_write_tpkt_packet** cotp_connect_request_packet);
-plc4c_return_code createS7ConnectionRequest(
+plc4c_return_code plc4c_driver_s7_create_s7_connection_request(
     plc4c_driver_s7_config* configuration,
     plc4c_s7_read_write_tpkt_packet** s7_connect_request_packet);
-plc4c_return_code createS7IdentifyRemoteRequest(
+plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
     plc4c_s7_read_write_tpkt_packet** s7_identify_remote_request_packet);
-plc4c_return_code createS7ReadRequest(
+plc4c_return_code plc4c_driver_s7_create_s7_read_request(
     plc4c_read_request* read_request,
     plc4c_s7_read_write_tpkt_packet** s7_read_request_packet);
-plc4c_return_code createS7WriteRequest(
+plc4c_return_code plc4c_driver_s7_create_s7_write_request(
     plc4c_write_request* write_request,
     plc4c_s7_read_write_tpkt_packet** s7_write_request_packet);
-plc4c_return_code parseAddress(
-    char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item);
 
 #ifdef __cplusplus
 }

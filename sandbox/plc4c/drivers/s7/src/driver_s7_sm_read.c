@@ -52,7 +52,8 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
     case PLC4C_DRIVER_S7_READ_INIT: {
       plc4c_s7_read_write_tpkt_packet* s7_read_request_packet;
       plc4c_return_code return_code =
-          createS7ReadRequest(read_request, &s7_read_request_packet);
+          plc4c_driver_s7_create_s7_read_request(
+              read_request, &s7_read_request_packet);
       if (return_code != OK) {
         return return_code;
       }
