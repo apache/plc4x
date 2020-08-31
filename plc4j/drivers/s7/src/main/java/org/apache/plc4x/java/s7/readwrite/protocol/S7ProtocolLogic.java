@@ -29,6 +29,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.s7.readwrite.COTPPacket;
@@ -46,13 +47,11 @@ import org.apache.plc4x.java.s7.readwrite.S7MessageRequest;
 import org.apache.plc4x.java.s7.readwrite.S7MessageResponseData;
 import org.apache.plc4x.java.s7.readwrite.S7MessageUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserData;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItem;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions;
 import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserData;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem;
@@ -96,7 +95,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -110,7 +108,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
     private S7DriverContext s7DriverContext;
-    private static final AtomicInteger tpduGenerator = new AtomicInteger(10);
+    private final AtomicInteger tpduGenerator = new AtomicInteger(10);
     private RequestTransactionManager tm;
 
     @Override
@@ -257,7 +255,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .check(p -> p.getPayload() instanceof S7MessageResponseData)
             .unwrap(p -> (S7MessageResponseData) p.getPayload())
             .check(p -> p.getTpduReference() == tpduId)
-            .check(p -> p.getParameter() instanceof S7ParameterReadVarResponse)
             .handle(p -> {
                 future.complete(p);
                 // Finish the request-transaction.
@@ -296,7 +293,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .check(p -> p.getPayload() instanceof S7MessageResponseData)
             .unwrap(p -> ((S7MessageResponseData) p.getPayload()))
             .check(p -> p.getTpduReference() == tpduId)
-            .check(p -> p.getParameter() instanceof S7ParameterWriteVarResponse)
             .handle(p -> {
                 try {
                     future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
@@ -383,6 +379,33 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private PlcResponse decodeReadResponse(S7MessageResponseData responseMessage, InternalPlcReadRequest plcReadRequest) throws PlcProtocolException {
+        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+        // If the result contains any form of non-null error code, handle this instead.
+        if((responseMessage.getErrorClass() != 0) || (responseMessage.getErrorCode() != 0)) {
+            // This is usually the case if PUT/GET wasn't enabled on the PLC
+            if((responseMessage.getErrorClass() == 129) && (responseMessage.getErrorCode() == 4)) {
+                LOGGER.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                    "that PUT/GET is not enabled on the PLC.");
+                for (String fieldName : plcReadRequest.getFieldNames()) {
+                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+                    values.put(fieldName, result);
+                }
+                return new DefaultPlcReadResponse(plcReadRequest, values);
+            } else {
+                LOGGER.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
+                    "We probably need to implement explicit handling for this, so please file a bug-report " +
+                    "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
+                    "containing a capture of the communication.",
+                    responseMessage.getErrorClass(), responseMessage.getErrorCode());
+                for (String fieldName : plcReadRequest.getFieldNames()) {
+                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
+                    values.put(fieldName, result);
+                }
+                return new DefaultPlcReadResponse(plcReadRequest, values);
+            }
+        }
+
+        // In all other cases all went well.
         S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
 
         // If the numbers of items don't match, we're in big trouble as the only
@@ -393,7 +416,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         S7VarPayloadDataItem[] payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcReadRequest.getFieldNames()) {
@@ -415,6 +437,31 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private PlcResponse decodeWriteResponse(S7MessageResponseData responseMessage, InternalPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
+        Map<String, PlcResponseCode> responses = new HashMap<>();
+        // If the result contains any form of non-null error code, handle this instead.
+        if((responseMessage.getErrorClass() != 0) || (responseMessage.getErrorCode() != 0)) {
+            // This is usually the case if PUT/GET wasn't enabled on the PLC
+            if((responseMessage.getErrorClass() == 129) && (responseMessage.getErrorCode() == 4)) {
+                LOGGER.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                    "that PUT/GET is not enabled on the PLC.");
+                for (String fieldName : plcWriteRequest.getFieldNames()) {
+                    responses.put(fieldName, PlcResponseCode.ACCESS_DENIED);
+                }
+                return new DefaultPlcWriteResponse(plcWriteRequest, responses);
+            } else {
+                LOGGER.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
+                        "We probably need to implement explicit handling for this, so please file a bug-report " +
+                        "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
+                        "containing a capture of the communication.",
+                    responseMessage.getErrorClass(), responseMessage.getErrorCode());
+                for (String fieldName : plcWriteRequest.getFieldNames()) {
+                    responses.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
+                }
+                return new DefaultPlcWriteResponse(plcWriteRequest, responses);
+            }
+        }
+
+        // In all other cases all went well.
         S7PayloadWriteVarResponse payload = (S7PayloadWriteVarResponse) responseMessage.getPayload();
 
         // If the numbers of items don't match, we're in big trouble as the only
@@ -425,7 +472,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 "The number of requested items doesn't match the number of returned items");
         }
 
-        Map<String, PlcResponseCode> responses = new HashMap<>();
         S7VarPayloadStatusItem[] payloadItems = payload.getItems();
         int index = 0;
         for (String fieldName : plcWriteRequest.getFieldNames()) {

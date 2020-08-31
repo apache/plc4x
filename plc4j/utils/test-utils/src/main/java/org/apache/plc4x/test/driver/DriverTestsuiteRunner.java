@@ -145,11 +145,9 @@ public class DriverTestsuiteRunner {
             // Force the driver to not wait for the connection before returning the connection.
             System.setProperty(GeneratedDriverBase.PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE, "false");
 
-            PlcConnection connection = getConnection(driverName, driverParameters);
-
             TimeUnit.MILLISECONDS.sleep(200);
 
-            return new DriverTestsuite(testsuiteName, connection, setupSteps, teardownSteps, testcases, bigEndian);
+            return new DriverTestsuite(testsuiteName, driverName, driverParameters, setupSteps, teardownSteps, testcases, bigEndian);
         } catch (DocumentException e) {
             throw new DriverTestsuiteException("Error parsing testsuite xml", e);
         } catch (InterruptedException e) {
@@ -177,12 +175,12 @@ public class DriverTestsuiteRunner {
     }
 
     private void run(DriverTestsuite testsuite, Testcase testcase) throws DriverTestsuiteException {
-        final PlcConnection plcConnection = testsuite.getConnection();
-        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(testsuite);
+        final PlcConnection plcConnection = getConnection(testsuite.getDriverName(), testsuite.getDriverParameters());
+        final Plc4xEmbeddedChannel embeddedChannel = getEmbeddedChannel(plcConnection);
         final boolean bigEndian = testsuite.isBigEndian();
         // Be sure this is reset, just in case a previous testcase failed.
         responseFuture = null;
-        if(!testsuite.getSetupSteps().isEmpty()) {
+        if (!testsuite.getSetupSteps().isEmpty()) {
             LOGGER.info("Running setup steps");
             for (TestStep setupStep : testsuite.getSetupSteps()) {
                 executeStep(setupStep, plcConnection, embeddedChannel, bigEndian);
@@ -265,15 +263,18 @@ public class DriverTestsuiteRunner {
                     if(responseFuture == null) {
                         throw new DriverTestsuiteException("No response expected.");
                     }
+                    PlcResponse plcResponse = null;
                     try {
-                        final PlcResponse plcResponse = responseFuture.get(5000, TimeUnit.MILLISECONDS);
-                        // Reset the future.
-                        responseFuture = null;
-                        final String serializedResponse = mapper.writeValueAsString(plcResponse);
-                        validateApiMessage(payload, serializedResponse);
+                        plcResponse = responseFuture.get(5000, TimeUnit.MILLISECONDS);
                     } catch(Exception e) {
-                        throw new DriverTestsuiteException("Got no response within 1000ms.");
+                        throw new DriverTestsuiteException("Got no response within 5000ms.");
                     }
+
+                    // Reset the future.
+                    responseFuture = null;
+                    final String serializedResponse = mapper.writeValueAsString(plcResponse);
+                    validateApiMessage(payload, serializedResponse);
+
                     break;
                 }
                 case DELAY: {
@@ -301,9 +302,9 @@ public class DriverTestsuiteRunner {
         return new TestStep(stepType, stepName, definition);
     }
 
-    private Plc4xEmbeddedChannel getEmbeddedChannel(DriverTestsuite testSuite) {
-        if(testSuite.getConnection() instanceof ChannelExposingConnection) {
-            ChannelExposingConnection connection = (ChannelExposingConnection) testSuite.getConnection();
+    private Plc4xEmbeddedChannel getEmbeddedChannel(PlcConnection plcConnection) {
+        if(plcConnection instanceof ChannelExposingConnection) {
+            ChannelExposingConnection connection = (ChannelExposingConnection) plcConnection;
             Channel channel = connection.getChannel();
             if(channel instanceof Plc4xEmbeddedChannel) {
                 return (Plc4xEmbeddedChannel) channel;
@@ -343,7 +344,7 @@ public class DriverTestsuiteRunner {
 
     private byte[] getOutboundBytes(Plc4xEmbeddedChannel embeddedChannel) throws DriverTestsuiteException {
         ByteBuf byteBuf = null;
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 500; i++) {
             byteBuf = embeddedChannel.readOutbound();
             if(byteBuf != null) {
                 break;
@@ -351,7 +352,7 @@ public class DriverTestsuiteRunner {
             delay(10);
         }
         if(byteBuf == null) {
-            throw new DriverTestsuiteException("No outbound message available within 1000ms");
+            throw new DriverTestsuiteException("No outbound message available within 5000ms");
         }
         final byte[] data = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(data);

@@ -167,7 +167,7 @@
   </testcase>
 
   <testcase>
-    <name>Multi element direct read request</name>
+    <name>Multi-element direct read request</name>
     <description>
       When doing a simple read request with only direct addresses, but multiple
       ones, the unofficial multi-read method should be used to read all in one go.
@@ -221,7 +221,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>2</invokeId>
+            <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteRequest">
               <indexGroup>61568</indexGroup>
               <indexOffset>2</indexOffset>
@@ -277,7 +277,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>2</invokeId>
+            <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteResponse">
               <result>OK</result>
               <data>AAAAAAAAAAABAQ==</data>
@@ -371,7 +371,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>3</invokeId>
+            <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteRequest">
               <indexGroup>61443</indexGroup>
               <indexOffset>0</indexOffset>
@@ -416,7 +416,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>3</invokeId>
+            <invokeId>1</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
               <data>AQCAGw==</data>
@@ -458,7 +458,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>4</invokeId>
+            <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadRequest">
               <indexGroup>61445</indexGroup>
               <indexOffset>461373441</indexOffset>
@@ -501,7 +501,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>4</invokeId>
+            <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
               <data>AAAAAAAAAAABAQ==</data>
@@ -547,6 +547,93 @@
           </fields>
         </TestReadRequest>
       </api-request>
+      <outgoing-plc-message name="Send Resolve Symbolic Address Request">
+        <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
+          <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
+            <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>20</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </targetAmsNetId>
+            <targetAmsPort>48898</targetAmsPort>
+            <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>200</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </sourceAmsNetId>
+            <sourceAmsPort>48898</sourceAmsPort>
+            <commandId>ADS_READ_WRITE</commandId>
+            <state className="org.apache.plc4x.java.ads.readwrite.State">
+              <initCommand>false</initCommand>
+              <updCommand>false</updCommand>
+              <timestampAdded>false</timestampAdded>
+              <highPriorityCommand>false</highPriorityCommand>
+              <systemCommand>false</systemCommand>
+              <adsCommand>true</adsCommand>
+              <noReturn>false</noReturn>
+              <response>false</response>
+              <broadcast>false</broadcast>
+            </state>
+            <errorCode>0</errorCode>
+            <invokeId>1</invokeId>
+            <data className="org.apache.plc4x.java.ads.readwrite.AdsReadWriteRequest">
+              <indexGroup>61443</indexGroup>
+              <indexOffset>0</indexOffset>
+              <readLength>4</readLength>
+              <items/>
+              <data>bWFpbi5mX3RyaWdEYXRlaUdlbGVzZW4uTQA=</data>
+            </data>
+          </userdata>
+        </AmsTCPPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Resolve Symbolic Address Response">
+        <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
+          <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
+            <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>200</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </targetAmsNetId>
+            <targetAmsPort>48898</targetAmsPort>
+            <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>20</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </sourceAmsNetId>
+            <sourceAmsPort>48898</sourceAmsPort>
+            <commandId>ADS_READ_WRITE</commandId>
+            <state className="org.apache.plc4x.java.ads.readwrite.State">
+              <initCommand>false</initCommand>
+              <updCommand>false</updCommand>
+              <timestampAdded>false</timestampAdded>
+              <highPriorityCommand>false</highPriorityCommand>
+              <systemCommand>false</systemCommand>
+              <adsCommand>true</adsCommand>
+              <noReturn>false</noReturn>
+              <response>true</response>
+              <broadcast>false</broadcast>
+            </state>
+            <errorCode>0</errorCode>
+            <invokeId>1</invokeId>
+            <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
+              <result>OK</result>
+              <data>AQCAGw==</data>
+            </data>
+          </userdata>
+        </AmsTCPPacket>
+      </incoming-plc-message>
       <outgoing-plc-message name="Send Ads Read Request">
         <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
           <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
@@ -581,7 +668,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>5</invokeId>
+            <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadRequest">
               <indexGroup>61445</indexGroup>
               <indexOffset>461373441</indexOffset>
@@ -624,7 +711,7 @@
               <broadcast>false</broadcast>
             </state>
             <errorCode>0</errorCode>
-            <invokeId>5</invokeId>
+            <invokeId>2</invokeId>
             <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
               <result>OK</result>
               <data>AAAAAAAAAAABAQ==</data>
@@ -633,6 +720,119 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
+        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
+          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
+            <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
+              <adsDataType>BOOL</adsDataType>
+              <numberOfElements>1</numberOfElements>
+              <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
+            </hurz1>
+          </request>
+          <hurz1>
+            <code>OK</code>
+            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+              <object>false</object>
+            </value>
+          </hurz1>
+        </DefaultPlcReadResponse>
+      </api-response>
+      <delay>500</delay>
+      <api-request name="Receive a second Read Request for the same resource from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz1</name>
+              <address>main.f_trigDateiGelesen.M:BOOL</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send Ads Read Request directly using the preciously resolved address">
+        <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
+          <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
+            <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>20</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </targetAmsNetId>
+            <targetAmsPort>48898</targetAmsPort>
+            <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>200</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </sourceAmsNetId>
+            <sourceAmsPort>48898</sourceAmsPort>
+            <commandId>ADS_READ</commandId>
+            <state className="org.apache.plc4x.java.ads.readwrite.State">
+              <initCommand>false</initCommand>
+              <updCommand>false</updCommand>
+              <timestampAdded>false</timestampAdded>
+              <highPriorityCommand>false</highPriorityCommand>
+              <systemCommand>false</systemCommand>
+              <adsCommand>true</adsCommand>
+              <noReturn>false</noReturn>
+              <response>false</response>
+              <broadcast>false</broadcast>
+            </state>
+            <errorCode>0</errorCode>
+            <invokeId>3</invokeId>
+            <data className="org.apache.plc4x.java.ads.readwrite.AdsReadRequest">
+              <indexGroup>61445</indexGroup>
+              <indexOffset>461373441</indexOffset>
+              <length>1</length>
+            </data>
+          </userdata>
+        </AmsTCPPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Ads Read Response again">
+        <AmsTCPPacket className="org.apache.plc4x.java.ads.readwrite.AmsTCPPacket">
+          <userdata className="org.apache.plc4x.java.ads.readwrite.AmsPacket">
+            <targetAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>200</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </targetAmsNetId>
+            <targetAmsPort>48898</targetAmsPort>
+            <sourceAmsNetId className="org.apache.plc4x.java.ads.readwrite.AmsNetId">
+              <octet1>192</octet1>
+              <octet2>168</octet2>
+              <octet3>23</octet3>
+              <octet4>20</octet4>
+              <octet5>1</octet5>
+              <octet6>1</octet6>
+            </sourceAmsNetId>
+            <sourceAmsPort>48898</sourceAmsPort>
+            <commandId>ADS_READ</commandId>
+            <state className="org.apache.plc4x.java.ads.readwrite.State">
+              <initCommand>false</initCommand>
+              <updCommand>false</updCommand>
+              <timestampAdded>false</timestampAdded>
+              <highPriorityCommand>false</highPriorityCommand>
+              <systemCommand>false</systemCommand>
+              <adsCommand>true</adsCommand>
+              <noReturn>false</noReturn>
+              <response>true</response>
+              <broadcast>false</broadcast>
+            </state>
+            <errorCode>0</errorCode>
+            <invokeId>3</invokeId>
+            <data className="org.apache.plc4x.java.ads.readwrite.AdsReadResponse">
+              <result>OK</result>
+              <data>AAAAAAAAAAABAQ==</data>
+            </data>
+          </userdata>
+        </AmsTCPPacket>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application again">
         <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
           <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
             <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
