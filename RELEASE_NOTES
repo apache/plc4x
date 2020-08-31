@@ -57,6 +57,9 @@ PLC4X-218   [Scraper] After stopping the scraper still the
             terminate
 PLC4X-239   Read DTL (Date and Time)
 PLC4X-240   Protocol error in reading string
+PLC4X-132   [S7] Communication to S7 PLC dies in some situations
+PLC4X-245   [Modbus] Apache NiFi processor throws
+            java.io.IOException after a while
 
 
 ==============================================================
