@@ -22,12 +22,23 @@ package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.ParserStack;
 import org.apache.plc4x.plugins.codegenerator.types.terms.Term;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class ExpressionStringParser {
+
+    private final ParserStack parserStack;
+
+    public ExpressionStringParser() {
+        this(new ParserStack());
+    }
+
+    public ExpressionStringParser(ParserStack parserStack) {
+        this.parserStack = parserStack;
+    }
 
     public Term parse(InputStream source) {
         ExpressionLexer lexer;
@@ -36,7 +47,7 @@ public class ExpressionStringParser {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        ExpressionStringListener listener = new ExpressionStringListener();
+        ExpressionStringListener listener = new ExpressionStringListener(parserStack, ExpressionParser.ruleNames);
         new ParseTreeWalker().walk(listener, new ExpressionParser(new CommonTokenStream(lexer)).expressionString());
         return listener.getRoot();
     }

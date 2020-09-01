@@ -19,21 +19,58 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.expression;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.ParserStack;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class ExpressionStringListener extends ExpressionBaseListener {
 
+    private final List<String> ruleNames;
+    private final ParserStack parserStack;
     private Stack<List<Term>> parserContexts;
 
     private Term root;
 
+    public ExpressionStringListener(ParserStack parserStack, String[] recognizer) {
+        this.parserStack = parserStack;
+        this.ruleNames = Arrays.asList(recognizer);
+    }
+
     public Term getRoot() {
         return root;
+    }
+
+    @Override
+    public void visitErrorNode(ErrorNode node) {
+        System.out.println("Error in expression " + parserStack.toString() + " " + node);
+    }
+
+    @Override
+    public void enterEveryRule(ParserRuleContext ctx) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("kind", "expression");
+        context.put("source", ctx.getStart().getTokenSource().getSourceName());
+        context.put("line", ctx.getStart().getTokenSource().getLine());
+        context.put("callChain", ctx.getRuleContext().toString(ruleNames));
+        parserStack.push(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine(),
+            context
+        );
+    }
+
+    @Override
+    public void exitEveryRule(ParserRuleContext ctx) {
+        parserStack.pop();
     }
 
     @Override

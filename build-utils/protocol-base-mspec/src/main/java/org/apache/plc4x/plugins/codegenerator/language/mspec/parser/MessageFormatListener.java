@@ -19,9 +19,12 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecBaseListener;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.ParserStack;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.expression.ExpressionStringParser;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.fields.*;
@@ -45,11 +48,19 @@ import java.util.*;
 
 public class MessageFormatListener extends MSpecBaseListener {
 
+    private final ParserStack parserStack;
+    private final List<String> ruleNames;
+
     private Deque<List<Field>> parserContexts;
 
     private Deque<List<EnumValue>> enumContexts;
 
     private Map<String, TypeDefinition> types;
+
+    public MessageFormatListener(ParserStack parserStack, String[] ruleNames) {
+        this.parserStack = parserStack;
+        this.ruleNames = Arrays.asList(ruleNames);
+    }
 
     public Deque<List<Field>> getParserContexts() {
         return parserContexts;
@@ -68,6 +79,31 @@ public class MessageFormatListener extends MSpecBaseListener {
         parserContexts = new LinkedList<>();
         enumContexts = new LinkedList<>();
         types = new HashMap<>();
+    }
+
+    @Override
+    public void enterEveryRule(ParserRuleContext ctx) {
+        Map<String, Object> context = new HashMap<>();
+        context.put("kind", "mspec");
+        context.put("source", ctx.getStart().getTokenSource().getSourceName());
+        context.put("line", ctx.getStart().getTokenSource().getLine());
+        context.put("text", ctx.getRuleContext().getText());
+        context.put("callChain", ctx.getRuleContext().toString(ruleNames));
+        parserStack.push(
+            ctx.getStart().getLine(),
+            ctx.getStart().getCharPositionInLine(),
+            context
+        );
+    }
+
+    @Override
+    public void exitEveryRule(ParserRuleContext ctx) {
+        parserStack.pop();
+    }
+
+    @Override
+    public void visitErrorNode(ErrorNode node) {
+        System.out.println("Error node " + parserStack.toString() + " " + node);
     }
 
     @Override
@@ -412,7 +448,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private Term getExpressionTerm(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(parserStack);
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
@@ -495,7 +531,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     private Term parseExpression(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser();
+        ExpressionStringParser parser = new ExpressionStringParser(parserStack);
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {

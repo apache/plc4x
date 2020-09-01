@@ -19,27 +19,80 @@
 
 package org.apache.plc4x.plugins.codegenerator.language.mspec.parser;
 
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecLexer;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.MSpecParser;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.ParserStack;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.TypeDefinition;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 public class MessageFormatParser {
 
+    private final ParserStack parserStack;
+
+    public MessageFormatParser() {
+        this(new ParserStack());
+    }
+
+    public MessageFormatParser(ParserStack stack) {
+        this.parserStack = stack;
+    }
+
     public Map<String, TypeDefinition> parse(InputStream source) {
-        MSpecLexer lexer;
         try {
-            lexer = new MSpecLexer(CharStreams.fromStream(source));
+            return parse(CharStreams.fromStream(source));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not read source stream", e);
         }
-        MessageFormatListener listener = new MessageFormatListener();
+    }
+
+    public Map<String, TypeDefinition> parse(InputStream source, String name) {
+        try {
+            return parse(CharStreams.fromReader(new InputStreamReader(source), name));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read source stream", e);
+        }
+    }
+
+    public Map<String, TypeDefinition> parse(Path source) {
+        try {
+            return parse(CharStreams.fromPath(source));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read source path", e);
+        }
+    }
+
+    public Map<String, TypeDefinition> parse(URL source) {
+        try {
+            return parse(Paths.get(source.toURI()));
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Invalid source URI", e);
+        }
+    }
+
+    public Map<String, TypeDefinition> parse(File source) {
+        try {
+            return parse(CharStreams.fromFileName(source.getAbsolutePath()));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not open file", e);
+        }
+    }
+
+    private Map<String, TypeDefinition> parse(CharStream input) {
+        MSpecLexer lexer = new MSpecLexer(input);
+        MessageFormatListener listener = new MessageFormatListener(parserStack, MSpecParser.ruleNames);
         new ParseTreeWalker().walk(listener, new MSpecParser(new CommonTokenStream(lexer)).file());
         return listener.getTypes();
     }
