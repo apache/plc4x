@@ -663,7 +663,7 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
 
 <#if indentContent>    </#if>  // Padding Field (padding)
             <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-<#if indentContent>    </#if> int _needsPadding = (int) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+<#if indentContent>    </#if> int _needsPadding = (int) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")});
 <#if indentContent>    </#if> while(_needsPadding-- > 0) {
 <#if indentContent>    </#if>    lengthInBits += ${simpleTypeReference.sizeInBits};
 <#if indentContent>    </#if>  }
