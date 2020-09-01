@@ -327,8 +327,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 
 <#if indentContent>  </#if>  // Padding Field (padding)
 <#if indentContent>  </#if>  {
-<#if indentContent>  </#if>    bool _needsPadding = (bool) ((plc4c_spi_read_has_more(buf, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)}));
-<#if indentContent>  </#if>    if(_needsPadding) {
+<#if indentContent>  </#if>    int _timesPadding = (int) ((plc4c_spi_read_has_more(buf, ${helper.getNumBits(paddingField.type)})) && (${helper.toParseExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)}));
+<#if indentContent>  </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>  </#if>      // Just read the padding data and ignore it
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)} _paddingValue = ${helper.getNullValueForTypeReference(paddingField.type)};
 <#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(paddingField.type, "&_paddingValue")};
@@ -516,8 +516,8 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_bu
 <#if indentContent>    </#if>  // Padding Field (padding)
 <#if indentContent>    </#if>  {
     <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-<#if indentContent>    </#if>    bool _needsPadding = (bool) (${helper.toSerializationExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)});
-<#if indentContent>    </#if>    if(_needsPadding) {
+<#if indentContent>    </#if>    int _timesPadding = (int) (${helper.toSerializationExpression(baseType, paddingField, paddingField.paddingCondition, baseType.parserArguments)});
+<#if indentContent>    </#if>    while (_timesPadding-- > 0) {
 <#if indentContent>    </#if>      // Just output the default padding data
 <#if indentContent>    </#if>      _res = ${helper.getWriteBufferWriteMethodCall(paddingField.type, helper.toParseExpression(baseType, paddingField, paddingField.paddingValue, baseType.parserArguments))};
 <#if indentContent>    </#if>      if(_res != OK) {
@@ -663,7 +663,8 @@ uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(
 
 <#if indentContent>    </#if>  // Padding Field (padding)
             <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-<#if indentContent>    </#if>  if((bool) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})) {
+<#if indentContent>    </#if> int _needsPadding = (int) (${helper.toSerializationExpression(type, paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})
+<#if indentContent>    </#if> while(_needsPadding-- > 0) {
 <#if indentContent>    </#if>    lengthInBits += ${simpleTypeReference.sizeInBits};
 <#if indentContent>    </#if>  }
                 <#break>

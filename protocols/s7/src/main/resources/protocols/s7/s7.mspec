@@ -234,7 +234,7 @@
     [enum     DataTransportSize      'transportSize']
     [implicit uint 16                'dataLength' 'COUNT(data) * ((transportSize == DataTransportSize.BIT) ? 1 : (transportSize.sizeInBits ? 8 : 1))']
     [array    int  8                 'data'       count 'transportSize.sizeInBits ? CEIL(dataLength / 8.0) : dataLength']
-    [padding  uint 8                 'pad'        '0x00' '!lastItem && ((COUNT(data) % 2) == 1)']
+    [padding  uint 8                 'pad'        '0x00' 'lastItem ? 0 : COUNT(data) % 2']
 ]
 
 [type 'S7VarPayloadStatusItem'

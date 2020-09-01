@@ -251,7 +251,8 @@ public<#if helper.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${
 
         // Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        if((boolean) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")})) {
+        int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)?replace("lastItem", "false")});
+        while (_timesPadding-- > 0) {
             lengthInBits += ${simpleTypeReference.sizeInBits};
         }
         <#break>
