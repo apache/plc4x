@@ -338,8 +338,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            int _needsPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
-            while ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && _needsPadding-- > 0) {
+            int _timesPadding = (int) (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            while ((io.hasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding-- > 0)) {
                 // Just read the padding data and ignore it
                 ${helper.getReadBufferReadMethodCall(simpleTypeReference)};
             }
@@ -505,8 +505,8 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
 
         // Padding Field (padding)
         {
-            int _needsPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
-            while (_needsPadding-- > 0) {
+            int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
+            while (_timesPadding-- > 0) {
                 ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
                 ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
             }
