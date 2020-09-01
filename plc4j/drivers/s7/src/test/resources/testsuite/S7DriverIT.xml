@@ -349,7 +349,7 @@
         <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
           <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
             <parameters/>
-            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponseData">
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponse">
               <tpduReference>10</tpduReference>
               <errorClass>129</errorClass>
               <errorCode>4</errorCode>
