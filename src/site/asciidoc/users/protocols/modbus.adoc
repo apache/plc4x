@@ -106,6 +106,8 @@ There are a number of memory areas defined in the Modbus specification.
 |Holding Register |`holding-register:` or `4` or `4x` |Short value, usually representing an analog output from the PLC    |16 |Read/Write|1
 |Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read Only|0
 
+|===
+
 Initially the Modbus format was specified allowing up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
 Later on this was expanded to allow up 65536 address to be specified per memory area (except the extended register area).
 When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified. When using the shorter versions there are two formats available  i.e. 30001 and 300001.
