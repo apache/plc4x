@@ -96,7 +96,7 @@ There are a number of memory areas defined in the Modbus specification.
 - Holding Register
 - Extended Register Area
 
-[cols="2,2a,5,1"]
+[cols="2,2a,5,1,2,1"]
 |===
 |Name |Memory Area Aliases |Description |Bit-Size | Permissions | Starting Address
 
