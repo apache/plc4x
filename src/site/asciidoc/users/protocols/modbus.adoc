@@ -120,9 +120,6 @@ Using the extended-register: format you are able to reference all of these, if t
 This memory area starts at address 0.
 At the moment this implementation only supports reading the extended memory area.
 
-|===
-
-
 ==== Data Types
 
 In contrast to most other protocols Modbus only supports two datatypes.
