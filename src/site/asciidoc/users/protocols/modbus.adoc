@@ -108,9 +108,10 @@ There are a number of memory areas defined in the Modbus specification.
 
 |===
 
-Initially the Modbus format was specified allowing up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
-Later on this was expanded to allow up 65536 address to be specified per memory area (except the extended register area).
-When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified. When using the shorter versions there are two formats available  i.e. 30001 and 300001.
+Initially the Modbus format allowed up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
+Later on, this was expanded to allow up 65536 address within each memory area (except the extended register area).
+When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified. 
+When using the shorter versions there are two formats available  i.e. 30001 and 300001.
 With the shorter format 3XXXX being limited to between 30001 and 39999, while the longer format 3XXXXX being limited to between 300001 and 365535.
 These memory areas all start at address 1.
 
@@ -136,6 +137,7 @@ Most memory areas start at address 1, except for the extended register area whic
 The input, holding and extended registers consist of 16-bit registers while the discrete input and coil areas consist of bits.
 
 The Modbus function codes:-
+
 - 0x01 (Read Coils)
 - 0x02 (Read Discrete Inputs)
 - 0x03 (Read Holding Registers)
@@ -147,10 +149,10 @@ The Modbus function codes:-
 - 0x14 (Read File Record)(Extended Register Read)
 - 0x15 (Write File Record)(Extended Register Write is not yet supported)
 
-
 ==== Examples
 
 To read 10 holding registers starting at address 20 the following examples are all valid.
+
 - holding-register:20[10]
 - 400020[10]
 - 4x00020[10]
@@ -158,6 +160,7 @@ To read 10 holding registers starting at address 20 the following examples are a
 - 4x0020[10]
 
 To read 1 holding register at address 5678 the following examples are valid.
+
 - holding-register:5678
 - 405678
 - 4x05678
@@ -165,18 +168,22 @@ To read 1 holding register at address 5678 the following examples are valid.
 - 4x5678
 
 To read 10 extended registers starting at address 50 the following examples are valid.
+
 - extended-register:50[10]
 - 600050[10]
 - 6x00050[10]
 - 60050[10]
 - 6x0050[10]
+
 This corresponds to addresses 50-60 in file record 1.
 
 To read 10 extended registers starting at address 9995 the following examples are valid.
+
 - extended-register:9995[10]
 - 609995[10]
 - 6x09995[10]
 - 69995[10]
 - 6x9995[10]
+
 This corresponds to addresses 9995-9999 in file record 1 and addresses 0-5 in file record 2.
 Note that this request is split into 2 sub requests in the Modbus protocol.
