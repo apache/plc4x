@@ -30,14 +30,14 @@ import java.util.*;
 
 public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
-    private static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
+    public static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
         .Builder().name("PLC_CONNECTION_STRING")
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
-    private static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
+    public static final PropertyDescriptor PLC_ADDRESS_STRING = new PropertyDescriptor
         .Builder().name("PLC_ADDRESS_STRING")
         .displayName("PLC resource address String")
         .description("PLC4X address string used identify the resource to read/write on a given PLC device " +
@@ -46,16 +46,16 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         .addValidator(new Plc4xAddressStringValidator())
         .build();
 
-    static final Relationship SUCCESS = new Relationship.Builder()
-        .name("SUCCESS")
+    public final Relationship REL_SUCCESS = new Relationship.Builder()
+        .name("success")
         .description("Successfully processed")
         .build();
-    static final Relationship FAILURE = new Relationship.Builder()
-        .name("FAILURE")
+    public final Relationship REL_FAILURE = new Relationship.Builder()
+        .name("failure")
         .description("An error occurred processing")
         .build();
 
-    private List<PropertyDescriptor> descriptors;
+    protected List<PropertyDescriptor> descriptors;
 
     Set<Relationship> relationships;
 
@@ -65,9 +65,14 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @Override
     protected void init(final ProcessorInitializationContext context) {
         this.descriptors = Arrays.asList(PLC_CONNECTION_STRING, PLC_ADDRESS_STRING);
-        this.relationships = new HashSet<>(Arrays.asList(SUCCESS, FAILURE));
+        this.relationships = new HashSet<>(Arrays.asList(REL_SUCCESS, REL_FAILURE));
     }
 
+    
+    public Map<String, String> getPlcAddress() {
+        return addressMap;
+    }
+    
     public String getConnectionString() {
         return connectionString;
     }
