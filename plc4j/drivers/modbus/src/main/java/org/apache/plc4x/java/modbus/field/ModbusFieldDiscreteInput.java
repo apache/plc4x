@@ -29,8 +29,8 @@ public class ModbusFieldDiscreteInput extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("1" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("1x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    public ModbusFieldDiscreteInput(int address, Integer quantity) {
-        super(address, quantity);
+    public ModbusFieldDiscreteInput(int address, Integer quantity, String datatype) {
+        super(address, quantity, datatype);
     }
 
     public static boolean matches(String addressString) {
@@ -62,6 +62,10 @@ public class ModbusFieldDiscreteInput extends ModbusField {
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldDiscreteInput(address, quantity);
+
+        String datatypeTemp = matcher.group("datatype");
+        String datatype = datatypeTemp != null ? datatypeTemp : "INT";
+
+        return new ModbusFieldDiscreteInput(address, quantity, datatype);
     }
 }

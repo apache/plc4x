@@ -21,19 +21,50 @@ package org.apache.plc4x.java.modbus.field;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+):(?<datatype>[a-zA-Z_]+)(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5}):(?<datatype>[a-zA-Z_]+)(\\[(?<quantity>\\d+)])?");
+    public static final String[] DATATYPES = {"BYTE",
+                                              "WORD",
+                                              "DWORD",
+                                              "LWORD",
+                                              "SINT",
+                                              "INT",
+                                              "DINT",
+                                              "LINT",
+                                              "USINT",
+                                              "UINT",
+                                              "UDINT",
+                                              "ULINT",
+                                              "REAL",
+                                              "LREAL",
+                                              "TIME",
+                                              "LTIME",
+                                              "DATE",
+                                              "LDATE",
+                                              "TIME_OF_DAY",
+                                              "LTIME_OF_DAY",
+                                              "DATE_TIME",
+                                              "LDATE_TIME",
+                                              "CHAR",
+                                              "WCHAR",
+                                              "STRING",
+                                              "WSTRING"};
+
     protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
     private final int quantity;
+
+    private final String dataType;
 
     public static ModbusField of(String addressString) throws PlcInvalidFieldException {
         if(ModbusFieldCoil.matches(addressString)) {
@@ -54,7 +85,7 @@ public abstract class ModbusField implements PlcField {
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
-    protected ModbusField(int address, Integer quantity) {
+    protected ModbusField(int address, Integer quantity, String dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
             throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
@@ -62,6 +93,10 @@ public abstract class ModbusField implements PlcField {
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
+        }
+        this.dataType = dataType != null ? dataType : "INT";
+        if (ArrayUtils.contains( DATATYPES, this.dataType.toUpperCase()) == false) {
+            throw new IllegalArgumentException("datatype must be an IEC-61131 listed datatype. Was " + this.dataType);
         }
     }
 
@@ -71,6 +106,10 @@ public abstract class ModbusField implements PlcField {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public String getDataType() {
+        return dataType;
     }
 
     @Override
@@ -94,6 +133,7 @@ public abstract class ModbusField implements PlcField {
     public String toString() {
         return "ModbusField{" +
             "address=" + address +
+            "datatype=" + dataType +
             "quantity=" + quantity +
             '}';
     }

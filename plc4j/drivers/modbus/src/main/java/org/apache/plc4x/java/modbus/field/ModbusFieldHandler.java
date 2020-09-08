@@ -19,10 +19,15 @@ under the License.
 package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.modbus.readwrite.PlcINT;
+import org.apache.plc4x.java.modbus.readwrite.PlcUINT;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
@@ -124,6 +129,43 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
         return encodeShort(field, values);
+    }
+
+    @Override
+    public PlcValue encodeString(PlcField field, Object[] values) {
+        ModbusField modbusField = (ModbusField) field;
+        switch (modbusField.getDataType()) {
+            case "INT":
+              if(values.length == 1) {
+                  return new PlcINT((String) values[0]);
+              } else {
+                  //return PlcINT.getList(values);
+                  return new PlcINT((String) values[0]);
+              }
+            case "UINT":
+              if(values.length == 1) {
+                  return new PlcUINT((String) values[0]);
+              } else {
+                  //return PlcUINT.getList(values);
+                  return new PlcINT((String) values[0]);
+              }
+            case "BYTE":
+            case "SINT":
+            case "USINT":
+            case "WORD":
+            case "DWORD":
+            case "DINT":
+            case "UDINT":
+            case "LWORD":
+            case "LINT":
+            case "ULINT":
+            case "CHAR":
+            case "WCHAR":
+            case "STRING":
+            case "WSTRING":
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
+        }
     }
 
     @Override

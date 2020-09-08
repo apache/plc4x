@@ -27,11 +27,14 @@ import org.apache.plc4x.java.api.value.PlcList;
 import org.apache.plc4x.java.api.value.PlcShort;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.config.ModbusConfiguration;
+import org.apache.plc4x.java.modbus.field.ModbusField;
 import org.apache.plc4x.java.modbus.field.ModbusFieldCoil;
 import org.apache.plc4x.java.modbus.field.ModbusFieldDiscreteInput;
 import org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister;
 import org.apache.plc4x.java.modbus.field.ModbusFieldInputRegister;
 import org.apache.plc4x.java.modbus.field.ModbusExtendedRegister;
+import org.apache.plc4x.java.modbus.readwrite.PlcINT;
+import org.apache.plc4x.java.modbus.readwrite.PlcUINT;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.readwrite.io.DataItemIO;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -94,7 +97,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         // Example for sending a request ...
         if(request.getFieldNames().size() == 1) {
             String fieldName = request.getFieldNames().iterator().next();
-            PlcField field = request.getField(fieldName);
+            ModbusField field = (ModbusField) request.getField(fieldName);
             final ModbusPDU requestPdu = getReadRequestPdu(field);
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
@@ -140,7 +143,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         }
                     } else {
                         try {
-                            plcValue = toPlcValue(requestPdu, responsePdu);
+                            plcValue = toPlcValue(requestPdu, responsePdu, field.getDataType());
                             responseCode = PlcResponseCode.OK;
                         } catch (ParseException e) {
                             // Add an error response code ...
@@ -272,7 +275,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         throw new PlcRuntimeException("Unsupported write field type " + field.getClass().getName());
     }
 
-    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response) throws ParseException {
+    private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, String dataType) throws ParseException {
+        System.out.println(dataType);
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
             if (!(response instanceof ModbusPDUReadDiscreteInputsResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -379,6 +383,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             bytes[0] = (byte)((shortValue >> 8) & 0xff);
             bytes[1] = (byte)(shortValue & 0xff);
             return bytes;
+        } else if(plcValue instanceof PlcUINT) {
+            return ((PlcUINT) plcValue).getBytes();
+        }
+        else if(plcValue instanceof PlcINT) {
+            return ((PlcINT) plcValue).getBytes();
         }
         return new byte[0];
     }

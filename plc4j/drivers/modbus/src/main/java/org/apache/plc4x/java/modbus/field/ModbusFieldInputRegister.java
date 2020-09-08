@@ -29,8 +29,8 @@ public class ModbusFieldInputRegister extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("3" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("3x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
-    protected ModbusFieldInputRegister(int address, Integer quantity) {
-        super(address, quantity);
+    protected ModbusFieldInputRegister(int address, Integer quantity, String datatype) {
+        super(address, quantity, datatype);
     }
 
     public static boolean matches(String addressString) {
@@ -61,6 +61,10 @@ public class ModbusFieldInputRegister extends ModbusField {
 
         String quantityString = matcher.group("quantity");
         Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
-        return new ModbusFieldInputRegister(address, quantity);
+
+        String datatypeTemp = matcher.group("datatype");
+        String datatype = datatypeTemp != null ? datatypeTemp : "INT";
+
+        return new ModbusFieldInputRegister(address, quantity, datatype);
     }
 }
