@@ -277,7 +277,7 @@
         ['1' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['2','1' Integer
+        ['2','1' INT
             [simple int 16 'value']
         ]
         ['2' List
