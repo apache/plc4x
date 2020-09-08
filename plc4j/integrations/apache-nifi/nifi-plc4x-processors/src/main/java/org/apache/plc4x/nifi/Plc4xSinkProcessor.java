@@ -78,7 +78,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         } catch (ProcessException e) {
             throw e;
         } catch (Exception e) {
-            throw new ProcessException("Got an error while trying to get a connection");
+            throw new ProcessException("Got an error while trying to get a connection", e);
         }
     }
 
