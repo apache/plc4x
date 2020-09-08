@@ -256,6 +256,7 @@ public class ${type.name}IO {
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, boolean littleEndian) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
             WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case, type.parserArguments)} / 8, littleEndian);
+            Plc${case.name} plcVal = (Plc${case.name}) _value;
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
@@ -283,7 +284,7 @@ public class ${type.name}IO {
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${field.name}").get${helper.getLanguageTypeNameForField(field)?cap_first}();
                         <#else>
                             <#if field.name == "value">
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${case.name}();
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) plcVal.get${case.name}();
                             <#else>
                                 <#-- Just for now -->
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForTypeReference(field.type)};
