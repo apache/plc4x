@@ -139,15 +139,21 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
               if(values.length == 1) {
                   return new PlcINT((String) values[0]);
               } else {
-                  //return PlcINT.getList(values);
-                  return new PlcINT((String) values[0]);
+                List<PlcINT> plcINTValues = new LinkedList<>();
+                for (int i = 0; i < values.length; i++) {
+                  plcINTValues.add(new PlcINT((String) values[i]));
+                }
+                return new PlcList(plcINTValues);
               }
             case "UINT":
               if(values.length == 1) {
                   return new PlcUINT((String) values[0]);
               } else {
-                  //return PlcUINT.getList(values);
-                  return new PlcINT((String) values[0]);
+                  List<PlcUINT> plcUINTValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcUINTValues.add(new PlcUINT((String) values[i]));
+                  }
+                  return new PlcList(plcUINTValues);
               }
             case "BYTE":
             case "SINT":
