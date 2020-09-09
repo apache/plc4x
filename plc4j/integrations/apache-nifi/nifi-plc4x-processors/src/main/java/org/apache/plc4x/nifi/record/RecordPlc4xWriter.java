@@ -18,6 +18,7 @@ import org.apache.nifi.serialization.record.Record;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.serialization.record.RecordSet;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
 import org.apache.plc4x.nifi.util.Plc4xCommon;
 import org.apache.avro.Schema;
@@ -41,9 +42,17 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 
 	@Override
 	public long writeResultSet(PlcReadResponse response, Map<String, String> plcAddressMap, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
-		if (fullRecordSet == null) {
+		if (fullRecordSet == null) {	
 			//TODO: infer Protocol form connection string
-            final Schema avroSchema = Plc4xCommon.createSchema(plcAddressMap, PLC4X_PROTOCOL.S7);
+			
+			//TODO version 1
+            //final Schema avroSchema = Plc4xCommon.createSchema(plcAddressMap, PLC4X_PROTOCOL.S7);
+                        
+			//TODO version 2: is this mapping based on "PlcDatatype" classes valid for aall protocols?
+			Map<String, ? extends PlcValue> responseDataStructure = response.getAsPlcValue().getStruct();
+			
+			final Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure);
+            
             final RecordSchema recordAvroSchema = AvroTypeUtil.createSchema(avroSchema);
             fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(plcAddressMap, response, recordAvroSchema, callback);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
