@@ -33,15 +33,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcUINT extends PlcValueAdapter {
+public class PlcUINT extends PlcIECValue<Integer> {
 
     BigInteger minValue = BigInteger.valueOf(0);
     BigInteger maxValue = BigInteger.valueOf(((long) Short.MAX_VALUE) * 2);
 
-    final Integer value;
-    final boolean isNullable;
-
     public PlcUINT(Integer value) {
+        super();
         if ((BigInteger.valueOf(value).compareTo(minValue) > 0) && (BigInteger.valueOf(value).compareTo(maxValue) < 0)) {
           this.value = value;
           this.isNullable = false;
@@ -51,6 +49,7 @@ public class PlcUINT extends PlcValueAdapter {
     }
 
     public PlcUINT(Short value) {
+        super();
         if ((BigInteger.valueOf(value).compareTo(minValue) > 0) && (BigInteger.valueOf(value).compareTo(maxValue) < 0)) {
           this.value = (Integer) value.intValue();
           this.isNullable = false;
@@ -60,6 +59,7 @@ public class PlcUINT extends PlcValueAdapter {
     }
 
     public PlcUINT(String value) {
+        super();
         Integer val;
         try {
           val = Integer.parseInt(value);
@@ -77,6 +77,7 @@ public class PlcUINT extends PlcValueAdapter {
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcUINT(@JsonProperty("value") int value) {
+      super();
       this.value = value;
       this.isNullable = false;
     }
@@ -99,62 +100,11 @@ public class PlcUINT extends PlcValueAdapter {
         return Integer.toString(value);
     }
 
-    @Override
-    public Object getObject() {
-        return value;
-    }
-
-    @Override
-    @JsonIgnore
-    public int getLength() {
-        return 1;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isSimple() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isNullable() {
-        return isNullable;
-    }
-
     public byte[] getBytes() {
         byte[] bytes = new byte[2];
         bytes[0] = (byte)((value >> 8) & 0xff);
         bytes[1] = (byte)(value & 0xff);
         return bytes;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isNull() {
-        return isNullable && value == null;
-    }
-
-    //public static int getList(String[] values) {
-    //    List<String> plcUintList = new LinkedList<>();
-    //    for (int i = 0; i < values.length; i++) {
-    //      plcUintList.add(new PlcUINT((String) values[i]));
-    //    }
-    //    return new PlcList(plcUintList);
-    //}
-
-    /**
-     * Convenience method to simplify accessing items with a list syntax.
-     * @param i item number
-     * @return if i == 0 returns itself, otherwise throws an exception.
-     */
-    @Override
-    @JsonIgnore
-    public PlcValue getIndex(int i) {
-        if(i == 0) {
-            return this;
-        }
-        return super.getIndex(i);
     }
 
 }
