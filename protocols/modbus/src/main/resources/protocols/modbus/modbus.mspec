@@ -277,11 +277,54 @@
         ['1' List
             [array bit 'value' count 'numberOfValues']
         ]
-        ['2','1' INT
+        ['21','1' INT
             [simple int 16 'value']
         ]
-        ['2' List
+        ['21' List
             [array int 16 'value' count 'numberOfValues']
         ]
+        ['25','1' UINT
+            [simple uint 16 'value']
+        ]
+        ['25' List
+            [array uint 16 'value' count 'numberOfValues']
+        ]
+        ['30','1' REAL
+            [simple float 8.23  'value']
+        ]
+        ['30' List
+            [array float 8.23 'value' count 'numberOfValues']
+        ]
     ]
+]
+
+[enum uint 8 'ModbusDataType' [uint 8 'dataTypeSize']
+    ['00' NULL ['0']]
+    ['01' BOOL ['1']]
+    ['10' BYTE ['1']]
+    ['11' WORD ['2']]
+    ['12' DWORD ['4']]
+    ['13' LWORD ['8']]
+    ['20' SINT ['1']]
+    ['21' INT ['2']]
+    ['22' DINT ['4']]
+    ['23' LINT ['8']]
+    ['24' USINT ['1']]
+    ['25' UINT ['2']]
+    ['26' UDINT ['4']]
+    ['27' ULINT ['8']]
+    ['30' REAL ['4']]
+    ['31' LREAL ['8']]
+    ['40' TIME ['8']]
+    ['41' LTIME ['8']]
+    ['50' DATE ['8']]
+    ['51' LDATE ['8']]
+    ['60' TIME_OF_DAY ['8']]
+    ['61' LTIME_OF_DAY ['8']]
+    ['70' DATE_AND_TIME ['8']]
+    ['71' LDATE_AND_TIME ['8']]
+    ['80' CHAR ['1']]
+    ['81' WCHAR ['2']]
+    ['82' STRING ['8']]
+    ['83' WSTRING ['8']]
 ]

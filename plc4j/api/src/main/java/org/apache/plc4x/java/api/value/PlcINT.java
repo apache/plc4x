@@ -17,13 +17,13 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.modbus.readwrite;
+package org.apache.plc4x.java.api.value;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import org.apache.plc4x.java.api.value.*;
 
@@ -40,46 +40,54 @@ public class PlcINT extends PlcIECValue<Short> {
 
     public PlcINT(Short value) {
       super();
-      if ((BigInteger.valueOf(value).compareTo(minValue) > 0) && (BigInteger.valueOf(value).compareTo(maxValue) < 0)) {
+      if ((BigInteger.valueOf(value).compareTo(minValue) >= 0) && (BigInteger.valueOf(value).compareTo(maxValue) <= 0)) {
         this.value = value;
         this.isNullable = false;
       } else {
-        throw new PlcIncompatibleDatatypeException("");
+        throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a PLCINT Value");
       }
     }
 
     public PlcINT(Integer value) {
       super();
-      if ((BigInteger.valueOf(value).compareTo(minValue) > 0) && (BigInteger.valueOf(value).compareTo(maxValue) < 0)) {
+      if ((BigInteger.valueOf(value).compareTo(minValue) >= 0) && (BigInteger.valueOf(value).compareTo(maxValue) <= 0)) {
         this.value = (Short) value.shortValue();
         this.isNullable = false;
       } else {
-        throw new PlcIncompatibleDatatypeException("");
+        throw new PlcInvalidFieldException("Value of type " + value +
+          " is out of range " + minValue + " - " + maxValue + " for a PLCINT Value");
       }
     }
 
     public PlcINT(String value) {
       super();
-      Short val;
       try {
-        val = Short.valueOf((String) value).shortValue();
+        Short val = Short.valueOf(value).shortValue();
+        if ((BigInteger.valueOf(val).compareTo(minValue) >= 0) && (BigInteger.valueOf(val).compareTo(maxValue) <= 0)) {
+          this.value = val;
+          this.isNullable = false;
+        } else {
+          throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a PLCINT Value");
+        }
       }
       catch(Exception e) {
-        throw new PlcIncompatibleDatatypeException("");
-      }
-      if ((BigInteger.valueOf(val).compareTo(minValue) > 0) && (BigInteger.valueOf(val).compareTo(maxValue) < 0)) {
-        this.value = val;
-        this.isNullable = false;
-      } else {
-        throw new PlcIncompatibleDatatypeException("");
+        throw new PlcInvalidFieldException("Value of type " + value +
+          " is out of range " + minValue + " - " + maxValue + " for a PLCINT Value");
       }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcINT(@JsonProperty("value") short value) {
       super();
-      this.value = value;
-      this.isNullable = false;
+      if ((BigInteger.valueOf(value).compareTo(minValue) >= 0) && (BigInteger.valueOf(value).compareTo(maxValue) <= 0)) {
+        this.value = value;
+        this.isNullable = false;
+      } else {
+        throw new PlcInvalidFieldException("Value of type " + value +
+          " is out of range " + minValue + " - " + maxValue + " for a PLCINT Value");
+      }
     }
 
     @Override

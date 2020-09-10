@@ -60,7 +60,7 @@ public class ModbusFieldHoldingRegister extends ModbusField {
         int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : 1;
 
         String datatypeTemp = matcher.group("datatype");
         String datatype = datatypeTemp != null ? datatypeTemp : "INT";

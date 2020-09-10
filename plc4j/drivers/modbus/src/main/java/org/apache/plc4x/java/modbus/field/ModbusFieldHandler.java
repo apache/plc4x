@@ -21,10 +21,9 @@ package org.apache.plc4x.java.modbus.field;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.modbus.readwrite.PlcINT;
-import org.apache.plc4x.java.modbus.readwrite.PlcUINT;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.modbus.readwrite.*;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -90,7 +89,7 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBoolean(booleanValues.get(0));
+            return new PlcBOOL(booleanValues.get(0));
         } else {
             return new PlcList(booleanValues);
         }
@@ -103,7 +102,51 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        ModbusField modbusField = (ModbusField) field;
+        switch (modbusField.getDataType()) {
+            case "INT":
+              if(values.length == 1) {
+                  return new PlcINT((Integer) values[0]);
+              } else {
+                List<PlcINT> plcINTValues = new LinkedList<>();
+                for (int i = 0; i < values.length; i++) {
+                  plcINTValues.add(new PlcINT((Integer) values[i]));
+                }
+                return new PlcList(plcINTValues);
+              }
+            case "UINT":
+              if(values.length == 1) {
+                  return new PlcUINT((Integer) values[0]);
+              } else {
+                  List<PlcUINT> plcUINTValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcUINTValues.add(new PlcUINT((Integer) values[i]));
+                  }
+                  return new PlcList(plcUINTValues);
+              }
+            case "REAL":
+              if(values.length == 1) {
+                  return new PlcREAL((Integer) values[0]);
+              } else {
+                  List<PlcREAL> plcREALValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcREALValues.add(new PlcREAL((Integer) values[i]));
+                  }
+                  return new PlcList(plcREALValues);
+              }
+            case "BOOL":
+              if(values.length == 1) {
+                  return new PlcBOOL((Integer) values[0]);
+              } else {
+                  List<PlcBOOL> plcBOOLValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcBOOLValues.add(new PlcBOOL((Integer) values[i]));
+                  }
+                  return new PlcList(plcBOOLValues);
+              }
+            default:
+                throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
+        }
     }
 
     @Override
@@ -118,7 +161,21 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+      ModbusField modbusField = (ModbusField) field;
+      switch (modbusField.getDataType()) {
+          case "REAL":
+            if(values.length == 1) {
+                return new PlcREAL((String) values[0]);
+            } else {
+                List<PlcREAL> plcREALValues = new LinkedList<>();
+                for (int i = 0; i < values.length; i++) {
+                  plcREALValues.add(new PlcREAL((String) values[i]));
+                }
+                return new PlcList(plcREALValues);
+            }
+          default:
+              throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
+      }
     }
 
     @Override
@@ -155,20 +212,26 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
                   }
                   return new PlcList(plcUINTValues);
               }
-            case "BYTE":
-            case "SINT":
-            case "USINT":
-            case "WORD":
-            case "DWORD":
-            case "DINT":
-            case "UDINT":
-            case "LWORD":
-            case "LINT":
-            case "ULINT":
-            case "CHAR":
-            case "WCHAR":
-            case "STRING":
-            case "WSTRING":
+            case "REAL":
+              if(values.length == 1) {
+                  return new PlcREAL((String) values[0]);
+              } else {
+                  List<PlcREAL> plcREALValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcREALValues.add(new PlcREAL((String) values[i]));
+                  }
+                  return new PlcList(plcREALValues);
+              }
+            case "BOOL":
+              if(values.length == 1) {
+                  return new PlcBOOL((String) values[0]);
+              } else {
+                  List<PlcBOOL> plcBOOLValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcBOOLValues.add(new PlcBOOL((String) values[i]));
+                  }
+                  return new PlcList(plcBOOLValues);
+              }
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
         }
@@ -176,25 +239,31 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            Number numberValue = (Number) values[0];
-            // Intentionally checking the next larger type.
-            if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
-                throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
-            }
-            return new PlcShort(numberValue.shortValue());
-        } else {
-            List<PlcShort> shorts = new ArrayList<>(values.length);
-            for (Object value : values) {
-                Number numberValue = (Number) value;
-                // Intentionally checking the next larger type.
-                if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
-                    throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
+          ModbusField modbusField = (ModbusField) field;
+          switch (modbusField.getDataType()) {
+              case "INT":
+                if(values.length == 1) {
+                    return new PlcINT((Short) values[0]);
+                } else {
+                  List<PlcINT> plcINTValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcINTValues.add(new PlcINT((Short) values[i]));
+                  }
+                  return new PlcList(plcINTValues);
                 }
-                shorts.add(new PlcShort(((Number) value).shortValue()));
-            }
-            return new PlcList(shorts);
-        }
+              case "UINT":
+                if(values.length == 1) {
+                    return new PlcUINT((Short) values[0]);
+                } else {
+                    List<PlcUINT> plcUINTValues = new LinkedList<>();
+                    for (int i = 0; i < values.length; i++) {
+                      plcUINTValues.add(new PlcUINT((Short) values[i]));
+                    }
+                    return new PlcList(plcUINTValues);
+                }
+              default:
+                  throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
+          }
     }
 
 }

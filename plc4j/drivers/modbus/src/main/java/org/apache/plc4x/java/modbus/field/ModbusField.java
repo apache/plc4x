@@ -20,6 +20,7 @@ package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.modbus.readwrite.types.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -27,11 +28,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.lang.*;
+
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+):(?<datatype>[a-zA-Z_]+)(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5}):(?<datatype>[a-zA-Z_]+)(\\[(?<quantity>\\d+)])?");
-    public static final String[] DATATYPES = {"BYTE",
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5}):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
+    public static final String[] DATATYPES = {"BOOL",
+                                              "BYTE",
                                               "WORD",
                                               "DWORD",
                                               "LWORD",
@@ -108,8 +112,20 @@ public abstract class ModbusField implements PlcField {
         return quantity;
     }
 
+    public int getLengthBytes() {
+        return (int) (quantity * ModbusDataType.valueOf(dataType).getDataTypeSize());
+    }
+
+    public int getLengthWords() {
+        return (int) (quantity * Math.round(ModbusDataType.valueOf(dataType).getDataTypeSize()/2));
+    }
+
     public String getDataType() {
         return dataType;
+    }
+
+    public int getDataTypeSize() {
+        return (int) ModbusDataType.valueOf(dataType).getDataTypeSize();
     }
 
     @Override
