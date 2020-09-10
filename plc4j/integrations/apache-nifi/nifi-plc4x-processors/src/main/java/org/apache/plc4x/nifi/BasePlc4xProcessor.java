@@ -24,9 +24,6 @@ import org.apache.nifi.processor.AbstractProcessor;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.util.*;
@@ -62,8 +59,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     Set<Relationship> relationships;
 
-    private PlcConnection connection;
-
+    private String connectionString;
     private Map<String, String> addressMap;
 
     @Override
@@ -72,8 +68,8 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         this.relationships = new HashSet<>(Arrays.asList(SUCCESS, FAILURE));
     }
 
-    PlcConnection getConnection() {
-        return connection;
+    public String getConnectionString() {
+        return connectionString;
     }
 
     Collection<String> getFields() {
@@ -96,14 +92,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     @OnScheduled
     public void onScheduled(final ProcessContext context) {
         PropertyValue property = context.getProperty(PLC_CONNECTION_STRING.getName());
-        if ((connection == null) || !connection.isConnected()) {
-            try {
-                connection = new PlcDriverManager().getConnection(property.getValue());
-            } catch (PlcConnectionException e) {
-                getLogger().error("Error connecting to " + property.getValue(), e);
-            }
-        }
-
+        connectionString = property.getValue();
         addressMap = new HashMap<>();
         PropertyValue addresses = context.getProperty(PLC_ADDRESS_STRING.getName());
         for (String segment : addresses.getValue().split(";")) {
@@ -129,13 +118,13 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         BasePlc4xProcessor that = (BasePlc4xProcessor) o;
         return Objects.equals(descriptors, that.descriptors) &&
             Objects.equals(getRelationships(), that.getRelationships()) &&
-            Objects.equals(getConnection(), that.getConnection()) &&
+            Objects.equals(getConnectionString(), that.getConnectionString()) &&
             Objects.equals(addressMap, that.addressMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnection(), addressMap);
+        return Objects.hash(super.hashCode(), descriptors, getRelationships(), getConnectionString(), addressMap);
     }
 
     public static class Plc4xConnectionStringValidator implements Validator {

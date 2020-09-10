@@ -305,4 +305,79 @@
     </steps>
   </testcase>
 
+  <testcase>
+    <name>Single element read request with disabled PUT/GET</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz</name>
+              <address>%Q0.0:BOOL</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send S7 Read Request">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageRequest">
+              <tpduReference>10</tpduReference>
+              <parameter className="org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest">
+                <items>
+                  <items className="org.apache.plc4x.java.s7.readwrite.S7VarRequestParameterItemAddress">
+                    <address className="org.apache.plc4x.java.s7.readwrite.S7AddressAny">
+                      <transportSize>BOOL</transportSize>
+                      <numberOfElements>1</numberOfElements>
+                      <dbNumber>0</dbNumber>
+                      <area>OUTPUTS</area>
+                      <byteAddress>0</byteAddress>
+                      <bitAddress>0</bitAddress>
+                    </address>
+                  </items>
+                </items>
+              </parameter>
+              <payload/>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>10</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive S7 Read Response">
+        <TPKTPacket className="org.apache.plc4x.java.s7.readwrite.TPKTPacket">
+          <payload className="org.apache.plc4x.java.s7.readwrite.COTPPacketData">
+            <parameters/>
+            <payload className="org.apache.plc4x.java.s7.readwrite.S7MessageResponse">
+              <tpduReference>10</tpduReference>
+              <errorClass>129</errorClass>
+              <errorCode>4</errorCode>
+            </payload>
+            <eot>true</eot>
+            <tpduRef>0</tpduRef>
+          </payload>
+        </TPKTPacket>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
+          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
+            <hurz className="org.apache.plc4x.java.s7.readwrite.field.S7Field">
+              <dataType>BOOL</dataType>
+              <memoryArea>OUTPUTS</memoryArea>
+              <blockNumber>0</blockNumber>
+              <byteOffset>0</byteOffset>
+              <bitOffset>0</bitOffset>
+              <numElements>1</numElements>
+            </hurz>
+          </request>
+          <hurz>
+            <code>ACCESS_DENIED</code>
+            <value/>
+          </hurz>
+        </DefaultPlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
 </test:driver-testsuite>

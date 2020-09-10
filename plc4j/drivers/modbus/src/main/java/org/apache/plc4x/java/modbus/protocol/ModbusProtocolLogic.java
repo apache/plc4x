@@ -97,6 +97,10 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             PlcField field = request.getField(fieldName);
             final ModbusPDU requestPdu = getReadRequestPdu(field);
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(transactionIdentifierGenerator.get() == 0xFFFF) {
+                transactionIdentifierGenerator.set(1);
+            }
             ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
@@ -178,6 +182,10 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             PlcField field = request.getField(fieldName);
             final ModbusPDU requestPdu = getWriteRequestPdu(field, ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName));
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(transactionIdentifierGenerator.get() == 0xFFFF) {
+                transactionIdentifierGenerator.set(1);
+            }
             ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)

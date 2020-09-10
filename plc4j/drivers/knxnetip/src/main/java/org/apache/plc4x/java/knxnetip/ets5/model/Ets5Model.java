@@ -29,10 +29,12 @@ public class Ets5Model {
 
     private final byte groupAddressType;
     private final Map<String, GroupAddress> groupAddresses;
+    private final Map<String, String> topologyNames;
 
-    public Ets5Model(byte groupAddressType, Map<String, GroupAddress> groupAddresses) {
+    public Ets5Model(byte groupAddressType, Map<String, GroupAddress> groupAddresses, Map<String, String> topologyNames) {
         this.groupAddressType = groupAddressType;
         this.groupAddresses = groupAddresses;
+        this.topologyNames = topologyNames;
     }
 
     public byte getGroupAddressType() {
@@ -75,6 +77,10 @@ public class Ets5Model {
 
     public Map<String, GroupAddress> getGroupAddresses() {
         return groupAddresses;
+    }
+
+    public String getTopologyName(String addressPart) {
+        return topologyNames.get(addressPart);
     }
 
     @Override

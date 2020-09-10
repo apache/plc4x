@@ -46,33 +46,29 @@
 
 |Compatible Transports:
 2+| - `tcp` (Default Port: 502)
-- `serial`
-- `raw-socket`
-- `pcap-replay`
+#- `serial`
+#- `raw-socket`
+#- `pcap-replay`
 
 3+|Supported Operations
 
 |
 | `read`
-| Only supported with `tcp` and `serial` transport.
+| Only supported with `tcp` transport.
 
 |
 | `write`
-| Only supported with `tcp` and `serial` transport.
-
-|
-| `subscribe` (passive)
-| Only supported with `raw-socket` and `pcap-replay`.
+| Only supported with `tcp` transport.
 
 3+|Options
 
 |
-| `request-timeout` (1000ms)
-| `Rack` value for the client (PLC4X device). Defaults to 1.
+| `request-timeout` (ms)
+| Timeout after which a request is terminated. Defaults to 1000ms.
 
 |
 | `unit-identifier` (1)
-| `Slot` value for the client (PLC4X device). Defaults to 1.
+| Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 
 |===
 

@@ -151,7 +151,7 @@
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
     <netty.version>4.1.47.Final</netty.version>
-    <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
+    <owasp-dependency-check.version>6.0.0</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
@@ -635,7 +635,7 @@
       <dependency>
         <groupId>org.dom4j</groupId>
         <artifactId>dom4j</artifactId>
-        <version>2.1.1</version>
+        <version>2.1.3</version>
       </dependency>
       <dependency>
         <groupId>org.elasticsearch</groupId>
@@ -1385,7 +1385,7 @@
           </reportSet>
         </reportSets>
       </plugin-->
-    </plugins>
+     </plugins>
   </reporting>
 
   <!-- Make Snapshots of Apache projects available -->
@@ -1583,20 +1583,6 @@
             <artifactId>maven-enforcer-plugin</artifactId>
             <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
             <executions>
-              <execution>
-                <id>check-at-least-java-8</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <version>1.8.0</version>
-                    </requireJavaVersion>
-                  </rules>
-                </configuration>
-              </execution>
               <!-- Ensure we're not mixing dependency versions -->
               <execution>
                 <id>enforce-version-convergence</id>

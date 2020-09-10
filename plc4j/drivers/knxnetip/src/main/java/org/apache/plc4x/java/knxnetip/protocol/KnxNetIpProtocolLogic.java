@@ -194,6 +194,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                                                         } else {
                                                             LOGGER.error("Connection state problems. Got no status information.");
                                                         }
+                                                        // Stop the timer.
+                                                        connectionStateTimer.cancel();
                                                     }
                                                 });
                                         }
@@ -444,11 +446,15 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
         // If there is an ETS5 model provided, continue decoding the payload.
         if (knxNetIpDriverContext.getEts5Model() != null) {
-            final GroupAddress groupAddress =
-                knxNetIpDriverContext.getEts5Model().getGroupAddresses().get(destinationAddress);
+            final Ets5Model ets5Model = knxNetIpDriverContext.getEts5Model();
+            final GroupAddress groupAddress = ets5Model.getGroupAddresses().get(destinationAddress);
+            final String areaName = ets5Model.getTopologyName(destinationAddress.substring(
+                0, destinationAddress.indexOf('/')));
+            final String lineName = ets5Model.getTopologyName(destinationAddress.substring(
+                0, destinationAddress.indexOf('/', destinationAddress.indexOf('/') + 1)));
 
             if ((groupAddress != null) && (groupAddress.getType() != null)) {
-                LOGGER.info(String.format("Message from: '%s' to: '%s'",
+                LOGGER.trace(String.format("Message from: '%s' to: '%s'",
                     toString(sourceAddress), destinationAddress));
 
                 // Parse the payload depending on the type of the group-address.
@@ -466,6 +472,12 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 } else {
                     dataPointMap.put("location", null);
                     dataPointMap.put("function", null);
+                }
+                if(areaName != null) {
+                    dataPointMap.put("area", new PlcString(areaName));
+                }
+                if(lineName != null) {
+                    dataPointMap.put("line", new PlcString(lineName));
                 }
                 dataPointMap.put("description", new PlcString(groupAddress.getName()));
                 dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
