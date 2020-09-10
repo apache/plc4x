@@ -165,11 +165,11 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
       switch (modbusField.getDataType()) {
           case "REAL":
             if(values.length == 1) {
-                return new PlcREAL((String) values[0]);
+                return new PlcREAL((Float) values[0]);
             } else {
                 List<PlcREAL> plcREALValues = new LinkedList<>();
                 for (int i = 0; i < values.length; i++) {
-                  plcREALValues.add(new PlcREAL((String) values[i]));
+                  plcREALValues.add(new PlcREAL((Float) values[i]));
                 }
                 return new PlcList(plcREALValues);
             }

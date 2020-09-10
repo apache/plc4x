@@ -29,6 +29,8 @@ public class ModbusFieldInputRegister extends ModbusField {
     public static final Pattern ADDRESS_SHORTER_PATTERN = Pattern.compile("3" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
     public static final Pattern ADDRESS_SHORT_PATTERN = Pattern.compile("3x" + ModbusField.FIXED_DIGIT_MODBUS_PATTERN);
 
+    protected static final int REGISTER_MAXADDRESS = 65535;
+
     protected ModbusFieldInputRegister(int address, Integer quantity, String datatype) {
         super(address, quantity, datatype);
     }
@@ -58,9 +60,15 @@ public class ModbusFieldInputRegister extends ModbusField {
     public static ModbusFieldInputRegister of(String addressString) {
         Matcher matcher = getMatcher(addressString);
         int address = Integer.parseInt(matcher.group("address")) - PROTOCOL_ADDRESS_OFFSET;
+        if (address > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Address must be less than or equal to " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET));
+        }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : null;
+        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : 1;
+        if ((address + quantity) > REGISTER_MAXADDRESS) {
+            throw new IllegalArgumentException("Last requested address is out of range, should be between " + PROTOCOL_ADDRESS_OFFSET + " and " + REGISTER_MAXADDRESS + ". Was " + (address + PROTOCOL_ADDRESS_OFFSET + (quantity - 1)));
+        }
 
         String datatypeTemp = matcher.group("datatype");
         String datatype = datatypeTemp != null ? datatypeTemp : "INT";
