@@ -52,6 +52,11 @@ public class RawSocketChannelFactory extends NettyChannelFactory implements HasC
     }
 
     @Override
+    public boolean isPassive() {
+        return true;
+    }
+
+    @Override
     public EventLoopGroup getEventLoopGroup() {
         return new ThreadPerChannelEventLoop(new OioEventLoopGroup());
     }

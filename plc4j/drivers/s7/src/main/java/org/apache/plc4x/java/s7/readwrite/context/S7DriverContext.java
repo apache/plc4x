@@ -28,6 +28,7 @@ import org.apache.plc4x.java.spi.context.DriverContext;
 
 public class S7DriverContext implements DriverContext, HasConfiguration<S7Configuration> {
 
+    private boolean passiveMode = false;
     private int callingTsapId;
     private int calledTsapId;
     private COTPTpduSize cotpTpduSize;
@@ -59,6 +60,14 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         this.pduSize = cotpTpduSize.getSizeInBytes() - 16;
         this.maxAmqCaller = configuration.maxAmqCaller;
         this.maxAmqCallee = configuration.maxAmqCallee;
+    }
+
+    public boolean isPassiveMode() {
+        return passiveMode;
+    }
+
+    public void setPassiveMode(boolean passiveMode) {
+        this.passiveMode = passiveMode;
     }
 
     public int getCallingTsapId() {

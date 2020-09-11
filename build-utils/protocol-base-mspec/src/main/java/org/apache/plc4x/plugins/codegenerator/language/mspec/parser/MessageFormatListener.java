@@ -91,7 +91,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
         // Handle enum types.
         if (ctx.enumValues != null) {
-            TypeReference type = getTypeReference(ctx.type);
+            TypeReference type = (ctx.type != null) ? getTypeReference(ctx.type) : null;
             EnumValue[] enumValues = getEnumValues();
             DefaultEnumTypeDefinition enumType = new DefaultEnumTypeDefinition(typeName, type, enumValues,
                 parserArguments, null);
@@ -311,11 +311,11 @@ public class MessageFormatListener extends MSpecBaseListener {
     @Override
     public void enterTypeSwitchField(MSpecParser.TypeSwitchFieldContext ctx) {
         int numDiscriminators = ctx.discriminators.expression().size();
-        String[] discriminatorNames = new String[numDiscriminators];
+        Term[] discriminatorExpressions = new Term[numDiscriminators];
         for (int i = 0; i < numDiscriminators; i++) {
-            discriminatorNames[i] = ctx.discriminators.expression().get(i).expr.getText();
+            discriminatorExpressions[i] = getExpressionTerm(ctx.discriminators.expression().get(i).expr.getText());
         }
-        DefaultSwitchField field = new DefaultSwitchField(discriminatorNames);
+        DefaultSwitchField field = new DefaultSwitchField(discriminatorExpressions);
         if (parserContexts.peek() != null) {
             parserContexts.peek().add(field);
         }
@@ -343,15 +343,8 @@ public class MessageFormatListener extends MSpecBaseListener {
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
         String typeName = ctx.name.getText();
         List<Argument> parserArguments = new LinkedList<>();
-        // Add all the arguments from the parent type.
-        if(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext) {
-            if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params != null) {
-                parserArguments.addAll(Arrays.asList(getParserArguments(
-                    ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent.parent).params.argument())));
-            }
-        }
-        // For dataIo there is one level less to navigate.
-        else {
+        // For DataIO types, add all the arguments from the parent type.
+        if(!(ctx.parent.parent.parent.parent instanceof MSpecParser.ComplexTypeContext)) {
             if (((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params != null) {
                 parserArguments.addAll(Arrays.asList(getParserArguments(
                     ((MSpecParser.ComplexTypeContext) ctx.parent.parent.parent).params.argument())));
@@ -389,7 +382,7 @@ public class MessageFormatListener extends MSpecBaseListener {
 
     @Override
     public void enterEnumValueDefinition(MSpecParser.EnumValueDefinitionContext ctx) {
-        String value = unquoteString(ctx.valueExpression.getText());
+        String value = (ctx.valueExpression != null) ? unquoteString(ctx.valueExpression.getText()) : null;
         String name = ctx.name.getText();
         Map<String, String> constants = null;
         if (ctx.constantValueExpressions != null) {

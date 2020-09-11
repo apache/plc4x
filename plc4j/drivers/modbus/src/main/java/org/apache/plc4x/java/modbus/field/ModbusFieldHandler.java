@@ -32,14 +32,16 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
-        if (ModbusFieldDiscreteInput.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+        if (ModbusFieldDiscreteInput.matches(fieldQuery)) {
             return ModbusFieldDiscreteInput.of(fieldQuery);
-        } else if (ModbusFieldHoldingRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+        } else if (ModbusFieldHoldingRegister.matches(fieldQuery)) {
             return ModbusFieldHoldingRegister.of(fieldQuery);
-        } else if (ModbusFieldInputRegister.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+        } else if (ModbusFieldInputRegister.matches(fieldQuery)) {
             return ModbusFieldInputRegister.of(fieldQuery);
-        } else if (ModbusFieldCoil.ADDRESS_PATTERN.matcher(fieldQuery).matches()) {
+        } else if (ModbusFieldCoil.matches(fieldQuery)) {
             return ModbusFieldCoil.of(fieldQuery);
+        } else if (ModbusExtendedRegister.matches(fieldQuery)) {
+            return ModbusExtendedRegister.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }

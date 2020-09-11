@@ -357,7 +357,7 @@ public class PlcValues {
 
     public static PlcValue of(Object o) {
         if(o == null) {
-            return null;
+            return new PlcNull();
         }
         try {
             String simpleName = o.getClass().getSimpleName();
@@ -370,6 +370,10 @@ public class PlcValues {
                 clazz = List.class;
                 Object[] objectArray = (Object[]) o;
                 o = Arrays.asList(objectArray);
+            }
+            // If it's one of the LocalDate, LocalTime or LocalDateTime, cut off the "Local".
+            if(simpleName.startsWith("Local")) {
+                simpleName = simpleName.substring(5);
             }
             Constructor<?> constructor = Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + simpleName).getDeclaredConstructor(clazz);
             return ((PlcValue) constructor.newInstance(o));

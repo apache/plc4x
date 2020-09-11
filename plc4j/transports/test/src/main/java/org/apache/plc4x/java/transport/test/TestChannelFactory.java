@@ -51,6 +51,11 @@ public class TestChannelFactory extends NettyChannelFactory implements HasConfig
     }
 
     @Override
+    public boolean isPassive() {
+        return false;
+    }
+
+    @Override
     protected Bootstrap createBootstrap() {
         return new EmbeddedBootstrap();
     }

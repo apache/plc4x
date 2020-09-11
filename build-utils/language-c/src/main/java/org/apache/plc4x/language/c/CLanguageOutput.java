@@ -56,7 +56,9 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.emptyList();
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/c/enum-template-h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/enum-template-c.ftlh"));
     }
 
     @Override
@@ -65,8 +67,8 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
     }
 
     @Override
-    protected FreemarkerLanguageTemplateHelper getHelper(Map<String, TypeDefinition> types) {
-        return new CLanguageTemplateHelper(types);
+    protected FreemarkerLanguageTemplateHelper getHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+        return new CLanguageTemplateHelper(thisType, protocolName, flavorName, types);
     }
 
 }

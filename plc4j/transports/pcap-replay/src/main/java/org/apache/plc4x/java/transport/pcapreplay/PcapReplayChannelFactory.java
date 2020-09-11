@@ -51,6 +51,11 @@ public class PcapReplayChannelFactory extends NettyChannelFactory implements Has
     }
 
     @Override
+    public boolean isPassive() {
+        return true;
+    }
+
+    @Override
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);

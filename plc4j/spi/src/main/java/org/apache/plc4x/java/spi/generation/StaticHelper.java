@@ -42,6 +42,9 @@ public class StaticHelper {
     }
 
     public static int COUNT(Object obj) {
+        if(obj == null) {
+            return 0;
+        }
         if (obj.getClass().isArray()) {
             if(obj.getClass().getComponentType() != null && obj.getClass().getComponentType().isPrimitive()) {
                 if(obj.getClass().getComponentType() == boolean.class) {

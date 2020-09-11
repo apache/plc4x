@@ -30,7 +30,7 @@
   <name>Sandbox: StreamPipes Processors</name>
 
   <properties>
-    <streampipes.version>0.65.0</streampipes.version>
+    <streampipes.version>0.66.0</streampipes.version>
   </properties>
 
   <build>
@@ -61,10 +61,16 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>
       <version>0.8.0-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-wrapper</artifactId>
       <version>${streampipes.version}</version>
       <exclusions>
@@ -87,7 +93,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-wrapper-standalone</artifactId>
       <version>${streampipes.version}</version>
       <exclusions>
@@ -98,7 +104,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-sdk</artifactId>
       <version>${streampipes.version}</version>
       <exclusions>
@@ -114,10 +120,42 @@
           <artifactId>javax.inject</artifactId>
           <groupId>javax.inject</groupId>
         </exclusion>
+        <exclusion>
+          <artifactId>javax.activation-api</artifactId>
+          <groupId>javax.activation</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-codec</artifactId>
+          <groupId>commons-codec</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>httpcore</artifactId>
+          <groupId>org.apache.httpcomponents</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jaxb-api</artifactId>
+          <groupId>javax.xml.bind</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-config</artifactId>
       <version>${streampipes.version}</version>
       <exclusions>
@@ -128,32 +166,32 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-messaging-kafka</artifactId>
       <version>${streampipes.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-dataformat-cbor</artifactId>
       <version>${streampipes.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-dataformat-fst</artifactId>
       <version>${streampipes.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-dataformat-smile</artifactId>
       <version>${streampipes.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-dataformat-json</artifactId>
       <version>${streampipes.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.streampipes</groupId>
+      <groupId>org.apache.streampipes</groupId>
       <artifactId>streampipes-container-standalone</artifactId>
       <version>${streampipes.version}</version>
       <exclusions>
@@ -196,6 +234,17 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.apache.plc4x</groupId>
+        <artifactId>plc4j-spi</artifactId>
+        <version>0.8.0-SNAPSHOT</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jdk8</artifactId>
@@ -240,6 +289,52 @@
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
         <version>3.4.1.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient-osgi</artifactId>
+        <version>4.5.10</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>io.fogsy</groupId>
+        <artifactId>empire-cp-common-utils</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.rdf4j</groupId>
+        <artifactId>rdf4j-rio-api</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>io.fogsy</groupId>
+        <artifactId>empire-pinto</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
     </dependencies>
   </dependencyManagement>

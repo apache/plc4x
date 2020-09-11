@@ -101,19 +101,19 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
 
-    <plc4x-code-generation.version>1.2.0</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.3.0-SNAPSHOT</plc4x-code-generation.version>
 
     <antlr.version>4.8</antlr.version>
     <apiguardian.version>1.1.0</apiguardian.version>
     <asm.version>5.0.4</asm.version>
     <assertj.version>3.11.1</assertj.version>
     <bouncycastle.version>1.60</bouncycastle.version>
-    <boost.version>1.71.0</boost.version>
-    <boost.version.underline-short>1_71</boost.version.underline-short>
+    <boost.version>1.73.0</boost.version>
+    <boost.version.underline-short>1_73</boost.version.underline-short>
     <boost.version.underline>${boost.version.underline-short}_0</boost.version.underline>
     <byte-buddy.version>1.9.10</byte-buddy.version>
-    <!-- CMake 3.17.0 is already released, but we should keep it in sync with the cmake-maven-plugn -->
-    <cmake-version>3.16.0</cmake-version>
+    <!-- CMake 3.17.0 is already released, but we should keep it in sync with the cmake-maven-plugin -->
+    <cmake-version>3.17.3</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.4</commons-cli.version>
     <commons-codec.version>1.12</commons-codec.version>
@@ -151,7 +151,7 @@
     <metrics-core.version>3.1.2</metrics-core.version>
     <mockito.version>2.24.5</mockito.version>
     <netty.version>4.1.47.Final</netty.version>
-    <owasp-dependency-check.version>5.0.0-M1</owasp-dependency-check.version>
+    <owasp-dependency-check.version>6.0.0</owasp-dependency-check.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <scala.version>2.12.6</scala.version>
     <slf4j.version>1.7.25</slf4j.version>
@@ -461,8 +461,13 @@
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4.12</version>
+        <version>4.4.13</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -630,7 +635,7 @@
       <dependency>
         <groupId>org.dom4j</groupId>
         <artifactId>dom4j</artifactId>
-        <version>2.1.1</version>
+        <version>2.1.3</version>
       </dependency>
       <dependency>
         <groupId>org.elasticsearch</groupId>
@@ -874,6 +879,9 @@
             <!-- Wireshark Captures -->
             <exclude>**/*.pcap</exclude>
 
+            <!-- JEVN local version files -->
+            <exclude>**/.java-version</exclude>
+
             <!-- Asciidoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
 
@@ -1095,22 +1103,12 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.22.2</version>
-          <configuration>
-            <argLine>
-              --illegal-access=permit
-            </argLine>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1277,7 +1275,7 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.16.3-b2</version>
+          <version>3.17.3-b1</version>
         </plugin>
 
         <plugin>
@@ -1387,7 +1385,7 @@
           </reportSet>
         </reportSets>
       </plugin-->
-    </plugins>
+     </plugins>
   </reporting>
 
   <!-- Make Snapshots of Apache projects available -->
@@ -1585,20 +1583,6 @@
             <artifactId>maven-enforcer-plugin</artifactId>
             <version>3.0.0-M2</version> <!--$NO-MVN-MAN-VER$-->
             <executions>
-              <execution>
-                <id>check-at-least-java-8</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <version>1.8.0</version>
-                    </requireJavaVersion>
-                  </rules>
-                </configuration>
-              </execution>
               <!-- Ensure we're not mixing dependency versions -->
               <execution>
                 <id>enforce-version-convergence</id>
@@ -1737,6 +1721,7 @@
               <algorithms>
                 <algorithm>SHA-512</algorithm>
               </algorithms>
+              <includeRelativePath>true</includeRelativePath>
               <fileSets>
                 <fileSet>
                   <directory>${project.build.directory}</directory>

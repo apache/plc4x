@@ -23,22 +23,22 @@ file
  ;
 
 complexTypeDefinition
- : (COMMENT.*?)? LBRACKET complexType RBRACKET
+ : (COMMENT.*?)? LBRACKET complexType RBRACKET (COMMENT.*?)?
  ;
 
 complexType
  : 'type' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition*
  | 'discriminatedType' name=idExpression (LBRACKET params=argumentList RBRACKET)? fieldDefinition+
- | 'enum' type=typeReference name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
+ | 'enum' (type=typeReference)? name=idExpression (LBRACKET params=argumentList RBRACKET)? enumValues=enumValueDefinition+
  | 'dataIo' name=idExpression (LBRACKET params=argumentList RBRACKET)? dataIoTypeSwitch=dataIoDefinition
  ;
 
 fieldDefinition
- : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
  ;
 
 dataIoDefinition
- : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
  ;
 
 field
@@ -120,7 +120,7 @@ virtualField
  ;
 
 enumValueDefinition
- : (COMMENT.*?)? LBRACKET valueExpression=expression name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET (valueExpression=expression)? name=IDENTIFIER (LBRACKET constantValueExpressions=multipleExpressions RBRACKET)? RBRACKET
  ;
 
 bitmaskValueDefinition

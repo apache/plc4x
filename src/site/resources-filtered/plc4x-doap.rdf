@@ -83,28 +83,35 @@
 
         <release>
             <Version>
-                <name>Latest 0.6.0 release</name>
+                <name>Latest 0.7.0 release (Generated Drivers)</name>
+                <created>2020-05-25</created>
+                <revision>0.7.0</revision>
+            </Version>
+        </release>
+        <release>
+            <Version>
+                <name>Latest 0.6.0 release (Manual Drivers LTS)</name>
                 <created>2020-03-01</created>
                 <revision>0.6.0</revision>
             </Version>
         </release>
         <release>
             <Version>
-                <name>Latest 0.5.0 release</name>
+                <name>Legacy 0.5.0 release</name>
                 <created>2019-11-25</created>
                 <revision>0.5.0</revision>
             </Version>
         </release>
         <release>
             <Version>
-                <name>Latest 0.4.0 release</name>
+                <name>Legacy 0.4.0 release</name>
                 <created>2019-05-27</created>
                 <revision>0.4.0</revision>
             </Version>
         </release>
         <release>
             <Version>
-                <name>Latest 0.3.1 release</name>
+                <name>Legacy 0.3.1 release</name>
                 <created>2019-03-13</created>
                 <revision>0.3.1</revision>
             </Version>

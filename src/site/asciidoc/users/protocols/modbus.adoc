@@ -46,33 +46,29 @@
 
 |Compatible Transports:
 2+| - `tcp` (Default Port: 502)
-- `serial`
-- `raw-socket`
-- `pcap-replay`
+#- `serial`
+#- `raw-socket`
+#- `pcap-replay`
 
 3+|Supported Operations
 
 |
 | `read`
-| Only supported with `tcp` and `serial` transport.
+| Only supported with `tcp` transport.
 
 |
 | `write`
-| Only supported with `tcp` and `serial` transport.
-
-|
-| `subscribe` (passive)
-| Only supported with `raw-socket` and `pcap-replay`.
+| Only supported with `tcp` transport.
 
 3+|Options
 
 |
-| `request-timeout` (1000ms)
-| `Rack` value for the client (PLC4X device). Defaults to 1.
+| `request-timeout` (ms)
+| Timeout after which a request is terminated. Defaults to 1000ms.
 
 |
 | `unit-identifier` (1)
-| `Slot` value for the client (PLC4X device). Defaults to 1.
+| Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 
 |===
 
@@ -90,12 +86,20 @@ Coils and Registers are generally separated into pure inputs which are read-only
 Inputs (Read-Only):
 
 - Discrete Input (Boolean / 1 bit)
-- Input Register (Short / 16 bi)
+- Input Register (Short / 16 bit)
 
 Output (Read/Write):
 
 - Coil (Boolean / 1 bit)
-- Holding Register (Short / 16 bi)
+- Holding Register (Short / 16 bit)
+
+Extended Registers (6x) - Function Code 20 - (Short / 16 bit)
+
+These are able to be referenced as a continuous data area 600000 - 699999. Internally this is converted to the file number/register format. File number 1 corresponds to the first 10000 registers (600000 - 609999), file number 2 the next 10000 (610000 - 619999) and so on.
+
+Note unlike the other areas this area starts at address 0.
+
+At the moment this implementation only supports reading the extended memory area.
 
 Here come the syntax descriptions of these addresses (Each address can reference either a single item or an array):
 
@@ -103,9 +107,10 @@ Here come the syntax descriptions of these addresses (Each address can reference
 |===
 |Name |Address Syntax |Description |Bit-Size
 
-|Discrete Input   |`discrete-input:{start-address}` or `discrete-input:{start-address}[{count}]`   |Read-only Boolean input value, usually representing a binary input to the PLC |1
-|Input Register   |`input-register:{start-address}` or `input-register:{start-address}[{count}]`   |Read-only Short input value, usually representing an analog input to the PLC  |16
-|Coil             |`coil:{start-address}` or `coil:{start-address}[{count}]`             |Read/Write Boolean value, usually representing a binary output from the PLC   |1
-|Holding Register |`holding-register:{start-address}` or `holding-register:{start-address}[{count}]` |Read/Write Short value, usually representing an analog output from the PLC    |16
+|Discrete Input   |`discrete-input:{start-address}` or `discrete-input:{start-address}[{count}]` or `1{start-address}` or `1{start-address}[{count}]` or `1x{start-address}` or `1x{start-address}[{count}]`   |Read-only Boolean input value, usually representing a binary input to the PLC |1
+|Input Register   |`input-register:{start-address}` or `input-register:{start-address}[{count}]` or `3{start-address}` or `3{start-address}[{count}]` or `3x{start-address}` or `3x{start-address}[{count}]`   |Read-only Short input value, usually representing an analog input to the PLC  |16
+|Coil             |`coil:{start-address}` or `coil:{start-address}[{count}]` or `0{start-address}` or `0{start-address}[{count}]` or `0x{start-address}` or `0x{start-address}[{count}]`             |Read/Write Boolean value, usually representing a binary output from the PLC   |1
+|Holding Register |`holding-register:{start-address}` or `holding-register:{start-address}[{count}]` or `4{start-address}` or `4{start-address}[{count}]` or `4x{start-address}` or `4x{start-address}[{count}]` |Read/Write Short value, usually representing an analog output from the PLC    |16
+|Extended Register |`extended-register:{start-address}` or `extended-register:{start-address}[{count}]` or `6{start-address}` or `6{start-address}[{count}]` or `6x{start-address}` or `6x{start-address}[{count}]` |Read/Write Short value,    |16
 
 |===

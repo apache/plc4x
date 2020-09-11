@@ -22,6 +22,8 @@
 #include <plc4c/system.h>
 #include <plc4c/types.h>
 
+bool plc4c_is_bigendian();
+
 plc4c_return_code plc4c_system_create_connection(char *connection_string,
                                                  plc4c_connection **connection);
 

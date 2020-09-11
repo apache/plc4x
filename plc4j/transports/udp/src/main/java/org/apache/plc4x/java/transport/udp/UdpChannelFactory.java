@@ -51,6 +51,11 @@ public class UdpChannelFactory extends NettyChannelFactory implements HasConfigu
     }
 
     @Override
+    public boolean isPassive() {
+        return false;
+    }
+
+    @Override
     public void configureBootstrap(Bootstrap bootstrap) {
         if(configuration != null) {
             logger.info("Configuring Bootstrap with {}", configuration);

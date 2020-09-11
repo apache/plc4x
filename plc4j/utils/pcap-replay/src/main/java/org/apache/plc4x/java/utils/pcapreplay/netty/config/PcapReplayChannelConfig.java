@@ -48,7 +48,7 @@ public class PcapReplayChannelConfig extends PcapChannelConfig {
         if(option == PcapReplayChannelOption.SPEED_FACTOR) {
             if (value instanceof Float) {
                 speedFactor = (Float) value;
-                return speedFactor > 0;
+                return speedFactor >= 0;
             }
             return false;
         } else if(option == PcapReplayChannelOption.LOOP) {

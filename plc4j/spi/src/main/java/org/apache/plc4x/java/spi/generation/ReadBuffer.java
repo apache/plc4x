@@ -92,7 +92,7 @@ public class ReadBuffer {
         if (bitLength <= 0) {
             throw new ParseException("unsigned byte must contain at least 1 bit");
         }
-        if (bitLength > 4) {
+        if (bitLength > 7) {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
@@ -106,7 +106,7 @@ public class ReadBuffer {
         if (bitLength <= 0) {
             throw new ParseException("unsigned short must contain at least 1 bit");
         }
-        if (bitLength > 8) {
+        if (bitLength > 15) {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
@@ -121,7 +121,7 @@ public class ReadBuffer {
         if (bitLength <= 0) {
             throw new ParseException("unsigned int must contain at least 1 bit");
         }
-        if (bitLength > 16) {
+        if (bitLength > 31) {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
@@ -138,7 +138,7 @@ public class ReadBuffer {
         if (bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
-        if (bitLength > 32) {
+        if (bitLength > 63) {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
@@ -250,10 +250,10 @@ public class ReadBuffer {
                 }
             } else if (bitLength == 32) {
                 byte[] buffer = new byte[4];
-                buffer[0] = bi.readByte(true, 8);
-                buffer[1] = bi.readByte(true, 8);
-                buffer[2] = bi.readByte(true, 8);
-                buffer[3] = bi.readByte(true, 8);
+                buffer[0] = bi.readByte(false, 8);
+                buffer[1] = bi.readByte(false, 8);
+                buffer[2] = bi.readByte(false, 8);
+                buffer[3] = bi.readByte(false, 8);
                 return Float.intBitsToFloat((buffer[0] & 0xff) ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
@@ -272,12 +272,11 @@ public class ReadBuffer {
     }
 
     public String readString(int bitLength, String encoding) {
-        byte[] strBytes = new byte[bitLength/8];
-        for(int i= 0; i<bitLength/8 && hasMore(8); i++){
+        byte[] strBytes = new byte[bitLength / 8];
+        for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
             try {
                 strBytes[i] = readByte(8);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 throw new PlcRuntimeException(e);
             }
         }

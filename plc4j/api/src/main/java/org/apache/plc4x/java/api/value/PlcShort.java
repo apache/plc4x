@@ -30,14 +30,6 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcShort extends PlcSimpleValue<Short> {
 
-    public PlcShort(Byte value) {
-        super(value.shortValue(), true);
-    }
-
-    public PlcShort(byte value) {
-        super(((Byte) value).shortValue(), false);
-    }
-
     public PlcShort(Short value) {
         super(value, true);
     }
@@ -45,14 +37,6 @@ public class PlcShort extends PlcSimpleValue<Short> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcShort(@JsonProperty("value") short value) {
         super(value, false);
-    }
-
-    public PlcShort(Integer value) {
-        super(value.shortValue(), true);
-    }
-
-    public PlcShort(int value) {
-        super(((Integer) value).shortValue(), false);
     }
 
     @Override
@@ -70,7 +54,7 @@ public class PlcShort extends PlcSimpleValue<Short> {
     @Override
     @JsonIgnore
     public boolean isByte() {
-        return true;
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override

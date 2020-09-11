@@ -31,7 +31,6 @@ public class DF1Utils {
         short destinationAddress = (short) args[0];
         short sourceAddress = (short) args[1];
         DF1Command command = (DF1Command) args[2];
-        short commandDiscriminatorValues = (short) command.getDiscriminatorValues()[0];
         short status = command.getStatus();
         int transactionCounter = command.getTransactionCounter();
         if(command instanceof DF1UnprotectedReadRequest) {
@@ -40,7 +39,7 @@ public class DF1Utils {
                 WriteBuffer writeBuffer = new WriteBuffer(10, false);
                 writeBuffer.writeUnsignedShort(8, destinationAddress);
                 writeBuffer.writeUnsignedShort(8, sourceAddress);
-                writeBuffer.writeUnsignedShort(8, commandDiscriminatorValues);
+                writeBuffer.writeUnsignedShort(8, command.getCommandCode());
                 writeBuffer.writeUnsignedShort(8, status);
                 writeBuffer.writeUnsignedInt(16, (short) transactionCounter);
                 writeBuffer.writeUnsignedInt(16, (short) unprotectedReadRequest.getAddress());
@@ -60,7 +59,7 @@ public class DF1Utils {
                 WriteBuffer writeBuffer = new WriteBuffer(10, false);
                 writeBuffer.writeUnsignedShort(8, destinationAddress);
                 writeBuffer.writeUnsignedShort(8, sourceAddress);
-                writeBuffer.writeUnsignedShort(8, commandDiscriminatorValues);
+                writeBuffer.writeUnsignedShort(8, command.getCommandCode());
                 writeBuffer.writeUnsignedShort(8, status);
                 writeBuffer.writeUnsignedInt(16, (short) transactionCounter);
                 boolean escape10 = false;

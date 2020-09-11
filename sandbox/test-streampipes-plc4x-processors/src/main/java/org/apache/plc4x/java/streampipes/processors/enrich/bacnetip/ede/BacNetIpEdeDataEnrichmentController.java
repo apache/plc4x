@@ -21,22 +21,22 @@ package org.apache.plc4x.java.streampipes.processors.enrich.bacnetip.ede;
 import org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5.Ets5DataEnrichment;
 import org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5.Ets5DataEnrichmentParameters;
 import org.apache.plc4x.java.streampipes.shared.source.knxnetip.Constants;
-import org.streampipes.model.DataProcessorType;
-import org.streampipes.model.graph.DataProcessorDescription;
-import org.streampipes.model.graph.DataProcessorInvocation;
-import org.streampipes.model.schema.PropertyScope;
-import org.streampipes.sdk.builder.PrimitivePropertyBuilder;
-import org.streampipes.sdk.builder.ProcessingElementBuilder;
-import org.streampipes.sdk.builder.StreamRequirementsBuilder;
-import org.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
-import org.streampipes.sdk.helpers.EpRequirements;
-import org.streampipes.sdk.helpers.Labels;
-import org.streampipes.sdk.helpers.Locales;
-import org.streampipes.sdk.helpers.OutputStrategies;
-import org.streampipes.sdk.utils.Assets;
-import org.streampipes.sdk.utils.Datatypes;
-import org.streampipes.wrapper.standalone.ConfiguredEventProcessor;
-import org.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
+import org.apache.streampipes.model.DataProcessorType;
+import org.apache.streampipes.model.graph.DataProcessorDescription;
+import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.model.schema.PropertyScope;
+import org.apache.streampipes.sdk.builder.PrimitivePropertyBuilder;
+import org.apache.streampipes.sdk.builder.ProcessingElementBuilder;
+import org.apache.streampipes.sdk.builder.StreamRequirementsBuilder;
+import org.apache.streampipes.sdk.extractor.ProcessingElementParameterExtractor;
+import org.apache.streampipes.sdk.helpers.EpRequirements;
+import org.apache.streampipes.sdk.helpers.Labels;
+import org.apache.streampipes.sdk.helpers.Locales;
+import org.apache.streampipes.sdk.helpers.OutputStrategies;
+import org.apache.streampipes.sdk.utils.Assets;
+import org.apache.streampipes.sdk.utils.Datatypes;
+import org.apache.streampipes.wrapper.standalone.ConfiguredEventProcessor;
+import org.apache.streampipes.wrapper.standalone.declarer.StandaloneEventProcessingDeclarer;
 
 public class BacNetIpEdeDataEnrichmentController extends StandaloneEventProcessingDeclarer<Ets5DataEnrichmentParameters> {
 

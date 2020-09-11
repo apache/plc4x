@@ -19,8 +19,8 @@ under the License.
 
 package org.apache.plc4x.java.streampipes.processors.config;
 
-import org.streampipes.config.SpConfig;
-import org.streampipes.container.model.PeConfig;
+import org.apache.streampipes.config.SpConfig;
+import org.apache.streampipes.container.model.PeConfig;
 
 public enum Config implements PeConfig {
 

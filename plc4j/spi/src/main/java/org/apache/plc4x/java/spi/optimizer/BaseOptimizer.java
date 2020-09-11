@@ -49,9 +49,10 @@ public abstract class BaseOptimizer {
             for (String fieldName : curRequest.getFieldNames()) {
                 if (readResponse.isLeft()) {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
-                    fields.put(fieldName,
-                        new ResponseItem<>(subReadResponse.getResponseCode(fieldName),
-                            subReadResponse.getAsPlcValue().getValue(fieldName)));
+                    PlcResponseCode responseCode = subReadResponse.getResponseCode(fieldName);
+                    PlcValue value = (responseCode == PlcResponseCode.OK) ?
+                        subReadResponse.getAsPlcValue().getValue(fieldName) : null;
+                    fields.put(fieldName, new ResponseItem<>(responseCode, value));
                 } else {
                     fields.put(fieldName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                 }
@@ -68,8 +69,9 @@ public abstract class BaseOptimizer {
                                                      Map<PlcRequest, Either<PlcResponse, Exception>> writeResponses) {
         Map<String, PlcResponseCode> fields = new HashMap<>();
         for (Map.Entry<PlcRequest, Either<PlcResponse, Exception>> requestsEntries : writeResponses.entrySet()) {
+            PlcWriteRequest subWriteRequest = (PlcWriteRequest) requestsEntries.getKey();
             Either<PlcResponse, Exception> writeResponse = requestsEntries.getValue();
-            for (String fieldName : writeRequest.getFieldNames()) {
+            for (String fieldName : subWriteRequest.getFieldNames()) {
                 if (writeResponse.isLeft()) {
                     PlcWriteResponse subWriteResponse = (PlcWriteResponse) writeResponse.getLeft();
                     fields.put(fieldName, subWriteResponse.getResponseCode(fieldName));

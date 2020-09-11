@@ -26,6 +26,6 @@ import org.apache.plc4x.java.spi.generation.Message;
 
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline);
+    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, boolean passive);
 
 }

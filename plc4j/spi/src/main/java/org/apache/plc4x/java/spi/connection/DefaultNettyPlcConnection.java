@@ -175,7 +175,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline));
+                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, channelFactory.isPassive()));
             }
         };
     }

@@ -61,4 +61,62 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</value>
     </xml>
   </testcase>
 
+  <testcase>
+    <name>Read Extended Registers Request Split File Record</name>
+    <raw>000a0000001101140e060003270e000206000400000008</raw>
+    <root-type>ModbusTcpADU</root-type>
+    <parser-arguments>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+        <transactionIdentifier>10</transactionIdentifier>
+        <unitIdentifier>1</unitIdentifier>
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequest">
+          <items>
+            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem">
+              <referenceType>6</referenceType>
+              <fileNumber>3</fileNumber>
+              <recordNumber>9998</recordNumber>
+              <recordLength>2</recordLength>
+            </items>
+            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordRequestItem">
+              <referenceType>6</referenceType>
+              <fileNumber>4</fileNumber>
+              <recordNumber>0</recordNumber>
+              <recordLength>8</recordLength>
+            </items>
+          </items>
+        </pdu>
+      </ModbusTcpADU>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>Read Extended Registers Response Split File Record</name>
+    <raw>000a0000001b011418050600000000110600000000000000000000000000000000</raw>
+    <root-type>ModbusTcpADU</root-type>
+    <parser-arguments>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+        <transactionIdentifier>10</transactionIdentifier>
+        <unitIdentifier>1</unitIdentifier>
+        <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponse">
+          <items>
+            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
+              <referenceType>6</referenceType>
+              <data>AAAAAA==</data>
+            </items>
+            <items className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadFileRecordResponseItem">
+              <referenceType>6</referenceType>
+              <data>AAAAAAAAAAAAAAAAAAAAAA==</data>
+            </items>
+          </items>
+        </pdu>
+      </ModbusTcpADU>
+    </xml>
+  </testcase>
+
 </test:testsuite>

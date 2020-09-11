@@ -24,6 +24,7 @@ import io.vavr.control.Either;
 import java.time.Instant;
 import java.util.Deque;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,6 +46,9 @@ public class HandlerRegistration {
 
     private final BiConsumer<?, ? extends Throwable> errorConsumer;
     private final Instant timeout;
+
+    private volatile boolean cancelled = false;
+    private volatile boolean handled = false;
 
     public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Instant timeout) {
         this.commands = commands;
@@ -77,6 +81,22 @@ public class HandlerRegistration {
 
     public Instant getTimeout() {
         return timeout;
+    }
+
+    public void cancel() {
+        this.cancelled = true;
+    }
+
+    public boolean isCancelled() {
+        return this.cancelled;
+    }
+
+    public void confirmHandled() {
+        this.handled = true;
+    }
+
+    public boolean hasHandled() {
+        return this.handled;
     }
 
     @Override

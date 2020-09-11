@@ -24,6 +24,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcString extends PlcSimpleValue<String> {
 
@@ -46,20 +49,84 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
+    @SuppressWarnings("all")
+    public boolean isBoolean() {
+        try {
+            Boolean.parseBoolean(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
     public boolean getBoolean() {
         return Boolean.parseBoolean(value);
     }
 
     @Override
     @JsonIgnore
-    public double getDouble() {
-        return Double.parseDouble(value);
+    @SuppressWarnings("all")
+    public boolean isByte() {
+        try {
+            Byte.parseByte(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     @JsonIgnore
-    public float getFloat() {
-        return Float.parseFloat(value);
+    public byte getByte() {
+        return Byte.parseByte(value);
+    }
+
+    @Override
+    @JsonIgnore
+    @SuppressWarnings("all")
+    public boolean isShort() {
+        try {
+            Short.parseShort(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return Short.parseShort(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -70,8 +137,70 @@ public class PlcString extends PlcSimpleValue<String> {
 
     @Override
     @JsonIgnore
-    public int getInteger() {
-        return Integer.parseInt(value);
+    public boolean isBigInteger() {
+        try {
+            new BigInteger(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return new BigInteger(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        try {
+            Float.parseFloat(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return Float.parseFloat(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return Double.parseDouble(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        try {
+            new BigDecimal(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return new BigDecimal(value);
     }
 
     @Override

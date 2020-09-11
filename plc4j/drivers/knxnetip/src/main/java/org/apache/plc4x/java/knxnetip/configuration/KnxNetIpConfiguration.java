@@ -19,9 +19,14 @@ under the License.
 package org.apache.plc4x.java.knxnetip.configuration;
 
 import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
+import org.apache.plc4x.java.knxnetip.readwrite.types.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
 import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
 import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
 import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
@@ -37,6 +42,18 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @IntDefaultValue(3)
     public int groupAddressType = 3;
 
+    @ConfigurationParameter("connection-type")
+    @StringDefaultValue("LINK_LAYER")
+    public String connectionType = "LINK_LAYER";
+
+    @ConfigurationParameter("replay-speed-factor")
+    @FloatDefaultValue(1.0f)
+    public float replaySpeedFactor = 1.0f;
+
+    @ConfigurationParameter("loop")
+    @BooleanDefaultValue(false)
+    public boolean loop = false;
+
     public String getKnxprojFilePath() {
         return knxprojFilePath;
     }
@@ -51,6 +68,39 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
 
     public void setGroupAddressType(int groupAddressType) {
         this.groupAddressType = groupAddressType;
+    }
+
+    public String getConnectionType() {
+        return connectionType;
+    }
+
+    public void setConnectionType(String connectionType) {
+        // Try to parse the provided value, if it doesn't match any of the constants,
+        // throw an error.
+        try {
+            KnxLayer.valueOf("TUNNEL_" + connectionType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ConfigurationException("Value provided for connection-type invalid.");
+        }
+        this.connectionType = connectionType.toUpperCase();
+    }
+
+    @Override
+    public float getReplaySpeedFactor() {
+        return replaySpeedFactor;
+    }
+
+    public void setReplaySpeedFactor(float replaySpeedFactor) {
+        this.replaySpeedFactor = replaySpeedFactor;
+    }
+
+    @Override
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
     }
 
     @Override

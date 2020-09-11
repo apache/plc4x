@@ -28,33 +28,37 @@ import java.util.regex.Pattern;
 public abstract class ModbusField implements PlcField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})(\\[(?<quantity>\\d+)])?");
+    protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
     private final int quantity;
 
     public static ModbusField of(String addressString) throws PlcInvalidFieldException {
-        Matcher matcher = ModbusFieldCoil.ADDRESS_PATTERN.matcher(addressString);
-        if(matcher.matches()) {
+        if(ModbusFieldCoil.matches(addressString)) {
             return ModbusFieldCoil.of(addressString);
         }
-        matcher = ModbusFieldDiscreteInput.ADDRESS_PATTERN.matcher(addressString);
-        if(matcher.matches()) {
+        if(ModbusFieldDiscreteInput.matches(addressString)) {
             return ModbusFieldDiscreteInput.of(addressString);
         }
-        matcher = ModbusFieldHoldingRegister.ADDRESS_PATTERN.matcher(addressString);
-        if(matcher.matches()) {
+        if(ModbusFieldHoldingRegister.matches(addressString)) {
             return ModbusFieldHoldingRegister.of(addressString);
         }
-        matcher = ModbusFieldInputRegister.ADDRESS_PATTERN.matcher(addressString);
-        if(matcher.matches()) {
+        if(ModbusFieldInputRegister.matches(addressString)) {
             return ModbusFieldInputRegister.of(addressString);
+        }
+        if(ModbusExtendedRegister.matches(addressString)) {
+            return ModbusExtendedRegister.of(addressString);
         }
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
     protected ModbusField(int address, Integer quantity) {
         this.address = address;
+        if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
+            throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
+        }
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);

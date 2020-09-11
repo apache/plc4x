@@ -39,22 +39,6 @@ public class PlcByte extends PlcSimpleValue<Byte> {
         super(value, false);
     }
 
-    public PlcByte(Short value) {
-        super(value.byteValue(), true);
-    }
-
-    public PlcByte(short value) {
-        super(((Short) value).byteValue(), false);
-    }
-
-    public PlcByte(Integer value) {
-        super(value.byteValue(), true);
-    }
-
-    public PlcByte(int value) {
-        super(((Integer) value).byteValue(), false);
-    }
-
     @Override
     @JsonIgnore
     public boolean isBoolean() {

@@ -32,7 +32,7 @@
   <description>Integration module for integrating PLC4X into Apache Kafka (Kafka-Connect-Plugin)</description>
 
   <properties>
-    <kafka.version>2.3.0</kafka.version>
+    <kafka.version>2.5.0</kafka.version>
   </properties>
 
   <!-- Build a fat jar so the user only needs to drop in this one jar -->
@@ -57,8 +57,8 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ethernet-ip</usedDependency-->
+            <!--usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency-->
+            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
@@ -117,13 +117,13 @@
       <artifactId>plc4j-driver-ads</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ethernet-ip</artifactId>
+      <artifactId>plc4j-driver-eip</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <scope>runtime</scope>
-    </dependency-->
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-knxnetip</artifactId>

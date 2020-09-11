@@ -29,7 +29,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-sandbox,with-cpp,with-boost,with-dotnet,with-python,with-proxies,with-logstash -DbranchName=release/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
@@ -54,7 +54,7 @@ IMPORTANT: Please be sure to execute the release with a Java version between 1.8
 * [ ] Add the version to the DOAP file on `develop`
 * [ ] Update Download site
 * [ ] Update Jira
-* [ ] Merge back release version to `master` branch
+* [ ] Merge back release version to `release` branch
 * [ ] Send announce email
 
 === Preparing your system for being able to release
@@ -136,7 +136,7 @@ According to SemVer, we have: Major, Minor and Bugfix releases.
 
 For each new Major and Minor release we create a new branch at the beginning of a code-freeze phase.
 
-So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `rel/{current-short-version}`.
+So if currently the project version in develop is `{current-full-version}-SNAPSHOT`, we create a branch `release/{current-short-version}`.
 
 When creating the branch is exactly the moment in which the version in `develop` is incremented to the next minor version.
 
@@ -148,14 +148,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=rel/{minor-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=release/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-boost,with-c,with-cpp,with-docker,with-dotnet,with-logstash,with-proxies,with-python,with-sandbox -DbranchName=release/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -169,7 +169,7 @@ Where the suggested default is manually overridden.
 
 This step now should perform quite quickly as no build and no tests are involved.
 
-However in the end the versions of the `develop` branch are updated and a new `rel/{current-short-version}` branch is created.
+However in the end the versions of the `develop` branch are updated and a new `release/{current-short-version}` branch is created.
 
 === Preparing `develop` for the next iteration
 
@@ -477,14 +477,14 @@ Please add the just released version to the top of the versions.
 
 This file is needed for Apache's tooling to automatically keep track of project release activity and we use this internally too to automatically update the documentation to always reference the latest released version automatically.
 
-=== Merge back release version to master branch
+=== Merge back release version to `release` branch
 
-The master branch should always point to the last released version.
+The `release` branch should always point to the last released version.
 This has to be done with git
 
 [subs="verbatim,attributes"]
 ----
-git checkout master
+git checkout release
 git merge release/{current-full-version}
 ----
 

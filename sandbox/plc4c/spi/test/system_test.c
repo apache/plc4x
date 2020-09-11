@@ -22,10 +22,6 @@
 
 #include "plc4c/spi/system_private.h"
 
-void setUp(void) {}
-
-void tearDown(void) {}
-
 void test_system_plc4c_system_create_connection_args(
     char *connection_string, plc4c_return_code expected_return_code,
     char *expected_connection_string, char *expected_protocol_code,
@@ -51,7 +47,7 @@ void test_system_plc4c_system_create_connection_args(
     TEST_ASSERT_EQUAL_STRING(expected_parameters, connection->parameters);
     free(connection);
   }
-  printf("OK\n");
+  printf(" -> OK\n");
 }
 
 void test_system_plc4c_system_create_connection(void) {
@@ -86,12 +82,4 @@ void test_system_plc4c_system_create_connection(void) {
   // There should only be one question-mark ...
   test_system_plc4c_system_create_connection_args(
       "a://a?b?c", INVALID_CONNECTION_STRING, NULL, NULL, NULL, NULL, NULL);
-}
-
-int main(void) {
-  UNITY_BEGIN();
-
-  RUN_TEST(test_system_plc4c_system_create_connection);
-
-  return UNITY_END();
 }

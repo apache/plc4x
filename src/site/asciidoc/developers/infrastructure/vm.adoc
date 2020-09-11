@@ -54,11 +54,11 @@ As soon as that's handled by the Infra team, you should be ready to log-in on th
 
 Using SSH we should now be able to login to the VM.
 
-   ssh apacheId@plc4x-vm.apache.org
+   ssh apacheId@plc4x-vm2.apache.org
 
 Be sure to use the username matching your Apache ID or the login will fail.
 
-If all wen't well you should now be able to login to the machine using your apache user.
+If all went well you should now be able to login to the machine using your apache user.
 
 === Doing things as `root`
 
@@ -67,7 +67,7 @@ Providing a sudo password directly would increase the danger of having this inte
 
 Instead of now entering a password, a challenge is displayed:
 
-    myid@plc4x-vm:~$ sudo apt-get update
+    myid@plc4x-vm2:~$ sudo apt-get update
     otp-md5 496 pl8230
     Password:
 

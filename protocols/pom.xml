@@ -35,7 +35,7 @@
 
   <modules>
     <module>ab-eth</module>
-    <module>amsads</module>
+    <module>ads</module>
     <module>bacnetip</module>
     <module>df1</module>
     <module>eip</module>

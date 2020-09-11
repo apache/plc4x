@@ -20,6 +20,7 @@ package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
 import org.apache.plc4x.java.knxnetip.readwrite.io.KNXNetIPMessageIO;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -30,6 +31,8 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.optimizer.SingleFieldOptimizer;
 
 import java.util.function.ToIntFunction;
 
@@ -59,7 +62,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
 
     @Override
     protected boolean canWrite() {
-        return false;
+        return true;
     }
 
     @Override
@@ -73,6 +76,11 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     }
 
     @Override
+    protected BaseOptimizer getOptimizer() {
+        return new SingleFieldOptimizer();
+    }
+
+    @Override
     protected PlcFieldHandler getFieldHandler() {
         return new KnxNetIpFieldHandler();
     }
@@ -81,6 +89,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     protected ProtocolStackConfigurer<KNXNetIPMessage> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(KNXNetIPMessage.class, KNXNetIPMessageIO.class)
             .withProtocol(KnxNetIpProtocolLogic.class)
+            .withDriverContext(KnxNetIpDriverContext.class)
             .withPacketSizeEstimator(PacketSizeEstimator.class)
             .build();
     }

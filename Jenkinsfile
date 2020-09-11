@@ -173,7 +173,7 @@ pipeline {
             steps {
                 echo 'Building Site'
                 //sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-proxies,with-logstash site'
-                sh 'mvn -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -pl .'
+                sh 'mvn -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check,with-logstash site -X -pl .'
             }
         }
 
@@ -286,14 +286,14 @@ Is back to normal.
 
         always {
             script {
-                if(env.BRANCH_NAME == "master") {
+                if(env.BRANCH_NAME == "release") {
                     // Double check if something was really changed as sometimes the
                     // build just runs without any changes.
                     if(currentBuild.changeSets.size() > 0) {
                         emailext(
-                            subject: "[COMMIT-TO-MASTER]: A commit to the master branch was made'",
+                            subject: "[COMMIT-TO-RELEASE]: A commit to the release branch was made'",
                             body: """
-COMMIT-TO-MASTER: A commit to the master branch was made:
+COMMIT-TO-RELEASE: A commit to the release branch was made:
 
 Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BRANCH_NAME}] [${env.BUILD_NUMBER}]</a>"
 """,

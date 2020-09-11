@@ -35,6 +35,9 @@ typedef enum plc4c_return_code {
   INVALID_CONNECTION_STRING,
   NON_MATCHING_LISTS,
   INVALID_LIST_SIZE,
+  NULL_VALUE,
+  OUT_OF_RANGE,
+  INVALID_ARGUMENT,
   NOT_REACHABLE,
   PERMISSION_DENIED,
 
@@ -45,8 +48,11 @@ typedef enum plc4c_return_code {
   NO_TRANSPORT_AVAILABLE,
   UNKNOWN_TRANSPORT,
 
+  PARSE_ERROR,
+
   UNKNOWN_ERROR,
-  INTERNAL_ERROR
+  INTERNAL_ERROR,
+  NOT_IMPLEMENTED
 } plc4c_return_code;
 
 typedef enum plc4c_response_code {

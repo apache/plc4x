@@ -83,13 +83,13 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     /** Applies the given Stack to the Pipeline */
     @Override
     public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(
-            Configuration configuration, ChannelPipeline pipeline) {
+            Configuration configuration, ChannelPipeline pipeline, boolean passive) {
         pipeline.addLast(getMessageCodec(configuration));
         Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = configure(configuration, createInstance(protocolClass));
         if(driverContextClass != null) {
             protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, protocol, basePacketClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol, basePacketClass);
         pipeline.addLast(context);
         return protocol;
     }

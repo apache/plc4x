@@ -38,6 +38,7 @@ public class CliOptions {
     private final String storageGroup;
     private final String device;
     private final String datatype;
+    private final boolean useJDBC;
 
     public static CliOptions fromArgs(String[] args) {
         options = new Options();
@@ -114,6 +115,13 @@ public class CliOptions {
                 .desc("The data type of the field")
                 .required()
                 .build());
+        options.addOption(
+            Option.builder()
+                .type(Boolean.class)
+                .longOpt("use-jdbc")
+                .hasArg()
+                .desc("Whether use JDBC API or not")
+                .build());
 
         CommandLineParser parser = new DefaultParser();
         CommandLine commandLine;
@@ -129,8 +137,9 @@ public class CliOptions {
             String storageGroup = commandLine.getOptionValue("iotdb-sg");
             String device = commandLine.getOptionValue("iotdb-device");
             String datatype = commandLine.getOptionValue("iotdb-datatype");
+            boolean useJDBC = Boolean.valueOf(commandLine.getOptionValue("use-jdbc", "false"));
 
-            return new CliOptions(connectionString, fieldAddress, pollingInterval, iotdbIpPort, user, password, storageGroup, device, datatype);
+            return new CliOptions(connectionString, fieldAddress, pollingInterval, iotdbIpPort, user, password, storageGroup, device, datatype, useJDBC);
         } catch (ParseException e) {
             LOGGER.error(e.getMessage());
             return null;
@@ -142,7 +151,7 @@ public class CliOptions {
         formatter.printHelp("PlcLogger", options);
     }
 
-    public CliOptions(String connectionString, String fieldAddress, int pollingInterval, String iotdbIpPort, String user, String password, String storageGroup, String device, String datatype) {
+    public CliOptions(String connectionString, String fieldAddress, int pollingInterval, String iotdbIpPort, String user, String password, String storageGroup, String device, String datatype, boolean useJDBC) {
         this.connectionString = connectionString;
         this.fieldAddress = fieldAddress;
         this.pollingInterval = pollingInterval;
@@ -152,6 +161,7 @@ public class CliOptions {
         this.storageGroup = storageGroup;
         this.device = device;
         this.datatype = datatype;
+        this.useJDBC = useJDBC;
     }
 
     public String getConnectionString() {
@@ -188,6 +198,10 @@ public class CliOptions {
 
     public String getDatatype() {
         return datatype;
+    }
+
+    public boolean isUseJDBC() {
+        return useJDBC;
     }
 
 }

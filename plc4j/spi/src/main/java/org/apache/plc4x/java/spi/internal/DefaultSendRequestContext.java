@@ -88,17 +88,19 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
     }
 
     @Override
-    public void handle(Consumer<T> packetConsumer) {
+    public DefaultContextHandler handle(Consumer<T> packetConsumer) {
         if (this.packetConsumer != null) {
             throw new ConversationContext.PlcWiringException("can't handle multiple consumers");
         }
         this.packetConsumer = packetConsumer;
-        finisher.accept(new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout)));
+        final HandlerRegistration registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, Instant.now().plus(timeout));
+        finisher.accept(registration);
         context.sendToWire(request);
+        return new DefaultContextHandler(() -> registration.hasHandled(), () -> registration.cancel());
     }
 
     @Override
-    public <E extends Throwable> ConversationContext.SendRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
+    public ConversationContext.SendRequestContext<T> onTimeout(Consumer<TimeoutException> onTimeoutConsumer) {
         if (this.onTimeoutConsumer != null) {
             throw new ConversationContext.PlcWiringException("can't handle multiple timeout consumers");
         }
@@ -126,7 +128,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             };
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultSendRequestContext<R>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultSendRequestContext<>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
     @Override

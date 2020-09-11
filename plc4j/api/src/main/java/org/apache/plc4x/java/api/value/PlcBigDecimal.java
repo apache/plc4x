@@ -50,7 +50,7 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
     @Override
     @JsonIgnore
     public boolean isByte() {
-        return true;
+        return (value != null) && (value.compareTo(BigDecimal.valueOf(Byte.MAX_VALUE)) <= 0) && (value.compareTo(BigDecimal.valueOf(Byte.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
     @Override
     @JsonIgnore
     public boolean isShort() {
-        return true;
+        return (value != null) && (value.compareTo(BigDecimal.valueOf(Short.MAX_VALUE)) <= 0) && (value.compareTo(BigDecimal.valueOf(Short.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
     @Override
     @JsonIgnore
     public boolean isInteger() {
-        return true;
+        return (value != null) && (value.compareTo(BigDecimal.valueOf(Integer.MAX_VALUE)) <= 0) && (value.compareTo(BigDecimal.valueOf(Integer.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
     @Override
     @JsonIgnore
     public boolean isLong() {
-        return true;
+        return (value != null) && (value.compareTo(BigDecimal.valueOf(Long.MAX_VALUE)) <= 0) && (value.compareTo(BigDecimal.valueOf(Long.MIN_VALUE)) >= 0);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class PlcBigDecimal extends PlcSimpleValue<BigDecimal> {
     @Override
     @JsonIgnore
     public BigInteger getBigInteger() {
-        return BigInteger.valueOf(value.longValue());
+        return value.toBigInteger();
     }
 
     @Override

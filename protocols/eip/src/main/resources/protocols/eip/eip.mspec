@@ -58,7 +58,7 @@
             [array      int     8   'tag'   length  '(RequestPathSize*2)']
             [simple     uint    16  'elementNb']
         ]
-        ['0xCC' CipReadResponse
+        ['0xCC' CipReadResponse [uint 16 'serviceLen']
               [reserved   uint            8   '0x00']
               [simple     uint            8   'status']
               [simple     uint            8   'extStatus']
@@ -77,12 +77,12 @@
             [simple     uint        8   'status']
             [simple     uint        8   'extStatus']
         ]
-        ['0x0A' MultipleServiceRequest
+        ['0x0A' MultipleServiceRequest [uint 16 'serviceLen']
                [const  int     8   'RequestPathSize'   '0x02']
                [const  uint    32  'RequestPath'       '0x01240220']   //Logical Segment: Class(0x20) 0x02, Instance(0x24) 01 (Message Router)
                [simple Services  'data'         ['serviceLen - 6 '] ]
         ]
-        ['0x8A' MultipleServiceResponse
+        ['0x8A' MultipleServiceResponse [uint 16 'serviceLen']
                [reserved   uint    8   '0x0']
                [simple     uint    8   'status']
                [simple     uint    8   'extStatus']
@@ -97,8 +97,8 @@
                [reserved   uint    8   '0x24']   // setRequestPathLogicalInstanceSegment
                [reserved   uint    8   '0x01']   // setRequestPathInstance
                [reserved   uint    16  '0x9D05']   //Timeout 5s
-               [implicit   uint    16   'messageSize'   'lengthInBytes - 10 - 4']   //substract above and routing
-               [simple     CipService  'service' ['messageSize'] ]
+               [implicit   uint    16  'messageSize'   'lengthInBytes - 10 - 4']   //subtract above and routing
+               [simple     CipService  'unconnectedService' ['messageSize'] ]
                [const      uint    16  'route' '0x0001']
                [simple     int     8   'backPlane']
                [simple     int     8   'slot']

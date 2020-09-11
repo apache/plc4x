@@ -101,20 +101,6 @@
       <version>0.8.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-          </usedDependencies>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

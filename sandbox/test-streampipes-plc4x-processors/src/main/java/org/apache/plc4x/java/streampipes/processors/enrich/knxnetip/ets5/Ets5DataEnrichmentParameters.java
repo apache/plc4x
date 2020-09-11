@@ -18,8 +18,8 @@ under the License.
 */
 package org.apache.plc4x.java.streampipes.processors.enrich.knxnetip.ets5;
 
-import org.streampipes.model.graph.DataProcessorInvocation;
-import org.streampipes.wrapper.params.binding.EventProcessorBindingParams;
+import org.apache.streampipes.model.graph.DataProcessorInvocation;
+import org.apache.streampipes.wrapper.params.binding.EventProcessorBindingParams;
 
 public class Ets5DataEnrichmentParameters extends EventProcessorBindingParams {
 

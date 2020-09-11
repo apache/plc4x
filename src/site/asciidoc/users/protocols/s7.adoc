@@ -46,8 +46,8 @@
 
 |Compatible Transports:
 2+| - `tcp` (Default Port: 102)
-- `raw-socket`
-- `pcap-replay`
+//- `raw-socket`
+//- `pcap-replay`
 
 3+|Supported Operations
 
@@ -59,10 +59,10 @@
 | `write`
 | Only supported with `tcp` transport.
 
-|
-| `subscribe`
-| Generally supported with `tcp` transport with S7 devices of types: `S7 300`, `S7 400`, `S7 1500` (active and passive).
-With `raw-socket` and `pcap-replay` supported on all devices (passive).
+//|
+//| `subscribe`
+//| Generally supported with `tcp` transport with S7 devices of types: `S7 300`, `S7 400`, `S7 1500` (active and passive).
+//With `raw-socket` and `pcap-replay` supported on all devices (passive).
 
 3+|Options
 
@@ -147,6 +147,14 @@ In case of accessing data in the `data block` memory area, the syntax is quite a
 - DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
 - DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}:{Data-Type-Code}[{Count}]
 
+When reading a `STRING` datatype, currently 254 characters would automatically be fetched from the PLC.
+
+In order to limit the amount of data, we extended the `STRING` type declaration syntax to allow limiting this.
+
+With the following format less than 254 characters can be read:
+
+- DB{Data-Block-Number}.DB{Short-Data-Type-Code}{Start-Byte-Address}:STRING({string-length})[{Count}]
+
 These addresses can usually be copied directly out of TIA portal.
 However we also implemented a shorter version, as above version does have some unnecesary boilerplate parts (The `.DB` in the middle as well as the `Short-Data-Type-Code`)
 
@@ -154,6 +162,7 @@ The shorter syntax looks like this:
 
 - DB{Data-Block-Number}.{Start-Byte-Address}.{Bit-Offset}:BOOL[{Count}]
 - DB{Data-Block-Number}.{Start-Byte-Address}:{Data-Type-Code}[{Count}]
+- DB{Data-Block-Number}.{Start-Byte-Address}:STRING({string-length})[{Count}]
 
 The S7 driver will handle both types of notation equally.
 
