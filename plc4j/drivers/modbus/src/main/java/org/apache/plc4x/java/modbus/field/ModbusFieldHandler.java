@@ -124,6 +124,16 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
                   }
                   return new PlcList(plcUINTValues);
               }
+            case "DINT":
+              if(values.length == 1) {
+                  return new PlcDINT((Integer) values[0]);
+              } else {
+                  List<PlcDINT> plcDINTValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcDINTValues.add(new PlcDINT((Integer) values[i]));
+                  }
+                  return new PlcList(plcDINTValues);
+              }
             case "REAL":
               if(values.length == 1) {
                   return new PlcREAL((Integer) values[0]);
@@ -212,6 +222,16 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
                   }
                   return new PlcList(plcUINTValues);
               }
+            case "DINT":
+              if(values.length == 1) {
+                  return new PlcDINT((String) values[0]);
+              } else {
+                  List<PlcDINT> plcDINTValues = new LinkedList<>();
+                  for (int i = 0; i < values.length; i++) {
+                    plcDINTValues.add(new PlcDINT((String) values[i]));
+                  }
+                  return new PlcList(plcDINTValues);
+              }
             case "REAL":
               if(values.length == 1) {
                   return new PlcREAL((String) values[0]);
@@ -260,6 +280,16 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
                       plcUINTValues.add(new PlcUINT((Short) values[i]));
                     }
                     return new PlcList(plcUINTValues);
+                }
+              case "DINT":
+                if(values.length == 1) {
+                    return new PlcDINT((Short) values[0]);
+                } else {
+                    List<PlcDINT> plcDINTValues = new LinkedList<>();
+                    for (int i = 0; i < values.length; i++) {
+                      plcDINTValues.add(new PlcDINT((Short) values[i]));
+                    }
+                    return new PlcList(plcDINTValues);
                 }
               default:
                   throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());

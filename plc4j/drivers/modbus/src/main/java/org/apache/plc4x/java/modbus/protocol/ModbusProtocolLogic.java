@@ -369,6 +369,16 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     byte[] tempBytes = ((PlcUINT) value).getBytes();
                     bytes.add(tempBytes[0]);
                     bytes.add(tempBytes[1]);
+                  } else if(plcValue instanceof PlcDINT) {
+                      if(bytes == null) {
+                          fieldDataTypeSize = ModbusDataType.valueOf("DINT").getDataTypeSize();
+                          bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                      }
+                      byte[] tempBytes = ((PlcDINT) value).getBytes();
+                      bytes.add(tempBytes[0]);
+                      bytes.add(tempBytes[1]);
+                      bytes.add(tempBytes[2]);
+                      bytes.add(tempBytes[3]);
                 } else if(plcValue instanceof PlcREAL) {
                     if(bytes == null) {
                         fieldDataTypeSize = ModbusDataType.valueOf("REAL").getDataTypeSize();
@@ -380,7 +390,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     bytes.add(tempBytes[2]);
                     bytes.add(tempBytes[3]);
                 } else {
-                    throw new PlcRuntimeException("Can only encode BOOL, INT, UINT or REAL values");
+                    throw new PlcRuntimeException("Can only encode BOOL, INT, UINT, DINT or REAL values");
                 }
             }
             if(booleans != null) {
@@ -398,8 +408,12 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             return ((PlcREAL) plcValue).getBytes();
         } else if(plcValue instanceof PlcUINT) {
             return ((PlcUINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcDINT) {
+            return ((PlcDINT) plcValue).getBytes();
         } else if(plcValue instanceof PlcINT) {
             return ((PlcINT) plcValue).getBytes();
+        } else {
+            throw new PlcRuntimeException("Can only encode BOOL, INT, UINT, DINT or REAL values");
         }
         return new byte[0];
     }

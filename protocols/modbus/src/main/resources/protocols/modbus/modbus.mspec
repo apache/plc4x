@@ -283,6 +283,12 @@
         ['21' List
             [array int 16 'value' count 'numberOfValues']
         ]
+        ['22','1' DINT
+            [simple int 32 'value']
+        ]
+        ['22' List
+            [array int 32 'value' count 'numberOfValues']
+        ]
         ['25','1' UINT
             [simple uint 16 'value']
         ]

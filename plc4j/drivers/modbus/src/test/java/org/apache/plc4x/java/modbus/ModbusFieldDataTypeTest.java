@@ -63,6 +63,7 @@ public class ModbusFieldDataTypeTest {
         //Datatype, Length in Words
         String[][] datatypes = {{"INT","1"},
                                 {"UINT","1"},
+                                {"DINT","2"},
                                 {"REAL","2"}};
         for(int i = 0; i< datatypes.length; i++){
             ModbusExtendedRegister extendedregister = ModbusExtendedRegister.of("extended-register:1:" + datatypes[i][0]);

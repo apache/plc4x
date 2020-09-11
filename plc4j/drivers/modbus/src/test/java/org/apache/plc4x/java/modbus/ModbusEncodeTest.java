@@ -49,6 +49,15 @@ public class ModbusEncodeTest {
     }
 
     @Test
+    public void testEncodeIntegerDINT() {
+        Integer[] object = {1,655354775,-2147483648,2147483647,5,6,7};
+        ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:DINT");
+        ModbusFieldHandler handler = new ModbusFieldHandler();
+        PlcList list = (PlcList) handler.encodeInteger(holdingregister, object);
+        Assertions.assertEquals("[1,655354775,-2147483648,2147483647,5,6,7]", list.toString());
+    }
+
+    @Test
     public void testEncodeFloatREAL() {
         Float[] object = {(float) 1.1,(float) 1000.1,(float) 100000.1,(float) 6363.9,(float) 879.873,(float) 6,(float) 7};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:REAL");
