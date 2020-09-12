@@ -35,8 +35,8 @@ import java.util.List;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcREAL extends PlcIECValue<Float> {
 
-    Float minValue = (Float) Float.MIN_VALUE;
-    Float maxValue = (Float) Float.MAX_VALUE;
+    Float minValue = -Float.MAX_VALUE;
+    Float maxValue = Float.MAX_VALUE;
 
     public PlcREAL(Float value) {
         super();

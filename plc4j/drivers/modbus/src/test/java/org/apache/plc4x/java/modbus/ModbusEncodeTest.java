@@ -59,11 +59,11 @@ public class ModbusEncodeTest {
 
     @Test
     public void testEncodeFloatREAL() {
-        Float[] object = {(float) 1.1,(float) 1000.1,(float) 100000.1,(float) 6363.9,(float) 879.873,(float) 6,(float) 7};
+        Float[] object = {(float) 1.1,(float) 1000.1,(float) 100000.1,(float) 3.4028232E38,(float) -3.4028232E38,(float) -1,(float) 10384759934840.0};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:7:REAL");
         ModbusFieldHandler handler = new ModbusFieldHandler();
         PlcList list = (PlcList) handler.encodeFloat(holdingregister, object);
-        Assertions.assertEquals("[1.1,1000.1,100000.1,6363.9,879.873,6.0,7.0]", list.toString());
+        Assertions.assertEquals("[1.1,1000.1,100000.1,3.4028233E38,-3.4028233E38,-1.0,1.03847601E13]", list.toString());
     }
 
 }
