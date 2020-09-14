@@ -38,11 +38,11 @@ typedef struct plc4c_response_item_t plc4c_response_item;
 typedef struct plc4c_response_subscription_item_t plc4c_response_subscription_item;
 typedef struct plc4c_response_unsubscription_item_t plc4c_response_unsubscription_item;
 
-typedef plc4c_return_code *(*plc4c_connection_configure_function)(
+typedef plc4c_return_code (*plc4c_connection_configure_function)(
     plc4c_list* parameters, void** configuration);
 
-typedef plc4c_item *(*plc4c_connection_parse_address_item)(
-    char *address_string);
+typedef plc4c_return_code (*plc4c_connection_parse_address_item)(
+    char *address_string, void** encoded_address);
 
 typedef plc4c_return_code (*plc4c_connection_encode_value_item)(
     plc4c_item *item, void *value, void **encoded_value);
@@ -137,6 +137,7 @@ struct plc4c_system_t {
 
 struct plc4c_item_t {
   char *name;
+  void *address;
 };
 
 struct plc4c_driver_t {

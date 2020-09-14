@@ -19,6 +19,7 @@
 
 #include "plc4c/driver_s7.h"
 #include "plc4c/driver_s7_sm.h"
+#include "plc4c/driver_s7_encode_decode.h"
 
 plc4c_return_code plc4c_driver_s7_configure_function(
     plc4c_list* parameters, void** configuration) {
@@ -48,7 +49,7 @@ plc4c_driver* plc4c_driver_s7_create() {
   driver->protocol_code = "s7";
   driver->protocol_name = "Siemens S7 (Basic)";
   driver->default_transport_code = "tcp";
-  driver->parse_address_function = NULL;
+  driver->parse_address_function = &plc4c_driver_s7_encode_address;
   driver->configure_function = &plc4c_driver_s7_configure_function;
   driver->connect_function = &plc4c_driver_s7_connect_function;
   driver->disconnect_function = &plc4c_driver_s7_disconnect_function;

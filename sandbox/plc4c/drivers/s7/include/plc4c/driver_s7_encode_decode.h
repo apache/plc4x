@@ -37,7 +37,7 @@ plc4c_driver_s7_controller_type decode_controller_type(char* article_number);
 plc4c_return_code decode_byte(const char* from_ptr, const char* to_ptr, uint8_t* value);
 
 plc4c_return_code plc4c_driver_s7_encode_address(
-    char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item);
+    char* address, void** item);
 
 #ifdef __cplusplus
 }

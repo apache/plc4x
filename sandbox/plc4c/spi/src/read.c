@@ -33,10 +33,14 @@ void plc4c_read_request_set_connection(plc4c_read_request *read_request,
 }
 
 plc4c_return_code plc4c_read_request_add_item(plc4c_read_request *read_request,
-                                              char *address) {
-  plc4c_item *item =
-      read_request->connection->driver->parse_address_function(address);
-  plc4c_utils_list_insert_tail_value(read_request->items, item);
+                                              char* field_name, char *address) {
+  plc4c_item *item = malloc(sizeof(plc4c_item));
+  if(item == NULL) {
+    return NO_MEMORY;
+  }
+  item->name = field_name;
+  read_request->connection->driver->parse_address_function(address, &(item->address));
+  plc4c_utils_list_insert_head_value(read_request->items, item);
   return OK;
 }
 
@@ -46,21 +50,23 @@ plc4c_return_code plc4c_read_request_execute(
   // Inject the default read context into the system task.
   plc4c_read_request_execution *new_read_request_execution =
       malloc(sizeof(plc4c_read_request_execution));
+  if(new_read_request_execution == NULL) {
+    return NO_MEMORY;
+  }
   new_read_request_execution->read_request = read_request;
   new_read_request_execution->read_response = NULL;
   new_read_request_execution->system_task = NULL;
 
-  plc4c_system_task *system_task;
-  plc4c_connection_get_driver(plc4c_read_request_get_connection(read_request))
-      ->read_function(new_read_request_execution, &system_task);
+  read_request->connection->driver->read_function(
+      new_read_request_execution, &(new_read_request_execution->system_task));
 
   // Increment the number of running tasks for this connection.
   plc4c_connection_task_added(read_request->connection);
   // Add the new task to the task-list.
-  plc4c_utils_list_insert_tail_value(
+  plc4c_utils_list_insert_head_value(
       plc4c_system_get_task_list(plc4c_connection_get_system(
           plc4c_read_request_get_connection(read_request))),
-      system_task);
+      new_read_request_execution->system_task);
 
   *read_request_execution = new_read_request_execution;
   return OK;

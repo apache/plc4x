@@ -402,45 +402,49 @@ plc4c_return_code plc4c_driver_s7_create_s7_read_request(
 
   (*s7_read_request_packet)->payload =
       malloc(sizeof(plc4c_s7_read_write_cotp_packet));
+  if((*s7_read_request_packet)->payload == NULL) {
+    return NO_MEMORY;
+  }
   (*s7_read_request_packet)->payload->_type =
       plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data;
   (*s7_read_request_packet)->payload->cotp_packet_data_tpdu_ref =
       configuration->pdu_id++;
   (*s7_read_request_packet)->payload->cotp_packet_data_eot = true;
+  (*s7_read_request_packet)->payload->parameters = NULL;
   (*s7_read_request_packet)->payload->payload =
       malloc(sizeof(plc4c_s7_read_write_s7_message));
+  if((*s7_read_request_packet)->payload->payload == NULL) {
+    return NO_MEMORY;
+  }
   (*s7_read_request_packet)->payload->payload->_type =
       plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
   (*s7_read_request_packet)->payload->payload->parameter =
       malloc(sizeof(plc4c_s7_read_write_s7_parameter));
+  if((*s7_read_request_packet)->payload->payload->parameter == NULL) {
+    return NO_MEMORY;
+  }
   (*s7_read_request_packet)->payload->payload->parameter->_type =
       plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_request;
   plc4c_utils_list_create(
       &(*s7_read_request_packet)
            ->payload->payload->parameter->s7_parameter_read_var_request_items);
 
-  plc4c_list_element* item = read_request->items->tail;
-  while (item != NULL) {
+  plc4c_list_element* cur_item = read_request->items->tail;
+  while (cur_item != NULL) {
+    plc4c_item* item = cur_item->value;
     // Get the item address from the API request.
-    char* itemAddress = item->value;
-
-    // Create the item ...
-    plc4c_s7_read_write_s7_var_request_parameter_item* request_item;
-    plc4c_return_code return_code =
-        plc4c_driver_s7_encode_address(itemAddress, &request_item);
-    if (return_code != OK) {
-      return return_code;
-    }
+    plc4c_s7_read_write_s7_var_request_parameter_item* parsed_item_address = item->address;
 
     // Add the new item to the request.
     plc4c_utils_list_insert_head_value(
         (*s7_read_request_packet)
             ->payload->payload->parameter->s7_parameter_read_var_request_items,
-        request_item);
+        parsed_item_address);
 
-    item = item->next;
+    cur_item = cur_item->next;
   }
 
+  (*s7_read_request_packet)->payload->payload->payload = NULL;
   return OK;
 }
 

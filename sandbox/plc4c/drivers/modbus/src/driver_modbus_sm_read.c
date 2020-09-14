@@ -93,6 +93,9 @@ plc4c_return_code plc4c_driver_modbus_read_function(
     plc4c_read_request_execution* read_request_execution,
     plc4c_system_task** task) {
   plc4c_system_task* new_task = malloc(sizeof(plc4c_system_task));
+  if(new_task == NULL) {
+    return NO_MEMORY;
+  }
   new_task->state_id = PLC4C_DRIVER_MODBUS_READ_INIT;
   new_task->state_machine_function = &plc4c_driver_modbus_read_machine_function;
   new_task->completed = false;

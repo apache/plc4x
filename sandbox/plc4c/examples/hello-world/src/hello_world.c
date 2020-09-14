@@ -195,9 +195,9 @@ int main() {
         }
         printf("SUCCESS\n");
 
-        printf("Adding an item for 'RANDOM/foo:INTEGER' ... ");
+        printf("Adding an item for '%I0.0:BOOL' ... ");
         result =
-            plc4c_read_request_add_item(read_request, "RANDOM/foo:INTEGER");
+            plc4c_read_request_add_item(read_request, "hurz", "%I0.0:BOOL");
         if (result != OK) {
           printf("FAILED\n");
           return -1;

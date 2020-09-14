@@ -90,10 +90,11 @@ plc4c_return_code decode_byte(const char* from_ptr, const char* to_ptr, uint8_t*
 }
 
 plc4c_return_code plc4c_driver_s7_encode_address(
-    char* address, plc4c_s7_read_write_s7_var_request_parameter_item** item) {
+    char* address, void** item) {
 
-  *item = malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
-  (*item)->_type =
+  plc4c_s7_read_write_s7_var_request_parameter_item* s7_item =
+      malloc(sizeof(plc4c_s7_read_write_s7_var_request_parameter_item));
+  s7_item->_type =
       plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address;
 
   // Java Regexp:
@@ -244,6 +245,10 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     ////////////////////////////////////////////////////////////////////////////
 
     plc4c_s7_read_write_s7_address* any_address = malloc(sizeof(plc4c_s7_read_write_s7_address));
+    if(any_address == NULL) {
+      return NO_MEMORY;
+    }
+    any_address->_type = plc4c_s7_read_write_s7_address_type_plc4c_s7_read_write_s7_address_any;
 
     for(int i = 0; i < plc4c_s7_read_write_memory_area_num_values(); i++) {
       plc4c_s7_read_write_memory_area ma = plc4c_s7_read_write_memory_area_value_for_index(i);
@@ -297,7 +302,7 @@ plc4c_return_code plc4c_driver_s7_encode_address(
       }
     }
 
-    (*item)->s7_var_request_parameter_item_address_address = any_address;
+    s7_item->s7_var_request_parameter_item_address_address = any_address;
   }
   // - Else -> PLC_PROXY_ADDRESS_PATTERN
   else {
@@ -333,8 +338,9 @@ plc4c_return_code plc4c_driver_s7_encode_address(
     //   parse the byte array
     //   - directly add the resulting struct to the request
     plc4c_s7_read_write_s7_address_parse(
-        read_buffer, &(*item)->s7_var_request_parameter_item_address_address);
+        read_buffer, &s7_item->s7_var_request_parameter_item_address_address);
   }
 
+  *item = s7_item;
   return OK;
 }

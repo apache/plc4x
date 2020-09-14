@@ -99,7 +99,7 @@ plc4c_return_code plc4c_driver_s7_write_function(
   new_task->state_machine_function = &plc4c_driver_s7_write_machine_function;
   new_task->completed = false;
   new_task->context = write_request_execution;
-  new_task->connection = write_request_execution->system_task->connection;
+  new_task->connection = write_request_execution->write_request->connection;
   *task = new_task;
   return OK;
 }
