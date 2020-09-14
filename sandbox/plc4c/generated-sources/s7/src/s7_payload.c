@@ -75,7 +75,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
       uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_read_var_response_num_items;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
-                          plc4c_list* _value = NULL;
+                          plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
         _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &_value);
         if(_res != OK) {
           return _res;
@@ -100,7 +100,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
       uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_request_items);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
-                          plc4c_list* _value = NULL;
+                          plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
         _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(buf, lastItem, (void*) &_value);
         if(_res != OK) {
           return _res;
@@ -125,7 +125,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
       uint8_t itemCount = ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_response_num_items;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
-                          plc4c_list* _value = NULL;
+                          plc4c_s7_read_write_s7_var_payload_status_item* _value = NULL;
         _res = plc4c_s7_read_write_s7_var_payload_status_item_parse(buf, (void*) &_value);
         if(_res != OK) {
           return _res;
@@ -150,7 +150,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* bu
       uint8_t itemCount = plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items);
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
-                          plc4c_list* _value = NULL;
+                          plc4c_s7_read_write_s7_payload_user_data_item* _value = NULL;
         _res = plc4c_s7_read_write_s7_payload_user_data_item_parse(buf, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get_value(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_function_type, (void*) &_value);
         if(_res != OK) {
           return _res;

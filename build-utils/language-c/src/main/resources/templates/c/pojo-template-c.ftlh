@@ -139,22 +139,22 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    for(int curItem = 0; curItem < itemCount; curItem++) {
 <#if indentContent>  </#if>      <#if !helper.isSimpleTypeReference(arrayField.type)>bool lastItem = curItem == (itemCount - 1);</#if>
       <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>                <#if helper.isSimpleTypeReference(arrayField.type)>
+<#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)}* _value = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(arrayField.type)}));
 <#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "_value")};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
-                <#else>
+<#else>
       <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
 <#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
-                </#if>
+</#if>
 <#if indentContent>  </#if>    }
             <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
             <#elseif helper.isLengthArrayField(field)>
@@ -163,22 +163,22 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    uint8_t ${arrayField.name}EndPos = plc4c_spi_read_get_pos(buf) + _${arrayField.name}Length;
 <#if indentContent>  </#if>    while(plc4c_spi_read_get_pos(buf) < ${arrayField.name}EndPos) {
                 <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-                <#if helper.isSimpleTypeReference(arrayField.type)>
+<#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
 <#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value")};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
-                <#else>
+<#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
 <#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
-                </#if>
+</#if>
                 <#-- After parsing, update the current position, but only if it's needed -->
                 <#if arrayField.loopExpression.contains("curPos")>
 <#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(buf) - startPos;
@@ -189,22 +189,22 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
 <#if indentContent>  </#if>    // Terminated array
 <#if indentContent>  </#if>    while(!((boolean) (${helper.toParseExpression(baseType, arrayField, arrayField.loopExpression, baseType.parserArguments)}))) {
             <#-- Inizialize a local variable with the simple type (Intentionally keeping the java-style names so they can be used in expressions) -->
-                <#if helper.isSimpleTypeReference(arrayField.type)>
+<#if helper.isSimpleTypeReference(arrayField.type)>
 <#if indentContent>  </#if>      ${helper.getLanguageTypeNameForTypeReference(arrayField.type)} _value = ${helper.getNullValueForTypeReference(arrayField.type)};
 <#if indentContent>  </#if>      _res = ${helper.getReadBufferReadMethodCall(arrayField.type, "&_value")};
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, &_value);
-                <#else>
+<#else>
                 <#-- Inizialize a local variable with the complex type (Intentionally keeping the java-style names so they can be used in expressions) -->
-<#if indentContent>  </#if>      ${helper.getLanguageTypeNameForField(field)}* _value = NULL;
+<#if indentContent>  </#if>      ${helper.getCTypeName(arrayField.type.name)}* _value = NULL;
 <#if indentContent>  </#if>      _res = ${helper.getCTypeName(arrayField.type.name)}_parse(buf<#if field.params?has_content>, <#list field.params as parserTerm>${helper.toParseExpression(baseType, field, parserTerm, baseType.parserArguments)}<#sep>, </#sep></#list></#if>, (void*) &_value);
 <#if indentContent>  </#if>      if(_res != OK) {
 <#if indentContent>  </#if>        return _res;
 <#if indentContent>  </#if>      }
 <#if indentContent>  </#if>      plc4c_utils_list_insert_head_value(${arrayField.name}, _value);
-                </#if>
+</#if>
               <#-- After parsing, update the current position, but only if it's needed -->
               <#if arrayField.loopExpression.contains("curPos")>
 <#if indentContent>  </#if>      curPos = plc4c_spi_read_get_pos(buf) - startPos;

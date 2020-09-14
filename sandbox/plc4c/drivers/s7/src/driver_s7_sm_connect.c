@@ -292,7 +292,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
             plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response) {
           plc4c_list_element* szl_item =
               item->s7_payload_user_data_item_cpu_function_read_szl_response_items
-                  ->head;
+                  ->tail;
           while (szl_item != NULL) {
             plc4c_s7_read_write_szl_data_tree_item* data_tree_item =
                 szl_item->value;
@@ -302,6 +302,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
                 configuration->controller_type =
                     decode_controller_type(article_number);
                 free(article_number);
+                break;
               } else {
                 configuration->controller_type =
                     PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;

@@ -47,18 +47,18 @@ uint16_t plc4c_driver_s7_get_nearest_matching_tpdu_size(uint16_t pdu_size) {
 plc4c_driver_s7_controller_type decode_controller_type(char* article_number) {
   char* prefix = "6ES7 ";
   // If this article-number doesn't start with this prefix, we can't decode it.
-  if (strncmp(prefix, article_number, strlen(prefix)) != 0) {
+  if (strncmp(prefix, article_number, (size_t) strlen(prefix)) != 0) {
     return PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;
   }
   char model = *(article_number + 5);
   switch (model) {
-    case 2:
+    case '2':
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_1200;
-    case 5:
+    case '5':
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_1500;
-    case 3:
+    case '3':
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_300;
-    case 4:
+    case '4':
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_400;
     default:
       return PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY;

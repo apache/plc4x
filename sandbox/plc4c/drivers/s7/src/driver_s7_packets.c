@@ -247,6 +247,7 @@ plc4c_return_code plc4c_driver_s7_create_s7_connection_request(
   }
   (*s7_connect_request_packet)->payload->payload->_type =
       plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_request;
+
   (*s7_connect_request_packet)->payload->payload->parameter =
       malloc(sizeof(plc4c_s7_read_write_s7_parameter));
   if ((*s7_connect_request_packet)->payload->payload->parameter == NULL) {
@@ -266,6 +267,13 @@ plc4c_return_code plc4c_driver_s7_create_s7_connection_request(
       ->payload->payload->parameter
       ->s7_parameter_setup_communication_pdu_length = configuration->pdu_size;
 
+  (*s7_connect_request_packet)->payload->payload->payload = NULL;
+/*      malloc(sizeof(plc4c_s7_read_write_s7_payload));
+  if ((*s7_connect_request_packet)->payload->payload->payload == NULL) {
+    return NO_MEMORY;
+  }
+  (*s7_connect_request_packet)->payload->payload->payload->_type =
+      plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data;*/
   return OK;
 }
 

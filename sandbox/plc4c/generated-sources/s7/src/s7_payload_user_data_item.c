@@ -120,7 +120,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
     }
 
 
-
+                    
     // Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     uint16_t szlItemCount = 0;
     _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &szlItemCount);
@@ -141,7 +141,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
       uint8_t itemCount = szlItemCount;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         bool lastItem = curItem == (itemCount - 1);
-        plc4c_list* _value = NULL;
+                          plc4c_s7_read_write_szl_data_tree_item* _value = NULL;
         _res = plc4c_s7_read_write_szl_data_tree_item_parse(buf, (void*) &_value);
         if(_res != OK) {
           return _res;
