@@ -25,6 +25,8 @@ extern "C" {
 #include <plc4c/types.h>
 #include <stdint.h>
 
+#include "../../../../generated-sources/s7/includes/cotp_tpdu_size.h"
+
 enum plc4c_driver_s7_controller_type {
   PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY = 0,
   PLC4C_DRIVER_S7_CONTROLLER_TYPE_S7_300 = 1,
@@ -49,7 +51,7 @@ struct plc4c_driver_s7_config {
   uint8_t remote_slot;
   uint16_t calling_tsap_id;
   uint16_t called_tsap_id;
-  uint16_t cotp_tpdu_size;
+  plc4c_s7_read_write_cotp_tpdu_size cotp_tpdu_size;
   uint16_t pdu_size;
   uint8_t max_amq_caller;
   uint8_t max_amq_callee;

@@ -38,6 +38,9 @@ typedef struct plc4c_response_item_t plc4c_response_item;
 typedef struct plc4c_response_subscription_item_t plc4c_response_subscription_item;
 typedef struct plc4c_response_unsubscription_item_t plc4c_response_unsubscription_item;
 
+typedef plc4c_return_code *(*plc4c_connection_configure_function)(
+    plc4c_list* parameters, void** configuration);
+
 typedef plc4c_item *(*plc4c_connection_parse_address_item)(
     char *address_string);
 
@@ -83,6 +86,9 @@ typedef void (*plc4c_connect_free_subscription_response_function)(
 typedef void (*plc4c_connect_free_unsubscription_response_function)(
     plc4c_unsubscription_response *response);
 
+typedef plc4c_return_code (*plc4c_transport_configure_function)(
+    plc4c_list* parameters, void** configuration);
+
 // TODO: Implement the argument.
 typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);
 
@@ -90,7 +96,7 @@ typedef plc4c_return_code (*plc4c_transport_open_function)(void* config);
 typedef plc4c_return_code (*plc4c_transport_close_function)(void* config);
 
 typedef plc4c_return_code (*plc4c_transport_send_message_function)(
-    plc4c_spi_write_buffer* message);
+    void* transport_configuration, plc4c_spi_write_buffer* message);
 
 // Helper function that tells the transport what to do with the current input
 // on positive return value: a read-buffer with given number of bytes is
@@ -104,7 +110,7 @@ typedef int16_t (*accept_message_function)(
     uint8_t* data, uint16_t length);
 
 typedef plc4c_return_code (*plc4c_transport_select_message_function)(
-    accept_message_function accept_message, plc4c_spi_read_buffer** message);
+    void* transport_configuration, uint8_t min_size, accept_message_function accept_message, plc4c_spi_read_buffer** message);
 
 struct plc4c_system_t {
   /* drivers */
@@ -137,6 +143,7 @@ struct plc4c_driver_t {
   char *protocol_code;
   char *protocol_name;
   char *default_transport_code;
+  plc4c_connection_configure_function configure_function;
   plc4c_connection_parse_address_item parse_address_function;
   plc4c_connection_connect_function connect_function;
   plc4c_connection_disconnect_function disconnect_function;
@@ -164,6 +171,7 @@ struct plc4c_transport_t {
   char *transport_code;
   char* transport_name;
 
+  plc4c_transport_configure_function configure;
   plc4c_transport_open_function open;
   plc4c_transport_close_function close;
   plc4c_transport_send_message_function send_message;
@@ -183,6 +191,7 @@ struct plc4c_connection_t {
   char *protocol_code;
   char *transport_code;
   char *transport_connect_information;
+  void *transport_configuration;
   char *parameters;
   void *configuration;
 

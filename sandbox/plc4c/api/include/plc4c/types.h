@@ -54,6 +54,7 @@ typedef enum plc4c_return_code {
   PARSE_ERROR,
 
   UNKNOWN_ERROR,
+  CONNECTION_ERROR,
   INTERNAL_ERROR,
   NOT_IMPLEMENTED
 } plc4c_return_code;

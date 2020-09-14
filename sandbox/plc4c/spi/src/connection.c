@@ -154,6 +154,11 @@ void plc4c_connection_set_driver(plc4c_connection *connection,
   connection->driver = driver;
 }
 
+void plc4c_connection_set_configuration(plc4c_connection *connection,
+                                        void *configuration) {
+  connection->configuration = configuration;
+}
+
 bool plc4c_connection_has_error(plc4c_connection *connection) { return false; }
 
 plc4c_return_code plc4c_connection_disconnect(plc4c_connection *connection) {

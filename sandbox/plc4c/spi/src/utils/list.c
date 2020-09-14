@@ -28,7 +28,7 @@ void plc4c_utils_list_create(plc4c_list **list) {
 }
 
 size_t plc4c_utils_list_size(plc4c_list *list) {
-  if (list->tail == NULL) {
+  if ((list == NULL) || (list->tail == NULL)) {
     return 0;
   }
   plc4c_list_element *cur_element = list->tail;

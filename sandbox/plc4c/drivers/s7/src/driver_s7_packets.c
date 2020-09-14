@@ -62,8 +62,8 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
   // The length information is located in bytes 3 and 4
   if (buffer_length >= 4) {
     uint16_t packet_length =
-        ((uint16_t) (buffer_data + 2) << 8) |
-        ((uint16_t) (buffer_data + 3));
+        ((uint16_t) *(buffer_data + 2) << 8) |
+        ((uint16_t) *(buffer_data + 3));
     if (buffer_length >= packet_length) {
       return packet_length;
     }
@@ -79,6 +79,7 @@ int16_t plc4c_driver_s7_select_message_function(uint8_t* buffer_data,
       }
       return -(buffer_length - 1);
     }
+    return packet_length;
   }
   // In all other cases, we'll just have to wait for the next time.
   return 0;
@@ -97,10 +98,13 @@ plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
   if (return_code != OK) {
     return return_code;
   }
-  plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, packet);
+  return_code = plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, packet);
+  if(return_code != OK) {
+    return return_code;
+  }
 
   // Now send this to the recipient.
-  return_code = connection->transport->send_message(write_buffer);
+  return_code = connection->transport->send_message(connection->transport_configuration, write_buffer);
   if (return_code != OK) {
     return return_code;
   }
@@ -114,7 +118,9 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
   // If it is, get a read_buffer for reading it.
   plc4c_spi_read_buffer* read_buffer;
   plc4c_return_code return_code = connection->transport->select_message(
-      plc4c_driver_s7_select_message_function, &read_buffer);
+      connection->transport_configuration,
+      4, plc4c_driver_s7_select_message_function,
+      &read_buffer);
   // OK is only returned if a packet is available.
   if (return_code != OK) {
     return return_code;
@@ -295,18 +301,19 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   }
   (*s7_identify_remote_request_packet)->payload->payload->_type =
       plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_user_data;
+
+  // Create a Parameter
   (*s7_identify_remote_request_packet)->payload->payload->parameter =
       malloc(sizeof(plc4c_s7_read_write_s7_parameter));
-  if ((*s7_identify_remote_request_packet)->payload->payload->parameter ==
-      NULL) {
+  if ((*s7_identify_remote_request_packet)->payload->payload->parameter == NULL) {
     return NO_MEMORY;
   }
   (*s7_identify_remote_request_packet)->payload->payload->parameter->_type =
       plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_user_data;
-
   plc4c_utils_list_create(
       &((*s7_identify_remote_request_packet)
             ->payload->payload->parameter->s7_parameter_user_data_items));
+  // Create the Parameter Item
   plc4c_s7_read_write_s7_parameter_user_data_item* parameter_item =
       malloc(sizeof(plc4c_s7_read_write_s7_parameter_user_data_item));
   parameter_item->_type =
@@ -331,9 +338,17 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
           ->payload->payload->parameter->s7_parameter_user_data_items,
       parameter_item);
 
+  // Create the Payload
+  (*s7_identify_remote_request_packet)->payload->payload->payload = malloc(sizeof(plc4c_s7_read_write_s7_payload));
+  if ((*s7_identify_remote_request_packet)->payload->payload->parameter == NULL) {
+    return NO_MEMORY;
+  }
+  (*s7_identify_remote_request_packet)->payload->payload->payload->_type =
+      plc4c_s7_read_write_s7_payload_type_plc4c_s7_read_write_s7_payload_user_data;
   plc4c_utils_list_create(
       &((*s7_identify_remote_request_packet)
             ->payload->payload->payload->s7_payload_user_data_items));
+  // Create the Payload Item
   plc4c_s7_read_write_s7_payload_user_data_item* payload_item =
       malloc(sizeof(plc4c_s7_read_write_s7_payload_user_data_item));
   payload_item->_type =
@@ -351,6 +366,10 @@ plc4c_return_code plc4c_driver_s7_create_s7_identify_remote_request(
   payload_item->szl_id->sublist_extract = 0x00;
   payload_item->szl_id->sublist_list =
       plc4c_s7_read_write_szl_sublist_MODULE_IDENTIFICATION;
+  plc4c_utils_list_insert_head_value(
+      (*s7_identify_remote_request_packet)
+          ->payload->payload->payload->s7_payload_user_data_items,
+      payload_item);
 
   return OK;
 }

@@ -68,7 +68,8 @@ plc4c_return_code plc4c_driver_modbus_send_packet(plc4c_connection* connection,
   plc4c_modbus_read_write_modbus_tcp_adu_serialize(write_buffer, packet);
 
   // Now send this to the recipient.
-  return_code = connection->transport->send_message(write_buffer);
+  return_code = connection->transport->send_message(
+      connection->transport_configuration, write_buffer);
   if (return_code != OK) {
     return return_code;
   }
@@ -82,7 +83,9 @@ plc4c_return_code plc4c_driver_modbus_receive_packet(plc4c_connection* connectio
   // If it is, get a read_buffer for reading it.
   plc4c_spi_read_buffer* read_buffer;
   plc4c_return_code return_code = connection->transport->select_message(
-      plc4c_driver_modbus_select_message_function, &read_buffer);
+      connection->transport_configuration,
+      6, plc4c_driver_modbus_select_message_function,
+      &read_buffer);
   // OK is only returned if a packet is available.
   if (return_code != OK) {
     return return_code;

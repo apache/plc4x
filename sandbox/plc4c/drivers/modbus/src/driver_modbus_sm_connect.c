@@ -37,6 +37,7 @@ plc4c_return_code plc4c_driver_modbus_connect_machine_function(
 
 plc4c_return_code plc4c_driver_modbus_connect_function(
     plc4c_connection *connection, plc4c_system_task **task) {
+
   plc4c_system_task *new_task = malloc(sizeof(plc4c_system_task));
   // There's nothing to do here, so no need for a state-machine.
   new_task->state_id = -1;

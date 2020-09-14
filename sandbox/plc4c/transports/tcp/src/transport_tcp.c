@@ -20,22 +20,122 @@
 #include <plc4c/spi/types_private.h>
 #include <plc4c/transport_tcp.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <string.h>
+#include <errno.h>
+
+extern int errno;
+
+plc4c_return_code plc4c_transport_tcp_configure_function(
+    plc4c_list* parameters, void** configuration) {
+  plc4c_transport_tcp_config* tcp_configuration = malloc(sizeof(plc4c_transport_tcp_config));
+  if(tcp_configuration == NULL) {
+    return NO_MEMORY;
+  }
+  // TODO: Implement this ...
+  tcp_configuration->address = "192.168.23.30";
+  tcp_configuration->port = 102;
+
+  *configuration = tcp_configuration;
+  return OK;
+}
 
 plc4c_return_code plc4c_transport_tcp_open_function(void* config) {
+  int sockfd;
+  int connfd;
+  struct sockaddr_in servaddr;
+
+  plc4c_transport_tcp_config* tcp_config = config;
+
+  tcp_config->sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (tcp_config->sockfd < 0) {
+    return CONNECTION_ERROR;
+  }
+
+  // Configure where to connect to.
+  bzero(&servaddr, sizeof(struct sockaddr_in));
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_addr.s_addr = inet_addr(tcp_config->address);
+  servaddr.sin_port = htons(tcp_config->port);
+
+  int result = connect(tcp_config->sockfd, (struct sockaddr*) &servaddr,
+                       sizeof(servaddr));
+  if(result != 0) {
+    char* error_msg = strerror(errno);
+    printf(error_msg);
+    return CONNECTION_ERROR;
+  }
   return OK;
 }
 
 plc4c_return_code plc4c_transport_tcp_close_function(void* config) {
+  plc4c_transport_tcp_config* tcp_config = config;
+
+  // If the sockfd is zero we're not really connected.
+  if(tcp_config->sockfd == 0) {
+    return INTERNAL_ERROR;
+  }
+
+  // Stop receiving as well as sending.
+  shutdown(tcp_config->sockfd, 2);
   return OK;
 }
 
 plc4c_return_code plc4c_transport_tcp_send_message_function(
-    plc4c_spi_write_buffer* message) {
+    void* transport_configuration, plc4c_spi_write_buffer* message) {
+  plc4c_transport_tcp_config* tcp_config = transport_configuration;
+
+  ssize_t bytes_sent = send(tcp_config->sockfd, message->data, message->length, MSG_DONTWAIT);
+  if(bytes_sent < 0) {
+    return CONNECTION_ERROR;
+  }
+
   return OK;
 }
 
 plc4c_return_code plc4c_transport_tcp_select_message_function(
+    void* transport_configuration, uint8_t min_size,
     accept_message_function accept_message, plc4c_spi_read_buffer** message) {
+  plc4c_transport_tcp_config* tcp_config = transport_configuration;
+
+  // First try to read the minimum number of bytes the driver needs to know
+  // how big a packet is.
+  uint8_t* size_buffer = malloc(sizeof(uint8_t) * min_size);
+  if(size_buffer == NULL) {
+    return NO_MEMORY;
+  }
+  int received_bytes = recv(tcp_config->sockfd, size_buffer, min_size, 0);
+  // TODO: if the value is negative, it's more a "please remove this much of corrupt data" ...
+  if(received_bytes < 0) {
+    return CONNECTION_ERROR;
+  }
+
+  // Now that we have enough data to find out how many bytes we need, have
+  // the accept_message function find out how many
+  int16_t message_size = accept_message(size_buffer, min_size);
+  if(message_size < 0) {
+    return INTERNAL_ERROR;
+  }
+  uint8_t* message_buffer = malloc(sizeof(uint8_t) * message_size);
+  if(message_size < 0) {
+    return NO_MEMORY;
+  }
+
+  // Copy the size_buffer to the start of the new buffer.
+  memcpy(message_buffer, size_buffer, min_size);
+  free(size_buffer);
+
+  // Read the rest of the packet.
+  received_bytes = recv(tcp_config->sockfd, message_buffer + min_size, message_size - min_size, 0);
+  if(received_bytes != message_size - min_size) {
+    return CONNECTION_ERROR;
+  }
+
+  // Create a new read-buffer with the read message data.
+  plc4c_spi_read_buffer_create(message_buffer, message_size, message);
   return OK;
 }
 
@@ -44,6 +144,7 @@ plc4c_transport *plc4c_transport_tcp_create() {
       (plc4c_transport *)malloc(sizeof(plc4c_transport));
   transport->transport_code = "tcp";
   transport->transport_name = "TCP transport";
+  transport->configure = &plc4c_transport_tcp_configure_function;
   transport->open = &plc4c_transport_tcp_open_function;
   transport->close = &plc4c_transport_tcp_close_function;
   transport->send_message = &plc4c_transport_tcp_send_message_function;

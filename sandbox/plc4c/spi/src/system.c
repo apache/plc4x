@@ -435,9 +435,22 @@ plc4c_return_code plc4c_system_connect(plc4c_system *system,
   // Initialize a new connection task and schedule that.
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  plc4c_driver* driver = plc4c_connection_get_driver(new_connection);
+
+  // Configure the driver configuration first.
+  void* configuration = NULL;
+  // TODO: Pass in the configuration options ...
+  driver->configure_function(NULL, &configuration);
+  plc4c_connection_set_configuration(new_connection, configuration);
+
+  // TODO: Somehow let the driver inject default values which the transport can then pickup ...
+
+  // Prepare a configuration data structure for the current transport.
+  new_connection->transport->configure(NULL, &new_connection->transport_configuration);
+
+  // Create a new connection task.
   plc4c_system_task *new_connection_task = NULL;
-  result = plc4c_connection_get_driver(new_connection)
-               ->connect_function(new_connection, &new_connection_task);
+  result = driver->connect_function(new_connection, &new_connection_task);
   if (result != OK) {
     return -1;
   }

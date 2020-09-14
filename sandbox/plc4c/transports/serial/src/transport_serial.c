@@ -35,7 +35,8 @@ plc4c_return_code plc4c_transport_serial_send_message_function(
 }
 
 plc4c_return_code plc4c_transport_serial_select_message_function(
-    accept_message_function accept_message, plc4c_spi_read_buffer** message) {
+    void* transport_configuration, accept_message_function accept_message,
+    plc4c_spi_read_buffer** message) {
   return OK;
 }
 

@@ -30,6 +30,7 @@
 
 enum plc4c_driver_s7_connect_states {
   PLC4C_DRIVER_S7_CONNECT_INIT,
+  PLC4C_DRIVER_S7_CONNECT_TRANSPORT_CONNECT,
   PLC4C_DRIVER_S7_CONNECT_SEND_COTP_CONNECT_REQUEST,
   PLC4C_DRIVER_S7_CONNECT_RECEIVE_COTP_CONNECT_RESPONSE,
   PLC4C_DRIVER_S7_CONNECT_SEND_S7_CONNECT_REQUEST,
@@ -74,6 +75,15 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
           plc4c_driver_s7_get_nearest_matching_tpdu_size(
               configuration->pdu_size);
       configuration->pdu_size = configuration->cotp_tpdu_size - 16;
+
+      task->state_id = PLC4C_DRIVER_S7_CONNECT_TRANSPORT_CONNECT;
+      break;
+    }
+    case PLC4C_DRIVER_S7_CONNECT_TRANSPORT_CONNECT: {
+      plc4c_return_code return_code = connection->transport->open(connection->transport_configuration);
+      if(return_code != OK) {
+        return return_code;
+      }
 
       task->state_id = PLC4C_DRIVER_S7_CONNECT_SEND_COTP_CONNECT_REQUEST;
       break;
@@ -192,7 +202,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
         return INTERNAL_ERROR;
       }
       if (s7_connect_response_packet->payload->payload->_type !=
-          plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response) {
+          plc4c_s7_read_write_s7_message_type_plc4c_s7_read_write_s7_message_response_data) {
         return INTERNAL_ERROR;
       }
       if (s7_connect_response_packet->payload->payload->parameter->_type !=
@@ -213,7 +223,7 @@ plc4c_return_code plc4c_driver_s7_connect_machine_function(
               ->s7_parameter_setup_communication_max_amq_callee;
 
       // If no controller is explicitly selected, detect it.
-      if (configuration->controller_type !=
+      if (configuration->controller_type ==
           PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY) {
         task->state_id = PLC4C_DRIVER_S7_CONNECT_SEND_S7_IDENTIFICATION_REQUEST;
       }

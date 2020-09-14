@@ -35,9 +35,10 @@ uint16_t plc4c_driver_s7_encode_tsap_id(
 uint16_t plc4c_driver_s7_get_nearest_matching_tpdu_size(uint16_t pdu_size) {
   for (int i = 0; i < plc4c_s7_read_write_cotp_tpdu_size_num_values(); i++) {
     uint16_t cur_value =
-        plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(i);
+        plc4c_s7_read_write_cotp_tpdu_size_get_size_in_bytes(
+            plc4c_s7_read_write_cotp_tpdu_size_value_for_index(i));
     if (cur_value >= pdu_size) {
-      return cur_value;
+      return plc4c_s7_read_write_cotp_tpdu_size_value_for_index(i);
     }
   }
   return 0;
