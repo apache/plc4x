@@ -51,6 +51,8 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
+import org.apache.plc4x.nifi.util.PLC4X_PROTOCOL;
+import org.apache.plc4x.nifi.util.Plc4xCommon;
 
 @Tags({ "plc4x-source" })
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
@@ -78,12 +80,19 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 
 	
 	private PlcConnection connection = null;
+	
+	private static PLC4X_PROTOCOL PROTOCOL = null;
+	
 	@Override
     public void onScheduled(final ProcessContext context) {
         super.onScheduled(context);
         //TODO: Change this to use NiFi service instead of direct connection, service has a close phase, processor only hace init, scheduled and trigger phases 
         try {        	
 			this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
+			
+			//TODO how to infer protocol within the writer?
+			PROTOCOL = Plc4xCommon.getConnectionProtocol(getConnectionString());
+			
 		} catch (PlcConnectionException e) {
 			if(this.connection != null)
 				try {
@@ -162,7 +171,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	
 					resultSetFF = session.write(resultSetFF, out -> {
 						try {
-							nrOfRows.set(plc4xWriter.writeResultSet(readResponse, this.getPlcAddress(), out, logger, null));
+							nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, this.getPlcAddress(), out, logger, null, PROTOCOL));
 						} catch (Exception e) {
 							throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 						}

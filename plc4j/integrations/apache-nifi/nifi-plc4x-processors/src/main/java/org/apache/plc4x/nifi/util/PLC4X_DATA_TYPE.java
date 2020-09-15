@@ -11,5 +11,7 @@ public enum PLC4X_DATA_TYPE {
 		DOUBLE,
 		FLOAT,
 		SMALLINT,
-		STRING
+		STRING,
+		SHORT,
+		ARRAY
 }

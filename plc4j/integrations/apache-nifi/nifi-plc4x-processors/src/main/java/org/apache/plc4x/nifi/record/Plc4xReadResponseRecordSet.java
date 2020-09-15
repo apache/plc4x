@@ -44,10 +44,10 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private boolean moreRows;
 
 
-    public Plc4xReadResponseRecordSet(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema) throws IOException {
+    public Plc4xReadResponseRecordSet(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema, PLC4X_PROTOCOL PROTOCOL) throws IOException {
         this.readResponse = readResponse;
         moreRows = true;
-        this.schema = createSchema(plcAddressMap, readerSchema, true);
+        this.schema = createSchema(plcAddressMap, readerSchema, true, PROTOCOL);
         rsColumnNames = plcAddressMap.keySet();
         
     }
@@ -102,6 +102,9 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
             values.put(fieldName, value);
         }
 
+        //TODO add timestamp field to schema
+        values.put(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, System.currentTimeMillis());
+        	
         return new MapRecord(schema, values);
     }
 
@@ -116,16 +119,21 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         return value;
     }
 
-    private static RecordSchema createSchema(final Map<String, String> plcAddressMap, final RecordSchema readerSchema, boolean nullable) {
+    private static RecordSchema createSchema(final Map<String, String> plcAddressMap, final RecordSchema readerSchema, boolean nullable, PLC4X_PROTOCOL PROTOCOL) {
         final List<RecordField> fields = new ArrayList<>(plcAddressMap.size());
         for (Map.Entry<String, String> entry : plcAddressMap.entrySet()) {
-            //TODO: Infer protocolo and pass to the method
-            PLC4X_DATA_TYPE plc4xType = Plc4xCommon.inferTypeFromAddressString(entry.getValue(), PLC4X_PROTOCOL.S7);
+            PLC4X_DATA_TYPE plc4xType = Plc4xCommon.inferTypeFromAddressString(entry.getValue(), PROTOCOL);
             final DataType dataType = getDataType(plc4xType, readerSchema);
             final String fieldName = entry.getKey();
             final RecordField field = new RecordField(fieldName, dataType, nullable);
             fields.add(field);
         }
+        
+        //TODO add timestamp field to schema
+        final RecordField timestampField = new RecordField(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, RecordFieldType.LONG.getDataType(), false);
+        fields.add(timestampField);
+        
+        
         return new SimpleRecordSchema(fields);
     }
 
@@ -151,7 +159,12 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
             case SMALLINT:
             	return RecordFieldType.SHORT.getDataType();
             case STRING:
-            	return RecordFieldType.STRING.getDataType();            	
+            	return RecordFieldType.STRING.getDataType(); 
+            case ARRAY:
+            	//TODO array type -> return RecordFieldType.ARRAY.getArrayDataType(RecordFieldType.BOOLEAN.getDataType());
+            	return RecordFieldType.STRING.getDataType(); 
+            case SHORT: 
+            	return RecordFieldType.SHORT.getDataType();
             default:
             	return RecordFieldType.STRING.getDataType();
         }

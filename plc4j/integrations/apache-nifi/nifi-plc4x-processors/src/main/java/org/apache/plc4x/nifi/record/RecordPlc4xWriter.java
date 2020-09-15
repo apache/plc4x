@@ -41,20 +41,12 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	}
 
 	@Override
-	public long writeResultSet(PlcReadResponse response, Map<String, String> plcAddressMap, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback) throws Exception {
+	public long writePlcReadResponse(PlcReadResponse response, Map<String, String> plcAddressMap, OutputStream outputStream, ComponentLog logger, Plc4xReadResponseRowCallback callback, PLC4X_PROTOCOL PROTOCOL) throws Exception {
 		if (fullRecordSet == null) {	
-			//TODO: infer Protocol form connection string
-			
-			//TODO version 1
-            //final Schema avroSchema = Plc4xCommon.createSchema(plcAddressMap, PLC4X_PROTOCOL.S7);
-                        
-			//TODO version 2: is this mapping based on "PlcDatatype" classes valid for aall protocols?
-			Map<String, ? extends PlcValue> responseDataStructure = response.getAsPlcValue().getStruct();
-			
-			final Schema avroSchema = Plc4xCommon.createSchema(responseDataStructure);
+            final Schema avroSchema = Plc4xCommon.createSchema(plcAddressMap, PROTOCOL);
             
             final RecordSchema recordAvroSchema = AvroTypeUtil.createSchema(avroSchema);
-            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(plcAddressMap, response, recordAvroSchema, callback);
+            fullRecordSet = new Plc4xReadResponseRecordSetWithCallback(plcAddressMap, response, recordAvroSchema, callback, PROTOCOL);
             writeSchema = recordSetWriterFactory.getSchema(originalAttributes, fullRecordSet.getSchema());
         }
                 
@@ -70,7 +62,7 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	}
 
 	@Override
-	public void writeEmptyResultSet(OutputStream outputStream, ComponentLog logger) throws IOException {
+	public void writeEmptyPlcReadResponse(OutputStream outputStream, ComponentLog logger) throws IOException {
 		try (final RecordSetWriter resultSetWriter = recordSetWriterFactory.createWriter(logger, writeSchema, outputStream, Collections.emptyMap())) {
             mimeType = resultSetWriter.getMimeType();
             resultSetWriter.beginRecordSet();
@@ -110,8 +102,8 @@ public class RecordPlc4xWriter implements Plc4xWriter {
 	
 	private static class Plc4xReadResponseRecordSetWithCallback extends Plc4xReadResponseRecordSet {
         private final Plc4xReadResponseRowCallback callback;
-        public Plc4xReadResponseRecordSetWithCallback(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema, Plc4xReadResponseRowCallback callback) throws IOException {
-            super(plcAddressMap, readResponse, readerSchema);
+        public Plc4xReadResponseRecordSetWithCallback(final Map<String, String> plcAddressMap, final PlcReadResponse readResponse, final RecordSchema readerSchema, Plc4xReadResponseRowCallback callback, PLC4X_PROTOCOL PROTOCOL) throws IOException {
+            super(plcAddressMap, readResponse, readerSchema, PROTOCOL);
             this.callback = callback;
         }
         @Override
