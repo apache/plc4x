@@ -99,7 +99,11 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                 abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
 
             final int transactionCounter = transactionCounterGenerator.incrementAndGet();
-            // origin/sender: constant = 5
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(transactionCounterGenerator.get() == 0xFFFF) {
+                transactionCounterGenerator.set(1);
+            }
+// origin/sender: constant = 5
             DF1RequestMessage requestMessage = new DF1CommandRequestMessage(
                 (short) configuration.getStation(), (short) 5, (short) 0,
                 transactionCounter, logicalRead);
