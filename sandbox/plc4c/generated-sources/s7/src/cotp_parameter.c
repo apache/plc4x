@@ -139,7 +139,6 @@ plc4c_return_code plc4c_s7_read_write_cotp_parameter_parse(plc4c_spi_read_buffer
       uint8_t itemCount = rest;
       for(int curItem = 0; curItem < itemCount; curItem++) {
         
-                  
         uint8_t* _value = malloc(sizeof(uint8_t));
         _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) _value);
         if(_res != OK) {

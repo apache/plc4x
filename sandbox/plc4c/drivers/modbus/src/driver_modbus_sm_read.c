@@ -17,7 +17,6 @@
   under the License.
 */
 
-#include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>

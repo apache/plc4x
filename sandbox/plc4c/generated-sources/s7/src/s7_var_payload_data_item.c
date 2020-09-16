@@ -68,7 +68,6 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4c_spi_r
     uint8_t itemCount = ((plc4c_s7_read_write_data_transport_size_get_size_in_bits(transportSize)) ? plc4c_spi_evaluation_helper_ceil((dataLength) / (8.0)) : dataLength);
     for(int curItem = 0; curItem < itemCount; curItem++) {
       
-                
       int8_t* _value = malloc(sizeof(int8_t));
       _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) _value);
       if(_res != OK) {

@@ -254,7 +254,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
     uint8_t _parametersLength = (((headerLength) + (1))) - (curPos);
     uint8_t parametersEndPos = plc4c_spi_read_get_pos(buf) + _parametersLength;
     while(plc4c_spi_read_get_pos(buf) < parametersEndPos) {
-      plc4c_list* _value = NULL;
+      plc4c_s7_read_write_cotp_parameter* _value = NULL;
       _res = plc4c_s7_read_write_cotp_parameter_parse(buf, (((headerLength) + (1))) - (curPos), (void*) &_value);
       if(_res != OK) {
         return _res;

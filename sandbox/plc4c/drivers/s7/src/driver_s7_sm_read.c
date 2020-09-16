@@ -80,8 +80,34 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
         return return_code;
       }
 
-      // TODO: Check the response ...
-      // TODO: Decode the items in the response ...
+      // Check the response.
+      plc4c_s7_read_write_s7_parameter* parameter = s7_read_response_packet->payload->payload->parameter;
+      if(parameter->_type != plc4c_s7_read_write_s7_parameter_type_plc4c_s7_read_write_s7_parameter_read_var_response) {
+        return INTERNAL_ERROR;
+      }
+      // Check if the number of items matches that of the request
+      // (Otherwise we won't know how to interpret the items)
+      if(parameter->s7_parameter_read_var_response_num_items != plc4c_utils_list_size(read_request->items)) {
+        return INTERNAL_ERROR;
+      }
+      // Iterate over the request items and use the types to decode the
+      // response items.
+      plc4c_s7_read_write_s7_payload* payload = s7_read_response_packet->payload->payload->payload;
+      plc4c_list_element* cur_request_item_element = plc4c_utils_list_tail(read_request->items);
+      plc4c_list_element* cur_response_item_element = plc4c_utils_list_tail(payload->s7_payload_read_var_response_items);
+      while((cur_request_item_element != NULL) && (cur_response_item_element != NULL)) {
+        plc4c_item* cur_request_item = cur_request_item_element->value;
+        plc4c_s7_read_write_s7_address* s7_address = cur_request_item->address;
+        plc4c_s7_read_write_transport_size transport_size = s7_address->s7_address_any_transport_size;
+        uint16_t num_elements = s7_address->s7_address_any_number_of_elements;
+
+        plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item = cur_response_item_element->value;
+        
+
+        cur_request_item_element = cur_request_item_element->next;
+        cur_request_item_element = cur_response_item_element->next;
+      }
+
       // TODO: Return the results to the API ...
 
       task->completed = true;

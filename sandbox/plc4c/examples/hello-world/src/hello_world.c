@@ -26,6 +26,7 @@
 #include <plc4c/utils/list.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../../../spi/include/plc4c/spi/types_private.h"
 
