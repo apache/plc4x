@@ -33,44 +33,57 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcUINT extends PlcIECValue<Integer> {
+public class PlcWCHAR extends PlcIECValue<Integer> {
 
     static Integer minValue = 0;
     static Integer maxValue = Short.MAX_VALUE * 2 + 1;
 
-    public PlcUINT(Boolean value) {
+    public PlcWCHAR(Boolean value) {
         super();
         this.value = value ? (Integer) 1 : (Integer) 0;
         this.isNullable = false;
     }
 
-    public PlcUINT(Byte value) {
+    public PlcWCHAR(Byte value) {
         super();
         this.value = (Integer) value.intValue();
         this.isNullable = false;
     }
 
-    public PlcUINT(Short value) {
+    public PlcWCHAR(Character value) {
+        super();
+        Integer val = Character.getNumericValue(value);
+        if ((val >= minValue) && (val <= maxValue)) {
+            this.value = val;
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcWCHAR(Short value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
             this.value = (Integer) value.intValue();
             this.isNullable = false;
         } else {
-            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCUINT Value");
+            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
         }
     }
 
-    public PlcUINT(Integer value) {
+    public PlcWCHAR(Integer value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCUINT Value");
+            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
         }
     }
 
-    public PlcUINT(Long value) {
+    public PlcWCHAR(Long value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
             this.value = (Integer) value.intValue();
@@ -82,7 +95,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         }
     }
 
-    public PlcUINT(Float value) {
+    public PlcWCHAR(Float value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
             this.value = (Integer) value.intValue();
@@ -94,7 +107,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         }
     }
 
-    public PlcUINT(Double value) {
+    public PlcWCHAR(Double value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
             this.value = (Integer) value.intValue();
@@ -106,7 +119,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         }
     }
 
-    public PlcUINT(BigInteger value) {
+    public PlcWCHAR(BigInteger value) {
         super();
         if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
             this.value = (Integer) value.intValue();
@@ -118,7 +131,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         }
     }
 
-    public PlcUINT(BigDecimal value) {
+    public PlcWCHAR(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
             this.value = (Integer) value.intValue();
@@ -130,7 +143,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         }
     }
 
-    public PlcUINT(String value) {
+    public PlcWCHAR(String value) {
         super();
         try {
             Integer val = Integer.parseInt(value);
@@ -138,22 +151,22 @@ public class PlcUINT extends PlcIECValue<Integer> {
                 this.value = val;
                 this.isNullable = false;
             } else {
-                throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCUINT Value");
+                throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
             }
         }
         catch(Exception e) {
-            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCUINT Value");
+            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
         }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcUINT(@JsonProperty("value") int value) {
+    public PlcWCHAR(@JsonProperty("value") int value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCUINT Value");
+            throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
         }
     }
 
@@ -169,7 +182,7 @@ public class PlcUINT extends PlcIECValue<Integer> {
         return value;
     }
 
-    public int getUINT() {
+    public int getWCHAR() {
         return value;
     }
 

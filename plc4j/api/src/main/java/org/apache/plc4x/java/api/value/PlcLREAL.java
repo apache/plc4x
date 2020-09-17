@@ -33,58 +33,52 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcREAL extends PlcIECValue<Float> {
+public class PlcLREAL extends PlcIECValue<Double> {
 
-    static Float minValue = -Float.MAX_VALUE;
-    static Float maxValue = Float.MAX_VALUE;
+    static Double minValue = -Double.MAX_VALUE;
+    static Double maxValue = Double.MAX_VALUE;
 
-    public PlcREAL(Boolean value) {
+    public PlcLREAL(Boolean value) {
         super();
-        this.value = value ? (Float) 1.0f : (Float) 0.0f;
+        this.value = value ? (Double) 1.0 : (Double) 0.0;
         this.isNullable = false;
     }
 
-    public PlcREAL(Byte value) {
+    public PlcLREAL(Byte value) {
         super();
-        this.value = (Float) value.floatValue();
+        this.value = (Double) value.doubleValue();
         this.isNullable = false;
     }
 
-    public PlcREAL(Short value) {
+    public PlcLREAL(Short value) {
         super();
-        this.value = (Float) value.floatValue();
+        this.value = (Double) value.doubleValue();
         this.isNullable = false;
     }
 
-    public PlcREAL(Integer value) {
+    public PlcLREAL(Integer value) {
         super();
-        this.value = (Float) value.floatValue();
+        this.value = (Double) value.doubleValue();
         this.isNullable = false;
     }
 
-    public PlcREAL(Float value) {
+    public PlcLREAL(Float value) {
+        super();
+        this.value = (Double) value.doubleValue();
+        this.isNullable = false;
+    }
+
+    public PlcLREAL(Double value) {
         super();
         this.value = value;
         this.isNullable = false;
     }
 
-    public PlcREAL(Double value) {
-        super();
-        if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Float) value.floatValue();
-            this.isNullable = false;
-        } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
-              " is out of range " + minValue + " - " + maxValue + " for a " +
-              this.getClass().getSimpleName() + " Value");
-        }
-    }
-
-    public PlcREAL(BigInteger value) {
+    public PlcLREAL(BigInteger value) {
         super();
         BigDecimal val = new BigDecimal(value);
         if ((val.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (val.compareTo(BigDecimal.valueOf(maxValue)) <= 0)) {
-            this.value = (Float) val.floatValue();
+            this.value = (Double) val.doubleValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -93,10 +87,10 @@ public class PlcREAL extends PlcIECValue<Float> {
         }
     }
 
-    public PlcREAL(BigDecimal value) {
+    public PlcLREAL(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Float) value.floatValue();
+            this.value = (Double) value.doubleValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -105,10 +99,10 @@ public class PlcREAL extends PlcIECValue<Float> {
         }
     }
 
-    public PlcREAL(String value) {
+    public PlcLREAL(String value) {
         super();
         try {
-            Float val = Float.parseFloat(value);
+            Double val = Double.parseDouble(value);
             this.value = val;
             this.isNullable = false;
         }
@@ -120,37 +114,46 @@ public class PlcREAL extends PlcIECValue<Float> {
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcREAL(@JsonProperty("value") float value) {
+    public PlcLREAL(@JsonProperty("value") double value) {
         super();
-        this.value = new Float(value);
+        this.value = new Double(value);
         this.isNullable = false;
     }
 
     @Override
     @JsonIgnore
-    public boolean isFloat() {
+    public boolean isDouble() {
         return true;
     }
 
     @Override
     @JsonIgnore
-    public float getFloat() {
+    public double getDouble() {
         return value;
     }
 
-    public float getREAL() {
+    public double getLREAL() {
         return value;
     }
 
     @Override
     @JsonIgnore
     public String toString() {
-        return Float.toString(value);
+        return Double.toString(value);
     }
 
     public byte[] getBytes() {
-        int intBits =  Float.floatToIntBits(value);
-	      return new byte[] { (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };
+        long longBits =  Double.doubleToRawLongBits(value);
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) ((longBits >> 56) & 0xff);
+        bytes[1] = (byte) ((longBits >> 48) & 0xff);
+        bytes[2] = (byte) ((longBits >> 40) & 0xff);
+        bytes[3] = (byte) ((longBits >> 32) & 0xff);
+        bytes[4] = (byte) ((longBits >> 24) & 0xff);
+        bytes[5] = (byte) ((longBits >> 16) & 0xff);
+        bytes[6] = (byte) ((longBits >> 8) & 0xff);
+        bytes[7] = (byte) (longBits & 0xff);
+        return bytes;
     }
 
 }

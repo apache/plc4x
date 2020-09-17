@@ -353,6 +353,27 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     PlcBOOL plcBool= (PlcBOOL) value;
                     booleans.set(b, plcBool.getBoolean());
                     b++;
+                } else if((plcValue instanceof PlcSINT) && (plcList.getLength() % 2 == 0)) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("SINT").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcSINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                } else if((plcValue instanceof PlcUSINT) && (plcList.getLength() % 2 == 0)) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("USINT").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcUSINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                } else if((plcValue instanceof PlcBYTE) && (plcList.getLength() % 2 == 0)) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("BYTE").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcBYTE) value).getBytes();
+                    bytes.add(tempBytes[0]);
                 } else if(plcValue instanceof PlcINT) {
                     if(bytes == null) {
                         fieldDataTypeSize = ModbusDataType.valueOf("INT").getDataTypeSize();
@@ -369,16 +390,86 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     byte[] tempBytes = ((PlcUINT) value).getBytes();
                     bytes.add(tempBytes[0]);
                     bytes.add(tempBytes[1]);
-                  } else if(plcValue instanceof PlcDINT) {
-                      if(bytes == null) {
-                          fieldDataTypeSize = ModbusDataType.valueOf("DINT").getDataTypeSize();
-                          bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
-                      }
-                      byte[] tempBytes = ((PlcDINT) value).getBytes();
-                      bytes.add(tempBytes[0]);
-                      bytes.add(tempBytes[1]);
-                      bytes.add(tempBytes[2]);
-                      bytes.add(tempBytes[3]);
+                } else if(plcValue instanceof PlcWORD) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("WORD").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcWORD) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                } else if(plcValue instanceof PlcDINT) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("DINT").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcDINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                } else if(plcValue instanceof PlcUDINT) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("UDINT").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcUDINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                } else if(plcValue instanceof PlcDWORD) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("DWORD").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcDWORD) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                } else if(plcValue instanceof PlcLINT) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("LINT").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcLINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                    bytes.add(tempBytes[4]);
+                    bytes.add(tempBytes[5]);
+                    bytes.add(tempBytes[6]);
+                    bytes.add(tempBytes[7]);
+                } else if(plcValue instanceof PlcULINT) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("ULINT").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcULINT) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                    bytes.add(tempBytes[4]);
+                    bytes.add(tempBytes[5]);
+                    bytes.add(tempBytes[6]);
+                    bytes.add(tempBytes[7]);
+                } else if(plcValue instanceof PlcLWORD) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("LWORD").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcLWORD) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                    bytes.add(tempBytes[4]);
+                    bytes.add(tempBytes[5]);
+                    bytes.add(tempBytes[6]);
+                    bytes.add(tempBytes[7]);
                 } else if(plcValue instanceof PlcREAL) {
                     if(bytes == null) {
                         fieldDataTypeSize = ModbusDataType.valueOf("REAL").getDataTypeSize();
@@ -389,8 +480,37 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     bytes.add(tempBytes[1]);
                     bytes.add(tempBytes[2]);
                     bytes.add(tempBytes[3]);
+                } else if(plcValue instanceof PlcLREAL) {
+                    if(bytes == null) {
+                      fieldDataTypeSize = ModbusDataType.valueOf("LREAL").getDataTypeSize();
+                      bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcLREAL) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
+                    bytes.add(tempBytes[2]);
+                    bytes.add(tempBytes[3]);
+                    bytes.add(tempBytes[4]);
+                    bytes.add(tempBytes[5]);
+                    bytes.add(tempBytes[6]);
+                    bytes.add(tempBytes[7]);
+                } else if((plcValue instanceof PlcCHAR) && (plcList.getLength() % 2 == 0)) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("CHAR").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcCHAR) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                } else if((plcValue instanceof PlcWCHAR) && (plcList.getLength() % 2 == 0)) {
+                    if(bytes == null) {
+                        fieldDataTypeSize = ModbusDataType.valueOf("WCHAR").getDataTypeSize();
+                        bytes = new ArrayList<>(plcList.getList().size() * Math.round(fieldDataTypeSize));
+                    }
+                    byte[] tempBytes = ((PlcWCHAR) value).getBytes();
+                    bytes.add(tempBytes[0]);
+                    bytes.add(tempBytes[1]);
                 } else {
-                    throw new PlcRuntimeException("Can only encode BOOL, INT, UINT, DINT or REAL values");
+                    throw new PlcRuntimeException("Encoder Not found"); //Fix BH :)
                 }
             }
             if(booleans != null) {
@@ -404,14 +524,38 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             }
         } else if(plcValue instanceof PlcBOOL) {
             return ((PlcBOOL) plcValue).getBytes();
-        } else if(plcValue instanceof PlcREAL) {
-            return ((PlcREAL) plcValue).getBytes();
-        } else if(plcValue instanceof PlcUINT) {
-            return ((PlcUINT) plcValue).getBytes();
-        } else if(plcValue instanceof PlcDINT) {
-            return ((PlcDINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcSINT) {
+            return ((PlcSINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcUSINT) {
+            return ((PlcUSINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcBYTE) {
+            return ((PlcBYTE) plcValue).getBytes();
         } else if(plcValue instanceof PlcINT) {
             return ((PlcINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcUINT) {
+            return ((PlcUINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcWORD) {
+            return ((PlcWORD) plcValue).getBytes();
+        } else if(plcValue instanceof PlcDINT) {
+            return ((PlcDINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcUDINT) {
+            return ((PlcUDINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcDWORD) {
+            return ((PlcDWORD) plcValue).getBytes();
+        } else if(plcValue instanceof PlcLINT) {
+            return ((PlcLINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcULINT) {
+            return ((PlcULINT) plcValue).getBytes();
+        } else if(plcValue instanceof PlcLWORD) {
+            return ((PlcLWORD) plcValue).getBytes();
+        } else if(plcValue instanceof PlcREAL) {
+            return ((PlcREAL) plcValue).getBytes();
+        } else if(plcValue instanceof PlcLREAL) {
+            return ((PlcLREAL) plcValue).getBytes();
+        } else if(plcValue instanceof PlcCHAR) {
+            return ((PlcCHAR) plcValue).getBytes();
+        } else if(plcValue instanceof PlcWCHAR) {
+            return ((PlcWCHAR) plcValue).getBytes();
         } else {
             throw new PlcRuntimeException("Can only encode BOOL, INT, UINT, DINT or REAL values");
         }

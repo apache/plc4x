@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import org.apache.plc4x.java.api.value.*;
 
@@ -35,12 +35,18 @@ import java.util.List;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDINT extends PlcIECValue<Integer> {
 
-    BigInteger minValue = BigInteger.valueOf((long) Integer.MIN_VALUE);
-    BigInteger maxValue = BigInteger.valueOf((long) Integer.MAX_VALUE);
+    static Integer minValue = Integer.MIN_VALUE;
+    static Integer maxValue = Integer.MAX_VALUE;
 
-    public PlcDINT(Integer value) {
+    public PlcDINT(Boolean value) {
         super();
-        this.value = value;
+        this.value = value ? 1 : 0;
+        this.isNullable = false;
+    }
+
+    public PlcDINT(Byte value) {
+        super();
+        this.value = (Integer) value.intValue();
         this.isNullable = false;
     }
 
@@ -50,15 +56,83 @@ public class PlcDINT extends PlcIECValue<Integer> {
         this.isNullable = false;
     }
 
+    public PlcDINT(Integer value) {
+        super();
+        this.value = value;
+        this.isNullable = false;
+    }
+
+    public PlcDINT(Long value) {
+        super();
+        if (value >= minValue && value <= maxValue) {
+            this.value = (Integer) value.intValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcDINT(Float value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = (Integer) value.intValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcDINT(Double value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = (Integer) value.intValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcDINT(BigInteger value) {
+        super();
+        if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
+            this.value = (Integer) value.intValue();
+            this.isNullable = true;
+        } else {
+          throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a " +
+            this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcDINT(BigDecimal value) {
+        super();
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
+            this.value = (Integer) value.intValue();
+            this.isNullable = true;
+        } else {
+          throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a " +
+            this.getClass().getSimpleName() + " Value");
+        }
+    }
+
     public PlcDINT(String value) {
         super();
         try {
-          Integer val = Integer.parseInt(value);
-          this.value = val;
-          this.isNullable = false;
+            Integer val = Integer.parseInt(value);
+            this.value = val;
+            this.isNullable = false;
         }
         catch(Exception e) {
-          throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCDINT Value");
+            throw new IllegalArgumentException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a " +
+            this.getClass().getSimpleName() + " Value");
         }
     }
 
