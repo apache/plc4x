@@ -24,8 +24,10 @@ extern "C" {
 
 #include <plc4c/types.h>
 #include <stdint.h>
+#include <time.h>
 
-#include "../../../../generated-sources/s7/includes/cotp_tpdu_size.h"
+#include "../../../../generated-sources/s7/include/cotp_tpdu_size.h"
+#include "../../../../spi/include/plc4c/spi/read_buffer.h"
 
 enum plc4c_driver_s7_controller_type {
   PLC4C_DRIVER_S7_CONTROLLER_TYPE_ANY = 0,
@@ -61,8 +63,27 @@ struct plc4c_driver_s7_config {
 };
 typedef struct plc4c_driver_s7_config plc4c_driver_s7_config;
 
-
 plc4c_driver *plc4c_driver_s7_create();
+
+/*
+ *
+ *   Static functions
+ *
+ */
+
+char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io, int32_t stringLength, char* encoding);
+
+time_t plc4c_s7_read_write_parse_tia_time(plc4c_spi_read_buffer* io);
+
+time_t plc4c_s7_read_write_parse_s5_time(plc4c_spi_read_buffer* io);
+
+time_t plc4c_s7_read_write_parse_tia_l_time(plc4c_spi_read_buffer* io);
+
+time_t plc4c_s7_read_write_parse_tia_date(plc4c_spi_read_buffer* io);
+
+time_t plc4c_s7_read_write_parse_tia_time_of_day(plc4c_spi_read_buffer* io);
+
+time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io);
 
 #ifdef __cplusplus
 }

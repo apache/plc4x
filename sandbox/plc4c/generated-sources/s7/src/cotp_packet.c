@@ -53,8 +53,8 @@ plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* buf, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* io, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -66,14 +66,14 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
 
   // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint8_t headerLength = 0;
-  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &headerLength);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &headerLength);
   if(_res != OK) {
     return _res;
   }
 
   // Discriminator Field (tpduCode) (Used as input to a switch field)
   uint8_t tpduCode = 0;
-  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &tpduCode);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &tpduCode);
   if(_res != OK) {
     return _res;
   }
@@ -84,7 +84,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (eot)
     bool eot = false;
-    _res = plc4c_spi_read_bit(buf, (bool*) &eot);
+    _res = plc4c_spi_read_bit(io, (bool*) &eot);
     if(_res != OK) {
       return _res;
     }
@@ -94,7 +94,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (tpduRef)
     unsigned int tpduRef = 0;
-    _res = plc4c_spi_read_unsigned_byte(buf, 7, (uint8_t*) &tpduRef);
+    _res = plc4c_spi_read_unsigned_byte(io, 7, (uint8_t*) &tpduRef);
     if(_res != OK) {
       return _res;
     }
@@ -106,7 +106,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &destinationReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &destinationReference);
     if(_res != OK) {
       return _res;
     }
@@ -116,7 +116,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (sourceReference)
     uint16_t sourceReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &sourceReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &sourceReference);
     if(_res != OK) {
       return _res;
     }
@@ -126,7 +126,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
-    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -138,7 +138,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &destinationReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &destinationReference);
     if(_res != OK) {
       return _res;
     }
@@ -148,7 +148,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (sourceReference)
     uint16_t sourceReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &sourceReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &sourceReference);
     if(_res != OK) {
       return _res;
     }
@@ -158,7 +158,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
-    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -170,7 +170,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &destinationReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &destinationReference);
     if(_res != OK) {
       return _res;
     }
@@ -180,7 +180,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (sourceReference)
     uint16_t sourceReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &sourceReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &sourceReference);
     if(_res != OK) {
       return _res;
     }
@@ -190,7 +190,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Enum field (protocolClass)
     plc4c_s7_read_write_cotp_protocol_class protocolClass = plc4c_s7_read_write_cotp_protocol_class_null();
-    _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &protocolClass);
+    _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &protocolClass);
     if(_res != OK) {
       return _res;
     }
@@ -202,7 +202,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &destinationReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &destinationReference);
     if(_res != OK) {
       return _res;
     }
@@ -212,7 +212,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (sourceReference)
     uint16_t sourceReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &sourceReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &sourceReference);
     if(_res != OK) {
       return _res;
     }
@@ -224,7 +224,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (destinationReference)
     uint16_t destinationReference = 0;
-    _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &destinationReference);
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &destinationReference);
     if(_res != OK) {
       return _res;
     }
@@ -234,7 +234,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
                     
     // Simple Field (rejectCause)
     uint8_t rejectCause = 0;
-    _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &rejectCause);
+    _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &rejectCause);
     if(_res != OK) {
       return _res;
     }
@@ -243,7 +243,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   }
 
   // Array field (parameters)
-  curPos = plc4c_spi_read_get_pos(buf) - startPos;
+  curPos = plc4c_spi_read_get_pos(io) - startPos;
   plc4c_list* parameters = NULL;
   plc4c_utils_list_create(&parameters);
   if(parameters == NULL) {
@@ -252,28 +252,28 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   {
     // Length array
     uint8_t _parametersLength = (((headerLength) + (1))) - (curPos);
-    uint8_t parametersEndPos = plc4c_spi_read_get_pos(buf) + _parametersLength;
-    while(plc4c_spi_read_get_pos(buf) < parametersEndPos) {
+    uint8_t parametersEndPos = plc4c_spi_read_get_pos(io) + _parametersLength;
+    while(plc4c_spi_read_get_pos(io) < parametersEndPos) {
       plc4c_s7_read_write_cotp_parameter* _value = NULL;
-      _res = plc4c_s7_read_write_cotp_parameter_parse(buf, (((headerLength) + (1))) - (curPos), (void*) &_value);
+      _res = plc4c_s7_read_write_cotp_parameter_parse(io, (((headerLength) + (1))) - (curPos), (void*) &_value);
       if(_res != OK) {
         return _res;
       }
       plc4c_utils_list_insert_head_value(parameters, _value);
-      curPos = plc4c_spi_read_get_pos(buf) - startPos;
+      curPos = plc4c_spi_read_get_pos(io) - startPos;
     }
   }
   (*_message)->parameters = parameters;
 
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-  curPos = plc4c_spi_read_get_pos(buf) - startPos;
+  curPos = plc4c_spi_read_get_pos(io) - startPos;
   plc4c_s7_read_write_s7_message* payload = NULL;
   if((curPos) < (cotpLen)) {
     payload = malloc(sizeof(plc4c_s7_read_write_s7_message));
     if(payload == NULL) {
       return NO_MEMORY;
     }
-    _res = plc4c_s7_read_write_s7_message_parse(buf, &payload);
+    _res = plc4c_s7_read_write_s7_message_parse(io, &payload);
     if(_res != OK) {
       return _res;
     }
@@ -285,30 +285,30 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* b
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_cotp_packet* _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_cotp_packet* _message) {
   plc4c_return_code _res = OK;
 
   // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(buf, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(_message->payload) : 0))) + (1))));
+  _res = plc4c_spi_write_unsigned_byte(io, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(_message->payload) : 0))) + (1))));
   if(_res != OK) {
     return _res;
   }
 
   // Discriminator Field (tpduCode)
-  plc4c_spi_write_unsigned_byte(buf, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
+  plc4c_spi_write_unsigned_byte(io, 8, plc4c_s7_read_write_cotp_packet_get_discriminator(_message->_type).tpduCode);
 
   // Switch Field (Depending of the current type, serialize the sub-type elements)
   switch(_message->_type) {
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_data: {
 
       // Simple Field (eot)
-      _res = plc4c_spi_write_bit(buf, _message->cotp_packet_data_eot);
+      _res = plc4c_spi_write_bit(io, _message->cotp_packet_data_eot);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (tpduRef)
-      _res = plc4c_spi_write_unsigned_byte(buf, 7, _message->cotp_packet_data_tpdu_ref);
+      _res = plc4c_spi_write_unsigned_byte(io, 7, _message->cotp_packet_data_tpdu_ref);
       if(_res != OK) {
         return _res;
       }
@@ -318,19 +318,19 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_request: {
 
       // Simple Field (destinationReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_connection_request_destination_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_connection_request_destination_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (sourceReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_connection_request_source_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_connection_request_source_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_connection_request_protocol_class);
+      _res = plc4c_spi_write_signed_byte(io, 8, _message->cotp_packet_connection_request_protocol_class);
       if(_res != OK) {
         return _res;
       }
@@ -340,19 +340,19 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_connection_response: {
 
       // Simple Field (destinationReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_connection_response_destination_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_connection_response_destination_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (sourceReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_connection_response_source_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_connection_response_source_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_connection_response_protocol_class);
+      _res = plc4c_spi_write_signed_byte(io, 8, _message->cotp_packet_connection_response_protocol_class);
       if(_res != OK) {
         return _res;
       }
@@ -362,19 +362,19 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_request: {
 
       // Simple Field (destinationReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_disconnect_request_destination_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_disconnect_request_destination_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (sourceReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_disconnect_request_source_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_disconnect_request_source_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Enum field (protocolClass)
-      _res = plc4c_spi_write_signed_byte(buf, 8, _message->cotp_packet_disconnect_request_protocol_class);
+      _res = plc4c_spi_write_signed_byte(io, 8, _message->cotp_packet_disconnect_request_protocol_class);
       if(_res != OK) {
         return _res;
       }
@@ -384,13 +384,13 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_disconnect_response: {
 
       // Simple Field (destinationReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_disconnect_response_destination_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_disconnect_response_destination_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (sourceReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_disconnect_response_source_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_disconnect_response_source_reference);
       if(_res != OK) {
         return _res;
       }
@@ -400,13 +400,13 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     case plc4c_s7_read_write_cotp_packet_type_plc4c_s7_read_write_cotp_packet_tpdu_error: {
 
       // Simple Field (destinationReference)
-      _res = plc4c_spi_write_unsigned_short(buf, 16, _message->cotp_packet_tpdu_error_destination_reference);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->cotp_packet_tpdu_error_destination_reference);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (rejectCause)
-      _res = plc4c_spi_write_unsigned_byte(buf, 8, _message->cotp_packet_tpdu_error_reject_cause);
+      _res = plc4c_spi_write_unsigned_byte(io, 8, _message->cotp_packet_tpdu_error_reject_cause);
       if(_res != OK) {
         return _res;
       }
@@ -421,7 +421,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
     for(int curItem = 0; curItem < itemCount; curItem++) {
       bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_cotp_parameter* _value = (plc4c_s7_read_write_cotp_parameter*) plc4c_utils_list_get_value(_message->parameters, curItem);
-      _res = plc4c_s7_read_write_cotp_parameter_serialize(buf, (void*) _value);
+      _res = plc4c_s7_read_write_cotp_parameter_serialize(io, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -430,7 +430,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    _res = plc4c_s7_read_write_s7_message_serialize(buf, _message->payload);
+    _res = plc4c_s7_read_write_s7_message_serialize(io, _message->payload);
     if(_res != OK) {
       return _res;
     }

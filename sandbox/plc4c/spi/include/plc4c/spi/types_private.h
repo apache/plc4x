@@ -222,14 +222,17 @@ struct plc4c_data_t {
   size_t size;
   union {
     bool boolean_value;
-    char char_value;
-    unsigned char uchar_value;
-    short short_value;
-    unsigned short ushort_value;
-    int int_value;
-    unsigned int uint_value;
+    int8_t char_value;
+    uint8_t uchar_value;
+    int16_t short_value;
+    uint16_t ushort_value;
+    int32_t int_value;
+    uint32_t uint_value;
+    int64_t lint_value;
+    uint64_t ulint_value;
     /* more */
     float float_value;
+    double double_value;
     char *pstring_value;
     char *const_string_value;
     void *pvoid_value;

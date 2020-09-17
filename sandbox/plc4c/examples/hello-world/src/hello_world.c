@@ -242,7 +242,7 @@ int main() {
 
         // Iterate over all returned items.
         plc4c_list_element *cur_element =
-            plc4c_utils_list_head(read_response->items);
+            plc4c_utils_list_tail(read_response->items);
         while (cur_element != NULL) {
           plc4c_response_value_item *value_item = cur_element->value;
 
@@ -259,8 +259,18 @@ int main() {
         plc4c_read_request_execution_destroy(read_request_execution);
         plc4c_read_request_destroy(read_request);
 
+        // TODO: Comment out after implementing the write functionality.
+        // Disconnect.
+        printf("Disconnecting ... ");
+        result = plc4c_connection_disconnect(connection);
+        if (result != OK) {
+          printf("FAILED");
+          return -1;
+        }
+        state = DISCONNECTING;
+
         // Create a new write-request.
-        printf("Preparing a write-request ... ");
+/*        printf("Preparing a write-request ... ");
         char value[] = "bar";
         result =
             plc4c_connection_create_write_request(connection, &write_request);
@@ -289,7 +299,7 @@ int main() {
           return -1;
         } else {
           state = WRITE_REQUEST_SENT;
-        }
+        }*/
         break;
       }
         // Wait until the write-request execution is finished.

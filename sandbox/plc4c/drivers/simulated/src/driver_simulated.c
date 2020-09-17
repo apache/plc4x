@@ -133,7 +133,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(
          * we can also set a custom printf method
          * right , now just create a new random value
          */
-        value_item->value = plc4c_data_create_uint_data(rand());
+        value_item->value = plc4c_data_create_uint32_t_data(rand());
 
         // Add the value to the response.
         plc4c_utils_list_insert_tail_value(read_response->items, value_item);

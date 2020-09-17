@@ -18,10 +18,10 @@
 ]]
 
 include_directories("include" "../../api/include" "../../spi/include"
-    "${PLC4C_ROOT_DIR}/generated-sources/s7/includes")
+    "../../generated-sources/s7/include")
 
 # Add the generated sources
-file(GLOB generatedSources "${PLC4C_ROOT_DIR}/generated-sources/s7/src/*.c")
+file(GLOB generatedSources "../../generated-sources/s7/src/*.c")
 
 add_library(plc4c-driver-s7
         src/driver_s7.c

@@ -16,8 +16,8 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_H_
-#define PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_H_
+#ifndef PLC4C_MODBUS_READ_WRITE_MODBUS_SERIAL_ADU_H_
+#define PLC4C_MODBUS_READ_WRITE_MODBUS_SERIAL_ADU_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -31,30 +31,27 @@ extern "C" {
 #endif
 
 
-// Constant values.
-uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER();
-
-struct plc4c_modbus_read_write_modbus_tcp_adu {
+struct plc4c_modbus_read_write_modbus_serial_adu {
   /* Properties */
-  uint16_t transaction_identifier;
-  uint16_t protocol_identifier;
-  uint8_t unit_identifier;
+  uint16_t transaction_id;
+  uint16_t length;
+  uint8_t address;
   plc4c_modbus_read_write_modbus_pdu* pdu;
 };
-typedef struct plc4c_modbus_read_write_modbus_tcp_adu plc4c_modbus_read_write_modbus_tcp_adu;
+typedef struct plc4c_modbus_read_write_modbus_serial_adu plc4c_modbus_read_write_modbus_serial_adu;
 
 // Create an empty NULL-struct
-plc4c_modbus_read_write_modbus_tcp_adu plc4c_modbus_read_write_modbus_tcp_adu_null();
+plc4c_modbus_read_write_modbus_serial_adu plc4c_modbus_read_write_modbus_serial_adu_null();
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** message);
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_parse(plc4c_spi_read_buffer* io, bool response, plc4c_modbus_read_write_modbus_serial_adu** message);
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_serial_adu_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_serial_adu* message);
 
-uint16_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bytes(plc4c_modbus_read_write_modbus_tcp_adu* message);
+uint16_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bytes(plc4c_modbus_read_write_modbus_serial_adu* message);
 
-uint16_t plc4c_modbus_read_write_modbus_tcp_adu_length_in_bits(plc4c_modbus_read_write_modbus_tcp_adu* message);
+uint16_t plc4c_modbus_read_write_modbus_serial_adu_length_in_bits(plc4c_modbus_read_write_modbus_serial_adu* message);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_H_
+#endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_SERIAL_ADU_H_

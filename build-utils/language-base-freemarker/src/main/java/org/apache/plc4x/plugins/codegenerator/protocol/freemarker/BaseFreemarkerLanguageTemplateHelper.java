@@ -89,11 +89,11 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return thisType;
     }
 
-    protected String getProtocolName() {
+    public String getProtocolName() {
         return protocolName;
     }
 
-    protected String getFlavorName() {
+    public String getFlavorName() {
         return flavorName;
     }
 

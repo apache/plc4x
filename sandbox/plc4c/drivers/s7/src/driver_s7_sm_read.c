@@ -18,7 +18,6 @@
 */
 
 #include <ctype.h>
-#include <plc4c/plc4c.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,11 +26,29 @@
 #include "plc4c/driver_s7_packets.h"
 #include "cotp_protocol_class.h"
 #include "tpkt_packet.h"
+#include "data_item.h"
 
 enum plc4c_driver_s7_read_states {
   PLC4C_DRIVER_S7_READ_INIT,
   PLC4C_DRIVER_S7_READ_FINISHED
 };
+
+plc4c_return_code plc4c_driver_s7_read_list_to_byte_array(plc4c_list* list, uint8_t** array) {
+  size_t array_size = plc4c_utils_list_size(list);
+  uint8_t* byte_array = malloc(sizeof(uint8_t) * array_size);
+  if(byte_array == NULL) {
+    return NO_MEMORY;
+  }
+  uint8_t* cur_byte = byte_array;
+  plc4c_list_element* cur_element = list->tail;
+  for(int i = 0; i < array_size; i++) {
+    *cur_byte = (uint8_t) (cur_element->value);
+    cur_byte++;
+    cur_element = cur_element->next;
+  }
+  *array = byte_array;
+  return OK;
+}
 
 plc4c_return_code plc4c_driver_s7_read_machine_function(
     plc4c_system_task* task) {
@@ -90,6 +107,15 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
       if(parameter->s7_parameter_read_var_response_num_items != plc4c_utils_list_size(read_request->items)) {
         return INTERNAL_ERROR;
       }
+
+      plc4c_read_response* read_response = malloc(sizeof(plc4c_read_response));
+      if(read_response == NULL) {
+        return NO_MEMORY;
+      }
+      read_response->read_request = read_request;
+      read_request_execution->read_response = read_response;
+      plc4c_utils_list_create(&(read_response->items));
+
       // Iterate over the request items and use the types to decode the
       // response items.
       plc4c_s7_read_write_s7_payload* payload = s7_read_response_packet->payload->payload->payload;
@@ -97,15 +123,48 @@ plc4c_return_code plc4c_driver_s7_read_machine_function(
       plc4c_list_element* cur_response_item_element = plc4c_utils_list_tail(payload->s7_payload_read_var_response_items);
       while((cur_request_item_element != NULL) && (cur_response_item_element != NULL)) {
         plc4c_item* cur_request_item = cur_request_item_element->value;
-        plc4c_s7_read_write_s7_address* s7_address = cur_request_item->address;
-        plc4c_s7_read_write_transport_size transport_size = s7_address->s7_address_any_transport_size;
-        uint16_t num_elements = s7_address->s7_address_any_number_of_elements;
 
+        // Get the protocol id for the current item from the corresponding
+        // request item. Also get the number of elements, if it's an array.
+        plc4c_s7_read_write_s7_var_request_parameter_item* s7_address = cur_request_item->address;
+        plc4c_s7_read_write_transport_size transport_size = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_transport_size;
+        uint8_t data_protocol_id = plc4c_s7_read_write_transport_size_get_data_protocol_id(transport_size);
+        uint16_t num_elements = s7_address->s7_var_request_parameter_item_address_address->s7_address_any_number_of_elements;
+        int32_t string_length = 0;
+
+        // Convert the linked list with uint8_t elements into an array of uint8_t.
         plc4c_s7_read_write_s7_var_payload_data_item* cur_response_item = cur_response_item_element->value;
-        
+        uint8_t* byte_array = NULL;
+        plc4c_return_code result = plc4c_driver_s7_read_list_to_byte_array(cur_response_item->data, &byte_array);
+        if(result != OK) {
+          return result;
+        }
+
+        // Create a new read-buffer for reading data from the uint8_t array.
+        plc4c_spi_read_buffer* read_buffer;
+        result = plc4c_spi_read_buffer_create(byte_array, plc4c_utils_list_size(cur_response_item->data), &read_buffer);
+        if(result != OK) {
+          return result;
+        }
+
+        // Parse the data item.
+        plc4c_data* data_item;
+        plc4c_s7_read_write_data_item_parse(read_buffer, data_protocol_id, string_length, &data_item);
+
+        // Create a new response value-item
+        plc4c_response_value_item* response_value_item = malloc(sizeof(plc4c_response_value_item));
+        if(response_value_item == NULL) {
+          return NO_MEMORY;
+        }
+        response_value_item->item = cur_request_item;
+        response_value_item->response_code = PLC4C_RESPONSE_CODE_OK;
+        response_value_item->value = data_item;
+
+        // Add the value-item to the list.
+        plc4c_utils_list_insert_head_value(read_response->items, response_value_item);
 
         cur_request_item_element = cur_request_item_element->next;
-        cur_request_item_element = cur_response_item_element->next;
+        cur_response_item_element = cur_response_item_element->next;
       }
 
       // TODO: Return the results to the API ...

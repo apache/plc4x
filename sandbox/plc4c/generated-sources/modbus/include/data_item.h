@@ -16,42 +16,28 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_S7_READ_WRITE_SZL_ID_H_
-#define PLC4C_S7_READ_WRITE_SZL_ID_H_
+#ifndef PLC4C_MODBUS_READ_WRITE_DATA_ITEM_H_
+#define PLC4C_MODBUS_READ_WRITE_DATA_ITEM_H_
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
-#include "szl_module_type_class.h"
-#include "szl_sublist.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer* buf, uint8_t dataType, uint8_t numberOfValues, plc4c_data** data_item);
 
-struct plc4c_s7_read_write_szl_id {
-  /* Properties */
-  plc4c_s7_read_write_szl_module_type_class type_class;
-  unsigned int sublist_extract : 4;
-  plc4c_s7_read_write_szl_sublist sublist_list;
-};
-typedef struct plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id;
+plc4c_return_code plc4c_modbus_read_write_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_data** data_item);
 
-// Create an empty NULL-struct
-plc4c_s7_read_write_szl_id plc4c_s7_read_write_szl_id_null();
+uint16_t plc4c_modbus_read_write_data_item_length_in_bytes(plc4c_data* data_item);
 
-plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_id** message);
-
-plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_id* message);
-
-uint16_t plc4c_s7_read_write_szl_id_length_in_bytes(plc4c_s7_read_write_szl_id* message);
-
-uint16_t plc4c_s7_read_write_szl_id_length_in_bits(plc4c_s7_read_write_szl_id* message);
+uint16_t plc4c_modbus_read_write_data_item_length_in_bits(plc4c_data* data_item);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_S7_READ_WRITE_SZL_ID_H_
+#endif  // PLC4C_MODBUS_READ_WRITE_DATA_ITEM_H_

@@ -1,4 +1,4 @@
-#[[
+/*
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
   distributed with this work for additional information
@@ -15,22 +15,29 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-]]
+*/
+#ifndef PLC4C_S7_READ_WRITE_DATA_ITEM_H_
+#define PLC4C_S7_READ_WRITE_DATA_ITEM_H_
 
-include_directories("include" "../../api/include" "../../spi/include"
-    "../../generated-sources/modbus/include")
+#include <stdbool.h>
+#include <stdint.h>
+#include <plc4c/spi/read_buffer.h>
+#include <plc4c/spi/write_buffer.h>
+#include <plc4c/utils/list.h>
 
-# Add the generated sources
-file(GLOB generatedSources "../../generated-sources/modbus/src/*.c")
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-add_library(plc4c-driver-modbus
-        src/driver_modbus.c
-        src/driver_modbus_encode_decode.c
-        src/driver_modbus_packets.c
-        src/driver_modbus_sm_connect.c
-        src/driver_modbus_sm_disconnect.c
-        src/driver_modbus_sm_read.c
-        src/driver_modbus_sm_write.c
-        ${generatedSources})
+plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* buf, uint8_t dataProtocolId, int32_t stringLength, plc4c_data** data_item);
 
-target_link_libraries(plc4c-driver-modbus plc4c-spi ${CMAKE_DL_LIBS})
+plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_data** data_item);
+
+uint16_t plc4c_s7_read_write_data_item_length_in_bytes(plc4c_data* data_item);
+
+uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4c_data* data_item);
+
+#ifdef __cplusplus
+}
+#endif
+#endif  // PLC4C_S7_READ_WRITE_DATA_ITEM_H_

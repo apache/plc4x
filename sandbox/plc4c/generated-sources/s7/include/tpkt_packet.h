@@ -16,42 +16,43 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
-#define PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+#ifndef PLC4C_S7_READ_WRITE_TPKT_PACKET_H_
+#define PLC4C_S7_READ_WRITE_TPKT_PACKET_H_
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
+#include "cotp_packet.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-struct plc4c_s7_read_write_szl_data_tree_item {
+// Constant values.
+uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID();
+
+struct plc4c_s7_read_write_tpkt_packet {
   /* Properties */
-  uint16_t item_index;
-  plc4c_list* mlfb;
-  uint16_t module_type_id;
-  uint16_t ausbg;
-  uint16_t ausbe;
+  uint8_t protocol_id;
+  plc4c_s7_read_write_cotp_packet* payload;
 };
-typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
+typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;
 
 // Create an empty NULL-struct
-plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item_null();
+plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet_null();
 
-plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_szl_data_tree_item** message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_tpkt_packet** message);
 
-plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_szl_data_tree_item* message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_tpkt_packet* message);
 
-uint16_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* message);
+uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4c_s7_read_write_tpkt_packet* message);
 
-uint16_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* message);
+uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bits(plc4c_s7_read_write_tpkt_packet* message);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+#endif  // PLC4C_S7_READ_WRITE_TPKT_PACKET_H_

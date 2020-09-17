@@ -29,8 +29,8 @@ uint8_t PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_tpkt_packet** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_tpkt_packet** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -42,7 +42,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Const Field (protocolId)
   uint8_t protocolId = 0;
-  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &protocolId);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &protocolId);
   if(_res != OK) {
     return _res;
   }
@@ -54,7 +54,7 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
     uint8_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &_reserved);
+    _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &_reserved);
     if(_res != OK) {
       return _res;
     }
@@ -65,14 +65,14 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
 
   // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t len = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &len);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &len);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (payload)
   plc4c_s7_read_write_cotp_packet* payload;
-  _res = plc4c_s7_read_write_cotp_packet_parse(buf, (len) - (4), (void*) &payload);
+  _res = plc4c_s7_read_write_cotp_packet_parse(io, (len) - (4), (void*) &payload);
   if(_res != OK) {
     return _res;
   }
@@ -81,26 +81,26 @@ plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* b
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_tpkt_packet* _message) {
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_tpkt_packet* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (protocolId)
-  plc4c_spi_write_unsigned_byte(buf, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID());
+  plc4c_spi_write_unsigned_byte(io, 8, PLC4C_S7_READ_WRITE_TPKT_PACKET_PROTOCOL_ID());
 
   // Reserved Field
-  _res = plc4c_spi_write_unsigned_byte(buf, 8, 0x00);
+  _res = plc4c_spi_write_unsigned_byte(io, 8, 0x00);
   if(_res != OK) {
     return _res;
   }
 
   // Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
+  _res = plc4c_spi_write_unsigned_short(io, 16, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message->payload)) + (4));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (payload)
-  _res = plc4c_s7_read_write_cotp_packet_serialize(buf, _message->payload);
+  _res = plc4c_s7_read_write_cotp_packet_serialize(io, _message->payload);
   if(_res != OK) {
     return _res;
   }

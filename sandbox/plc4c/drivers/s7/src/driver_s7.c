@@ -63,3 +63,45 @@ plc4c_driver* plc4c_driver_s7_create() {
   driver->free_unsubscription_response_function = NULL;
   return driver;
 }
+
+/*
+ *
+ *   Static functions
+ *
+ */
+
+char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io, int32_t stringLength, char* encoding) {
+  // TODO: Implement ...
+  return "";
+}
+
+time_t plc4c_s7_read_write_parse_tia_time(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
+time_t plc4c_s7_read_write_parse_s5_time(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
+time_t plc4c_s7_read_write_parse_tia_l_time(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
+time_t plc4c_s7_read_write_parse_tia_date(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
+time_t plc4c_s7_read_write_parse_tia_time_of_day(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+
+time_t plc4c_s7_read_write_parse_tia_date_time(plc4c_spi_read_buffer* io) {
+  // TODO: Implement ...
+  return 0;
+}
+

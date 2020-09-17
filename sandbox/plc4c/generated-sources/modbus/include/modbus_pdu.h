@@ -227,9 +227,9 @@ typedef struct plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus
 // Create an empty NULL-struct
 plc4c_modbus_read_write_modbus_pdu plc4c_modbus_read_write_modbus_pdu_null();
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_pdu** message);
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer* io, bool response, plc4c_modbus_read_write_modbus_pdu** message);
 
-plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_pdu* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_pdu* message);
 
 uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bytes(plc4c_modbus_read_write_modbus_pdu* message);
 

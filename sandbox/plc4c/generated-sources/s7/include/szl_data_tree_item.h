@@ -16,8 +16,8 @@
   specific language governing permissions and limitations
   under the License.
 */
-#ifndef PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_H_
-#define PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_H_
+#ifndef PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
+#define PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -30,27 +30,28 @@ extern "C" {
 #endif
 
 
-// Constant values.
-uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_MODBUS_TCP_DEFAULT_PORT();
-
-struct plc4c_modbus_read_write_modbus_constants {
+struct plc4c_s7_read_write_szl_data_tree_item {
   /* Properties */
-  uint16_t modbus_tcp_default_port;
+  uint16_t item_index;
+  plc4c_list* mlfb;
+  uint16_t module_type_id;
+  uint16_t ausbg;
+  uint16_t ausbe;
 };
-typedef struct plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants;
+typedef struct plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item;
 
 // Create an empty NULL-struct
-plc4c_modbus_read_write_modbus_constants plc4c_modbus_read_write_modbus_constants_null();
+plc4c_s7_read_write_szl_data_tree_item plc4c_s7_read_write_szl_data_tree_item_null();
 
-plc4c_return_code plc4c_modbus_read_write_modbus_constants_parse(plc4c_spi_read_buffer* buf, plc4c_modbus_read_write_modbus_constants** message);
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_szl_data_tree_item** message);
 
-plc4c_return_code plc4c_modbus_read_write_modbus_constants_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_constants* message);
+plc4c_return_code plc4c_s7_read_write_szl_data_tree_item_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_szl_data_tree_item* message);
 
-uint16_t plc4c_modbus_read_write_modbus_constants_length_in_bytes(plc4c_modbus_read_write_modbus_constants* message);
+uint16_t plc4c_s7_read_write_szl_data_tree_item_length_in_bytes(plc4c_s7_read_write_szl_data_tree_item* message);
 
-uint16_t plc4c_modbus_read_write_modbus_constants_length_in_bits(plc4c_modbus_read_write_modbus_constants* message);
+uint16_t plc4c_s7_read_write_szl_data_tree_item_length_in_bits(plc4c_s7_read_write_szl_data_tree_item* message);
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_CONSTANTS_H_
+#endif  // PLC4C_S7_READ_WRITE_SZL_DATA_TREE_ITEM_H_
