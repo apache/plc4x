@@ -54,34 +54,33 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
-        List<Boolean> booleanValues = new LinkedList<>();
+        List<PlcBOOL> booleanValues = new LinkedList<>();
         for (Object value : values) {
             if (value instanceof Boolean) {
-                Boolean booleanValue = (Boolean) value;
-                booleanValues.add(booleanValue);
+                booleanValues.add(new PlcBOOL((Boolean) value));
             } else if (value instanceof Byte) {
                 Byte byteValue = (Byte) value;
                 BitSet bitSet = BitSet.valueOf(new byte[]{byteValue});
                 for (int i = 0; i < 8; i++) {
-                    booleanValues.add(bitSet.get(i));
+                    booleanValues.add(new PlcBOOL(bitSet.get(i)));
                 }
             } else if (value instanceof Short) {
                 Short shortValue = (Short) value;
                 BitSet bitSet = BitSet.valueOf(new long[]{shortValue});
                 for (int i = 0; i < 16; i++) {
-                    booleanValues.add(bitSet.get(i));
+                    booleanValues.add(new PlcBOOL(bitSet.get(i)));
                 }
             } else if (value instanceof Integer) {
                 Integer integerValue = (Integer) value;
                 BitSet bitSet = BitSet.valueOf(new long[]{integerValue});
                 for (int i = 0; i < 32; i++) {
-                    booleanValues.add(bitSet.get(i));
+                    booleanValues.add(new PlcBOOL(bitSet.get(i)));
                 }
             } else if (value instanceof Long) {
                 long longValue = (Long) value;
                 BitSet bitSet = BitSet.valueOf(new long[]{longValue});
                 for (int i = 0; i < 64; i++) {
-                    booleanValues.add(bitSet.get(i));
+                    booleanValues.add(new PlcBOOL(bitSet.get(i)));
                 }
             } else {
                 throw new IllegalArgumentException(
@@ -90,7 +89,7 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBOOL(booleanValues.get(0));
+            return booleanValues.get(0);
         } else {
             return new PlcList(booleanValues);
         }
@@ -1865,19 +1864,27 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
                 }
             case "STRING":
                 if(values.length == 1) {
-                    List<PlcCHAR> plcCHARValues = new LinkedList<>();
-                    for (int i = 0; i < ((String) values[0]).length(); i++) {
-                        plcCHARValues.add(new PlcCHAR(Character.valueOf(((String) values[0]).charAt(i))));
+                    if (((String) values[0]).length() == 1) {
+                        return new PlcCHAR(Character.valueOf(((String) values[0]).charAt(0)));
+                    } else {
+                        List<PlcCHAR> plcCHARValues = new LinkedList<>();
+                        for (int i = 0; i < ((String) values[0]).length(); i++) {
+                            plcCHARValues.add(new PlcCHAR(Character.valueOf(((String) values[0]).charAt(i))));
+                        }
+                        return new PlcList(plcCHARValues);
                     }
-                    return new PlcList(plcCHARValues);
                 }
             case "WSTRING":
                 if(values.length == 1) {
-                    List<PlcWCHAR> plcWCHARValues = new LinkedList<>();
-                    for (int i = 0; i < ((String) values[0]).length(); i++) {
-                        plcWCHARValues.add(new PlcWCHAR(Character.valueOf(((String) values[0]).charAt(i))));
+                    if (((String) values[0]).length() == 1) {
+                        return new PlcWCHAR(Character.valueOf(((String) values[0]).charAt(0)));
+                    } else {
+                        List<PlcWCHAR> plcWCHARValues = new LinkedList<>();
+                        for (int i = 0; i < ((String) values[0]).length(); i++) {
+                            plcWCHARValues.add(new PlcWCHAR(Character.valueOf(((String) values[0]).charAt(i))));
+                        }
+                        return new PlcList(plcWCHARValues);
                     }
-                    return new PlcList(plcWCHARValues);
                 }
             default:
                 throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());

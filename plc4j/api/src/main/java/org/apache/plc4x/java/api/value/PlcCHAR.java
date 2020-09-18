@@ -46,12 +46,12 @@ public class PlcCHAR extends PlcIECValue<Short> {
 
     public PlcCHAR(Character value) {
         super();
-        Integer val = Character.getNumericValue(value);
+        Integer val = (int) value;
         if ((val >= minValue) && (val <= maxValue)) {
             this.value = (Short) val.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Character '" + Character.toString(value) + "', Value " + val +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -63,7 +63,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -75,7 +75,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -87,7 +87,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -99,7 +99,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -111,7 +111,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -123,7 +123,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -135,7 +135,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
+          throw new PlcInvalidFieldException("Value " + value +
             " is out of range " + minValue + " - " + maxValue + " for a " +
             this.getClass().getSimpleName() + " Value");
         }
@@ -147,7 +147,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = (Short) value.shortValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
+          throw new PlcInvalidFieldException("Value " + value +
             " is out of range " + minValue + " - " + maxValue + " for a " +
             this.getClass().getSimpleName() + " Value");
         }
@@ -156,18 +156,18 @@ public class PlcCHAR extends PlcIECValue<Short> {
     public PlcCHAR(String value) {
         super();
         try {
-            Short val = Short.valueOf(value).shortValue();
+            Short val = (short) value.charAt(0);
             if ((val >= minValue) && (val <= maxValue)) {
-                this.value = val;
+                this.value = (short) val;
                 this.isNullable = false;
             } else {
-                throw new PlcInvalidFieldException("Value of type " + value +
+                throw new PlcInvalidFieldException("Value " + value +
                   " is out of range " + minValue + " - " + maxValue + " for a " +
                   this.getClass().getSimpleName() + " Value");
             }
         }
         catch(Exception e) {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -180,7 +180,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = value;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -205,7 +205,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
     @Override
     @JsonIgnore
     public String toString() {
-        return Short.toString(value);
+        return Character.toString(Character.valueOf((char) ((short) value)));
     }
 
     public byte[] getBytes() {

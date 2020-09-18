@@ -510,7 +510,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     bytes.add(tempBytes[0]);
                     bytes.add(tempBytes[1]);
                 } else {
-                    throw new PlcRuntimeException("Encoder Not found"); //Fix BH :)
+                    throw new PlcRuntimeException("Encoder Not found for Datatype " + plcValue.getClass().getName() + " or the array length is not divisible by 2"); //Fix BH :)
                 }
             }
             if(booleans != null) {
@@ -524,12 +524,6 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             }
         } else if(plcValue instanceof PlcBOOL) {
             return ((PlcBOOL) plcValue).getBytes();
-        } else if(plcValue instanceof PlcSINT) {
-            return ((PlcSINT) plcValue).getBytes();
-        } else if(plcValue instanceof PlcUSINT) {
-            return ((PlcUSINT) plcValue).getBytes();
-        } else if(plcValue instanceof PlcBYTE) {
-            return ((PlcBYTE) plcValue).getBytes();
         } else if(plcValue instanceof PlcINT) {
             return ((PlcINT) plcValue).getBytes();
         } else if(plcValue instanceof PlcUINT) {
@@ -557,7 +551,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         } else if(plcValue instanceof PlcWCHAR) {
             return ((PlcWCHAR) plcValue).getBytes();
         } else {
-            throw new PlcRuntimeException("Can only encode BOOL, INT, UINT, DINT or REAL values");
+            throw new PlcRuntimeException("Encoder Not found for Datatype " + plcValue.getClass().getName());
         }
         return new byte[0];
     }

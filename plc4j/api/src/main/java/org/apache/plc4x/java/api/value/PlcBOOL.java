@@ -171,6 +171,10 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         return (value != null) && value;
     }
 
+    public boolean getBOOL() {
+        return (value != null) && value;
+    }
+
     @Override
     @JsonIgnore
     public boolean isByte() {

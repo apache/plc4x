@@ -52,12 +52,12 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
 
     public PlcWCHAR(Character value) {
         super();
-        Integer val = Character.getNumericValue(value);
+        Integer val = (int) value;
         if ((val >= minValue) && (val <= maxValue)) {
             this.value = val;
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Character '" + Character.toString(value) + "', Value " + val +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -189,7 +189,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     @Override
     @JsonIgnore
     public String toString() {
-        return Integer.toString(value);
+        return Character.toString(Character.valueOf((char) ((int) value)));
     }
 
     public byte[] getBytes() {
