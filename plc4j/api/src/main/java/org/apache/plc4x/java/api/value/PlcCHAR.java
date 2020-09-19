@@ -188,14 +188,14 @@ public class PlcCHAR extends PlcIECValue<Short> {
 
     @Override
     @JsonIgnore
-    public boolean isShort() {
+    public boolean isString() {
         return true;
     }
 
     @Override
     @JsonIgnore
-    public short getShort() {
-        return value;
+    public String getString() {
+        return Character.toString(Character.valueOf((char) ((short) value)));
     }
 
     public short getCHAR() {

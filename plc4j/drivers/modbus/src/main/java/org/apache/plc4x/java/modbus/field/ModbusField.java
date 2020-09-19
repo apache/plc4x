@@ -117,7 +117,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getLengthWords() {
-        return (int) (quantity * Math.round(ModbusDataType.valueOf(dataType).getDataTypeSize()/2));
+        return (int) (quantity * ((float) ModbusDataType.valueOf(dataType).getDataTypeSize())/2.0f);
     }
 
     public String getDataType() {

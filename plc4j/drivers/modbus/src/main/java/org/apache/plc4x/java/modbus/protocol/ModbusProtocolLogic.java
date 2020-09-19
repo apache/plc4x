@@ -300,7 +300,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
-            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2)));
+            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -309,7 +309,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
-            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2)));
+            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -333,7 +333,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                   "Expected " + req.getItems().length + ", but got " + resp.getItems().length);
             }
 
-            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round((dataLength/2)/(fieldDataTypeSize/2)));
+            return DataItemIO.staticParse(io, fieldDataType, (short) Math.round((dataLength/2.0f)/(fieldDataTypeSize/2.0f)));
         }
         return null;
     }

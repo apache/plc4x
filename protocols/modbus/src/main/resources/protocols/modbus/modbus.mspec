@@ -356,10 +356,10 @@
             [array float 8.23 'value' count 'numberOfValues']
         ]
         ['31','1' LREAL
-            [simple float 10.53  'value']
+            [simple float 11.52  'value']
         ]
         ['31' List
-            [array float 10.53 'value' count 'numberOfValues']
+            [array float 11.52 'value' count 'numberOfValues']
         ]
         ['80','1' CHAR
             [simple uint 8 'value']
@@ -403,6 +403,6 @@
     ['71' LDATE_AND_TIME ['8']]
     ['80' CHAR ['1']]
     ['81' WCHAR ['2']]
-    ['82' STRING ['8']]
-    ['83' WSTRING ['8']]
+    ['82' STRING ['1']]
+    ['83' WSTRING ['2']]
 ]
