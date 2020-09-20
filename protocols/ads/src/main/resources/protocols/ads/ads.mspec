@@ -408,24 +408,24 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['AdsDataType.BYTE' List
+        ['AdsDataType.BYTE' Boolean
             [array bit 'value' count '8']
         ]
-        ['AdsDataType.BITARR8' List
+        ['AdsDataType.BITARR8' Boolean
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['AdsDataType.WORD' List
+        ['AdsDataType.WORD' Boolean
             [array bit 'value' count '16']
         ]
-        ['AdsDataType.BITARR16' List
+        ['AdsDataType.BITARR16' Boolean
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['AdsDataType.DWORD' List
+        ['AdsDataType.DWORD' Boolean
             [array bit 'value' count '32']
         ]
-        ['AdsDataType.BITARR32' List
+        ['AdsDataType.BITARR32' Boolean
             [array bit 'value' count '32']
         ]
 

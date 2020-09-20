@@ -272,19 +272,19 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['11' List
+        ['11' Boolean
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['12' List
+        ['12' Boolean
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['13' List
+        ['13' Boolean
             [array bit 'value' count '32']
         ]
         // 8 byte (64 bit)
-        ['14' List
+        ['14' Boolean
             [array bit 'value' count '64']
         ]
 

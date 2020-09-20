@@ -300,7 +300,7 @@ public class ReadBuffer {
                 throw new PlcRuntimeException(e);
             }
         }
-        return new String(strBytes, Charset.forName(encoding));
+        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
     }
 
 }
