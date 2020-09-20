@@ -203,6 +203,11 @@ public class PlcCHAR extends PlcIECValue<Short> {
     }
 
     @Override
+    public Object getObject() {
+        return Character.toString(Character.valueOf((char) ((short) value)));
+    }
+
+    @Override
     @JsonIgnore
     public String toString() {
         return Character.toString(Character.valueOf((char) ((short) value)));

@@ -32,7 +32,7 @@ public class ModbusFieldCoil extends ModbusField {
     protected static final int REGISTER_MAXADDRESS = 65535;
 
     public ModbusFieldCoil(int address, Integer quantity, String datatype) {
-        super(address, quantity, datatype);
+        super(address, quantity, datatype.toUpperCase());
     }
 
     public static boolean matches(String addressString) {
@@ -74,7 +74,7 @@ public class ModbusFieldCoil extends ModbusField {
         String datatypeTemp = matcher.group("datatype");
         String datatype = datatypeTemp != null ? datatypeTemp : "BOOL";
 
-        return new ModbusFieldCoil(address, quantity, datatype);
+        return new ModbusFieldCoil(address, quantity, datatype.toUpperCase());
     }
 
 }

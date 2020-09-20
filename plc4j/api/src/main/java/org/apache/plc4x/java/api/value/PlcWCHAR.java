@@ -187,6 +187,11 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     }
 
     @Override
+    public Object getObject() {
+        return Character.toString(Character.valueOf((char) ((int) value)));
+    }
+
+    @Override
     @JsonIgnore
     public String toString() {
         return Character.toString(Character.valueOf((char) ((int) value)));

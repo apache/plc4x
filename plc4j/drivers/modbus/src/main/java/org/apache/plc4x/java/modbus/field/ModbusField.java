@@ -34,33 +34,6 @@ public abstract class ModbusField implements PlcField {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
     public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5}):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
-    public static final String[] DATATYPES = {"BOOL",
-                                              "BYTE",
-                                              "WORD",
-                                              "DWORD",
-                                              "LWORD",
-                                              "SINT",
-                                              "INT",
-                                              "DINT",
-                                              "LINT",
-                                              "USINT",
-                                              "UINT",
-                                              "UDINT",
-                                              "ULINT",
-                                              "REAL",
-                                              "LREAL",
-                                              "TIME",
-                                              "LTIME",
-                                              "DATE",
-                                              "LDATE",
-                                              "TIME_OF_DAY",
-                                              "LTIME_OF_DAY",
-                                              "DATE_TIME",
-                                              "LDATE_TIME",
-                                              "CHAR",
-                                              "WCHAR",
-                                              "STRING",
-                                              "WSTRING"};
 
     protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
@@ -99,9 +72,7 @@ public abstract class ModbusField implements PlcField {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : "INT";
-        if (ArrayUtils.contains( DATATYPES, this.dataType.toUpperCase()) == false) {
-            throw new IllegalArgumentException("datatype must be an IEC-61131 listed datatype. Was " + this.dataType);
-        }
+        ModbusDataType.valueOf(this.dataType);
     }
 
     public int getAddress() {

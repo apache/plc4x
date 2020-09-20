@@ -32,7 +32,7 @@ public class ModbusExtendedRegister extends ModbusField {
     protected static final int REGISTER_MAXADDRESS = 655359999;
 
     protected ModbusExtendedRegister(int address, Integer quantity, String datatype) {
-        super(address, quantity, datatype);
+        super(address, quantity, datatype.toUpperCase());
     }
 
     public static boolean matches(String addressString) {
@@ -74,6 +74,6 @@ public class ModbusExtendedRegister extends ModbusField {
         String datatypeTemp = matcher.group("datatype");
         String datatype = datatypeTemp != null ? datatypeTemp : "INT";
 
-        return new ModbusExtendedRegister(address, quantity, datatype);
+        return new ModbusExtendedRegister(address, quantity, datatype.toUpperCase());
     }
 }
