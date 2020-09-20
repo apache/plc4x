@@ -18,7 +18,7 @@
 #
 from contextlib import contextmanager
 
-from plc4py.org.apache.plc4x.api.PlcConnection import PlcConnection
+from plc4py.api.PlcConnection import PlcConnection
 
 
 class PlcDriverManager:
