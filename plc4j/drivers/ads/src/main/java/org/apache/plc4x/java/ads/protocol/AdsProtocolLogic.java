@@ -693,6 +693,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if(invokeIdGenerator.get() == 0xFFFFFFFF) {
             invokeIdGenerator.set(1);
         }
+        return invokeId;
     }
 
     protected byte[] getNullByteTerminatedArray(String value) {
