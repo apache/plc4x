@@ -256,16 +256,16 @@
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
-    [implicit   uint 16    'recordLength'   '(COUNT(recordData) * 2) / 2']
-    [array      uint 16    'recordData'     length  'recordLength * 2']
+    [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
+    [array      int 8      'recordData'     length  'recordLength']
 ]
 
 [type 'ModbusPDUWriteFileRecordResponseItem'
     [simple     uint 8     'referenceType']
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
-    [implicit   uint 16    'recordLength'   '(COUNT(recordData) * 2) / 2']
-    [array      uint 16    'recordData'     length  'recordLength * 2']
+    [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
+    [array      int 8      'recordData'     length  'recordLength']
 ]
 
 [dataIo 'DataItem' [uint 8 'dataType', uint 8 'numberOfValues']
