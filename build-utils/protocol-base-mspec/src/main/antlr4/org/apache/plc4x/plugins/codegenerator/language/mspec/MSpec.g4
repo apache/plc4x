@@ -23,7 +23,7 @@ file
  ;
 
 complexTypeDefinition
- : (COMMENT.*?)? LBRACKET complexType RBRACKET
+ : (COMMENT.*?)? LBRACKET complexType RBRACKET (COMMENT.*?)?
  ;
 
 complexType
@@ -34,11 +34,11 @@ complexType
  ;
 
 fieldDefinition
- : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET field (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
  ;
 
 dataIoDefinition
- : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET
+ : (COMMENT.*?)? LBRACKET typeSwitchField (LBRACKET params=multipleExpressions RBRACKET)? RBRACKET (COMMENT.*?)?
  ;
 
 field

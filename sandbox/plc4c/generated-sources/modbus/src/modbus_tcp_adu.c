@@ -29,8 +29,8 @@ uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* buf, bool response, plc4c_modbus_read_write_modbus_tcp_adu** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_buffer* io, bool response, plc4c_modbus_read_write_modbus_tcp_adu** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -42,7 +42,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (transactionIdentifier)
   uint16_t transactionIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &transactionIdentifier);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &transactionIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -50,7 +50,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Const Field (protocolIdentifier)
   uint16_t protocolIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &protocolIdentifier);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &protocolIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -61,14 +61,14 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
   uint16_t length = 0;
-  _res = plc4c_spi_read_unsigned_short(buf, 16, (uint16_t*) &length);
+  _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &length);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (unitIdentifier)
   uint8_t unitIdentifier = 0;
-  _res = plc4c_spi_read_unsigned_byte(buf, 8, (uint8_t*) &unitIdentifier);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &unitIdentifier);
   if(_res != OK) {
     return _res;
   }
@@ -76,7 +76,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu;
-  _res = plc4c_modbus_read_write_modbus_pdu_parse(buf, response, (void*) &pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_parse(io, response, (void*) &pdu);
   if(_res != OK) {
     return _res;
   }
@@ -85,32 +85,32 @@ plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_parse(plc4c_spi_read_bu
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* buf, plc4c_modbus_read_write_modbus_tcp_adu* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_tcp_adu_serialize(plc4c_spi_write_buffer* io, plc4c_modbus_read_write_modbus_tcp_adu* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (transactionIdentifier)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, _message->transaction_identifier);
+  _res = plc4c_spi_write_unsigned_short(io, 16, _message->transaction_identifier);
   if(_res != OK) {
     return _res;
   }
 
   // Const Field (protocolIdentifier)
-  plc4c_spi_write_unsigned_short(buf, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
+  plc4c_spi_write_unsigned_short(io, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
 
   // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(buf, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));
+  _res = plc4c_spi_write_unsigned_short(io, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->pdu)) + (1));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (unitIdentifier)
-  _res = plc4c_spi_write_unsigned_byte(buf, 8, _message->unit_identifier);
+  _res = plc4c_spi_write_unsigned_byte(io, 8, _message->unit_identifier);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (pdu)
-  _res = plc4c_modbus_read_write_modbus_pdu_serialize(buf, _message->pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_serialize(io, _message->pdu);
   if(_res != OK) {
     return _res;
   }

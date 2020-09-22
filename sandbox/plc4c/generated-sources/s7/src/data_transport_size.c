@@ -18,6 +18,7 @@
 */
 
 #include "data_transport_size.h"
+#include <string.h>
 
 
 // Create an empty NULL-struct
@@ -27,6 +28,63 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
   return plc4c_s7_read_write_data_transport_size_null_const;
 }
 
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_of(char* value_string) {
+    if(strcmp(value_string, "NULL") == 0) {
+        return 0x00;
+    }
+    if(strcmp(value_string, "BIT") == 0) {
+        return 0x03;
+    }
+    if(strcmp(value_string, "BYTE_WORD_DWORD") == 0) {
+        return 0x04;
+    }
+    if(strcmp(value_string, "INTEGER") == 0) {
+        return 0x05;
+    }
+    if(strcmp(value_string, "DINTEGER") == 0) {
+        return 0x06;
+    }
+    if(strcmp(value_string, "REAL") == 0) {
+        return 0x07;
+    }
+    if(strcmp(value_string, "OCTET_STRING") == 0) {
+        return 0x09;
+    }
+    return -1;
+}
+
+int plc4c_s7_read_write_data_transport_size_num_values() {
+  return 7;
+}
+
+plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x00;
+      }
+      case 1: {
+        return 0x03;
+      }
+      case 2: {
+        return 0x04;
+      }
+      case 3: {
+        return 0x05;
+      }
+      case 4: {
+        return 0x06;
+      }
+      case 5: {
+        return 0x07;
+      }
+      case 6: {
+        return 0x09;
+      }
+      default: {
+        return -1;
+      }
+    }
+}
 
 bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value) {
   switch(value) {

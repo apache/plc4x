@@ -146,7 +146,7 @@ public class PooledPlcDriverManager extends PlcDriverManager {
         KeyedObjectPool<PoolKey, PlcConnection> createPool(PooledPlcConnectionFactory pooledPlcConnectionFactory);
     }
 
-    // TODO: maybe export to jmx // generic poolKey has builting jmx too
+    // TODO: maybe export to jmx // generic poolKey has builtin jmx too
     public Map<String, Number> getStatistics() {
         HashMap<String, Number> statistics = new HashMap<>();
         statistics.put("numActive", keyedObjectPool.getNumActive());
