@@ -104,13 +104,13 @@ There are a number of memory areas defined in the Modbus specification.
 |Coil             |`coil:` or `0` or `0x`             |Boolean value, usually representing a binary output from the PLC   |1 |Read/Write|1
 |Input Register   |`input-register:` or `3` or `3x`   |Short input value, usually representing an analog input to the PLC  |16 |Read Only|1
 |Holding Register |`holding-register:` or `4` or `4x` |Short value, usually representing an analog output from the PLC    |16 |Read/Write|1
-|Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read Only|0
+|Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read/Write|0
 
 |===
 
 Initially the Modbus format allowed up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
 Later on, this was expanded to allow up 65536 address within each memory area (except the extended register area).
-When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified. 
+When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified.
 When using the shorter versions there are two formats available  i.e. 30001 and 300001.
 With the shorter format 3XXXX being limited to between 30001 and 39999, while the longer format 3XXXXX being limited to between 300001 and 365535.
 These memory areas all start at address 1.
@@ -119,7 +119,6 @@ For the extended register area the addresses 0-99999 are able to be specified. T
 Address 610000 is then the first address in the second file record and so on. It is noted that there is generally only 10 file records (600000 thru to 699999) however the spec allows for 65536 file records.
 Using the extended-register: format you are able to reference all of these, if the shorter format is used then it is limited to 699999.
 This memory area starts at address 0.
-At the moment this implementation only supports reading the extended memory area.
 
 ==== Data Types
 
@@ -147,7 +146,7 @@ The Modbus function codes:-
 - 0x0F (Write Multiple Coils)
 - 0x10 (Write Multiple Registers)
 - 0x14 (Read File Record)(Extended Register Read)
-- 0x15 (Write File Record)(Extended Register Write is not yet supported)
+- 0x15 (Write File Record)(Extended Register Write)
 
 ==== Examples
 

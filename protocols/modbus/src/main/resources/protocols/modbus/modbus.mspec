@@ -257,7 +257,7 @@
     [simple     uint 16    'fileNumber']
     [simple     uint 16    'recordNumber']
     [implicit   uint 16    'recordLength'   'COUNT(recordData) / 2']
-    [array      int 8      'recordData'     length  'recordLength']
+    [array      int 8      'recordData'     length  'recordLength * 2']
 ]
 
 [type 'ModbusPDUWriteFileRecordResponseItem'
