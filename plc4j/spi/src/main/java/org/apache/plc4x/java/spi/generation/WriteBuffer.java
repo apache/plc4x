@@ -204,8 +204,33 @@ public class WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeFloat(int bitLength, float value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+    public void writeFloat(int bitLength, float value, int bitsExponent, int bitsMantissa) throws ParseException {
+        boolean negative = value < 0.0 ? true : false;
+        writeBit(negative);
+
+        int exponent = Math.getExponent(value) + 127; //Do we need to specify the bias.
+        int mask = 0x00000000;
+        for (int i = 0; i < bitsExponent; i++) {
+            mask += ( 1 << i );
+        }
+        if (exponent != (exponent & mask)) {
+            throw new UnsupportedOperationException("Exponent too large for number of bits specified");
+        }
+        writeUnsignedInt(bitsExponent, exponent);
+
+        double mantissa = value / Math.pow(2, exponent);
+
+    	String doubleAsString = String.valueOf(mantissa);
+    	int indexOfDecimal = doubleAsString.indexOf(".");
+        Long longMantissa = Long.parseLong(doubleAsString.substring(indexOfDecimal));
+        long longMask = 0x0000000000000000;
+        for (int i = 0; i < bitsMantissa; i++) {
+            longMask += ( 1 << i );
+        }
+        if (longMantissa != (longMantissa & longMask)) {
+            throw new UnsupportedOperationException("Mantissa too large for number of bits specified");
+        }
+        writeUnsignedLong(bitsMantissa, longMantissa);
     }
 
     public void writeDouble(int bitLength, double value) throws ParseException {
