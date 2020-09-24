@@ -333,16 +333,12 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                StringBuilder sb = new StringBuilder();
-                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
-                    sb.append("\n        boolean negative = value < 0;");
-                    sb.append("\n        io.writeBit(negative);");
+
+                if (floatTypeReference.getSizeInBits() == 32) {
+                    return "io.writeFloat(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
+                } else if (floatTypeReference.getSizeInBits() == 64) {
+                    return "io.writeDouble(" + fieldName + "," + floatTypeReference.getExponent() + "," + floatTypeReference.getMantissa() + ")";
                 }
-                sb.append("\n        final int exponent = Math.getExponent(value);");
-                sb.append("\n        final double mantissa = value / Math.pow(2, exponent);");
-                sb.append("\n        io.writeInt(").append(floatTypeReference.getExponent()).append(", exponent);");
-                sb.append("\n        io.writeDouble(").append(floatTypeReference.getMantissa()).append(", mantissa)");
-                return sb.toString().substring(9);
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;

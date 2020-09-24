@@ -204,37 +204,18 @@ public class WriteBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
-    public void writeFloat(int bitLength, float value, int bitsExponent, int bitsMantissa) throws ParseException {
-        boolean negative = value < 0.0 ? true : false;
-        writeBit(negative);
-
-        int exponent = Math.getExponent(value) + 127; //Do we need to specify the bias.
-        int mask = 0x00000000;
-        for (int i = 0; i < bitsExponent; i++) {
-            mask += ( 1 << i );
+    public void writeFloat(float value, int bitsExponent, int bitsMantissa) throws ParseException {
+        if (bitsExponent != 8 || bitsMantissa != 23) {
+            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
         }
-        if (exponent != (exponent & mask)) {
-            throw new UnsupportedOperationException("Exponent too large for number of bits specified");
-        }
-        writeUnsignedInt(bitsExponent, exponent);
-
-        double mantissa = value / Math.pow(2, exponent);
-
-    	String doubleAsString = String.valueOf(mantissa);
-    	int indexOfDecimal = doubleAsString.indexOf(".");
-        Long longMantissa = Long.parseLong(doubleAsString.substring(indexOfDecimal));
-        long longMask = 0x0000000000000000;
-        for (int i = 0; i < bitsMantissa; i++) {
-            longMask += ( 1 << i );
-        }
-        if (longMantissa != (longMantissa & longMask)) {
-            throw new UnsupportedOperationException("Mantissa too large for number of bits specified");
-        }
-        writeUnsignedLong(bitsMantissa, longMantissa);
+        writeInt(1 + bitsExponent + bitsMantissa, Float.floatToRawIntBits(value));
     }
 
-    public void writeDouble(int bitLength, double value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+    public void writeDouble(double value, int bitsExponent, int bitsMantissa) throws ParseException {
+        if (bitsExponent != 11 || bitsMantissa != 52) {
+            throw new UnsupportedOperationException("Exponent and/or Mantissa non standard size");
+        }
+        writeLong(1 + bitsExponent + bitsMantissa, Double.doubleToRawLongBits(value));
     }
 
     public void writeBigDecimal(int bitLength, BigDecimal value) throws ParseException {
