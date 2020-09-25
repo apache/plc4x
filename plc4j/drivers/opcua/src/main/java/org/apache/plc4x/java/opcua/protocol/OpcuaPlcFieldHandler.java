@@ -61,7 +61,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Boolean) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcBoolean(resultSet.get(0));
+            return new PlcBOOL(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -75,7 +75,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Byte) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcInteger(resultSet.get(0));
+            return new PlcSINT(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -89,7 +89,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Short) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcInteger(resultSet.get(0));
+            return new PlcINT(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -103,7 +103,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Integer) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcInteger(resultSet.get(0));
+            return new PlcDINT(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -131,7 +131,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Long) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcLong(resultSet.get(0));
+            return new PlcLINT(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -145,7 +145,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Float) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcFloat(resultSet.get(0));
+            return new PlcREAL(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }
@@ -160,7 +160,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add((Double) item);
         }
         if(resultSet.size() == 1) {
-            return new PlcDouble(resultSet.get(0));
+            return new PlcLREAL(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }

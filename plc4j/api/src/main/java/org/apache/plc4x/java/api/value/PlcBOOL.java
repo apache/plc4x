@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -44,8 +42,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Byte value) {
         super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue && value <= maxValue)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -56,8 +54,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Short value) {
         super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue && value <= maxValue)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -68,8 +66,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Integer value) {
         super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue && value <= maxValue)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -80,8 +78,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Long value) {
         super();
-        if (value >= minValue && value <= maxValue) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue && value <= maxValue)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -92,8 +90,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Float value) {
         super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -104,8 +102,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Double value) {
         super();
-        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = ((value != null) && value >= 1) ? true : false;
+        if ((value != null) && (value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = value >= 1;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -116,8 +114,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigInteger value) {
         super();
-        if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = ((value != null) && (value.compareTo(BigInteger.valueOf(maxValue)) >= 0)) ? true : false;
+        if ((value != null) && (value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
+            this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -128,8 +126,8 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigDecimal value) {
         super();
-        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = ((value != null) && (value.compareTo(BigDecimal.valueOf(maxValue)) >= 0)) ? true : false;
+        if ((value != null) && (value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
+            this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -141,8 +139,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     public PlcBOOL(String value) {
         super();
         try {
-             boolean val = Boolean.parseBoolean(value);
-             this.value = val;
+             this.value = Boolean.parseBoolean(value);
              this.isNullable = false;
         }
         catch(Exception e) {
@@ -171,6 +168,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         return (value != null) && value;
     }
 
+    @JsonIgnore
     public boolean getBOOL() {
         return (value != null) && value;
     }
@@ -283,6 +281,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         return toString();
     }
 
+    @JsonIgnore
     public byte[] getBytes() {
         return ((value != null) && value) ? new byte[] {0x01} : new byte[] {0x00};
     }

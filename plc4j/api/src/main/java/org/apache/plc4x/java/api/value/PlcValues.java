@@ -40,17 +40,17 @@ public class PlcValues {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcValues.class);
 
     public static PlcValue of(Boolean b) {
-        return new PlcBoolean(b);
+        return new PlcBOOL(b);
     }
 
     public static PlcValue of(boolean b) {
-        return new PlcBoolean(b);
+        return new PlcBOOL(b);
     }
 
     public static PlcValue of(Boolean[] b) {
         if(b != null) {
             if(b.length == 1) {
-                return new PlcBoolean(b[0]);
+                return new PlcBOOL(b[0]);
             } else if(b.length > 1) {
                 return new PlcList(Arrays.asList(b));
             }
@@ -61,7 +61,7 @@ public class PlcValues {
     public static PlcValue of(boolean[] b) {
         if(b != null) {
             if(b.length == 1) {
-                return new PlcBoolean(b[0]);
+                return new PlcBOOL(b[0]);
             } else if(b.length > 1) {
                 return new PlcList(Arrays.asList(b));
             }
@@ -70,17 +70,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Byte i) {
-        return new PlcInteger(i);
+        return new PlcSINT(i);
     }
 
     public static PlcValue of(byte i) {
-        return new PlcInteger(i);
+        return new PlcSINT(i);
     }
 
     public static PlcValue of(Byte[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcSINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -91,7 +91,7 @@ public class PlcValues {
     public static PlcValue of(byte[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcSINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -100,17 +100,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Short i) {
-        return new PlcInteger(i);
+        return new PlcINT(i);
     }
 
     public static PlcValue of(short i) {
-        return new PlcInteger(i);
+        return new PlcINT(i);
     }
 
     public static PlcValue of(Short[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -121,7 +121,7 @@ public class PlcValues {
     public static PlcValue of(short[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -130,17 +130,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Integer i) {
-        return new PlcInteger(i);
+        return new PlcDINT(i);
     }
 
     public static PlcValue of(int i) {
-        return new PlcInteger(i);
+        return new PlcDINT(i);
     }
 
     public static PlcValue of(Integer[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcDINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -151,7 +151,7 @@ public class PlcValues {
     public static PlcValue of(int[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcInteger(i[0]);
+                return new PlcDINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -160,17 +160,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Long i) {
-        return new PlcLong(i);
+        return new PlcLINT(i);
     }
 
     public static PlcValue of(long i) {
-        return new PlcLong(i);
+        return new PlcLINT(i);
     }
 
     public static PlcValue of(Long[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcLong(i[0]);
+                return new PlcLINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -181,7 +181,7 @@ public class PlcValues {
     public static PlcValue of(long[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcLong(i[0]);
+                return new PlcLINT(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -205,17 +205,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Float i) {
-        return new PlcFloat(i);
+        return new PlcREAL(i);
     }
 
     public static PlcValue of(float i) {
-        return new PlcFloat(i);
+        return new PlcREAL(i);
     }
 
     public static PlcValue of(Float[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcFloat(i[0]);
+                return new PlcREAL(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -226,7 +226,7 @@ public class PlcValues {
     public static PlcValue of(float[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcFloat(i[0]);
+                return new PlcREAL(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -235,17 +235,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(Double i) {
-        return new PlcDouble(i);
+        return new PlcLREAL(i);
     }
 
     public static PlcValue of(double i) {
-        return new PlcDouble(i);
+        return new PlcLREAL(i);
     }
 
     public static PlcValue of(Double[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcDouble(i[0]);
+                return new PlcLREAL(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }
@@ -256,7 +256,7 @@ public class PlcValues {
     public static PlcValue of(double[] i) {
         if(i != null) {
             if(i.length == 1) {
-                return new PlcDouble(i[0]);
+                return new PlcLREAL(i[0]);
             } else if(i.length > 1) {
                 return new PlcList(Arrays.asList(i));
             }

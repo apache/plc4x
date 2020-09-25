@@ -40,7 +40,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
 
     public PlcCHAR(Boolean value) {
         super();
-        this.value = value ? new Short((short) 1) : new Short((short) 0);
+        this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
         this.isNullable = false;
     }
 
@@ -48,7 +48,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
         super();
         Integer val = (int) value;
         if ((val >= minValue) && (val <= maxValue)) {
-            this.value = (Short) val.shortValue();
+            this.value = val.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Character '" + Character.toString(value) + "', Value " + val +
@@ -198,6 +198,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
         return Character.toString(Character.valueOf((char) ((short) value)));
     }
 
+    @JsonIgnore
     public short getCHAR() {
         return value;
     }
@@ -213,6 +214,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
         return Character.toString(Character.valueOf((char) ((short) value)));
     }
 
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte)(value & 0xff);

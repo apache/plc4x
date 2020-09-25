@@ -84,8 +84,8 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     public void read() throws OPMException, PlcConnectionException {
         Map<String, PlcValue> results = new HashMap<>();
         String prefix = MyEntity.class.getName() + ".";
-        results.put(prefix + "counter", new PlcInteger(1));
-        results.put(prefix + "counter2", new PlcLong(1L));
+        results.put(prefix + "counter", new PlcDINT(1));
+        results.put(prefix + "counter2", new PlcLINT(1L));
         PlcEntityManager manager = getPlcEntityManager(results);
 
         MyEntity myEntity = manager.read(MyEntity.class, "s7://localhost:5555/0/0");

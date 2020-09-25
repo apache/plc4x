@@ -23,44 +23,150 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcByte extends PlcSimpleValue<Byte> {
+public class PlcBYTE extends PlcIECValue<Short> {
 
-    public PlcByte(Byte value) {
-        super(value, true);
+    static Short minValue = 0;
+    static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
+
+    public PlcBYTE(Boolean value) {
+        super();
+        this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
+        this.isNullable = false;
+    }
+
+    public PlcBYTE(Byte value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue)) {
+            this.value = value.shortValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(Short value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue)) {
+            this.value = value;
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(Integer value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue)) {
+            this.value = value.shortValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(Long value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue)) {
+            this.value = value.shortValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(Float value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = value.shortValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(Double value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
+            this.value = value.shortValue();
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(BigInteger value) {
+        super();
+        if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
+            this.value = value.shortValue();
+            this.isNullable = true;
+        } else {
+          throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a " +
+            this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(BigDecimal value) {
+        super();
+        if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
+            this.value = value.shortValue();
+            this.isNullable = true;
+        } else {
+          throw new PlcInvalidFieldException("Value of type " + value +
+            " is out of range " + minValue + " - " + maxValue + " for a " +
+            this.getClass().getSimpleName() + " Value");
+        }
+    }
+
+    public PlcBYTE(String value) {
+        super();
+        try {
+            short val = Short.parseShort(value);
+            if ((val >= minValue) && (val <= maxValue)) {
+                this.value = val;
+                this.isNullable = false;
+            } else {
+                throw new PlcInvalidFieldException("Value of type " + value +
+                  " is out of range " + minValue + " - " + maxValue + " for a " +
+                  this.getClass().getSimpleName() + " Value");
+            }
+        }
+        catch(Exception e) {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
     }
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcByte(@JsonProperty("value") byte value) {
-        super(value, false);
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isBoolean() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean getBoolean() {
-        return (value != null) && !value.equals((byte) 0);
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isByte() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public byte getByte() {
-        return value;
+    public PlcBYTE(@JsonProperty("value") short value) {
+        super();
+        if ((value >= minValue) && (value <= maxValue)) {
+            this.value = value;
+            this.isNullable = false;
+        } else {
+            throw new PlcInvalidFieldException("Value of type " + value +
+              " is out of range " + minValue + " - " + maxValue + " for a " +
+              this.getClass().getSimpleName() + " Value");
+        }
     }
 
     @Override
@@ -72,97 +178,25 @@ public class PlcByte extends PlcSimpleValue<Byte> {
     @Override
     @JsonIgnore
     public short getShort() {
-        return value.shortValue();
+        return value;
     }
 
-    @Override
     @JsonIgnore
-    public boolean isInteger() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public int getInteger() {
-        return value.intValue();
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isLong() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public long getLong() {
-        return value.longValue();
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isBigInteger() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public BigInteger getBigInteger() {
-        return BigInteger.valueOf((long) value);
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isFloat() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public float getFloat() {
-        return value.floatValue();
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isDouble() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public double getDouble() {
-        return value.doubleValue();
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isBigDecimal() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public BigDecimal getBigDecimal() {
-        return new BigDecimal(value);
-    }
-
-    @Override
-    @JsonIgnore
-    public boolean isString() {
-        return true;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getString() {
-        return toString();
+    public short getBYTE() {
+        return value;
     }
 
     @Override
     @JsonIgnore
     public String toString() {
-        return Integer.toString(value);
+        return Short.toString(value);
+    }
+
+    @JsonIgnore
+    public byte[] getBytes() {
+        byte[] bytes = new byte[1];
+        bytes[0] = (byte)(value & 0xff);
+        return bytes;
     }
 
 }

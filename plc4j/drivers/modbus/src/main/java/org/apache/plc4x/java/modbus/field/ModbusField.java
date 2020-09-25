@@ -32,8 +32,8 @@ import java.lang.*;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5}):?(?<datatype>[a-zA-Z_]+)?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?(:(?<datatype>[a-zA-Z_]+))?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(\\[(?<quantity>\\d+)])?(:(?<datatype>[a-zA-Z_]+))?");
 
     protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 

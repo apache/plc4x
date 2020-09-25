@@ -99,13 +99,27 @@ public class HelloInflux {
         if (contextName.equals("address")) {
             point.addTag(contextName, plcValue.getString());
         } else {
-            if (plcValue instanceof PlcBoolean) {
+            if (plcValue instanceof PlcBOOL) {
                 point.addField(contextName, plcValue.getBoolean());
-            } else if (plcValue instanceof PlcInteger) {
+            } else if (plcValue instanceof PlcSINT) {
+                point.addField(contextName, plcValue.getByte());
+            } else if (plcValue instanceof PlcUSINT) {
+                point.addField(contextName, plcValue.getShort());
+            } else if (plcValue instanceof PlcINT) {
+                point.addField(contextName, plcValue.getShort());
+            } else if (plcValue instanceof PlcUINT) {
+                point.addField(contextName, plcValue.getInteger());
+            } else if (plcValue instanceof PlcDINT) {
+                point.addField(contextName, plcValue.getInteger());
+            } else if (plcValue instanceof PlcUDINT) {
                 point.addField(contextName, plcValue.getLong());
-            } else if (plcValue instanceof PlcFloat) {
+            } else if (plcValue instanceof PlcLINT) {
+                point.addField(contextName, plcValue.getLong());
+            } else if (plcValue instanceof PlcULINT) {
+                point.addField(contextName, plcValue.getBigInteger());
+            } else if (plcValue instanceof PlcREAL) {
                 point.addField(contextName, plcValue.getFloat());
-            } else if (plcValue instanceof PlcDouble) {
+            } else if (plcValue instanceof PlcLREAL) {
                 point.addField(contextName, plcValue.getDouble());
             } else if (plcValue instanceof PlcString) {
                 point.addField(contextName, plcValue.getString());

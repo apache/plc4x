@@ -25,12 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDINT extends PlcIECValue<Integer> {
@@ -46,13 +42,13 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     public PlcDINT(Byte value) {
         super();
-        this.value = (Integer) value.intValue();
+        this.value = value.intValue();
         this.isNullable = false;
     }
 
     public PlcDINT(Short value) {
         super();
-        this.value = (Integer) value.intValue();
+        this.value = value.intValue();
         this.isNullable = false;
     }
 
@@ -65,7 +61,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(Long value) {
         super();
         if (value >= minValue && value <= maxValue) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -77,7 +73,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(Float value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -89,7 +85,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(Double value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -101,7 +97,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(BigInteger value) {
         super();
         if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -113,7 +109,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -125,8 +121,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(String value) {
         super();
         try {
-            Integer val = Integer.parseInt(value);
-            this.value = val;
+            this.value = Integer.parseInt(value);
             this.isNullable = false;
         }
         catch(Exception e) {
@@ -143,6 +138,43 @@ public class PlcDINT extends PlcIECValue<Integer> {
       this.isNullable = false;
     }
 
+
+    @Override
+    @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isShort() {
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return value.shortValue();
+    }
+
     @Override
     @JsonIgnore
     public boolean isInteger() {
@@ -155,8 +187,76 @@ public class PlcDINT extends PlcIECValue<Integer> {
         return value;
     }
 
-    public int getDINT() {
-        return value;
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.longValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(getLong());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return value.doubleValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return BigDecimal.valueOf(getFloat());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @Override
@@ -165,6 +265,12 @@ public class PlcDINT extends PlcIECValue<Integer> {
         return Integer.toString(value);
     }
 
+    @JsonIgnore
+    public int getDINT() {
+        return value;
+    }
+
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[4];
         bytes[0] = (byte)((value >> 24) & 0xff);

@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.api.value;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.plc4x.java.api.value.*;
 
 public abstract class PlcIECValue<T> extends PlcValueAdapter {
 

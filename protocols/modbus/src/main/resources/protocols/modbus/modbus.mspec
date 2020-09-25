@@ -270,11 +270,11 @@
 
 [dataIo 'DataItem' [uint 8 'dataType', uint 8 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
-        ['1','1' Boolean
+        ['1','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['1' Boolean
+        ['1' BOOL
             [array bit 'value' count 'numberOfValues']
         ]
         ['10','1' BYTE

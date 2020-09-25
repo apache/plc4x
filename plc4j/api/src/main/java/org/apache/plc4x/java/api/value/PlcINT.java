@@ -25,12 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcINT extends PlcIECValue<Short> {
@@ -40,13 +36,13 @@ public class PlcINT extends PlcIECValue<Short> {
 
     public PlcINT(Boolean value) {
         super();
-        this.value = value ? new Short((short) 1) : new Short((short) 0);
+        this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
         this.isNullable = false;
     }
 
     public PlcINT(Byte value) {
         super();
-        this.value = (Short) value.shortValue();
+        this.value = value.shortValue();
         this.isNullable = false;
     }
 
@@ -59,7 +55,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(Integer value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -71,7 +67,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(Long value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -83,7 +79,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(Float value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -95,7 +91,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(Double value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -107,7 +103,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(BigInteger value) {
         super();
         if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -119,7 +115,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -131,8 +127,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(String value) {
         super();
         try {
-            Short val = Short.valueOf(value).shortValue();
-            this.value = val;
+            this.value = Short.valueOf(value);
             this.isNullable = false;
         }
         catch(Exception e) {
@@ -150,6 +145,30 @@ public class PlcINT extends PlcIECValue<Short> {
 
     @Override
     @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isShort() {
         return true;
     }
@@ -160,16 +179,102 @@ public class PlcINT extends PlcIECValue<Short> {
         return value;
     }
 
-    public short getINT() {
-        return value;
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return value.intValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.longValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(getLong());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return value.doubleValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return BigDecimal.valueOf(getFloat());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @Override
     @JsonIgnore
     public String toString() {
-        return Short.toString(value);
+        return Integer.toString(value);
     }
 
+    @JsonIgnore
+    public short getINT() {
+        return value;
+    }
+
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[2];
         bytes[0] = (byte)((value >> 8) & 0xff);

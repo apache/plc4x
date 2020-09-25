@@ -73,11 +73,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   }
   {
     // Length array
-    uint8_t _recordDataLength = (recordLength) * (2);
+    uint8_t _recordDataLength = recordLength;
     uint8_t recordDataEndPos = plc4c_spi_read_get_pos(io) + _recordDataLength;
     while(plc4c_spi_read_get_pos(io) < recordDataEndPos) {
-      uint16_t _value = 0;
-      _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &_value);
+      int8_t _value = 0;
+      _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -111,7 +111,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
   }
 
   // Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(io, 16, (((plc4c_spi_evaluation_helper_count(_message->record_data)) * (2))) / (2));
+  _res = plc4c_spi_write_unsigned_short(io, 16, (plc4c_spi_evaluation_helper_count(_message->record_data)) / (2));
   if(_res != OK) {
     return _res;
   }
@@ -121,8 +121,8 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_write_file_record_response_
     uint8_t itemCount = plc4c_utils_list_size(_message->record_data);
     for(int curItem = 0; curItem < itemCount; curItem++) {
 
-      uint16_t* _value = (uint16_t*) plc4c_utils_list_get_value(_message->record_data, curItem);
-      plc4c_spi_write_unsigned_short(io, 16, *_value);
+      int8_t* _value = (int8_t*) plc4c_utils_list_get_value(_message->record_data, curItem);
+      plc4c_spi_write_signed_byte(io, 8, *_value);
     }
   }
 
@@ -149,7 +149,7 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_write_file_record_response_item_leng
   lengthInBits += 16;
 
   // Array field
-  lengthInBits += 16 * plc4c_utils_list_size(_message->record_data);
+  lengthInBits += 8 * plc4c_utils_list_size(_message->record_data);
 
   return lengthInBits;
 }

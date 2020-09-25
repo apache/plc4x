@@ -25,12 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLREAL extends PlcIECValue<Double> {
@@ -46,25 +42,25 @@ public class PlcLREAL extends PlcIECValue<Double> {
 
     public PlcLREAL(Byte value) {
         super();
-        this.value = (Double) value.doubleValue();
+        this.value = value.doubleValue();
         this.isNullable = false;
     }
 
     public PlcLREAL(Short value) {
         super();
-        this.value = (Double) value.doubleValue();
+        this.value = value.doubleValue();
         this.isNullable = false;
     }
 
     public PlcLREAL(Integer value) {
         super();
-        this.value = (Double) value.doubleValue();
+        this.value = value.doubleValue();
         this.isNullable = false;
     }
 
     public PlcLREAL(Float value) {
         super();
-        this.value = (Double) value.doubleValue();
+        this.value = value.doubleValue();
         this.isNullable = false;
     }
 
@@ -78,7 +74,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
         super();
         BigDecimal val = new BigDecimal(value);
         if ((val.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (val.compareTo(BigDecimal.valueOf(maxValue)) <= 0)) {
-            this.value = (Double) val.doubleValue();
+            this.value = val.doubleValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -90,7 +86,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
     public PlcLREAL(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Double) value.doubleValue();
+            this.value = value.doubleValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -102,8 +98,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
     public PlcLREAL(String value) {
         super();
         try {
-            Double val = Double.parseDouble(value);
-            this.value = val;
+            this.value = Double.parseDouble(value);
             this.isNullable = false;
         }
         catch(Exception e) {
@@ -116,8 +111,92 @@ public class PlcLREAL extends PlcIECValue<Double> {
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcLREAL(@JsonProperty("value") double value) {
         super();
-        this.value = new Double(value);
+        this.value = value;
         this.isNullable = false;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isShort() {
+        return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return value.shortValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return value.intValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        return (value != null) && (value <= Long.MAX_VALUE) && (value >= Long.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.longValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(getLong());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return (value != null) && (value <= Float.MAX_VALUE) && (value >= -Float.MAX_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
     }
 
     @Override
@@ -132,8 +211,28 @@ public class PlcLREAL extends PlcIECValue<Double> {
         return value;
     }
 
-    public double getLREAL() {
-        return value;
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return new BigDecimal(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @Override
@@ -142,6 +241,12 @@ public class PlcLREAL extends PlcIECValue<Double> {
         return Double.toString(value);
     }
 
+    @JsonIgnore
+    public double getLREAL() {
+        return value;
+    }
+
+    @JsonIgnore
     public byte[] getBytes() {
         long longBits =  Double.doubleToRawLongBits(value);
         byte[] bytes = new byte[8];

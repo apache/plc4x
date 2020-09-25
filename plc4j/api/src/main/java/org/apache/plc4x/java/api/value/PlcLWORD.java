@@ -19,18 +19,12 @@
 
 package org.apache.plc4x.java.api.value;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLWORD extends PlcIECValue<BigInteger> {
@@ -196,6 +190,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         return value;
     }
 
+    @JsonIgnore
     public BigInteger getLWORD() {
         return value;
     }
@@ -206,6 +201,7 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         return value.toString();
     }
 
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] tmp = value.toByteArray();
         byte[] bytes = new byte[8];

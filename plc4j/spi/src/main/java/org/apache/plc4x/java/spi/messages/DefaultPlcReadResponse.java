@@ -60,7 +60,7 @@ public class DefaultPlcReadResponse implements InternalPlcReadResponse, PlcReadR
     @JsonIgnore
     public PlcValue getAsPlcValue() {
         return PlcValues.of(request.getFieldNames().stream()
-            .collect(Collectors.toMap(Function.identity(), name -> PlcValues.of(getObject(name)))));
+            .collect(Collectors.toMap(Function.identity(), this::getPlcValue)));
     }
 
     @Override

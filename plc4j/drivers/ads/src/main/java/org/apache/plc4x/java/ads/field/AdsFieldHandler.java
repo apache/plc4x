@@ -464,9 +464,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case BIT:
             case BIT8: {
                 if (values.length == 1) {
-                    return new PlcBoolean(Boolean.valueOf(stringValues[0]));
+                    return new PlcBOOL(Boolean.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcBoolean(Boolean.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcBOOL(Boolean.valueOf(s))).collect(Collectors.toList()));
                 }
             }
             case BYTE:
@@ -484,9 +484,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case SINT:
             case INT8: {
                 if (values.length == 1) {
-                    return new PlcByte(Byte.valueOf(stringValues[0]));
+                    return new PlcSINT(Byte.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcByte(Byte.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcSINT(Byte.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
@@ -495,9 +495,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case INT:
             case INT16: {
                 if (values.length == 1) {
-                    return new PlcShort(Short.valueOf(stringValues[0]));
+                    return new PlcINT(Short.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcShort(Short.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcINT(Short.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
@@ -506,9 +506,9 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case DINT:
             case INT32: {
                 if (values.length == 1) {
-                    return new PlcInteger(Integer.valueOf(stringValues[0]));
+                    return new PlcDINT(Integer.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcInteger(Integer.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcDINT(Integer.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
@@ -517,36 +517,36 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             case LINT:
             case INT64: {
                 if (values.length == 1) {
-                    return new PlcLong(Long.valueOf(stringValues[0]));
+                    return new PlcLINT(Long.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcLong(Long.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcLINT(Long.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
             case ULINT:
             case UINT64: {
                 if (values.length == 1) {
-                    return new PlcBigInteger(new BigInteger(stringValues[0]));
+                    return new PlcULINT(new BigInteger(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcBigInteger(new BigInteger(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcULINT(new BigInteger(s))).collect(Collectors.toList()));
                 }
             }
 
             case REAL:
             case FLOAT: {
                 if (values.length == 1) {
-                    return new PlcFloat(Float.valueOf(stringValues[0]));
+                    return new PlcREAL(Float.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcFloat(Float.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcREAL(Float.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
             case LREAL:
             case DOUBLE: {
                 if (values.length == 1) {
-                    return new PlcDouble(Double.valueOf(stringValues[0]));
+                    return new PlcLREAL(Double.valueOf(stringValues[0]));
                 } else {
-                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcDouble(Double.valueOf(s))).collect(Collectors.toList()));
+                    return new PlcList(Arrays.stream(stringValues).map(s -> new PlcLREAL(Double.valueOf(s))).collect(Collectors.toList()));
                 }
             }
 
@@ -775,60 +775,63 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBoolean(booleanValues.get(0));
+            return new PlcBOOL(booleanValues.get(0));
         } else {
             return new PlcList(booleanValues);
         }
     }
 
     private PlcValue internalEncodeInteger(PlcField field, Object[] values) {
+        // TODO: Review and double check this method.
         AdsField adsField = (AdsField) field;
         Class<? extends PlcValue> fieldType;
         switch (adsField.getAdsDataType()) {
             case BYTE:
-                fieldType = PlcInteger.class;
-                break;
             case WORD:
-                fieldType = PlcList.class;
-                break;
             case DWORD:
-                fieldType = PlcList.class;
+                fieldType = PlcBOOL.class;
                 break;
             case SINT:
-                fieldType = PlcInteger.class;
+                fieldType = PlcSINT.class;
                 break;
             case USINT:
-                fieldType = PlcLong.class;
+                fieldType = PlcUSINT.class;
                 break;
             case INT:
-                fieldType = PlcInteger.class;
+                fieldType = PlcINT.class;
                 break;
             case UINT:
-                fieldType = PlcInteger.class;
+                fieldType = PlcUINT.class;
                 break;
             case DINT:
-                fieldType = PlcInteger.class;
+                fieldType = PlcDINT.class;
                 break;
             case UDINT:
-                fieldType = PlcLong.class;
+                fieldType = PlcUDINT.class;
                 break;
             case LINT:
-                fieldType = PlcLong.class;
+                fieldType = PlcLINT.class;
                 break;
             case ULINT:
-                fieldType = PlcBigInteger.class;
+                fieldType = PlcULINT.class;
                 break;
             case INT32:
-                fieldType = PlcInteger.class;
+                fieldType = PlcDINT.class;
                 break;
             case INT64:
-                fieldType = PlcLong.class;
+                fieldType = PlcLINT.class;
+                break;
+            case FLOAT:
+                fieldType = PlcREAL.class;
+                break;
+            case DOUBLE:
+                fieldType = PlcLREAL.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign integer values to " + adsField.getAdsDataType().name() + " fields.");
         }
-        if (fieldType == PlcLong.class) {
+        if (fieldType == PlcREAL.class) {
             Long[] longValues = new Long[values.length];
             for (int i = 0; i < values.length; i++) {
                 if (!((values[i] instanceof Byte) || (values[i] instanceof Short) ||
@@ -845,7 +848,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 longValues[i] = value.longValue();
             }
             if(longValues.length == 1) {
-                return new PlcLong(longValues[0]);
+                return new PlcREAL(longValues[0]);
             } else {
                 return new PlcList(Arrays.asList(longValues));
             }
@@ -882,16 +885,16 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
         AdsDataType adsDataType = adsField.getAdsDataType();
         switch (adsDataType) {
             case REAL:
-                fieldType = PlcFloat.class;
+                fieldType = PlcREAL.class;
                 break;
             case LREAL:
-                fieldType = PlcDouble.class;
+                fieldType = PlcLREAL.class;
                 break;
             default:
                 throw new IllegalArgumentException(
                     "Cannot assign floating point values to " + adsDataType.name() + " fields.");
         }
-        if (fieldType == PlcDouble.class) {
+        if (fieldType == PlcLREAL.class) {
             Double[] floatingPointValues = new Double[values.length];
             for (int i = 0; i < values.length; i++) {
                 if (values[i] instanceof Float) {
@@ -910,7 +913,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 }*/
             }
             if(floatingPointValues.length == 1) {
-                return new PlcDouble(floatingPointValues[0]);
+                return new PlcLREAL(floatingPointValues[0]);
             } else {
                 return new PlcList(Arrays.asList(floatingPointValues));
             }
@@ -939,7 +942,7 @@ public class AdsFieldHandler extends DefaultPlcFieldHandler {
                 }*/
             }
             if(floatingPointValues.length == 1) {
-                return new PlcFloat(floatingPointValues[0]);
+                return new PlcREAL(floatingPointValues[0]);
             } else {
                 return new PlcList(Arrays.asList(floatingPointValues));
             }

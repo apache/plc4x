@@ -30,7 +30,7 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
-        if((dataType == 1) && (numberOfValues == 1)) { /* Boolean */
+        if((dataType == 1) && (numberOfValues == 1)) { /* BOOL */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -54,11 +54,91 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                 *data_item = plc4c_data_create_bool_data(value);
 
         } else 
-        if(dataType == 1) { /* List */
+        if(dataType == 1) { /* BOOL */
 
                     // Array field (value)
         } else 
-        if((dataType == 2) && (numberOfValues == 1)) { /* Integer */
+        if((dataType == 10) && (numberOfValues == 1)) { /* BYTE */
+
+                // Simple Field (value)
+                uint8_t value = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(value);
+
+        } else 
+        if(dataType == 10) { /* BYTE */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 11) && (numberOfValues == 1)) { /* WORD */
+
+                // Simple Field (value)
+                uint16_t value = 0;
+                _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint16_t_data(value);
+
+        } else 
+        if(dataType == 11) { /* WORD */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 12) && (numberOfValues == 1)) { /* DWORD */
+
+                // Simple Field (value)
+                uint32_t value = 0;
+                _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint32_t_data(value);
+
+        } else 
+        if(dataType == 12) { /* DWORD */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 13) && (numberOfValues == 1)) { /* LWORD */
+
+                // Simple Field (value)
+                uint64_t value = 0;
+                _res = plc4c_spi_read_unsigned_long(io, 64, (uint64_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint64_t_data(value);
+
+        } else 
+        if(dataType == 13) { /* LWORD */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 20) && (numberOfValues == 1)) { /* SINT */
+
+                // Simple Field (value)
+                int8_t value = 0;
+                _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_int8_t_data(value);
+
+        } else 
+        if(dataType == 20) { /* SINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 21) && (numberOfValues == 1)) { /* INT */
 
                 // Simple Field (value)
                 int16_t value = 0;
@@ -70,7 +150,167 @@ plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer*
                 *data_item = plc4c_data_create_int16_t_data(value);
 
         } else 
-        if(dataType == 2) { /* List */
+        if(dataType == 21) { /* INT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 22) && (numberOfValues == 1)) { /* DINT */
+
+                // Simple Field (value)
+                int32_t value = 0;
+                _res = plc4c_spi_read_signed_int(io, 32, (int32_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_int32_t_data(value);
+
+        } else 
+        if(dataType == 22) { /* DINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 23) && (numberOfValues == 1)) { /* LINT */
+
+                // Simple Field (value)
+                int64_t value = 0;
+                _res = plc4c_spi_read_signed_long(io, 64, (int64_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_int64_t_data(value);
+
+        } else 
+        if(dataType == 23) { /* LINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 24) && (numberOfValues == 1)) { /* USINT */
+
+                // Simple Field (value)
+                uint8_t value = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(value);
+
+        } else 
+        if(dataType == 24) { /* USINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 25) && (numberOfValues == 1)) { /* UINT */
+
+                // Simple Field (value)
+                uint16_t value = 0;
+                _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint16_t_data(value);
+
+        } else 
+        if(dataType == 25) { /* UINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 26) && (numberOfValues == 1)) { /* UDINT */
+
+                // Simple Field (value)
+                uint32_t value = 0;
+                _res = plc4c_spi_read_unsigned_int(io, 32, (uint32_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint32_t_data(value);
+
+        } else 
+        if(dataType == 26) { /* UDINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 27) && (numberOfValues == 1)) { /* ULINT */
+
+                // Simple Field (value)
+                uint64_t value = 0;
+                _res = plc4c_spi_read_unsigned_long(io, 64, (uint64_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint64_t_data(value);
+
+        } else 
+        if(dataType == 27) { /* ULINT */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 30) && (numberOfValues == 1)) { /* REAL */
+
+                // Simple Field (value)
+                float value = 0.0;
+                _res = plc4c_spi_read_float(io, 32, (float*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_float_data(value);
+
+        } else 
+        if(dataType == 30) { /* REAL */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 31) && (numberOfValues == 1)) { /* LREAL */
+
+                // Simple Field (value)
+                double value = 0.0;
+                _res = plc4c_spi_read_double(io, 64, (double*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_double_data(value);
+
+        } else 
+        if(dataType == 31) { /* LREAL */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 80) && (numberOfValues == 1)) { /* CHAR */
+
+                // Simple Field (value)
+                uint8_t value = 0;
+                _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint8_t_data(value);
+
+        } else 
+        if(dataType == 80) { /* CHAR */
+
+                    // Array field (value)
+        } else 
+        if((dataType == 81) && (numberOfValues == 1)) { /* WCHAR */
+
+                // Simple Field (value)
+                uint16_t value = 0;
+                _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &value);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_uint16_t_data(value);
+
+        } else 
+        if(dataType == 81) { /* WCHAR */
 
                     // Array field (value)
         }

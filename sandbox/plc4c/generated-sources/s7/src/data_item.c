@@ -30,7 +30,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
     uint16_t curPos;
     plc4c_return_code _res = OK;
 
-        if(dataProtocolId == 01) { /* Boolean */
+        if(dataProtocolId == 01) { /* BOOL */
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -54,23 +54,23 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_bool_data(value);
 
         } else 
-        if(dataProtocolId == 11) { /* List */
+        if(dataProtocolId == 11) { /* BOOL */
 
                     // Array field (value)
         } else 
-        if(dataProtocolId == 12) { /* List */
+        if(dataProtocolId == 12) { /* BOOL */
 
                     // Array field (value)
         } else 
-        if(dataProtocolId == 13) { /* List */
+        if(dataProtocolId == 13) { /* BOOL */
 
                     // Array field (value)
         } else 
-        if(dataProtocolId == 14) { /* List */
+        if(dataProtocolId == 14) { /* BOOL */
 
                     // Array field (value)
         } else 
-        if(dataProtocolId == 21) { /* Integer */
+        if(dataProtocolId == 21) { /* SINT */
 
                 // Simple Field (value)
                 int8_t value = 0;
@@ -82,7 +82,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_int8_t_data(value);
 
         } else 
-        if(dataProtocolId == 22) { /* Integer */
+        if(dataProtocolId == 22) { /* USINT */
 
                 // Simple Field (value)
                 uint8_t value = 0;
@@ -94,7 +94,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_uint8_t_data(value);
 
         } else 
-        if(dataProtocolId == 23) { /* Integer */
+        if(dataProtocolId == 23) { /* INT */
 
                 // Simple Field (value)
                 int16_t value = 0;
@@ -106,7 +106,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_int16_t_data(value);
 
         } else 
-        if(dataProtocolId == 24) { /* Integer */
+        if(dataProtocolId == 24) { /* UINT */
 
                 // Simple Field (value)
                 uint16_t value = 0;
@@ -118,7 +118,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_uint16_t_data(value);
 
         } else 
-        if(dataProtocolId == 25) { /* Integer */
+        if(dataProtocolId == 25) { /* DINT */
 
                 // Simple Field (value)
                 int32_t value = 0;
@@ -130,7 +130,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_int32_t_data(value);
 
         } else 
-        if(dataProtocolId == 26) { /* Long */
+        if(dataProtocolId == 26) { /* UDINT */
 
                 // Simple Field (value)
                 uint32_t value = 0;
@@ -142,7 +142,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_uint32_t_data(value);
 
         } else 
-        if(dataProtocolId == 27) { /* Long */
+        if(dataProtocolId == 27) { /* LINT */
 
                 // Simple Field (value)
                 int64_t value = 0;
@@ -154,7 +154,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_int64_t_data(value);
 
         } else 
-        if(dataProtocolId == 28) { /* BigInteger */
+        if(dataProtocolId == 28) { /* ULINT */
 
                 // Simple Field (value)
                 uint64_t value = 0;
@@ -166,7 +166,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_uint64_t_data(value);
 
         } else 
-        if(dataProtocolId == 31) { /* Float */
+        if(dataProtocolId == 31) { /* REAL */
 
                 // Simple Field (value)
                 float value = 0.0;
@@ -178,7 +178,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_float_data(value);
 
         } else 
-        if(dataProtocolId == 32) { /* Double */
+        if(dataProtocolId == 32) { /* LREAL */
 
                 // Simple Field (value)
                 double value = 0.0;

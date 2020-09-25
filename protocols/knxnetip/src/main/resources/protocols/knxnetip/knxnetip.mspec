@@ -396,11 +396,11 @@
 
 [dataIo 'KnxDatapoint' [uint 10 'mainNumber', uint 10 'subNumber']
     [typeSwitch 'mainNumber','subNumber'
-        ['1' Boolean
+        ['1' BOOL
             [reserved uint 7 '0x0']
             [simple   bit    'value']
         ]
-        ['2' Boolean
+        ['2' BOOL
             [reserved uint 6 '0x0']
             [simple   bit    'control']
             [simple   bit    'value']
@@ -415,33 +415,33 @@
             [simple   bit    'b1']
             [simple   bit    'b0']
         ]
-        ['3' Integer
+        ['3' USINT
             [reserved uint 4 '0x0']
             [simple   bit    'control']
             [simple   uint 3 'value']
         ]
-        ['18' Integer
+        ['18' USINT
             [simple   bit    'control']
             [reserved uint 1 '0x0']
             [simple   uint 6 'value']
         ]
-        ['17' Integer
+        ['17' USINT
             [reserved uint 2 '0x0']
             [simple   uint 6 'value']
         ]
-        ['5' Integer
+        ['5' USINT
             [reserved uint 8 '0x0']
             [simple   uint 8 'value']
         ]
-        ['7' Integer
+        ['7' UINT
             [reserved uint 8 '0x0']
             [simple uint 16 'value']
         ]
-        ['12' Long
+        ['12' UDINT
             [reserved uint 8 '0x0']
             [simple uint 32 'value']
         ]
-        ['6','20' Integer
+        ['6','20' SINT
             [simple   bit   'a']
             [simple   bit   'b']
             [simple   bit   'c']
@@ -449,23 +449,23 @@
             [simple   bit   'e']
             [simple   int 8 'value']
         ]
-        ['6' Integer
+        ['6' SINT
             [reserved uint 8 '0x0']
             [simple   int  8 'value']
         ]
-        ['8' Integer
+        ['8' INT
             [reserved uint 8  '0x0']
             [simple   int  16 'value']
         ]
-        ['13' Integer
+        ['13' DINT
             [reserved uint 8  '0x0']
             [simple   int  32 'value']
         ]
-        ['9' Float
+        ['9' REAL
             [reserved uint  8    '0x0']
             [manual   float 4.11 'value' 'STATIC_CALL("org.apache.plc4x.java.knxnetip.utils.KnxHelper.bytesToF16", io)' 'STATIC_CALL("org.apache.plc4x.java.knxnetip.utils.KnxHelper.f16toBytes", io, object)' '16']
         ]
-        ['14' Float
+        ['14' REAL
             [reserved uint  8    '0x0']
             [simple   float 8.23 'value']
         ]

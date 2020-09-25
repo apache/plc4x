@@ -25,12 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcUSINT extends PlcIECValue<Short> {
@@ -40,7 +36,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
 
     public PlcUSINT(Boolean value) {
         super();
-        this.value = value ? new Short((short) 1) : new Short((short) 0);
+        this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);
         this.isNullable = false;
     }
 
@@ -59,7 +55,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(Short value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
+            this.value = value;
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -71,7 +67,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(Integer value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -83,7 +79,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(Long value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -95,7 +91,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(Float value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -107,7 +103,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(Double value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -119,7 +115,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(BigInteger value) {
         super();
         if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -131,7 +127,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Short) value.shortValue();
+            this.value = value.shortValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -143,7 +139,7 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public PlcUSINT(String value) {
         super();
         try {
-            Short val = Short.valueOf(value).shortValue();
+            short val = Short.parseShort(value);
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = val;
                 this.isNullable = false;
@@ -175,6 +171,30 @@ public class PlcUSINT extends PlcIECValue<Short> {
 
     @Override
     @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isShort() {
         return true;
     }
@@ -185,8 +205,88 @@ public class PlcUSINT extends PlcIECValue<Short> {
         return value;
     }
 
-    public short getUSINT() {
-        return value;
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return value.intValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.longValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigInteger() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigInteger getBigInteger() {
+        return BigInteger.valueOf(getLong());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return value.doubleValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return BigDecimal.valueOf(getFloat());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @Override
@@ -195,6 +295,12 @@ public class PlcUSINT extends PlcIECValue<Short> {
         return Short.toString(value);
     }
 
+    @JsonIgnore
+    public short getUSINT() {
+        return value;
+    }
+
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte)(value & 0xff);

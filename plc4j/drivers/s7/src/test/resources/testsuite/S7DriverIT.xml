@@ -296,7 +296,7 @@
           </request>
           <hurz>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>true</object>
             </value>
           </hurz>

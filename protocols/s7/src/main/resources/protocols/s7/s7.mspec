@@ -263,7 +263,7 @@
         // -----------------------------------------
         // Bit
         // -----------------------------------------
-        ['01' Boolean
+        ['01' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
@@ -272,19 +272,19 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['11' Boolean
+        ['11' BOOL
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['12' Boolean
+        ['12' BOOL
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['13' Boolean
+        ['13' BOOL
             [array bit 'value' count '32']
         ]
         // 8 byte (64 bit)
-        ['14' Boolean
+        ['14' BOOL
             [array bit 'value' count '64']
         ]
 
@@ -292,41 +292,41 @@
         // Integers
         // -----------------------------------------
         // 8 bit:
-        ['21' Integer
+        ['21' SINT
             [simple int 8 'value']
         ]
-        ['22' Integer
+        ['22' USINT
             [simple uint 8 'value']
         ]
         // 16 bit:
-        ['23' Integer
+        ['23' INT
             [simple int 16 'value']
         ]
-        ['24' Integer
+        ['24' UINT
             [simple uint 16 'value']
         ]
         // 32 bit:
-        ['25' Integer
+        ['25' DINT
             [simple int 32 'value']
         ]
-        ['26' Long
+        ['26' UDINT
             [simple uint 32 'value']
         ]
         // 64 bit:
-        ['27' Long
+        ['27' LINT
             [simple int 64 'value']
         ]
-        ['28' BigInteger
+        ['28' ULINT
             [simple uint 64 'value']
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
-        ['31' Float
+        ['31' REAL
             [simple float 8.23  'value']
         ]
-        ['32' Double
+        ['32' LREAL
             [simple float 11.52 'value']
         ]
 

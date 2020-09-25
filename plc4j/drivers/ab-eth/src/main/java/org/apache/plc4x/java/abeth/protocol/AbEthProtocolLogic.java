@@ -26,10 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcInteger;
-import org.apache.plc4x.java.api.value.PlcList;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -158,7 +155,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if(data.length == 1) {
-                                    plcValue = new PlcInteger(data[0]);
+                                    plcValue = new PlcINT(data[0]);
                                 } else {
                                     plcValue = new PlcList(Arrays.asList(data));
                                 }

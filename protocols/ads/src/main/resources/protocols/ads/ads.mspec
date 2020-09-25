@@ -391,15 +391,15 @@
         // -----------------------------------------
         // Bit
         // -----------------------------------------
-        ['AdsDataType.BOOL' Boolean
+        ['AdsDataType.BOOL' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['AdsDataType.BIT' Boolean
+        ['AdsDataType.BIT' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['AdsDataType.BIT8' Boolean
+        ['AdsDataType.BIT8' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
@@ -408,24 +408,24 @@
         // Bit-strings
         // -----------------------------------------
         // 1 byte
-        ['AdsDataType.BYTE' Boolean
+        ['AdsDataType.BYTE' BOOL
             [array bit 'value' count '8']
         ]
-        ['AdsDataType.BITARR8' Boolean
+        ['AdsDataType.BITARR8' BOOL
             [array bit 'value' count '8']
         ]
         // 2 byte (16 bit)
-        ['AdsDataType.WORD' Boolean
+        ['AdsDataType.WORD' BOOL
             [array bit 'value' count '16']
         ]
-        ['AdsDataType.BITARR16' Boolean
+        ['AdsDataType.BITARR16' BOOL
             [array bit 'value' count '16']
         ]
         // 4 byte (32 bit)
-        ['AdsDataType.DWORD' Boolean
+        ['AdsDataType.DWORD' BOOL
             [array bit 'value' count '32']
         ]
-        ['AdsDataType.BITARR32' Boolean
+        ['AdsDataType.BITARR32' BOOL
             [array bit 'value' count '32']
         ]
 
@@ -433,71 +433,71 @@
         // Integers
         // -----------------------------------------
         // 8 bit:
-        ['AdsDataType.SINT' Integer
+        ['AdsDataType.SINT' SINT
             [simple int 8 'value']
         ]
-        ['AdsDataType.INT8' Integer
+        ['AdsDataType.INT8' SINT
             [simple int 8 'value']
         ]
-        ['AdsDataType.USINT' Integer
+        ['AdsDataType.USINT' USINT
             [simple uint 8 'value']
         ]
-        ['AdsDataType.UINT8' Integer
+        ['AdsDataType.UINT8' USINT
             [simple uint 8 'value']
         ]
         // 16 bit:
-        ['AdsDataType.INT' Integer
+        ['AdsDataType.INT' INT
             [simple int 16 'value']
         ]
-        ['AdsDataType.INT16' Integer
+        ['AdsDataType.INT16' INT
             [simple int 16 'value']
         ]
-        ['AdsDataType.UINT' Integer
+        ['AdsDataType.UINT' UINT
             [simple uint 16 'value']
         ]
-        ['AdsDataType.UINT16' Integer
+        ['AdsDataType.UINT16' UINT
             [simple uint 16 'value']
         ]
         // 32 bit:
-        ['AdsDataType.DINT' Integer
+        ['AdsDataType.DINT' DINT
             [simple int 32 'value']
         ]
-        ['AdsDataType.INT32' Integer
+        ['AdsDataType.INT32' DINT
             [simple int 32 'value']
         ]
-        ['AdsDataType.UDINT' Long
+        ['AdsDataType.UDINT' UDINT
             [simple uint 32 'value']
         ]
-        ['AdsDataType.UINT32' Long
+        ['AdsDataType.UINT32' UDINT
             [simple uint 32 'value']
         ]
         // 64 bit:
-        ['AdsDataType.LINT' Long
+        ['AdsDataType.LINT' LINT
             [simple int 64 'value']
         ]
-        ['AdsDataType.INT64' Long
+        ['AdsDataType.INT64' LINT
             [simple int 64 'value']
         ]
-        ['AdsDataType.ULINT' BigInteger
+        ['AdsDataType.ULINT' ULINT
             [simple uint 64 'value']
         ]
-        ['AdsDataType.UINT64' BigInteger
+        ['AdsDataType.UINT64' ULINT
             [simple uint 64 'value']
         ]
 
         // -----------------------------------------
         // Floating point values
         // -----------------------------------------
-        ['AdsDataType.REAL' Float
+        ['AdsDataType.REAL' REAL
             [simple float 8.23  'value']
         ]
-        ['AdsDataType.FLOAT' Float
+        ['AdsDataType.FLOAT' REAL
             [simple float 8.23  'value']
         ]
-        ['AdsDataType.LREAL' Double
+        ['AdsDataType.LREAL' LREAL
             [simple float 11.52 'value']
         ]
-        ['AdsDataType.DOUBLE' Double
+        ['AdsDataType.DOUBLE' LREAL
             [simple float 11.52 'value']
         ]
 

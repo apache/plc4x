@@ -25,12 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
-import org.apache.plc4x.java.api.value.*;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcWCHAR extends PlcIECValue<Integer> {
@@ -52,7 +48,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
 
     public PlcWCHAR(Character value) {
         super();
-        Integer val = (int) value;
+        int val = (int) value;
         if ((val >= minValue) && (val <= maxValue)) {
             this.value = val;
             this.isNullable = false;
@@ -66,7 +62,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(Short value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new IllegalArgumentException("Value of type " + value + " is out of range " + minValue + " - " + maxValue + " for a PLCWCHAR Value");
@@ -86,7 +82,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(Long value) {
         super();
         if ((value >= minValue) && (value <= maxValue)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -98,7 +94,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(Float value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -110,7 +106,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(Double value) {
         super();
         if ((value >= minValue) && (value <= maxValue) && (value % 1 == 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = false;
         } else {
             throw new PlcInvalidFieldException("Value of type " + value +
@@ -122,7 +118,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(BigInteger value) {
         super();
         if ((value.compareTo(BigInteger.valueOf(minValue)) >= 0) && (value.compareTo(BigInteger.valueOf(maxValue)) <= 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -134,7 +130,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(BigDecimal value) {
         super();
         if ((value.compareTo(BigDecimal.valueOf(minValue)) >= 0) && (value.compareTo(BigDecimal.valueOf(maxValue)) <= 0) && (value.scale() <= 0)) {
-            this.value = (Integer) value.intValue();
+            this.value = value.intValue();
             this.isNullable = true;
         } else {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -146,7 +142,7 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     public PlcWCHAR(String value) {
         super();
         try {
-            Integer val = Integer.parseInt(value);
+            int val = Integer.parseInt(value);
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = val;
                 this.isNullable = false;
@@ -182,21 +178,23 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
         return value;
     }
 
+    @JsonIgnore
     public int getWCHAR() {
         return value;
     }
 
     @Override
     public Object getObject() {
-        return Character.toString(Character.valueOf((char) ((int) value)));
+        return Character.toString((char) ((int) value));
     }
 
     @Override
     @JsonIgnore
     public String toString() {
-        return Character.toString(Character.valueOf((char) ((int) value)));
+        return Character.toString((char) ((int) value));
     }
 
+    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[2];
         bytes[0] = (byte)((value >> 8) & 0xff);

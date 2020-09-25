@@ -125,17 +125,17 @@ public class Datapoint {
         values.put("keyName", (keyName == null) ? null : new PlcString(keyName));
         values.put("objectName", (objectName == null) ? null : new PlcString(objectName));
         values.put("description", (description == null) ? null : new PlcString(description));
-        values.put("defaultValue", (defaultValue == null) ? null : new PlcDouble(defaultValue));
-        values.put("minValue", (minValue == null) ? null : new PlcDouble(minValue));
-        values.put("maxValue", (maxValue == null) ? null : new PlcDouble(maxValue));
-        values.put("commandable", (commandable == null) ? null : new PlcBoolean(commandable));
-        values.put("supportsCov", (supportsCov == null) ? null : new PlcBoolean(supportsCov));
-        values.put("hiLimit", (hiLimit == null) ? null : new PlcDouble(hiLimit));
-        values.put("lowLimit", (lowLimit == null) ? null : new PlcDouble(lowLimit));
+        values.put("defaultValue", (defaultValue == null) ? null : new PlcLREAL(defaultValue));
+        values.put("minValue", (minValue == null) ? null : new PlcLREAL(minValue));
+        values.put("maxValue", (maxValue == null) ? null : new PlcLREAL(maxValue));
+        values.put("commandable", (commandable == null) ? null : new PlcBOOL(commandable));
+        values.put("supportsCov", (supportsCov == null) ? null : new PlcBOOL(supportsCov));
+        values.put("hiLimit", (hiLimit == null) ? null : new PlcLREAL(hiLimit));
+        values.put("lowLimit", (lowLimit == null) ? null : new PlcLREAL(lowLimit));
         values.put("stateTextReference", (stateTextReference == null) ? null : new PlcString(stateTextReference));
-        values.put("unitCode", (unitCode == null) ? null : new PlcInteger(unitCode));
-        values.put("vendorSpecificAddress", (vendorSpecificAddress == null) ? null : new PlcInteger(vendorSpecificAddress));
-        values.put("notificationClass", (notificationClass == null) ? null : new PlcInteger(notificationClass));
+        values.put("unitCode", (unitCode == null) ? null : new PlcDINT(unitCode));
+        values.put("vendorSpecificAddress", (vendorSpecificAddress == null) ? null : new PlcDINT(vendorSpecificAddress));
+        values.put("notificationClass", (notificationClass == null) ? null : new PlcDINT(notificationClass));
         return values;
     }
 
