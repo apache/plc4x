@@ -36,7 +36,7 @@ import java.util.List;
 public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
-    public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
+    public PlcField createField(String fieldQuery) {
         if (ModbusFieldDiscreteInput.matches(fieldQuery)) {
             return ModbusFieldDiscreteInput.of(fieldQuery);
         } else if (ModbusFieldHoldingRegister.matches(fieldQuery)) {

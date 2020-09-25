@@ -22,13 +22,8 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.modbus.readwrite.types.*;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.lang.*;
 
 public abstract class ModbusField implements PlcField {
 
@@ -43,7 +38,7 @@ public abstract class ModbusField implements PlcField {
 
     private final String dataType;
 
-    public static ModbusField of(String addressString) throws PlcInvalidFieldException {
+    public static ModbusField of(String addressString) {
         if(ModbusFieldCoil.matches(addressString)) {
             return ModbusFieldCoil.of(addressString);
         }
@@ -84,7 +79,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getLengthBytes() {
-        return (int) (quantity * ModbusDataType.valueOf(dataType).getDataTypeSize());
+        return quantity * ModbusDataType.valueOf(dataType).getDataTypeSize();
     }
 
     public int getLengthWords() {
@@ -96,7 +91,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getDataTypeSize() {
-        return (int) ModbusDataType.valueOf(dataType).getDataTypeSize();
+        return ModbusDataType.valueOf(dataType).getDataTypeSize();
     }
 
     @Override

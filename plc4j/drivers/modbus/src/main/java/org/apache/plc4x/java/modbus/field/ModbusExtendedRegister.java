@@ -41,7 +41,7 @@ public class ModbusExtendedRegister extends ModbusField {
             ADDRESS_SHORT_PATTERN.matcher(addressString).matches();
     }
 
-    public static Matcher getMatcher(String addressString) throws PlcInvalidFieldException {
+    public static Matcher getMatcher(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (matcher.matches()) {
           return matcher;
@@ -66,7 +66,7 @@ public class ModbusExtendedRegister extends ModbusField {
         }
 
         String quantityString = matcher.group("quantity");
-        Integer quantity = quantityString != null ? Integer.valueOf(quantityString) : 1;
+        int quantity = quantityString != null ? Integer.parseInt(quantityString) : 1;
         if ((address + quantity) > REGISTER_MAXADDRESS) {
             throw new IllegalArgumentException("Last requested address is out of range, should be between 0 and " + REGISTER_MAXADDRESS + ". Was " + (address + (quantity - 1)));
         }
