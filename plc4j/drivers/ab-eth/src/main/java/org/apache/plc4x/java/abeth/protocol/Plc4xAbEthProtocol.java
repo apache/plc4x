@@ -179,7 +179,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if(data.length == 1) {
-                                    plcValue = new PlcInteger(data[0]);
+                                    plcValue = new PlcINT(data[0]);
                                 } else {
                                     plcValue = new PlcList(Arrays.asList(data));
                                 }
@@ -243,7 +243,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
 
     private PlcValue decodeReadResponseUnsignedBytePlcValue(AbEthField field, ByteBuf data) {
         Short[] shorts = null;//readAllValues(Short.class, field, i -> data.readUnsignedByte());
-        return new PlcInteger(1/*shorts*/);
+        return new PlcSINT(1/*shorts*/);
     }
 
 }

@@ -140,9 +140,9 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
 
                             // Initialize an enriched version of the PlcStruct.
                             final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
-                            enrichedPlcValue.put("deviceIdentifier", new PlcLong(deviceIdentifier));
-                            enrichedPlcValue.put("objectType", new PlcInteger(objectType));
-                            enrichedPlcValue.put("objectInstance", new PlcLong(objectInstance));
+                            enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
+                            enrichedPlcValue.put("objectType", new PlcDINT(objectType));
+                            enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
                             enrichedPlcValue.put("address", new PlcString(toString(curField)));
                             // Add all of the existing attributes.
                             enrichedPlcValue.putAll(plcValue.getStruct());

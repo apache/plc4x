@@ -152,7 +152,27 @@ public class ReadBuffer {
     }
 
     public BigInteger readUnsignedBigInteger(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        //Support specific case where value less than 64 bits and big endian.
+        if (bitLength <= 0) {
+            throw new ParseException("unsigned long must contain at least 1 bit");
+        }
+        if (bitLength > 64) {
+            throw new ParseException("unsigned long can only contain max 64 bits");
+        }
+        try {
+            Long val = bi.readLong(false, bitLength);
+            if (littleEndian) {
+                throw new UnsupportedOperationException("not implemented yet");
+            }
+            if (val >= 0) {
+                return BigInteger.valueOf(val);
+            } else {
+                BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
+                return BigInteger.valueOf(val).add(constant);
+            }
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public byte readByte(int bitLength) throws ParseException {
@@ -250,10 +270,10 @@ public class ReadBuffer {
                 }
             } else if (bitLength == 32) {
                 byte[] buffer = new byte[4];
-                buffer[0] = bi.readByte(true, 8);
-                buffer[1] = bi.readByte(true, 8);
-                buffer[2] = bi.readByte(true, 8);
-                buffer[3] = bi.readByte(true, 8);
+                buffer[0] = bi.readByte(false, 8);
+                buffer[1] = bi.readByte(false, 8);
+                buffer[2] = bi.readByte(false, 8);
+                buffer[3] = bi.readByte(false, 8);
                 return Float.intBitsToFloat((buffer[0] & 0xff) ^ buffer[1] << 8 ^ buffer[2] << 16 ^ buffer[3] << 24);
             } else {
                 throw new UnsupportedOperationException("unsupported bit length (only 16 and 32 supported)");
@@ -280,7 +300,7 @@ public class ReadBuffer {
                 throw new PlcRuntimeException(e);
             }
         }
-        return new String(strBytes, Charset.forName(encoding));
+        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
     }
 
 }

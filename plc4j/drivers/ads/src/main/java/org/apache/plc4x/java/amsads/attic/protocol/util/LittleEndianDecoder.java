@@ -53,7 +53,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte != 0);
                 }
                 if(values.size() == 1) {
-                    return new PlcBoolean(values.get(0));
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -65,7 +65,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte != 0);
                 }
                 if(values.size() == 1) {
-                    return new PlcBoolean(values.get(0));
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -77,7 +77,8 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -89,7 +90,8 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -101,7 +103,8 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -113,7 +116,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcSINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -125,7 +128,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -137,7 +140,7 @@ public class LittleEndianDecoder {
                     values.offer(intLE);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcDINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -149,7 +152,7 @@ public class LittleEndianDecoder {
                     values.offer(longLE);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    return new PlcLINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -161,7 +164,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcUSINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -173,7 +176,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcUINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -185,7 +188,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    return new PlcUDINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -201,7 +204,7 @@ public class LittleEndianDecoder {
                     values.offer(bigInteger);
                 }
                 if(values.size() == 1) {
-                    return new PlcBigInteger(values.get(0));
+                    return new PlcULINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -215,7 +218,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcFloat(values.get(0));
+                    return new PlcREAL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -229,7 +232,7 @@ public class LittleEndianDecoder {
                     values.offer(aLong);
                 }
                 if(values.size() == 1) {
-                    return new PlcDouble(values.get(0));
+                    return new PlcLREAL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -241,7 +244,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte != 0);
                 }
                 if(values.size() == 1) {
-                    return new PlcBoolean(values.get(0));
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -253,7 +256,8 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -265,7 +269,8 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -277,7 +282,8 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    // TODO: Double-Check this ...
+                    return new PlcBOOL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -289,7 +295,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcSINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -301,7 +307,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcUSINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -313,7 +319,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -325,7 +331,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcUINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -337,7 +343,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcInteger(values.get(0));
+                    return new PlcDINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -349,7 +355,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    return new PlcUDINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -361,7 +367,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcLong(values.get(0));
+                    return new PlcLINT(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -375,7 +381,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcFloat(values.get(0));
+                    return new PlcREAL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }
@@ -389,7 +395,7 @@ public class LittleEndianDecoder {
                     values.offer(aByte);
                 }
                 if(values.size() == 1) {
-                    return new PlcDouble(values.get(0));
+                    return new PlcLREAL(values.get(0));
                 } else {
                     return new PlcList(values);
                 }

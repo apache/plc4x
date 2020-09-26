@@ -26,10 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcInteger;
-import org.apache.plc4x.java.api.value.PlcList;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -99,7 +96,11 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                 abEthField.getElementNumber(), (short) 0); // Subelementnumber default to zero
 
             final int transactionCounter = transactionCounterGenerator.incrementAndGet();
-            // origin/sender: constant = 5
+            // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+            if(transactionCounterGenerator.get() == 0xFFFF) {
+                transactionCounterGenerator.set(1);
+            }
+// origin/sender: constant = 5
             DF1RequestMessage requestMessage = new DF1CommandRequestMessage(
                 (short) configuration.getStation(), (short) 5, (short) 0,
                 transactionCounter, logicalRead);
@@ -154,7 +155,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if(data.length == 1) {
-                                    plcValue = new PlcInteger(data[0]);
+                                    plcValue = new PlcINT(data[0]);
                                 } else {
                                     plcValue = new PlcList(Arrays.asList(data));
                                 }

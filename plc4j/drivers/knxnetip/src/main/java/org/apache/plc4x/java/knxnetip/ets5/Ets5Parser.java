@@ -92,7 +92,24 @@ public class Ets5Parser {
                 }
                 Document projectDoc = builder.parse(zipFile.getInputStream(projectFile));
 
-                final Map<String, Function> groupAddressRefs = new HashMap();
+                final Map<String, String> topologyNames = new HashMap<>();
+                final XPathExpression topology = xPath.compile("//Topology");
+                final Element topologyElement = (Element) topology.evaluate(projectDoc, XPathConstants.NODE);
+                final NodeList areas = topologyElement.getElementsByTagName("Area");
+                for (int a = 0; a < areas.getLength(); a++) {
+                    final Element areaNode = (Element) areas.item(a);
+                    final String curAreaAddress = areaNode.getAttribute("Address");
+                    topologyNames.put(curAreaAddress, areaNode.getAttribute("Name"));
+
+                    final NodeList lines = areaNode.getElementsByTagName("Line");
+                    for(int l = 0; l < lines.getLength(); l++) {
+                        final Element lineNode = (Element) lines.item(l);
+                        final String curLineAddress = curAreaAddress + "/" + lineNode.getAttribute("Address");
+                        topologyNames.put(curLineAddress, lineNode.getAttribute("Name"));
+                    }
+                }
+
+                final Map<String, Function> groupAddressRefs = new HashMap<>();
                 final XPathExpression xpathGroupAddressRef = xPath.compile("//GroupAddressRef");
                 NodeList groupAddressRefNodes = (NodeList) xpathGroupAddressRef.evaluate(projectDoc, XPathConstants.NODESET);
                 for (int i = 0; i < groupAddressRefNodes.getLength(); i++) {
@@ -129,7 +146,7 @@ public class Ets5Parser {
                     GroupAddress groupAddress = new GroupAddress(knxGroupAddress, name, addressType, function);
                     groupAddresses.put(knxGroupAddress, groupAddress);
                 }
-                return new Ets5Model(groupAddressStyleCode, groupAddresses);
+                return new Ets5Model(groupAddressStyleCode, groupAddresses, topologyNames);
             }
         } catch (IOException e) {
             // Zip and Xml Stuff

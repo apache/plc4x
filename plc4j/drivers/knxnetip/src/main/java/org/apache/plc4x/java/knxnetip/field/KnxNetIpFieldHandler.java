@@ -20,7 +20,6 @@ package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcBoolean;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;

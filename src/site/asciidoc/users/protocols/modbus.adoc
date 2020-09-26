@@ -74,43 +74,133 @@
 
 === Individual Resource Address Format
 
-In contrast to most other protocols Modbus only supports two datatypes.
 
-- Bit (Coil)
-- Short (2-bytes) (Registers)
 
-Some implementations implement more types based on these, such as 16 bit half-precision floating point types wrapped in a Register or joining multiple Coils or Registers to bigger data-types, but this is not handled by the Modbus specification.
+==== General Format
 
-Coils and Registers are generally separated into pure inputs which are read-only and writable versions.
+In general all Modbus addresses have this format:
 
-Inputs (Read-Only):
+----
+{memory-Area}{start-address}:{data-type}[{array-size}]
+----
 
-- Discrete Input (Boolean / 1 bit)
-- Input Register (Short / 16 bit)
+If the array-size part is omitted, the size-default of `1` is assumed.
+If the data-type part is omitted, it defaults to BOOL for Coils and Discrete Inputs and INT for input, holding and extended registers.
 
-Output (Read/Write):
+==== Memory Areas
 
-- Coil (Boolean / 1 bit)
-- Holding Register (Short / 16 bit)
+There are a number of memory areas defined in the Modbus specification.
 
-Extended Registers (6x) - Function Code 20 - (Short / 16 bit)
+- Discrete Input Area
+- Coil Area
+- Input Register Area
+- Holding Register
+- Extended Register Area
 
-These are able to be referenced as a continuous data area 600000 - 699999. Internally this is converted to the file number/register format. File number 1 corresponds to the first 10000 registers (600000 - 609999), file number 2 the next 10000 (610000 - 619999) and so on.
-
-Note unlike the other areas this area starts at address 0.
-
-At the moment this implementation only supports reading the extended memory area.
-
-Here come the syntax descriptions of these addresses (Each address can reference either a single item or an array):
-
-[cols="2,2a,5,1"]
+[cols="2,2a,5,1,2,1"]
 |===
-|Name |Address Syntax |Description |Bit-Size
+|Name |Memory Area Aliases |Description |Bit-Size | Permissions | Starting Address
 
-|Discrete Input   |`discrete-input:{start-address}` or `discrete-input:{start-address}[{count}]` or `1{start-address}` or `1{start-address}[{count}]` or `1x{start-address}` or `1x{start-address}[{count}]`   |Read-only Boolean input value, usually representing a binary input to the PLC |1
-|Input Register   |`input-register:{start-address}` or `input-register:{start-address}[{count}]` or `3{start-address}` or `3{start-address}[{count}]` or `3x{start-address}` or `3x{start-address}[{count}]`   |Read-only Short input value, usually representing an analog input to the PLC  |16
-|Coil             |`coil:{start-address}` or `coil:{start-address}[{count}]` or `0{start-address}` or `0{start-address}[{count}]` or `0x{start-address}` or `0x{start-address}[{count}]`             |Read/Write Boolean value, usually representing a binary output from the PLC   |1
-|Holding Register |`holding-register:{start-address}` or `holding-register:{start-address}[{count}]` or `4{start-address}` or `4{start-address}[{count}]` or `4x{start-address}` or `4x{start-address}[{count}]` |Read/Write Short value, usually representing an analog output from the PLC    |16
-|Extended Register |`extended-register:{start-address}` or `extended-register:{start-address}[{count}]` or `6{start-address}` or `6{start-address}[{count}]` or `6x{start-address}` or `6x{start-address}[{count}]` |Read/Write Short value,    |16
+|Discrete Input   |`discrete-input:` or `1` or `1x`   |Boolean input value, usually representing a binary input to the PLC |1 |Read Only|1
+|Coil             |`coil:` or `0` or `0x`             |Boolean value, usually representing a binary output from the PLC   |1 |Read/Write|1
+|Input Register   |`input-register:` or `3` or `3x`   |Short input value, usually representing an analog input to the PLC  |16 |Read Only|1
+|Holding Register |`holding-register:` or `4` or `4x` |Short value, usually representing an analog output from the PLC    |16 |Read/Write|1
+|Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read/Write|0
 
 |===
+
+Initially the Modbus format allowed up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
+Later on, this was expanded to allow up 65536 address within each memory area (except the extended register area).
+When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified.
+When using the shorter versions there are two formats available  i.e. 30001 and 300001.
+With the shorter format 3XXXX being limited to between 30001 and 39999, while the longer format 3XXXXX being limited to between 300001 and 365535.
+These memory areas all start at address 1.
+
+For the extended register area the addresses 0-99999 are able to be specified. These registers are mapped to file records with a length of 10000. Address 600000 corresponds to the first address in file record 0.
+Address 610000 is then the first address in the second file record and so on. It is noted that there is generally only 10 file records (600000 thru to 699999) however the spec allows for 65536 file records.
+Using the extended-register: format you are able to reference all of these, if the shorter format is used then it is limited to 699999.
+This memory area starts at address 0.
+
+==== Data Types
+
+The following data types are supported
+
+- BOOL (boolean)
+- SINT (int 8)
+- USINT (uint 8)
+- BYTE (uint 8)
+- INT (int 16)
+- UINT (uint 16)
+- WORD (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- DWORD (uint 32)
+- LINT (int 64)
+- ULINT (uint 64)
+- LWORD (uint 64)
+- REAL (float)
+- LREAL (double)
+- CHAR (char)
+- WCHAR (2 byte char)
+
+This may have partial support but more testing is required.
+- STRING (char[]) - When reading returns an unsigned byte array.
+- WSTRING (2 byte char[]) - When reading returns an unsigned word array.
+
+==== Some useful tips
+
+Most memory areas start at address 1, except for the extended register area which starts at 0. These are both mapped to 0x0000 when it is sent in the Modbus protocol.
+
+The input, holding and extended registers consist of 16-bit registers while the discrete input and coil areas consist of bits.
+
+The following Modbus function codes are supported:-
+
+- 0x01 (Read Coils)
+- 0x02 (Read Discrete Inputs)
+- 0x03 (Read Holding Registers)
+- 0x04 (Read Input Registers)
+- 0x05 (Write Single Coil)
+- 0x06 (Write Single Register)
+- 0x0F (Write Multiple Coils)
+- 0x10 (Write Multiple Registers)
+- 0x14 (Read File Record)(Extended Register Read)
+- 0x15 (Write File Record)(Extended Register Write)
+
+==== Examples
+
+To read 10 holding registers starting at address 20 and parse as Unsigned Integers the following examples are all valid.
+
+- holding-register:20:UINT[10]
+- 400020:UINT[10]
+- 4x00020:UINT[10]
+- 40020:UINT[10]
+- 4x0020:UINT[10]
+
+To read 1 holding register at address 5678 the following examples are valid.
+
+- holding-register:5678
+- 405678
+- 4x05678
+- 45678
+- 4x5678
+
+To read 10 extended registers starting at address 50 the following examples are valid.
+
+- extended-register:50[10]
+- 600050[10]
+- 6x00050[10]
+- 60050[10]
+- 6x0050[10]
+
+This corresponds to addresses 50-59 in file record 1.
+
+To read 10 extended registers starting at address 9995 the following examples are valid.
+
+- extended-register:9995[10]
+- 609995[10]
+- 6x09995[10]
+- 69995[10]
+- 6x9995[10]
+
+This corresponds to addresses 9995-9999 in file record 1 and addresses 0-5 in file record 2.
+Note that this request is split into 2 sub requests in the Modbus protocol.

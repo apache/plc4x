@@ -47,7 +47,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Boolean.class) {
             if(values.length == 1) {
-                return new PlcBoolean((Boolean) values[0]);
+                return new PlcBOOL((Boolean) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -60,7 +60,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Byte.class) {
             if(values.length == 1) {
-                return new PlcInteger((Byte) values[0]);
+                return new PlcSINT((Byte) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -73,7 +73,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Short.class) {
             if(values.length == 1) {
-                return new PlcInteger((Short) values[0]);
+                return new PlcINT((Short) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -86,7 +86,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Integer.class) {
             if(values.length == 1) {
-                return new PlcInteger((Integer) values[0]);
+                return new PlcDINT((Integer) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -112,7 +112,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Long.class) {
             if(values.length == 1) {
-                return new PlcLong((Long) values[0]);
+                return new PlcLINT((Long) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -125,7 +125,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Float.class) {
             if(values.length == 1) {
-                return new PlcFloat((Float) values[0]);
+                return new PlcREAL((Float) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }
@@ -151,7 +151,7 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == Double.class) {
             if(values.length == 1) {
-                return new PlcDouble((Double) values[0]);
+                return new PlcLREAL((Double) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }

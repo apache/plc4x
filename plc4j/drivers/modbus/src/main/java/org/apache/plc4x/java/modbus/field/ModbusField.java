@@ -20,22 +20,25 @@ package org.apache.plc4x.java.modbus.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.modbus.readwrite.types.*;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ModbusField implements PlcField {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(\\[(?<quantity>\\d+)])?");
-    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})(\\[(?<quantity>\\d+)])?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>\\d+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
+    public static final Pattern FIXED_DIGIT_MODBUS_PATTERN = Pattern.compile("(?<address>\\d{4,5})?(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
+
     protected static final int PROTOCOL_ADDRESS_OFFSET = 1;
 
     private final int address;
 
     private final int quantity;
 
-    public static ModbusField of(String addressString) throws PlcInvalidFieldException {
+    private final String dataType;
+
+    public static ModbusField of(String addressString) {
         if(ModbusFieldCoil.matches(addressString)) {
             return ModbusFieldCoil.of(addressString);
         }
@@ -54,7 +57,7 @@ public abstract class ModbusField implements PlcField {
         throw new PlcInvalidFieldException("Unable to parse address: " + addressString);
     }
 
-    protected ModbusField(int address, Integer quantity) {
+    protected ModbusField(int address, Integer quantity, String dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
             throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
@@ -63,6 +66,8 @@ public abstract class ModbusField implements PlcField {
         if (this.quantity <= 0) {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
         }
+        this.dataType = dataType != null ? dataType : "INT";
+        ModbusDataType.valueOf(this.dataType);
     }
 
     public int getAddress() {
@@ -71,6 +76,22 @@ public abstract class ModbusField implements PlcField {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getLengthBytes() {
+        return quantity * ModbusDataType.valueOf(dataType).getDataTypeSize();
+    }
+
+    public int getLengthWords() {
+        return (int) (quantity * ((float) ModbusDataType.valueOf(dataType).getDataTypeSize())/2.0f);
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public int getDataTypeSize() {
+        return ModbusDataType.valueOf(dataType).getDataTypeSize();
     }
 
     @Override
@@ -94,6 +115,7 @@ public abstract class ModbusField implements PlcField {
     public String toString() {
         return "ModbusField{" +
             "address=" + address +
+            "datatype=" + dataType +
             "quantity=" + quantity +
             '}';
     }

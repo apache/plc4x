@@ -20,10 +20,7 @@ package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcBoolean;
-import org.apache.plc4x.java.api.value.PlcList;
-import org.apache.plc4x.java.api.value.PlcShort;
-import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
 import java.util.ArrayList;
@@ -82,7 +79,7 @@ public class FirmataFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBoolean(booleanValues.get(0));
+            return new PlcBOOL(booleanValues.get(0));
         } else {
             return new PlcList(booleanValues);
         }
@@ -101,16 +98,16 @@ public class FirmataFieldHandler extends DefaultPlcFieldHandler {
             if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
                 throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
             }
-            return new PlcShort(numberValue.shortValue());
+            return new PlcINT(numberValue.shortValue());
         } else {
-            List<PlcShort> shorts = new ArrayList<>(values.length);
+            List<PlcINT> shorts = new ArrayList<>(values.length);
             for (Object value : values) {
                 Number numberValue = (Number) value;
                 // Intentionally checking the next larger type.
                 if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
                     throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
                 }
-                shorts.add(new PlcShort(((Number) value).shortValue()));
+                shorts.add(new PlcINT(((Number) value).shortValue()));
             }
             return new PlcList(shorts);
         }

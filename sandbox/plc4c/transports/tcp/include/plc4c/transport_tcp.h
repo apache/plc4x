@@ -24,6 +24,14 @@ extern "C" {
 
 #include <plc4c/types.h>
 
+struct plc4c_transport_tcp_config {
+  char* address;
+  uint16_t port;
+
+  int sockfd;
+};
+typedef struct plc4c_transport_tcp_config plc4c_transport_tcp_config;
+
 plc4c_transport *plc4c_transport_tcp_create();
 
 #ifdef __cplusplus

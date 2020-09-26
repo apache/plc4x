@@ -140,7 +140,7 @@
           </request>
           <hurz>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcInteger">
+            <value className="org.apache.plc4x.java.api.value.PlcDINT">
               <object>369229824</object>
             </value>
           </hurz>

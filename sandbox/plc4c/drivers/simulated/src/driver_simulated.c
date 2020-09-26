@@ -63,7 +63,7 @@ plc4c_return_code plc4c_driver_simulated_connect_machine_function(
     return INTERNAL_ERROR;
   }
   if (plc4c_connection_get_connected(connection)) {
-    return INTERNAL_ERROR;
+    return ALREADY_CONNECTED;
   }
   plc4c_connection_set_connected(connection, true);
   task->completed = true;
@@ -133,7 +133,7 @@ plc4c_return_code plc4c_driver_simulated_read_machine_function(
          * we can also set a custom printf method
          * right , now just create a new random value
          */
-        value_item->value = plc4c_data_create_uint_data(rand());
+        value_item->value = plc4c_data_create_uint32_t_data(rand());
 
         // Add the value to the response.
         plc4c_utils_list_insert_tail_value(read_response->items, value_item);
@@ -369,7 +369,8 @@ plc4c_return_code plc4c_driver_simulated_write_function(
   return OK;
 }
 
-void free_read_response_item(plc4c_list_element *read_item_element) {
+void plc4c_driver_simulated_free_read_response_item(
+    plc4c_list_element *read_item_element) {
   plc4c_response_value_item *value_item =
       (plc4c_response_value_item *)read_item_element->value;
   plc4c_data_destroy(value_item->value);
@@ -378,10 +379,12 @@ void free_read_response_item(plc4c_list_element *read_item_element) {
 
 void plc4c_driver_simulated_free_read_response(plc4c_read_response *response) {
   // the request will be cleaned up elsewhere
-  plc4c_utils_list_delete_elements(response->items, &free_read_response_item);
+  plc4c_utils_list_delete_elements(response->items,
+                                   &plc4c_driver_simulated_free_read_response_item);
 }
 
-void free_write_response_item(plc4c_list_element *write_item_element) {
+void plc4c_driver_simulated_free_write_response_item(
+    plc4c_list_element *write_item_element) {
   plc4c_response_value_item *value_item =
       (plc4c_response_value_item *)write_item_element->value;
   // do not delete the plc4c_item
@@ -395,7 +398,7 @@ void plc4c_driver_simulated_free_write_response(
     plc4c_write_response *response) {
   // the request will be cleaned up elsewhere
   plc4c_utils_list_delete_elements(response->response_items,
-                                   &free_write_response_item);
+                                   &plc4c_driver_simulated_free_write_response_item);
 }
 
 plc4c_driver *plc4c_driver_simulated_create() {
