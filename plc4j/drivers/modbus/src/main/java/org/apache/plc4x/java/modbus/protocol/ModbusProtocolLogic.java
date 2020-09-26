@@ -336,51 +336,17 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     }
 
     private byte[] fromPlcValue(PlcValue plcValue) {
-        if(plcValue instanceof PlcList) {
-            PlcList plcList = (PlcList) plcValue;
-            BitSet booleans = null;
-            List<Short> shorts = null;
-            int b = 0;
-            for (PlcValue value : plcList.getList()) {
-                if(value instanceof PlcBoolean) {
-                    if(booleans == null) {
-                        booleans = new BitSet(plcList.getList().size());
-                    }
-                    PlcBoolean plcBoolean = (PlcBoolean) value;
-                    booleans.set(b, plcBoolean.getBoolean());
-                    b++;
-                } else if(value.isShort()) {
-                    if(shorts == null) {
-                        shorts = new ArrayList<>(plcList.getList().size());
-                    }
-                    shorts.add(value.getShort());
-                } else {
-                    throw new PlcRuntimeException("Can only encode boolean or short values");
-                }
-            }
-            if(booleans != null) {
-                return booleans.toByteArray();
-            } else if(shorts != null) {
-                byte[] bytes = new byte[shorts.size() * 2];
-                for(int i = 0; i < shorts.size(); i++) {
-                    Short shortValue = shorts.get(i);
-                    bytes[i * 2] = (byte)((shortValue >> 8) & 0xff);
-                    bytes[(i * 2) + 1] = (byte)(shortValue & 0xff);
-                }
-                return bytes;
-            }
-        } else if(plcValue instanceof PlcBoolean) {
-            PlcBoolean plcBoolean = (PlcBoolean) plcValue;
-            return plcBoolean.getBoolean() ? new byte[] {0x01} : new byte[] {0x00};
-        } else if(plcValue instanceof PlcShort) {
-            PlcShort plcShort = (PlcShort) plcValue;
-            Short shortValue = plcShort.getShort();
-            byte[] bytes = new byte[2];
-            bytes[0] = (byte)((shortValue >> 8) & 0xff);
-            bytes[1] = (byte)(shortValue & 0xff);
-            return bytes;
+        Short fieldDataType = ModbusDataType.valueOf(plcValue.getDataTypeString()).getValue();
+        WriteBuffer buffer;
+        try {
+            if(plcValue instanceof PlcList) {
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) ((PlcList) plcValue).getLength(), false);
+            } else {
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false);
+        } catch (ParseException e) {
+            throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
         }
-        return new byte[0];
+        return buffer.getData();
     }
 
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
