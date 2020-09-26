@@ -132,7 +132,26 @@ public class WriteBuffer {
     }
 
     public void writeUnsignedBigInteger(int bitLength, BigInteger value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        try {
+            switch (bitLength) {
+                case 8:
+                    writeUnsignedByte(bitLength, value.byteValueExact());
+                    break;
+                case 16:
+                    writeUnsignedShort(bitLength, value.shortValueExact());
+                    break;
+                case 32:
+                    writeUnsignedInt(bitLength, value.intValue());
+                    break;
+                case 64:
+                    writeUnsignedLong(bitLength, value.longValue());
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Only 8, 16, 32 or 64 bit");
+            }
+        } catch (ArithmeticException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public void writeByte(int bitLength, byte value) throws ParseException {
@@ -201,7 +220,26 @@ public class WriteBuffer {
     }
 
     public void writeBigInteger(int bitLength, BigInteger value) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        try {
+            switch (bitLength) {
+                case 8:
+                    writeByte(bitLength, value.byteValueExact());
+                    break;
+                case 16:
+                    writeShort(bitLength, value.shortValueExact());
+                    break;
+                case 32:
+                    writeInt(bitLength, value.intValue());
+                    break;
+                case 64:
+                    writeLong(bitLength, value.longValue());
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Only 8, 16, 32 or 64 bit");
+            }
+        } catch (ArithmeticException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public void writeFloat(float value, int bitsExponent, int bitsMantissa) throws ParseException {
