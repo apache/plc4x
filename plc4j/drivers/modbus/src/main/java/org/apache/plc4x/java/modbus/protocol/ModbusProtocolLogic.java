@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -262,11 +263,11 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         if(field instanceof ModbusFieldCoil) {
             ModbusFieldCoil coil = (ModbusFieldCoil) field;
             return new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getQuantity(),
-                fromPlcValue(plcValue));
+                fromPlcValue(field, plcValue));
         } else if(field instanceof ModbusFieldHoldingRegister) {
             ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;
             return new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
-                holdingRegister.getLengthWords(), fromPlcValue(plcValue));
+                holdingRegister.getLengthWords(), fromPlcValue(field, plcValue));
         } else if(field instanceof ModbusExtendedRegister) {
             ModbusExtendedRegister extendedRegister = (ModbusExtendedRegister) field;
             int group1_address = extendedRegister.getAddress() % FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH;
@@ -280,7 +281,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             if ((group1_address + extendedRegister.getLengthWords()) <= FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH) {
               //If request doesn't span file records, use a single group
               group1_quantity = extendedRegister.getLengthWords();
-              ModbusPDUWriteFileRecordRequestItem group1 = new ModbusPDUWriteFileRecordRequestItem((short) 6, group1_file_number, group1_address, fromPlcValue(plcValue));
+              ModbusPDUWriteFileRecordRequestItem group1 = new ModbusPDUWriteFileRecordRequestItem((short) 6, group1_file_number, group1_address, fromPlcValue(field, plcValue));
               itemArray = new ModbusPDUWriteFileRecordRequestItem[] {group1};
             } else {
               //If it doesn span a file record. e.g. 609998[10] request 2 words in first group and 8 in second.
@@ -288,8 +289,8 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
               group2_quantity = extendedRegister.getLengthWords() - group1_quantity;
               group2_file_number = (short) (group1_file_number + 1);
 
-              plcValue1 = ArrayUtils.subarray(fromPlcValue(plcValue), 0, group1_quantity);
-              plcValue2 = ArrayUtils.subarray(fromPlcValue(plcValue), group1_quantity, fromPlcValue(plcValue).length);
+              plcValue1 = ArrayUtils.subarray(fromPlcValue(field, plcValue), 0, group1_quantity);
+              plcValue2 = ArrayUtils.subarray(fromPlcValue(field, plcValue), group1_quantity, fromPlcValue(field, plcValue).length);
               ModbusPDUWriteFileRecordRequestItem group1 = new ModbusPDUWriteFileRecordRequestItem((short) 6, group1_file_number, group1_address, plcValue1);
               ModbusPDUWriteFileRecordRequestItem group2 = new ModbusPDUWriteFileRecordRequestItem((short) 6, group2_file_number, group2_address, plcValue2);
               itemArray = new ModbusPDUWriteFileRecordRequestItem[] {group1, group2};
@@ -365,18 +366,20 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         return null;
     }
 
-    private byte[] fromPlcValue(PlcValue plcValue) {
-        Short fieldDataType = ModbusDataType.valueOf(plcValue.getDataTypeString()).getValue();
-        WriteBuffer buffer;
+    private byte[] fromPlcValue(PlcField field, PlcValue plcValue) {
+        Short fieldDataType = ModbusDataType.valueOf(((ModbusField) field).getDataType()).getValue();
         try {
+            WriteBuffer buffer;
             if(plcValue instanceof PlcList) {
                 buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) ((PlcList) plcValue).getLength(), false);
             } else {
                 buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false);
+            }
+            return buffer.getData();
         } catch (ParseException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
         }
-        return buffer.getData();
+
     }
 
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
