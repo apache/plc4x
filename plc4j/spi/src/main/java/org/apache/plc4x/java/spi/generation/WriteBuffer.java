@@ -144,7 +144,21 @@ public class WriteBuffer {
                     writeUnsignedInt(bitLength, value.intValue());
                     break;
                 case 64:
-                    writeUnsignedLong(bitLength, value.longValue());
+                    if(littleEndian) {
+                        if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                            writeLong(32, value.longValue());
+                            writeLong(32, value.shiftRight(32).longValue());
+                        } else {
+                            writeLong(bitLength, value.longValue());
+                        }
+                    } else {
+                        if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                            writeLong(32, value.shiftRight(32).longValue());
+                            writeLong(32, value.longValue());                            
+                        } else {
+                            writeLong(bitLength, value.longValue());
+                        }
+                    }
                     break;
                 default:
                     throw new UnsupportedOperationException("Only 8, 16, 32 or 64 bit");
