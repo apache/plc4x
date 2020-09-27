@@ -118,8 +118,8 @@ public class WriteBuffer {
         if(bitLength <= 0) {
             throw new ParseException("unsigned long must contain at least 1 bit");
         }
-        if(bitLength > 32) {
-            throw new ParseException("unsigned long can only contain max 32 bits");
+        if(bitLength > 63) {
+            throw new ParseException("unsigned long can only contain max 63 bits");
         }
         try {
             if(littleEndian) {
@@ -133,35 +133,26 @@ public class WriteBuffer {
 
     public void writeUnsignedBigInteger(int bitLength, BigInteger value) throws ParseException {
         try {
-            switch (bitLength) {
-                case 8:
-                    writeUnsignedByte(bitLength, value.byteValueExact());
-                    break;
-                case 16:
-                    writeUnsignedShort(bitLength, value.shortValueExact());
-                    break;
-                case 32:
-                    writeUnsignedInt(bitLength, value.intValue());
-                    break;
-                case 64:
-                    if(littleEndian) {
-                        if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                            writeLong(32, value.longValue());
-                            writeLong(32, value.shiftRight(32).longValue());
-                        } else {
-                            writeLong(bitLength, value.longValue());
-                        }
+            if (bitLength == 64) {
+                if(littleEndian) {
+                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                        writeLong(32, value.longValue());
+                        writeLong(32, value.shiftRight(32).longValue());
                     } else {
-                        if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
-                            writeLong(32, value.shiftRight(32).longValue());
-                            writeLong(32, value.longValue());                            
-                        } else {
-                            writeLong(bitLength, value.longValue());
-                        }
+                        writeLong(bitLength, value.longValue());
                     }
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Only 8, 16, 32 or 64 bit");
+                } else {
+                    if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
+                        writeLong(32, value.shiftRight(32).longValue());
+                        writeLong(32, value.longValue());
+                    } else {
+                        writeLong(bitLength, value.longValue());
+                    }
+                }
+            } else if (bitLength < 64){
+                writeUnsignedLong(bitLength, value.longValue());
+            } else {
+                throw new ParseException("Unsigned Big Integer can only contain max 64 bits");
             }
         } catch (ArithmeticException e) {
             throw new ParseException("Error reading", e);
@@ -235,22 +226,10 @@ public class WriteBuffer {
 
     public void writeBigInteger(int bitLength, BigInteger value) throws ParseException {
         try {
-            switch (bitLength) {
-                case 8:
-                    writeByte(bitLength, value.byteValueExact());
-                    break;
-                case 16:
-                    writeShort(bitLength, value.shortValueExact());
-                    break;
-                case 32:
-                    writeInt(bitLength, value.intValue());
-                    break;
-                case 64:
-                    writeLong(bitLength, value.longValue());
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Only 8, 16, 32 or 64 bit");
+            if(bitLength > 64) {
+                throw new ParseException("Big Integer can only contain max 64 bits");
             }
+            writeLong(bitLength, value.longValue());
         } catch (ArithmeticException e) {
             throw new ParseException("Error reading", e);
         }
