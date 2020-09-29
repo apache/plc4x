@@ -126,6 +126,7 @@ public class PlcValueAdapter implements PlcValue {
      * @return well ... an Integer ... ahem ... int ...
      */
     @Override
+    @JsonIgnore
     public int getInt() {
         return getInteger();
     }
