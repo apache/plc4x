@@ -105,6 +105,11 @@ public class PlcNull implements PlcValue {
     }
 
     @Override
+    public int getInt() {
+        return 0;
+    }
+
+    @Override
     public boolean isLong() {
         return false;
     }

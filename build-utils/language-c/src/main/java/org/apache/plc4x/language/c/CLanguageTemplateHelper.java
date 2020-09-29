@@ -18,7 +18,6 @@ under the License.
 */
 package org.apache.plc4x.language.c;
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.StringType;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;

@@ -357,28 +357,25 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
                 .expectResponse(KNXNetIPMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((tr, e) -> future.completeExceptionally(e))
-                // Technically this is not 100% correct, as actually an Ack would be received
-                // which is instantly followed by this request. However the Ack was always OK
-                // no matter what I threw at the Gateway, so we'll make the code a lot simpler
-                // and assume the Request is the response to our request.
-                .check(tr -> tr instanceof TunnelingRequest)
-                .unwrap(tr -> ((TunnelingRequest) tr))
-                .check(tr -> tr.getCemi() instanceof CEMIDataCon)
-                .check(tr -> (tr.getTunnelingRequestDataBlock().getCommunicationChannelId() == communicationChannelId) &&
-                    (tr.getTunnelingRequestDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter()))
+                .check(tr -> tr instanceof TunnelingResponse)
+                .unwrap(tr -> ((TunnelingResponse) tr))
+                .check(tr -> tr.getTunnelingResponseDataBlock().getCommunicationChannelId() == knxRequest.getTunnelingRequestDataBlock().getCommunicationChannelId())
+                .check(tr -> tr.getTunnelingResponseDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter())
                 .handle(tr -> {
-                    // In this case all wen't well.
-                    PlcResponseCode responseCode = PlcResponseCode.OK;
+                    PlcResponseCode responseCode;
+                    // In this case all went well.
+                    if(tr.getTunnelingResponseDataBlock().getStatus() == Status.NO_ERROR) {
+                        responseCode = PlcResponseCode.OK;
+                    }
+                    // TODO: Should probably differentiate a bit on this and not treat everything as internal error.
+                    else {
+                        responseCode = PlcResponseCode.INTERNAL_ERROR;
+                    }
                     // Prepare the response.
                     PlcWriteResponse response = new DefaultPlcWriteResponse(request,
                         Collections.singletonMap(fieldName, responseCode));
 
                     future.complete(response);
-
-                    // Send Ack back.
-                    TunnelingResponse ack = new TunnelingResponse(new TunnelingResponseDataBlock(communicationChannelId,
-                        tr.getTunnelingRequestDataBlock().getSequenceCounter(), Status.NO_ERROR));
-                    transaction.submit(() -> context.sendToWire(ack));
 
                     // Finish the request-transaction.
                     transaction.endRequest();

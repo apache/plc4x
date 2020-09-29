@@ -74,6 +74,8 @@ public interface PlcValue {
 
     int getInteger();
 
+    int getInt();
+
     boolean isLong();
 
     long getLong();

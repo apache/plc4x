@@ -288,8 +288,7 @@ public class ${type.name}IO {
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${field.name}").get${helper.getLanguageTypeNameForField(field)?cap_first}();
                         <#else>
                             <#if field.name == "value">
-            Plc${case.name} plcVal = (Plc${case.name}) _value;
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) plcVal.get${case.name}();
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(field)?cap_first}();
                             <#else>
                                 <#-- Just for now -->
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForTypeReference(field.type)};
