@@ -31,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -353,6 +354,27 @@ public class PlcValues {
 
     public static PlcValue of(Map<String, PlcValue> map) {
         return new PlcStruct(map);
+    }
+
+    private static PlcValue constructorHelper(Constructor<?> constructor, Object value) {
+        try {
+            return (PlcValue) constructor.newInstance(value);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new PlcIncompatibleDatatypeException(value.getClass());
+        }
+    }
+
+    public static PlcValue of(Object[] values, Class clazz) {
+        try {
+            Constructor<?> constructor = clazz.getDeclaredConstructor(values.getClass());
+            if(values.length == 1) {
+                return ((PlcValue) constructor.newInstance(values[0]));
+            } else {
+                return PlcValues.of(Arrays.stream(values).map(value -> (constructorHelper(constructor, value))).collect(Collectors.toList()));
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new PlcIncompatibleDatatypeException(values[0].getClass());
+        }
     }
 
     public static PlcValue of(Object o) {

@@ -158,7 +158,7 @@ public class ModbusEncodeTest {
         Assertions.assertEquals("[1.1,1000.1,100000.1,1.7E308,-1.7E308,-1.0,1.038475993484E13]", list.toString());
     }
 
-    @Test
+    /*@Test
     public void testEncodeStringSTRING() {
         String[] object = {"Hello Toddy!"};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:STRING");
@@ -174,5 +174,5 @@ public class ModbusEncodeTest {
         ModbusFieldHandler handler = new ModbusFieldHandler();
         PlcList list = (PlcList) handler.encodeString(holdingregister, object);
         Assertions.assertEquals("[H,e,l,l,o, ,T,o,d,d,y,!]", list.toString());
-    }
+    } */
 }

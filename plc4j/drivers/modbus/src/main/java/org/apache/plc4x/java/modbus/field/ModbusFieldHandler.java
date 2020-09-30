@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ModbusFieldHandler extends DefaultPlcFieldHandler {
 
@@ -1691,203 +1693,14 @@ public class ModbusFieldHandler extends DefaultPlcFieldHandler {
     @Override
     public PlcValue encodeString(PlcField field, Object[] values) {
         ModbusField modbusField = (ModbusField) field;
-        switch (modbusField.getDataType()) {
-            case "BOOL":
-                if(values.length == 1) {
-                    return new PlcBOOL((String) values[0]);
-                } else {
-                    List<PlcBOOL> plcBOOLValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcBOOLValues.add(new PlcBOOL((String) values[i]));
-                    }
-                    return new PlcList(plcBOOLValues);
-                }
-            case "BYTE":
-                if(values.length == 1) {
-                    return new PlcBYTE((String) values[0]);
-                } else {
-                    List<PlcBYTE> plcBYTEValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcBYTEValues.add(new PlcBYTE((String) values[i]));
-                    }
-                    return new PlcList(plcBYTEValues);
-                }
-            case "SINT":
-                if(values.length == 1) {
-                    return new PlcSINT((String) values[0]);
-                } else {
-                    List<PlcSINT> plcSINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcSINTValues.add(new PlcSINT((String) values[i]));
-                    }
-                    return new PlcList(plcSINTValues);
-                }
-            case "USINT":
-                if(values.length == 1) {
-                    return new PlcUSINT((String) values[0]);
-                } else {
-                    List<PlcUSINT> plcUSINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcUSINTValues.add(new PlcUSINT((String) values[i]));
-                    }
-                    return new PlcList(plcUSINTValues);
-                }
-            case "INT":
-                if(values.length == 1) {
-                    return new PlcINT((String) values[0]);
-                } else {
-                    List<PlcINT> plcINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcINTValues.add(new PlcINT((String) values[i]));
-                    }
-                    return new PlcList(plcINTValues);
-                }
-            case "UINT":
-                if(values.length == 1) {
-                    return new PlcUINT((String) values[0]);
-                } else {
-                    List<PlcUINT> plcUINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcUINTValues.add(new PlcUINT((String) values[i]));
-                    }
-                    return new PlcList(plcUINTValues);
-                }
-            case "WORD":
-                if(values.length == 1) {
-                    return new PlcWORD((String) values[0]);
-                } else {
-                    List<PlcWORD> plcWORDValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcWORDValues.add(new PlcWORD((String) values[i]));
-                    }
-                    return new PlcList(plcWORDValues);
-                }
-            case "DINT":
-                if(values.length == 1) {
-                    return new PlcDINT((String) values[0]);
-                } else {
-                    List<PlcDINT> plcDINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcDINTValues.add(new PlcDINT((String) values[i]));
-                    }
-                    return new PlcList(plcDINTValues);
-                }
-            case "UDINT":
-                if(values.length == 1) {
-                    return new PlcUDINT((String) values[0]);
-                } else {
-                    List<PlcUDINT> plcUDINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcUDINTValues.add(new PlcUDINT((String) values[i]));
-                    }
-                    return new PlcList(plcUDINTValues);
-                }
-            case "DWORD":
-                if(values.length == 1) {
-                    return new PlcDWORD((String) values[0]);
-                } else {
-                    List<PlcDWORD> plcDWORDValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcDWORDValues.add(new PlcDWORD((String) values[i]));
-                    }
-                    return new PlcList(plcDWORDValues);
-                }
-            case "LINT":
-                if(values.length == 1) {
-                    return new PlcLINT((String) values[0]);
-                } else {
-                    List<PlcLINT> plcLINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcLINTValues.add(new PlcLINT((String) values[i]));
-                    }
-                    return new PlcList(plcLINTValues);
-                }
-            case "ULINT":
-                if(values.length == 1) {
-                    return new PlcULINT((String) values[0]);
-                } else {
-                    List<PlcULINT> plcULINTValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcULINTValues.add(new PlcULINT((String) values[i]));
-                    }
-                    return new PlcList(plcULINTValues);
-                }
-            case "LWORD":
-                if(values.length == 1) {
-                    return new PlcLWORD((String) values[0]);
-                } else {
-                    List<PlcLWORD> plcLWORDValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcLWORDValues.add(new PlcLWORD((String) values[i]));
-                    }
-                    return new PlcList(plcLWORDValues);
-                }
-            case "REAL":
-                if(values.length == 1) {
-                    return new PlcREAL((String) values[0]);
-                } else {
-                    List<PlcREAL> plcREALValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcREALValues.add(new PlcREAL((String) values[i]));
-                    }
-                    return new PlcList(plcREALValues);
-                }
-            case "LREAL":
-                if(values.length == 1) {
-                    return new PlcLREAL((String) values[0]);
-                } else {
-                    List<PlcLREAL> plcLREALValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcLREALValues.add(new PlcLREAL((String) values[i]));
-                    }
-                    return new PlcList(plcLREALValues);
-                }
-            case "CHAR":
-                if(values.length == 1) {
-                    return new PlcCHAR((String) values[0]);
-                } else {
-                    List<PlcCHAR> plcCHARValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcCHARValues.add(new PlcCHAR((String) values[i]));
-                    }
-                    return new PlcList(plcCHARValues);
-                }
-            case "WCHAR":
-                if(values.length == 1) {
-                    return new PlcWCHAR((String) values[0]);
-                } else {
-                    List<PlcWCHAR> plcWCHARValues = new LinkedList<>();
-                    for (int i = 0; i < values.length; i++) {
-                        plcWCHARValues.add(new PlcWCHAR((String) values[i]));
-                    }
-                    return new PlcList(plcWCHARValues);
-                }
-            case "STRING":
-                if(values.length == 1) {
-                    if (((String) values[0]).length() == 1) {
-                        return new PlcCHAR(Character.valueOf(((String) values[0]).charAt(0)));
-                    } else {
-                        List<PlcCHAR> plcCHARValues = new LinkedList<>();
-                        for (int i = 0; i < ((String) values[0]).length(); i++) {
-                            plcCHARValues.add(new PlcCHAR(Character.valueOf(((String) values[0]).charAt(i))));
-                        }
-                        return new PlcList(plcCHARValues);
-                    }
-                }
-            case "WSTRING":
-                if(values.length == 1) {
-                    if (((String) values[0]).length() == 1) {
-                        return new PlcWCHAR(Character.valueOf(((String) values[0]).charAt(0)));
-                    } else {
-                        List<PlcWCHAR> plcWCHARValues = new LinkedList<>();
-                        for (int i = 0; i < ((String) values[0]).length(); i++) {
-                            plcWCHARValues.add(new PlcWCHAR(Character.valueOf(((String) values[0]).charAt(i))));
-                        }
-                        return new PlcList(plcWCHARValues);
-                    }
-                }
-            default:
-                throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType());
+        try {
+            switch (modbusField.getDataType()) {
+                //Implement Custom PlcValue types here
+                default:
+                    return PlcValues.of(values, Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + modbusField.getDataType()));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new PlcRuntimeException("Invalid encoder for type " + modbusField.getDataType() + e);
         }
     }
 }
