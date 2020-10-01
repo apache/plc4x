@@ -365,15 +365,16 @@ public class PlcValues {
     }
 
     public static PlcValue of(Object[] values, Class clazz) {
+        //Encode values to the type defined in clazz
         try {
-            Constructor<?> constructor = clazz.getDeclaredConstructor(values.getClass());
+            Constructor<?> constructor = clazz.getDeclaredConstructor(values[0].getClass());
             if(values.length == 1) {
                 return ((PlcValue) constructor.newInstance(values[0]));
             } else {
                 return PlcValues.of(Arrays.stream(values).map(value -> (constructorHelper(constructor, value))).collect(Collectors.toList()));
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new PlcIncompatibleDatatypeException(values[0].getClass());
+            throw new PlcIncompatibleDatatypeException(e + " " + values[0].getClass());
         }
     }
 

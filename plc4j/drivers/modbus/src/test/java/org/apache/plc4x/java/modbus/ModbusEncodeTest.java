@@ -33,6 +33,15 @@ import java.math.BigDecimal;
 public class ModbusEncodeTest {
 
     @Test
+    public void testEncodeBooleanBOOL() {
+        Boolean[] object = {true,false,true,false,true,false,true,true,false};
+        ModbusFieldCoil coils = ModbusFieldCoil.of("coil:8:BOOL");
+        ModbusFieldHandler handler = new ModbusFieldHandler();
+        PlcList list = (PlcList) handler.encodeBoolean(coils, object);
+        Assertions.assertEquals("[true,false,true,false,true,false,true,true,false]", list.toString());
+    }
+
+    @Test
     public void testEncodeIntegerSINT() {
         Integer[] object = {1,-1,127,-128,5,6,7,8};
         ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:8:SINT");
