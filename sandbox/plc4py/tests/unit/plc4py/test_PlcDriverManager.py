@@ -19,8 +19,8 @@
 from typing import Union
 from unittest.mock import MagicMock
 
-from plc4py.org.apache.plc4x.PlcDriverManager import PlcDriverManager
-from plc4py.org.apache.plc4x.api.PlcConnection import PlcConnection
+from plc4py.PlcDriverManager import PlcDriverManager
+from plc4py.api.PlcConnection import PlcConnection
 
 
 def test_connection_context_manager_impl_close_called(mocker) -> None:
