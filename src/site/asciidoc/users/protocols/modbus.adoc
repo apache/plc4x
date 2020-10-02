@@ -144,6 +144,7 @@ The following data types are supported
 - WCHAR (2 byte char)
 
 This may have partial support but more testing is required.
+
 - STRING (char[]) - When reading returns an unsigned byte array.
 - WSTRING (2 byte char[]) - When reading returns an unsigned word array.
 
