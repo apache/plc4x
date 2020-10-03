@@ -267,7 +267,7 @@ public class ${type.name}IO {
             PlcList values = (PlcList) _value;
 
             for (Plc${case.name} val : ((List<Plc${case.name}>) values.getList())) {
-                ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${helper.getLanguageTypeNameForField(field)?cap_first}();
+                ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${case.name}();
                 ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
             }
                     <#break>

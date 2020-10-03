@@ -180,6 +180,66 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
 
     @Override
     @JsonIgnore
+    public boolean isBoolean() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean getBoolean() {
+        return (value != null) && !value.equals(0);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isByte() {
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) >= 0);
+    }
+
+    @Override
+    @JsonIgnore
+    public byte getByte() {
+        return value.byteValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isShort() {
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) >= 0);
+    }
+
+    @Override
+    @JsonIgnore
+    public short getShort() {
+        return value.shortValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isInteger() {
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) >= 0);
+    }
+
+    @Override
+    @JsonIgnore
+    public int getInteger() {
+        return value.intValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isLong() {
+        return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0);
+    }
+
+    @Override
+    @JsonIgnore
+    public long getLong() {
+        return value.longValue();
+    }
+
+    @Override
+    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
@@ -188,6 +248,54 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     @JsonIgnore
     public BigInteger getBigInteger() {
         return value;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isFloat() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public float getFloat() {
+        return value.floatValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public double getDouble() {
+        return value.doubleValue();
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isBigDecimal() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public BigDecimal getBigDecimal() {
+        return new BigDecimal(value);
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isString() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getString() {
+        return toString();
     }
 
     @JsonIgnore
