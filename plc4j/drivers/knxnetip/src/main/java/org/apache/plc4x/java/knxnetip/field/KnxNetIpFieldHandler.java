@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
@@ -39,74 +40,47 @@ public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Boolean) values[0]);
-        }
-        return PlcValues.of((Boolean[]) values);
+        return internalEncode(field, values, "BOOL");
     }
 
     @Override
     public PlcValue encodeByte(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Byte) values[0]);
-        }
-        return PlcValues.of((Byte[]) values);
+        return internalEncode(field, values, "BYTE");
     }
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Short) values[0]);
-        }
-        return PlcValues.of((Short[]) values);
+        return internalEncode(field, values, "INT");
     }
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Integer) values[0]);
-        }
-        return PlcValues.of((Integer[]) values);
+        return internalEncode(field, values, "DINT");
     }
 
     @Override
     public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((BigInteger) values[0]);
-        }
-        return PlcValues.of((BigInteger[]) values);
+        return internalEncode(field, values, "LINT");
     }
 
     @Override
     public PlcValue encodeLong(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Long) values[0]);
-        }
-        return PlcValues.of((Long[]) values);
+        return internalEncode(field, values, "LINT");
     }
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Float) values[0]);
-        }
-        return PlcValues.of((Float[]) values);
+        return internalEncode(field, values, "REAL");
     }
 
     @Override
     public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((BigDecimal) values[0]);
-        }
-        return PlcValues.of((BigDecimal[]) values);
+        return internalEncode(field, values, "LREAL");
     }
 
     @Override
     public PlcValue encodeDouble(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            return PlcValues.of((Double) values[0]);
-        }
-        return PlcValues.of((Double[]) values);
+        return internalEncode(field, values, "LREAL");
     }
 
     @Override
@@ -115,6 +89,19 @@ public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
             return PlcValues.of((String) values[0]);
         }
         return PlcValues.of((String[]) values);
+    }
+
+    private PlcValue internalEncode(PlcField field, Object[] values, String datatype) {
+        KnxNetIpField knxField = (KnxNetIpField) field;
+        try {
+            switch (datatype) {
+                //Implement Custom PlcValue types here
+                default:
+                    return PlcValues.of(values, Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + datatype));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new PlcRuntimeException("Invalid encoder for type " + datatype + e);
+        }
     }
 
 }

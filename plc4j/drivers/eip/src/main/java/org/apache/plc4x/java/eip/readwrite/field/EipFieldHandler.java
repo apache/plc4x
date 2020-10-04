@@ -44,79 +44,48 @@ public class EipFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        switch (eipField.getType()){
-            case BOOL:
-            case DWORD:
-                return internalEncodeBoolean(field, values);
-            default:
-                throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
-        }
+        return internalEncode(field, values);
     }
 
 
     @Override
     public PlcValue encodeByte(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.SINT) {
-            return internalEncodeInteger(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.INT ||eipField.getType() == CIPDataTypeCode.DINT ) {
-            return internalEncodeInteger(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.DINT) {
-            return internalEncodeInteger(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        throw new PlcNotImplementedException(values.getClass()+" not implemented");
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeLong(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.REAL) {
-            return internalEncodeFloatingPoint(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.REAL) {
-            return internalEncodeFloatingPoint(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        throw new PlcNotImplementedException(values.getClass()+" not implemented");
+        return internalEncode(field, values);
     }
 
     @Override
     public PlcValue encodeDouble(PlcField field, Object[] values) {
-        EipField eipField = (EipField)field;
-        if (eipField.getType() == CIPDataTypeCode.REAL) {
-            return internalEncodeFloatingPoint(field, values);
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+        return internalEncode(field, values);
     }
 
     @Override
@@ -127,7 +96,7 @@ public class EipFieldHandler implements PlcFieldHandler {
             case STRING36:
                 return internalEncodeString(field, values);
             default:
-                throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType());
+                return internalEncode(field, values);
         }
     }
 
@@ -146,196 +115,19 @@ public class EipFieldHandler implements PlcFieldHandler {
         throw new PlcNotImplementedException("Not implemented");
     }
 
-    private PlcValue internalEncodeBoolean(PlcField field, Object[] values) {
+    private PlcValue internalEncode(PlcField field, Object[] values) {
         EipField eipField = (EipField) field;
-        switch (eipField.getType()) {
-            case BOOL:
-            case DWORD:
-                break;
-            default:
-                throw new IllegalArgumentException(
-                    "Cannot assign boolean values to " + eipField.getType() + " fields.");
-        }
-        List<Boolean> booleanValues = new LinkedList<>();
-        for (Object value : values) {
-            if (value instanceof Boolean) {
-                Boolean booleanValue = (Boolean) value;
-                booleanValues.add(booleanValue);
-            } else if (value instanceof Byte) {
-                Byte byteValue = (Byte) value;
-                BitSet bitSet = BitSet.valueOf(new byte[]{byteValue});
-                for (int i = 0; i < 8; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Short) {
-                Short shortValue = (Short) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{shortValue});
-                for (int i = 0; i < 16; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Integer) {
-                Integer integerValue = (Integer) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{integerValue});
-                for (int i = 0; i < 32; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Long) {
-                long longValue = (Long) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{longValue});
-                for (int i = 0; i < 64; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + value.getClass().getName() +
-                        " is not assignable to " +eipField.getType() + " fields.");
-            }
-        }
-        if(booleanValues.size() == 1) {
-            return new PlcBOOL(booleanValues.get(0));
-        } else {
-            return new PlcList(booleanValues);
-        }
-    }
-
-    private PlcValue internalEncodeInteger(PlcField field, Object[] values) {
-        EipField eipField = (EipField) field;
-        // Initialize the constraints.
-        BigInteger minValue;
-        BigInteger maxValue;
-        Class<? extends PlcValue> fieldType;
-        Class<?> valueType;
-        Object[] castedValues;
-        switch (eipField.getType()){
-            case SINT:
-                minValue = BigInteger.valueOf(Byte.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Byte.MAX_VALUE);
-                fieldType = PlcSINT.class;
-                valueType = Byte.class;
-                castedValues = new Byte[values.length];
-                break;
-            case INT:
-                minValue = BigInteger.valueOf(Short.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Short.MAX_VALUE);
-                fieldType = PlcINT.class;
-                valueType = Short.class;
-                castedValues = new Short[values.length];
-                break;
-            case DINT:
-                minValue = BigInteger.valueOf(Integer.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Integer.MAX_VALUE);
-                fieldType = PlcDINT.class;
-                valueType= Integer.class;
-                castedValues = new Integer[values.length];
-                break;
-            case LINT:
-                minValue = BigInteger.valueOf(Long.MIN_VALUE);
-                maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = PlcLINT.class;
-                valueType= Long.class;
-                castedValues = new Long[values.length];
-                break;
-            default:
-                throw new IllegalArgumentException(
-                    "Cannot assign integer values to " + eipField.getType() +" fields.");
-        }
-        for (int i = 0; i < values.length; i++) {
-            BigInteger value;
-            if ((values[i] instanceof Byte) || (values[i] instanceof Short) ||
-                (values[i] instanceof Integer) || (values[i] instanceof Long)) {
-                value = BigInteger.valueOf(((Number) values[i]).longValue());
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + values[i].getClass().getName() +
-                        " is not assignable to " + eipField.getType() + " fields.");
-            }
-            if (minValue.compareTo(value) > 0) {
-                throw new IllegalArgumentException(
-                    "Value of " + value.toString() + " exceeds allowed minimum for type "
-                        + eipField.getType() + " (min " + minValue.toString() + ")");
-            }
-            if (maxValue.compareTo(value) < 0) {
-                throw new IllegalArgumentException(
-                    "Value of " + value.toString() + " exceeds allowed maximum for type "
-                        + eipField.getType() + " (max " + maxValue.toString() + ")");
-            }
-            if (valueType == Byte.class) {
-                castedValues[i] = value.byteValue();
-            } else if (valueType== Short.class) {
-                castedValues[i] = value.shortValue();
-                //---------------------------------------
-            } else if (valueType == Integer.class) {
-                castedValues[i] = value.intValue();
-            } else if (valueType == Long.class) {
-                castedValues[i] = value.longValue();
-            } else {
-                castedValues[i] = value;
-            }
-        }
-        // Create the field item.
         try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(castedValues);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
+            switch (eipField.getType().name()) {
+                //Implement Custom PlcValue types here
+                default:
+                    return PlcValues.of(values, Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + eipField.getType().name()));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new PlcRuntimeException("Invalid encoder for type " + eipField.getType().name() + e);
         }
     }
 
-    private PlcValue internalEncodeFloatingPoint(PlcField field, Object[] values) {
-        EipField eipField = (EipField) field;
-
-        // Initialize the constraints.
-        Double minValue;
-        Double maxValue;
-        Class<? extends PlcValue> fieldType;
-        Class<?> valueType;
-        Object[] castedValues;
-        if (eipField.getType() == CIPDataTypeCode.REAL) {
-            minValue = (double) -Float.MAX_VALUE;
-            maxValue = (double) Float.MAX_VALUE;
-            fieldType = PlcREAL.class;
-            valueType = Float.class;
-            castedValues = new Float[values.length];
-        } else {
-            throw new IllegalArgumentException(
-                "Cannot assign floating point values to " + eipField.getType() + " fields.");
-        }
-
-        // Check the constraints
-        for (int i = 0; i < values.length; i++) {
-            Double value;
-            if (values[i] instanceof Float) {
-                value = ((Float) values[i]).doubleValue();
-            } else if (values[i] instanceof Double) {
-                value = (Double) values[i];
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + values[i].getClass().getName() +
-                        " is not assignable to " + eipField.getType() + " fields.");
-            }
-            if (value < minValue) {
-                throw new IllegalArgumentException(
-                    "Value of " + value + " exceeds allowed minimum for type "
-                        +eipField.getType() + " (min " + minValue.toString() + ")");
-            }
-            if (value > maxValue) {
-                throw new IllegalArgumentException(
-                    "Value of " + value + " exceeds allowed maximum for type "
-                        + eipField.getType() + " (max " + maxValue.toString() + ")");
-            }
-            if (valueType == Float.class) {
-                castedValues[i] = value.floatValue();
-            } else {
-                castedValues[i] = value;
-            }
-        }
-
-        // Create the field item.
-        try {
-            return fieldType.getDeclaredConstructor(valueType).newInstance(castedValues);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new PlcRuntimeException("Error initializing field class " + fieldType.getSimpleName(), e);
-        }
-    }
 
     private PlcValue internalEncodeString(PlcField field, Object[] values) {
         EipField eipField = (EipField) field;

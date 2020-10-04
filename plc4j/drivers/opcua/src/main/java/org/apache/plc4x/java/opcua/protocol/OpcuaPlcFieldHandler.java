@@ -20,6 +20,7 @@ package org.apache.plc4x.java.opcua.protocol;
 
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
@@ -55,58 +56,22 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<Boolean> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Boolean) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcBOOL(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "BOOL");
     }
 
     @Override
     public PlcValue encodeByte(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<Byte> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Byte) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcSINT(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "SINT");
     }
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<Short> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Short) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcINT(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "INT");
     }
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<Integer> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Integer) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcDINT(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "DINT");
     }
 
     @Override
@@ -125,30 +90,12 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeLong(PlcField field, Object[] values) {
-        OpcuaField adsField = (OpcuaField) field;
-        ArrayList<Long> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Long) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcLINT(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "LINT");
     }
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<Float> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add((Float) item);
-        }
-        if(resultSet.size() == 1) {
-            return new PlcREAL(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
+        return internalEncode(field, values, "REAL");
     }
 
 
@@ -163,6 +110,19 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             return new PlcLREAL(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
+        }
+    }
+
+    private PlcValue internalEncode(PlcField field, Object[] values, String datatype) {
+        OpcuaField opcField = (OpcuaField) field;
+        try {
+            switch (datatype) {
+                //Implement Custom PlcValue types here
+                default:
+                    return PlcValues.of(values, Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + datatype));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new PlcRuntimeException("Invalid encoder for type " + datatype + e);
         }
     }
 

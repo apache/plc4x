@@ -19,6 +19,7 @@ under the License.
 package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
@@ -42,105 +43,60 @@ public class FirmataFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        FirmataField firmataField = (FirmataField) field;
-        List<Boolean> booleanValues = new LinkedList<>();
-        for (Object value : values) {
-            if (value instanceof Boolean) {
-                Boolean booleanValue = (Boolean) value;
-                booleanValues.add(booleanValue);
-            } else if (value instanceof Byte) {
-                Byte byteValue = (Byte) value;
-                BitSet bitSet = BitSet.valueOf(new byte[]{byteValue});
-                for (int i = 0; i < 8; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Short) {
-                Short shortValue = (Short) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{shortValue});
-                for (int i = 0; i < 16; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Integer) {
-                Integer integerValue = (Integer) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{integerValue});
-                for (int i = 0; i < 32; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else if (value instanceof Long) {
-                long longValue = (Long) value;
-                BitSet bitSet = BitSet.valueOf(new long[]{longValue});
-                for (int i = 0; i < 64; i++) {
-                    booleanValues.add(bitSet.get(i));
-                }
-            } else {
-                throw new IllegalArgumentException(
-                    "Value of type " + value.getClass().getName() +
-                        " is not assignable to " + firmataField + " fields.");
-            }
-        }
-        if(booleanValues.size() == 1) {
-            return new PlcBOOL(booleanValues.get(0));
-        } else {
-            return new PlcList(booleanValues);
-        }
+        return internalEncode(field, values, "BOOL");
     }
 
     @Override
     public PlcValue encodeByte(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "BYTE");
     }
 
     @Override
     public PlcValue encodeShort(PlcField field, Object[] values) {
-        if(values.length == 1) {
-            Number numberValue = (Number) values[0];
-            // Intentionally checking the next larger type.
-            if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
-                throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
-            }
-            return new PlcINT(numberValue.shortValue());
-        } else {
-            List<PlcINT> shorts = new ArrayList<>(values.length);
-            for (Object value : values) {
-                Number numberValue = (Number) value;
-                // Intentionally checking the next larger type.
-                if((numberValue.intValue() < Short.MIN_VALUE) || (numberValue.intValue() > Short.MAX_VALUE)) {
-                    throw new PlcInvalidFieldException("Value of " + numberValue.toString() + " exceeds the boundaries of a short value.");
-                }
-                shorts.add(new PlcINT(((Number) value).shortValue()));
-            }
-            return new PlcList(shorts);
-        }
+        return internalEncode(field, values, "INT");
     }
 
     @Override
     public PlcValue encodeInteger(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "DINT");
     }
 
     @Override
     public PlcValue encodeLong(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "LINT");
     }
 
     @Override
     public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "LINT");
     }
 
     @Override
     public PlcValue encodeFloat(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "REAL");
     }
 
     @Override
     public PlcValue encodeDouble(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "LREAL");
     }
 
     @Override
     public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        return encodeShort(field, values);
+        return internalEncode(field, values, "LREAL");
+    }
+
+    private PlcValue internalEncode(PlcField field, Object[] values, String datatype) {
+        FirmataField firmataField = (FirmataField) field;
+        try {
+            switch (datatype) {
+                //Implement Custom PlcValue types here
+                default:
+                    return PlcValues.of(values, Class.forName(PlcValues.class.getPackage().getName() + ".Plc" + datatype));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new PlcRuntimeException("Invalid encoder for type " + datatype + e);
+        }
     }
 
 }
