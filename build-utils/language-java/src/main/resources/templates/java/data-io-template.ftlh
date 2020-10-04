@@ -270,6 +270,12 @@ public class ${type.name}IO {
                 ${helper.getLanguageTypeNameForField(field)} value = (${helper.getLanguageTypeNameForField(field)}) val.get${case.name}();
                 ${helper.getWriteBufferWriteMethodCall(field.type, "(" + field.name + ")")};
             }
+
+                    <#if case.name == "BOOL">
+            while (io.getPos() < io.getData().length) {
+                io.writeBit(false);
+            }
+                    </#if>
                     <#break>
                     <#case "const">
             // Const Field (${field.name})

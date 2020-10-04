@@ -372,14 +372,35 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             WriteBuffer buffer;
             if(plcValue instanceof PlcList) {
                 buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) ((PlcList) plcValue).getLength(), false);
+                byte[] data = buffer.getData();
+                switch (((ModbusField) field).getDataType()) {
+                    case "BOOL":
+                        //Reverse Bits in each byte as
+                        //they should ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
+                        byte[] bytes = new byte[data.length];
+                        for (int i = 0; i < data.length; i++) {
+                            bytes[i] = reverseBitsOfByte(data[i]);
+                        }
+                        return bytes;
+                    default:
+                        return data;
+                }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false);
+                return DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false).getData();
             }
-            return buffer.getData();
         } catch (ParseException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
         }
 
+    }
+
+    private byte reverseBitsOfByte(byte b) {
+        BitSet bits = BitSet.valueOf(new byte[] {b});
+        BitSet reverse = BitSet.valueOf(new byte[] {(byte) 0x00});
+        for (int j = 0; j < 8; j++) {
+            reverse.set(j, bits.get(7-j));
+        }
+        return reverse.toByteArray()[0];
     }
 
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
