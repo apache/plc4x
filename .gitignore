@@ -176,3 +176,6 @@ build-iPhoneSimulator/
 
 # Exclude VSCode project settings.
 .vscode/
+
+# Temp stuff ...
+/sandbox/plc4go/temp/
