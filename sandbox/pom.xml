@@ -107,6 +107,15 @@
       </modules>
     </profile>
 
+
+    <!-- Build PLC4X including the Go modules -->
+    <profile>
+      <id>with-go</id>
+      <modules>
+        <module>plc4go</module>
+      </modules>
+    </profile>
+
     <!-- Build PLC4X including the .Net modules -->
     <profile>
       <id>with-dotnet</id>
