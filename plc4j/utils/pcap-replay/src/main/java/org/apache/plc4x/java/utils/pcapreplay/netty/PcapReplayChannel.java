@@ -101,7 +101,7 @@ public class PcapReplayChannel extends OioByteStreamChannel {
             PcapHandle.TimestampPrecision.NANO);
 
         // If the address allows fine tuning which packets to process, set a filter to reduce the load.
-        String filter = config.getFilterString(localAddress, remoteAddress);
+        String filter = "";//config.getFilterString(localAddress, remoteAddress);
         if(filter.length() > 0) {
             handle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
@@ -132,7 +132,9 @@ public class PcapReplayChannel extends OioByteStreamChannel {
 
                         // Send the bytes to the netty pipeline.
                         byte[] data = config.getPacketHandler().getData(packet);
-                        buffer.writeBytes(data);
+                        if(data != null) {
+                            buffer.writeBytes(data);
+                        }
 
                         // Remember the timestamp of the current packet.
                         lastPacketTime = curPacketTime;
