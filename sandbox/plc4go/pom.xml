@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -28,30 +29,77 @@
   </parent>
 
   <artifactId>plc4go</artifactId>
-  <packaging>pom</packaging>
+  <packaging>mvn-golang</packaging>
 
   <name>Sandbox: PLC4Go</name>
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
-  <plugins>
-    <plugin>
-      <groupId>com.igormaznitsa</groupId>
-      <artifactId>mvn-golang-wrapper</artifactId>
-      <version>2.3.5</version>
-      <extensions>true</extensions>
-      <executions>
-        <execution>
-          <goals>
-            <goal>run</goal>
-          </goals>
-          <configuration>
-            <packages>
-              <package>main.go</package>
-            </packages>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <!--
+        Generate the driver code.
+      -->
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-driver-modbus</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>modbus</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/generated-sources</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>mvn-golang-wrapper</artifactId>
+        <version>2.3.5</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>main.go</package>
+              </packages>
+              <sources>src,generated-sources</sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- This dependency is just to ensure thrift is built first -->
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-build-utils-language-go</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
 
 </project>
