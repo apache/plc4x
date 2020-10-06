@@ -103,8 +103,11 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
             }
             // This is a normal udp packet.
             else {
-                return packet.getPayload().getPayload().getPayload().getRawData();
+                if((packet.getPayload() != null) && (packet.getPayload().getPayload() != null) && (packet.getPayload().getPayload().getPayload() != null)) {
+                    return packet.getPayload().getPayload().getPayload().getRawData();
+                }
             }
+            return null;
         };
     }
 
