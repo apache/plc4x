@@ -912,6 +912,8 @@
 
             <!-- Exclude a temp file needed by Docker -->
             <exclude>project_version</exclude>
+
+            <exclude>plc4go/**</exclude>
           </excludes>
         </configuration>
       </plugin>
