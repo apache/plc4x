@@ -25,8 +25,8 @@ type ModbusPDUReadInputRegistersResponse struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadInputRegistersResponse) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadInputRegistersResponse) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -39,14 +39,14 @@ func (m ModbusPDUReadInputRegistersResponse) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadInputRegistersResponse) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadInputRegistersResponse) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadInputRegistersResponse) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadInputRegistersResponse) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadInputRegistersResponse) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadInputRegistersResponse) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

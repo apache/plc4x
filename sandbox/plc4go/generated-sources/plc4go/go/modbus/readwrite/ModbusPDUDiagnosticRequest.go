@@ -26,8 +26,8 @@ type ModbusPDUDiagnosticRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUDiagnosticRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -38,14 +38,14 @@ func (m ModbusPDUDiagnosticRequest) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUDiagnosticRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUDiagnosticRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUDiagnosticRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUDiagnosticRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

@@ -27,8 +27,8 @@ type ModbusPDUMaskWriteHoldingRegisterResponse struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -42,14 +42,14 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) parse(io spi.ReadBuffer) {
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

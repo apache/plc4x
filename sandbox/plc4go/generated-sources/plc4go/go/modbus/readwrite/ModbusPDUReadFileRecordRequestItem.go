@@ -27,7 +27,7 @@ type ModbusPDUReadFileRecordRequestItem struct {
 	recordLength  uint16
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) lengthInBits() uint16 {
+func (m ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Simple field (referenceType)
@@ -45,14 +45,14 @@ func (m ModbusPDUReadFileRecordRequestItem) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadFileRecordRequestItem) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

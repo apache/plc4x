@@ -23,7 +23,7 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 type ModbusConstants struct {
 }
 
-func (m ModbusConstants) lengthInBits() uint16 {
+func (m ModbusConstants) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Const Field (modbusTcpDefaultPort)
@@ -32,14 +32,14 @@ func (m ModbusConstants) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusConstants) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusConstants) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusConstants) parse(io spi.ReadBuffer) {
+func (m ModbusConstants) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusConstants) serialize(io spi.WriteBuffer) {
+func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

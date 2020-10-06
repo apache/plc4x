@@ -25,7 +25,7 @@ type ModbusPDUReadFileRecordResponseItem struct {
 	data          []int8
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) lengthInBits() uint16 {
+func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Implicit Field (dataLength)
@@ -42,14 +42,14 @@ func (m ModbusPDUReadFileRecordResponseItem) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadFileRecordResponseItem) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

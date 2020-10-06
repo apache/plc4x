@@ -78,8 +78,8 @@ type ${type.name} struct {
 <#if type.parentType??>    ${type.parentType.name}</#if>
 }
 
-func (m ${type.name}) lengthInBits() uint16 {
-    var lengthInBits uint16 = <#if type.parentType??>m.${type.parentType.name}.lengthInBits()<#else>0</#if>
+func (m ${type.name}) LengthInBits() uint16 {
+    var lengthInBits uint16 = <#if type.parentType??>m.${type.parentType.name}.LengthInBits()<#else>0</#if>
     <#list type.fields as field>
         <#switch field.typeName>
             <#case "array">
@@ -92,7 +92,7 @@ func (m ${type.name}) lengthInBits() uint16 {
         lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name}))
                 <#else>
         for _, element := range m.${arrayField.name} {
-            lengthInBits += element.lengthInBits()
+            lengthInBits += element.LengthInBits()
         }
                 </#if>
     }
@@ -152,7 +152,7 @@ func (m ${type.name}) lengthInBits() uint16 {
                     <#assign simpleTypeReference = optionalField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits}
                 <#else>
-        lengthInBits += m.${optionalField.name}.lengthInBits()
+        lengthInBits += m.${optionalField.name}.LengthInBits()
                 </#if>
     }
                 <#break>
@@ -182,7 +182,7 @@ func (m ${type.name}) lengthInBits() uint16 {
                     <#assign simpleTypeReference = simpleField.type>
     lengthInBits += ${simpleTypeReference.sizeInBits}
                 <#else>
-    lengthInBits += m.${simpleField.name}.lengthInBits()
+    lengthInBits += m.${simpleField.name}.LengthInBits()
                 </#if>
                 <#break>
             <#case "switch">
@@ -201,16 +201,15 @@ func (m ${type.name}) lengthInBits() uint16 {
     return lengthInBits
 }
 
-func (m ${type.name}) lengthInBytes() uint16 {
-    return m.lengthInBits() / 8
+func (m ${type.name}) LengthInBytes() uint16 {
+    return m.LengthInBits() / 8
 }
 
-func (m ${type.name}) parse(io spi.ReadBuffer) {
+func (m ${type.name}) Parse(io spi.ReadBuffer) {
     // TODO: Implement ...
 }
 
-func (m ${type.name}) serialize(io spi.WriteBuffer) {
+func (m ${type.name}) Serialize(io spi.WriteBuffer) {
     // TODO: Implement ...
 }
-
 </#outputformat>

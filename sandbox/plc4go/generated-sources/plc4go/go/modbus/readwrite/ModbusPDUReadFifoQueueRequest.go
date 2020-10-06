@@ -25,8 +25,8 @@ type ModbusPDUReadFifoQueueRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadFifoQueueRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -34,14 +34,14 @@ func (m ModbusPDUReadFifoQueueRequest) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadFifoQueueRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadFifoQueueRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadFifoQueueRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadFifoQueueRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

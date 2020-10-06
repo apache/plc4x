@@ -23,6 +23,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
+import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
 import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
@@ -708,5 +709,31 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         return valueString;
     }
+
+    public String escapeEnumValue(TypeReference typeReference, String valueString) {
+        // Currently the only case in which here complex type references are used are when referencing enum constants.
+        if (typeReference instanceof ComplexTypeReference) {
+            // C doesn't like NULL values for enums, so we have to return something else (we'll treat -1 as NULL)
+            if ("null".equals(valueString)) {
+                return "-1";
+            }
+            String typeName = valueString.substring(0, valueString.indexOf('.'));
+            String constantName = valueString.substring(valueString.indexOf('.') + 1);
+            return constantName;
+        } else {
+            return escapeValue(typeReference, valueString);
+        }
+    }
+
+    public Collection<EnumValue> getUniqueEnumValues(EnumValue[] enumValues) {
+        Map<String, EnumValue> filteredEnumValues = new TreeMap<>();
+        for (EnumValue enumValue : enumValues) {
+            if (!filteredEnumValues.containsKey(enumValue.getValue())) {
+                filteredEnumValues.put(enumValue.getValue(), enumValue);
+            }
+        }
+        return filteredEnumValues.values();
+    }
+
 
 }

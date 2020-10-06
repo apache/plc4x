@@ -29,8 +29,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -55,14 +55,14 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) lengthInBits() uint16
 	return lengthInBits
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

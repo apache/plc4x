@@ -23,7 +23,7 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 type ModbusPDU struct {
 }
 
-func (m ModbusPDU) lengthInBits() uint16 {
+func (m ModbusPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Discriminator Field (error)
@@ -37,14 +37,14 @@ func (m ModbusPDU) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDU) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDU) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDU) parse(io spi.ReadBuffer) {
+func (m ModbusPDU) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDU) serialize(io spi.WriteBuffer) {
+func (m ModbusPDU) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }
