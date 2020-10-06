@@ -26,8 +26,8 @@ type ModbusPDUReadInputRegistersRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadInputRegistersRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadInputRegistersRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -38,14 +38,14 @@ func (m ModbusPDUReadInputRegistersRequest) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadInputRegistersRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadInputRegistersRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadInputRegistersRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadInputRegistersRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadInputRegistersRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadInputRegistersRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

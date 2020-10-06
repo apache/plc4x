@@ -25,8 +25,8 @@ type ModbusPDUError struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUError) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUError) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (exceptionCode)
 	lengthInBits += 8
@@ -34,14 +34,14 @@ func (m ModbusPDUError) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUError) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUError) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUError) parse(io spi.ReadBuffer) {
+func (m ModbusPDUError) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUError) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUError) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

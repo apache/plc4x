@@ -48,16 +48,14 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getComplexTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Arrays.asList(
-            freemarkerConfiguration.getTemplate("templates/go/pojo-template.ftlh")/*,
-            freemarkerConfiguration.getTemplate("templates/go/io-template.ftlh")*/);
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/go/model-template.ftlh"));
     }
 
     @Override
     protected List<Template> getEnumTypeTemplates(Configuration freemarkerConfiguration) throws IOException {
-        /*return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/enum-template.ftlh"));*/
-        return Collections.emptyList();
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/go/enum-template.ftlh"));
     }
 
     @Override

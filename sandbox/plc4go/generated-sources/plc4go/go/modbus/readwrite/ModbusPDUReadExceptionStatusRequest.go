@@ -24,20 +24,20 @@ type ModbusPDUReadExceptionStatusRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadExceptionStatusRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	return lengthInBits
 }
 
-func (m ModbusPDUReadExceptionStatusRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadExceptionStatusRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadExceptionStatusRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadExceptionStatusRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

@@ -19,4 +19,75 @@
 package spi
 
 type ReadBuffer struct {
+	data    []uint8
+	bytePos uint8
+	bitPos  uint8
+}
+
+func (rb ReadBuffer) GetPos() uint16 {
+	return 0
+}
+
+func (rb ReadBuffer) GetBytes() []uint8 {
+	return rb.data
+}
+
+func (rb ReadBuffer) GetTotalBytes() uint64 {
+	return 0
+}
+
+func (rb ReadBuffer) HasMore(bitLength uint8) bool {
+	return false
+}
+
+func (rb ReadBuffer) PeekByte(offset uint8) uint8 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadBit() bool {
+	return false
+}
+
+func (rb ReadBuffer) ReadUint8(bitLength uint8) uint8 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadUint16(bitLength uint8) uint16 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadUint32(bitLength uint8) uint32 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadUint64(bitLength uint8) uint64 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadInt8(bitLength uint8) int8 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadInt16(bitLength uint8) int16 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadInt32(bitLength uint8) int32 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadInt64(bitLength uint8) int64 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadFloat32(bitLength uint8) float32 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadFloat64(bitLength uint8) float64 {
+	return 0
+}
+
+func (rb ReadBuffer) ReadString(bitLength uint8) string {
+	return ""
 }

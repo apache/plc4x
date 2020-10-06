@@ -27,7 +27,7 @@ type ModbusSerialADU struct {
 	pdu           ModbusPDU
 }
 
-func (m ModbusSerialADU) lengthInBits() uint16 {
+func (m ModbusSerialADU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Simple field (transactionId)
@@ -43,19 +43,19 @@ func (m ModbusSerialADU) lengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.pdu.lengthInBits()
+	lengthInBits += m.pdu.LengthInBits()
 
 	return lengthInBits
 }
 
-func (m ModbusSerialADU) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusSerialADU) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusSerialADU) parse(io spi.ReadBuffer) {
+func (m ModbusSerialADU) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusSerialADU) serialize(io spi.WriteBuffer) {
+func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

@@ -24,20 +24,20 @@ type ModbusPDUReadDeviceIdentificationRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	return lengthInBits
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadDeviceIdentificationRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadDeviceIdentificationRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadDeviceIdentificationRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

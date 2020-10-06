@@ -26,8 +26,8 @@ type ModbusPDUReadCoilsRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUReadCoilsRequest) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -38,14 +38,14 @@ func (m ModbusPDUReadCoilsRequest) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUReadCoilsRequest) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadCoilsRequest) parse(io spi.ReadBuffer) {
+func (m ModbusPDUReadCoilsRequest) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUReadCoilsRequest) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadCoilsRequest) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

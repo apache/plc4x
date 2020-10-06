@@ -26,7 +26,7 @@ type ModbusTcpADU struct {
 	pdu                   ModbusPDU
 }
 
-func (m ModbusTcpADU) lengthInBits() uint16 {
+func (m ModbusTcpADU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Simple field (transactionIdentifier)
@@ -42,19 +42,19 @@ func (m ModbusTcpADU) lengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.pdu.lengthInBits()
+	lengthInBits += m.pdu.LengthInBits()
 
 	return lengthInBits
 }
 
-func (m ModbusTcpADU) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusTcpADU) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusTcpADU) parse(io spi.ReadBuffer) {
+func (m ModbusTcpADU) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusTcpADU) serialize(io spi.WriteBuffer) {
+func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }

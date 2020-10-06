@@ -28,8 +28,8 @@ type ModbusPDUGetComEventLogResponse struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUGetComEventLogResponse) lengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.lengthInBits()
+func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -51,14 +51,14 @@ func (m ModbusPDUGetComEventLogResponse) lengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m ModbusPDUGetComEventLogResponse) lengthInBytes() uint16 {
-	return m.lengthInBits() / 8
+func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUGetComEventLogResponse) parse(io spi.ReadBuffer) {
+func (m ModbusPDUGetComEventLogResponse) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 
-func (m ModbusPDUGetComEventLogResponse) serialize(io spi.WriteBuffer) {
+func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) {
 	// TODO: Implement ...
 }
