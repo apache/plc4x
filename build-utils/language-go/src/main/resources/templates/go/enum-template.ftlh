@@ -78,4 +78,14 @@ func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNam
 }
     </#list>
 </#if>
+
+<#if type.type?has_content>
+func (e ${type.name}) Parse(io spi.ReadBuffer) {
+    // TODO: Implement ...
+}
+
+func (e ${type.name}) Serialize(io spi.WriteBuffer) {
+    // TODO: Implement ...
+}
+</#if>
 </#outputformat>
