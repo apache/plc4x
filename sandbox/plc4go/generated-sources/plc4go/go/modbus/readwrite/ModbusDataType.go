@@ -18,6 +18,8 @@
 //
 package readwrite
 
+import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+
 type ModbusDataType uint8
 
 const (
@@ -170,4 +172,12 @@ func (e ModbusDataType) GetDataTypeSize() uint8 {
 			return 0
 		}
 	}
+}
+
+func (e ModbusDataType) Parse(io spi.ReadBuffer) {
+	// TODO: Implement ...
+}
+
+func (e ModbusDataType) Serialize(io spi.WriteBuffer) {
+	// TODO: Implement ...
 }
