@@ -136,7 +136,6 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                         // These are value change notifications. Ignore the rest.
                         if(notification.getPropertyIdentifier()[0] == (short) 0x55) {
                             final BACnetTag baCnetTag = notification.getValue();
-                            final PlcValue plcValue = baCnetTag.toPlcValue();
 
                             // Initialize an enriched version of the PlcStruct.
                             final Map<String, PlcValue> enrichedPlcValue = new HashMap<>();
@@ -144,8 +143,20 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                             enrichedPlcValue.put("objectType", new PlcDINT(objectType));
                             enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
                             enrichedPlcValue.put("address", new PlcString(toString(curField)));
-                            // Add all of the existing attributes.
-                            enrichedPlcValue.putAll(plcValue.getStruct());
+
+                            // From the original BACNet tag
+                            enrichedPlcValue.put("typeOrTagNumber", PlcValues.of(baCnetTag.getTypeOrTagNumber()));
+                            enrichedPlcValue.put("lengthValueType", PlcValues.of(baCnetTag.getLengthValueType()));
+                            if(baCnetTag.getExtTagNumber() != null) {
+                                enrichedPlcValue.put("extTagNumber", PlcValues.of(baCnetTag.getExtTagNumber()));
+                            } else {
+                                enrichedPlcValue.put("extTagNumber", new PlcNull());
+                            }
+                            if(baCnetTag.getExtLength() != null) {
+                                enrichedPlcValue.put("extLength", PlcValues.of(baCnetTag.getExtLength()));
+                            } else {
+                                enrichedPlcValue.put("extLength", new PlcNull());
+                            }
 
                             // Use the information in the edeModel to enrich the information.
                             if(edeModel != null) {
