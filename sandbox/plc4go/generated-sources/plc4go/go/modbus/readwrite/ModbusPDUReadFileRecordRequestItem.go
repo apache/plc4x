@@ -18,13 +18,20 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUReadFileRecordRequestItem struct {
 	referenceType uint8
 	fileNumber    uint16
 	recordNumber  uint16
 	recordLength  uint16
+}
+
+func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) ModbusPDUReadFileRecordRequestItem {
+	return &ModbusPDUReadFileRecordRequestItem{referenceType: referenceType, fileNumber: fileNumber, recordNumber: recordNumber, recordLength: recordLength}
 }
 
 func (m ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
@@ -49,10 +56,22 @@ func (m ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUReadFileRecordRequestItemParse(io spi.ReadBuffer) ModbusPDUReadFileRecordRequestItem {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (referenceType)
+	var referenceType uint8 = io.ReadUint8(8)
+
+	// Simple Field (fileNumber)
+	var fileNumber uint16 = io.ReadUint16(16)
+
+	// Simple Field (recordNumber)
+	var recordNumber uint16 = io.ReadUint16(16)
+
+	// Simple Field (recordLength)
+	var recordLength uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength)
 }

@@ -18,28 +18,44 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusConstants struct {
+
+}
+
+
+func NewModbusConstants() ModbusConstants {
+    return &ModbusConstants{}
 }
 
 func (m ModbusConstants) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Const Field (modbusTcpDefaultPort)
-	lengthInBits += 16
+    // Const Field (modbusTcpDefaultPort)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusConstants) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusConstants) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusConstantsParse(io spi.ReadBuffer) ModbusConstants {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Const Field (modbusTcpDefaultPort)
+    uint16 modbusTcpDefaultPort = io.ReadUint16(16)
+    if modbusTcpDefaultPort != ModbusConstants.MODBUSTCPDEFAULTPORT {
+        throw new ParseException("Expected constant value " + ModbusConstants.MODBUSTCPDEFAULTPORT + " but got " + modbusTcpDefaultPort)
+    }
+
+    // Create the instance
+    return NewModbusConstants()
 }
 
-func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}

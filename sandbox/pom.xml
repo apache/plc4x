@@ -94,7 +94,6 @@
       </modules>
     </profile>
 
-
     <!-- Build PLC4X including the Go modules -->
     <profile>
       <id>with-go</id>

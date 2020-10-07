@@ -174,7 +174,7 @@ func (e ModbusDataType) GetDataTypeSize() uint8 {
 	}
 }
 
-func (e ModbusDataType) Parse(io spi.ReadBuffer) {
+func (e *ModbusDataType) Parse(io spi.ReadBuffer) {
 	// TODO: Implement ...
 }
 

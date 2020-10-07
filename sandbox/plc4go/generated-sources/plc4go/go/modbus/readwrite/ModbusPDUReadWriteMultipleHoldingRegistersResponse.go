@@ -18,35 +18,65 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUReadWriteMultipleHoldingRegistersResponse struct {
-	value []int8
-	ModbusPDU
+    value []int8
+    ModbusPDU
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) initialize() ModbusPDU {
+    return m.ModbusPDU
+}
+
+func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []int8) ModbusPDUInitializer {
+    return &ModbusPDUReadWriteMultipleHoldingRegistersResponse{value: value}
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Implicit Field (byteCount)
-	lengthInBits += 8
+    // Implicit Field (byteCount)
+    lengthInBits += 8
 
-	// Array field
-	if len(m.value) > 0 {
-		lengthInBits += 8 * uint16(len(m.value))
-	}
+    // Array field
+    if len(m.value) > 0 {
+        lengthInBits += 8 * uint16(len(m.value))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    var byteCount uint8 = io.ReadUint8(8)
+
+    // Array field (value)
+    // Count array
+    if byteCount > math.MaxUint8 {
+        throw new ParseException("Array count of " + (byteCount) + " exceeds the maximum allowed count of " + math.MaxUint8);
+    }
+    int8[] value;
+    {
+        var itemCount := byteCount
+        value = new int8[itemCount]
+        for curItem := 0; curItem < itemCount; curItem++ {
+            
+            value[curItem] = io.ReadInt8(8)
+        }
+    }
+
+    // Create the instance
+    return NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value)
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}

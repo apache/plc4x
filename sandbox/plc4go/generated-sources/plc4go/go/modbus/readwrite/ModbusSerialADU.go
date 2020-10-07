@@ -18,44 +18,74 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusSerialADU struct {
-	transactionId uint16
-	length        uint16
-	address       uint8
-	pdu           ModbusPDU
+    transactionId uint16
+    length uint16
+    address uint8
+    pdu ModbusPDU
+
+}
+
+
+func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu ModbusPDU) ModbusSerialADU {
+    return &ModbusSerialADU{transactionId: transactionId, length: length, address: address, pdu: pdu}
 }
 
 func (m ModbusSerialADU) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Simple field (transactionId)
-	lengthInBits += 16
+    // Simple field (transactionId)
+    lengthInBits += 16
 
-	// Reserved Field (reserved)
-	lengthInBits += 16
+    // Reserved Field (reserved)
+    lengthInBits += 16
 
-	// Simple field (length)
-	lengthInBits += 16
+    // Simple field (length)
+    lengthInBits += 16
 
-	// Simple field (address)
-	lengthInBits += 8
+    // Simple field (address)
+    lengthInBits += 8
 
-	// Simple field (pdu)
-	lengthInBits += m.pdu.LengthInBits()
+    // Simple field (pdu)
+    lengthInBits += m.pdu.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusSerialADU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusSerialADU) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusSerialADUParse(io spi.ReadBuffer, response bool) ModbusSerialADU {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Simple Field (transactionId)
+    var transactionId uint16 = io.ReadUint16(16)
+
+    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+    {
+        var reserved uint16 = io.ReadUint16(16)
+        if reserved != (uint16) 0x0000 {
+            LOGGER.info("Expected constant value " + 0x0000 + " but got " + reserved + " for reserved field.")
+        }
+    }
+
+    // Simple Field (length)
+    var length uint16 = io.ReadUint16(16)
+
+    // Simple Field (address)
+    var address uint8 = io.ReadUint8(8)
+
+    // Simple Field (pdu)
+    var pdu ModbusPDU = ModbusPDUIO.staticParse(io, (bool) (response))
+
+    // Create the instance
+    return NewModbusSerialADU(transactionId, length, address, pdu)
 }
 
-func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}
