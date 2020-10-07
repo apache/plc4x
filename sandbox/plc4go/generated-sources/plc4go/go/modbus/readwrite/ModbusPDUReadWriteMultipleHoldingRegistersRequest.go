@@ -18,51 +18,93 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
-	readStartingAddress  uint16
-	readQuantity         uint16
-	writeStartingAddress uint16
-	writeQuantity        uint16
-	value                []int8
-	ModbusPDU
+    readStartingAddress uint16
+    readQuantity uint16
+    writeStartingAddress uint16
+    writeQuantity uint16
+    value []int8
+    ModbusPDU
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) initialize() ModbusPDU {
+    return m.ModbusPDU
+}
+
+func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []int8) ModbusPDUInitializer {
+    return &ModbusPDUReadWriteMultipleHoldingRegistersRequest{readStartingAddress: readStartingAddress, readQuantity: readQuantity, writeStartingAddress: writeStartingAddress, writeQuantity: writeQuantity, value: value}
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (readStartingAddress)
-	lengthInBits += 16
+    // Simple field (readStartingAddress)
+    lengthInBits += 16
 
-	// Simple field (readQuantity)
-	lengthInBits += 16
+    // Simple field (readQuantity)
+    lengthInBits += 16
 
-	// Simple field (writeStartingAddress)
-	lengthInBits += 16
+    // Simple field (writeStartingAddress)
+    lengthInBits += 16
 
-	// Simple field (writeQuantity)
-	lengthInBits += 16
+    // Simple field (writeQuantity)
+    lengthInBits += 16
 
-	// Implicit Field (byteCount)
-	lengthInBits += 8
+    // Implicit Field (byteCount)
+    lengthInBits += 8
 
-	// Array field
-	if len(m.value) > 0 {
-		lengthInBits += 8 * uint16(len(m.value))
-	}
+    // Array field
+    if len(m.value) > 0 {
+        lengthInBits += 8 * uint16(len(m.value))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Simple Field (readStartingAddress)
+    var readStartingAddress uint16 = io.ReadUint16(16)
+
+    // Simple Field (readQuantity)
+    var readQuantity uint16 = io.ReadUint16(16)
+
+    // Simple Field (writeStartingAddress)
+    var writeStartingAddress uint16 = io.ReadUint16(16)
+
+    // Simple Field (writeQuantity)
+    var writeQuantity uint16 = io.ReadUint16(16)
+
+    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    var byteCount uint8 = io.ReadUint8(8)
+
+    // Array field (value)
+    // Count array
+    if byteCount > math.MaxUint8 {
+        throw new ParseException("Array count of " + (byteCount) + " exceeds the maximum allowed count of " + math.MaxUint8);
+    }
+    int8[] value;
+    {
+        var itemCount := byteCount
+        value = new int8[itemCount]
+        for curItem := 0; curItem < itemCount; curItem++ {
+            
+            value[curItem] = io.ReadInt8(8)
+        }
+    }
+
+    // Create the instance
+    return NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress, readQuantity, writeStartingAddress, writeQuantity, value)
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}

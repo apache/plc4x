@@ -18,12 +18,23 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUReadHoldingRegistersRequest struct {
 	startingAddress uint16
 	quantity        uint16
 	ModbusPDU
+}
+
+func (m ModbusPDUReadHoldingRegistersRequest) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUReadHoldingRegistersRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
+	return &ModbusPDUReadHoldingRegistersRequest{startingAddress: startingAddress, quantity: quantity}
 }
 
 func (m ModbusPDUReadHoldingRegistersRequest) LengthInBits() uint16 {
@@ -42,10 +53,16 @@ func (m ModbusPDUReadHoldingRegistersRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUReadHoldingRegistersRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (startingAddress)
+	var startingAddress uint16 = io.ReadUint16(16)
+
+	// Simple Field (quantity)
+	var quantity uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUReadHoldingRegistersRequest(startingAddress, quantity)
 }

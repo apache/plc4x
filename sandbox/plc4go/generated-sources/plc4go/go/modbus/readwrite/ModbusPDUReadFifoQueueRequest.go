@@ -18,11 +18,22 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUReadFifoQueueRequest struct {
 	fifoPointerAddress uint16
 	ModbusPDU
+}
+
+func (m ModbusPDUReadFifoQueueRequest) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitializer {
+	return &ModbusPDUReadFifoQueueRequest{fifoPointerAddress: fifoPointerAddress}
 }
 
 func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
@@ -38,10 +49,13 @@ func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUReadFifoQueueRequest) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (fifoPointerAddress)
+	var fifoPointerAddress uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress)
 }

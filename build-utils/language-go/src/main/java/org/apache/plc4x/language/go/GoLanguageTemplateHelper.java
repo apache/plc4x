@@ -214,44 +214,42 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getReadBufferReadMethodCall(SimpleTypeReference simpleTypeReference, String valueString) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.readBit()";
+                return "io.ReadBit()";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 4) {
-                    return "io.readUnsignedByte(" + integerTypeReference.getSizeInBits() + ")";
-                }
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readUnsignedShort(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint8(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readUnsignedInt(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint16(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readUnsignedLong(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadUint32(" + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.readUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ")";
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "io.ReadUint64(" + integerTypeReference.getSizeInBits() + ")";
+                }
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.readByte(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt8(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.readShort(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt16(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.readInt(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt32(" + integerTypeReference.getSizeInBits() + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.readLong(" + integerTypeReference.getSizeInBits() + ")";
+                    return "io.ReadInt64(" + integerTypeReference.getSizeInBits() + ")";
                 }
-                return "io.readBigInteger(" + integerTypeReference.getSizeInBits() + ")";
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                String type = (floatTypeReference.getSizeInBits() <= 32) ? "Float" : "Double";
-                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float" : "double";
+                String type = (floatTypeReference.getSizeInBits() <= 32)? "ReadFloat32" : "ReadFloat64";
+                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float32" : "float64";
                 String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
                 StringBuilder sb = new StringBuilder("((Supplier<").append(type).append(">) (() -> {");
                 sb.append("\n            return (").append(typeCast).append(") toFloat(io, ").append(
@@ -263,7 +261,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.readString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ", \"" +
                     stringTypeReference.getEncoding() + "\")";
             }
         }

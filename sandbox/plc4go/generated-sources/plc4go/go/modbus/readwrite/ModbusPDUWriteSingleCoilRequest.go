@@ -18,12 +18,23 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUWriteSingleCoilRequest struct {
 	address uint16
 	value   uint16
 	ModbusPDU
+}
+
+func (m ModbusPDUWriteSingleCoilRequest) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUInitializer {
+	return &ModbusPDUWriteSingleCoilRequest{address: address, value: value}
 }
 
 func (m ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
@@ -42,10 +53,16 @@ func (m ModbusPDUWriteSingleCoilRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUWriteSingleCoilRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (address)
+	var address uint16 = io.ReadUint16(16)
+
+	// Simple Field (value)
+	var value uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUWriteSingleCoilRequest(address, value)
 }

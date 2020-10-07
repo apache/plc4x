@@ -18,13 +18,24 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUMaskWriteHoldingRegisterResponse struct {
 	referenceAddress uint16
 	andMask          uint16
 	orMask           uint16
 	ModbusPDU
+}
+
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {
+	return &ModbusPDUMaskWriteHoldingRegisterResponse{referenceAddress: referenceAddress, andMask: andMask, orMask: orMask}
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
@@ -46,10 +57,19 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUMaskWriteHoldingRegisterResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (referenceAddress)
+	var referenceAddress uint16 = io.ReadUint16(16)
+
+	// Simple Field (andMask)
+	var andMask uint16 = io.ReadUint16(16)
+
+	// Simple Field (orMask)
+	var orMask uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask)
 }

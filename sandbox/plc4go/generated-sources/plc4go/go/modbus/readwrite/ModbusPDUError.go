@@ -18,11 +18,22 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUError struct {
 	exceptionCode uint8
 	ModbusPDU
+}
+
+func (m ModbusPDUError) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUError(exceptionCode uint8) ModbusPDUInitializer {
+	return &ModbusPDUError{exceptionCode: exceptionCode}
 }
 
 func (m ModbusPDUError) LengthInBits() uint16 {
@@ -38,10 +49,13 @@ func (m ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUError) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUErrorParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUError) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (exceptionCode)
+	var exceptionCode uint8 = io.ReadUint8(8)
+
+	// Create the instance
+	return NewModbusPDUError(exceptionCode)
 }

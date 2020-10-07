@@ -18,10 +18,21 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUGetComEventLogRequest struct {
 	ModbusPDU
+}
+
+func (m ModbusPDUGetComEventLogRequest) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUGetComEventLogRequest() ModbusPDUInitializer {
+	return &ModbusPDUGetComEventLogRequest{}
 }
 
 func (m ModbusPDUGetComEventLogRequest) LengthInBits() uint16 {
@@ -34,10 +45,10 @@ func (m ModbusPDUGetComEventLogRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUGetComEventLogRequest) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUGetComEventLogRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUGetComEventLogRequest) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Create the instance
+	return NewModbusPDUGetComEventLogRequest()
 }

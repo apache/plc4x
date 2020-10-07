@@ -18,43 +18,71 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusTcpADU struct {
-	transactionIdentifier uint16
-	unitIdentifier        uint8
-	pdu                   ModbusPDU
+    transactionIdentifier uint16
+    unitIdentifier uint8
+    pdu ModbusPDU
+
+}
+
+
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADU {
+    return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
 }
 
 func (m ModbusTcpADU) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Simple field (transactionIdentifier)
-	lengthInBits += 16
+    // Simple field (transactionIdentifier)
+    lengthInBits += 16
 
-	// Const Field (protocolIdentifier)
-	lengthInBits += 16
+    // Const Field (protocolIdentifier)
+    lengthInBits += 16
 
-	// Implicit Field (length)
-	lengthInBits += 16
+    // Implicit Field (length)
+    lengthInBits += 16
 
-	// Simple field (unitIdentifier)
-	lengthInBits += 8
+    // Simple field (unitIdentifier)
+    lengthInBits += 8
 
-	// Simple field (pdu)
-	lengthInBits += m.pdu.LengthInBits()
+    // Simple field (pdu)
+    lengthInBits += m.pdu.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusTcpADU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusTcpADU) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusTcpADUParse(io spi.ReadBuffer, response bool) ModbusTcpADU {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Simple Field (transactionIdentifier)
+    var transactionIdentifier uint16 = io.ReadUint16(16)
+
+    // Const Field (protocolIdentifier)
+    uint16 protocolIdentifier = io.ReadUint16(16)
+    if protocolIdentifier != ModbusTcpADU.PROTOCOLIDENTIFIER {
+        throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier)
+    }
+
+    // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    var length uint16 = io.ReadUint16(16)
+
+    // Simple Field (unitIdentifier)
+    var unitIdentifier uint8 = io.ReadUint8(8)
+
+    // Simple Field (pdu)
+    var pdu ModbusPDU = ModbusPDUIO.staticParse(io, (bool) (response))
+
+    // Create the instance
+    return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu)
 }
 
-func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}

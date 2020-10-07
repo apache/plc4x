@@ -80,7 +80,7 @@ func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNam
 </#if>
 
 <#if type.type?has_content>
-func (e ${type.name}) Parse(io spi.ReadBuffer) {
+func (e *${type.name}) Parse(io spi.ReadBuffer) {
     // TODO: Implement ...
 }
 

@@ -18,37 +18,62 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUWriteFileRecordResponse struct {
-	items []ModbusPDUWriteFileRecordResponseItem
-	ModbusPDU
+    items []ModbusPDUWriteFileRecordResponseItem
+    ModbusPDU
+}
+
+func (m ModbusPDUWriteFileRecordResponse) initialize() ModbusPDU {
+    return m.ModbusPDU
+}
+
+func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordResponseItem) ModbusPDUInitializer {
+    return &ModbusPDUWriteFileRecordResponse{items: items}
 }
 
 func (m ModbusPDUWriteFileRecordResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Implicit Field (byteCount)
-	lengthInBits += 8
+    // Implicit Field (byteCount)
+    lengthInBits += 8
 
-	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
-			lengthInBits += element.LengthInBits()
-		}
-	}
+    // Array field
+    if len(m.items) > 0 {
+        for _, element := range m.items {
+            lengthInBits += element.LengthInBits()
+        }
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUWriteFileRecordResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUWriteFileRecordResponse) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
+func ModbusPDUWriteFileRecordResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
+    var startPos = io.GetPos()
+    var curPos uint16
+
+    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    var byteCount uint8 = io.ReadUint8(8)
+
+    // Array field (items)
+    // Length array
+    var _itemsLength := byteCount
+    List<ModbusPDUWriteFileRecordResponseItem> _itemsList = new LinkedList<>();
+    itemsEndPos := io.GetPos() + _itemsLength;
+    for ;io.getPos() < itemsEndPos; {
+        _itemsList.add(ModbusPDUWriteFileRecordResponseItemIO.staticParse(io));
+    }
+    ModbusPDUWriteFileRecordResponseItem[] items = _itemsList.toArray(new ModbusPDUWriteFileRecordResponseItem[0])
+
+    // Create the instance
+    return NewModbusPDUWriteFileRecordResponse(items)
 }
 
-func (m ModbusPDUWriteFileRecordResponse) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
-}

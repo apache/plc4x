@@ -18,12 +18,23 @@
 //
 package readwrite
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import (
+	"math"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
 
 type ModbusPDUWriteMultipleCoilsResponse struct {
 	startingAddress uint16
 	quantity        uint16
 	ModbusPDU
+}
+
+func (m ModbusPDUWriteMultipleCoilsResponse) initialize() ModbusPDU {
+	return m.ModbusPDU
+}
+
+func NewModbusPDUWriteMultipleCoilsResponse(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
+	return &ModbusPDUWriteMultipleCoilsResponse{startingAddress: startingAddress, quantity: quantity}
 }
 
 func (m ModbusPDUWriteMultipleCoilsResponse) LengthInBits() uint16 {
@@ -42,10 +53,16 @@ func (m ModbusPDUWriteMultipleCoilsResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func (m ModbusPDUWriteMultipleCoilsResponse) Parse(io spi.ReadBuffer) {
-	// TODO: Implement ...
-}
+func ModbusPDUWriteMultipleCoilsResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
+	var startPos = io.GetPos()
+	var curPos uint16
 
-func (m ModbusPDUWriteMultipleCoilsResponse) Serialize(io spi.WriteBuffer) {
-	// TODO: Implement ...
+	// Simple Field (startingAddress)
+	var startingAddress uint16 = io.ReadUint16(16)
+
+	// Simple Field (quantity)
+	var quantity uint16 = io.ReadUint16(16)
+
+	// Create the instance
+	return NewModbusPDUWriteMultipleCoilsResponse(startingAddress, quantity)
 }
