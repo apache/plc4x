@@ -28,6 +28,7 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 
@@ -752,11 +753,87 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
         // For Constant field: "strconv"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
-            (field instanceof ReservedField))) {
+            (field instanceof ConstField))) {
             imports.add("\"strconv\"");
         }
 
         return imports;
     }
+
+    public String getVariableName(Field field) {
+        if(!(field instanceof NamedField)) {
+            return "_";
+        }
+        NamedField namedField = (NamedField) field;
+
+        String name = null;
+        for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
+            if(curField == field) {
+                name = namedField.getName();
+            } else if(name != null) {
+                if(curField instanceof ArrayField) {
+                    ArrayField arrayField = (ArrayField) curField;
+                    if(arrayField.getLoopExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof ChecksumField) {
+                    ChecksumField checksumField = (ChecksumField) curField;
+                    if(checksumField.getChecksumExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof ImplicitField) {
+                    ImplicitField implicitField = (ImplicitField) curField;
+                    if(implicitField.getSerializeExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof ManualArrayField) {
+                    ManualArrayField manualArrayField = (ManualArrayField) curField;
+                    if(manualArrayField.getLengthExpression().contains(name)) {
+                        return name;
+                    }
+                    if(manualArrayField.getLoopExpression().contains(name)) {
+                        return name;
+                    }
+                    if(manualArrayField.getParseExpression().contains(name)) {
+                        return name;
+                    }
+                    if(manualArrayField.getSerializeExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof ManualField) {
+                    ManualField manualField = (ManualField) curField;
+                    if(manualField.getLengthExpression().contains(name)) {
+                        return name;
+                    }
+                    if(manualField.getParseExpression().contains(name)) {
+                        return name;
+                    }
+                    if(manualField.getSerializeExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof OptionalField) {
+                    OptionalField optionalField = (OptionalField) curField;
+                    if(optionalField.getConditionExpression().contains(name)) {
+                        return name;
+                    }
+                } else if(curField instanceof SwitchField) {
+                    SwitchField switchField = (SwitchField) curField;
+                    for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
+                        if(discriminatorExpression.contains(name)) {
+                            return name;
+                        }
+                    }
+                } else if(curField instanceof VirtualField) {
+                    VirtualField virtualField = (VirtualField) curField;
+                    if(virtualField.getValueExpression().contains(name)) {
+                        return name;
+                    }
+                }
+            }
+        }
+
+        return "_";
+    }
+
 
 }
