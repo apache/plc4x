@@ -19,6 +19,7 @@
 package readwrite
 
 import (
+	log "github.com/sirupsen/logrus"
 	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
@@ -29,8 +30,8 @@ type ModbusPDUWriteSingleCoilRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) initialize() ModbusPDU {
-	return m.ModbusPDU
+func (m ModbusPDUWriteSingleCoilRequest) initialize() spi.Message {
+	return spi.Message(m)
 }
 
 func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUInitializer {

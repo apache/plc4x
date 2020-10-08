@@ -21,14 +21,18 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
+
+// Constant values.
+const MODBUSTCPDEFAULTPORT uint16 = 502;
 
 type ModbusConstants struct {
 
 }
 
 
-func NewModbusConstants() ModbusConstants {
+func NewModbusConstants() spi.Message {
     return &ModbusConstants{}
 }
 
@@ -45,13 +49,13 @@ func (m ModbusConstants) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusConstantsParse(io spi.ReadBuffer) ModbusConstants {
+func ModbusConstantsParse(io spi.ReadBuffer) spi.Message {
     var startPos = io.GetPos()
     var curPos uint16
 
     // Const Field (modbusTcpDefaultPort)
-    uint16 modbusTcpDefaultPort = io.ReadUint16(16)
-    if modbusTcpDefaultPort != ModbusConstants.MODBUSTCPDEFAULTPORT {
+    var modbusTcpDefaultPort uint16 = io.ReadUint16(16)
+    if modbusTcpDefaultPort != MODBUSTCPDEFAULTPORT {
         throw new ParseException("Expected constant value " + ModbusConstants.MODBUSTCPDEFAULTPORT + " but got " + modbusTcpDefaultPort)
     }
 

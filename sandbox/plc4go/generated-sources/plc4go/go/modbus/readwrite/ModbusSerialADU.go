@@ -21,6 +21,8 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
+    "reflect"
 )
 
 type ModbusSerialADU struct {
@@ -32,7 +34,7 @@ type ModbusSerialADU struct {
 }
 
 
-func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu ModbusPDU) ModbusSerialADU {
+func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu ModbusPDU) spi.Message {
     return &ModbusSerialADU{transactionId: transactionId, length: length, address: address, pdu: pdu}
 }
 
@@ -61,7 +63,7 @@ func (m ModbusSerialADU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusSerialADUParse(io spi.ReadBuffer, response bool) ModbusSerialADU {
+func ModbusSerialADUParse(io spi.ReadBuffer, response bool) spi.Message {
     var startPos = io.GetPos()
     var curPos uint16
 
@@ -71,8 +73,11 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) ModbusSerialADU {
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
         var reserved uint16 = io.ReadUint16(16)
-        if reserved != (uint16) 0x0000 {
-            LOGGER.info("Expected constant value " + 0x0000 + " but got " + reserved + " for reserved field.")
+        if reserved != uint16(0x0000) {
+            log.WithFields(log.Fields{
+                "expected value": uint16(0x0000),
+                "got value": reserved,
+            }).Info("Got unexpected response.")
         }
     }
 
@@ -83,7 +88,16 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) ModbusSerialADU {
     var address uint8 = io.ReadUint8(8)
 
     // Simple Field (pdu)
-    var pdu ModbusPDU = ModbusPDUIO.staticParse(io, (bool) (response))
+    var _pduMessage spi.Message = ModbusPDUParse(io, bool(response))
+    var pdu ModbusPDU
+    pdu, _pduOk := _pduMessage.(ModbusPDU)
+    if !_pduOk {
+        log.WithFields(log.Fields{
+            "expected type": "ModbusPDU",
+            "got type": reflect.TypeOf(_pduMessage),
+        }).Error("Couldn't cast message")
+        throw new RuntimeException()
+    }
 
     // Create the instance
     return NewModbusSerialADU(transactionId, length, address, pdu)

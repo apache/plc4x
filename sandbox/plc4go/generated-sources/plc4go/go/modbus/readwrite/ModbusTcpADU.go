@@ -21,7 +21,11 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
+
+// Constant values.
+const PROTOCOLIDENTIFIER uint16 = 0x0000;
 
 type ModbusTcpADU struct {
     transactionIdentifier uint16
@@ -31,7 +35,7 @@ type ModbusTcpADU struct {
 }
 
 
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) ModbusTcpADU {
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) spi.Message {
     return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
 }
 
@@ -60,7 +64,7 @@ func (m ModbusTcpADU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io spi.ReadBuffer, response bool) ModbusTcpADU {
+func ModbusTcpADUParse(io spi.ReadBuffer, response bool) spi.Message {
     var startPos = io.GetPos()
     var curPos uint16
 
@@ -68,8 +72,8 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) ModbusTcpADU {
     var transactionIdentifier uint16 = io.ReadUint16(16)
 
     // Const Field (protocolIdentifier)
-    uint16 protocolIdentifier = io.ReadUint16(16)
-    if protocolIdentifier != ModbusTcpADU.PROTOCOLIDENTIFIER {
+    var protocolIdentifier uint16 = io.ReadUint16(16)
+    if protocolIdentifier != PROTOCOLIDENTIFIER {
         throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier)
     }
 
@@ -80,7 +84,16 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) ModbusTcpADU {
     var unitIdentifier uint8 = io.ReadUint8(8)
 
     // Simple Field (pdu)
-    var pdu ModbusPDU = ModbusPDUIO.staticParse(io, (bool) (response))
+    var _pduMessage spi.Message = ModbusPDUParse(io, bool(response))
+    var pdu ModbusPDU
+    pdu, _pduOk := _pduMessage.(ModbusPDU)
+    if !_pduOk {
+        log.WithFields(log.Fields{
+            "expected type": "ModbusPDU",
+            "got type": reflect.TypeOf(_pduMessage),
+        }).Error("Couldn't cast message")
+        throw new RuntimeException()
+    }
 
     // Create the instance
     return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu)

@@ -331,11 +331,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public String getReservedValue(ReservedField reservedField) {
         final String languageTypeName = getLanguageTypeNameForTypeReference(reservedField.getType());
-        if("BigInteger".equals(languageTypeName)) {
-            return "BigInteger.valueOf(" + reservedField.getReferenceValue() + ")";
-        } else {
-            return "(" + languageTypeName + ") " + reservedField.getReferenceValue();
-        }
+        return languageTypeName + "(" + reservedField.getReferenceValue() + ")";
     }
 
     public String toParseExpression(TypedField field, Term term, Argument[] parserArguments) {

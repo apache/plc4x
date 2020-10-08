@@ -19,6 +19,7 @@
 package readwrite
 
 import (
+	log "github.com/sirupsen/logrus"
 	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
@@ -28,8 +29,8 @@ type ModbusPDUError struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUError) initialize() ModbusPDU {
-	return m.ModbusPDU
+func (m ModbusPDUError) initialize() spi.Message {
+	return spi.Message(m)
 }
 
 func NewModbusPDUError(exceptionCode uint8) ModbusPDUInitializer {
