@@ -19,79 +19,70 @@
 package readwrite
 
 import (
-    "math"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
 type ModbusPDUWriteMultipleCoilsRequest struct {
-    startingAddress uint16
-    quantity uint16
-    value []int8
-    ModbusPDU
+	startingAddress uint16
+	quantity        uint16
+	value           []int8
+	ModbusPDU
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) initialize() spi.Message {
-    return spi.Message(m)
+	return spi.Message(m)
 }
 
 func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []int8) ModbusPDUInitializer {
-    return &ModbusPDUWriteMultipleCoilsRequest{startingAddress: startingAddress, quantity: quantity, value: value}
+	return &ModbusPDUWriteMultipleCoilsRequest{startingAddress: startingAddress, quantity: quantity, value: value}
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-    // Simple field (startingAddress)
-    lengthInBits += 16
+	// Simple field (startingAddress)
+	lengthInBits += 16
 
-    // Simple field (quantity)
-    lengthInBits += 16
+	// Simple field (quantity)
+	lengthInBits += 16
 
-    // Implicit Field (byteCount)
-    lengthInBits += 8
+	// Implicit Field (byteCount)
+	lengthInBits += 8
 
-    // Array field
-    if len(m.value) > 0 {
-        lengthInBits += 8 * uint16(len(m.value))
-    }
+	// Array field
+	if len(m.value) > 0 {
+		lengthInBits += 8 * uint16(len(m.value))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-    // Simple Field (startingAddress)
-    var startingAddress uint16 = io.ReadUint16(16)
+	// Simple Field (startingAddress)
+	var startingAddress uint16 = io.ReadUint16(16)
 
-    // Simple Field (quantity)
-    var quantity uint16 = io.ReadUint16(16)
+	// Simple Field (quantity)
+	var quantity uint16 = io.ReadUint16(16)
 
-    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var byteCount uint8 = io.ReadUint8(8)
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var byteCount uint8 = io.ReadUint8(8)
 
-    // Array field (value)
-    // Count array
-    if byteCount > math.MaxUint8 {
-        throw new ParseException("Array count of " + (byteCount) + " exceeds the maximum allowed count of " + math.MaxUint8);
-    }
-    int8[] value;
-    {
-        var itemCount := byteCount
-        value = new int8[itemCount]
-        for curItem := 0; curItem < itemCount; curItem++ {
-            
-            value[curItem] = io.ReadInt8(8)
-        }
-    }
+	// Array field (value)
+	var value []int8
+	// Count array
+	{
+		value := make([]int8, byteCount)
+		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-    // Create the instance
-    return NewModbusPDUWriteMultipleCoilsRequest(startingAddress, quantity, value)
+			value[curItem] = io.ReadInt8(8)
+		}
+	}
+
+	// Create the instance
+	return NewModbusPDUWriteMultipleCoilsRequest(startingAddress, quantity, value), nil
 }
-

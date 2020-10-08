@@ -19,8 +19,6 @@
 package readwrite
 
 import (
-	log "github.com/sirupsen/logrus"
-	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
@@ -50,13 +48,11 @@ func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
-	var startPos = io.GetPos()
-	var curPos uint16
+func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (fifoPointerAddress)
 	var fifoPointerAddress uint16 = io.ReadUint16(16)
 
 	// Create the instance
-	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress)
+	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil
 }

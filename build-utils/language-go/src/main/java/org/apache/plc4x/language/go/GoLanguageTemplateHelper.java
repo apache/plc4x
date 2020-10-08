@@ -272,7 +272,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.writeBit((boolean) " + fieldName + ")";
+                return "io.writeBit((bool) " + fieldName + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -348,7 +348,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         if(term instanceof Literal) {
             if(term instanceof NullLiteral) {
-                return "null";
+                return "nil";
             } else if(term instanceof BooleanLiteral) {
                 return Boolean.toString(((BooleanLiteral) term).getValue());
             } else if(term instanceof NumericLiteral) {
@@ -729,5 +729,34 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return filteredEnumValues.values();
     }
 
+    public List<String> getRequiredImports() {
+        List<String> imports = new ArrayList<>();
+        // At least one reserved field or simple field with complex type
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            (field instanceof ReservedField))) {
+            imports.add("log \"github.com/sirupsen/logrus\"");
+        }
+
+        // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            (field instanceof ConstField) || (field instanceof SwitchField) ||
+                ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
+            imports.add("\"errors\"");
+        }
+
+        // "Fields with complex type": "reflect"
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
+            imports.add("\"reflect\"");
+        }
+
+        // For Constant field: "strconv"
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            (field instanceof ReservedField))) {
+            imports.add("\"strconv\"");
+        }
+
+        return imports;
+    }
 
 }

@@ -19,83 +19,78 @@
 package readwrite
 
 import (
-    "math"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+	"errors"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+	"reflect"
+	"strconv"
 )
 
 // Constant values.
-const PROTOCOLIDENTIFIER uint16 = 0x0000;
+const PROTOCOLIDENTIFIER uint16 = 0x0000
 
 type ModbusTcpADU struct {
-    transactionIdentifier uint16
-    unitIdentifier uint8
-    pdu ModbusPDU
-
+	transactionIdentifier uint16
+	unitIdentifier        uint8
+	pdu                   ModbusPDU
 }
 
-
 func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) spi.Message {
-    return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
+	return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
 }
 
 func (m ModbusTcpADU) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+	var lengthInBits uint16 = 0
 
-    // Simple field (transactionIdentifier)
-    lengthInBits += 16
+	// Simple field (transactionIdentifier)
+	lengthInBits += 16
 
-    // Const Field (protocolIdentifier)
-    lengthInBits += 16
+	// Const Field (protocolIdentifier)
+	lengthInBits += 16
 
-    // Implicit Field (length)
-    lengthInBits += 16
+	// Implicit Field (length)
+	lengthInBits += 16
 
-    // Simple field (unitIdentifier)
-    lengthInBits += 8
+	// Simple field (unitIdentifier)
+	lengthInBits += 8
 
-    // Simple field (pdu)
-    lengthInBits += m.pdu.LengthInBits()
+	// Simple field (pdu)
+	lengthInBits += m.pdu.LengthInBits()
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m ModbusTcpADU) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io spi.ReadBuffer, response bool) spi.Message {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
-    // Simple Field (transactionIdentifier)
-    var transactionIdentifier uint16 = io.ReadUint16(16)
+	// Simple Field (transactionIdentifier)
+	var transactionIdentifier uint16 = io.ReadUint16(16)
 
-    // Const Field (protocolIdentifier)
-    var protocolIdentifier uint16 = io.ReadUint16(16)
-    if protocolIdentifier != PROTOCOLIDENTIFIER {
-        throw new ParseException("Expected constant value " + ModbusTcpADU.PROTOCOLIDENTIFIER + " but got " + protocolIdentifier)
-    }
+	// Const Field (protocolIdentifier)
+	var protocolIdentifier uint16 = io.ReadUint16(16)
+	if protocolIdentifier != PROTOCOLIDENTIFIER {
+		return nil, errors.New("Expected constant value " + strconv.Itoa(int(PROTOCOLIDENTIFIER)) + " but got " + strconv.Itoa(int(protocolIdentifier)))
+	}
 
-    // Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var length uint16 = io.ReadUint16(16)
+	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var _ uint16 = io.ReadUint16(16)
 
-    // Simple Field (unitIdentifier)
-    var unitIdentifier uint8 = io.ReadUint8(8)
+	// Simple Field (unitIdentifier)
+	var unitIdentifier uint8 = io.ReadUint8(8)
 
-    // Simple Field (pdu)
-    var _pduMessage spi.Message = ModbusPDUParse(io, bool(response))
-    var pdu ModbusPDU
-    pdu, _pduOk := _pduMessage.(ModbusPDU)
-    if !_pduOk {
-        log.WithFields(log.Fields{
-            "expected type": "ModbusPDU",
-            "got type": reflect.TypeOf(_pduMessage),
-        }).Error("Couldn't cast message")
-        throw new RuntimeException()
-    }
+	// Simple Field (pdu)
+	_pduMessage, _err := ModbusPDUParse(io, bool(response))
+	if _err != nil {
+		return nil, errors.New("Error parsing simple field 'pdu'. " + _err.Error())
+	}
+	var pdu ModbusPDU
+	pdu, _pduOk := _pduMessage.(ModbusPDU)
+	if !_pduOk {
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_pduMessage).Name() + " to ModbusPDU")
+	}
 
-    // Create the instance
-    return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu)
+	// Create the instance
+	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
 }
-

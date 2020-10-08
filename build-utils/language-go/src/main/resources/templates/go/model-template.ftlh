@@ -63,15 +63,18 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/$
 package ${helper.packageName(outputFlavor)}
 
 import (
-    "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+<#if helper.getRequiredImports()?has_content>
+    <#list helper.getRequiredImports() as import>
+    ${import}
+    </#list>
+</#if>
 )
 <#if type.constFields?has_content>
 
 // Constant values.
     <#list type.constFields as field>
-const ${field.name?upper_case} ${helper.getLanguageTypeNameForField(field)} = ${field.referenceValue};
+const ${field.name?upper_case} ${helper.getLanguageTypeNameForField(field)} = ${field.referenceValue}
     </#list>
 </#if>
 
@@ -231,9 +234,9 @@ func (m ${type.name}) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (<#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if>, error) {
+<#--    var startPos = io.GetPos()
+    var curPos uint16-->
     <#list type.fields as field>
         <#switch field.typeName>
             <#case "array">
@@ -244,63 +247,68 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#if arrayField.loopExpression.contains("curPos")>
     curPos = io.GetPos() - startPos
                 </#if>
+    var ${arrayField.name} []${helper.getLanguageTypeNameForField(field)}
             <#-- If this is a count array, we can directly initialize an array with the given size -->
                 <#if helper.isCountArrayField(field)>
     // Count array
-    if ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} > math.MaxUint8 {
-        throw new ParseException("Array count of " + (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + math.MaxUint8);
-    }
-    ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name};
     {
-        var itemCount := ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}
-        ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[itemCount]
-        for curItem := 0; curItem < itemCount; curItem++ {
-                <#-- When parsing simple types, there is nothing that could require the "lastItem" -->
-            <#if !helper.isSimpleTypeReference(arrayField.type)>boolean lastItem = curItem == (itemCount - 1);</#if>
+        ${arrayField.name} := make([]${helper.getLanguageTypeNameForField(field)}, ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)})
+        for curItem := uint16(0); curItem < uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); curItem++ {
+<#if !helper.isSimpleTypeReference(arrayField.type)>            boolean lastItem = curItem == (itemCount - 1);</#if>
             ${arrayField.name}[curItem] = <#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)<#if helper.isDiscriminatedChildTypeDefinition(helper.getTypeDefinitionForTypeReference(arrayField.type))>.build()</#if></#if>
         }
     }
                 <#-- In all other cases do we have to work with a list, that is later converted to an array -->
-                <#else>
+                <#elseif helper.isLengthArrayField(field)>
                 <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-                    <#if helper.isLengthArrayField(field)>
     // Length array
-    var _${arrayField.name}Length := ${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}
-    List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-    ${arrayField.name}EndPos := io.GetPos() + _${arrayField.name}Length;
-    for ;io.getPos() < ${arrayField.name}EndPos; {
-        _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
+    _${arrayField.name}Length := uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)})
+    _${arrayField.name}EndPos := io.GetPos() + _${arrayField.name}Length
+    for ;io.GetPos() < _${arrayField.name}EndPos; {
+                    <#if helper.isSimpleTypeReference(arrayField.type)>
+                        <#assign simpleTypeReference = arrayField.type>
+        ${arrayField.name} = append(${arrayField.name}, ${helper.getReadBufferReadMethodCall(simpleTypeReference)})
+                    <#else>
+        _message, _err := ${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)
+        if _err != nil {
+            return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+        }
+        var _item ${helper.getLanguageTypeNameForField(field)}
+        _item, _ok := _message.(${arrayField.type.name})
+        if !_ok {
+            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${arrayField.type.name}")
+        }
+        ${arrayField.name} = append(${arrayField.name}, _item)
+                    </#if>
                     <#-- After parsing, update the current position, but only if it's needed -->
-                        <#if arrayField.loopExpression.contains("curPos")>
+                    <#if arrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos;
-                        </#if>
+                    </#if>
     }
                     <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-                    <#elseif helper.isTerminatedArrayField(field)>
+                <#elseif helper.isTerminatedArrayField(field)>
     // Terminated array
-    List<${helper.getLanguageTypeNameForField(arrayField)}> _${arrayField.name}List = new LinkedList<>();
-    for ;!((boolean) (${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)})); {
-        _${arrayField.name}List.add(<#if helper.isSimpleTypeReference(arrayField.type)><#assign simpleTypeReference = arrayField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else>${arrayField.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(arrayField.type, parserArgument?index))}) (${helper.toParseExpression(arrayField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>)
+    for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); {
+                    <#if helper.isSimpleTypeReference(arrayField.type)>
+                        <#assign simpleTypeReference = arrayField.type>
+        ${arrayField.name} = append(${arrayField.name}, ${helper.getReadBufferReadMethodCall(simpleTypeReference)})
+                    <#else>
+        _message, _err := ${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)
+        if _err != nil {
+        }
+        var _item ${helper.getLanguageTypeNameForField(field)}
+        _item, _ok := _message.(${arrayField.type.name})
+        if !_ok {
+            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${arrayField.type.name}")
+        }
+        ${arrayField.name} = append(${arrayField.name}, _item)
+                    </#if>
 
                     <#-- After parsing, update the current position, but only if it's needed -->
-                        <#if arrayField.loopExpression.contains("curPos")>
+                    <#if arrayField.loopExpression.contains("curPos")>
         curPos = io.getPos() - startPos
-                        </#if>
-    }
                     </#if>
-                <#--
-                    Convert the list into an array. However if the array is of a primitive
-                    type we have to iterate over it's elements and explicitly cast them.
-                    Otherwise a simple toArray call is fine.
-                -->
-                    <#if helper.isSimpleTypeReference(arrayField.type)>
-    ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = new ${helper.getLanguageTypeNameForField(field)}[_${arrayField.name}List.size()]
-    for i := 0; i < _${arrayField.name}List.size(); i++ {
-        ${arrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) _${arrayField.name}List.get(i)
     }
-                    <#else>
-    ${helper.getLanguageTypeNameForField(field)}[] ${arrayField.name} = _${arrayField.name}List.toArray(new ${helper.getLanguageTypeNameForField(arrayField)}[0])
-                    </#if>
                 </#if>
                 <#break>
             <#case "checksum">
@@ -315,7 +323,7 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
         ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
         checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
         if checksum != checksumRef {
-            throw new ParseException(String.format("Checksum verification failed. Expected %04X but got %04X", checksumRef & 0xFFFF, checksum & 0xFFFF));
+            return nil, errors.New("Checksum verification failed. Expected " + (checksumRef & 0xFFFF) + " but got " + (checksum & 0xFFFF)")
         }
     }
                 <#break>
@@ -326,7 +334,7 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     // Const Field (${constField.name})
     var ${constField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
     if ${constField.name} != ${constField.name?upper_case} {
-        throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name})
+        return nil, errors.New("Expected constant value " + strconv.Itoa(int(${constField.name?upper_case})) + " but got " + strconv.Itoa(int(${constField.name})))
     }
                 <#break>
             <#case "discriminator">
@@ -463,15 +471,14 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
                 <#else>
                     <#assign complexTypeReference = simpleField.type>
-    var _${simpleField.name}Message spi.Message = ${complexTypeReference.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)
+    _${simpleField.name}Message, _err := ${complexTypeReference.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field '${simpleField.name}'. " + _err.Error())
+    }
     var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)}
     ${simpleField.name}, _${simpleField.name}Ok := _${simpleField.name}Message.(${helper.getLanguageTypeNameForField(field)})
     if !_${simpleField.name}Ok {
-        log.WithFields(log.Fields{
-            "expected type": "${helper.getLanguageTypeNameForField(field)}",
-            "got type": reflect.TypeOf(_${simpleField.name}Message),
-        }).Error("Couldn't cast message")
-        throw new RuntimeException()
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_${simpleField.name}Message).Name() + " to ${helper.getLanguageTypeNameForField(field)}")
     }
                 </#if>
                 <#break>
@@ -481,11 +488,15 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     var initializer ${type.name}Initializer
+    var typeSwitchError error
     switch {
                 <#list switchField.cases as case>
     <#if case.discriminatorValues?has_content>case <#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#sep> && </#sep></#list></#if>:
-        initializer = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+        initializer, typeSwitchError = ${case.name}Parse(io<#if case.parserArguments?has_content>, <#list case.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
                 </#list>
+    }
+    if typeSwitchError != nil {
+        return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
     }
                 <#break>
 
@@ -500,9 +511,9 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
 
     // Create the instance
     <#if helper.isDiscriminatedParentTypeDefinition()>
-    return initializer.initialize(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>)
+    return initializer.initialize(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>), nil
     <#else>
-    return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>)
+    return New${type.name}(<#list type.propertyFields as field>${field.name}<#sep>, </#sep></#list>), nil
     </#if>
 }
 
