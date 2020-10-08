@@ -21,6 +21,7 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
 
 type ModbusPDUWriteMultipleCoilsRequest struct {
@@ -30,8 +31,8 @@ type ModbusPDUWriteMultipleCoilsRequest struct {
     ModbusPDU
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) initialize() ModbusPDU {
-    return m.ModbusPDU
+func (m ModbusPDUWriteMultipleCoilsRequest) initialize() spi.Message {
+    return spi.Message(m)
 }
 
 func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint16, value []int8) ModbusPDUInitializer {

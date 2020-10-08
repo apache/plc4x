@@ -21,6 +21,7 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
 
 type ModbusPDUGetComEventLogResponse struct {
@@ -31,8 +32,8 @@ type ModbusPDUGetComEventLogResponse struct {
     ModbusPDU
 }
 
-func (m ModbusPDUGetComEventLogResponse) initialize() ModbusPDU {
-    return m.ModbusPDU
+func (m ModbusPDUGetComEventLogResponse) initialize() spi.Message {
+    return spi.Message(m)
 }
 
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) ModbusPDUInitializer {

@@ -21,6 +21,7 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
 
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
@@ -32,8 +33,8 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
     ModbusPDU
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) initialize() ModbusPDU {
-    return m.ModbusPDU
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) initialize() spi.Message {
+    return spi.Message(m)
 }
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []int8) ModbusPDUInitializer {

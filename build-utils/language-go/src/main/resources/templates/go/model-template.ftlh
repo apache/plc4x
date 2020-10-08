@@ -65,7 +65,15 @@ package ${helper.packageName(outputFlavor)}
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
+<#if type.constFields?has_content>
+
+// Constant values.
+    <#list type.constFields as field>
+const ${field.name?upper_case} ${helper.getLanguageTypeNameForField(field)} = ${field.referenceValue};
+    </#list>
+</#if>
 
 type ${type.name} struct {
 <#-- Prpoerty fields are fields that require a property in the pojo -->
@@ -83,15 +91,15 @@ type ${type.name} struct {
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
 type ${type.name}Initializer interface {
-    initialize(<#list type.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) ${type.name}
+    initialize(<#list type.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) spi.Message
 }
 <#else>
-<#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) ${type.parentType.name} {
-    return m.${type.parentType.name}
+<#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) spi.Message {
+    return spi.Message(m)
 }
 </#if>
 
-func New${type.name}(<#list type.getAllPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) <#if type.parentType??>${type.parentType.name}Initializer<#else>${type.name}</#if> {
+func New${type.name}(<#list type.getAllPropertyFields() as field>${field.name} <#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
     return &${type.name}{<#list type.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>}
 }
 </#if>
@@ -223,7 +231,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) <#if type.parentType??>${type.parentType.name}Initializer<#else>${type.name}</#if> {
+func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
     var startPos = io.GetPos()
     var curPos uint16
     <#list type.fields as field>
@@ -316,8 +324,8 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign simpleTypeReference = constField.type>
 
     // Const Field (${constField.name})
-    ${helper.getLanguageTypeNameForField(field)} ${constField.name} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
-    if ${constField.name} != ${type.name}.${constField.name?upper_case} {
+    var ${constField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    if ${constField.name} != ${constField.name?upper_case} {
         throw new ParseException("Expected constant value " + ${type.name}.${constField.name?upper_case} + " but got " + ${constField.name})
     }
                 <#break>
@@ -439,7 +447,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     {
         var reserved ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
         if reserved != ${helper.getReservedValue(reservedField)} {
-            LOGGER.info("Expected constant value " + ${reservedField.referenceValue} + " but got " + reserved + " for reserved field.")
+            log.WithFields(log.Fields{
+                "expected value": ${helper.getReservedValue(reservedField)},
+                "got value": reserved,
+            }).Info("Got unexpected response.")
         }
     }
                 <#break>
@@ -447,8 +458,24 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign simpleField = field>
 
     // Simple Field (${simpleField.name})
-    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)} = <#if helper.isSimpleTypeReference(simpleField.type)><#assign simpleTypeReference = simpleField.type>${helper.getReadBufferReadMethodCall(simpleTypeReference)}<#else><#assign complexTypeReference = simpleField.type>${complexTypeReference.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+                <#if helper.isSimpleTypeReference(simpleField.type)>
+                    <#assign simpleTypeReference = simpleField.type>
+    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+                <#else>
+                    <#assign complexTypeReference = simpleField.type>
+    var _${simpleField.name}Message spi.Message = ${complexTypeReference.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}(${helper.toParseExpression(simpleField, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)
+    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)}
+    ${simpleField.name}, _${simpleField.name}Ok := _${simpleField.name}Message.(${helper.getLanguageTypeNameForField(field)})
+    if !_${simpleField.name}Ok {
+        log.WithFields(log.Fields{
+            "expected type": "${helper.getLanguageTypeNameForField(field)}",
+            "got type": reflect.TypeOf(_${simpleField.name}Message),
+        }).Error("Couldn't cast message")
+        throw new RuntimeException()
+    }
+                </#if>
                 <#break>
+
             <#case "switch">
                 <#assign switchField = field>
 

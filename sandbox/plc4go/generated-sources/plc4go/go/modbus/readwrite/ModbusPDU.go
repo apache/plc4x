@@ -19,6 +19,7 @@
 package readwrite
 
 import (
+	log "github.com/sirupsen/logrus"
 	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
@@ -27,7 +28,7 @@ type ModbusPDU struct {
 }
 
 type ModbusPDUInitializer interface {
-	initialize() ModbusPDU
+	initialize() spi.Message
 }
 
 func (m ModbusPDU) LengthInBits() uint16 {
@@ -48,7 +49,7 @@ func (m ModbusPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUParse(io spi.ReadBuffer, response bool) ModbusPDU {
+func ModbusPDUParse(io spi.ReadBuffer, response bool) spi.Message {
 	var startPos = io.GetPos()
 	var curPos uint16
 

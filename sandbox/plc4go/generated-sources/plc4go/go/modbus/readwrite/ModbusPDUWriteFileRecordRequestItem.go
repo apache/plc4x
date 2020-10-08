@@ -21,6 +21,7 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
 
 type ModbusPDUWriteFileRecordRequestItem struct {
@@ -32,7 +33,7 @@ type ModbusPDUWriteFileRecordRequestItem struct {
 }
 
 
-func NewModbusPDUWriteFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []int8) ModbusPDUWriteFileRecordRequestItem {
+func NewModbusPDUWriteFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []int8) spi.Message {
     return &ModbusPDUWriteFileRecordRequestItem{referenceType: referenceType, fileNumber: fileNumber, recordNumber: recordNumber, recordData: recordData}
 }
 
@@ -63,7 +64,7 @@ func (m ModbusPDUWriteFileRecordRequestItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordRequestItemParse(io spi.ReadBuffer) ModbusPDUWriteFileRecordRequestItem {
+func ModbusPDUWriteFileRecordRequestItemParse(io spi.ReadBuffer) spi.Message {
     var startPos = io.GetPos()
     var curPos uint16
 

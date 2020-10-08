@@ -16,3 +16,5 @@
 module plc4x.apache.org/plc4go-modbus-driver/0.8.0
 
 go 1.14
+
+require github.com/sirupsen/logrus v1.7.0

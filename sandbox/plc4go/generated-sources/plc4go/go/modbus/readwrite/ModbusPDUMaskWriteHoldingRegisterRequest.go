@@ -19,6 +19,7 @@
 package readwrite
 
 import (
+	log "github.com/sirupsen/logrus"
 	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
@@ -30,8 +31,8 @@ type ModbusPDUMaskWriteHoldingRegisterRequest struct {
 	ModbusPDU
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterRequest) initialize() ModbusPDU {
-	return m.ModbusPDU
+func (m ModbusPDUMaskWriteHoldingRegisterRequest) initialize() spi.Message {
+	return spi.Message(m)
 }
 
 func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {

@@ -19,6 +19,6 @@
 package spi
 
 type Message interface {
-	lengthInBytes() uint16
-	lengthInBits() uint16
+	LengthInBytes() uint16
+	LengthInBits() uint16
 }

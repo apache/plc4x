@@ -21,6 +21,7 @@ package readwrite
 import (
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+    log "github.com/sirupsen/logrus"
 )
 
 type ModbusPDUWriteFileRecordResponse struct {
@@ -28,8 +29,8 @@ type ModbusPDUWriteFileRecordResponse struct {
     ModbusPDU
 }
 
-func (m ModbusPDUWriteFileRecordResponse) initialize() ModbusPDU {
-    return m.ModbusPDU
+func (m ModbusPDUWriteFileRecordResponse) initialize() spi.Message {
+    return spi.Message(m)
 }
 
 func NewModbusPDUWriteFileRecordResponse(items []ModbusPDUWriteFileRecordResponseItem) ModbusPDUInitializer {
