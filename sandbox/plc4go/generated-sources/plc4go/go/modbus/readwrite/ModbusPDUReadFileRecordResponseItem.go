@@ -19,67 +19,56 @@
 package readwrite
 
 import (
-    "math"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
 type ModbusPDUReadFileRecordResponseItem struct {
-    referenceType uint8
-    data []int8
-
+	referenceType uint8
+	data          []int8
 }
 
-
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) spi.Message {
-    return &ModbusPDUReadFileRecordResponseItem{referenceType: referenceType, data: data}
+	return &ModbusPDUReadFileRecordResponseItem{referenceType: referenceType, data: data}
 }
 
 func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
-    var lengthInBits uint16 = 0
+	var lengthInBits uint16 = 0
 
-    // Implicit Field (dataLength)
-    lengthInBits += 8
+	// Implicit Field (dataLength)
+	lengthInBits += 8
 
-    // Simple field (referenceType)
-    lengthInBits += 8
+	// Simple field (referenceType)
+	lengthInBits += 8
 
-    // Array field
-    if len(m.data) > 0 {
-        lengthInBits += 8 * uint16(len(m.data))
-    }
+	// Array field
+	if len(m.data) > 0 {
+		lengthInBits += 8 * uint16(len(m.data))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) spi.Message {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, error) {
 
-    // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var dataLength uint8 = io.ReadUint8(8)
+	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var dataLength uint8 = io.ReadUint8(8)
 
-    // Simple Field (referenceType)
-    var referenceType uint8 = io.ReadUint8(8)
+	// Simple Field (referenceType)
+	var referenceType uint8 = io.ReadUint8(8)
 
-    // Array field (data)
-    // Length array
-    var _dataLength := (dataLength) - (1)
-    List<int8> _dataList = new LinkedList<>();
-    dataEndPos := io.GetPos() + _dataLength;
-    for ;io.getPos() < dataEndPos; {
-        _dataList.add(io.ReadInt8(8));
-    }
-    int8[] data = new int8[_dataList.size()]
-    for i := 0; i < _dataList.size(); i++ {
-        data[i] = (int8) _dataList.get(i)
-    }
+	// Array field (data)
+	var data []int8
+	// Length array
+	_dataLength := uint16((dataLength) - (1))
+	_dataEndPos := io.GetPos() + _dataLength
+	for io.GetPos() < _dataEndPos {
+		data = append(data, io.ReadInt8(8))
+	}
 
-    // Create the instance
-    return NewModbusPDUReadFileRecordResponseItem(referenceType, data)
+	// Create the instance
+	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
 }
-

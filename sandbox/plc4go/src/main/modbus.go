@@ -13,4 +13,26 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package modbus
+package main
+
+import (
+	"encoding/hex"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/generated-sources/plc4go/go/modbus/readwrite"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+)
+
+func main() {
+	request, err := hex.DecodeString("000a00000006010300000004")
+	if err != nil {
+		// Output an error ...
+	}
+	rb := spi.ReadBufferNew(request)
+	adu, err := readwrite.ModbusTcpADUParse(*rb, false)
+	if err != nil {
+		// Output an error ...
+	}
+	if adu != nil {
+		// Output success ...
+	}
+
+}

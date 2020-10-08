@@ -19,8 +19,6 @@
 package readwrite
 
 import (
-	log "github.com/sirupsen/logrus"
-	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
@@ -58,9 +56,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(io spi.ReadBuffer) ModbusPDUInitializer {
-	var startPos = io.GetPos()
-	var curPos uint16
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (referenceAddress)
 	var referenceAddress uint16 = io.ReadUint16(16)
@@ -72,5 +68,5 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io spi.ReadBuffer) ModbusPDUI
 	var orMask uint16 = io.ReadUint16(16)
 
 	// Create the instance
-	return NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress, andMask, orMask)
+	return NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress, andMask, orMask), nil
 }

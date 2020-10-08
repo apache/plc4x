@@ -19,71 +19,62 @@
 package readwrite
 
 import (
-    "math"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
 type ModbusPDUReadFifoQueueResponse struct {
-    fifoValue []uint16
-    ModbusPDU
+	fifoValue []uint16
+	ModbusPDU
 }
 
 func (m ModbusPDUReadFifoQueueResponse) initialize() spi.Message {
-    return spi.Message(m)
+	return spi.Message(m)
 }
 
 func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) ModbusPDUInitializer {
-    return &ModbusPDUReadFifoQueueResponse{fifoValue: fifoValue}
+	return &ModbusPDUReadFifoQueueResponse{fifoValue: fifoValue}
 }
 
 func (m ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-    // Implicit Field (byteCount)
-    lengthInBits += 16
+	// Implicit Field (byteCount)
+	lengthInBits += 16
 
-    // Implicit Field (fifoCount)
-    lengthInBits += 16
+	// Implicit Field (fifoCount)
+	lengthInBits += 16
 
-    // Array field
-    if len(m.fifoValue) > 0 {
-        lengthInBits += 16 * uint16(len(m.fifoValue))
-    }
+	// Array field
+	if len(m.fifoValue) > 0 {
+		lengthInBits += 16 * uint16(len(m.fifoValue))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var byteCount uint16 = io.ReadUint16(16)
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var _ uint16 = io.ReadUint16(16)
 
-    // Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var fifoCount uint16 = io.ReadUint16(16)
+	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var fifoCount uint16 = io.ReadUint16(16)
 
-    // Array field (fifoValue)
-    // Count array
-    if fifoCount > math.MaxUint8 {
-        throw new ParseException("Array count of " + (fifoCount) + " exceeds the maximum allowed count of " + math.MaxUint8);
-    }
-    uint16[] fifoValue;
-    {
-        var itemCount := fifoCount
-        fifoValue = new uint16[itemCount]
-        for curItem := 0; curItem < itemCount; curItem++ {
-            
-            fifoValue[curItem] = io.ReadUint16(16)
-        }
-    }
+	// Array field (fifoValue)
+	var fifoValue []uint16
+	// Count array
+	{
+		fifoValue := make([]uint16, fifoCount)
+		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 
-    // Create the instance
-    return NewModbusPDUReadFifoQueueResponse(fifoValue)
+			fifoValue[curItem] = io.ReadUint16(16)
+		}
+	}
+
+	// Create the instance
+	return NewModbusPDUReadFifoQueueResponse(fifoValue), nil
 }
-

@@ -19,86 +19,77 @@
 package readwrite
 
 import (
-    "math"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
-    log "github.com/sirupsen/logrus"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
 type ModbusPDUGetComEventLogResponse struct {
-    status uint16
-    eventCount uint16
-    messageCount uint16
-    events []int8
-    ModbusPDU
+	status       uint16
+	eventCount   uint16
+	messageCount uint16
+	events       []int8
+	ModbusPDU
 }
 
 func (m ModbusPDUGetComEventLogResponse) initialize() spi.Message {
-    return spi.Message(m)
+	return spi.Message(m)
 }
 
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) ModbusPDUInitializer {
-    return &ModbusPDUGetComEventLogResponse{status: status, eventCount: eventCount, messageCount: messageCount, events: events}
+	return &ModbusPDUGetComEventLogResponse{status: status, eventCount: eventCount, messageCount: messageCount, events: events}
 }
 
 func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
-    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-    // Implicit Field (byteCount)
-    lengthInBits += 8
+	// Implicit Field (byteCount)
+	lengthInBits += 8
 
-    // Simple field (status)
-    lengthInBits += 16
+	// Simple field (status)
+	lengthInBits += 16
 
-    // Simple field (eventCount)
-    lengthInBits += 16
+	// Simple field (eventCount)
+	lengthInBits += 16
 
-    // Simple field (messageCount)
-    lengthInBits += 16
+	// Simple field (messageCount)
+	lengthInBits += 16
 
-    // Array field
-    if len(m.events) > 0 {
-        lengthInBits += 8 * uint16(len(m.events))
-    }
+	// Array field
+	if len(m.events) > 0 {
+		lengthInBits += 8 * uint16(len(m.events))
+	}
 
-    return lengthInBits
+	return lengthInBits
 }
 
 func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
-    return m.LengthInBits() / 8
+	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) ModbusPDUInitializer {
-    var startPos = io.GetPos()
-    var curPos uint16
+func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var byteCount uint8 = io.ReadUint8(8)
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var byteCount uint8 = io.ReadUint8(8)
 
-    // Simple Field (status)
-    var status uint16 = io.ReadUint16(16)
+	// Simple Field (status)
+	var status uint16 = io.ReadUint16(16)
 
-    // Simple Field (eventCount)
-    var eventCount uint16 = io.ReadUint16(16)
+	// Simple Field (eventCount)
+	var eventCount uint16 = io.ReadUint16(16)
 
-    // Simple Field (messageCount)
-    var messageCount uint16 = io.ReadUint16(16)
+	// Simple Field (messageCount)
+	var messageCount uint16 = io.ReadUint16(16)
 
-    // Array field (events)
-    // Count array
-    if (byteCount) - (6) > math.MaxUint8 {
-        throw new ParseException("Array count of " + ((byteCount) - (6)) + " exceeds the maximum allowed count of " + math.MaxUint8);
-    }
-    int8[] events;
-    {
-        var itemCount := (byteCount) - (6)
-        events = new int8[itemCount]
-        for curItem := 0; curItem < itemCount; curItem++ {
-            
-            events[curItem] = io.ReadInt8(8)
-        }
-    }
+	// Array field (events)
+	var events []int8
+	// Count array
+	{
+		events := make([]int8, (byteCount)-(6))
+		for curItem := uint16(0); curItem < uint16((byteCount)-(6)); curItem++ {
 
-    // Create the instance
-    return NewModbusPDUGetComEventLogResponse(status, eventCount, messageCount, events)
+			events[curItem] = io.ReadInt8(8)
+		}
+	}
+
+	// Create the instance
+	return NewModbusPDUGetComEventLogResponse(status, eventCount, messageCount, events), nil
 }
-

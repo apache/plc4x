@@ -24,6 +24,14 @@ type ReadBuffer struct {
 	bitPos  uint8
 }
 
+func ReadBufferNew(data []uint8) *ReadBuffer {
+	return &ReadBuffer{
+		data:    data,
+		bytePos: 0,
+		bitPos:  0,
+	}
+}
+
 func (rb ReadBuffer) GetPos() uint16 {
 	return 0
 }
