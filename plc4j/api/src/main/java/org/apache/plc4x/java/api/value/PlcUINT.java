@@ -280,11 +280,6 @@ public class PlcUINT extends PlcIECValue<Integer> {
     }
 
     @JsonIgnore
-    public int getUINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[2];
         bytes[0] = (byte)((value >> 8) & 0xff);

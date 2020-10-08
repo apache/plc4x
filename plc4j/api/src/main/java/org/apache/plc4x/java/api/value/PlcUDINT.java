@@ -297,11 +297,6 @@ public class PlcUDINT extends PlcIECValue<Long> {
     }
 
     @JsonIgnore
-    public long getUDINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[4];
         bytes[0] = (byte)((value >> 24) & 0xff);

@@ -296,11 +296,6 @@ public class PlcUSINT extends PlcIECValue<Short> {
     }
 
     @JsonIgnore
-    public short getUSINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte)(value & 0xff);

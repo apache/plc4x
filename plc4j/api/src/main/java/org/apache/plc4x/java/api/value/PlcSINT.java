@@ -276,11 +276,6 @@ public class PlcSINT extends PlcIECValue<Byte> {
     }
 
     @JsonIgnore
-    public byte getSINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte)(value & 0xff);

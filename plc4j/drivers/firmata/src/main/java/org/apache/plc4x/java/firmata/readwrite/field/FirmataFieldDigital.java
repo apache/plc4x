@@ -51,6 +51,11 @@ public class FirmataFieldDigital extends FirmataField {
         return pinMode;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return "BOOL";
+    }
+
     public static FirmataFieldDigital of(String addressString) {
         Matcher matcher = ADDRESS_PATTERN.matcher(addressString);
         if (!matcher.matches()) {

@@ -386,7 +386,12 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                return DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false).getData();
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false);
+                if (buffer != null) {
+                    return buffer.getData();
+                } else {
+                    throw new PlcRuntimeException("Unable to parse PlcValue :- " + ((ModbusField) field).getPlcDataType());
+                }
             }
         } catch (ParseException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);

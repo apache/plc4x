@@ -260,11 +260,6 @@ public class PlcLINT extends PlcIECValue<Long> {
     }
 
     @JsonIgnore
-    public long getLINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[8];
         bytes[0] = (byte)((value >> 56) & 0xff);

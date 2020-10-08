@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.BitSet;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDWORD extends PlcIECValue<Long> {
@@ -181,6 +182,16 @@ public class PlcDWORD extends PlcIECValue<Long> {
         return (value != null) && !value.equals(0);
     }
 
+    @JsonIgnore
+    public boolean[] getBooleanArray() {
+        boolean[] booleanValues = new boolean[32];
+        BitSet bitSet = BitSet.valueOf(new long[]{this.value});
+        for (int i = 0; i < 32; i++) {
+            booleanValues[i] = bitSet.get(i);
+        }
+        return booleanValues;
+    }
+
     @Override
     @JsonIgnore
     public boolean isByte() {
@@ -287,11 +298,6 @@ public class PlcDWORD extends PlcIECValue<Long> {
     @JsonIgnore
     public String getString() {
         return toString();
-    }
-
-    @JsonIgnore
-    public long getDWORD() {
-        return value;
     }
 
     @Override

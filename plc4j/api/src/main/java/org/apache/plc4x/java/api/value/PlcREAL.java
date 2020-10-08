@@ -248,11 +248,6 @@ public class PlcREAL extends PlcIECValue<Float> {
     }
 
     @JsonIgnore
-    public float getREAL() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         int intBits =  Float.floatToIntBits(value);
 	      return new byte[] { (byte) (intBits >> 24), (byte) (intBits >> 16), (byte) (intBits >> 8), (byte) (intBits) };

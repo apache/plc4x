@@ -95,6 +95,10 @@ public class S7Field implements PlcField {
         return dataType;
     }
 
+    public String getPlcDataType() {
+        return dataType.toString();
+    }
+
     public MemoryArea getMemoryArea() {
         return memoryArea;
     }

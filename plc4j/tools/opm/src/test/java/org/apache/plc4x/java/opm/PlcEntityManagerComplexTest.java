@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -245,7 +246,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         return new NoOpPlcFieldHandler();
     }
 
-    private static class NoOpPlcFieldHandler implements PlcFieldHandler {
+    private static class NoOpPlcFieldHandler extends DefaultPlcFieldHandler {
         @Override
         public org.apache.plc4x.java.api.model.PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
             return new org.apache.plc4x.java.api.model.PlcField() {

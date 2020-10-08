@@ -49,55 +49,54 @@ class SimularedFieldHandlerTest implements WithAssertions {
 
     @Test
     void encodeBoolean() {
-        when(plcField.getDataType()).thenReturn((Class) Boolean.class);
         assertThat(SUT.encodeBoolean(plcField, new Boolean[0])).isNotNull();
     }
 
     @Test
     void encodeByte() {
-        when(plcField.getDataType()).thenReturn((Class) Byte.class);
+        when(plcField.getPlcDataType()).thenReturn("Byte");
         assertThat(SUT.encodeByte(plcField, new Byte[0])).isNotNull();
     }
 
     @Test
     void encodeShort() {
-        when(plcField.getDataType()).thenReturn((Class) Short.class);
+        when(plcField.getPlcDataType()).thenReturn("Short");
         assertThat(SUT.encodeShort(plcField, new Short[0])).isNotNull();
     }
 
     @Test
     void encodeInteger() {
-        when(plcField.getDataType()).thenReturn((Class) Integer.class);
+        when(plcField.getPlcDataType()).thenReturn("Integer");
         assertThat(SUT.encodeInteger(plcField, new Integer[0])).isNotNull();
     }
 
     @Test
     void encodeBigInteger() {
-        when(plcField.getDataType()).thenReturn((Class) BigInteger.class);
+        when(plcField.getPlcDataType()).thenReturn("BigInteger");
         assertThat(SUT.encodeBigInteger(plcField, new BigInteger[0])).isNotNull();
     }
 
     @Test
     void encodeLong() {
-        when(plcField.getDataType()).thenReturn((Class) Long.class);
+        when(plcField.getPlcDataType()).thenReturn("Long");
         assertThat(SUT.encodeLong(plcField, new Long[0])).isNotNull();
     }
 
     @Test
     void encodeFloat() {
-        when(plcField.getDataType()).thenReturn((Class) Float.class);
+        when(plcField.getPlcDataType()).thenReturn("Float");
         assertThat(SUT.encodeFloat(plcField, new Float[0])).isNotNull();
     }
 
     @Test
     void encodeBigDecimal() {
-        when(plcField.getDataType()).thenReturn((Class) BigDecimal.class);
+        when(plcField.getPlcDataType()).thenReturn("BigDecimal");
         assertThat(SUT.encodeBigDecimal(plcField, new BigDecimal[0])).isNotNull();
     }
 
     @Test
     void encodeDouble() {
-        when(plcField.getDataType()).thenReturn((Class) Double.class);
+        when(plcField.getPlcDataType()).thenReturn("Double");
         assertThat(SUT.encodeDouble(plcField, new Double[0])).isNotNull();
     }
 
