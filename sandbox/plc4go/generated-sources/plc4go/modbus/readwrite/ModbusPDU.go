@@ -187,7 +187,7 @@ func (m ModbusPDU) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(7, (functionFlag))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	switch m.(type) {
+	switch IModbusPDU(m).(type) {
 	case IModbusPDUError:
 		IModbusPDUError(m).Serialize(io)
 	case IModbusPDUReadDiscreteInputsRequest:
