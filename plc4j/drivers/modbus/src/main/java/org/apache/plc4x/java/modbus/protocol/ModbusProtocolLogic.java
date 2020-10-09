@@ -116,28 +116,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                     // Check if the response was an error response.
                     if (responsePdu instanceof ModbusPDUError) {
                         ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
-                        switch (errorResponse.getExceptionCode()) {
-                            case 1:
-                                // This implies the received function code is not supported.
-                                responseCode = PlcResponseCode.UNSUPPORTED;
-                                break;
-                            case 2:
-                                responseCode = PlcResponseCode.INVALID_ADDRESS;
-                                break;
-                            case 3:
-                                responseCode = PlcResponseCode.INVALID_DATA;
-                                break;
-                            case 4:
-                                responseCode = PlcResponseCode.REMOTE_ERROR;
-                                break;
-                            case 6:
-                                responseCode = PlcResponseCode.REMOTE_BUSY;
-                                break;
-                            default:
-                                // This generally implies that something wen't wrong which we didn't anticipate.
-                                responseCode = PlcResponseCode.INTERNAL_ERROR;
-                                break;
-                        }
+                        responseCode = getErrorCode(errorResponse);
                     } else {
                         try {
                             plcValue = toPlcValue(requestPdu, responsePdu, field.getDataType());
@@ -162,6 +141,25 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
         }
         return future;
+    }
+
+    private PlcResponseCode getErrorCode(ModbusPDUError errorResponse) {
+        switch (errorResponse.getExceptionCode()) {
+            case 1:
+                // This implies the received function code is not supported.
+                return PlcResponseCode.UNSUPPORTED;
+            case 2:
+                return PlcResponseCode.INVALID_ADDRESS;
+            case 3:
+                return PlcResponseCode.INVALID_DATA;
+            case 4:
+                return PlcResponseCode.REMOTE_ERROR;
+            case 6:
+                return PlcResponseCode.REMOTE_BUSY;
+            default:
+                // This generally implies that something wen't wrong which we didn't anticipate.
+                return PlcResponseCode.INTERNAL_ERROR;
+        }
     }
 
     @Override
@@ -195,11 +193,25 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                 .check(p -> p.getTransactionIdentifier() == transactionIdentifier)
                 .unwrap(ModbusTcpADU::getPdu)
                 .handle(responsePdu -> {
-                    // TODO: Check the correct number of elements were written.
-
                     // Try to decode the response data based on the corresponding request.
                     PlcValue plcValue = null;
-                    PlcResponseCode responseCode = PlcResponseCode.OK;
+                    PlcResponseCode responseCode;
+
+                    // Check if the response was an error response.
+                    if (responsePdu instanceof ModbusPDUError) {
+                        ModbusPDUError errorResponse = (ModbusPDUError) responsePdu;
+                        responseCode = getErrorCode(errorResponse);
+                    } else {
+                        // TODO: Check the correct number of elements were written.
+                        if (responsePdu instanceof ModbusPDUWriteSingleCoilResponse) {
+                            ModbusPDUWriteSingleCoilResponse response = (ModbusPDUWriteSingleCoilResponse) responsePdu;
+                            ModbusPDUWriteSingleCoilRequest requestSingleCoil = (ModbusPDUWriteSingleCoilRequest) requestPdu;
+                            if (!((response.getValue() == requestSingleCoil.getValue()) && (response.getAddress() == requestSingleCoil.getAddress()))) {
+                                responseCode = PlcResponseCode.REMOTE_ERROR;
+                            }
+                        }
+                        responseCode = PlcResponseCode.OK;
+                    }
 
                     // Prepare the response.
                     PlcWriteResponse response = new DefaultPlcWriteResponse(request,
@@ -262,12 +274,24 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private ModbusPDU getWriteRequestPdu(PlcField field, PlcValue plcValue) {
         if(field instanceof ModbusFieldCoil) {
             ModbusFieldCoil coil = (ModbusFieldCoil) field;
-            return new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getQuantity(),
+            ModbusPDUWriteMultipleCoilsRequest request = new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getQuantity(),
                 fromPlcValue(field, plcValue));
+            if (request.getQuantity() == coil.getQuantity()) {
+                return request;
+            } else {
+                throw new PlcRuntimeException("Number of requested bytes (" + request.getQuantity() +
+                    ") doesn't match number of requested addresses (" + coil.getQuantity() + ")");
+            }
         } else if(field instanceof ModbusFieldHoldingRegister) {
             ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;
-            return new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
+            ModbusPDUWriteMultipleHoldingRegistersRequest request = new ModbusPDUWriteMultipleHoldingRegistersRequest(holdingRegister.getAddress(),
                 holdingRegister.getLengthWords(), fromPlcValue(field, plcValue));
+            if (request.getValue().length == holdingRegister.getLengthWords()*2) {
+                return request;
+            } else {
+                throw new PlcRuntimeException("Number of requested values (" + request.getValue().length/2 +
+                    ") doesn't match number of requested addresses (" + holdingRegister.getLengthWords() + ")");
+            }
         } else if(field instanceof ModbusExtendedRegister) {
             ModbusExtendedRegister extendedRegister = (ModbusExtendedRegister) field;
             int group1_address = extendedRegister.getAddress() % FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH;
