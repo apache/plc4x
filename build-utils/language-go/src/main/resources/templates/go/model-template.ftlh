@@ -92,10 +92,56 @@ type ${type.name} struct {
 <#if type.parentType??>    ${type.parentType.name}</#if>
 }
 
+type I${type.name} interface {
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    I${type.parentType.name}
+<#else>
+    spi.Message
+</#if>
+<#if helper.isDiscriminatedParentTypeDefinition()>
+    <#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
+    <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+    ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}
+        </#if>
+    </#list>
+</#if>
+    Serialize(io spi.WriteBuffer)
+}
+
+<#if helper.isDiscriminatedChildTypeDefinition()>
+    <#assign discriminatedChildType = type>
+    <#-- @ftlvariable name="discriminatedChildType" type="org.apache.plc4x.plugins.codegenerator.types.definitions.DiscriminatedComplexTypeDefinition" -->
+// Accessors for discriminator values.
+    <#list helper.getDiscriminatorValues(discriminatedChildType) as discriminatorName, discriminatorValue>
+        <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+func (m ${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
+    return <#if discriminatorValue??>${discriminatorValue}<#else>${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}</#if>
+}
+
+        </#if>
+    </#list>
+</#if>
 <#if helper.isDiscriminatedParentTypeDefinition()>
 type ${type.name}Initializer interface {
     initialize(<#list type.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) spi.Message
 }
+
+    <#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
+    <#-- If the discriminator name matches that of another field, suppress the methods generation -->
+        <#if !helper.isNonDiscriminatorField(discriminatorName)>
+// Dummy implementation ...
+func (m ${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
+    return ${helper.getNullValueForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])}
+}
+
+func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLanguageTypeNameForTypeReference(helper.getDiscriminatorTypes()[discriminatorName])} {
+    return m.${discriminatorName?cap_first}()
+}
+
+        </#if>
+    </#list>
 <#else>
 <#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>) spi.Message {
     return spi.Message(m)
@@ -517,155 +563,171 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     </#if>
 }
 
-    <#--if outputFlavor != "passive">
 func (m ${type.name}) Serialize(io spi.WriteBuffer) {
-    int startPos = io.getPos();
-
-        <#list type.fields as field>
-            <#switch field.typeName>
-                <#case "array">
-                    <#assign arrayField = field>
-                    <#assign simpleTypeReference = arrayField.type>
+    <#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
+    <#if arraySizeInBytesHelpers?has_content>
+        <#list arraySizeInBytesHelpers?keys as key>
+            <#assign typeName=arraySizeInBytesHelpers[key]>
+    ${key}ArraySizeInBytes := func(items []${typeName}) uint32 {
+        var sizeInBytes uint32 = 0
+        for _, v := range items {
+            sizeInBytes += uint32(v.LengthInBytes())
+        }
+        return sizeInBytes
+    }
+        </#list>
+    </#if>
+    <#list type.fields as field>
+        <#switch field.typeName>
+            <#case "array">
+                <#assign arrayField = field>
+                <#assign simpleTypeReference = arrayField.type>
 
     // Array Field (${arrayField.name})
-    if(_value.get${arrayField.name?cap_first}() != null) {
-        int itemCount = (int) _value.get${arrayField.name?cap_first}().length;
-        int curItem = 0;
-        for(${helper.getLanguageTypeNameForField(field)} element : _value.get${arrayField.name?cap_first}()) {
-                    <#if helper.isSimpleTypeReference(arrayField.type)>
-                        <#assign simpleTypeReference = arrayField.type>
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "element")};
-                    <#else>
-                        <#assign complexTypeReference = arrayField.type>
-            boolean lastItem = curItem == (itemCount - 1);
-            ${complexTypeReference.name}IO.staticSerialize(io, element<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
+    if m.${arrayField.name} != nil {
+                <#if helper.isComplexTypeReference(arrayField.type) && helper.needsVariable(arrayField, "curItem", true)>
+        itemCount := len(m.${arrayField.name})
+        var curItem uint16 = 0
+                </#if>
+        for _, _element := range m.${arrayField.name} {
+                <#if helper.isSimpleTypeReference(arrayField.type)>
+                    <#assign simpleTypeReference = arrayField.type>
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element")}
+                <#else>
+                    <#assign complexTypeReference = arrayField.type>
+                    <#if helper.needsVariable(arrayField, "curItem", true)>
+            var lastItem bool = curItem == (itemCount - 1)
                     </#if>
-            curItem++;
+            _element.Serialize(io<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+                </#if>
+                    <#if helper.needsVariable(arrayField, "curItem", true)>
+            curItem++
+                    </#if>
         }
     }
-                    <#break>
-                <#case "checksum">
-                    <#assign checksumField = field>
-                    <#assign simpleTypeReference = checksumField.type>
+                <#break>
+            <#case "checksum">
+                <#assign checksumField = field>
+                <#assign simpleTypeReference = checksumField.type>
 
     // Checksum Field (checksum) (Calculated)
     {
-        ${helper.getLanguageTypeNameForField(field)} _checksum = ${helper.getNullValueForTypeReference(checksumField.type)};
+        _checksum := ${helper.getNullValueForTypeReference(checksumField.type)}
         // Create an array of all the bytes written in this message element so far.
-        byte[] checksumRawData = io.getBytes(startPos, io.getPos());
-        _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)});
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")};
+        checksumRawData []uint8 = io.getBytes(startPos, io.getPos())
+        _checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")}
     }
-                    <#break>
-                <#case "const">
-                    <#assign constField = field>
-                    <#assign simpleTypeReference = constField.type>
+                <#break>
+            <#case "const">
+                <#assign constField = field>
+                <#assign simpleTypeReference = constField.type>
 
     // Const Field (${constField.name})
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)};
-                    <#break>
-                <#case "discriminator">
-                    <#assign discriminatorField = field>
-                    <#assign simpleTypeReference = discriminatorField.type>
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)}
+                <#break>
+            <#case "discriminator">
+                <#assign discriminatorField = field>
+                <#assign simpleTypeReference = discriminatorField.type>
 
     // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-    ${helper.getLanguageTypeNameForField(field)} ${discriminatorField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${discriminatorField.name?cap_first}();
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")};
-                    <#break>
-                <#case "enum">
-                    <#assign enumField = field>
+    ${discriminatorField.name} := ${type.name}${discriminatorField.name?cap_first}(m)
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")}
+                <#break>
+            <#case "enum">
+                <#assign enumField = field>
 
     // Enum field (${enumField.name})
-    ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${enumField.name?cap_first}();
-    ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")};
-                    <#break>
-                <#case "implicit">
-                    <#assign implicitField = field>
-                    <#assign simpleTypeReference = implicitField.type>
+    ${enumField.name} := m.${enumField.name}
+    ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(enumField.type), "(" + enumField.name + ".getValue())")}
+                <#break>
+            <#case "implicit">
+                <#assign implicitField = field>
+                <#assign simpleTypeReference = implicitField.type>
 
     // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    ${helper.getLanguageTypeNameForField(field)} ${implicitField.name} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)});
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")};
-                    <#break>
-                <#case "manualArray">
-                    <#assign manualArrayField = field>
+    var ${implicitField.name} ${helper.getLanguageTypeNameForField(field)} = (${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")}
+                <#break>
+            <#case "manualArray">
+                <#assign manualArrayField = field>
 
     // Manual Array Field (${manualArrayField.name})
-    if(_value.get${manualArrayField.name?cap_first}() != null) {
-        for(${helper.getLanguageTypeNameForField(field)} element : _value.get${manualArrayField.name?cap_first}()) {
-            ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)};
+    if m.${manualArrayField.name} != nil {
+        for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name}) {
+            ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
         }
     }
-                    <#break>
-                <#case "manual">
-                    <#assign manualField = field>
+                <#break>
+            <#case "manual">
+                <#assign manualField = field>
 
     // Manual Field (${manualField.name})
-    ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)};
-                    <#break>
-                <#case "optional">
-                    <#assign optionalField = field>
+    ${helper.toSerializationExpression(manualField, manualField.serializeExpression, type.parserArguments)}
+                <#break>
+            <#case "optional">
+                <#assign optionalField = field>
 
     // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
-    ${helper.getLanguageTypeNameForField(field)} ${optionalField.name} = null;
-    if(_value.get${optionalField.name?cap_first}() != null) {
-        ${optionalField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${optionalField.name?cap_first}();
-                    <#if helper.isSimpleTypeReference(optionalField.type)>
-                        <#assign simpleTypeReference = optionalField.type>
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")")};
-                    <#else>
-                        <#assign complexTypeReference = optionalField.type>
-        ${complexTypeReference.name}IO.staticSerialize(io, ${optionalField.name});
-                    </#if>
+    var ${optionalField.name} ${helper.getLanguageTypeNameForField(field)} = nil
+    if m.${optionalField.name} != nil {
+        ${optionalField.name} = m.${optionalField.name}
+                <#if helper.isSimpleTypeReference(optionalField.type)>
+                    <#assign simpleTypeReference = optionalField.type>
+        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + optionalField.name + ")")}
+                <#else>
+                    <#assign complexTypeReference = optionalField.type>
+        ${complexTypeReference.name}IO.staticSerialize(io, ${optionalField.name})
+                </#if>
     }
-                    <#break>
-                <#case "padding">
-                    <#assign paddingField = field>
-                    <#assign simpleTypeReference = paddingField.type>
+                <#break>
+            <#case "padding">
+                <#assign paddingField = field>
+                <#assign simpleTypeReference = paddingField.type>
 
     // Padding Field (padding)
     {
-        int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)});
-        while (_timesPadding-- > 0) {
-            ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)});
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")};
+        int _timesPadding = (int) (${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
+        for ;_timesPadding > 0; _timesPadding-- {
+            ${helper.getLanguageTypeNameForField(field)} _paddingValue = (${helper.getLanguageTypeNameForField(field)}) (${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
+            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")}
         }
     }
-                    <#break>
-                <#case "reserved">
-                    <#assign reservedField = field>
-                    <#assign simpleTypeReference = reservedField.type>
+                <#break>
+            <#case "reserved">
+                <#assign reservedField = field>
+                <#assign simpleTypeReference = reservedField.type>
 
     // Reserved Field (reserved)
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))};
-                    <#break>
-                <#case "simple">
-                    <#assign simpleField = field>
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))}
+                <#break>
+            <#case "simple">
+                <#assign simpleField = field>
 
     // Simple Field (${simpleField.name})
-    ${helper.getLanguageTypeNameForField(field)} ${simpleField.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${simpleField.name?cap_first}();
-                    <#if helper.isSimpleTypeReference(simpleField.type)>
-                        <#assign simpleTypeReference = simpleField.type>
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")};
-                    <#else>
-                        <#assign complexTypeReference = simpleField.type>
-    ${complexTypeReference.name}IO.staticSerialize(io, ${simpleField.name});
-                    </#if>
-                    <#break>
-                <#case "switch">
-                    <#assign switchField = field>
+    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)} = m.${simpleField.name}
+                <#if helper.isSimpleTypeReference(simpleField.type)>
+                    <#assign simpleTypeReference = simpleField.type>
+    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")}
+                <#else>
+                    <#assign complexTypeReference = simpleField.type>
+    ${simpleField.name}.Serialize(io)
+                </#if>
+                <#break>
+            <#case "switch">
+                <#assign switchField = field>
 
-    // Switch field (Depending on the discriminator values, passes the instantiation to a sub-type)
-                    <#list switchField.cases as case>
-    if(_value instanceof ${case.name}) {
-        ${case.name}IO.staticSerialize(io, (${case.name}) _value);
-    }<#sep> else </#sep>
-                    </#list>
-                    <#break>
-                <#case "virtual">
-                    <#break>
-            </#switch>
-        </#list>
+    // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+    switch m.(type) {
+                <#list switchField.cases as case>
+        case I${case.name}:
+            I${case.name}(m).Serialize(io)
+                </#list>
+    }
+                <#break>
+            <#case "virtual">
+                <#break>
+        </#switch>
+    </#list>
 }
-    </#if-->
 </#outputformat>

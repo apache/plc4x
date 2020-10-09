@@ -20,7 +20,6 @@
 package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.text.WordUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
@@ -28,7 +27,6 @@ import org.apache.plc4x.plugins.codegenerator.types.fields.*;
 import org.apache.plc4x.plugins.codegenerator.types.references.*;
 import org.apache.plc4x.plugins.codegenerator.types.terms.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 
@@ -40,8 +38,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
-        return "plc4go." + String.join("", languageName.split("\\-")) + "." +
-            String.join("", protocolName.split("\\-")) + "." +
+        return "plc4go." + String.join("", protocolName.split("\\-")) + "." +
             String.join("", languageFlavorName.split("\\-"));
     }
 
@@ -146,46 +143,19 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 case BIT: {
                     return "false";
                 }
-                case UINT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 16) {
-                        return "0";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "0l";
-                    }
-                    return "null";
-                }
+                case UINT:
                 case INT: {
-                    IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (integerTypeReference.getSizeInBits() <= 32) {
-                        return "0";
-                    }
-                    if (integerTypeReference.getSizeInBits() <= 64) {
-                        return "0l";
-                    }
-                    return "null";
+                    return "0";
                 }
                 case FLOAT: {
-                    FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                    int sizeInBits = ((floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? 1 : 0) +
-                        floatTypeReference.getExponent() + floatTypeReference.getMantissa();
-                    if (sizeInBits <= 32) {
-                        return "0.0f";
-                    }
-                    if (sizeInBits <= 64) {
-                        return "0.0";
-                    }
-                    return "null";
+                    return "0.0";
                 }
                 case STRING: {
-                    return "null";
+                    return "";
                 }
             }
-            return "Hurz";
-        } else {
-            return "null";
         }
+        return "null";
     }
 
     public int getNumBits(SimpleTypeReference simpleTypeReference) {
@@ -273,39 +243,37 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getWriteBufferWriteMethodCall(SimpleTypeReference simpleTypeReference, String fieldName) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT: {
-                return "io.writeBit((bool) " + fieldName + ")";
+                return "io.WriteBit((bool) " + fieldName + ")";
             }
             case UINT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 4) {
-                    return "io.writeUnsignedByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
-                }
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeUnsignedShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.WriteUint8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeUnsignedInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.WriteUint16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeUnsignedLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.WriteUint32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                return "io.writeUnsignedBigInteger(" + integerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + ")";
+                if (integerTypeReference.getSizeInBits() <= 64) {
+                    return "io.WriteUint64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
             }
             case INT: {
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "io.writeByte(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue())";
+                    return "io.WriteInt8(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "io.writeShort(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue())";
+                    return "io.WriteInt16(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "io.writeInt(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue())";
+                    return "io.WriteInt32(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "io.writeLong(" + integerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue())";
+                    return "io.WriteInt64(" + integerTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                return "io.writeBigInteger(" + integerTypeReference.getSizeInBits() + ", BigInteger.valueOf( " + fieldName + "))";
             }
             case FLOAT:
             case UFLOAT: {
@@ -323,8 +291,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.writeString(" + stringTypeReference.getSizeInBits() + ", \"" +
-                    stringTypeReference.getEncoding() + "\", (String) " + fieldName + ")";
+                return "io.WriteString(" + stringTypeReference.getSizeInBits() + ", \"" +
+                    stringTypeReference.getEncoding() + "\", " + fieldName + ")";
             }
         }
         return "Hurz";
@@ -422,7 +390,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         else if("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
-            if(!(vl.getArgs().get(0) instanceof StringLiteral)) {
+            if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
                 throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
             }
             // Get the class and method name
@@ -430,17 +398,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             // Cut off the double-quptes
             methodName = methodName.substring(1, methodName.length() - 1);
             sb.append(methodName).append("(");
-            for(int i = 1; i < vl.getArgs().size(); i++) {
+            for (int i = 1; i < vl.getArgs().size(); i++) {
                 Term arg = vl.getArgs().get(i);
-                if(i > 1) {
+                if (i > 1) {
                     sb.append(", ");
                 }
-                if(arg instanceof VariableLiteral) {
+                if (arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
                     // "io" is the default name of the reader argument which is always available.
                     boolean isParserArg = "io".equals(va.getName());
                     boolean isTypeArg = "_type".equals(va.getName());
-                    if(!isParserArg && !isTypeArg && parserArguments != null) {
+                    if (!isParserArg && !isTypeArg && parserArguments != null) {
                         for (Argument parserArgument : parserArguments) {
                             if (parserArgument.getName().equals(va.getName())) {
                                 isParserArg = true;
@@ -448,11 +416,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                             }
                         }
                     }
-                    if(isParserArg) {
+                    if (isParserArg) {
                         sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
                     }
                     // We have to manually evaluate the type information at code-generation time.
-                    else if(isTypeArg) {
+                    else if (isTypeArg) {
                         String part = va.getChild().getName();
                         switch (part) {
                             case "name":
@@ -471,12 +439,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     } else {
                         sb.append(toVariableParseExpression(field, va, null));
                     }
-                } else if(arg instanceof StringLiteral) {
+                } else if (arg instanceof StringLiteral) {
                     sb.append(((StringLiteral) arg).getValue());
                 }
             }
             sb.append(")");
             return sb.toString();
+        }
+        else if("COUNT".equals(vl.getName())) {
+            return "uint8(len(" + vl.getName() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "") + "))";
         }
         // All uppercase names are not fields, but utility methods.
         else if(vl.getName().equals(vl.getName().toUpperCase())) {
@@ -518,8 +489,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 if(arg instanceof VariableLiteral) {
                     VariableLiteral va = (VariableLiteral) arg;
-                    // "io" and "_value" are always available in every parser.
-                    boolean isSerializerArg = "io".equals(va.getName()) || "_value".equals(va.getName()) || "element".equals(va.getName());
+                    // "io" and "m" are always available in every parser.
+                    boolean isSerializerArg = "io".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
                     boolean isTypeArg = "_type".equals(va.getName());
                     if(!isSerializerArg && !isTypeArg && serialzerArguments != null) {
                         for (Argument serializerArgument : serialzerArguments) {
@@ -557,58 +528,45 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             sb.append(")");
             return sb.toString();
         }
-        // All uppercase names are not fields, but utility methods.
-        else if(vl.getName().equals(vl.getName().toUpperCase())) {
-            StringBuilder sb = new StringBuilder(vl.getName());
-            if(vl.getArgs() != null) {
-                sb.append("(");
-                boolean firstArg = true;
-                for(Term arg : vl.getArgs()) {
-                    if(!firstArg) {
-                        sb.append(", ");
+        else if("COUNT".equals(vl.getName())) {
+            VariableLiteral va = (VariableLiteral) vl.getArgs().get(0);
+            // "io" and "m" are always available in every parser.
+            boolean isSerializerArg = "io".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
+            if(!isSerializerArg && serialzerArguments != null) {
+                for (Argument serializerArgument : serialzerArguments) {
+                    if (serializerArgument.getName().equals(va.getName())) {
+                        isSerializerArg = true;
+                        break;
                     }
-
-                    if(arg instanceof VariableLiteral) {
-                        VariableLiteral va = (VariableLiteral) arg;
-                        boolean isSerializerArg = "io".equals(va.getName());
-                        boolean isTypeArg = "_type".equals(va.getName());
-                        if(!isSerializerArg && !isTypeArg && serialzerArguments != null) {
-                            for (Argument serializerArgument : serialzerArguments) {
-                                if (serializerArgument.getName().equals(va.getName())) {
-                                    isSerializerArg = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if(isSerializerArg) {
-                            sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
-                        } else if(isTypeArg) {
-                            String part = va.getChild().getName();
-                            switch (part) {
-                                case "name":
-                                    sb.append("\"").append(field.getTypeName()).append("\"");
-                                    break;
-                                case "length":
-                                    sb.append("\"").append(((SimpleTypeReference) field).getSizeInBits()).append("\"");
-                                    break;
-                                case "encoding":
-                                    String encoding = ((StringTypeReference) field.getType()).getEncoding();
-                                    // Cut off the single quotes.
-                                    encoding = encoding.substring(1, encoding.length() - 1);
-                                    sb.append("\"").append(encoding).append("\"");
-                                    break;
-                            }
-                        } else {
-                            sb.append(toVariableSerializationExpression(field, va, null));
-                        }
-                    } else if(arg instanceof StringLiteral) {
-                        sb.append(((StringLiteral) arg).getValue());
-                    }
-                    firstArg = false;
                 }
-                sb.append(")");
             }
-            return sb.toString();
+            StringBuilder sb = new StringBuilder();
+            if(isSerializerArg) {
+                sb.append(va.getName() + ((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+            } else {
+                sb.append(toVariableSerializationExpression(field, va, null));
+            }
+            return getLanguageTypeNameForField(field) + "(len(" + sb.toString() + "))";
+        }
+        else if("ARRAY_SIZE_IN_BYTES".equals(vl.getName())) {
+            VariableLiteral va = (VariableLiteral) vl.getArgs().get(0);
+            // "io" and "m" are always available in every parser.
+            boolean isSerializerArg = "io".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
+            if(!isSerializerArg && serialzerArguments != null) {
+                for (Argument serializerArgument : serialzerArguments) {
+                    if (serializerArgument.getName().equals(va.getName())) {
+                        isSerializerArg = true;
+                        break;
+                    }
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            if(isSerializerArg) {
+                sb.append(va.getName()).append(((va.getChild() != null) ? "." + toVariableExpressionRest(va.getChild()) : ""));
+            } else {
+                sb.append(toVariableSerializationExpression(field, va, null));
+            }
+            return getLanguageTypeNameForField(field) + "(" + ((VariableLiteral) vl.getArgs().get(0)).getName() + "ArraySizeInBytes(" + sb.toString() + "))";
         }
         // The synthetic checksumRawData is a local field and should not be accessed as bean property.
         boolean isSerializerArg = "checksumRawData".equals(vl.getName()) || "_value".equals(vl.getName()) || "element".equals(vl.getName());
@@ -639,12 +597,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return "";
             }
         } else {
-            return "_value." + toVariableExpressionRest(vl);
+            return "m." + toVariableExpressionRest(vl);
         }
     }
 
     private String toVariableExpressionRest(VariableLiteral vl) {
-        return "get" + WordUtils.capitalize(vl.getName()) + "()" + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
+        if("lengthInBytes".equals(vl.getName())) {
+            return "LengthInBytes()";
+        } else if("lengthInBits".equals(vl.getName())) {
+            return "LengthInBits()";
+        }
+        return vl.getName() + ((vl.isIndexed() ? "[" + vl.getIndex() + "]" : "") +
             ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : ""));
     }
 
@@ -835,5 +798,95 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "_";
     }
 
+    public boolean needsVariable(ArrayField field, String variableName, boolean serialization) {
+        if(!serialization) {
+            if (field.getLoopExpression().contains(variableName)) {
+                return true;
+            }
+        }
+        if((field.getParams() != null) && (field.getParams().length > 0)){
+            for (Term param : field.getParams()) {
+                if(param.contains(variableName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Right now only the ARRAY_SIZE_IN_BYTES requires helpers to be generated.
+     * Also right now only the Modbus protocol requires this and here the referenced
+     * properties are all also members of the current complex type,
+     * so we'll simplify things here for now.
+     *
+     * @param functionName name of the
+     * @return
+     */
+    public Map<String, String> requiresHelperFunctions(String functionName) {
+        Map<String, String> result = new HashMap<>();
+        // Search for array fields ...
+        for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
+            if(curField instanceof ArrayField) {
+                ArrayField arrayField = (ArrayField) curField;
+                if(arrayField.getType() instanceof ComplexTypeReference) {
+                    result.put(arrayField.getName(), getLanguageTypeNameForField(arrayField));
+                }
+            }
+        }
+        return result;
+    }
+
+    public Term findTerm(Term baseTerm, String name) {
+        if(baseTerm instanceof VariableLiteral) {
+            VariableLiteral variableLiteral = (VariableLiteral) baseTerm;
+            if(variableLiteral.getName().equals(name)) {
+                return variableLiteral;
+            }
+            if(variableLiteral.getChild() != null) {
+                Term found = findTerm(variableLiteral.getChild(), name);
+                if(found != null) {
+                    return found;
+                }
+            }
+            for (Term arg : variableLiteral.getArgs()) {
+                Term found = findTerm(arg, name);
+                if(found != null) {
+                    return found;
+                }
+            }
+        } else if(baseTerm instanceof UnaryTerm) {
+            UnaryTerm unaryTerm = (UnaryTerm) baseTerm;
+            Term found = findTerm(unaryTerm.getA(), name);
+            if(found != null) {
+                return found;
+            }
+        } else if(baseTerm instanceof BinaryTerm) {
+            BinaryTerm binaryTerm = (BinaryTerm) baseTerm;
+            Term found = findTerm(binaryTerm.getA(), name);
+            if(found != null) {
+                return found;
+            }
+            found = findTerm(binaryTerm.getB(), name);
+            if(found != null) {
+                return found;
+            }
+        } else if(baseTerm instanceof TernaryTerm) {
+            TernaryTerm ternaryTerm = (TernaryTerm) baseTerm;
+            Term found = findTerm(ternaryTerm.getA(), name);
+            if(found != null) {
+                return found;
+            }
+            found = findTerm(ternaryTerm.getB(), name);
+            if(found != null) {
+                return found;
+            }
+            found = findTerm(ternaryTerm.getC(), name);
+            if(found != null) {
+                return found;
+            }
+        }
+        return null;
+    }
 
 }

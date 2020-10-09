@@ -17,7 +17,7 @@ package main
 
 import (
 	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/generated-sources/plc4go/go/modbus/readwrite"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/generated-sources/plc4go/modbus/readwrite"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
 )
 
