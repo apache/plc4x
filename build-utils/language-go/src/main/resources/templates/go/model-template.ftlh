@@ -718,7 +718,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer) {
                 <#assign switchField = field>
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    switch m.(type) {
+    switch I${type.name}(m).(type) {
                 <#list switchField.cases as case>
         case I${case.name}:
             I${case.name}(m).Serialize(io)
