@@ -54,7 +54,7 @@
               <protocolName>modbus</protocolName>
               <languageName>go</languageName>
               <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/generated-sources</outputDir>
+              <outputDir>${project.basedir}/internal</outputDir>
             </configuration>
           </execution>
         </executions>
@@ -65,19 +65,13 @@
         <artifactId>mvn-golang-wrapper</artifactId>
         <version>2.3.5</version>
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <packages>
-                <package>main.go</package>
-              </packages>
-              <sources>src,generated-sources</sources>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <moduleMode>true</moduleMode>
+          <!--packages>
+            <package>cmd/modbus/modbus.go</package>
+          </packages-->
+          <sources>.</sources>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -97,6 +91,13 @@
       <artifactId>plc4x-protocols-modbus</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.igormaznitsa</groupId>
+      <artifactId>mvn-golang-wrapper</artifactId>
+      <version>2.3.5</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
