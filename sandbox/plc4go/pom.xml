@@ -65,11 +65,23 @@
         <artifactId>mvn-golang-wrapper</artifactId>
         <version>2.3.5</version>
         <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>run-go-vet</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>vet</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
-          <moduleMode>true</moduleMode>
           <!--packages>
             <package>cmd/modbus/modbus.go</package>
           </packages-->
+          <packages>
+            <package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/modbus</package>
+            <!--package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model</package-->
+          </packages>
           <sources>.</sources>
         </configuration>
       </plugin>
