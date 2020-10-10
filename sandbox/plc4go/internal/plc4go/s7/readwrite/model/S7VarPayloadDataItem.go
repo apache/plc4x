@@ -124,7 +124,7 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer) {
 			transportSize.Serialize(io)
 
 			// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			dataLength := uint16((uint16(len(m.data))) * (spi.InlineIf(((m.transportSize) == (DataTransportSize.BIT)), uint16(1), uint16((spi.InlineIf((m.transportSize.sizeInBits), uint16(8), uint16(1)))))))
+			dataLength := uint16((uint16(len(m.data))) * (spi.InlineIf(((m.transportSize) == (DataTransportSize_BIT)), uint16(1), uint16((spi.InlineIf((m.transportSize.sizeInBits), uint16(8), uint16(1)))))))
 			io.WriteUint16(16, (dataLength))
 
 			// Array Field (data)

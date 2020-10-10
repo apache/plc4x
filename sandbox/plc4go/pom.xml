@@ -45,6 +45,32 @@
         <artifactId>plc4x-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>generate-driver-bacnetip</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>bacnetip</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/internal</outputDir>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-driver-knxnetip</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>knxnetip</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/internal</outputDir>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-driver-modbus</id>
             <phase>generate-sources</phase>
             <goals>
@@ -111,7 +137,7 @@
             <package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/main</package>
             <!--package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model</package-->
           </packages>
-          <sources>.</sources>
+          <sources>${project.basedir}</sources>
         </configuration>
       </plugin>
     </plugins>
@@ -127,6 +153,20 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-bacnetip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-knxnetip</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>

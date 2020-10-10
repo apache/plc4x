@@ -1,0 +1,143 @@
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+package model
+
+import (
+	"errors"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"strconv"
+)
+
+// Constant values.
+const BVLC_BACNETTYPE uint8 = 0x81
+
+// The data-structure of this message
+type BVLC struct {
+}
+
+// The corresponding interface
+type IBVLC interface {
+	spi.Message
+	BvlcFunction() uint8
+	Serialize(io spi.WriteBuffer)
+}
+
+type BVLCInitializer interface {
+	initialize() spi.Message
+}
+
+func BVLCBvlcFunction(m IBVLC) uint8 {
+	return m.BvlcFunction()
+}
+
+func (m BVLC) LengthInBits() uint16 {
+	var lengthInBits uint16 = 0
+
+	// Const Field (bacnetType)
+	lengthInBits += 8
+
+	// Discriminator Field (bvlcFunction)
+	lengthInBits += 8
+
+	// Implicit Field (bvlcLength)
+	lengthInBits += 16
+
+	// Length of sub-type elements will be added by sub-type...
+
+	return lengthInBits
+}
+
+func (m BVLC) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
+}
+
+func BVLCParse(io spi.ReadBuffer) (spi.Message, error) {
+
+	// Const Field (bacnetType)
+	var bacnetType uint8 = io.ReadUint8(8)
+	if bacnetType != BVLC_BACNETTYPE {
+		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BVLC_BACNETTYPE)) + " but got " + strconv.Itoa(int(bacnetType)))
+	}
+
+	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
+	var bvlcFunction uint8 = io.ReadUint8(8)
+
+	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	var bvlcLength uint16 = io.ReadUint16(16)
+
+	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+	var initializer BVLCInitializer
+	var typeSwitchError error
+	switch {
+	case bvlcFunction == 0x00:
+		initializer, typeSwitchError = BVLCResultParse(io)
+	case bvlcFunction == 0x01:
+		initializer, typeSwitchError = BVLCWideBroadcastDistributionTableParse(io)
+	case bvlcFunction == 0x02:
+		initializer, typeSwitchError = BVLCReadBroadcastDistributionTableParse(io)
+	case bvlcFunction == 0x03:
+		initializer, typeSwitchError = BVLCReadBroadcastDistributionTableAckParse(io)
+	case bvlcFunction == 0x04:
+		initializer, typeSwitchError = BVLCForwardedNPDUParse(io, bvlcLength)
+	case bvlcFunction == 0x05:
+		initializer, typeSwitchError = BVLCRegisterForeignDeviceParse(io)
+	case bvlcFunction == 0x06:
+		initializer, typeSwitchError = BVLCReadForeignDeviceTableParse(io)
+	case bvlcFunction == 0x07:
+		initializer, typeSwitchError = BVLCReadForeignDeviceTableAckParse(io)
+	case bvlcFunction == 0x08:
+		initializer, typeSwitchError = BVLCDeleteForeignDeviceTableEntryParse(io)
+	case bvlcFunction == 0x09:
+		initializer, typeSwitchError = BVLCDistributeBroadcastToNetworkParse(io)
+	case bvlcFunction == 0x0A:
+		initializer, typeSwitchError = BVLCOriginalUnicastNPDUParse(io, bvlcLength)
+	case bvlcFunction == 0x0B:
+		initializer, typeSwitchError = BVLCOriginalBroadcastNPDUParse(io, bvlcLength)
+	case bvlcFunction == 0x0C:
+		initializer, typeSwitchError = BVLCSecureBVLLParse(io)
+	}
+	if typeSwitchError != nil {
+		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+	}
+
+	// Create the instance
+	return initializer.initialize(), nil
+}
+
+func (m BVLC) Serialize(io spi.WriteBuffer) {
+	serializeFunc := func(typ interface{}) {
+		if iBVLC, ok := typ.(IBVLC); ok {
+
+			// Const Field (bacnetType)
+			io.WriteUint8(8, 0x81)
+
+			// Discriminator Field (bvlcFunction) (Used as input to a switch field)
+			bvlcFunction := BVLCBvlcFunction(iBVLC)
+			io.WriteUint8(8, (bvlcFunction))
+
+			// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+			bvlcLength := uint16(m.LengthInBytes())
+			io.WriteUint16(16, (bvlcLength))
+
+			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+			iBVLC.Serialize(io)
+		}
+	}
+	serializeFunc(m)
+}

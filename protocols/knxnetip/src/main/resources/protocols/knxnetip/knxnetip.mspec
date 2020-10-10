@@ -312,7 +312,7 @@
     [simple        bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
-    [simple        bit          'error']
+    [simple        bit          'errorFlag']
     [simple        bit          'groupDestinationAddress']
     [simple        uint 3       'hopCount']
     [simple        uint 4       'extendedFrameFormat']
@@ -335,7 +335,7 @@
     [discriminator bit          'notAckFrame']
     [enum          CEMIPriority 'priority']
     [simple        bit          'acknowledgeRequested']
-    [simple        bit          'error']
+    [simple        bit          'errorFlag']
     [typeSwitch 'notAckFrame','standardFrame','polling'
         ['false' CEMIFrameAck
         ]
