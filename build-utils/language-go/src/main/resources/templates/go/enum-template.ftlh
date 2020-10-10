@@ -46,7 +46,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/$
 //
 package ${helper.packageName(outputFlavor)}
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/src/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>
 
