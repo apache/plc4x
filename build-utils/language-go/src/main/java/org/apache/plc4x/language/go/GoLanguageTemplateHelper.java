@@ -221,16 +221,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case FLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                String type = (floatTypeReference.getSizeInBits() <= 32)? "ReadFloat32" : "ReadFloat64";
-                String typeCast = (floatTypeReference.getSizeInBits() <= 32) ? "float32" : "float64";
-                String defaultNull = (floatTypeReference.getSizeInBits() <= 32) ? "0.0f" : "0.0";
-                StringBuilder sb = new StringBuilder("((Supplier<").append(type).append(">) (() -> {");
-                sb.append("\n            return (").append(typeCast).append(") toFloat(io, ").append(
-                    (floatTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) ? "true" : "false")
-                    .append(", ").append(floatTypeReference.getExponent()).append(", ")
-                    .append(floatTypeReference.getMantissa()).append(");");
-                sb.append("\n        })).get()");
-                return sb.toString();
+                if (floatTypeReference.getSizeInBits() <= 32) {
+                    return "io.ReadFloat32(" + floatTypeReference.getSizeInBits() + ")";
+                }
+                if (floatTypeReference.getSizeInBits() <= 64) {
+                    return "io.ReadFloat64(" + floatTypeReference.getSizeInBits() + ")";
+                }
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
@@ -280,16 +276,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case FLOAT:
             case UFLOAT: {
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                StringBuilder sb = new StringBuilder();
-                if(simpleTypeReference.getBaseType() == SimpleTypeReference.SimpleBaseType.FLOAT) {
-                    sb.append("\n        boolean negative = value < 0;");
-                    sb.append("\n        io.writeBit(negative);");
+                if (floatTypeReference.getSizeInBits() <= 32) {
+                    return "io.WriteFloat32(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
                 }
-                sb.append("\n        final int exponent = Math.getExponent(value);");
-                sb.append("\n        final double mantissa = value / Math.pow(2, exponent);");
-                sb.append("\n        io.writeInt(").append(floatTypeReference.getExponent()).append(", exponent);");
-                sb.append("\n        io.writeDouble(").append(floatTypeReference.getMantissa()).append(", mantissa)");
-                return sb.toString().substring(9);
+                if (floatTypeReference.getSizeInBits() <= 64) {
+                    return "io.WriteFloat64(" + floatTypeReference.getSizeInBits() + ", " + fieldName + ")";
+                }
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
@@ -330,7 +322,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 VariableLiteral variableLiteral = (VariableLiteral) term;
                 // If this literal references an Enum type, then we have to output it differently.
                 if(getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
-                    return variableLiteral.getName() + "." + variableLiteral.getChild().getName() +
+                    return variableLiteral.getName() + "_" + variableLiteral.getChild().getName() +
                         ((variableLiteral.getChild().getChild() != null) ?
                             "." + toVariableExpressionRest(variableLiteral.getChild().getChild()) : "");
                 } else {
@@ -787,6 +779,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     for (Term discriminatorExpression : switchField.getDiscriminatorExpressions()) {
                         if(discriminatorExpression.contains(name)) {
                             return name;
+                        }
+                    }
+                    for (DiscriminatedComplexTypeDefinition curCase : switchField.getCases()) {
+                        for (Argument parserArgument : curCase.getParserArguments()) {
+                            if(parserArgument.getName().equals(name)) {
+                                return name;
+                            }
                         }
                     }
                 } else if(curField instanceof VirtualField) {

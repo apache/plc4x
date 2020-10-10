@@ -20,6 +20,8 @@ import (
 )
 
 func main() {
+	//drivers.BacnetIp()
+	drivers.KnxNetIp()
 	drivers.Modbus()
 	//drivers.S7()
 }

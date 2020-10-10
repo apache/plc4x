@@ -67,7 +67,7 @@
           <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData">
             <doNotRepeat>false</doNotRepeat>
             <priority>LOW</priority>
-            <error>true</error>
+            <errorFlag>true</errorFlag>
           </cemiFrame>
         </cemi>
       </TunnelingRequest>
@@ -107,7 +107,7 @@
           <cemiFrame className="org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData">
             <doNotRepeat>true</doNotRepeat>
             <priority>URGENT</priority>
-            <error>false</error>
+            <errorFlag>false</errorFlag>
           </cemiFrame>
         </cemi>
       </TunnelingRequest>
@@ -435,7 +435,7 @@
             <repeated>true</repeated>
             <priority>LOW</priority>
             <acknowledgeRequested>false</acknowledgeRequested>
-            <error>false</error>
+            <errorFlag>false</errorFlag>
             <sourceAddress className="org.apache.plc4x.java.knxnetip.readwrite.KNXAddress">
               <mainGroup>3</mainGroup>
               <middleGroup>6</middleGroup>
