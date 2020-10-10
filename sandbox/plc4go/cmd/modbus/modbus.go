@@ -17,7 +17,7 @@ package main
 
 import (
 	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -27,7 +27,7 @@ func main() {
 		// Output an error ...
 	}
 	rb := spi.ReadBufferNew(request)
-	adu, err := readwrite.ModbusTcpADUParse(*rb, false)
+	adu, err := model.ModbusTcpADUParse(*rb, false)
 	if err != nil {
 		// Output an error ...
 	}
