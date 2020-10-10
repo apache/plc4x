@@ -25,7 +25,7 @@
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.go.GoLanguageTemplateHelper" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
-${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/${type.name}.go
+${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.go
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -44,7 +44,7 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/$
 // specific language governing permissions and limitations
 // under the License.
 //
-package ${helper.packageName(outputFlavor)}
+package model
 
 import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
