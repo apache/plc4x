@@ -82,7 +82,7 @@ func ModbusPDUReadFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, er
 
 func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadFileRecordRequestItem); ok {
 
 			// Simple Field (referenceType)
 			var referenceType uint8 = m.referenceType

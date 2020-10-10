@@ -48,7 +48,7 @@ func (m ModbusPDUReadFifoQueueRequest) Response() bool {
 }
 
 func (m ModbusPDUReadFifoQueueRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitializer {
@@ -79,7 +79,7 @@ func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer
 
 func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
 
 			// Simple Field (fifoPointerAddress)
 			var fifoPointerAddress uint16 = m.fifoPointerAddress

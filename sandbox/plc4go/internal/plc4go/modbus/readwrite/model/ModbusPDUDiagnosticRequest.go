@@ -49,7 +49,7 @@ func (m ModbusPDUDiagnosticRequest) Response() bool {
 }
 
 func (m ModbusPDUDiagnosticRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUDiagnosticRequest(status uint16, eventCount uint16) ModbusPDUInitializer {
@@ -86,7 +86,7 @@ func ModbusPDUDiagnosticRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, e
 
 func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUDiagnosticRequest); ok {
 
 			// Simple Field (status)
 			var status uint16 = m.status

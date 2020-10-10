@@ -48,7 +48,7 @@ func (m ModbusPDUReadDiscreteInputsResponse) Response() bool {
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadDiscreteInputsResponse(value []int8) ModbusPDUInitializer {
@@ -85,7 +85,7 @@ func ModbusPDUReadDiscreteInputsResponseParse(io spi.ReadBuffer) (ModbusPDUIniti
 		value := make([]int8, byteCount)
 		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			value[curItem] = io.ReadInt8(8)
+			value = append(value, io.ReadInt8(8))
 		}
 	}
 
@@ -95,10 +95,10 @@ func ModbusPDUReadDiscreteInputsResponseParse(io spi.ReadBuffer) (ModbusPDUIniti
 
 func (m ModbusPDUReadDiscreteInputsResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadDiscreteInputsResponse); ok {
 
 			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var byteCount uint8 = (uint8(len(m.value)))
+			byteCount := uint8(uint8(len(m.value)))
 			io.WriteUint8(8, (byteCount))
 
 			// Array Field (value)

@@ -49,7 +49,7 @@ func (m ModbusPDUWriteMultipleHoldingRegistersResponse) Response() bool {
 }
 
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
@@ -86,7 +86,7 @@ func ModbusPDUWriteMultipleHoldingRegistersResponseParse(io spi.ReadBuffer) (Mod
 
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUWriteMultipleHoldingRegistersResponse); ok {
 
 			// Simple Field (startingAddress)
 			var startingAddress uint16 = m.startingAddress

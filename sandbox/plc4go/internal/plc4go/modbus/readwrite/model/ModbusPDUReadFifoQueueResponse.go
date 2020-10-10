@@ -48,7 +48,7 @@ func (m ModbusPDUReadFifoQueueResponse) Response() bool {
 }
 
 func (m ModbusPDUReadFifoQueueResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) ModbusPDUInitializer {
@@ -91,7 +91,7 @@ func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitialize
 		fifoValue := make([]uint16, fifoCount)
 		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 
-			fifoValue[curItem] = io.ReadUint16(16)
+			fifoValue = append(fifoValue, io.ReadUint16(16))
 		}
 	}
 
@@ -101,14 +101,14 @@ func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitialize
 
 func (m ModbusPDUReadFifoQueueResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadFifoQueueResponse); ok {
 
 			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var byteCount uint16 = (((uint16(len(m.fifoValue))) * (2)) + (2))
+			byteCount := uint16(((uint16(len(m.fifoValue))) * (2)) + (2))
 			io.WriteUint16(16, (byteCount))
 
 			// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var fifoCount uint16 = (((uint16(len(m.fifoValue))) * (2)) / (2))
+			fifoCount := uint16(((uint16(len(m.fifoValue))) * (2)) / (2))
 			io.WriteUint16(16, (fifoCount))
 
 			// Array Field (fifoValue)

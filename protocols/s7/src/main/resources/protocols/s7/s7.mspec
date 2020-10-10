@@ -442,7 +442,7 @@
     ['0x0F' DATE_AND_TIME    ['X'              , '12'                , 'null'                  , 'null'                               , '56'                   , 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
-[enum int 8 'MemoryArea'             [string 24 'utf8' 'shortName']
+[enum uint 8 'MemoryArea'             [string 24 'utf8' 'shortName']
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]
@@ -454,7 +454,7 @@
     ['0x86' LOCAL_DATA               ['LD']]
 ]
 
-[enum int 8 'DataTransportSize' [bit 'sizeInBits']
+[enum uint 8 'DataTransportSize' [bit 'sizeInBits']
     ['0x00' NULL                ['false']]
     ['0x03' BIT                 ['true']]
     ['0x04' BYTE_WORD_DWORD     ['true']]
@@ -464,7 +464,7 @@
     ['0x09' OCTET_STRING        ['false']]
 ]
 
-[enum int 8 'DataTransportErrorCode'
+[enum uint 8 'DataTransportErrorCode'
     ['0x00' RESERVED               ]
     ['0xFF' OK                     ]
     ['0x03' ACCESS_DENIED          ]
@@ -473,14 +473,14 @@
     ['0x0A' NOT_FOUND              ]
 ]
 
-[enum int 4 'SzlModuleTypeClass'
+[enum uint 4 'SzlModuleTypeClass'
     ['0x0' CPU]
     ['0x4' IM]
     ['0x8' FM]
     ['0xC' CP]
 ]
 
-[enum int 8 'SzlSublist'
+[enum uint 8 'SzlSublist'
     ['0x11' MODULE_IDENTIFICATION]
     ['0x12' CPU_FEATURES]
     ['0x13' USER_MEMORY_AREA]

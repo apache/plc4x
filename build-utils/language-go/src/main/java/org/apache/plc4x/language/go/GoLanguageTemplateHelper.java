@@ -151,11 +151,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     return "0.0";
                 }
                 case STRING: {
-                    return "";
+                    return "\"\"";
                 }
             }
+        } else if(typeReference instanceof ComplexTypeReference) {
+            return "0";
         }
-        return "null";
+        return "nil";
     }
 
     public int getNumBits(SimpleTypeReference simpleTypeReference) {
@@ -367,7 +369,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 Term a = tt.getA();
                 Term b = tt.getB();
                 Term c = tt.getC();
-                return "((" +  toExpression(field, a, variableExpressionGenerator) + ") ? " + toExpression(field, b, variableExpressionGenerator) + " : " + toExpression(field, c, variableExpressionGenerator) + ")";
+                return "spi.InlineIf((" +  toExpression(field, a, variableExpressionGenerator) + "), uint16(" + toExpression(field, b, variableExpressionGenerator) + "), uint16(" + toExpression(field, c, variableExpressionGenerator) + "))";
             } else {
                 throw new RuntimeException("Unsupported ternary operation type " + tt.getOperation());
             }
@@ -380,12 +382,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         VariableLiteral vl = (VariableLiteral) term;
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         if("CAST".equals(vl.getName())) {
-            StringBuilder sb = new StringBuilder(vl.getName());
             if((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
                 throw new RuntimeException("A CAST expression expects exactly two arguments.");
             }
-            sb.append("(").append(toVariableParseExpression(field, vl.getArgs().get(0), parserArguments))
-                .append(", ").append(((VariableLiteral) vl.getArgs().get(1)).getName()).append(".class)");
+            VariableLiteral type = (VariableLiteral) vl.getArgs().get(1);
+            StringBuilder sb = new StringBuilder(type.getName());
+            sb.append("(").append(toVariableParseExpression(field, vl.getArgs().get(0), parserArguments)).append(")");
             return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpressionRest(vl.getChild()) : "");
         }
         else if("STATIC_CALL".equals(vl.getName())) {
@@ -677,7 +679,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             String typeName = valueString.substring(0, valueString.indexOf('.'));
             String constantName = valueString.substring(valueString.indexOf('.') + 1);
-            return constantName;
+            return typeName + "_" + constantName;
         } else {
             return escapeValue(typeReference, valueString);
         }
@@ -710,6 +712,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
         // "Fields with complex type": "reflect"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            !(field instanceof EnumField) &&
             ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
             imports.add("\"reflect\"");
         }
@@ -792,6 +795,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         return name;
                     }
                 }
+                if(curField.getParams() != null) {
+                    for (Term param : curField.getParams()) {
+                        if(param.contains(name)) {
+                            return name;
+                        }
+                    }
+                }
             }
         }
 
@@ -825,16 +835,58 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
      */
     public Map<String, String> requiresHelperFunctions(String functionName) {
         Map<String, String> result = new HashMap<>();
-        // Search for array fields ...
+        boolean usesFunction = false;
+        // As the ARRAY_SIZE_IN_BYTES only applies to ArrayFields, search for these
         for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
             if(curField instanceof ArrayField) {
                 ArrayField arrayField = (ArrayField) curField;
-                if(arrayField.getType() instanceof ComplexTypeReference) {
-                    result.put(arrayField.getName(), getLanguageTypeNameForField(arrayField));
+                if(arrayField.getLoopExpression().contains(functionName)) {
+                    usesFunction = true;
+                }
+                result.put(arrayField.getName(), getLanguageTypeNameForField(arrayField));
+            } else if(curField instanceof ImplicitField) {
+                ImplicitField implicitField = (ImplicitField) curField;
+                if(implicitField.getSerializeExpression().contains(functionName)) {
+                    usesFunction = true;
                 }
             }
         }
-        return result;
+        if(usesFunction) {
+            return result;
+        } else {
+            return Collections.emptyMap();
+        }
+    }
+
+    public boolean requiresStartPosAndCurPos() {
+        for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
+            if(requiresVariable(curField, "curPos")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresVariable(Field curField, String variable) {
+        if(curField instanceof ArrayField) {
+            ArrayField arrayField = (ArrayField) curField;
+            if(arrayField.getLoopExpression().contains(variable)) {
+                return true;
+            }
+        } else if(curField instanceof OptionalField) {
+            OptionalField optionalField = (OptionalField) curField;
+            if(optionalField.getConditionExpression().contains(variable)) {
+                return true;
+            }
+        }
+        if(curField.getParams() != null) {
+            for (Term paramTerm : curField.getParams()) {
+                if (paramTerm.contains(variable)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Term findTerm(Term baseTerm, String name) {

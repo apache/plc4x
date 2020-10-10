@@ -49,7 +49,7 @@ func (m ModbusPDUReadDiscreteInputsRequest) Response() bool {
 }
 
 func (m ModbusPDUReadDiscreteInputsRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadDiscreteInputsRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
@@ -86,7 +86,7 @@ func ModbusPDUReadDiscreteInputsRequestParse(io spi.ReadBuffer) (ModbusPDUInitia
 
 func (m ModbusPDUReadDiscreteInputsRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadDiscreteInputsRequest); ok {
 
 			// Simple Field (startingAddress)
 			var startingAddress uint16 = m.startingAddress

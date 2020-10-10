@@ -57,6 +57,19 @@
               <outputDir>${project.basedir}/internal</outputDir>
             </configuration>
           </execution>
+          <execution>
+            <id>generate-driver-s7</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>s7</protocolName>
+              <languageName>go</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>${project.basedir}/internal</outputDir>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -66,6 +79,22 @@
         <version>2.3.5</version>
         <extensions>true</extensions>
         <executions>
+          <execution>
+            <id>default-fix</id>
+            <!-- Move the execution of this after the code generation -->
+            <phase>process-sources</phase>
+            <goals>
+              <goal>fix</goal>
+            </goals>
+          </execution>
+          <!-- Move the execution of this after the code generation -->
+          <execution>
+            <id>default-get</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>get</goal>
+            </goals>
+          </execution>
           <execution>
             <id>run-go-vet</id>
             <phase>verify</phase>
@@ -79,7 +108,7 @@
             <package>cmd/modbus/modbus.go</package>
           </packages-->
           <packages>
-            <package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/modbus</package>
+            <package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/main</package>
             <!--package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model</package-->
           </packages>
           <sources>.</sources>
@@ -101,6 +130,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
+      <version>0.8.0-SNAPSHOT</version>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-s7</artifactId>
       <version>0.8.0-SNAPSHOT</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>

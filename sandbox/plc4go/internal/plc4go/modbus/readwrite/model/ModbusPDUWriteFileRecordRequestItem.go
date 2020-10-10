@@ -96,7 +96,7 @@ func ModbusPDUWriteFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, e
 
 func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUWriteFileRecordRequestItem); ok {
 
 			// Simple Field (referenceType)
 			var referenceType uint8 = m.referenceType
@@ -111,7 +111,7 @@ func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 			io.WriteUint16(16, (recordNumber))
 
 			// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var recordLength uint16 = ((uint16(len(m.recordData))) / (2))
+			recordLength := uint16((uint16(len(m.recordData))) / (2))
 			io.WriteUint16(16, (recordLength))
 
 			// Array Field (recordData)

@@ -52,7 +52,7 @@ type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForType
 
 const(
 <#list type.enumValues as enumValue>
-    ${enumValue.name} ${type.name} = ${enumValue.value}
+    ${type.name}_${enumValue.name} ${type.name} = ${enumValue.value}
 </#list>
 )
 
@@ -72,7 +72,7 @@ func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNam
         }
         </#list>
         default: {
-            return 0
+            return ${helper.getNullValueForTypeReference(type.getConstantType(constantName))}
         }
     }
 }
@@ -80,8 +80,9 @@ func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNam
 </#if>
 
 <#if type.type?has_content>
-func (e *${type.name}) Parse(io spi.ReadBuffer) {
+func ${type.name}Parse(io spi.ReadBuffer) (${type.name}, error) {
     // TODO: Implement ...
+    return 0, nil
 }
 
 func (e ${type.name}) Serialize(io spi.WriteBuffer) {

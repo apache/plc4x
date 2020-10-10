@@ -25,7 +25,7 @@ import (
 )
 
 // Constant values.
-const MODBUSTCPDEFAULTPORT uint16 = 502
+const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = 502
 
 // The data-structure of this message
 type ModbusConstants struct {
@@ -58,8 +58,8 @@ func ModbusConstantsParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (modbusTcpDefaultPort)
 	var modbusTcpDefaultPort uint16 = io.ReadUint16(16)
-	if modbusTcpDefaultPort != MODBUSTCPDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(MODBUSTCPDEFAULTPORT)) + " but got " + strconv.Itoa(int(modbusTcpDefaultPort)))
+	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
+		return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusConstants_MODBUSTCPDEFAULTPORT)) + " but got " + strconv.Itoa(int(modbusTcpDefaultPort)))
 	}
 
 	// Create the instance
@@ -68,7 +68,7 @@ func ModbusConstantsParse(io spi.ReadBuffer) (spi.Message, error) {
 
 func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusConstants); ok {
 
 			// Const Field (modbusTcpDefaultPort)
 			io.WriteUint16(16, 502)

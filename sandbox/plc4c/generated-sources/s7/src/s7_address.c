@@ -97,7 +97,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_parse(plc4c_spi_read_buffer* io
                     
     // Enum field (area)
     plc4c_s7_read_write_memory_area area = plc4c_s7_read_write_memory_area_null();
-    _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &area);
+    _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &area);
     if(_res != OK) {
       return _res;
     }
@@ -171,7 +171,7 @@ plc4c_return_code plc4c_s7_read_write_s7_address_serialize(plc4c_spi_write_buffe
       }
 
       // Enum field (area)
-      _res = plc4c_spi_write_signed_byte(io, 8, _message->s7_address_any_area);
+      _res = plc4c_spi_write_unsigned_byte(io, 8, _message->s7_address_any_area);
       if(_res != OK) {
         return _res;
       }

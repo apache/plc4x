@@ -47,7 +47,7 @@ func (m ModbusPDUGetComEventLogRequest) Response() bool {
 }
 
 func (m ModbusPDUGetComEventLogRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUGetComEventLogRequest() ModbusPDUInitializer {
@@ -72,7 +72,7 @@ func ModbusPDUGetComEventLogRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 
 func (m ModbusPDUGetComEventLogRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUGetComEventLogRequest); ok {
 		}
 	}
 	serializeFunc(m)

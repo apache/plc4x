@@ -51,7 +51,7 @@ func (m ModbusPDUGetComEventLogResponse) Response() bool {
 }
 
 func (m ModbusPDUGetComEventLogResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) ModbusPDUInitializer {
@@ -106,7 +106,7 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 		events := make([]int8, (byteCount)-(6))
 		for curItem := uint16(0); curItem < uint16((byteCount)-(6)); curItem++ {
 
-			events[curItem] = io.ReadInt8(8)
+			events = append(events, io.ReadInt8(8))
 		}
 	}
 
@@ -116,10 +116,10 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 
 func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUGetComEventLogResponse); ok {
 
 			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var byteCount uint8 = ((uint8(len(m.events))) + (6))
+			byteCount := uint8((uint8(len(m.events))) + (6))
 			io.WriteUint8(8, (byteCount))
 
 			// Simple Field (status)

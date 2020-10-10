@@ -23,34 +23,34 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 type ModbusDataType uint8
 
 const (
-	NULL           ModbusDataType = 00
-	BOOL           ModbusDataType = 01
-	BYTE           ModbusDataType = 10
-	WORD           ModbusDataType = 11
-	DWORD          ModbusDataType = 12
-	LWORD          ModbusDataType = 13
-	SINT           ModbusDataType = 20
-	INT            ModbusDataType = 21
-	DINT           ModbusDataType = 22
-	LINT           ModbusDataType = 23
-	USINT          ModbusDataType = 24
-	UINT           ModbusDataType = 25
-	UDINT          ModbusDataType = 26
-	ULINT          ModbusDataType = 27
-	REAL           ModbusDataType = 30
-	LREAL          ModbusDataType = 31
-	TIME           ModbusDataType = 40
-	LTIME          ModbusDataType = 41
-	DATE           ModbusDataType = 50
-	LDATE          ModbusDataType = 51
-	TIME_OF_DAY    ModbusDataType = 60
-	LTIME_OF_DAY   ModbusDataType = 61
-	DATE_AND_TIME  ModbusDataType = 70
-	LDATE_AND_TIME ModbusDataType = 71
-	CHAR           ModbusDataType = 80
-	WCHAR          ModbusDataType = 81
-	STRING         ModbusDataType = 82
-	WSTRING        ModbusDataType = 83
+	ModbusDataType_NULL           ModbusDataType = 00
+	ModbusDataType_BOOL           ModbusDataType = 01
+	ModbusDataType_BYTE           ModbusDataType = 10
+	ModbusDataType_WORD           ModbusDataType = 11
+	ModbusDataType_DWORD          ModbusDataType = 12
+	ModbusDataType_LWORD          ModbusDataType = 13
+	ModbusDataType_SINT           ModbusDataType = 20
+	ModbusDataType_INT            ModbusDataType = 21
+	ModbusDataType_DINT           ModbusDataType = 22
+	ModbusDataType_LINT           ModbusDataType = 23
+	ModbusDataType_USINT          ModbusDataType = 24
+	ModbusDataType_UINT           ModbusDataType = 25
+	ModbusDataType_UDINT          ModbusDataType = 26
+	ModbusDataType_ULINT          ModbusDataType = 27
+	ModbusDataType_REAL           ModbusDataType = 30
+	ModbusDataType_LREAL          ModbusDataType = 31
+	ModbusDataType_TIME           ModbusDataType = 40
+	ModbusDataType_LTIME          ModbusDataType = 41
+	ModbusDataType_DATE           ModbusDataType = 50
+	ModbusDataType_LDATE          ModbusDataType = 51
+	ModbusDataType_TIME_OF_DAY    ModbusDataType = 60
+	ModbusDataType_LTIME_OF_DAY   ModbusDataType = 61
+	ModbusDataType_DATE_AND_TIME  ModbusDataType = 70
+	ModbusDataType_LDATE_AND_TIME ModbusDataType = 71
+	ModbusDataType_CHAR           ModbusDataType = 80
+	ModbusDataType_WCHAR          ModbusDataType = 81
+	ModbusDataType_STRING         ModbusDataType = 82
+	ModbusDataType_WSTRING        ModbusDataType = 83
 )
 
 func (e ModbusDataType) GetDataTypeSize() uint8 {
@@ -174,8 +174,9 @@ func (e ModbusDataType) GetDataTypeSize() uint8 {
 	}
 }
 
-func (e *ModbusDataType) Parse(io spi.ReadBuffer) {
+func ModbusDataTypeParse(io spi.ReadBuffer) (ModbusDataType, error) {
 	// TODO: Implement ...
+	return 0, nil
 }
 
 func (e ModbusDataType) Serialize(io spi.WriteBuffer) {
