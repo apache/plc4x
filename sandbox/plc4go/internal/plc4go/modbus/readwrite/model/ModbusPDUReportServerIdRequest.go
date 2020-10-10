@@ -47,7 +47,7 @@ func (m ModbusPDUReportServerIdRequest) Response() bool {
 }
 
 func (m ModbusPDUReportServerIdRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReportServerIdRequest() ModbusPDUInitializer {
@@ -72,7 +72,7 @@ func ModbusPDUReportServerIdRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 
 func (m ModbusPDUReportServerIdRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReportServerIdRequest); ok {
 		}
 	}
 	serializeFunc(m)

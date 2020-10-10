@@ -26,7 +26,7 @@ import (
 )
 
 // Constant values.
-const PROTOCOLIDENTIFIER uint16 = 0x0000
+const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // The data-structure of this message
 type ModbusTcpADU struct {
@@ -77,8 +77,8 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Const Field (protocolIdentifier)
 	var protocolIdentifier uint16 = io.ReadUint16(16)
-	if protocolIdentifier != PROTOCOLIDENTIFIER {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(PROTOCOLIDENTIFIER)) + " but got " + strconv.Itoa(int(protocolIdentifier)))
+	if protocolIdentifier != ModbusTcpADU_PROTOCOLIDENTIFIER {
+		return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusTcpADU_PROTOCOLIDENTIFIER)) + " but got " + strconv.Itoa(int(protocolIdentifier)))
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -104,7 +104,7 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
 func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusTcpADU); ok {
 
 			// Simple Field (transactionIdentifier)
 			var transactionIdentifier uint16 = m.transactionIdentifier
@@ -114,7 +114,7 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
 			io.WriteUint16(16, 0x0000)
 
 			// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var length uint16 = ((m.pdu.LengthInBytes()) + (1))
+			length := uint16((m.pdu.LengthInBytes()) + (1))
 			io.WriteUint16(16, (length))
 
 			// Simple Field (unitIdentifier)

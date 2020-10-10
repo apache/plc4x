@@ -49,7 +49,7 @@ func (m ModbusPDUWriteSingleCoilRequest) Response() bool {
 }
 
 func (m ModbusPDUWriteSingleCoilRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUInitializer {
@@ -86,7 +86,7 @@ func ModbusPDUWriteSingleCoilRequestParse(io spi.ReadBuffer) (ModbusPDUInitializ
 
 func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUWriteSingleCoilRequest); ok {
 
 			// Simple Field (address)
 			var address uint16 = m.address

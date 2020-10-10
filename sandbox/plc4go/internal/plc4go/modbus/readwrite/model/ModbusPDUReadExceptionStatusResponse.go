@@ -48,7 +48,7 @@ func (m ModbusPDUReadExceptionStatusResponse) Response() bool {
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadExceptionStatusResponse(value uint8) ModbusPDUInitializer {
@@ -79,7 +79,7 @@ func ModbusPDUReadExceptionStatusResponseParse(io spi.ReadBuffer) (ModbusPDUInit
 
 func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
 
 			// Simple Field (value)
 			var value uint8 = m.value

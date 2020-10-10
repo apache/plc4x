@@ -50,7 +50,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {
@@ -93,7 +93,7 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(io spi.ReadBuffer) (ModbusPD
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUMaskWriteHoldingRegisterResponse); ok {
 
 			// Simple Field (referenceAddress)
 			var referenceAddress uint16 = m.referenceAddress

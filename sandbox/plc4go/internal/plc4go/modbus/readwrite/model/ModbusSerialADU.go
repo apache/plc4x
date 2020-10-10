@@ -107,7 +107,7 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error)
 
 func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusSerialADU); ok {
 
 			// Simple Field (transactionId)
 			var transactionId uint16 = m.transactionId

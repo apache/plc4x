@@ -36,7 +36,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
 
   // Enum field (typeClass)
   plc4c_s7_read_write_szl_module_type_class typeClass = plc4c_s7_read_write_szl_module_type_class_null();
-  _res = plc4c_spi_read_signed_byte(io, 4, (int8_t*) &typeClass);
+  _res = plc4c_spi_read_unsigned_byte(io, 4, (uint8_t*) &typeClass);
   if(_res != OK) {
     return _res;
   }
@@ -52,7 +52,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_parse(plc4c_spi_read_buffer* io, pl
 
   // Enum field (sublistList)
   plc4c_s7_read_write_szl_sublist sublistList = plc4c_s7_read_write_szl_sublist_null();
-  _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &sublistList);
+  _res = plc4c_spi_read_unsigned_byte(io, 8, (uint8_t*) &sublistList);
   if(_res != OK) {
     return _res;
   }
@@ -65,7 +65,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* i
   plc4c_return_code _res = OK;
 
   // Enum field (typeClass)
-  _res = plc4c_spi_write_signed_byte(io, 4, _message->type_class);
+  _res = plc4c_spi_write_unsigned_byte(io, 4, _message->type_class);
   if(_res != OK) {
     return _res;
   }
@@ -77,7 +77,7 @@ plc4c_return_code plc4c_s7_read_write_szl_id_serialize(plc4c_spi_write_buffer* i
   }
 
   // Enum field (sublistList)
-  _res = plc4c_spi_write_signed_byte(io, 8, _message->sublist_list);
+  _res = plc4c_spi_write_unsigned_byte(io, 8, _message->sublist_list);
   if(_res != OK) {
     return _res;
   }

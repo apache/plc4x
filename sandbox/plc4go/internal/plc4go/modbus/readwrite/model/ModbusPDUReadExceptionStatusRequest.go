@@ -47,7 +47,7 @@ func (m ModbusPDUReadExceptionStatusRequest) Response() bool {
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadExceptionStatusRequest() ModbusPDUInitializer {
@@ -72,7 +72,7 @@ func ModbusPDUReadExceptionStatusRequestParse(io spi.ReadBuffer) (ModbusPDUIniti
 
 func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadExceptionStatusRequest); ok {
 		}
 	}
 	serializeFunc(m)

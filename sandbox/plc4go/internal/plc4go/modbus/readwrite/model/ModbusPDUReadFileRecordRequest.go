@@ -50,7 +50,7 @@ func (m ModbusPDUReadFileRecordRequest) Response() bool {
 }
 
 func (m ModbusPDUReadFileRecordRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadFileRecordRequest(items []ModbusPDUReadFileRecordRequestItem) ModbusPDUInitializer {
@@ -113,10 +113,10 @@ func (m ModbusPDUReadFileRecordRequest) Serialize(io spi.WriteBuffer) {
 		return sizeInBytes
 	}
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadFileRecordRequest); ok {
 
 			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var byteCount uint8 = (uint8(itemsArraySizeInBytes(m.items)))
+			byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
 			io.WriteUint8(8, (byteCount))
 
 			// Array Field (items)

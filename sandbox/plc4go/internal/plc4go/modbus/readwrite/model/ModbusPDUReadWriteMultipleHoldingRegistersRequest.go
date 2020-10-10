@@ -52,7 +52,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Response() bool {
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) initialize() spi.Message {
-	return spi.Message(m)
+	return m
 }
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []int8) ModbusPDUInitializer {
@@ -113,7 +113,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (
 		value := make([]int8, byteCount)
 		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			value[curItem] = io.ReadInt8(8)
+			value = append(value, io.ReadInt8(8))
 		}
 	}
 
@@ -123,7 +123,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
 	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDU); ok {
+		if _, ok := typ.(IModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
 
 			// Simple Field (readStartingAddress)
 			var readStartingAddress uint16 = m.readStartingAddress
@@ -142,7 +142,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.Writ
 			io.WriteUint16(16, (writeQuantity))
 
 			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			var byteCount uint8 = (uint8(len(m.value)))
+			byteCount := uint8(uint8(len(m.value)))
 			io.WriteUint8(8, (byteCount))
 
 			// Array Field (value)

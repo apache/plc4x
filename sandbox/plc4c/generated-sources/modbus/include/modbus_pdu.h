@@ -37,8 +37,8 @@ extern "C" {
 
 // Structure used to contain the discriminator values for discriminated types using this as a parent
 struct plc4c_modbus_read_write_modbus_pdu_discriminator {
-  bool error;
-  unsigned int function;
+  bool errorFlag;
+  unsigned int functionFlag;
   bool response;
 };
 typedef struct plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_modbus_pdu_discriminator;
