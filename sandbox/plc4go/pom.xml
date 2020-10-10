@@ -35,7 +35,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>cmd</sourceDirectory>
     <plugins>
       <!--
         Generate the driver code.
@@ -130,12 +130,8 @@
           </execution>
         </executions>
         <configuration>
-          <!--packages>
-            <package>cmd/modbus/modbus.go</package>
-          </packages-->
           <packages>
             <package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/main</package>
-            <!--package>plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model</package-->
           </packages>
           <sources>${project.basedir}</sources>
         </configuration>
