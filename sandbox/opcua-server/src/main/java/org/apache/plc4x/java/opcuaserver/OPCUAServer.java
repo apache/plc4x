@@ -121,6 +121,10 @@ public class OPCUAServer {
 
         readCommandLineArgs(args);
 
+        if (config.getDir() == null) {
+            throw new Exception("Please set the dir in the config file");
+        }
+
         File securityTempDir = new File(config.getDir(), "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
             throw new Exception("unable to create security dir: " + securityTempDir);

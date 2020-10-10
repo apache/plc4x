@@ -28,7 +28,7 @@ public class Configuration {
     @JsonProperty
     private String version;
 
-    @JsonProperty
+    @JsonProperty(required=true)
     private String dir;
 
     @JsonProperty
