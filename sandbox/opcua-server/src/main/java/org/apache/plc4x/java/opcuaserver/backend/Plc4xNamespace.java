@@ -17,7 +17,9 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.opcuaserver;
+package org.apache.plc4x.java.opcuaserver.backend;
+
+import org.apache.plc4x.java.opcuaserver.*;
 
 import java.lang.reflect.Array;
 import java.util.List;
@@ -71,18 +73,6 @@ import org.eclipse.milo.opcua.stack.core.types.structured.StructureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.utils.connectionpool.*;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -108,15 +98,16 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
     private final SubscriptionModel subscriptionModel;
 
-    PlcDriverManager driverManager;
+    private Plc4xCommunication plc4xServer;
 
-    Plc4xNamespace(OpcUaServer server, Configuration c) {
+    public Plc4xNamespace(OpcUaServer server, Configuration c) {
         super(server, NAMESPACE_URI);
 
         this.config = c;
         subscriptionModel = new SubscriptionModel(server, this);
         dictionaryManager = new DataTypeDictionaryManager(getNodeContext(), NAMESPACE_URI);
-        driverManager = new PooledPlcDriverManager();
+
+        plc4xServer = new Plc4xCommunication();
 
         getLifecycleManager().addLifecycle(dictionaryManager);
         getLifecycleManager().addLifecycle(subscriptionModel);
@@ -154,74 +145,6 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
         addDynamicNodes(folderNode, c);
     }
 
-    private Object getValue(String tag, String connectionString) {
-            PlcConnection connection = null;
-            try {
-                connection = driverManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                System.out.println("Failed" + e);
-            }
-
-            // Create a new read request:
-            // - Give the single item requested an alias name
-            PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("value-1", tag);
-            PlcReadRequest readRequest = builder.build();
-
-            PlcReadResponse response = null;
-            try {
-                response = readRequest.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                System.out.println("Failed" + e);
-            }
-
-            Object resp = null;
-
-            for (String fieldName : response.getFieldNames()) {
-                if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                    int numValues = response.getNumberOfValues(fieldName);
-                    // If it's just one element, output just one single line.
-                    if(numValues == 1) {
-                        resp = response.getObject(fieldName);
-                    }
-                }
-            }
-            try {
-                connection.close();
-            } catch (Exception e) {
-                System.out.println("Close Failed" + e);
-            }
-            return resp;
-    }
-
-    private void setValue(String tag, String value, String connectionString) {
-            PlcConnection connection = null;
-            try {
-                connection = driverManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                System.out.println("Failed" + e);
-            }
-
-            // Create a new read request:
-            // - Give the single item requested an alias name
-            final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            builder.addItem(tag, tag, value);
-            PlcWriteRequest writeRequest = builder.build();
-
-            try {
-                writeRequest.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                System.out.println("Failed" + e);
-            }
-
-            try {
-                connection.close();
-            } catch (Exception e) {
-                System.out.println("Close Failed" + e);
-            }
-            return;
-    }
-
     private void addDynamicNodes(UaFolderNode rootNode, DeviceConfiguration c) {
         final List<Tag> tags = c.getTags();
         final String connectionString = c.getConnectionString();
@@ -251,7 +174,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                 filter,
                 AttributeFilters.getValue(
                     ctx ->
-                        new DataValue(new Variant(getValue(tag, connectionString)))
+                        new DataValue(new Variant(plc4xServer.getValue(tag, connectionString)))
                 )
             );
 
@@ -259,7 +182,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                 filter,
                 AttributeFilters.setValue(
                     (ctx, value) ->
-                        setValue(tag, value.toString(), connectionString)
+                        plc4xServer.setValue(tag, value.toString(), connectionString)
                 )
             );
 

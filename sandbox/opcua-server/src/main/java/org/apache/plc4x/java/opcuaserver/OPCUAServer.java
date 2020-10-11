@@ -64,6 +64,8 @@ import static org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig.USE
 
 import org.apache.commons.cli.*;
 
+import org.apache.plc4x.java.opcuaserver.backend.Plc4xNamespace;
+
 public class OPCUAServer {
 
     private Configuration config;

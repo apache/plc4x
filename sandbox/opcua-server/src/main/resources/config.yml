@@ -17,11 +17,11 @@
 #under the License.
 
 version: 0.1
-#dir: Enter Certificate Directory Here
+#dir: {directory.here}
 name: Plc4x.OPC.UA.Server
 tcpPort: 12687
 httpPort: 8445
-modbusDevices:
+devices:
       - name: ModbusDevice
         connectionString: modbus://127.0.0.1:5467
         tags:

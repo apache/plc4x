@@ -35,7 +35,7 @@ public class Configuration {
     private String name;
 
     @JsonProperty
-    private List<DeviceConfiguration> modbusDevices;
+    private List<DeviceConfiguration> devices;
 
     @JsonProperty
     private Integer tcpPort = 12686;
@@ -63,7 +63,7 @@ public class Configuration {
     }
 
     public List<DeviceConfiguration> getDevices() {
-        return modbusDevices;
+        return devices;
     }
 
 }
