@@ -703,6 +703,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"math\"");
         }
 
+        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi\"");
+
         // "Fields with complex type": "reflect"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
             !(field instanceof EnumField) &&
