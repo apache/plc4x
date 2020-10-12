@@ -52,6 +52,26 @@ func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, se
 	return &APDUSegmentAck{negativeAck: negativeAck, server: server, originalInvokeId: originalInvokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize}
 }
 
+func CastIAPDUSegmentAck(structType interface{}) IAPDUSegmentAck {
+	castFunc := func(typ interface{}) IAPDUSegmentAck {
+		if iAPDUSegmentAck, ok := typ.(IAPDUSegmentAck); ok {
+			return iAPDUSegmentAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
+	castFunc := func(typ interface{}) APDUSegmentAck {
+		if sAPDUSegmentAck, ok := typ.(APDUSegmentAck); ok {
+			return sAPDUSegmentAck
+		}
+		return APDUSegmentAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUSegmentAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -113,32 +133,27 @@ func APDUSegmentAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUSegmentAck); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(2, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(2, uint8(0x00))
 
-			// Simple Field (negativeAck)
-			var negativeAck bool = m.negativeAck
-			io.WriteBit((bool)(negativeAck))
+	// Simple Field (negativeAck)
+	negativeAck := bool(m.negativeAck)
+	io.WriteBit((bool)(negativeAck))
 
-			// Simple Field (server)
-			var server bool = m.server
-			io.WriteBit((bool)(server))
+	// Simple Field (server)
+	server := bool(m.server)
+	io.WriteBit((bool)(server))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Simple Field (sequenceNumber)
-			var sequenceNumber uint8 = m.sequenceNumber
-			io.WriteUint8(8, (sequenceNumber))
+	// Simple Field (sequenceNumber)
+	sequenceNumber := uint8(m.sequenceNumber)
+	io.WriteUint8(8, (sequenceNumber))
 
-			// Simple Field (proposedWindowSize)
-			var proposedWindowSize uint8 = m.proposedWindowSize
-			io.WriteUint8(8, (proposedWindowSize))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (proposedWindowSize)
+	proposedWindowSize := uint8(m.proposedWindowSize)
+	io.WriteUint8(8, (proposedWindowSize))
 }

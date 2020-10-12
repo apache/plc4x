@@ -39,6 +39,26 @@ func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter 
 	return &TunnelingRequestDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter}
 }
 
+func CastITunnelingRequestDataBlock(structType interface{}) ITunnelingRequestDataBlock {
+	castFunc := func(typ interface{}) ITunnelingRequestDataBlock {
+		if iTunnelingRequestDataBlock, ok := typ.(ITunnelingRequestDataBlock); ok {
+			return iTunnelingRequestDataBlock
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastTunnelingRequestDataBlock(structType interface{}) TunnelingRequestDataBlock {
+	castFunc := func(typ interface{}) TunnelingRequestDataBlock {
+		if sTunnelingRequestDataBlock, ok := typ.(TunnelingRequestDataBlock); ok {
+			return sTunnelingRequestDataBlock
+		}
+		return TunnelingRequestDataBlock{}
+	}
+	return castFunc(structType)
+}
+
 func (m TunnelingRequestDataBlock) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -88,24 +108,19 @@ func TunnelingRequestDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m TunnelingRequestDataBlock) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ITunnelingRequestDataBlock); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Simple Field (sequenceCounter)
-			var sequenceCounter uint8 = m.sequenceCounter
-			io.WriteUint8(8, (sequenceCounter))
+	// Simple Field (sequenceCounter)
+	sequenceCounter := uint8(m.sequenceCounter)
+	io.WriteUint8(8, (sequenceCounter))
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
-		}
-	}
-	serializeFunc(m)
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 }

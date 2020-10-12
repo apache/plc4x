@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer() BACnetConfirmedS
 	return &BACnetConfirmedServiceRequestConfirmedPrivateTransfer{}
 }
 
+func CastIBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType interface{}) IBACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+		if iBACnetConfirmedServiceRequestConfirmedPrivateTransfer, ok := typ.(IBACnetConfirmedServiceRequestConfirmedPrivateTransfer); ok {
+			return iBACnetConfirmedServiceRequestConfirmedPrivateTransfer
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType interface{}) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+		if sBACnetConfirmedServiceRequestConfirmedPrivateTransfer, ok := typ.(BACnetConfirmedServiceRequestConfirmedPrivateTransfer); ok {
+			return sBACnetConfirmedServiceRequestConfirmedPrivateTransfer
+		}
+		return BACnetConfirmedServiceRequestConfirmedPrivateTransfer{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io spi.ReadBuffe
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestConfirmedPrivateTransfer); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

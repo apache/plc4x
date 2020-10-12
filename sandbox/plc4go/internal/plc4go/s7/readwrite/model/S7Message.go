@@ -51,6 +51,26 @@ func S7MessageMessageType(m IS7Message) uint8 {
 	return m.MessageType()
 }
 
+func CastIS7Message(structType interface{}) IS7Message {
+	castFunc := func(typ interface{}) IS7Message {
+		if iS7Message, ok := typ.(IS7Message); ok {
+			return iS7Message
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7Message(structType interface{}) S7Message {
+	castFunc := func(typ interface{}) S7Message {
+		if sS7Message, ok := typ.(S7Message); ok {
+			return sS7Message
+		}
+		return S7Message{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7Message) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -141,8 +161,8 @@ func S7MessageParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
 	var parameter *S7Parameter = nil
-	if (parameterLength) > (0) {
-		_message, _err := S7ParameterParse(io, uint8(messageType))
+	if bool((parameterLength) > (0)) {
+		_message, _err := S7ParameterParse(io, messageType)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'parameter' field " + _err.Error())
 		}
@@ -156,8 +176,8 @@ func S7MessageParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *S7Payload = nil
-	if (payloadLength) > (0) {
-		_message, _err := S7PayloadParse(io, uint8(messageType), S7Parameter(parameter))
+	if bool((payloadLength) > (0)) {
+		_message, _err := S7PayloadParse(io, messageType, *parameter)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'payload' field " + _err.Error())
 		}
@@ -174,48 +194,44 @@ func S7MessageParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m S7Message) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iS7Message, ok := typ.(IS7Message); ok {
+	iS7Message := CastIS7Message(m)
 
-			// Const Field (protocolId)
-			io.WriteUint8(8, 0x32)
+	// Const Field (protocolId)
+	io.WriteUint8(8, 0x32)
 
-			// Discriminator Field (messageType) (Used as input to a switch field)
-			messageType := S7MessageMessageType(iS7Message)
-			io.WriteUint8(8, (messageType))
+	// Discriminator Field (messageType) (Used as input to a switch field)
+	messageType := uint8(S7MessageMessageType(iS7Message))
+	io.WriteUint8(8, (messageType))
 
-			// Reserved Field (reserved)
-			io.WriteUint16(16, uint16(0x0000))
+	// Reserved Field (reserved)
+	io.WriteUint16(16, uint16(0x0000))
 
-			// Simple Field (tpduReference)
-			var tpduReference uint16 = m.tpduReference
-			io.WriteUint16(16, (tpduReference))
+	// Simple Field (tpduReference)
+	tpduReference := uint16(m.tpduReference)
+	io.WriteUint16(16, (tpduReference))
 
-			// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			parameterLength := uint16(spi.InlineIf(((m.parameter) != (nil)), uint16(m.parameter.LengthInBytes()), uint16(0)))
-			io.WriteUint16(16, (parameterLength))
+	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	parameterLength := uint16(spi.InlineIf(bool((m.parameter) != (nil)), uint16(m.parameter.LengthInBytes()), uint16(uint16(0))))
+	io.WriteUint16(16, (parameterLength))
 
-			// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			payloadLength := uint16(spi.InlineIf(((m.payload) != (nil)), uint16(m.payload.LengthInBytes()), uint16(0)))
-			io.WriteUint16(16, (payloadLength))
+	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	payloadLength := uint16(spi.InlineIf(bool((m.payload) != (nil)), uint16(m.payload.LengthInBytes()), uint16(uint16(0))))
+	io.WriteUint16(16, (payloadLength))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iS7Message.Serialize(io)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iS7Message.Serialize(io)
 
-			// Optional Field (parameter) (Can be skipped, if the value is null)
-			var parameter *S7Parameter = nil
-			if m.parameter != nil {
-				parameter = m.parameter
-				parameter.Serialize(io)
-			}
-
-			// Optional Field (payload) (Can be skipped, if the value is null)
-			var payload *S7Payload = nil
-			if m.payload != nil {
-				payload = m.payload
-				payload.Serialize(io)
-			}
-		}
+	// Optional Field (parameter) (Can be skipped, if the value is null)
+	var parameter *S7Parameter = nil
+	if m.parameter != nil {
+		parameter = m.parameter
+		parameter.Serialize(io)
 	}
-	serializeFunc(m)
+
+	// Optional Field (payload) (Can be skipped, if the value is null)
+	var payload *S7Payload = nil
+	if m.payload != nil {
+		payload = m.payload
+		payload.Serialize(io)
+	}
 }

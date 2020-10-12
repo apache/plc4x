@@ -49,6 +49,26 @@ func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) KNXNetIPMess
 	return &SearchRequest{hpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint}
 }
 
+func CastISearchRequest(structType interface{}) ISearchRequest {
+	castFunc := func(typ interface{}) ISearchRequest {
+		if iSearchRequest, ok := typ.(ISearchRequest); ok {
+			return iSearchRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastSearchRequest(structType interface{}) SearchRequest {
+	castFunc := func(typ interface{}) SearchRequest {
+		if sSearchRequest, ok := typ.(SearchRequest); ok {
+			return sSearchRequest
+		}
+		return SearchRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m SearchRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,13 +100,8 @@ func SearchRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 }
 
 func (m SearchRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ISearchRequest); ok {
 
-			// Simple Field (hpaiIDiscoveryEndpoint)
-			var hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint = m.hpaiIDiscoveryEndpoint
-			hpaiIDiscoveryEndpoint.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (hpaiIDiscoveryEndpoint)
+	hpaiIDiscoveryEndpoint := HPAIDiscoveryEndpoint(m.hpaiIDiscoveryEndpoint)
+	hpaiIDiscoveryEndpoint.Serialize(io)
 }

@@ -46,6 +46,26 @@ func NewBACnetServiceAckGetAlarmSummary() BACnetServiceAckInitializer {
 	return &BACnetServiceAckGetAlarmSummary{}
 }
 
+func CastIBACnetServiceAckGetAlarmSummary(structType interface{}) IBACnetServiceAckGetAlarmSummary {
+	castFunc := func(typ interface{}) IBACnetServiceAckGetAlarmSummary {
+		if iBACnetServiceAckGetAlarmSummary, ok := typ.(IBACnetServiceAckGetAlarmSummary); ok {
+			return iBACnetServiceAckGetAlarmSummary
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckGetAlarmSummary(structType interface{}) BACnetServiceAckGetAlarmSummary {
+	castFunc := func(typ interface{}) BACnetServiceAckGetAlarmSummary {
+		if sBACnetServiceAckGetAlarmSummary, ok := typ.(BACnetServiceAckGetAlarmSummary); ok {
+			return sBACnetServiceAckGetAlarmSummary
+		}
+		return BACnetServiceAckGetAlarmSummary{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckGetAlarmSummary) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckGetAlarmSummaryParse(io spi.ReadBuffer) (BACnetServiceAckIn
 }
 
 func (m BACnetServiceAckGetAlarmSummary) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckGetAlarmSummary); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

@@ -42,6 +42,26 @@ func BACnetConfirmedServiceRequestServiceChoice(m IBACnetConfirmedServiceRequest
 	return m.ServiceChoice()
 }
 
+func CastIBACnetConfirmedServiceRequest(structType interface{}) IBACnetConfirmedServiceRequest {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequest {
+		if iBACnetConfirmedServiceRequest, ok := typ.(IBACnetConfirmedServiceRequest); ok {
+			return iBACnetConfirmedServiceRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequest(structType interface{}) BACnetConfirmedServiceRequest {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequest {
+		if sBACnetConfirmedServiceRequest, ok := typ.(BACnetConfirmedServiceRequest); ok {
+			return sBACnetConfirmedServiceRequest
+		}
+		return BACnetConfirmedServiceRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -150,16 +170,12 @@ func BACnetConfirmedServiceRequestParse(io spi.ReadBuffer, len uint16) (spi.Mess
 }
 
 func (m BACnetConfirmedServiceRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBACnetConfirmedServiceRequest, ok := typ.(IBACnetConfirmedServiceRequest); ok {
+	iBACnetConfirmedServiceRequest := CastIBACnetConfirmedServiceRequest(m)
 
-			// Discriminator Field (serviceChoice) (Used as input to a switch field)
-			serviceChoice := BACnetConfirmedServiceRequestServiceChoice(iBACnetConfirmedServiceRequest)
-			io.WriteUint8(8, (serviceChoice))
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(BACnetConfirmedServiceRequestServiceChoice(iBACnetConfirmedServiceRequest))
+	io.WriteUint8(8, (serviceChoice))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBACnetConfirmedServiceRequest.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBACnetConfirmedServiceRequest.Serialize(io)
 }

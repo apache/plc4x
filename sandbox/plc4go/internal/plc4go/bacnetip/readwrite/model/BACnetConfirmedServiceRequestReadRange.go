@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestReadRange() BACnetConfirmedServiceRequestIn
 	return &BACnetConfirmedServiceRequestReadRange{}
 }
 
+func CastIBACnetConfirmedServiceRequestReadRange(structType interface{}) IBACnetConfirmedServiceRequestReadRange {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadRange {
+		if iBACnetConfirmedServiceRequestReadRange, ok := typ.(IBACnetConfirmedServiceRequestReadRange); ok {
+			return iBACnetConfirmedServiceRequestReadRange
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) BACnetConfirmedServiceRequestReadRange {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadRange {
+		if sBACnetConfirmedServiceRequestReadRange, ok := typ.(BACnetConfirmedServiceRequestReadRange); ok {
+			return sBACnetConfirmedServiceRequestReadRange
+		}
+		return BACnetConfirmedServiceRequestReadRange{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestReadRange) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestReadRangeParse(io spi.ReadBuffer) (BACnetConfi
 }
 
 func (m BACnetConfirmedServiceRequestReadRange) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestReadRange); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

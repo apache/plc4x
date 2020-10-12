@@ -46,6 +46,26 @@ func NewBVLCSecureBVLL() BVLCInitializer {
 	return &BVLCSecureBVLL{}
 }
 
+func CastIBVLCSecureBVLL(structType interface{}) IBVLCSecureBVLL {
+	castFunc := func(typ interface{}) IBVLCSecureBVLL {
+		if iBVLCSecureBVLL, ok := typ.(IBVLCSecureBVLL); ok {
+			return iBVLCSecureBVLL
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCSecureBVLL(structType interface{}) BVLCSecureBVLL {
+	castFunc := func(typ interface{}) BVLCSecureBVLL {
+		if sBVLCSecureBVLL, ok := typ.(BVLCSecureBVLL); ok {
+			return sBVLCSecureBVLL
+		}
+		return BVLCSecureBVLL{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCSecureBVLL) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCSecureBVLLParse(io spi.ReadBuffer) (BVLCInitializer, error) {
 }
 
 func (m BVLCSecureBVLL) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCSecureBVLL); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

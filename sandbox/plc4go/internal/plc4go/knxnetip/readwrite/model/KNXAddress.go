@@ -39,6 +39,26 @@ func NewKNXAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) spi.Messa
 	return &KNXAddress{mainGroup: mainGroup, middleGroup: middleGroup, subGroup: subGroup}
 }
 
+func CastIKNXAddress(structType interface{}) IKNXAddress {
+	castFunc := func(typ interface{}) IKNXAddress {
+		if iKNXAddress, ok := typ.(IKNXAddress); ok {
+			return iKNXAddress
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKNXAddress(structType interface{}) KNXAddress {
+	castFunc := func(typ interface{}) KNXAddress {
+		if sKNXAddress, ok := typ.(KNXAddress); ok {
+			return sKNXAddress
+		}
+		return KNXAddress{}
+	}
+	return castFunc(structType)
+}
+
 func (m KNXAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -74,21 +94,16 @@ func KNXAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m KNXAddress) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKNXAddress); ok {
 
-			// Simple Field (mainGroup)
-			var mainGroup uint8 = m.mainGroup
-			io.WriteUint8(4, (mainGroup))
+	// Simple Field (mainGroup)
+	mainGroup := uint8(m.mainGroup)
+	io.WriteUint8(4, (mainGroup))
 
-			// Simple Field (middleGroup)
-			var middleGroup uint8 = m.middleGroup
-			io.WriteUint8(4, (middleGroup))
+	// Simple Field (middleGroup)
+	middleGroup := uint8(m.middleGroup)
+	io.WriteUint8(4, (middleGroup))
 
-			// Simple Field (subGroup)
-			var subGroup uint8 = m.subGroup
-			io.WriteUint8(8, (subGroup))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (subGroup)
+	subGroup := uint8(m.subGroup)
+	io.WriteUint8(8, (subGroup))
 }

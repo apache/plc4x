@@ -50,6 +50,26 @@ func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) APDUIn
 	return &APDUAbort{server: server, originalInvokeId: originalInvokeId, abortReason: abortReason}
 }
 
+func CastIAPDUAbort(structType interface{}) IAPDUAbort {
+	castFunc := func(typ interface{}) IAPDUAbort {
+		if iAPDUAbort, ok := typ.(IAPDUAbort); ok {
+			return iAPDUAbort
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUAbort(structType interface{}) APDUAbort {
+	castFunc := func(typ interface{}) APDUAbort {
+		if sAPDUAbort, ok := typ.(APDUAbort); ok {
+			return sAPDUAbort
+		}
+		return APDUAbort{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUAbort) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -99,24 +119,19 @@ func APDUAbortParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUAbort) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUAbort); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(3, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(3, uint8(0x00))
 
-			// Simple Field (server)
-			var server bool = m.server
-			io.WriteBit((bool)(server))
+	// Simple Field (server)
+	server := bool(m.server)
+	io.WriteBit((bool)(server))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Simple Field (abortReason)
-			var abortReason uint8 = m.abortReason
-			io.WriteUint8(8, (abortReason))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (abortReason)
+	abortReason := uint8(m.abortReason)
+	io.WriteUint8(8, (abortReason))
 }

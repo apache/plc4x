@@ -46,6 +46,26 @@ func NewBVLCDeleteForeignDeviceTableEntry() BVLCInitializer {
 	return &BVLCDeleteForeignDeviceTableEntry{}
 }
 
+func CastIBVLCDeleteForeignDeviceTableEntry(structType interface{}) IBVLCDeleteForeignDeviceTableEntry {
+	castFunc := func(typ interface{}) IBVLCDeleteForeignDeviceTableEntry {
+		if iBVLCDeleteForeignDeviceTableEntry, ok := typ.(IBVLCDeleteForeignDeviceTableEntry); ok {
+			return iBVLCDeleteForeignDeviceTableEntry
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteForeignDeviceTableEntry {
+	castFunc := func(typ interface{}) BVLCDeleteForeignDeviceTableEntry {
+		if sBVLCDeleteForeignDeviceTableEntry, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
+			return sBVLCDeleteForeignDeviceTableEntry
+		}
+		return BVLCDeleteForeignDeviceTableEntry{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCDeleteForeignDeviceTableEntryParse(io spi.ReadBuffer) (BVLCInitializer,
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCDeleteForeignDeviceTableEntry); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

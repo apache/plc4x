@@ -46,6 +46,26 @@ func BACnetTagContextSpecificTag(m IBACnetTag) uint8 {
 	return m.ContextSpecificTag()
 }
 
+func CastIBACnetTag(structType interface{}) IBACnetTag {
+	castFunc := func(typ interface{}) IBACnetTag {
+		if iBACnetTag, ok := typ.(IBACnetTag); ok {
+			return iBACnetTag
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTag(structType interface{}) BACnetTag {
+	castFunc := func(typ interface{}) BACnetTag {
+		if sBACnetTag, ok := typ.(BACnetTag); ok {
+			return sBACnetTag
+		}
+		return BACnetTag{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTag) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -90,14 +110,14 @@ func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
-	if (typeOrTagNumber) == (15) {
+	if bool((typeOrTagNumber) == (15)) {
 		_val := io.ReadUint8(8)
 		extTagNumber = &_val
 	}
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
-	if (lengthValueType) == (5) {
+	if bool((lengthValueType) == (5)) {
 		_val := io.ReadUint8(8)
 		extLength = &_val
 	}
@@ -111,21 +131,21 @@ func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x1:
 		initializer, typeSwitchError = BACnetTagApplicationBooleanParse(io)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x2:
-		initializer, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationUnsignedIntegerParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x3:
-		initializer, typeSwitchError = BACnetTagApplicationSignedIntegerParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationSignedIntegerParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x4:
-		initializer, typeSwitchError = BACnetTagApplicationRealParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationRealParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x5:
-		initializer, typeSwitchError = BACnetTagApplicationDoubleParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationDoubleParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x6:
 		initializer, typeSwitchError = BACnetTagApplicationOctetStringParse(io)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x7:
 		initializer, typeSwitchError = BACnetTagApplicationCharacterStringParse(io)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x8:
-		initializer, typeSwitchError = BACnetTagApplicationBitStringParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationBitStringParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0x9:
-		initializer, typeSwitchError = BACnetTagApplicationEnumeratedParse(io, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagApplicationEnumeratedParse(io, lengthValueType, *extLength)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xA:
 		initializer, typeSwitchError = BACnetTagApplicationDateParse(io)
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xB:
@@ -133,7 +153,7 @@ func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 	case contextSpecificTag == 0 && typeOrTagNumber == 0xC:
 		initializer, typeSwitchError = BACnetTagApplicationObjectIdentifierParse(io)
 	case contextSpecificTag == 1:
-		initializer, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, extTagNumber, lengthValueType, extLength)
+		initializer, typeSwitchError = BACnetTagContextParse(io, typeOrTagNumber, *extTagNumber, lengthValueType, *extLength)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
@@ -144,38 +164,34 @@ func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BACnetTag) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBACnetTag, ok := typ.(IBACnetTag); ok {
+	iBACnetTag := CastIBACnetTag(m)
 
-			// Simple Field (typeOrTagNumber)
-			var typeOrTagNumber uint8 = m.typeOrTagNumber
-			io.WriteUint8(4, (typeOrTagNumber))
+	// Simple Field (typeOrTagNumber)
+	typeOrTagNumber := uint8(m.typeOrTagNumber)
+	io.WriteUint8(4, (typeOrTagNumber))
 
-			// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-			contextSpecificTag := BACnetTagContextSpecificTag(iBACnetTag)
-			io.WriteUint8(1, (contextSpecificTag))
+	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
+	contextSpecificTag := uint8(BACnetTagContextSpecificTag(iBACnetTag))
+	io.WriteUint8(1, (contextSpecificTag))
 
-			// Simple Field (lengthValueType)
-			var lengthValueType uint8 = m.lengthValueType
-			io.WriteUint8(3, (lengthValueType))
+	// Simple Field (lengthValueType)
+	lengthValueType := uint8(m.lengthValueType)
+	io.WriteUint8(3, (lengthValueType))
 
-			// Optional Field (extTagNumber) (Can be skipped, if the value is null)
-			var extTagNumber *uint8 = nil
-			if m.extTagNumber != nil {
-				extTagNumber = m.extTagNumber
-				io.WriteUint8(8, *(extTagNumber))
-			}
-
-			// Optional Field (extLength) (Can be skipped, if the value is null)
-			var extLength *uint8 = nil
-			if m.extLength != nil {
-				extLength = m.extLength
-				io.WriteUint8(8, *(extLength))
-			}
-
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBACnetTag.Serialize(io)
-		}
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.extTagNumber != nil {
+		extTagNumber = m.extTagNumber
+		io.WriteUint8(8, *(extTagNumber))
 	}
-	serializeFunc(m)
+
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.extLength != nil {
+		extLength = m.extLength
+		io.WriteUint8(8, *(extLength))
+	}
+
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBACnetTag.Serialize(io)
 }

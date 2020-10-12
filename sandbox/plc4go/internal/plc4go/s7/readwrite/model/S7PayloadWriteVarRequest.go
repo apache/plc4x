@@ -53,6 +53,26 @@ func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem) S7PayloadInitiali
 	return &S7PayloadWriteVarRequest{items: items}
 }
 
+func CastIS7PayloadWriteVarRequest(structType interface{}) IS7PayloadWriteVarRequest {
+	castFunc := func(typ interface{}) IS7PayloadWriteVarRequest {
+		if iS7PayloadWriteVarRequest, ok := typ.(IS7PayloadWriteVarRequest); ok {
+			return iS7PayloadWriteVarRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadWriteVarRequest(structType interface{}) S7PayloadWriteVarRequest {
+	castFunc := func(typ interface{}) S7PayloadWriteVarRequest {
+		if sS7PayloadWriteVarRequest, ok := typ.(S7PayloadWriteVarRequest); ok {
+			return sS7PayloadWriteVarRequest
+		}
+		return S7PayloadWriteVarRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadWriteVarRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
@@ -76,10 +96,10 @@ func S7PayloadWriteVarRequestParse(io spi.ReadBuffer, parameter S7Parameter) (S7
 	var items []S7VarPayloadDataItem
 	// Count array
 	{
-		items := make([]S7VarPayloadDataItem, uint8(len(COUNT)))
-		for curItem := uint16(0); curItem < uint16(uint8(len(COUNT))); curItem++ {
-			lastItem := curItem == uint16(uint8(len(COUNT))-1)
-			_message, _err := S7VarPayloadDataItemParse(io, bool(lastItem))
+		items := make([]S7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).items)))
+		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).items))); curItem++ {
+			lastItem := curItem == uint16((len(CastS7ParameterWriteVarRequest(parameter).items))-1)
+			_message, _err := S7VarPayloadDataItemParse(io, lastItem)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
@@ -97,20 +117,15 @@ func S7PayloadWriteVarRequestParse(io spi.ReadBuffer, parameter S7Parameter) (S7
 }
 
 func (m S7PayloadWriteVarRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadWriteVarRequest); ok {
 
-			// Array Field (items)
-			if m.items != nil {
-				itemCount := uint16(len(m.items))
-				var curItem uint16 = 0
-				for _, _element := range m.items {
-					var lastItem bool = curItem == (itemCount - 1)
-					_element.Serialize(io, lastItem)
-					curItem++
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		itemCount := uint16(len(m.items))
+		var curItem uint16 = 0
+		for _, _element := range m.items {
+			var lastItem bool = curItem == (itemCount - 1)
+			_element.Serialize(io, lastItem)
+			curItem++
 		}
 	}
-	serializeFunc(m)
 }

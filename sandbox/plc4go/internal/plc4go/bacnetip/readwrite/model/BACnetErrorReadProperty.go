@@ -56,6 +56,26 @@ func NewBACnetErrorReadProperty(errorClassLength uint8, errorClass []int8, error
 	return &BACnetErrorReadProperty{errorClassLength: errorClassLength, errorClass: errorClass, errorCodeLength: errorCodeLength, errorCode: errorCode}
 }
 
+func CastIBACnetErrorReadProperty(structType interface{}) IBACnetErrorReadProperty {
+	castFunc := func(typ interface{}) IBACnetErrorReadProperty {
+		if iBACnetErrorReadProperty, ok := typ.(IBACnetErrorReadProperty); ok {
+			return iBACnetErrorReadProperty
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorReadProperty(structType interface{}) BACnetErrorReadProperty {
+	castFunc := func(typ interface{}) BACnetErrorReadProperty {
+		if sBACnetErrorReadProperty, ok := typ.(BACnetErrorReadProperty); ok {
+			return sBACnetErrorReadProperty
+		}
+		return BACnetErrorReadProperty{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorReadProperty) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -135,37 +155,32 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 }
 
 func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorReadProperty); ok {
 
-			// Const Field (errorClassHeader)
-			io.WriteUint8(5, 0x12)
+	// Const Field (errorClassHeader)
+	io.WriteUint8(5, 0x12)
 
-			// Simple Field (errorClassLength)
-			var errorClassLength uint8 = m.errorClassLength
-			io.WriteUint8(3, (errorClassLength))
+	// Simple Field (errorClassLength)
+	errorClassLength := uint8(m.errorClassLength)
+	io.WriteUint8(3, (errorClassLength))
 
-			// Array Field (errorClass)
-			if m.errorClass != nil {
-				for _, _element := range m.errorClass {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Const Field (errorCodeHeader)
-			io.WriteUint8(5, 0x12)
-
-			// Simple Field (errorCodeLength)
-			var errorCodeLength uint8 = m.errorCodeLength
-			io.WriteUint8(3, (errorCodeLength))
-
-			// Array Field (errorCode)
-			if m.errorCode != nil {
-				for _, _element := range m.errorCode {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (errorClass)
+	if m.errorClass != nil {
+		for _, _element := range m.errorClass {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (errorCodeHeader)
+	io.WriteUint8(5, 0x12)
+
+	// Simple Field (errorCodeLength)
+	errorCodeLength := uint8(m.errorCodeLength)
+	io.WriteUint8(3, (errorCodeLength))
+
+	// Array Field (errorCode)
+	if m.errorCode != nil {
+		for _, _element := range m.errorCode {
+			io.WriteInt8(8, _element)
+		}
+	}
 }

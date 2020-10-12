@@ -46,6 +46,26 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() BACnetUnconfirme
 	return &BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{}
 }
 
+func CastIBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+		if iBACnetUnconfirmedServiceRequestUnconfirmedTextMessage, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
+			return iBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+		if sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
+			return sBACnetUnconfirmedServiceRequestUnconfirmedTextMessage
+		}
+		return BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io spi.ReadBuffe
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

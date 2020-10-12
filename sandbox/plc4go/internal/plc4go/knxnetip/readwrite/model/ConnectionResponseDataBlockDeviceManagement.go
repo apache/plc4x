@@ -46,6 +46,26 @@ func NewConnectionResponseDataBlockDeviceManagement() ConnectionResponseDataBloc
 	return &ConnectionResponseDataBlockDeviceManagement{}
 }
 
+func CastIConnectionResponseDataBlockDeviceManagement(structType interface{}) IConnectionResponseDataBlockDeviceManagement {
+	castFunc := func(typ interface{}) IConnectionResponseDataBlockDeviceManagement {
+		if iConnectionResponseDataBlockDeviceManagement, ok := typ.(IConnectionResponseDataBlockDeviceManagement); ok {
+			return iConnectionResponseDataBlockDeviceManagement
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) ConnectionResponseDataBlockDeviceManagement {
+	castFunc := func(typ interface{}) ConnectionResponseDataBlockDeviceManagement {
+		if sConnectionResponseDataBlockDeviceManagement, ok := typ.(ConnectionResponseDataBlockDeviceManagement); ok {
+			return sConnectionResponseDataBlockDeviceManagement
+		}
+		return ConnectionResponseDataBlockDeviceManagement{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
 
@@ -63,9 +83,5 @@ func ConnectionResponseDataBlockDeviceManagementParse(io spi.ReadBuffer) (Connec
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionResponseDataBlockDeviceManagement); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

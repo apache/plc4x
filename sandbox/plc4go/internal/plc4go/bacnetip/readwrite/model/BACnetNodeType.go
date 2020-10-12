@@ -47,6 +47,16 @@ const (
 	BACnetNodeType_ZONE           BACnetNodeType = 0x15
 )
 
+func CastBACnetNodeType(structType interface{}) BACnetNodeType {
+	castFunc := func(typ interface{}) BACnetNodeType {
+		if sBACnetNodeType, ok := typ.(BACnetNodeType); ok {
+			return sBACnetNodeType
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func BACnetNodeTypeParse(io spi.ReadBuffer) (BACnetNodeType, error) {
 	// TODO: Implement ...
 	return 0, nil

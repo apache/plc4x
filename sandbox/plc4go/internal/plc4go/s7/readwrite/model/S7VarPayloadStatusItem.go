@@ -38,6 +38,26 @@ func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) spi.Message {
 	return &S7VarPayloadStatusItem{returnCode: returnCode}
 }
 
+func CastIS7VarPayloadStatusItem(structType interface{}) IS7VarPayloadStatusItem {
+	castFunc := func(typ interface{}) IS7VarPayloadStatusItem {
+		if iS7VarPayloadStatusItem, ok := typ.(IS7VarPayloadStatusItem); ok {
+			return iS7VarPayloadStatusItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
+	castFunc := func(typ interface{}) S7VarPayloadStatusItem {
+		if sS7VarPayloadStatusItem, ok := typ.(S7VarPayloadStatusItem); ok {
+			return sS7VarPayloadStatusItem
+		}
+		return S7VarPayloadStatusItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7VarPayloadStatusItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -64,13 +84,8 @@ func S7VarPayloadStatusItemParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m S7VarPayloadStatusItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7VarPayloadStatusItem); ok {
 
-			// Enum field (returnCode)
-			returnCode := m.returnCode
-			returnCode.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (returnCode)
+	returnCode := DataTransportErrorCode(m.returnCode)
+	returnCode.Serialize(io)
 }

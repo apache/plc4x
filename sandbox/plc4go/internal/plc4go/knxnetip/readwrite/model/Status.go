@@ -37,6 +37,16 @@ const (
 	Status_TUNNELLING_LAYER_NOT_SUPPORTED  Status = 0x29
 )
 
+func CastStatus(structType interface{}) Status {
+	castFunc := func(typ interface{}) Status {
+		if sStatus, ok := typ.(Status); ok {
+			return sStatus
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func StatusParse(io spi.ReadBuffer) (Status, error) {
 	// TODO: Implement ...
 	return 0, nil

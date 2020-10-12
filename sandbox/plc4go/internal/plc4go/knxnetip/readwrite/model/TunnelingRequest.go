@@ -50,6 +50,26 @@ func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, ce
 	return &TunnelingRequest{tunnelingRequestDataBlock: tunnelingRequestDataBlock, cemi: cemi}
 }
 
+func CastITunnelingRequest(structType interface{}) ITunnelingRequest {
+	castFunc := func(typ interface{}) ITunnelingRequest {
+		if iTunnelingRequest, ok := typ.(ITunnelingRequest); ok {
+			return iTunnelingRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastTunnelingRequest(structType interface{}) TunnelingRequest {
+	castFunc := func(typ interface{}) TunnelingRequest {
+		if sTunnelingRequest, ok := typ.(TunnelingRequest); ok {
+			return sTunnelingRequest
+		}
+		return TunnelingRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m TunnelingRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,7 +100,7 @@ func TunnelingRequestParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessa
 	}
 
 	// Simple Field (cemi)
-	_cemiMessage, _err := CEMIParse(io, uint8((totalLength)-((6)+(tunnelingRequestDataBlock.LengthInBytes()))))
+	_cemiMessage, _err := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
 	}
@@ -95,17 +115,12 @@ func TunnelingRequestParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessa
 }
 
 func (m TunnelingRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ITunnelingRequest); ok {
 
-			// Simple Field (tunnelingRequestDataBlock)
-			var tunnelingRequestDataBlock TunnelingRequestDataBlock = m.tunnelingRequestDataBlock
-			tunnelingRequestDataBlock.Serialize(io)
+	// Simple Field (tunnelingRequestDataBlock)
+	tunnelingRequestDataBlock := TunnelingRequestDataBlock(m.tunnelingRequestDataBlock)
+	tunnelingRequestDataBlock.Serialize(io)
 
-			// Simple Field (cemi)
-			var cemi CEMI = m.cemi
-			cemi.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (cemi)
+	cemi := CEMI(m.cemi)
+	cemi.Serialize(io)
 }

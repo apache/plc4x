@@ -46,6 +46,26 @@ func KNXNetIPMessageMsgType(m IKNXNetIPMessage) uint16 {
 	return m.MsgType()
 }
 
+func CastIKNXNetIPMessage(structType interface{}) IKNXNetIPMessage {
+	castFunc := func(typ interface{}) IKNXNetIPMessage {
+		if iKNXNetIPMessage, ok := typ.(IKNXNetIPMessage); ok {
+			return iKNXNetIPMessage
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKNXNetIPMessage(structType interface{}) KNXNetIPMessage {
+	castFunc := func(typ interface{}) KNXNetIPMessage {
+		if sKNXNetIPMessage, ok := typ.(KNXNetIPMessage); ok {
+			return sKNXNetIPMessage
+		}
+		return KNXNetIPMessage{}
+	}
+	return castFunc(structType)
+}
+
 func (m KNXNetIPMessage) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -133,27 +153,23 @@ func KNXNetIPMessageParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m KNXNetIPMessage) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iKNXNetIPMessage, ok := typ.(IKNXNetIPMessage); ok {
+	iKNXNetIPMessage := CastIKNXNetIPMessage(m)
 
-			// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			headerLength := uint8(6)
-			io.WriteUint8(8, (headerLength))
+	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	headerLength := uint8(uint8(6))
+	io.WriteUint8(8, (headerLength))
 
-			// Const Field (protocolVersion)
-			io.WriteUint8(8, 0x10)
+	// Const Field (protocolVersion)
+	io.WriteUint8(8, 0x10)
 
-			// Discriminator Field (msgType) (Used as input to a switch field)
-			msgType := KNXNetIPMessageMsgType(iKNXNetIPMessage)
-			io.WriteUint16(16, (msgType))
+	// Discriminator Field (msgType) (Used as input to a switch field)
+	msgType := uint16(KNXNetIPMessageMsgType(iKNXNetIPMessage))
+	io.WriteUint16(16, (msgType))
 
-			// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			totalLength := uint16(m.LengthInBytes())
-			io.WriteUint16(16, (totalLength))
+	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	totalLength := uint16(uint16(m.LengthInBytes()))
+	io.WriteUint16(16, (totalLength))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iKNXNetIPMessage.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iKNXNetIPMessage.Serialize(io)
 }

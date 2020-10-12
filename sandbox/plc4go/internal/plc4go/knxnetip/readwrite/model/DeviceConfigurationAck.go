@@ -49,6 +49,26 @@ func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurati
 	return &DeviceConfigurationAck{deviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
 }
 
+func CastIDeviceConfigurationAck(structType interface{}) IDeviceConfigurationAck {
+	castFunc := func(typ interface{}) IDeviceConfigurationAck {
+		if iDeviceConfigurationAck, ok := typ.(IDeviceConfigurationAck); ok {
+			return iDeviceConfigurationAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
+	castFunc := func(typ interface{}) DeviceConfigurationAck {
+		if sDeviceConfigurationAck, ok := typ.(DeviceConfigurationAck); ok {
+			return sDeviceConfigurationAck
+		}
+		return DeviceConfigurationAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m DeviceConfigurationAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,13 +100,8 @@ func DeviceConfigurationAckParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 }
 
 func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDeviceConfigurationAck); ok {
 
-			// Simple Field (deviceConfigurationAckDataBlock)
-			var deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock = m.deviceConfigurationAckDataBlock
-			deviceConfigurationAckDataBlock.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (deviceConfigurationAckDataBlock)
+	deviceConfigurationAckDataBlock := DeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
+	deviceConfigurationAckDataBlock.Serialize(io)
 }

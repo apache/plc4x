@@ -46,6 +46,26 @@ func NewBACnetErrorGetEnrollmentSummary() BACnetErrorInitializer {
 	return &BACnetErrorGetEnrollmentSummary{}
 }
 
+func CastIBACnetErrorGetEnrollmentSummary(structType interface{}) IBACnetErrorGetEnrollmentSummary {
+	castFunc := func(typ interface{}) IBACnetErrorGetEnrollmentSummary {
+		if iBACnetErrorGetEnrollmentSummary, ok := typ.(IBACnetErrorGetEnrollmentSummary); ok {
+			return iBACnetErrorGetEnrollmentSummary
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorGetEnrollmentSummary(structType interface{}) BACnetErrorGetEnrollmentSummary {
+	castFunc := func(typ interface{}) BACnetErrorGetEnrollmentSummary {
+		if sBACnetErrorGetEnrollmentSummary, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
+			return sBACnetErrorGetEnrollmentSummary
+		}
+		return BACnetErrorGetEnrollmentSummary{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorGetEnrollmentSummary) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACnetErrorInitial
 }
 
 func (m BACnetErrorGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorGetEnrollmentSummary); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

@@ -29,6 +29,16 @@ const (
 	TPCI_NUMBERED_CONTROL_DATA  TPCI = 0x3
 )
 
+func CastTPCI(structType interface{}) TPCI {
+	castFunc := func(typ interface{}) TPCI {
+		if sTPCI, ok := typ.(TPCI); ok {
+			return sTPCI
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func TPCIParse(io spi.ReadBuffer) (TPCI, error) {
 	// TODO: Implement ...
 	return 0, nil

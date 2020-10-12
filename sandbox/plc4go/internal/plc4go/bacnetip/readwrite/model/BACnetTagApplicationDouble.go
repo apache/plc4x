@@ -51,6 +51,26 @@ func NewBACnetTagApplicationDouble(value float64) BACnetTagInitializer {
 	return &BACnetTagApplicationDouble{value: value}
 }
 
+func CastIBACnetTagApplicationDouble(structType interface{}) IBACnetTagApplicationDouble {
+	castFunc := func(typ interface{}) IBACnetTagApplicationDouble {
+		if iBACnetTagApplicationDouble, ok := typ.(IBACnetTagApplicationDouble); ok {
+			return iBACnetTagApplicationDouble
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationDouble(structType interface{}) BACnetTagApplicationDouble {
+	castFunc := func(typ interface{}) BACnetTagApplicationDouble {
+		if sBACnetTagApplicationDouble, ok := typ.(BACnetTagApplicationDouble); ok {
+			return sBACnetTagApplicationDouble
+		}
+		return BACnetTagApplicationDouble{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationDouble) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -74,13 +94,8 @@ func BACnetTagApplicationDoubleParse(io spi.ReadBuffer, lengthValueType uint8, e
 }
 
 func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationDouble); ok {
 
-			// Simple Field (value)
-			var value float64 = m.value
-			io.WriteFloat64(64, (value))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (value)
+	value := float64(m.value)
+	io.WriteFloat64(64, (value))
 }

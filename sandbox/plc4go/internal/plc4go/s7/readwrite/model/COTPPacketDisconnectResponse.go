@@ -50,6 +50,26 @@ func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReferenc
 	return &COTPPacketDisconnectResponse{destinationReference: destinationReference, sourceReference: sourceReference}
 }
 
+func CastICOTPPacketDisconnectResponse(structType interface{}) ICOTPPacketDisconnectResponse {
+	castFunc := func(typ interface{}) ICOTPPacketDisconnectResponse {
+		if iCOTPPacketDisconnectResponse, ok := typ.(ICOTPPacketDisconnectResponse); ok {
+			return iCOTPPacketDisconnectResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconnectResponse {
+	castFunc := func(typ interface{}) COTPPacketDisconnectResponse {
+		if sCOTPPacketDisconnectResponse, ok := typ.(COTPPacketDisconnectResponse); ok {
+			return sCOTPPacketDisconnectResponse
+		}
+		return COTPPacketDisconnectResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacketDisconnectResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
@@ -79,17 +99,12 @@ func COTPPacketDisconnectResponseParse(io spi.ReadBuffer) (COTPPacketInitializer
 }
 
 func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPPacketDisconnectResponse); ok {
 
-			// Simple Field (destinationReference)
-			var destinationReference uint16 = m.destinationReference
-			io.WriteUint16(16, (destinationReference))
+	// Simple Field (destinationReference)
+	destinationReference := uint16(m.destinationReference)
+	io.WriteUint16(16, (destinationReference))
 
-			// Simple Field (sourceReference)
-			var sourceReference uint16 = m.sourceReference
-			io.WriteUint16(16, (sourceReference))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (sourceReference)
+	sourceReference := uint16(m.sourceReference)
+	io.WriteUint16(16, (sourceReference))
 }

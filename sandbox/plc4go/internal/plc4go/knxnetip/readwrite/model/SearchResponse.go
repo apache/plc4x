@@ -51,6 +51,26 @@ func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DI
 	return &SearchResponse{hpaiControlEndpoint: hpaiControlEndpoint, dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
+func CastISearchResponse(structType interface{}) ISearchResponse {
+	castFunc := func(typ interface{}) ISearchResponse {
+		if iSearchResponse, ok := typ.(ISearchResponse); ok {
+			return iSearchResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastSearchResponse(structType interface{}) SearchResponse {
+	castFunc := func(typ interface{}) SearchResponse {
+		if sSearchResponse, ok := typ.(SearchResponse); ok {
+			return sSearchResponse
+		}
+		return SearchResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m SearchResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -110,21 +130,16 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 }
 
 func (m SearchResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ISearchResponse); ok {
 
-			// Simple Field (hpaiControlEndpoint)
-			var hpaiControlEndpoint HPAIControlEndpoint = m.hpaiControlEndpoint
-			hpaiControlEndpoint.Serialize(io)
+	// Simple Field (hpaiControlEndpoint)
+	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint.Serialize(io)
 
-			// Simple Field (dibDeviceInfo)
-			var dibDeviceInfo DIBDeviceInfo = m.dibDeviceInfo
-			dibDeviceInfo.Serialize(io)
+	// Simple Field (dibDeviceInfo)
+	dibDeviceInfo := DIBDeviceInfo(m.dibDeviceInfo)
+	dibDeviceInfo.Serialize(io)
 
-			// Simple Field (dibSuppSvcFamilies)
-			var dibSuppSvcFamilies DIBSuppSvcFamilies = m.dibSuppSvcFamilies
-			dibSuppSvcFamilies.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (dibSuppSvcFamilies)
+	dibSuppSvcFamilies := DIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+	dibSuppSvcFamilies.Serialize(io)
 }

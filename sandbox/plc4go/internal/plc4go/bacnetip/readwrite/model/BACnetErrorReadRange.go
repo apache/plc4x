@@ -46,6 +46,26 @@ func NewBACnetErrorReadRange() BACnetErrorInitializer {
 	return &BACnetErrorReadRange{}
 }
 
+func CastIBACnetErrorReadRange(structType interface{}) IBACnetErrorReadRange {
+	castFunc := func(typ interface{}) IBACnetErrorReadRange {
+		if iBACnetErrorReadRange, ok := typ.(IBACnetErrorReadRange); ok {
+			return iBACnetErrorReadRange
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
+	castFunc := func(typ interface{}) BACnetErrorReadRange {
+		if sBACnetErrorReadRange, ok := typ.(BACnetErrorReadRange); ok {
+			return sBACnetErrorReadRange
+		}
+		return BACnetErrorReadRange{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorReadRange) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorReadRangeParse(io spi.ReadBuffer) (BACnetErrorInitializer, error
 }
 
 func (m BACnetErrorReadRange) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorReadRange); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

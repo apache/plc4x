@@ -47,6 +47,26 @@ func NewCOTPParameterChecksum(crc uint8) COTPParameterInitializer {
 	return &COTPParameterChecksum{crc: crc}
 }
 
+func CastICOTPParameterChecksum(structType interface{}) ICOTPParameterChecksum {
+	castFunc := func(typ interface{}) ICOTPParameterChecksum {
+		if iCOTPParameterChecksum, ok := typ.(ICOTPParameterChecksum); ok {
+			return iCOTPParameterChecksum
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
+	castFunc := func(typ interface{}) COTPParameterChecksum {
+		if sCOTPParameterChecksum, ok := typ.(COTPParameterChecksum); ok {
+			return sCOTPParameterChecksum
+		}
+		return COTPParameterChecksum{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPParameterChecksum) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
@@ -70,13 +90,8 @@ func COTPParameterChecksumParse(io spi.ReadBuffer) (COTPParameterInitializer, er
 }
 
 func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPParameterChecksum); ok {
 
-			// Simple Field (crc)
-			var crc uint8 = m.crc
-			io.WriteUint8(8, (crc))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (crc)
+	crc := uint8(m.crc)
+	io.WriteUint8(8, (crc))
 }

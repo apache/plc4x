@@ -42,6 +42,26 @@ func BACnetUnconfirmedServiceRequestServiceChoice(m IBACnetUnconfirmedServiceReq
 	return m.ServiceChoice()
 }
 
+func CastIBACnetUnconfirmedServiceRequest(structType interface{}) IBACnetUnconfirmedServiceRequest {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequest {
+		if iBACnetUnconfirmedServiceRequest, ok := typ.(IBACnetUnconfirmedServiceRequest); ok {
+			return iBACnetUnconfirmedServiceRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequest(structType interface{}) BACnetUnconfirmedServiceRequest {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequest {
+		if sBACnetUnconfirmedServiceRequest, ok := typ.(BACnetUnconfirmedServiceRequest); ok {
+			return sBACnetUnconfirmedServiceRequest
+		}
+		return BACnetUnconfirmedServiceRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -100,16 +120,12 @@ func BACnetUnconfirmedServiceRequestParse(io spi.ReadBuffer, len uint16) (spi.Me
 }
 
 func (m BACnetUnconfirmedServiceRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBACnetUnconfirmedServiceRequest, ok := typ.(IBACnetUnconfirmedServiceRequest); ok {
+	iBACnetUnconfirmedServiceRequest := CastIBACnetUnconfirmedServiceRequest(m)
 
-			// Discriminator Field (serviceChoice) (Used as input to a switch field)
-			serviceChoice := BACnetUnconfirmedServiceRequestServiceChoice(iBACnetUnconfirmedServiceRequest)
-			io.WriteUint8(8, (serviceChoice))
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(BACnetUnconfirmedServiceRequestServiceChoice(iBACnetUnconfirmedServiceRequest))
+	io.WriteUint8(8, (serviceChoice))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBACnetUnconfirmedServiceRequest.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBACnetUnconfirmedServiceRequest.Serialize(io)
 }

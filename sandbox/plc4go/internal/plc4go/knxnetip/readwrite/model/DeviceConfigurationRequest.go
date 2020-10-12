@@ -50,6 +50,26 @@ func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceCon
 	return &DeviceConfigurationRequest{deviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, cemi: cemi}
 }
 
+func CastIDeviceConfigurationRequest(structType interface{}) IDeviceConfigurationRequest {
+	castFunc := func(typ interface{}) IDeviceConfigurationRequest {
+		if iDeviceConfigurationRequest, ok := typ.(IDeviceConfigurationRequest); ok {
+			return iDeviceConfigurationRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
+	castFunc := func(typ interface{}) DeviceConfigurationRequest {
+		if sDeviceConfigurationRequest, ok := typ.(DeviceConfigurationRequest); ok {
+			return sDeviceConfigurationRequest
+		}
+		return DeviceConfigurationRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m DeviceConfigurationRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,7 +100,7 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 	}
 
 	// Simple Field (cemi)
-	_cemiMessage, _err := CEMIParse(io, uint8((totalLength)-((6)+(deviceConfigurationRequestDataBlock.LengthInBytes()))))
+	_cemiMessage, _err := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
 	}
@@ -95,17 +115,12 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 }
 
 func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDeviceConfigurationRequest); ok {
 
-			// Simple Field (deviceConfigurationRequestDataBlock)
-			var deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock = m.deviceConfigurationRequestDataBlock
-			deviceConfigurationRequestDataBlock.Serialize(io)
+	// Simple Field (deviceConfigurationRequestDataBlock)
+	deviceConfigurationRequestDataBlock := DeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
+	deviceConfigurationRequestDataBlock.Serialize(io)
 
-			// Simple Field (cemi)
-			var cemi CEMI = m.cemi
-			cemi.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (cemi)
+	cemi := CEMI(m.cemi)
+	cemi.Serialize(io)
 }

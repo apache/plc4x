@@ -58,6 +58,26 @@ func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messag
 	return &ModbusPDUGetComEventLogResponse{status: status, eventCount: eventCount, messageCount: messageCount, events: events}
 }
 
+func CastIModbusPDUGetComEventLogResponse(structType interface{}) IModbusPDUGetComEventLogResponse {
+	castFunc := func(typ interface{}) IModbusPDUGetComEventLogResponse {
+		if iModbusPDUGetComEventLogResponse, ok := typ.(IModbusPDUGetComEventLogResponse); ok {
+			return iModbusPDUGetComEventLogResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUGetComEventLogResponse(structType interface{}) ModbusPDUGetComEventLogResponse {
+	castFunc := func(typ interface{}) ModbusPDUGetComEventLogResponse {
+		if sModbusPDUGetComEventLogResponse, ok := typ.(ModbusPDUGetComEventLogResponse); ok {
+			return sModbusPDUGetComEventLogResponse
+		}
+		return ModbusPDUGetComEventLogResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -103,8 +123,8 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 	var events []int8
 	// Count array
 	{
-		events := make([]int8, (byteCount)-(6))
-		for curItem := uint16(0); curItem < uint16((byteCount)-(6)); curItem++ {
+		events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
+		for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
 
 			events = append(events, io.ReadInt8(8))
 		}
@@ -115,32 +135,27 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 }
 
 func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUGetComEventLogResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8((uint8(len(m.events))) + (6))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(uint8(len(m.events))) + uint8(uint8(6)))
+	io.WriteUint8(8, (byteCount))
 
-			// Simple Field (status)
-			var status uint16 = m.status
-			io.WriteUint16(16, (status))
+	// Simple Field (status)
+	status := uint16(m.status)
+	io.WriteUint16(16, (status))
 
-			// Simple Field (eventCount)
-			var eventCount uint16 = m.eventCount
-			io.WriteUint16(16, (eventCount))
+	// Simple Field (eventCount)
+	eventCount := uint16(m.eventCount)
+	io.WriteUint16(16, (eventCount))
 
-			// Simple Field (messageCount)
-			var messageCount uint16 = m.messageCount
-			io.WriteUint16(16, (messageCount))
+	// Simple Field (messageCount)
+	messageCount := uint16(m.messageCount)
+	io.WriteUint16(16, (messageCount))
 
-			// Array Field (events)
-			if m.events != nil {
-				for _, _element := range m.events {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (events)
+	if m.events != nil {
+		for _, _element := range m.events {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

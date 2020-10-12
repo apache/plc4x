@@ -55,6 +55,26 @@ func NewModbusPDUReportServerIdResponse(value []int8) ModbusPDUInitializer {
 	return &ModbusPDUReportServerIdResponse{value: value}
 }
 
+func CastIModbusPDUReportServerIdResponse(structType interface{}) IModbusPDUReportServerIdResponse {
+	castFunc := func(typ interface{}) IModbusPDUReportServerIdResponse {
+		if iModbusPDUReportServerIdResponse, ok := typ.(IModbusPDUReportServerIdResponse); ok {
+			return iModbusPDUReportServerIdResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReportServerIdResponse(structType interface{}) ModbusPDUReportServerIdResponse {
+	castFunc := func(typ interface{}) ModbusPDUReportServerIdResponse {
+		if sModbusPDUReportServerIdResponse, ok := typ.(ModbusPDUReportServerIdResponse); ok {
+			return sModbusPDUReportServerIdResponse
+		}
+		return ModbusPDUReportServerIdResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReportServerIdResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -94,20 +114,15 @@ func ModbusPDUReportServerIdResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 }
 
 func (m ModbusPDUReportServerIdResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReportServerIdResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

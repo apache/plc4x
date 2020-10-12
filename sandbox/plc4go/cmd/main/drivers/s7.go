@@ -15,13 +15,7 @@
 //
 package drivers
 
-/*import (
-    "encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/s7/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-)
-
-func S7() {
+/*func S7() {
 	request, err := hex.DecodeString("000a00000006010300000004")
 	if err != nil {
 		// Output an error ...

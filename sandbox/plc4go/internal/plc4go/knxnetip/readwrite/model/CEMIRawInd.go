@@ -46,6 +46,26 @@ func NewCEMIRawInd() CEMIInitializer {
 	return &CEMIRawInd{}
 }
 
+func CastICEMIRawInd(structType interface{}) ICEMIRawInd {
+	castFunc := func(typ interface{}) ICEMIRawInd {
+		if iCEMIRawInd, ok := typ.(ICEMIRawInd); ok {
+			return iCEMIRawInd
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIRawInd(structType interface{}) CEMIRawInd {
+	castFunc := func(typ interface{}) CEMIRawInd {
+		if sCEMIRawInd, ok := typ.(CEMIRawInd); ok {
+			return sCEMIRawInd
+		}
+		return CEMIRawInd{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIRawInd) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMI.LengthInBits()
 
@@ -63,9 +83,5 @@ func CEMIRawIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIRawInd) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIRawInd); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

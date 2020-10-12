@@ -51,6 +51,26 @@ func NewBACnetTagContext(data []int8) BACnetTagInitializer {
 	return &BACnetTagContext{data: data}
 }
 
+func CastIBACnetTagContext(structType interface{}) IBACnetTagContext {
+	castFunc := func(typ interface{}) IBACnetTagContext {
+		if iBACnetTagContext, ok := typ.(IBACnetTagContext); ok {
+			return iBACnetTagContext
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagContext(structType interface{}) BACnetTagContext {
+	castFunc := func(typ interface{}) BACnetTagContext {
+		if sBACnetTagContext, ok := typ.(BACnetTagContext); ok {
+			return sBACnetTagContext
+		}
+		return BACnetTagContext{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagContext) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -71,8 +91,8 @@ func BACnetTagContextParse(io spi.ReadBuffer, typeOrTagNumber uint8, extTagNumbe
 	// Array field (data)
 	var data []int8
 	// Length array
-	_dataLength := uint16(spi.InlineIf(((lengthValueType) == (5)), uint16(extLength), uint16(lengthValueType)))
-	_dataEndPos := io.GetPos() + _dataLength
+	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(extLength), uint16(lengthValueType))
+	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		data = append(data, io.ReadInt8(8))
 	}
@@ -82,16 +102,11 @@ func BACnetTagContextParse(io spi.ReadBuffer, typeOrTagNumber uint8, extTagNumbe
 }
 
 func (m BACnetTagContext) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagContext); ok {
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

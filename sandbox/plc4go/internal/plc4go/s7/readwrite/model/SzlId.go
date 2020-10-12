@@ -40,6 +40,26 @@ func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList Sz
 	return &SzlId{typeClass: typeClass, sublistExtract: sublistExtract, sublistList: sublistList}
 }
 
+func CastISzlId(structType interface{}) ISzlId {
+	castFunc := func(typ interface{}) ISzlId {
+		if iSzlId, ok := typ.(ISzlId); ok {
+			return iSzlId
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastSzlId(structType interface{}) SzlId {
+	castFunc := func(typ interface{}) SzlId {
+		if sSzlId, ok := typ.(SzlId); ok {
+			return sSzlId
+		}
+		return SzlId{}
+	}
+	return castFunc(structType)
+}
+
 func (m SzlId) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -81,21 +101,16 @@ func SzlIdParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m SzlId) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ISzlId); ok {
 
-			// Enum field (typeClass)
-			typeClass := m.typeClass
-			typeClass.Serialize(io)
+	// Enum field (typeClass)
+	typeClass := SzlModuleTypeClass(m.typeClass)
+	typeClass.Serialize(io)
 
-			// Simple Field (sublistExtract)
-			var sublistExtract uint8 = m.sublistExtract
-			io.WriteUint8(4, (sublistExtract))
+	// Simple Field (sublistExtract)
+	sublistExtract := uint8(m.sublistExtract)
+	io.WriteUint8(4, (sublistExtract))
 
-			// Enum field (sublistList)
-			sublistList := m.sublistList
-			sublistList.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (sublistList)
+	sublistList := SzlSublist(m.sublistList)
+	sublistList.Serialize(io)
 }

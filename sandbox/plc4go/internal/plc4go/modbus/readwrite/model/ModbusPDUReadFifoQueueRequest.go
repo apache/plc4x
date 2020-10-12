@@ -55,6 +55,26 @@ func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitia
 	return &ModbusPDUReadFifoQueueRequest{fifoPointerAddress: fifoPointerAddress}
 }
 
+func CastIModbusPDUReadFifoQueueRequest(structType interface{}) IModbusPDUReadFifoQueueRequest {
+	castFunc := func(typ interface{}) IModbusPDUReadFifoQueueRequest {
+		if iModbusPDUReadFifoQueueRequest, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
+			return iModbusPDUReadFifoQueueRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadFifoQueueRequest(structType interface{}) ModbusPDUReadFifoQueueRequest {
+	castFunc := func(typ interface{}) ModbusPDUReadFifoQueueRequest {
+		if sModbusPDUReadFifoQueueRequest, ok := typ.(ModbusPDUReadFifoQueueRequest); ok {
+			return sModbusPDUReadFifoQueueRequest
+		}
+		return ModbusPDUReadFifoQueueRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -78,13 +98,8 @@ func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer
 }
 
 func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
 
-			// Simple Field (fifoPointerAddress)
-			var fifoPointerAddress uint16 = m.fifoPointerAddress
-			io.WriteUint16(16, (fifoPointerAddress))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (fifoPointerAddress)
+	fifoPointerAddress := uint16(m.fifoPointerAddress)
+	io.WriteUint16(16, (fifoPointerAddress))
 }

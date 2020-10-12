@@ -50,6 +50,26 @@ func NewBACnetTagApplicationTime() BACnetTagInitializer {
 	return &BACnetTagApplicationTime{}
 }
 
+func CastIBACnetTagApplicationTime(structType interface{}) IBACnetTagApplicationTime {
+	castFunc := func(typ interface{}) IBACnetTagApplicationTime {
+		if iBACnetTagApplicationTime, ok := typ.(IBACnetTagApplicationTime); ok {
+			return iBACnetTagApplicationTime
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationTime(structType interface{}) BACnetTagApplicationTime {
+	castFunc := func(typ interface{}) BACnetTagApplicationTime {
+		if sBACnetTagApplicationTime, ok := typ.(BACnetTagApplicationTime); ok {
+			return sBACnetTagApplicationTime
+		}
+		return BACnetTagApplicationTime{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationTime) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -67,9 +87,5 @@ func BACnetTagApplicationTimeParse(io spi.ReadBuffer) (BACnetTagInitializer, err
 }
 
 func (m BACnetTagApplicationTime) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationTime); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

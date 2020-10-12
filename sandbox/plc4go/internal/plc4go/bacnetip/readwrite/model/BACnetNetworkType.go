@@ -36,6 +36,16 @@ const (
 	BACnetNetworkType_SERIAL             BACnetNetworkType = 0xA
 )
 
+func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
+	castFunc := func(typ interface{}) BACnetNetworkType {
+		if sBACnetNetworkType, ok := typ.(BACnetNetworkType); ok {
+			return sBACnetNetworkType
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func BACnetNetworkTypeParse(io spi.ReadBuffer) (BACnetNetworkType, error) {
 	// TODO: Implement ...
 	return 0, nil

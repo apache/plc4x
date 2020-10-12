@@ -37,6 +37,26 @@ func NewRelativeTimestamp(timestamp uint16) spi.Message {
 	return &RelativeTimestamp{timestamp: timestamp}
 }
 
+func CastIRelativeTimestamp(structType interface{}) IRelativeTimestamp {
+	castFunc := func(typ interface{}) IRelativeTimestamp {
+		if iRelativeTimestamp, ok := typ.(IRelativeTimestamp); ok {
+			return iRelativeTimestamp
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastRelativeTimestamp(structType interface{}) RelativeTimestamp {
+	castFunc := func(typ interface{}) RelativeTimestamp {
+		if sRelativeTimestamp, ok := typ.(RelativeTimestamp); ok {
+			return sRelativeTimestamp
+		}
+		return RelativeTimestamp{}
+	}
+	return castFunc(structType)
+}
+
 func (m RelativeTimestamp) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -60,13 +80,8 @@ func RelativeTimestampParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m RelativeTimestamp) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IRelativeTimestamp); ok {
 
-			// Simple Field (timestamp)
-			var timestamp uint16 = m.timestamp
-			io.WriteUint16(16, (timestamp))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (timestamp)
+	timestamp := uint16(m.timestamp)
+	io.WriteUint16(16, (timestamp))
 }

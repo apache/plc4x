@@ -50,6 +50,26 @@ func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBS
 	return &DescriptionResponse{dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
+func CastIDescriptionResponse(structType interface{}) IDescriptionResponse {
+	castFunc := func(typ interface{}) IDescriptionResponse {
+		if iDescriptionResponse, ok := typ.(IDescriptionResponse); ok {
+			return iDescriptionResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDescriptionResponse(structType interface{}) DescriptionResponse {
+	castFunc := func(typ interface{}) DescriptionResponse {
+		if sDescriptionResponse, ok := typ.(DescriptionResponse); ok {
+			return sDescriptionResponse
+		}
+		return DescriptionResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m DescriptionResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -95,17 +115,12 @@ func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 }
 
 func (m DescriptionResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDescriptionResponse); ok {
 
-			// Simple Field (dibDeviceInfo)
-			var dibDeviceInfo DIBDeviceInfo = m.dibDeviceInfo
-			dibDeviceInfo.Serialize(io)
+	// Simple Field (dibDeviceInfo)
+	dibDeviceInfo := DIBDeviceInfo(m.dibDeviceInfo)
+	dibDeviceInfo.Serialize(io)
 
-			// Simple Field (dibSuppSvcFamilies)
-			var dibSuppSvcFamilies DIBSuppSvcFamilies = m.dibSuppSvcFamilies
-			dibSuppSvcFamilies.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (dibSuppSvcFamilies)
+	dibSuppSvcFamilies := DIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+	dibSuppSvcFamilies.Serialize(io)
 }

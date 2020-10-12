@@ -55,6 +55,26 @@ func NewModbusPDUError(exceptionCode uint8) ModbusPDUInitializer {
 	return &ModbusPDUError{exceptionCode: exceptionCode}
 }
 
+func CastIModbusPDUError(structType interface{}) IModbusPDUError {
+	castFunc := func(typ interface{}) IModbusPDUError {
+		if iModbusPDUError, ok := typ.(IModbusPDUError); ok {
+			return iModbusPDUError
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUError(structType interface{}) ModbusPDUError {
+	castFunc := func(typ interface{}) ModbusPDUError {
+		if sModbusPDUError, ok := typ.(ModbusPDUError); ok {
+			return sModbusPDUError
+		}
+		return ModbusPDUError{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUError) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -78,13 +98,8 @@ func ModbusPDUErrorParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 }
 
 func (m ModbusPDUError) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUError); ok {
 
-			// Simple Field (exceptionCode)
-			var exceptionCode uint8 = m.exceptionCode
-			io.WriteUint8(8, (exceptionCode))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (exceptionCode)
+	exceptionCode := uint8(m.exceptionCode)
+	io.WriteUint8(8, (exceptionCode))
 }

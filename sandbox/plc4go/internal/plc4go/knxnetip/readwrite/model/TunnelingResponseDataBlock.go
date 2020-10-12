@@ -40,6 +40,26 @@ func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter
 	return &TunnelingResponseDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter, status: status}
 }
 
+func CastITunnelingResponseDataBlock(structType interface{}) ITunnelingResponseDataBlock {
+	castFunc := func(typ interface{}) ITunnelingResponseDataBlock {
+		if iTunnelingResponseDataBlock, ok := typ.(ITunnelingResponseDataBlock); ok {
+			return iTunnelingResponseDataBlock
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastTunnelingResponseDataBlock(structType interface{}) TunnelingResponseDataBlock {
+	castFunc := func(typ interface{}) TunnelingResponseDataBlock {
+		if sTunnelingResponseDataBlock, ok := typ.(TunnelingResponseDataBlock); ok {
+			return sTunnelingResponseDataBlock
+		}
+		return TunnelingResponseDataBlock{}
+	}
+	return castFunc(structType)
+}
+
 func (m TunnelingResponseDataBlock) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -84,25 +104,20 @@ func TunnelingResponseDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ITunnelingResponseDataBlock); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Simple Field (sequenceCounter)
-			var sequenceCounter uint8 = m.sequenceCounter
-			io.WriteUint8(8, (sequenceCounter))
+	// Simple Field (sequenceCounter)
+	sequenceCounter := uint8(m.sequenceCounter)
+	io.WriteUint8(8, (sequenceCounter))
 
-			// Enum field (status)
-			status := m.status
-			status.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (status)
+	status := Status(m.status)
+	status.Serialize(io)
 }

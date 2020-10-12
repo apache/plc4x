@@ -46,6 +46,26 @@ func NewBACnetServiceAckGetEnrollmentSummary() BACnetServiceAckInitializer {
 	return &BACnetServiceAckGetEnrollmentSummary{}
 }
 
+func CastIBACnetServiceAckGetEnrollmentSummary(structType interface{}) IBACnetServiceAckGetEnrollmentSummary {
+	castFunc := func(typ interface{}) IBACnetServiceAckGetEnrollmentSummary {
+		if iBACnetServiceAckGetEnrollmentSummary, ok := typ.(IBACnetServiceAckGetEnrollmentSummary); ok {
+			return iBACnetServiceAckGetEnrollmentSummary
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) BACnetServiceAckGetEnrollmentSummary {
+	castFunc := func(typ interface{}) BACnetServiceAckGetEnrollmentSummary {
+		if sBACnetServiceAckGetEnrollmentSummary, ok := typ.(BACnetServiceAckGetEnrollmentSummary); ok {
+			return sBACnetServiceAckGetEnrollmentSummary
+		}
+		return BACnetServiceAckGetEnrollmentSummary{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACnetService
 }
 
 func (m BACnetServiceAckGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckGetEnrollmentSummary); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

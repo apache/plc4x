@@ -42,6 +42,26 @@ func KNXGroupAddressNumLevels(m IKNXGroupAddress) uint8 {
 	return m.NumLevels()
 }
 
+func CastIKNXGroupAddress(structType interface{}) IKNXGroupAddress {
+	castFunc := func(typ interface{}) IKNXGroupAddress {
+		if iKNXGroupAddress, ok := typ.(IKNXGroupAddress); ok {
+			return iKNXGroupAddress
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKNXGroupAddress(structType interface{}) KNXGroupAddress {
+	castFunc := func(typ interface{}) KNXGroupAddress {
+		if sKNXGroupAddress, ok := typ.(KNXGroupAddress); ok {
+			return sKNXGroupAddress
+		}
+		return KNXGroupAddress{}
+	}
+	return castFunc(structType)
+}
+
 func (m KNXGroupAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -76,12 +96,8 @@ func KNXGroupAddressParse(io spi.ReadBuffer, numLevels uint8) (spi.Message, erro
 }
 
 func (m KNXGroupAddress) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iKNXGroupAddress, ok := typ.(IKNXGroupAddress); ok {
+	iKNXGroupAddress := CastIKNXGroupAddress(m)
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iKNXGroupAddress.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iKNXGroupAddress.Serialize(io)
 }

@@ -42,6 +42,26 @@ func CEMIMessageCode(m ICEMI) uint8 {
 	return m.MessageCode()
 }
 
+func CastICEMI(structType interface{}) ICEMI {
+	castFunc := func(typ interface{}) ICEMI {
+		if iCEMI, ok := typ.(ICEMI); ok {
+			return iCEMI
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMI(structType interface{}) CEMI {
+	castFunc := func(typ interface{}) CEMI {
+		if sCEMI, ok := typ.(CEMI); ok {
+			return sCEMI
+		}
+		return CEMI{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMI) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -98,16 +118,12 @@ func CEMIParse(io spi.ReadBuffer, size uint8) (spi.Message, error) {
 }
 
 func (m CEMI) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iCEMI, ok := typ.(ICEMI); ok {
+	iCEMI := CastICEMI(m)
 
-			// Discriminator Field (messageCode) (Used as input to a switch field)
-			messageCode := CEMIMessageCode(iCEMI)
-			io.WriteUint8(8, (messageCode))
+	// Discriminator Field (messageCode) (Used as input to a switch field)
+	messageCode := uint8(CEMIMessageCode(iCEMI))
+	io.WriteUint8(8, (messageCode))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iCEMI.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iCEMI.Serialize(io)
 }

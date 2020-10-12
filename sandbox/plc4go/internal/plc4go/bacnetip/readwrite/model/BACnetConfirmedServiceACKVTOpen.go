@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceACKVTOpen() BACnetConfirmedServiceACKInitializer {
 	return &BACnetConfirmedServiceACKVTOpen{}
 }
 
+func CastIBACnetConfirmedServiceACKVTOpen(structType interface{}) IBACnetConfirmedServiceACKVTOpen {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKVTOpen {
+		if iBACnetConfirmedServiceACKVTOpen, ok := typ.(IBACnetConfirmedServiceACKVTOpen); ok {
+			return iBACnetConfirmedServiceACKVTOpen
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceACKVTOpen(structType interface{}) BACnetConfirmedServiceACKVTOpen {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceACKVTOpen {
+		if sBACnetConfirmedServiceACKVTOpen, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
+			return sBACnetConfirmedServiceACKVTOpen
+		}
+		return BACnetConfirmedServiceACKVTOpen{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceACKVTOpen) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceACKVTOpenParse(io spi.ReadBuffer) (BACnetConfirmedSer
 }
 
 func (m BACnetConfirmedServiceACKVTOpen) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceACKVTOpen); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

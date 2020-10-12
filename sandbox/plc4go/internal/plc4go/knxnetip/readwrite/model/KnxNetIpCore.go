@@ -47,6 +47,26 @@ func NewKnxNetIpCore(version uint8) ServiceIdInitializer {
 	return &KnxNetIpCore{version: version}
 }
 
+func CastIKnxNetIpCore(structType interface{}) IKnxNetIpCore {
+	castFunc := func(typ interface{}) IKnxNetIpCore {
+		if iKnxNetIpCore, ok := typ.(IKnxNetIpCore); ok {
+			return iKnxNetIpCore
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
+	castFunc := func(typ interface{}) KnxNetIpCore {
+		if sKnxNetIpCore, ok := typ.(KnxNetIpCore); ok {
+			return sKnxNetIpCore
+		}
+		return KnxNetIpCore{}
+	}
+	return castFunc(structType)
+}
+
 func (m KnxNetIpCore) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
@@ -70,13 +90,8 @@ func KnxNetIpCoreParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
 }
 
 func (m KnxNetIpCore) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKnxNetIpCore); ok {
 
-			// Simple Field (version)
-			var version uint8 = m.version
-			io.WriteUint8(8, (version))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (version)
+	version := uint8(m.version)
+	io.WriteUint8(8, (version))
 }

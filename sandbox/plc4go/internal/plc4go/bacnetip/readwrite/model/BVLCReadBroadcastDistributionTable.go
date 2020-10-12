@@ -46,6 +46,26 @@ func NewBVLCReadBroadcastDistributionTable() BVLCInitializer {
 	return &BVLCReadBroadcastDistributionTable{}
 }
 
+func CastIBVLCReadBroadcastDistributionTable(structType interface{}) IBVLCReadBroadcastDistributionTable {
+	castFunc := func(typ interface{}) IBVLCReadBroadcastDistributionTable {
+		if iBVLCReadBroadcastDistributionTable, ok := typ.(IBVLCReadBroadcastDistributionTable); ok {
+			return iBVLCReadBroadcastDistributionTable
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroadcastDistributionTable {
+	castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTable {
+		if sBVLCReadBroadcastDistributionTable, ok := typ.(BVLCReadBroadcastDistributionTable); ok {
+			return sBVLCReadBroadcastDistributionTable
+		}
+		return BVLCReadBroadcastDistributionTable{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCReadBroadcastDistributionTable) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCReadBroadcastDistributionTableParse(io spi.ReadBuffer) (BVLCInitializer
 }
 
 func (m BVLCReadBroadcastDistributionTable) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCReadBroadcastDistributionTable); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

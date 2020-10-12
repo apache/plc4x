@@ -57,6 +57,26 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []SzlDataTreeItem)
 	return &S7PayloadUserDataItemCpuFunctionReadSzlResponse{items: items}
 }
 
+func CastIS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	castFunc := func(typ interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlResponse {
+		if iS7PayloadUserDataItemCpuFunctionReadSzlResponse, ok := typ.(IS7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
+			return iS7PayloadUserDataItemCpuFunctionReadSzlResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+	castFunc := func(typ interface{}) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+		if sS7PayloadUserDataItemCpuFunctionReadSzlResponse, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
+			return sS7PayloadUserDataItemCpuFunctionReadSzlResponse
+		}
+		return S7PayloadUserDataItemCpuFunctionReadSzlResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7PayloadUserDataItem.LengthInBits()
 
@@ -116,23 +136,18 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io spi.ReadBuffer) (S7
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
 
-			// Const Field (szlItemLength)
-			io.WriteUint16(16, 28)
+	// Const Field (szlItemLength)
+	io.WriteUint16(16, 28)
 
-			// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			szlItemCount := uint16(uint16(len(m.items)))
-			io.WriteUint16(16, (szlItemCount))
+	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	szlItemCount := uint16(uint16(len(m.items)))
+	io.WriteUint16(16, (szlItemCount))
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

@@ -46,6 +46,26 @@ func NewBACnetServiceAckGetEventInformation() BACnetServiceAckInitializer {
 	return &BACnetServiceAckGetEventInformation{}
 }
 
+func CastIBACnetServiceAckGetEventInformation(structType interface{}) IBACnetServiceAckGetEventInformation {
+	castFunc := func(typ interface{}) IBACnetServiceAckGetEventInformation {
+		if iBACnetServiceAckGetEventInformation, ok := typ.(IBACnetServiceAckGetEventInformation); ok {
+			return iBACnetServiceAckGetEventInformation
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckGetEventInformation(structType interface{}) BACnetServiceAckGetEventInformation {
+	castFunc := func(typ interface{}) BACnetServiceAckGetEventInformation {
+		if sBACnetServiceAckGetEventInformation, ok := typ.(BACnetServiceAckGetEventInformation); ok {
+			return sBACnetServiceAckGetEventInformation
+		}
+		return BACnetServiceAckGetEventInformation{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckGetEventInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckGetEventInformationParse(io spi.ReadBuffer) (BACnetServiceA
 }
 
 func (m BACnetServiceAckGetEventInformation) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckGetEventInformation); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

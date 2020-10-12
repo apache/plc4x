@@ -44,6 +44,16 @@ const (
 	SzlSublist_MODULE_DIAGNOSTIC_DATA                                        SzlSublist = 0xB1
 )
 
+func CastSzlSublist(structType interface{}) SzlSublist {
+	castFunc := func(typ interface{}) SzlSublist {
+		if sSzlSublist, ok := typ.(SzlSublist); ok {
+			return sSzlSublist
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func SzlSublistParse(io spi.ReadBuffer) (SzlSublist, error) {
 	// TODO: Implement ...
 	return 0, nil

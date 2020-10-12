@@ -51,6 +51,26 @@ func NewBACnetTagApplicationUnsignedInteger(data []int8) BACnetTagInitializer {
 	return &BACnetTagApplicationUnsignedInteger{data: data}
 }
 
+func CastIBACnetTagApplicationUnsignedInteger(structType interface{}) IBACnetTagApplicationUnsignedInteger {
+	castFunc := func(typ interface{}) IBACnetTagApplicationUnsignedInteger {
+		if iBACnetTagApplicationUnsignedInteger, ok := typ.(IBACnetTagApplicationUnsignedInteger); ok {
+			return iBACnetTagApplicationUnsignedInteger
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationUnsignedInteger(structType interface{}) BACnetTagApplicationUnsignedInteger {
+	castFunc := func(typ interface{}) BACnetTagApplicationUnsignedInteger {
+		if sBACnetTagApplicationUnsignedInteger, ok := typ.(BACnetTagApplicationUnsignedInteger); ok {
+			return sBACnetTagApplicationUnsignedInteger
+		}
+		return BACnetTagApplicationUnsignedInteger{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationUnsignedInteger) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -71,8 +91,8 @@ func BACnetTagApplicationUnsignedIntegerParse(io spi.ReadBuffer, lengthValueType
 	// Array field (data)
 	var data []int8
 	// Length array
-	_dataLength := uint16(spi.InlineIf(((lengthValueType) == (5)), uint16(extLength), uint16(lengthValueType)))
-	_dataEndPos := io.GetPos() + _dataLength
+	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(extLength), uint16(lengthValueType))
+	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		data = append(data, io.ReadInt8(8))
 	}
@@ -82,16 +102,11 @@ func BACnetTagApplicationUnsignedIntegerParse(io spi.ReadBuffer, lengthValueType
 }
 
 func (m BACnetTagApplicationUnsignedInteger) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationUnsignedInteger); ok {
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

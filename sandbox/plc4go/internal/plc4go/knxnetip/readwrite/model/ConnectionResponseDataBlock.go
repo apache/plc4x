@@ -42,6 +42,26 @@ func ConnectionResponseDataBlockConnectionType(m IConnectionResponseDataBlock) u
 	return m.ConnectionType()
 }
 
+func CastIConnectionResponseDataBlock(structType interface{}) IConnectionResponseDataBlock {
+	castFunc := func(typ interface{}) IConnectionResponseDataBlock {
+		if iConnectionResponseDataBlock, ok := typ.(IConnectionResponseDataBlock); ok {
+			return iConnectionResponseDataBlock
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionResponseDataBlock(structType interface{}) ConnectionResponseDataBlock {
+	castFunc := func(typ interface{}) ConnectionResponseDataBlock {
+		if sConnectionResponseDataBlock, ok := typ.(ConnectionResponseDataBlock); ok {
+			return sConnectionResponseDataBlock
+		}
+		return ConnectionResponseDataBlock{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionResponseDataBlock) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -86,20 +106,16 @@ func ConnectionResponseDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m ConnectionResponseDataBlock) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iConnectionResponseDataBlock, ok := typ.(IConnectionResponseDataBlock); ok {
+	iConnectionResponseDataBlock := CastIConnectionResponseDataBlock(m)
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Discriminator Field (connectionType) (Used as input to a switch field)
-			connectionType := ConnectionResponseDataBlockConnectionType(iConnectionResponseDataBlock)
-			io.WriteUint8(8, (connectionType))
+	// Discriminator Field (connectionType) (Used as input to a switch field)
+	connectionType := uint8(ConnectionResponseDataBlockConnectionType(iConnectionResponseDataBlock))
+	io.WriteUint8(8, (connectionType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iConnectionResponseDataBlock.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iConnectionResponseDataBlock.Serialize(io)
 }

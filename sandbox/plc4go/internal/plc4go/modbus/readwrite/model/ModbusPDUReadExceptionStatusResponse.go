@@ -55,6 +55,26 @@ func NewModbusPDUReadExceptionStatusResponse(value uint8) ModbusPDUInitializer {
 	return &ModbusPDUReadExceptionStatusResponse{value: value}
 }
 
+func CastIModbusPDUReadExceptionStatusResponse(structType interface{}) IModbusPDUReadExceptionStatusResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusResponse {
+		if iModbusPDUReadExceptionStatusResponse, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
+			return iModbusPDUReadExceptionStatusResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadExceptionStatusResponse(structType interface{}) ModbusPDUReadExceptionStatusResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusResponse {
+		if sModbusPDUReadExceptionStatusResponse, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
+			return sModbusPDUReadExceptionStatusResponse
+		}
+		return ModbusPDUReadExceptionStatusResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -78,13 +98,8 @@ func ModbusPDUReadExceptionStatusResponseParse(io spi.ReadBuffer) (ModbusPDUInit
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
 
-			// Simple Field (value)
-			var value uint8 = m.value
-			io.WriteUint8(8, (value))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (value)
+	value := uint8(m.value)
+	io.WriteUint8(8, (value))
 }

@@ -52,6 +52,26 @@ func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8) BACnetTagIn
 	return &BACnetTagApplicationBitString{unusedBits: unusedBits, data: data}
 }
 
+func CastIBACnetTagApplicationBitString(structType interface{}) IBACnetTagApplicationBitString {
+	castFunc := func(typ interface{}) IBACnetTagApplicationBitString {
+		if iBACnetTagApplicationBitString, ok := typ.(IBACnetTagApplicationBitString); ok {
+			return iBACnetTagApplicationBitString
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationBitString(structType interface{}) BACnetTagApplicationBitString {
+	castFunc := func(typ interface{}) BACnetTagApplicationBitString {
+		if sBACnetTagApplicationBitString, ok := typ.(BACnetTagApplicationBitString); ok {
+			return sBACnetTagApplicationBitString
+		}
+		return BACnetTagApplicationBitString{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationBitString) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -78,8 +98,8 @@ func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8
 	// Array field (data)
 	var data []int8
 	// Length array
-	_dataLength := uint16(spi.InlineIf(((lengthValueType) == (5)), uint16(((extLength) - (1))), uint16(((lengthValueType) - (1)))))
-	_dataEndPos := io.GetPos() + _dataLength
+	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(uint16(uint16(extLength)-uint16(uint16(1)))), uint16(uint16(uint16(lengthValueType)-uint16(uint16(1)))))
+	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		data = append(data, io.ReadInt8(8))
 	}
@@ -89,20 +109,15 @@ func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8
 }
 
 func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationBitString); ok {
 
-			// Simple Field (unusedBits)
-			var unusedBits uint8 = m.unusedBits
-			io.WriteUint8(8, (unusedBits))
+	// Simple Field (unusedBits)
+	unusedBits := uint8(m.unusedBits)
+	io.WriteUint8(8, (unusedBits))
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

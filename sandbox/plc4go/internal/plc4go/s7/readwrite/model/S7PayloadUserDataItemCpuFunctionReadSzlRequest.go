@@ -50,6 +50,26 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlRequest() S7PayloadUserDataItemIn
 	return &S7PayloadUserDataItemCpuFunctionReadSzlRequest{}
 }
 
+func CastIS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	castFunc := func(typ interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlRequest {
+		if iS7PayloadUserDataItemCpuFunctionReadSzlRequest, ok := typ.(IS7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
+			return iS7PayloadUserDataItemCpuFunctionReadSzlRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+	castFunc := func(typ interface{}) S7PayloadUserDataItemCpuFunctionReadSzlRequest {
+		if sS7PayloadUserDataItemCpuFunctionReadSzlRequest, ok := typ.(S7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
+			return sS7PayloadUserDataItemCpuFunctionReadSzlRequest
+		}
+		return S7PayloadUserDataItemCpuFunctionReadSzlRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7PayloadUserDataItem.LengthInBits()
 
@@ -67,9 +87,5 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io spi.ReadBuffer) (S7P
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadUserDataItemCpuFunctionReadSzlRequest); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

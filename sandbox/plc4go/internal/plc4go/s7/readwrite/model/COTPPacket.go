@@ -45,6 +45,26 @@ func COTPPacketTpduCode(m ICOTPPacket) uint8 {
 	return m.TpduCode()
 }
 
+func CastICOTPPacket(structType interface{}) ICOTPPacket {
+	castFunc := func(typ interface{}) ICOTPPacket {
+		if iCOTPPacket, ok := typ.(ICOTPPacket); ok {
+			return iCOTPPacket
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacket(structType interface{}) COTPPacket {
+	castFunc := func(typ interface{}) COTPPacket {
+		if sCOTPPacket, ok := typ.(COTPPacket); ok {
+			return sCOTPPacket
+		}
+		return COTPPacket{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacket) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -110,10 +130,10 @@ func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 	curPos = io.GetPos() - startPos
 	var parameters []COTPParameter
 	// Length array
-	_parametersLength := uint16(((headerLength) + (1)) - (curPos))
-	_parametersEndPos := io.GetPos() + _parametersLength
+	_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
+	_parametersEndPos := io.GetPos() + uint16(_parametersLength)
 	for io.GetPos() < _parametersEndPos {
-		_message, _err := COTPParameterParse(io, uint8(((headerLength)+(1))-(curPos)))
+		_message, _err := COTPParameterParse(io, uint8(uint8(uint8(headerLength)+uint8(uint8(1))))-uint8(curPos))
 		if _err != nil {
 			return nil, errors.New("Error parsing 'parameters' field " + _err.Error())
 		}
@@ -129,7 +149,7 @@ func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	curPos = io.GetPos() - startPos
 	var payload *S7Message = nil
-	if (curPos) < (cotpLen) {
+	if bool((curPos) < (cotpLen)) {
 		_message, _err := S7MessageParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'payload' field " + _err.Error())
@@ -147,34 +167,30 @@ func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 }
 
 func (m COTPPacket) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iCOTPPacket, ok := typ.(ICOTPPacket); ok {
+	iCOTPPacket := CastICOTPPacket(m)
 
-			// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			headerLength := uint8((m.LengthInBytes()) - ((spi.InlineIf(((m.payload) != (nil)), uint16(m.payload.LengthInBytes()), uint16(0))) + (1)))
-			io.WriteUint8(8, (headerLength))
+	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.payload) != (nil))), uint16(m.payload.LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
+	io.WriteUint8(8, (headerLength))
 
-			// Discriminator Field (tpduCode) (Used as input to a switch field)
-			tpduCode := COTPPacketTpduCode(iCOTPPacket)
-			io.WriteUint8(8, (tpduCode))
+	// Discriminator Field (tpduCode) (Used as input to a switch field)
+	tpduCode := uint8(COTPPacketTpduCode(iCOTPPacket))
+	io.WriteUint8(8, (tpduCode))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iCOTPPacket.Serialize(io)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iCOTPPacket.Serialize(io)
 
-			// Array Field (parameters)
-			if m.parameters != nil {
-				for _, _element := range m.parameters {
-					_element.Serialize(io)
-				}
-			}
-
-			// Optional Field (payload) (Can be skipped, if the value is null)
-			var payload *S7Message = nil
-			if m.payload != nil {
-				payload = m.payload
-				payload.Serialize(io)
-			}
+	// Array Field (parameters)
+	if m.parameters != nil {
+		for _, _element := range m.parameters {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
+
+	// Optional Field (payload) (Can be skipped, if the value is null)
+	var payload *S7Message = nil
+	if m.payload != nil {
+		payload = m.payload
+		payload.Serialize(io)
+	}
 }

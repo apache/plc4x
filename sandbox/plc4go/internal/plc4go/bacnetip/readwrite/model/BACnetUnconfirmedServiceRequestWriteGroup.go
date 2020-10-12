@@ -46,6 +46,26 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup() BACnetUnconfirmedServiceRequ
 	return &BACnetUnconfirmedServiceRequestWriteGroup{}
 }
 
+func CastIBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
+		if iBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(IBACnetUnconfirmedServiceRequestWriteGroup); ok {
+			return iBACnetUnconfirmedServiceRequestWriteGroup
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+		if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
+			return sBACnetUnconfirmedServiceRequestWriteGroup
+		}
+		return BACnetUnconfirmedServiceRequestWriteGroup{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(io spi.ReadBuffer) (BACnetUn
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestWriteGroup); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

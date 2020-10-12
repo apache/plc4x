@@ -50,6 +50,26 @@ func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, le
 	return &BACnetTagWithContent{typeOrTagNumber: typeOrTagNumber, contextSpecificTag: contextSpecificTag, lengthValueType: lengthValueType, extTagNumber: extTagNumber, extLength: extLength, propertyIdentifier: propertyIdentifier, value: value}
 }
 
+func CastIBACnetTagWithContent(structType interface{}) IBACnetTagWithContent {
+	castFunc := func(typ interface{}) IBACnetTagWithContent {
+		if iBACnetTagWithContent, ok := typ.(IBACnetTagWithContent); ok {
+			return iBACnetTagWithContent
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagWithContent(structType interface{}) BACnetTagWithContent {
+	castFunc := func(typ interface{}) BACnetTagWithContent {
+		if sBACnetTagWithContent, ok := typ.(BACnetTagWithContent); ok {
+			return sBACnetTagWithContent
+		}
+		return BACnetTagWithContent{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagWithContent) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -106,14 +126,14 @@ func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
-	if (typeOrTagNumber) == (15) {
+	if bool((typeOrTagNumber) == (15)) {
 		_val := io.ReadUint8(8)
 		extTagNumber = &_val
 	}
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
-	if (lengthValueType) == (5) {
+	if bool((lengthValueType) == (5)) {
 		_val := io.ReadUint8(8)
 		extLength = &_val
 	}
@@ -121,8 +141,8 @@ func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 	// Array field (propertyIdentifier)
 	var propertyIdentifier []uint8
 	// Length array
-	_propertyIdentifierLength := uint16(spi.InlineIf(((lengthValueType) == (5)), uint16(extLength), uint16(lengthValueType)))
-	_propertyIdentifierEndPos := io.GetPos() + _propertyIdentifierLength
+	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(*extLength), uint16(lengthValueType))
+	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
 		propertyIdentifier = append(propertyIdentifier, io.ReadUint8(8))
 	}
@@ -155,52 +175,47 @@ func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagWithContent); ok {
 
-			// Simple Field (typeOrTagNumber)
-			var typeOrTagNumber uint8 = m.typeOrTagNumber
-			io.WriteUint8(4, (typeOrTagNumber))
+	// Simple Field (typeOrTagNumber)
+	typeOrTagNumber := uint8(m.typeOrTagNumber)
+	io.WriteUint8(4, (typeOrTagNumber))
 
-			// Simple Field (contextSpecificTag)
-			var contextSpecificTag uint8 = m.contextSpecificTag
-			io.WriteUint8(1, (contextSpecificTag))
+	// Simple Field (contextSpecificTag)
+	contextSpecificTag := uint8(m.contextSpecificTag)
+	io.WriteUint8(1, (contextSpecificTag))
 
-			// Simple Field (lengthValueType)
-			var lengthValueType uint8 = m.lengthValueType
-			io.WriteUint8(3, (lengthValueType))
+	// Simple Field (lengthValueType)
+	lengthValueType := uint8(m.lengthValueType)
+	io.WriteUint8(3, (lengthValueType))
 
-			// Optional Field (extTagNumber) (Can be skipped, if the value is null)
-			var extTagNumber *uint8 = nil
-			if m.extTagNumber != nil {
-				extTagNumber = m.extTagNumber
-				io.WriteUint8(8, *(extTagNumber))
-			}
+	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
+	var extTagNumber *uint8 = nil
+	if m.extTagNumber != nil {
+		extTagNumber = m.extTagNumber
+		io.WriteUint8(8, *(extTagNumber))
+	}
 
-			// Optional Field (extLength) (Can be skipped, if the value is null)
-			var extLength *uint8 = nil
-			if m.extLength != nil {
-				extLength = m.extLength
-				io.WriteUint8(8, *(extLength))
-			}
+	// Optional Field (extLength) (Can be skipped, if the value is null)
+	var extLength *uint8 = nil
+	if m.extLength != nil {
+		extLength = m.extLength
+		io.WriteUint8(8, *(extLength))
+	}
 
-			// Array Field (propertyIdentifier)
-			if m.propertyIdentifier != nil {
-				for _, _element := range m.propertyIdentifier {
-					io.WriteUint8(8, _element)
-				}
-			}
-
-			// Const Field (openTag)
-			io.WriteUint8(8, 0x2e)
-
-			// Simple Field (value)
-			var value BACnetTag = m.value
-			value.Serialize(io)
-
-			// Const Field (closingTag)
-			io.WriteUint8(8, 0x2f)
+	// Array Field (propertyIdentifier)
+	if m.propertyIdentifier != nil {
+		for _, _element := range m.propertyIdentifier {
+			io.WriteUint8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (openTag)
+	io.WriteUint8(8, 0x2e)
+
+	// Simple Field (value)
+	value := BACnetTag(m.value)
+	value.Serialize(io)
+
+	// Const Field (closingTag)
+	io.WriteUint8(8, 0x2f)
 }

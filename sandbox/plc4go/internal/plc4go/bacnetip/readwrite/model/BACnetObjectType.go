@@ -84,6 +84,16 @@ const (
 	BACnetObjectType_ESCALATOR              BACnetObjectType = 0x03A
 )
 
+func CastBACnetObjectType(structType interface{}) BACnetObjectType {
+	castFunc := func(typ interface{}) BACnetObjectType {
+		if sBACnetObjectType, ok := typ.(BACnetObjectType); ok {
+			return sBACnetObjectType
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func BACnetObjectTypeParse(io spi.ReadBuffer) (BACnetObjectType, error) {
 	// TODO: Implement ...
 	return 0, nil

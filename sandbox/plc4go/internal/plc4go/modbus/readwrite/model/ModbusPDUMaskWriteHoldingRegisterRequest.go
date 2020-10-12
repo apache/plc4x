@@ -57,6 +57,26 @@ func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMas
 	return &ModbusPDUMaskWriteHoldingRegisterRequest{referenceAddress: referenceAddress, andMask: andMask, orMask: orMask}
 }
 
+func CastIModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) IModbusPDUMaskWriteHoldingRegisterRequest {
+	castFunc := func(typ interface{}) IModbusPDUMaskWriteHoldingRegisterRequest {
+		if iModbusPDUMaskWriteHoldingRegisterRequest, ok := typ.(IModbusPDUMaskWriteHoldingRegisterRequest); ok {
+			return iModbusPDUMaskWriteHoldingRegisterRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) ModbusPDUMaskWriteHoldingRegisterRequest {
+	castFunc := func(typ interface{}) ModbusPDUMaskWriteHoldingRegisterRequest {
+		if sModbusPDUMaskWriteHoldingRegisterRequest, ok := typ.(ModbusPDUMaskWriteHoldingRegisterRequest); ok {
+			return sModbusPDUMaskWriteHoldingRegisterRequest
+		}
+		return ModbusPDUMaskWriteHoldingRegisterRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -92,21 +112,16 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io spi.ReadBuffer) (ModbusPDU
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUMaskWriteHoldingRegisterRequest); ok {
 
-			// Simple Field (referenceAddress)
-			var referenceAddress uint16 = m.referenceAddress
-			io.WriteUint16(16, (referenceAddress))
+	// Simple Field (referenceAddress)
+	referenceAddress := uint16(m.referenceAddress)
+	io.WriteUint16(16, (referenceAddress))
 
-			// Simple Field (andMask)
-			var andMask uint16 = m.andMask
-			io.WriteUint16(16, (andMask))
+	// Simple Field (andMask)
+	andMask := uint16(m.andMask)
+	io.WriteUint16(16, (andMask))
 
-			// Simple Field (orMask)
-			var orMask uint16 = m.orMask
-			io.WriteUint16(16, (orMask))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (orMask)
+	orMask := uint16(m.orMask)
+	io.WriteUint16(16, (orMask))
 }

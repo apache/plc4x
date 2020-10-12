@@ -40,6 +40,26 @@ func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCo
 	return &DeviceConfigurationAckDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter, status: status}
 }
 
+func CastIDeviceConfigurationAckDataBlock(structType interface{}) IDeviceConfigurationAckDataBlock {
+	castFunc := func(typ interface{}) IDeviceConfigurationAckDataBlock {
+		if iDeviceConfigurationAckDataBlock, ok := typ.(IDeviceConfigurationAckDataBlock); ok {
+			return iDeviceConfigurationAckDataBlock
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDeviceConfigurationAckDataBlock(structType interface{}) DeviceConfigurationAckDataBlock {
+	castFunc := func(typ interface{}) DeviceConfigurationAckDataBlock {
+		if sDeviceConfigurationAckDataBlock, ok := typ.(DeviceConfigurationAckDataBlock); ok {
+			return sDeviceConfigurationAckDataBlock
+		}
+		return DeviceConfigurationAckDataBlock{}
+	}
+	return castFunc(structType)
+}
+
 func (m DeviceConfigurationAckDataBlock) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -84,25 +104,20 @@ func DeviceConfigurationAckDataBlockParse(io spi.ReadBuffer) (spi.Message, error
 }
 
 func (m DeviceConfigurationAckDataBlock) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDeviceConfigurationAckDataBlock); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Simple Field (sequenceCounter)
-			var sequenceCounter uint8 = m.sequenceCounter
-			io.WriteUint8(8, (sequenceCounter))
+	// Simple Field (sequenceCounter)
+	sequenceCounter := uint8(m.sequenceCounter)
+	io.WriteUint8(8, (sequenceCounter))
 
-			// Enum field (status)
-			status := m.status
-			status.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (status)
+	status := Status(m.status)
+	status.Serialize(io)
 }

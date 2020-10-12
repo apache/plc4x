@@ -56,6 +56,26 @@ func NewModbusPDUWriteMultipleHoldingRegistersResponse(startingAddress uint16, q
 	return &ModbusPDUWriteMultipleHoldingRegistersResponse{startingAddress: startingAddress, quantity: quantity}
 }
 
+func CastIModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) IModbusPDUWriteMultipleHoldingRegistersResponse {
+	castFunc := func(typ interface{}) IModbusPDUWriteMultipleHoldingRegistersResponse {
+		if iModbusPDUWriteMultipleHoldingRegistersResponse, ok := typ.(IModbusPDUWriteMultipleHoldingRegistersResponse); ok {
+			return iModbusPDUWriteMultipleHoldingRegistersResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUWriteMultipleHoldingRegistersResponse(structType interface{}) ModbusPDUWriteMultipleHoldingRegistersResponse {
+	castFunc := func(typ interface{}) ModbusPDUWriteMultipleHoldingRegistersResponse {
+		if sModbusPDUWriteMultipleHoldingRegistersResponse, ok := typ.(ModbusPDUWriteMultipleHoldingRegistersResponse); ok {
+			return sModbusPDUWriteMultipleHoldingRegistersResponse
+		}
+		return ModbusPDUWriteMultipleHoldingRegistersResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -85,17 +105,12 @@ func ModbusPDUWriteMultipleHoldingRegistersResponseParse(io spi.ReadBuffer) (Mod
 }
 
 func (m ModbusPDUWriteMultipleHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUWriteMultipleHoldingRegistersResponse); ok {
 
-			// Simple Field (startingAddress)
-			var startingAddress uint16 = m.startingAddress
-			io.WriteUint16(16, (startingAddress))
+	// Simple Field (startingAddress)
+	startingAddress := uint16(m.startingAddress)
+	io.WriteUint16(16, (startingAddress))
 
-			// Simple Field (quantity)
-			var quantity uint16 = m.quantity
-			io.WriteUint16(16, (quantity))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (quantity)
+	quantity := uint16(m.quantity)
+	io.WriteUint16(16, (quantity))
 }

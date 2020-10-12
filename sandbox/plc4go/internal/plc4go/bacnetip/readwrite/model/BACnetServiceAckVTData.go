@@ -46,6 +46,26 @@ func NewBACnetServiceAckVTData() BACnetServiceAckInitializer {
 	return &BACnetServiceAckVTData{}
 }
 
+func CastIBACnetServiceAckVTData(structType interface{}) IBACnetServiceAckVTData {
+	castFunc := func(typ interface{}) IBACnetServiceAckVTData {
+		if iBACnetServiceAckVTData, ok := typ.(IBACnetServiceAckVTData); ok {
+			return iBACnetServiceAckVTData
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckVTData(structType interface{}) BACnetServiceAckVTData {
+	castFunc := func(typ interface{}) BACnetServiceAckVTData {
+		if sBACnetServiceAckVTData, ok := typ.(BACnetServiceAckVTData); ok {
+			return sBACnetServiceAckVTData
+		}
+		return BACnetServiceAckVTData{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckVTData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckVTDataParse(io spi.ReadBuffer) (BACnetServiceAckInitializer
 }
 
 func (m BACnetServiceAckVTData) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckVTData); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

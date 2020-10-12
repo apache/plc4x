@@ -49,6 +49,26 @@ func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock)
 	return &TunnelingResponse{tunnelingResponseDataBlock: tunnelingResponseDataBlock}
 }
 
+func CastITunnelingResponse(structType interface{}) ITunnelingResponse {
+	castFunc := func(typ interface{}) ITunnelingResponse {
+		if iTunnelingResponse, ok := typ.(ITunnelingResponse); ok {
+			return iTunnelingResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastTunnelingResponse(structType interface{}) TunnelingResponse {
+	castFunc := func(typ interface{}) TunnelingResponse {
+		if sTunnelingResponse, ok := typ.(TunnelingResponse); ok {
+			return sTunnelingResponse
+		}
+		return TunnelingResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m TunnelingResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,13 +100,8 @@ func TunnelingResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m TunnelingResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ITunnelingResponse); ok {
 
-			// Simple Field (tunnelingResponseDataBlock)
-			var tunnelingResponseDataBlock TunnelingResponseDataBlock = m.tunnelingResponseDataBlock
-			tunnelingResponseDataBlock.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (tunnelingResponseDataBlock)
+	tunnelingResponseDataBlock := TunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
+	tunnelingResponseDataBlock.Serialize(io)
 }

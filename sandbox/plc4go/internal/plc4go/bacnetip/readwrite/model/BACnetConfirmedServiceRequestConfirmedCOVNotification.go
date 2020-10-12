@@ -65,6 +65,26 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
 	return &BACnetConfirmedServiceRequestConfirmedCOVNotification{subscriberProcessIdentifier: subscriberProcessIdentifier, monitoredObjectType: monitoredObjectType, monitoredObjectInstanceNumber: monitoredObjectInstanceNumber, issueConfirmedNotificationsType: issueConfirmedNotificationsType, issueConfirmedNotificationsInstanceNumber: issueConfirmedNotificationsInstanceNumber, lifetimeLength: lifetimeLength, lifetimeSeconds: lifetimeSeconds, notifications: notifications}
 }
 
+func CastIBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotification {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotification {
+		if iBACnetConfirmedServiceRequestConfirmedCOVNotification, ok := typ.(IBACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+			return iBACnetConfirmedServiceRequestConfirmedCOVNotification
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
+		if sBACnetConfirmedServiceRequestConfirmedCOVNotification, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
+			return sBACnetConfirmedServiceRequestConfirmedCOVNotification
+		}
+		return BACnetConfirmedServiceRequestConfirmedCOVNotification{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -187,8 +207,8 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io spi.ReadBuffe
 	// Array field (notifications)
 	var notifications []BACnetTagWithContent
 	// Length array
-	_notificationsLength := uint16((len) - (18))
-	_notificationsEndPos := io.GetPos() + _notificationsLength
+	_notificationsLength := uint16(len) - uint16(uint16(18))
+	_notificationsEndPos := io.GetPos() + uint16(_notificationsLength)
 	for io.GetPos() < _notificationsEndPos {
 		_message, _err := BACnetTagWithContentParse(io)
 		if _err != nil {
@@ -213,65 +233,60 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io spi.ReadBuffe
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
 
-			// Const Field (subscriberProcessIdentifierHeader)
-			io.WriteUint8(8, 0x09)
+	// Const Field (subscriberProcessIdentifierHeader)
+	io.WriteUint8(8, 0x09)
 
-			// Simple Field (subscriberProcessIdentifier)
-			var subscriberProcessIdentifier uint8 = m.subscriberProcessIdentifier
-			io.WriteUint8(8, (subscriberProcessIdentifier))
+	// Simple Field (subscriberProcessIdentifier)
+	subscriberProcessIdentifier := uint8(m.subscriberProcessIdentifier)
+	io.WriteUint8(8, (subscriberProcessIdentifier))
 
-			// Const Field (monitoredObjectIdentifierHeader)
-			io.WriteUint8(8, 0x1C)
+	// Const Field (monitoredObjectIdentifierHeader)
+	io.WriteUint8(8, 0x1C)
 
-			// Simple Field (monitoredObjectType)
-			var monitoredObjectType uint16 = m.monitoredObjectType
-			io.WriteUint16(10, (monitoredObjectType))
+	// Simple Field (monitoredObjectType)
+	monitoredObjectType := uint16(m.monitoredObjectType)
+	io.WriteUint16(10, (monitoredObjectType))
 
-			// Simple Field (monitoredObjectInstanceNumber)
-			var monitoredObjectInstanceNumber uint32 = m.monitoredObjectInstanceNumber
-			io.WriteUint32(22, (monitoredObjectInstanceNumber))
+	// Simple Field (monitoredObjectInstanceNumber)
+	monitoredObjectInstanceNumber := uint32(m.monitoredObjectInstanceNumber)
+	io.WriteUint32(22, (monitoredObjectInstanceNumber))
 
-			// Const Field (issueConfirmedNotificationsHeader)
-			io.WriteUint8(8, 0x2C)
+	// Const Field (issueConfirmedNotificationsHeader)
+	io.WriteUint8(8, 0x2C)
 
-			// Simple Field (issueConfirmedNotificationsType)
-			var issueConfirmedNotificationsType uint16 = m.issueConfirmedNotificationsType
-			io.WriteUint16(10, (issueConfirmedNotificationsType))
+	// Simple Field (issueConfirmedNotificationsType)
+	issueConfirmedNotificationsType := uint16(m.issueConfirmedNotificationsType)
+	io.WriteUint16(10, (issueConfirmedNotificationsType))
 
-			// Simple Field (issueConfirmedNotificationsInstanceNumber)
-			var issueConfirmedNotificationsInstanceNumber uint32 = m.issueConfirmedNotificationsInstanceNumber
-			io.WriteUint32(22, (issueConfirmedNotificationsInstanceNumber))
+	// Simple Field (issueConfirmedNotificationsInstanceNumber)
+	issueConfirmedNotificationsInstanceNumber := uint32(m.issueConfirmedNotificationsInstanceNumber)
+	io.WriteUint32(22, (issueConfirmedNotificationsInstanceNumber))
 
-			// Const Field (lifetimeHeader)
-			io.WriteUint8(5, 0x07)
+	// Const Field (lifetimeHeader)
+	io.WriteUint8(5, 0x07)
 
-			// Simple Field (lifetimeLength)
-			var lifetimeLength uint8 = m.lifetimeLength
-			io.WriteUint8(3, (lifetimeLength))
+	// Simple Field (lifetimeLength)
+	lifetimeLength := uint8(m.lifetimeLength)
+	io.WriteUint8(3, (lifetimeLength))
 
-			// Array Field (lifetimeSeconds)
-			if m.lifetimeSeconds != nil {
-				for _, _element := range m.lifetimeSeconds {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Const Field (listOfValuesOpeningTag)
-			io.WriteUint8(8, 0x4E)
-
-			// Array Field (notifications)
-			if m.notifications != nil {
-				for _, _element := range m.notifications {
-					_element.Serialize(io)
-				}
-			}
-
-			// Const Field (listOfValuesClosingTag)
-			io.WriteUint8(8, 0x4F)
+	// Array Field (lifetimeSeconds)
+	if m.lifetimeSeconds != nil {
+		for _, _element := range m.lifetimeSeconds {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (listOfValuesOpeningTag)
+	io.WriteUint8(8, 0x4E)
+
+	// Array Field (notifications)
+	if m.notifications != nil {
+		for _, _element := range m.notifications {
+			_element.Serialize(io)
+		}
+	}
+
+	// Const Field (listOfValuesClosingTag)
+	io.WriteUint8(8, 0x4F)
 }

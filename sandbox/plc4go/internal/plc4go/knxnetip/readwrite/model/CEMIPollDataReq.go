@@ -46,6 +46,26 @@ func NewCEMIPollDataReq() CEMIInitializer {
 	return &CEMIPollDataReq{}
 }
 
+func CastICEMIPollDataReq(structType interface{}) ICEMIPollDataReq {
+	castFunc := func(typ interface{}) ICEMIPollDataReq {
+		if iCEMIPollDataReq, ok := typ.(ICEMIPollDataReq); ok {
+			return iCEMIPollDataReq
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIPollDataReq(structType interface{}) CEMIPollDataReq {
+	castFunc := func(typ interface{}) CEMIPollDataReq {
+		if sCEMIPollDataReq, ok := typ.(CEMIPollDataReq); ok {
+			return sCEMIPollDataReq
+		}
+		return CEMIPollDataReq{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIPollDataReq) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMI.LengthInBits()
 
@@ -63,9 +83,5 @@ func CEMIPollDataReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIPollDataReq) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIPollDataReq); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

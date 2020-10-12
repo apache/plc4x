@@ -41,6 +41,26 @@ func NewModbusConstants() spi.Message {
 	return &ModbusConstants{}
 }
 
+func CastIModbusConstants(structType interface{}) IModbusConstants {
+	castFunc := func(typ interface{}) IModbusConstants {
+		if iModbusConstants, ok := typ.(IModbusConstants); ok {
+			return iModbusConstants
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusConstants(structType interface{}) ModbusConstants {
+	castFunc := func(typ interface{}) ModbusConstants {
+		if sModbusConstants, ok := typ.(ModbusConstants); ok {
+			return sModbusConstants
+		}
+		return ModbusConstants{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusConstants) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -67,12 +87,7 @@ func ModbusConstantsParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusConstants); ok {
 
-			// Const Field (modbusTcpDefaultPort)
-			io.WriteUint16(16, 502)
-		}
-	}
-	serializeFunc(m)
+	// Const Field (modbusTcpDefaultPort)
+	io.WriteUint16(16, 502)
 }

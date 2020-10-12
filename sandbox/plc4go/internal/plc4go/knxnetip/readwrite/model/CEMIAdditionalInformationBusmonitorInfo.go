@@ -57,6 +57,26 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 	return &CEMIAdditionalInformationBusmonitorInfo{frameErrorFlag: frameErrorFlag, bitErrorFlag: bitErrorFlag, parityErrorFlag: parityErrorFlag, unknownFlag: unknownFlag, lostFlag: lostFlag, sequenceNumber: sequenceNumber}
 }
 
+func CastICEMIAdditionalInformationBusmonitorInfo(structType interface{}) ICEMIAdditionalInformationBusmonitorInfo {
+	castFunc := func(typ interface{}) ICEMIAdditionalInformationBusmonitorInfo {
+		if iCEMIAdditionalInformationBusmonitorInfo, ok := typ.(ICEMIAdditionalInformationBusmonitorInfo); ok {
+			return iCEMIAdditionalInformationBusmonitorInfo
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdditionalInformationBusmonitorInfo {
+	castFunc := func(typ interface{}) CEMIAdditionalInformationBusmonitorInfo {
+		if sCEMIAdditionalInformationBusmonitorInfo, ok := typ.(CEMIAdditionalInformationBusmonitorInfo); ok {
+			return sCEMIAdditionalInformationBusmonitorInfo
+		}
+		return CEMIAdditionalInformationBusmonitorInfo{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMIAdditionalInformation.LengthInBits()
 
@@ -119,36 +139,31 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io spi.ReadBuffer) (CEMIAdditi
 }
 
 func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIAdditionalInformationBusmonitorInfo); ok {
 
-			// Const Field (len)
-			io.WriteUint8(8, 1)
+	// Const Field (len)
+	io.WriteUint8(8, 1)
 
-			// Simple Field (frameErrorFlag)
-			var frameErrorFlag bool = m.frameErrorFlag
-			io.WriteBit((bool)(frameErrorFlag))
+	// Simple Field (frameErrorFlag)
+	frameErrorFlag := bool(m.frameErrorFlag)
+	io.WriteBit((bool)(frameErrorFlag))
 
-			// Simple Field (bitErrorFlag)
-			var bitErrorFlag bool = m.bitErrorFlag
-			io.WriteBit((bool)(bitErrorFlag))
+	// Simple Field (bitErrorFlag)
+	bitErrorFlag := bool(m.bitErrorFlag)
+	io.WriteBit((bool)(bitErrorFlag))
 
-			// Simple Field (parityErrorFlag)
-			var parityErrorFlag bool = m.parityErrorFlag
-			io.WriteBit((bool)(parityErrorFlag))
+	// Simple Field (parityErrorFlag)
+	parityErrorFlag := bool(m.parityErrorFlag)
+	io.WriteBit((bool)(parityErrorFlag))
 
-			// Simple Field (unknownFlag)
-			var unknownFlag bool = m.unknownFlag
-			io.WriteBit((bool)(unknownFlag))
+	// Simple Field (unknownFlag)
+	unknownFlag := bool(m.unknownFlag)
+	io.WriteBit((bool)(unknownFlag))
 
-			// Simple Field (lostFlag)
-			var lostFlag bool = m.lostFlag
-			io.WriteBit((bool)(lostFlag))
+	// Simple Field (lostFlag)
+	lostFlag := bool(m.lostFlag)
+	io.WriteBit((bool)(lostFlag))
 
-			// Simple Field (sequenceNumber)
-			var sequenceNumber uint8 = m.sequenceNumber
-			io.WriteUint8(3, (sequenceNumber))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (sequenceNumber)
+	sequenceNumber := uint8(m.sequenceNumber)
+	io.WriteUint8(3, (sequenceNumber))
 }

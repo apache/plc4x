@@ -55,6 +55,26 @@ func NewModbusPDUReadHoldingRegistersResponse(value []int8) ModbusPDUInitializer
 	return &ModbusPDUReadHoldingRegistersResponse{value: value}
 }
 
+func CastIModbusPDUReadHoldingRegistersResponse(structType interface{}) IModbusPDUReadHoldingRegistersResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadHoldingRegistersResponse {
+		if iModbusPDUReadHoldingRegistersResponse, ok := typ.(IModbusPDUReadHoldingRegistersResponse); ok {
+			return iModbusPDUReadHoldingRegistersResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadHoldingRegistersResponse(structType interface{}) ModbusPDUReadHoldingRegistersResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadHoldingRegistersResponse {
+		if sModbusPDUReadHoldingRegistersResponse, ok := typ.(ModbusPDUReadHoldingRegistersResponse); ok {
+			return sModbusPDUReadHoldingRegistersResponse
+		}
+		return ModbusPDUReadHoldingRegistersResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadHoldingRegistersResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -94,20 +114,15 @@ func ModbusPDUReadHoldingRegistersResponseParse(io spi.ReadBuffer) (ModbusPDUIni
 }
 
 func (m ModbusPDUReadHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadHoldingRegistersResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

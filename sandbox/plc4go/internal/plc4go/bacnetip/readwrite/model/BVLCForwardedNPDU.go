@@ -51,6 +51,26 @@ func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU) BVLCInitializer {
 	return &BVLCForwardedNPDU{ip: ip, port: port, npdu: npdu}
 }
 
+func CastIBVLCForwardedNPDU(structType interface{}) IBVLCForwardedNPDU {
+	castFunc := func(typ interface{}) IBVLCForwardedNPDU {
+		if iBVLCForwardedNPDU, ok := typ.(IBVLCForwardedNPDU); ok {
+			return iBVLCForwardedNPDU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
+	castFunc := func(typ interface{}) BVLCForwardedNPDU {
+		if sBVLCForwardedNPDU, ok := typ.(BVLCForwardedNPDU); ok {
+			return sBVLCForwardedNPDU
+		}
+		return BVLCForwardedNPDU{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCForwardedNPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -78,8 +98,8 @@ func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializ
 	var ip []uint8
 	// Count array
 	{
-		ip := make([]uint8, 4)
-		for curItem := uint16(0); curItem < uint16(4); curItem++ {
+		ip := make([]uint8, uint16(4))
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
 			ip = append(ip, io.ReadUint8(8))
 		}
@@ -89,7 +109,7 @@ func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializ
 	var port uint16 = io.ReadUint16(16)
 
 	// Simple Field (npdu)
-	_npduMessage, _err := NPDUParse(io, uint16((bvlcLength)-(10)))
+	_npduMessage, _err := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
 	}
@@ -104,24 +124,19 @@ func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializ
 }
 
 func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCForwardedNPDU); ok {
 
-			// Array Field (ip)
-			if m.ip != nil {
-				for _, _element := range m.ip {
-					io.WriteUint8(8, _element)
-				}
-			}
-
-			// Simple Field (port)
-			var port uint16 = m.port
-			io.WriteUint16(16, (port))
-
-			// Simple Field (npdu)
-			var npdu NPDU = m.npdu
-			npdu.Serialize(io)
+	// Array Field (ip)
+	if m.ip != nil {
+		for _, _element := range m.ip {
+			io.WriteUint8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (port)
+	port := uint16(m.port)
+	io.WriteUint16(16, (port))
+
+	// Simple Field (npdu)
+	npdu := NPDU(m.npdu)
+	npdu.Serialize(io)
 }

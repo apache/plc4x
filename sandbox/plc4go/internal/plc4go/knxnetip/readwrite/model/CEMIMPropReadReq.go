@@ -51,6 +51,26 @@ func NewCEMIMPropReadReq(interfaceObjectType uint16, objectInstance uint8, prope
 	return &CEMIMPropReadReq{interfaceObjectType: interfaceObjectType, objectInstance: objectInstance, propertyId: propertyId, numberOfElements: numberOfElements, startIndex: startIndex}
 }
 
+func CastICEMIMPropReadReq(structType interface{}) ICEMIMPropReadReq {
+	castFunc := func(typ interface{}) ICEMIMPropReadReq {
+		if iCEMIMPropReadReq, ok := typ.(ICEMIMPropReadReq); ok {
+			return iCEMIMPropReadReq
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIMPropReadReq(structType interface{}) CEMIMPropReadReq {
+	castFunc := func(typ interface{}) CEMIMPropReadReq {
+		if sCEMIMPropReadReq, ok := typ.(CEMIMPropReadReq); ok {
+			return sCEMIMPropReadReq
+		}
+		return CEMIMPropReadReq{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIMPropReadReq) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMI.LengthInBits()
 
@@ -98,29 +118,24 @@ func CEMIMPropReadReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIMPropReadReq) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIMPropReadReq); ok {
 
-			// Simple Field (interfaceObjectType)
-			var interfaceObjectType uint16 = m.interfaceObjectType
-			io.WriteUint16(16, (interfaceObjectType))
+	// Simple Field (interfaceObjectType)
+	interfaceObjectType := uint16(m.interfaceObjectType)
+	io.WriteUint16(16, (interfaceObjectType))
 
-			// Simple Field (objectInstance)
-			var objectInstance uint8 = m.objectInstance
-			io.WriteUint8(8, (objectInstance))
+	// Simple Field (objectInstance)
+	objectInstance := uint8(m.objectInstance)
+	io.WriteUint8(8, (objectInstance))
 
-			// Simple Field (propertyId)
-			var propertyId uint8 = m.propertyId
-			io.WriteUint8(8, (propertyId))
+	// Simple Field (propertyId)
+	propertyId := uint8(m.propertyId)
+	io.WriteUint8(8, (propertyId))
 
-			// Simple Field (numberOfElements)
-			var numberOfElements uint8 = m.numberOfElements
-			io.WriteUint8(4, (numberOfElements))
+	// Simple Field (numberOfElements)
+	numberOfElements := uint8(m.numberOfElements)
+	io.WriteUint8(4, (numberOfElements))
 
-			// Simple Field (startIndex)
-			var startIndex uint16 = m.startIndex
-			io.WriteUint16(12, (startIndex))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (startIndex)
+	startIndex := uint16(m.startIndex)
+	io.WriteUint16(12, (startIndex))
 }

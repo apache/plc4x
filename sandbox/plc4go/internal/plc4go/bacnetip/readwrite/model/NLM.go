@@ -43,6 +43,26 @@ func NLMMessageType(m INLM) uint8 {
 	return m.MessageType()
 }
 
+func CastINLM(structType interface{}) INLM {
+	castFunc := func(typ interface{}) INLM {
+		if iNLM, ok := typ.(INLM); ok {
+			return iNLM
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastNLM(structType interface{}) NLM {
+	castFunc := func(typ interface{}) NLM {
+		if sNLM, ok := typ.(NLM); ok {
+			return sNLM
+		}
+		return NLM{}
+	}
+	return castFunc(structType)
+}
+
 func (m NLM) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -70,7 +90,7 @@ func NLMParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
 	var vendorId *uint16 = nil
-	if ((messageType) >= (128)) && ((messageType) <= (255)) {
+	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
 		_val := io.ReadUint16(16)
 		vendorId = &_val
 	}
@@ -93,23 +113,19 @@ func NLMParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 }
 
 func (m NLM) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iNLM, ok := typ.(INLM); ok {
+	iNLM := CastINLM(m)
 
-			// Discriminator Field (messageType) (Used as input to a switch field)
-			messageType := NLMMessageType(iNLM)
-			io.WriteUint8(8, (messageType))
+	// Discriminator Field (messageType) (Used as input to a switch field)
+	messageType := uint8(NLMMessageType(iNLM))
+	io.WriteUint8(8, (messageType))
 
-			// Optional Field (vendorId) (Can be skipped, if the value is null)
-			var vendorId *uint16 = nil
-			if m.vendorId != nil {
-				vendorId = m.vendorId
-				io.WriteUint16(16, *(vendorId))
-			}
-
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iNLM.Serialize(io)
-		}
+	// Optional Field (vendorId) (Can be skipped, if the value is null)
+	var vendorId *uint16 = nil
+	if m.vendorId != nil {
+		vendorId = m.vendorId
+		io.WriteUint16(16, *(vendorId))
 	}
-	serializeFunc(m)
+
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iNLM.Serialize(io)
 }

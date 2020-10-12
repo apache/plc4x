@@ -51,6 +51,26 @@ func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAI
 	return &DisconnectRequest{communicationChannelId: communicationChannelId, hpaiControlEndpoint: hpaiControlEndpoint}
 }
 
+func CastIDisconnectRequest(structType interface{}) IDisconnectRequest {
+	castFunc := func(typ interface{}) IDisconnectRequest {
+		if iDisconnectRequest, ok := typ.(IDisconnectRequest); ok {
+			return iDisconnectRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDisconnectRequest(structType interface{}) DisconnectRequest {
+	castFunc := func(typ interface{}) DisconnectRequest {
+		if sDisconnectRequest, ok := typ.(DisconnectRequest); ok {
+			return sDisconnectRequest
+		}
+		return DisconnectRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m DisconnectRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -102,20 +122,15 @@ func DisconnectRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m DisconnectRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDisconnectRequest); ok {
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 
-			// Simple Field (hpaiControlEndpoint)
-			var hpaiControlEndpoint HPAIControlEndpoint = m.hpaiControlEndpoint
-			hpaiControlEndpoint.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (hpaiControlEndpoint)
+	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint.Serialize(io)
 }

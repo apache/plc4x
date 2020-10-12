@@ -51,6 +51,26 @@ func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint
 	return &ConnectionStateRequest{communicationChannelId: communicationChannelId, hpaiControlEndpoint: hpaiControlEndpoint}
 }
 
+func CastIConnectionStateRequest(structType interface{}) IConnectionStateRequest {
+	castFunc := func(typ interface{}) IConnectionStateRequest {
+		if iConnectionStateRequest, ok := typ.(IConnectionStateRequest); ok {
+			return iConnectionStateRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionStateRequest(structType interface{}) ConnectionStateRequest {
+	castFunc := func(typ interface{}) ConnectionStateRequest {
+		if sConnectionStateRequest, ok := typ.(ConnectionStateRequest); ok {
+			return sConnectionStateRequest
+		}
+		return ConnectionStateRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionStateRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -102,20 +122,15 @@ func ConnectionStateRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 }
 
 func (m ConnectionStateRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionStateRequest); ok {
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 
-			// Simple Field (hpaiControlEndpoint)
-			var hpaiControlEndpoint HPAIControlEndpoint = m.hpaiControlEndpoint
-			hpaiControlEndpoint.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (hpaiControlEndpoint)
+	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint.Serialize(io)
 }

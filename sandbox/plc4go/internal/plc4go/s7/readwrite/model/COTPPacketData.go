@@ -50,6 +50,26 @@ func NewCOTPPacketData(eot bool, tpduRef uint8) COTPPacketInitializer {
 	return &COTPPacketData{eot: eot, tpduRef: tpduRef}
 }
 
+func CastICOTPPacketData(structType interface{}) ICOTPPacketData {
+	castFunc := func(typ interface{}) ICOTPPacketData {
+		if iCOTPPacketData, ok := typ.(ICOTPPacketData); ok {
+			return iCOTPPacketData
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacketData(structType interface{}) COTPPacketData {
+	castFunc := func(typ interface{}) COTPPacketData {
+		if sCOTPPacketData, ok := typ.(COTPPacketData); ok {
+			return sCOTPPacketData
+		}
+		return COTPPacketData{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacketData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
@@ -79,17 +99,12 @@ func COTPPacketDataParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
 }
 
 func (m COTPPacketData) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPPacketData); ok {
 
-			// Simple Field (eot)
-			var eot bool = m.eot
-			io.WriteBit((bool)(eot))
+	// Simple Field (eot)
+	eot := bool(m.eot)
+	io.WriteBit((bool)(eot))
 
-			// Simple Field (tpduRef)
-			var tpduRef uint8 = m.tpduRef
-			io.WriteUint8(7, (tpduRef))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (tpduRef)
+	tpduRef := uint8(m.tpduRef)
+	io.WriteUint8(7, (tpduRef))
 }

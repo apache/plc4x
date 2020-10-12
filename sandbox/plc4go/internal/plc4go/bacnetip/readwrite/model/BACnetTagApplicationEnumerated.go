@@ -51,6 +51,26 @@ func NewBACnetTagApplicationEnumerated(data []int8) BACnetTagInitializer {
 	return &BACnetTagApplicationEnumerated{data: data}
 }
 
+func CastIBACnetTagApplicationEnumerated(structType interface{}) IBACnetTagApplicationEnumerated {
+	castFunc := func(typ interface{}) IBACnetTagApplicationEnumerated {
+		if iBACnetTagApplicationEnumerated, ok := typ.(IBACnetTagApplicationEnumerated); ok {
+			return iBACnetTagApplicationEnumerated
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationEnumerated(structType interface{}) BACnetTagApplicationEnumerated {
+	castFunc := func(typ interface{}) BACnetTagApplicationEnumerated {
+		if sBACnetTagApplicationEnumerated, ok := typ.(BACnetTagApplicationEnumerated); ok {
+			return sBACnetTagApplicationEnumerated
+		}
+		return BACnetTagApplicationEnumerated{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationEnumerated) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -71,8 +91,8 @@ func BACnetTagApplicationEnumeratedParse(io spi.ReadBuffer, lengthValueType uint
 	// Array field (data)
 	var data []int8
 	// Length array
-	_dataLength := uint16(spi.InlineIf(((lengthValueType) == (5)), uint16(extLength), uint16(lengthValueType)))
-	_dataEndPos := io.GetPos() + _dataLength
+	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(extLength), uint16(lengthValueType))
+	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		data = append(data, io.ReadInt8(8))
 	}
@@ -82,16 +102,11 @@ func BACnetTagApplicationEnumeratedParse(io spi.ReadBuffer, lengthValueType uint
 }
 
 func (m BACnetTagApplicationEnumerated) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationEnumerated); ok {
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

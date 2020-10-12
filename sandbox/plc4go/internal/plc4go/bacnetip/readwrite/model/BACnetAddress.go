@@ -38,6 +38,26 @@ func NewBACnetAddress(address []uint8, port uint16) spi.Message {
 	return &BACnetAddress{address: address, port: port}
 }
 
+func CastIBACnetAddress(structType interface{}) IBACnetAddress {
+	castFunc := func(typ interface{}) IBACnetAddress {
+		if iBACnetAddress, ok := typ.(IBACnetAddress); ok {
+			return iBACnetAddress
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetAddress(structType interface{}) BACnetAddress {
+	castFunc := func(typ interface{}) BACnetAddress {
+		if sBACnetAddress, ok := typ.(BACnetAddress); ok {
+			return sBACnetAddress
+		}
+		return BACnetAddress{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -62,8 +82,8 @@ func BACnetAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 	var address []uint8
 	// Count array
 	{
-		address := make([]uint8, 4)
-		for curItem := uint16(0); curItem < uint16(4); curItem++ {
+		address := make([]uint8, uint16(4))
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
 			address = append(address, io.ReadUint8(8))
 		}
@@ -77,20 +97,15 @@ func BACnetAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BACnetAddress) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetAddress); ok {
 
-			// Array Field (address)
-			if m.address != nil {
-				for _, _element := range m.address {
-					io.WriteUint8(8, _element)
-				}
-			}
-
-			// Simple Field (port)
-			var port uint16 = m.port
-			io.WriteUint16(16, (port))
+	// Array Field (address)
+	if m.address != nil {
+		for _, _element := range m.address {
+			io.WriteUint8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (port)
+	port := uint16(m.port)
+	io.WriteUint16(16, (port))
 }

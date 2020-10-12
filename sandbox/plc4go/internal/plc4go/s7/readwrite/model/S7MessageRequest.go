@@ -49,6 +49,26 @@ func NewS7MessageRequest() S7MessageInitializer {
 	return &S7MessageRequest{}
 }
 
+func CastIS7MessageRequest(structType interface{}) IS7MessageRequest {
+	castFunc := func(typ interface{}) IS7MessageRequest {
+		if iS7MessageRequest, ok := typ.(IS7MessageRequest); ok {
+			return iS7MessageRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7MessageRequest(structType interface{}) S7MessageRequest {
+	castFunc := func(typ interface{}) S7MessageRequest {
+		if sS7MessageRequest, ok := typ.(S7MessageRequest); ok {
+			return sS7MessageRequest
+		}
+		return S7MessageRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7MessageRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Message.LengthInBits()
 
@@ -66,9 +86,5 @@ func S7MessageRequestParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
 }
 
 func (m S7MessageRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7MessageRequest); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

@@ -49,6 +49,26 @@ func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) Connecti
 	return &ConnectionRequestInformationTunnelConnection{knxLayer: knxLayer}
 }
 
+func CastIConnectionRequestInformationTunnelConnection(structType interface{}) IConnectionRequestInformationTunnelConnection {
+	castFunc := func(typ interface{}) IConnectionRequestInformationTunnelConnection {
+		if iConnectionRequestInformationTunnelConnection, ok := typ.(IConnectionRequestInformationTunnelConnection); ok {
+			return iConnectionRequestInformationTunnelConnection
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionRequestInformationTunnelConnection(structType interface{}) ConnectionRequestInformationTunnelConnection {
+	castFunc := func(typ interface{}) ConnectionRequestInformationTunnelConnection {
+		if sConnectionRequestInformationTunnelConnection, ok := typ.(ConnectionRequestInformationTunnelConnection); ok {
+			return sConnectionRequestInformationTunnelConnection
+		}
+		return ConnectionRequestInformationTunnelConnection{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
 
@@ -89,16 +109,11 @@ func ConnectionRequestInformationTunnelConnectionParse(io spi.ReadBuffer) (Conne
 }
 
 func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionRequestInformationTunnelConnection); ok {
 
-			// Enum field (knxLayer)
-			knxLayer := m.knxLayer
-			knxLayer.Serialize(io)
+	// Enum field (knxLayer)
+	knxLayer := KnxLayer(m.knxLayer)
+	knxLayer.Serialize(io)
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
-		}
-	}
-	serializeFunc(m)
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 }

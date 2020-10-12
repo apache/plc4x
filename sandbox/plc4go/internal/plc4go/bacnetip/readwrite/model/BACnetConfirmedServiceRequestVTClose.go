@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestVTClose() BACnetConfirmedServiceRequestInit
 	return &BACnetConfirmedServiceRequestVTClose{}
 }
 
+func CastIBACnetConfirmedServiceRequestVTClose(structType interface{}) IBACnetConfirmedServiceRequestVTClose {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestVTClose {
+		if iBACnetConfirmedServiceRequestVTClose, ok := typ.(IBACnetConfirmedServiceRequestVTClose); ok {
+			return iBACnetConfirmedServiceRequestVTClose
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConfirmedServiceRequestVTClose {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestVTClose {
+		if sBACnetConfirmedServiceRequestVTClose, ok := typ.(BACnetConfirmedServiceRequestVTClose); ok {
+			return sBACnetConfirmedServiceRequestVTClose
+		}
+		return BACnetConfirmedServiceRequestVTClose{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestVTClose) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestVTCloseParse(io spi.ReadBuffer) (BACnetConfirm
 }
 
 func (m BACnetConfirmedServiceRequestVTClose) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestVTClose); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

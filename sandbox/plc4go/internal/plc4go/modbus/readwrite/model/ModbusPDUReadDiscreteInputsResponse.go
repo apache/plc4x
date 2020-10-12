@@ -55,6 +55,26 @@ func NewModbusPDUReadDiscreteInputsResponse(value []int8) ModbusPDUInitializer {
 	return &ModbusPDUReadDiscreteInputsResponse{value: value}
 }
 
+func CastIModbusPDUReadDiscreteInputsResponse(structType interface{}) IModbusPDUReadDiscreteInputsResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadDiscreteInputsResponse {
+		if iModbusPDUReadDiscreteInputsResponse, ok := typ.(IModbusPDUReadDiscreteInputsResponse); ok {
+			return iModbusPDUReadDiscreteInputsResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadDiscreteInputsResponse(structType interface{}) ModbusPDUReadDiscreteInputsResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadDiscreteInputsResponse {
+		if sModbusPDUReadDiscreteInputsResponse, ok := typ.(ModbusPDUReadDiscreteInputsResponse); ok {
+			return sModbusPDUReadDiscreteInputsResponse
+		}
+		return ModbusPDUReadDiscreteInputsResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadDiscreteInputsResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -94,20 +114,15 @@ func ModbusPDUReadDiscreteInputsResponseParse(io spi.ReadBuffer) (ModbusPDUIniti
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadDiscreteInputsResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

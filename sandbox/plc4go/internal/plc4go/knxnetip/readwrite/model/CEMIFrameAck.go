@@ -58,6 +58,26 @@ func NewCEMIFrameAck() CEMIFrameInitializer {
 	return &CEMIFrameAck{}
 }
 
+func CastICEMIFrameAck(structType interface{}) ICEMIFrameAck {
+	castFunc := func(typ interface{}) ICEMIFrameAck {
+		if iCEMIFrameAck, ok := typ.(ICEMIFrameAck); ok {
+			return iCEMIFrameAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIFrameAck(structType interface{}) CEMIFrameAck {
+	castFunc := func(typ interface{}) CEMIFrameAck {
+		if sCEMIFrameAck, ok := typ.(CEMIFrameAck); ok {
+			return sCEMIFrameAck
+		}
+		return CEMIFrameAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIFrameAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
 
@@ -75,9 +95,5 @@ func CEMIFrameAckParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 }
 
 func (m CEMIFrameAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIFrameAck); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

@@ -57,6 +57,26 @@ func NewModbusPDUReadFileRecordResponse(items []ModbusPDUReadFileRecordResponseI
 	return &ModbusPDUReadFileRecordResponse{items: items}
 }
 
+func CastIModbusPDUReadFileRecordResponse(structType interface{}) IModbusPDUReadFileRecordResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadFileRecordResponse {
+		if iModbusPDUReadFileRecordResponse, ok := typ.(IModbusPDUReadFileRecordResponse); ok {
+			return iModbusPDUReadFileRecordResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadFileRecordResponse(structType interface{}) ModbusPDUReadFileRecordResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadFileRecordResponse {
+		if sModbusPDUReadFileRecordResponse, ok := typ.(ModbusPDUReadFileRecordResponse); ok {
+			return sModbusPDUReadFileRecordResponse
+		}
+		return ModbusPDUReadFileRecordResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadFileRecordResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -85,8 +105,8 @@ func ModbusPDUReadFileRecordResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 	// Array field (items)
 	var items []ModbusPDUReadFileRecordResponseItem
 	// Length array
-	_itemsLength := uint16(byteCount)
-	_itemsEndPos := io.GetPos() + _itemsLength
+	_itemsLength := byteCount
+	_itemsEndPos := io.GetPos() + uint16(_itemsLength)
 	for io.GetPos() < _itemsEndPos {
 		_message, _err := ModbusPDUReadFileRecordResponseItemParse(io)
 		if _err != nil {
@@ -112,20 +132,15 @@ func (m ModbusPDUReadFileRecordResponse) Serialize(io spi.WriteBuffer) {
 		}
 		return sizeInBytes
 	}
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadFileRecordResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

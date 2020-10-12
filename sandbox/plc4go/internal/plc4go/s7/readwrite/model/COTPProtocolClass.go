@@ -30,6 +30,16 @@ const (
 	COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
 
+func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
+	castFunc := func(typ interface{}) COTPProtocolClass {
+		if sCOTPProtocolClass, ok := typ.(COTPProtocolClass); ok {
+			return sCOTPProtocolClass
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func COTPProtocolClassParse(io spi.ReadBuffer) (COTPProtocolClass, error) {
 	// TODO: Implement ...
 	return 0, nil

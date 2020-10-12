@@ -453,6 +453,9 @@ public class MessageFormatListener extends MSpecBaseListener {
             (simpleBaseType == SimpleTypeReference.SimpleBaseType.DATETIME)) {
             return new DefaultTemporalTypeReference(simpleBaseType);
         }
+        else if(simpleBaseType == SimpleTypeReference.SimpleBaseType.BIT) {
+            return new DefaultBooleanTypeReference();
+        }
         // In all other cases (bit) it's just assume it's length it 1.
         else {
             return new DefaultIntegerTypeReference(simpleBaseType, 1);

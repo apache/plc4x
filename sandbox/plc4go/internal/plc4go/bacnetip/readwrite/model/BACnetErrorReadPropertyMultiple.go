@@ -46,6 +46,26 @@ func NewBACnetErrorReadPropertyMultiple() BACnetErrorInitializer {
 	return &BACnetErrorReadPropertyMultiple{}
 }
 
+func CastIBACnetErrorReadPropertyMultiple(structType interface{}) IBACnetErrorReadPropertyMultiple {
+	castFunc := func(typ interface{}) IBACnetErrorReadPropertyMultiple {
+		if iBACnetErrorReadPropertyMultiple, ok := typ.(IBACnetErrorReadPropertyMultiple); ok {
+			return iBACnetErrorReadPropertyMultiple
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorReadPropertyMultiple(structType interface{}) BACnetErrorReadPropertyMultiple {
+	castFunc := func(typ interface{}) BACnetErrorReadPropertyMultiple {
+		if sBACnetErrorReadPropertyMultiple, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
+			return sBACnetErrorReadPropertyMultiple
+		}
+		return BACnetErrorReadPropertyMultiple{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorReadPropertyMultipleParse(io spi.ReadBuffer) (BACnetErrorInitial
 }
 
 func (m BACnetErrorReadPropertyMultiple) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorReadPropertyMultiple); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

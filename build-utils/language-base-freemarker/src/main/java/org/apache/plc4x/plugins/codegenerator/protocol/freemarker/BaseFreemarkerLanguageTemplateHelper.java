@@ -286,6 +286,16 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      * Methods related to fields.
      **********************************************************************************/
 
+    public Field getFieldForNameFromCurrentOrParent(String fieldName) {
+        return ((ComplexTypeDefinition) getThisTypeDefinition()).getAllPropertyFields()
+            .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+    }
+
+    public Field getFieldForNameFromCurrent(String fieldName) {
+        return ((ComplexTypeDefinition) getThisTypeDefinition()).getPropertyFields()
+            .stream().filter(propertyField -> propertyField.getName().equals(fieldName)).findFirst().orElse(null);
+    }
+
     public boolean isAbstractField(Field field) {
         return field instanceof AbstractField;
     }

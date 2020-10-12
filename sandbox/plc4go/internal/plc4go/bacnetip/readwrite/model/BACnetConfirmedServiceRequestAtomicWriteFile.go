@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestAtomicWriteFile() BACnetConfirmedServiceReq
 	return &BACnetConfirmedServiceRequestAtomicWriteFile{}
 }
 
+func CastIBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) IBACnetConfirmedServiceRequestAtomicWriteFile {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestAtomicWriteFile {
+		if iBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(IBACnetConfirmedServiceRequestAtomicWriteFile); ok {
+			return iBACnetConfirmedServiceRequestAtomicWriteFile
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
+		if sBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
+			return sBACnetConfirmedServiceRequestAtomicWriteFile
+		}
+		return BACnetConfirmedServiceRequestAtomicWriteFile{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(io spi.ReadBuffer) (BACne
 }
 
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestAtomicWriteFile); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

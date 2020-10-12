@@ -55,6 +55,26 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersResponse(value []int8) ModbusP
 	return &ModbusPDUReadWriteMultipleHoldingRegistersResponse{value: value}
 }
 
+func CastIModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface{}) IModbusPDUReadWriteMultipleHoldingRegistersResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadWriteMultipleHoldingRegistersResponse {
+		if iModbusPDUReadWriteMultipleHoldingRegistersResponse, ok := typ.(IModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
+			return iModbusPDUReadWriteMultipleHoldingRegistersResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface{}) ModbusPDUReadWriteMultipleHoldingRegistersResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadWriteMultipleHoldingRegistersResponse {
+		if sModbusPDUReadWriteMultipleHoldingRegistersResponse, ok := typ.(ModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
+			return sModbusPDUReadWriteMultipleHoldingRegistersResponse
+		}
+		return ModbusPDUReadWriteMultipleHoldingRegistersResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -94,20 +114,15 @@ func ModbusPDUReadWriteMultipleHoldingRegistersResponseParse(io spi.ReadBuffer) 
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadWriteMultipleHoldingRegistersResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

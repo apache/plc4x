@@ -46,6 +46,26 @@ func NewRoutingIndication() KNXNetIPMessageInitializer {
 	return &RoutingIndication{}
 }
 
+func CastIRoutingIndication(structType interface{}) IRoutingIndication {
+	castFunc := func(typ interface{}) IRoutingIndication {
+		if iRoutingIndication, ok := typ.(IRoutingIndication); ok {
+			return iRoutingIndication
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastRoutingIndication(structType interface{}) RoutingIndication {
+	castFunc := func(typ interface{}) RoutingIndication {
+		if sRoutingIndication, ok := typ.(RoutingIndication); ok {
+			return sRoutingIndication
+		}
+		return RoutingIndication{}
+	}
+	return castFunc(structType)
+}
+
 func (m RoutingIndication) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -63,9 +83,5 @@ func RoutingIndicationParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m RoutingIndication) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IRoutingIndication); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

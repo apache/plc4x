@@ -42,6 +42,26 @@ func ServiceIdServiceType(m IServiceId) uint8 {
 	return m.ServiceType()
 }
 
+func CastIServiceId(structType interface{}) IServiceId {
+	castFunc := func(typ interface{}) IServiceId {
+		if iServiceId, ok := typ.(IServiceId); ok {
+			return iServiceId
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastServiceId(structType interface{}) ServiceId {
+	castFunc := func(typ interface{}) ServiceId {
+		if sServiceId, ok := typ.(ServiceId); ok {
+			return sServiceId
+		}
+		return ServiceId{}
+	}
+	return castFunc(structType)
+}
+
 func (m ServiceId) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -88,16 +108,12 @@ func ServiceIdParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m ServiceId) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iServiceId, ok := typ.(IServiceId); ok {
+	iServiceId := CastIServiceId(m)
 
-			// Discriminator Field (serviceType) (Used as input to a switch field)
-			serviceType := ServiceIdServiceType(iServiceId)
-			io.WriteUint8(8, (serviceType))
+	// Discriminator Field (serviceType) (Used as input to a switch field)
+	serviceType := uint8(ServiceIdServiceType(iServiceId))
+	io.WriteUint8(8, (serviceType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iServiceId.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iServiceId.Serialize(io)
 }

@@ -28,6 +28,16 @@ const (
 	DeviceGroup_OTHERS   DeviceGroup = 0x03
 )
 
+func CastDeviceGroup(structType interface{}) DeviceGroup {
+	castFunc := func(typ interface{}) DeviceGroup {
+		if sDeviceGroup, ok := typ.(DeviceGroup); ok {
+			return sDeviceGroup
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func DeviceGroupParse(io spi.ReadBuffer) (DeviceGroup, error) {
 	// TODO: Implement ...
 	return 0, nil

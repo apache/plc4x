@@ -49,6 +49,26 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) KNX
 	return &ConnectionStateResponse{communicationChannelId: communicationChannelId, status: status}
 }
 
+func CastIConnectionStateResponse(structType interface{}) IConnectionStateResponse {
+	castFunc := func(typ interface{}) IConnectionStateResponse {
+		if iConnectionStateResponse, ok := typ.(IConnectionStateResponse); ok {
+			return iConnectionStateResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse {
+	castFunc := func(typ interface{}) ConnectionStateResponse {
+		if sConnectionStateResponse, ok := typ.(ConnectionStateResponse); ok {
+			return sConnectionStateResponse
+		}
+		return ConnectionStateResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionStateResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -81,17 +101,12 @@ func ConnectionStateResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer
 }
 
 func (m ConnectionStateResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionStateResponse); ok {
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Enum field (status)
-			status := m.status
-			status.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (status)
+	status := Status(m.status)
+	status.Serialize(io)
 }

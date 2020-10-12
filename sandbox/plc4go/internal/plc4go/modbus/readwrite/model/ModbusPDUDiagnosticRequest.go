@@ -56,6 +56,26 @@ func NewModbusPDUDiagnosticRequest(status uint16, eventCount uint16) ModbusPDUIn
 	return &ModbusPDUDiagnosticRequest{status: status, eventCount: eventCount}
 }
 
+func CastIModbusPDUDiagnosticRequest(structType interface{}) IModbusPDUDiagnosticRequest {
+	castFunc := func(typ interface{}) IModbusPDUDiagnosticRequest {
+		if iModbusPDUDiagnosticRequest, ok := typ.(IModbusPDUDiagnosticRequest); ok {
+			return iModbusPDUDiagnosticRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticRequest {
+	castFunc := func(typ interface{}) ModbusPDUDiagnosticRequest {
+		if sModbusPDUDiagnosticRequest, ok := typ.(ModbusPDUDiagnosticRequest); ok {
+			return sModbusPDUDiagnosticRequest
+		}
+		return ModbusPDUDiagnosticRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -85,17 +105,12 @@ func ModbusPDUDiagnosticRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, e
 }
 
 func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUDiagnosticRequest); ok {
 
-			// Simple Field (status)
-			var status uint16 = m.status
-			io.WriteUint16(16, (status))
+	// Simple Field (status)
+	status := uint16(m.status)
+	io.WriteUint16(16, (status))
 
-			// Simple Field (eventCount)
-			var eventCount uint16 = m.eventCount
-			io.WriteUint16(16, (eventCount))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (eventCount)
+	eventCount := uint16(m.eventCount)
+	io.WriteUint16(16, (eventCount))
 }

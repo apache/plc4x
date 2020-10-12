@@ -15,7 +15,7 @@
 //
 package drivers
 
-/*import (
+import (
 	"encoding/hex"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/bacnetip/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
@@ -35,4 +35,4 @@ func BacnetIp() {
 		// Output success ...
 	}
 
-}*/
+}

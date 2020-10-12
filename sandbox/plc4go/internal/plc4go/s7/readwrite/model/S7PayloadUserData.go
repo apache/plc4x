@@ -53,6 +53,26 @@ func NewS7PayloadUserData(items []S7PayloadUserDataItem) S7PayloadInitializer {
 	return &S7PayloadUserData{items: items}
 }
 
+func CastIS7PayloadUserData(structType interface{}) IS7PayloadUserData {
+	castFunc := func(typ interface{}) IS7PayloadUserData {
+		if iS7PayloadUserData, ok := typ.(IS7PayloadUserData); ok {
+			return iS7PayloadUserData
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadUserData(structType interface{}) S7PayloadUserData {
+	castFunc := func(typ interface{}) S7PayloadUserData {
+		if sS7PayloadUserData, ok := typ.(S7PayloadUserData); ok {
+			return sS7PayloadUserData
+		}
+		return S7PayloadUserData{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadUserData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
@@ -76,10 +96,10 @@ func S7PayloadUserDataParse(io spi.ReadBuffer, parameter S7Parameter) (S7Payload
 	var items []S7PayloadUserDataItem
 	// Count array
 	{
-		items := make([]S7PayloadUserDataItem, uint8(len(COUNT)))
-		for curItem := uint16(0); curItem < uint16(uint8(len(COUNT))); curItem++ {
+		items := make([]S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).items)))
+		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).items))); curItem++ {
 
-			_message, _err := S7PayloadUserDataItemParse(io, uint8(S7ParameterUserDataItemCPUFunctions(S7ParameterUserData(parameter).items[0]).cpuFunctionType))
+			_message, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).items).cpuFunctionType)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
@@ -97,16 +117,11 @@ func S7PayloadUserDataParse(io spi.ReadBuffer, parameter S7Parameter) (S7Payload
 }
 
 func (m S7PayloadUserData) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadUserData); ok {
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

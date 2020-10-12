@@ -46,6 +46,26 @@ func NewBACnetServiceAckAtomicWriteFile() BACnetServiceAckInitializer {
 	return &BACnetServiceAckAtomicWriteFile{}
 }
 
+func CastIBACnetServiceAckAtomicWriteFile(structType interface{}) IBACnetServiceAckAtomicWriteFile {
+	castFunc := func(typ interface{}) IBACnetServiceAckAtomicWriteFile {
+		if iBACnetServiceAckAtomicWriteFile, ok := typ.(IBACnetServiceAckAtomicWriteFile); ok {
+			return iBACnetServiceAckAtomicWriteFile
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckAtomicWriteFile(structType interface{}) BACnetServiceAckAtomicWriteFile {
+	castFunc := func(typ interface{}) BACnetServiceAckAtomicWriteFile {
+		if sBACnetServiceAckAtomicWriteFile, ok := typ.(BACnetServiceAckAtomicWriteFile); ok {
+			return sBACnetServiceAckAtomicWriteFile
+		}
+		return BACnetServiceAckAtomicWriteFile{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckAtomicWriteFile) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckAtomicWriteFileParse(io spi.ReadBuffer) (BACnetServiceAckIn
 }
 
 func (m BACnetServiceAckAtomicWriteFile) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckAtomicWriteFile); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

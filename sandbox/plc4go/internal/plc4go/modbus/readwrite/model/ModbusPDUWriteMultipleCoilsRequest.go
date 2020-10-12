@@ -57,6 +57,26 @@ func NewModbusPDUWriteMultipleCoilsRequest(startingAddress uint16, quantity uint
 	return &ModbusPDUWriteMultipleCoilsRequest{startingAddress: startingAddress, quantity: quantity, value: value}
 }
 
+func CastIModbusPDUWriteMultipleCoilsRequest(structType interface{}) IModbusPDUWriteMultipleCoilsRequest {
+	castFunc := func(typ interface{}) IModbusPDUWriteMultipleCoilsRequest {
+		if iModbusPDUWriteMultipleCoilsRequest, ok := typ.(IModbusPDUWriteMultipleCoilsRequest); ok {
+			return iModbusPDUWriteMultipleCoilsRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWriteMultipleCoilsRequest {
+	castFunc := func(typ interface{}) ModbusPDUWriteMultipleCoilsRequest {
+		if sModbusPDUWriteMultipleCoilsRequest, ok := typ.(ModbusPDUWriteMultipleCoilsRequest); ok {
+			return sModbusPDUWriteMultipleCoilsRequest
+		}
+		return ModbusPDUWriteMultipleCoilsRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -108,28 +128,23 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitia
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUWriteMultipleCoilsRequest); ok {
 
-			// Simple Field (startingAddress)
-			var startingAddress uint16 = m.startingAddress
-			io.WriteUint16(16, (startingAddress))
+	// Simple Field (startingAddress)
+	startingAddress := uint16(m.startingAddress)
+	io.WriteUint16(16, (startingAddress))
 
-			// Simple Field (quantity)
-			var quantity uint16 = m.quantity
-			io.WriteUint16(16, (quantity))
+	// Simple Field (quantity)
+	quantity := uint16(m.quantity)
+	io.WriteUint16(16, (quantity))
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

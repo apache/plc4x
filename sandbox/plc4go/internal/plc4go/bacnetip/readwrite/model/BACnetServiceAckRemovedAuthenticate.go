@@ -46,6 +46,26 @@ func NewBACnetServiceAckRemovedAuthenticate() BACnetServiceAckInitializer {
 	return &BACnetServiceAckRemovedAuthenticate{}
 }
 
+func CastIBACnetServiceAckRemovedAuthenticate(structType interface{}) IBACnetServiceAckRemovedAuthenticate {
+	castFunc := func(typ interface{}) IBACnetServiceAckRemovedAuthenticate {
+		if iBACnetServiceAckRemovedAuthenticate, ok := typ.(IBACnetServiceAckRemovedAuthenticate); ok {
+			return iBACnetServiceAckRemovedAuthenticate
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) BACnetServiceAckRemovedAuthenticate {
+	castFunc := func(typ interface{}) BACnetServiceAckRemovedAuthenticate {
+		if sBACnetServiceAckRemovedAuthenticate, ok := typ.(BACnetServiceAckRemovedAuthenticate); ok {
+			return sBACnetServiceAckRemovedAuthenticate
+		}
+		return BACnetServiceAckRemovedAuthenticate{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckRemovedAuthenticate) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetServiceA
 }
 
 func (m BACnetServiceAckRemovedAuthenticate) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckRemovedAuthenticate); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

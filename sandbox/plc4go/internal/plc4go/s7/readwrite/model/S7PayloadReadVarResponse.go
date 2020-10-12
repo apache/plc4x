@@ -53,6 +53,26 @@ func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem) S7PayloadInitiali
 	return &S7PayloadReadVarResponse{items: items}
 }
 
+func CastIS7PayloadReadVarResponse(structType interface{}) IS7PayloadReadVarResponse {
+	castFunc := func(typ interface{}) IS7PayloadReadVarResponse {
+		if iS7PayloadReadVarResponse, ok := typ.(IS7PayloadReadVarResponse); ok {
+			return iS7PayloadReadVarResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadReadVarResponse(structType interface{}) S7PayloadReadVarResponse {
+	castFunc := func(typ interface{}) S7PayloadReadVarResponse {
+		if sS7PayloadReadVarResponse, ok := typ.(S7PayloadReadVarResponse); ok {
+			return sS7PayloadReadVarResponse
+		}
+		return S7PayloadReadVarResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadReadVarResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
@@ -76,10 +96,10 @@ func S7PayloadReadVarResponseParse(io spi.ReadBuffer, parameter S7Parameter) (S7
 	var items []S7VarPayloadDataItem
 	// Count array
 	{
-		items := make([]S7VarPayloadDataItem, S7ParameterReadVarResponse(parameter).numItems)
-		for curItem := uint16(0); curItem < uint16(S7ParameterReadVarResponse(parameter).numItems); curItem++ {
-			lastItem := curItem == uint16(S7ParameterReadVarResponse(parameter).numItems-1)
-			_message, _err := S7VarPayloadDataItemParse(io, bool(lastItem))
+		items := make([]S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).numItems)
+		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).numItems); curItem++ {
+			lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).numItems-1)
+			_message, _err := S7VarPayloadDataItemParse(io, lastItem)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
@@ -97,20 +117,15 @@ func S7PayloadReadVarResponseParse(io spi.ReadBuffer, parameter S7Parameter) (S7
 }
 
 func (m S7PayloadReadVarResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadReadVarResponse); ok {
 
-			// Array Field (items)
-			if m.items != nil {
-				itemCount := uint16(len(m.items))
-				var curItem uint16 = 0
-				for _, _element := range m.items {
-					var lastItem bool = curItem == (itemCount - 1)
-					_element.Serialize(io, lastItem)
-					curItem++
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		itemCount := uint16(len(m.items))
+		var curItem uint16 = 0
+		for _, _element := range m.items {
+			var lastItem bool = curItem == (itemCount - 1)
+			_element.Serialize(io, lastItem)
+			curItem++
 		}
 	}
-	serializeFunc(m)
 }

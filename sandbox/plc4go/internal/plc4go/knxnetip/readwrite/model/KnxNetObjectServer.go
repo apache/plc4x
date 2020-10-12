@@ -47,6 +47,26 @@ func NewKnxNetObjectServer(version uint8) ServiceIdInitializer {
 	return &KnxNetObjectServer{version: version}
 }
 
+func CastIKnxNetObjectServer(structType interface{}) IKnxNetObjectServer {
+	castFunc := func(typ interface{}) IKnxNetObjectServer {
+		if iKnxNetObjectServer, ok := typ.(IKnxNetObjectServer); ok {
+			return iKnxNetObjectServer
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
+	castFunc := func(typ interface{}) KnxNetObjectServer {
+		if sKnxNetObjectServer, ok := typ.(KnxNetObjectServer); ok {
+			return sKnxNetObjectServer
+		}
+		return KnxNetObjectServer{}
+	}
+	return castFunc(structType)
+}
+
 func (m KnxNetObjectServer) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
@@ -70,13 +90,8 @@ func KnxNetObjectServerParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
 }
 
 func (m KnxNetObjectServer) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKnxNetObjectServer); ok {
 
-			// Simple Field (version)
-			var version uint8 = m.version
-			io.WriteUint8(8, (version))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (version)
+	version := uint8(m.version)
+	io.WriteUint8(8, (version))
 }

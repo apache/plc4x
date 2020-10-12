@@ -48,6 +48,26 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize) COTPParameterInitializer {
 	return &COTPParameterTpduSize{tpduSize: tpduSize}
 }
 
+func CastICOTPParameterTpduSize(structType interface{}) ICOTPParameterTpduSize {
+	castFunc := func(typ interface{}) ICOTPParameterTpduSize {
+		if iCOTPParameterTpduSize, ok := typ.(ICOTPParameterTpduSize); ok {
+			return iCOTPParameterTpduSize
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
+	castFunc := func(typ interface{}) COTPParameterTpduSize {
+		if sCOTPParameterTpduSize, ok := typ.(COTPParameterTpduSize); ok {
+			return sCOTPParameterTpduSize
+		}
+		return COTPParameterTpduSize{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPParameterTpduSize) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
@@ -74,13 +94,8 @@ func COTPParameterTpduSizeParse(io spi.ReadBuffer) (COTPParameterInitializer, er
 }
 
 func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPParameterTpduSize); ok {
 
-			// Enum field (tpduSize)
-			tpduSize := m.tpduSize
-			tpduSize.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (tpduSize)
+	tpduSize := COTPTpduSize(m.tpduSize)
+	tpduSize.Serialize(io)
 }

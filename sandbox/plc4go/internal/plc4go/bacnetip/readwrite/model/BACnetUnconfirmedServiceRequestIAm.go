@@ -60,6 +60,26 @@ func NewBACnetUnconfirmedServiceRequestIAm(objectType uint16, objectInstanceNumb
 	return &BACnetUnconfirmedServiceRequestIAm{objectType: objectType, objectInstanceNumber: objectInstanceNumber, maximumApduLengthAcceptedLength: maximumApduLengthAcceptedLength, maximumApduLengthAccepted: maximumApduLengthAccepted, segmentationSupported: segmentationSupported, vendorId: vendorId}
 }
 
+func CastIBACnetUnconfirmedServiceRequestIAm(structType interface{}) IBACnetUnconfirmedServiceRequestIAm {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIAm {
+		if iBACnetUnconfirmedServiceRequestIAm, ok := typ.(IBACnetUnconfirmedServiceRequestIAm); ok {
+			return iBACnetUnconfirmedServiceRequestIAm
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconfirmedServiceRequestIAm {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIAm {
+		if sBACnetUnconfirmedServiceRequestIAm, ok := typ.(BACnetUnconfirmedServiceRequestIAm); ok {
+			return sBACnetUnconfirmedServiceRequestIAm
+		}
+		return BACnetUnconfirmedServiceRequestIAm{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -159,48 +179,43 @@ func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirm
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestIAm); ok {
 
-			// Const Field (objectIdentifierHeader)
-			io.WriteUint8(8, 0xC4)
+	// Const Field (objectIdentifierHeader)
+	io.WriteUint8(8, 0xC4)
 
-			// Simple Field (objectType)
-			var objectType uint16 = m.objectType
-			io.WriteUint16(10, (objectType))
+	// Simple Field (objectType)
+	objectType := uint16(m.objectType)
+	io.WriteUint16(10, (objectType))
 
-			// Simple Field (objectInstanceNumber)
-			var objectInstanceNumber uint32 = m.objectInstanceNumber
-			io.WriteUint32(22, (objectInstanceNumber))
+	// Simple Field (objectInstanceNumber)
+	objectInstanceNumber := uint32(m.objectInstanceNumber)
+	io.WriteUint32(22, (objectInstanceNumber))
 
-			// Const Field (maximumApduLengthAcceptedHeader)
-			io.WriteUint8(5, 0x04)
+	// Const Field (maximumApduLengthAcceptedHeader)
+	io.WriteUint8(5, 0x04)
 
-			// Simple Field (maximumApduLengthAcceptedLength)
-			var maximumApduLengthAcceptedLength uint8 = m.maximumApduLengthAcceptedLength
-			io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+	// Simple Field (maximumApduLengthAcceptedLength)
+	maximumApduLengthAcceptedLength := uint8(m.maximumApduLengthAcceptedLength)
+	io.WriteUint8(3, (maximumApduLengthAcceptedLength))
 
-			// Array Field (maximumApduLengthAccepted)
-			if m.maximumApduLengthAccepted != nil {
-				for _, _element := range m.maximumApduLengthAccepted {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Const Field (segmentationSupportedHeader)
-			io.WriteUint8(8, 0x91)
-
-			// Simple Field (segmentationSupported)
-			var segmentationSupported uint8 = m.segmentationSupported
-			io.WriteUint8(8, (segmentationSupported))
-
-			// Const Field (vendorIdHeader)
-			io.WriteUint8(8, 0x21)
-
-			// Simple Field (vendorId)
-			var vendorId uint8 = m.vendorId
-			io.WriteUint8(8, (vendorId))
+	// Array Field (maximumApduLengthAccepted)
+	if m.maximumApduLengthAccepted != nil {
+		for _, _element := range m.maximumApduLengthAccepted {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (segmentationSupportedHeader)
+	io.WriteUint8(8, 0x91)
+
+	// Simple Field (segmentationSupported)
+	segmentationSupported := uint8(m.segmentationSupported)
+	io.WriteUint8(8, (segmentationSupported))
+
+	// Const Field (vendorIdHeader)
+	io.WriteUint8(8, 0x21)
+
+	// Simple Field (vendorId)
+	vendorId := uint8(m.vendorId)
+	io.WriteUint8(8, (vendorId))
 }

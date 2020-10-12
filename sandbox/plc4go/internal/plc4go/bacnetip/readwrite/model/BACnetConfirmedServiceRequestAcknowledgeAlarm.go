@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestAcknowledgeAlarm() BACnetConfirmedServiceRe
 	return &BACnetConfirmedServiceRequestAcknowledgeAlarm{}
 }
 
+func CastIBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) IBACnetConfirmedServiceRequestAcknowledgeAlarm {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestAcknowledgeAlarm {
+		if iBACnetConfirmedServiceRequestAcknowledgeAlarm, ok := typ.(IBACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+			return iBACnetConfirmedServiceRequestAcknowledgeAlarm
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAcknowledgeAlarm {
+		if sBACnetConfirmedServiceRequestAcknowledgeAlarm, ok := typ.(BACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
+			return sBACnetConfirmedServiceRequestAcknowledgeAlarm
+		}
+		return BACnetConfirmedServiceRequestAcknowledgeAlarm{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io spi.ReadBuffer) (BACn
 }
 
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestAcknowledgeAlarm); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

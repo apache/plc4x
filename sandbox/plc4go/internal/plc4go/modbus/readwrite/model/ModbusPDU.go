@@ -52,6 +52,26 @@ func ModbusPDUResponse(m IModbusPDU) bool {
 	return m.Response()
 }
 
+func CastIModbusPDU(structType interface{}) IModbusPDU {
+	castFunc := func(typ interface{}) IModbusPDU {
+		if iModbusPDU, ok := typ.(IModbusPDU); ok {
+			return iModbusPDU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDU(structType interface{}) ModbusPDU {
+	castFunc := func(typ interface{}) ModbusPDU {
+		if sModbusPDU, ok := typ.(ModbusPDU); ok {
+			return sModbusPDU
+		}
+		return ModbusPDU{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -164,20 +184,16 @@ func ModbusPDUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 }
 
 func (m ModbusPDU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iModbusPDU, ok := typ.(IModbusPDU); ok {
+	iModbusPDU := CastIModbusPDU(m)
 
-			// Discriminator Field (errorFlag) (Used as input to a switch field)
-			errorFlag := ModbusPDUErrorFlag(iModbusPDU)
-			io.WriteBit((bool)(errorFlag))
+	// Discriminator Field (errorFlag) (Used as input to a switch field)
+	errorFlag := bool(ModbusPDUErrorFlag(iModbusPDU))
+	io.WriteBit((bool)(errorFlag))
 
-			// Discriminator Field (functionFlag) (Used as input to a switch field)
-			functionFlag := ModbusPDUFunctionFlag(iModbusPDU)
-			io.WriteUint8(7, (functionFlag))
+	// Discriminator Field (functionFlag) (Used as input to a switch field)
+	functionFlag := uint8(ModbusPDUFunctionFlag(iModbusPDU))
+	io.WriteUint8(7, (functionFlag))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iModbusPDU.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iModbusPDU.Serialize(io)
 }

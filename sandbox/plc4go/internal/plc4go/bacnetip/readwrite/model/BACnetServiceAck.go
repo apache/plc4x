@@ -42,6 +42,26 @@ func BACnetServiceAckServiceChoice(m IBACnetServiceAck) uint8 {
 	return m.ServiceChoice()
 }
 
+func CastIBACnetServiceAck(structType interface{}) IBACnetServiceAck {
+	castFunc := func(typ interface{}) IBACnetServiceAck {
+		if iBACnetServiceAck, ok := typ.(IBACnetServiceAck); ok {
+			return iBACnetServiceAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAck(structType interface{}) BACnetServiceAck {
+	castFunc := func(typ interface{}) BACnetServiceAck {
+		if sBACnetServiceAck, ok := typ.(BACnetServiceAck); ok {
+			return sBACnetServiceAck
+		}
+		return BACnetServiceAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -104,16 +124,12 @@ func BACnetServiceAckParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BACnetServiceAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBACnetServiceAck, ok := typ.(IBACnetServiceAck); ok {
+	iBACnetServiceAck := CastIBACnetServiceAck(m)
 
-			// Discriminator Field (serviceChoice) (Used as input to a switch field)
-			serviceChoice := BACnetServiceAckServiceChoice(iBACnetServiceAck)
-			io.WriteUint8(8, (serviceChoice))
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(BACnetServiceAckServiceChoice(iBACnetServiceAck))
+	io.WriteUint8(8, (serviceChoice))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBACnetServiceAck.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBACnetServiceAck.Serialize(io)
 }
