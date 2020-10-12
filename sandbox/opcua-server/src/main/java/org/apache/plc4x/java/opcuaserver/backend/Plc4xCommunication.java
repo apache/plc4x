@@ -129,6 +129,13 @@ public class Plc4xCommunication {
               // If it's just one element, output just one single line.
               if(numValues == 1) {
                   resp = response.getObject(fieldName);
+              } else {
+                //TODO: Possibly create a new node for each item in the array. We would then need to pass the connection string with the Fields in each protocol which I'm not keen on doing.
+                resp = "[" + response.getObject(fieldName, 0).toString();
+                for (int i = 1; i < numValues; i++) {
+                    resp = resp + "," + response.getObject(fieldName, i).toString();
+                }
+                resp = resp + "]";
               }
           }
         }

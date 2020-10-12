@@ -152,10 +152,10 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
             logger.info("Connection String " + connectionString);
             String name = tags.get(i).getAlias();
-            //TODO: Need to add different datatypes
-            NodeId typeId = Identifiers.Int16;
+            final String tag = tags.get(i).getAddress();            
+            NodeId typeId = Identifiers.BaseDataType;
             Variant variant = new Variant(0);
-            final String tag = tags.get(i).getAddress();
+
 
             UaVariableNode node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
                 .setNodeId(newNodeId(name))
