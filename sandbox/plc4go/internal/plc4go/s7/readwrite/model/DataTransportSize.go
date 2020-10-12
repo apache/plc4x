@@ -32,7 +32,7 @@ const (
 	DataTransportSize_OCTET_STRING    DataTransportSize = 0x09
 )
 
-func (e DataTransportSize) GetSizeInBits() bool {
+func (e DataTransportSize) SizeInBits() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */

@@ -64,7 +64,7 @@ returning the constant for a given enum value.
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
 
-func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} {
+func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))} {
     switch e  {
         <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
         case ${helper.escapeValue(type.type, enumValue.value)}: { /* '${enumValue.value}' */

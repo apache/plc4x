@@ -53,7 +53,7 @@ const (
 	ModbusDataType_WSTRING        ModbusDataType = 83
 )
 
-func (e ModbusDataType) GetDataTypeSize() uint8 {
+func (e ModbusDataType) DataTypeSize() uint8 {
 	switch e {
 	case 00:
 		{ /* '00' */
