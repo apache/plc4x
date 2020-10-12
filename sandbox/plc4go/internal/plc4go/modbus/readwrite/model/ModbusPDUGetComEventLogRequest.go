@@ -54,6 +54,26 @@ func NewModbusPDUGetComEventLogRequest() ModbusPDUInitializer {
 	return &ModbusPDUGetComEventLogRequest{}
 }
 
+func CastIModbusPDUGetComEventLogRequest(structType interface{}) IModbusPDUGetComEventLogRequest {
+	castFunc := func(typ interface{}) IModbusPDUGetComEventLogRequest {
+		if iModbusPDUGetComEventLogRequest, ok := typ.(IModbusPDUGetComEventLogRequest); ok {
+			return iModbusPDUGetComEventLogRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUGetComEventLogRequest(structType interface{}) ModbusPDUGetComEventLogRequest {
+	castFunc := func(typ interface{}) ModbusPDUGetComEventLogRequest {
+		if sModbusPDUGetComEventLogRequest, ok := typ.(ModbusPDUGetComEventLogRequest); ok {
+			return sModbusPDUGetComEventLogRequest
+		}
+		return ModbusPDUGetComEventLogRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUGetComEventLogRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -71,9 +91,5 @@ func ModbusPDUGetComEventLogRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 }
 
 func (m ModbusPDUGetComEventLogRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUGetComEventLogRequest); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

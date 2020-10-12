@@ -42,6 +42,26 @@ func COTPParameterParameterType(m ICOTPParameter) uint8 {
 	return m.ParameterType()
 }
 
+func CastICOTPParameter(structType interface{}) ICOTPParameter {
+	castFunc := func(typ interface{}) ICOTPParameter {
+		if iCOTPParameter, ok := typ.(ICOTPParameter); ok {
+			return iCOTPParameter
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPParameter(structType interface{}) COTPParameter {
+	castFunc := func(typ interface{}) COTPParameter {
+		if sCOTPParameter, ok := typ.(COTPParameter); ok {
+			return sCOTPParameter
+		}
+		return COTPParameter{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPParameter) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -92,20 +112,16 @@ func COTPParameterParse(io spi.ReadBuffer, rest uint8) (spi.Message, error) {
 }
 
 func (m COTPParameter) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iCOTPParameter, ok := typ.(ICOTPParameter); ok {
+	iCOTPParameter := CastICOTPParameter(m)
 
-			// Discriminator Field (parameterType) (Used as input to a switch field)
-			parameterType := COTPParameterParameterType(iCOTPParameter)
-			io.WriteUint8(8, (parameterType))
+	// Discriminator Field (parameterType) (Used as input to a switch field)
+	parameterType := uint8(COTPParameterParameterType(iCOTPParameter))
+	io.WriteUint8(8, (parameterType))
 
-			// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			parameterLength := uint8((m.LengthInBytes()) - (2))
-			io.WriteUint8(8, (parameterLength))
+	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	io.WriteUint8(8, (parameterLength))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iCOTPParameter.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iCOTPParameter.Serialize(io)
 }

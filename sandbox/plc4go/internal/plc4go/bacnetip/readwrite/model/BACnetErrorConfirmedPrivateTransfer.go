@@ -46,6 +46,26 @@ func NewBACnetErrorConfirmedPrivateTransfer() BACnetErrorInitializer {
 	return &BACnetErrorConfirmedPrivateTransfer{}
 }
 
+func CastIBACnetErrorConfirmedPrivateTransfer(structType interface{}) IBACnetErrorConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) IBACnetErrorConfirmedPrivateTransfer {
+		if iBACnetErrorConfirmedPrivateTransfer, ok := typ.(IBACnetErrorConfirmedPrivateTransfer); ok {
+			return iBACnetErrorConfirmedPrivateTransfer
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) BACnetErrorConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) BACnetErrorConfirmedPrivateTransfer {
+		if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
+			return sBACnetErrorConfirmedPrivateTransfer
+		}
+		return BACnetErrorConfirmedPrivateTransfer{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorConfirmedPrivateTransferParse(io spi.ReadBuffer) (BACnetErrorIni
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorConfirmedPrivateTransfer); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

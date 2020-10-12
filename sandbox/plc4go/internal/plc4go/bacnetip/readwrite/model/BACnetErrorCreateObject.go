@@ -46,6 +46,26 @@ func NewBACnetErrorCreateObject() BACnetErrorInitializer {
 	return &BACnetErrorCreateObject{}
 }
 
+func CastIBACnetErrorCreateObject(structType interface{}) IBACnetErrorCreateObject {
+	castFunc := func(typ interface{}) IBACnetErrorCreateObject {
+		if iBACnetErrorCreateObject, ok := typ.(IBACnetErrorCreateObject); ok {
+			return iBACnetErrorCreateObject
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject {
+	castFunc := func(typ interface{}) BACnetErrorCreateObject {
+		if sBACnetErrorCreateObject, ok := typ.(BACnetErrorCreateObject); ok {
+			return sBACnetErrorCreateObject
+		}
+		return BACnetErrorCreateObject{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorCreateObject) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorCreateObjectParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 }
 
 func (m BACnetErrorCreateObject) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorCreateObject); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

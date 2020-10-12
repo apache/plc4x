@@ -27,6 +27,16 @@ const (
 	HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
 
+func CastHostProtocolCode(structType interface{}) HostProtocolCode {
+	castFunc := func(typ interface{}) HostProtocolCode {
+		if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {
+			return sHostProtocolCode
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func HostProtocolCodeParse(io spi.ReadBuffer) (HostProtocolCode, error) {
 	// TODO: Implement ...
 	return 0, nil

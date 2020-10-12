@@ -50,6 +50,26 @@ func NewBACnetTagApplicationBoolean() BACnetTagInitializer {
 	return &BACnetTagApplicationBoolean{}
 }
 
+func CastIBACnetTagApplicationBoolean(structType interface{}) IBACnetTagApplicationBoolean {
+	castFunc := func(typ interface{}) IBACnetTagApplicationBoolean {
+		if iBACnetTagApplicationBoolean, ok := typ.(IBACnetTagApplicationBoolean); ok {
+			return iBACnetTagApplicationBoolean
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetTagApplicationBoolean(structType interface{}) BACnetTagApplicationBoolean {
+	castFunc := func(typ interface{}) BACnetTagApplicationBoolean {
+		if sBACnetTagApplicationBoolean, ok := typ.(BACnetTagApplicationBoolean); ok {
+			return sBACnetTagApplicationBoolean
+		}
+		return BACnetTagApplicationBoolean{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetTagApplicationBoolean) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
@@ -67,9 +87,5 @@ func BACnetTagApplicationBooleanParse(io spi.ReadBuffer) (BACnetTagInitializer, 
 }
 
 func (m BACnetTagApplicationBoolean) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetTagApplicationBoolean); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

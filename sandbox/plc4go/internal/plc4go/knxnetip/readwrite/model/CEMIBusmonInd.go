@@ -51,6 +51,26 @@ func NewCEMIBusmonInd(additionalInformationLength uint8, additionalInformation [
 	return &CEMIBusmonInd{additionalInformationLength: additionalInformationLength, additionalInformation: additionalInformation, cemiFrame: cemiFrame}
 }
 
+func CastICEMIBusmonInd(structType interface{}) ICEMIBusmonInd {
+	castFunc := func(typ interface{}) ICEMIBusmonInd {
+		if iCEMIBusmonInd, ok := typ.(ICEMIBusmonInd); ok {
+			return iCEMIBusmonInd
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIBusmonInd(structType interface{}) CEMIBusmonInd {
+	castFunc := func(typ interface{}) CEMIBusmonInd {
+		if sCEMIBusmonInd, ok := typ.(CEMIBusmonInd); ok {
+			return sCEMIBusmonInd
+		}
+		return CEMIBusmonInd{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIBusmonInd) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMI.LengthInBits()
 
@@ -82,8 +102,8 @@ func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 	// Array field (additionalInformation)
 	var additionalInformation []CEMIAdditionalInformation
 	// Length array
-	_additionalInformationLength := uint16(additionalInformationLength)
-	_additionalInformationEndPos := io.GetPos() + _additionalInformationLength
+	_additionalInformationLength := additionalInformationLength
+	_additionalInformationEndPos := io.GetPos() + uint16(_additionalInformationLength)
 	for io.GetPos() < _additionalInformationEndPos {
 		_message, _err := CEMIAdditionalInformationParse(io)
 		if _err != nil {
@@ -113,24 +133,19 @@ func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIBusmonInd) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIBusmonInd); ok {
 
-			// Simple Field (additionalInformationLength)
-			var additionalInformationLength uint8 = m.additionalInformationLength
-			io.WriteUint8(8, (additionalInformationLength))
+	// Simple Field (additionalInformationLength)
+	additionalInformationLength := uint8(m.additionalInformationLength)
+	io.WriteUint8(8, (additionalInformationLength))
 
-			// Array Field (additionalInformation)
-			if m.additionalInformation != nil {
-				for _, _element := range m.additionalInformation {
-					_element.Serialize(io)
-				}
-			}
-
-			// Simple Field (cemiFrame)
-			var cemiFrame CEMIFrame = m.cemiFrame
-			cemiFrame.Serialize(io)
+	// Array Field (additionalInformation)
+	if m.additionalInformation != nil {
+		for _, _element := range m.additionalInformation {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (cemiFrame)
+	cemiFrame := CEMIFrame(m.cemiFrame)
+	cemiFrame.Serialize(io)
 }

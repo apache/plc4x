@@ -54,6 +54,26 @@ func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNum
 	return &S7AddressAny{transportSize: transportSize, numberOfElements: numberOfElements, dbNumber: dbNumber, area: area, byteAddress: byteAddress, bitAddress: bitAddress}
 }
 
+func CastIS7AddressAny(structType interface{}) IS7AddressAny {
+	castFunc := func(typ interface{}) IS7AddressAny {
+		if iS7AddressAny, ok := typ.(IS7AddressAny); ok {
+			return iS7AddressAny
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7AddressAny(structType interface{}) S7AddressAny {
+	castFunc := func(typ interface{}) S7AddressAny {
+		if sS7AddressAny, ok := typ.(S7AddressAny); ok {
+			return sS7AddressAny
+		}
+		return S7AddressAny{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7AddressAny) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Address.LengthInBits()
 
@@ -127,36 +147,31 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 }
 
 func (m S7AddressAny) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7AddressAny); ok {
 
-			// Enum field (transportSize)
-			transportSize := m.transportSize
-			transportSize.Serialize(io)
+	// Enum field (transportSize)
+	transportSize := TransportSize(m.transportSize)
+	transportSize.Serialize(io)
 
-			// Simple Field (numberOfElements)
-			var numberOfElements uint16 = m.numberOfElements
-			io.WriteUint16(16, (numberOfElements))
+	// Simple Field (numberOfElements)
+	numberOfElements := uint16(m.numberOfElements)
+	io.WriteUint16(16, (numberOfElements))
 
-			// Simple Field (dbNumber)
-			var dbNumber uint16 = m.dbNumber
-			io.WriteUint16(16, (dbNumber))
+	// Simple Field (dbNumber)
+	dbNumber := uint16(m.dbNumber)
+	io.WriteUint16(16, (dbNumber))
 
-			// Enum field (area)
-			area := m.area
-			area.Serialize(io)
+	// Enum field (area)
+	area := MemoryArea(m.area)
+	area.Serialize(io)
 
-			// Reserved Field (reserved)
-			io.WriteUint8(5, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(5, uint8(0x00))
 
-			// Simple Field (byteAddress)
-			var byteAddress uint16 = m.byteAddress
-			io.WriteUint16(16, (byteAddress))
+	// Simple Field (byteAddress)
+	byteAddress := uint16(m.byteAddress)
+	io.WriteUint16(16, (byteAddress))
 
-			// Simple Field (bitAddress)
-			var bitAddress uint8 = m.bitAddress
-			io.WriteUint8(3, (bitAddress))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (bitAddress)
+	bitAddress := uint8(m.bitAddress)
+	io.WriteUint8(3, (bitAddress))
 }

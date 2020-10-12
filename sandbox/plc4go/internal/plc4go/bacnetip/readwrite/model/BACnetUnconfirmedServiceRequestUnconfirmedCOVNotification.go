@@ -46,6 +46,26 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() BACnetUnconf
 	return &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
 }
 
+func CastIBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+		if iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
+			return iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+		if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
+			return sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+		}
+		return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io spi.ReadB
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

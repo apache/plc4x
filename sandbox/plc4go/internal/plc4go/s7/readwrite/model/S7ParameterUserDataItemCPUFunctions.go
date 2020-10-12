@@ -54,6 +54,26 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 	return &S7ParameterUserDataItemCPUFunctions{method: method, cpuFunctionType: cpuFunctionType, cpuFunctionGroup: cpuFunctionGroup, cpuSubfunction: cpuSubfunction, sequenceNumber: sequenceNumber, dataUnitReferenceNumber: dataUnitReferenceNumber, lastDataUnit: lastDataUnit, errorCode: errorCode}
 }
 
+func CastIS7ParameterUserDataItemCPUFunctions(structType interface{}) IS7ParameterUserDataItemCPUFunctions {
+	castFunc := func(typ interface{}) IS7ParameterUserDataItemCPUFunctions {
+		if iS7ParameterUserDataItemCPUFunctions, ok := typ.(IS7ParameterUserDataItemCPUFunctions); ok {
+			return iS7ParameterUserDataItemCPUFunctions
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
+	castFunc := func(typ interface{}) S7ParameterUserDataItemCPUFunctions {
+		if sS7ParameterUserDataItemCPUFunctions, ok := typ.(S7ParameterUserDataItemCPUFunctions); ok {
+			return sS7ParameterUserDataItemCPUFunctions
+		}
+		return S7ParameterUserDataItemCPUFunctions{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7ParameterUserDataItem.LengthInBits()
 
@@ -119,21 +139,21 @@ func S7ParameterUserDataItemCPUFunctionsParse(io spi.ReadBuffer) (S7ParameterUse
 
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var dataUnitReferenceNumber *uint8 = nil
-	if (cpuFunctionType) == (8) {
+	if bool((cpuFunctionType) == (8)) {
 		_val := io.ReadUint8(8)
 		dataUnitReferenceNumber = &_val
 	}
 
 	// Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
 	var lastDataUnit *uint8 = nil
-	if (cpuFunctionType) == (8) {
+	if bool((cpuFunctionType) == (8)) {
 		_val := io.ReadUint8(8)
 		lastDataUnit = &_val
 	}
 
 	// Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
 	var errorCode *uint16 = nil
-	if (cpuFunctionType) == (8) {
+	if bool((cpuFunctionType) == (8)) {
 		_val := io.ReadUint16(16)
 		errorCode = &_val
 	}
@@ -143,54 +163,49 @@ func S7ParameterUserDataItemCPUFunctionsParse(io spi.ReadBuffer) (S7ParameterUse
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7ParameterUserDataItemCPUFunctions); ok {
 
-			// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			itemLength := uint8((m.LengthInBytes()) - (2))
-			io.WriteUint8(8, (itemLength))
+	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+	io.WriteUint8(8, (itemLength))
 
-			// Simple Field (method)
-			var method uint8 = m.method
-			io.WriteUint8(8, (method))
+	// Simple Field (method)
+	method := uint8(m.method)
+	io.WriteUint8(8, (method))
 
-			// Simple Field (cpuFunctionType)
-			var cpuFunctionType uint8 = m.cpuFunctionType
-			io.WriteUint8(4, (cpuFunctionType))
+	// Simple Field (cpuFunctionType)
+	cpuFunctionType := uint8(m.cpuFunctionType)
+	io.WriteUint8(4, (cpuFunctionType))
 
-			// Simple Field (cpuFunctionGroup)
-			var cpuFunctionGroup uint8 = m.cpuFunctionGroup
-			io.WriteUint8(4, (cpuFunctionGroup))
+	// Simple Field (cpuFunctionGroup)
+	cpuFunctionGroup := uint8(m.cpuFunctionGroup)
+	io.WriteUint8(4, (cpuFunctionGroup))
 
-			// Simple Field (cpuSubfunction)
-			var cpuSubfunction uint8 = m.cpuSubfunction
-			io.WriteUint8(8, (cpuSubfunction))
+	// Simple Field (cpuSubfunction)
+	cpuSubfunction := uint8(m.cpuSubfunction)
+	io.WriteUint8(8, (cpuSubfunction))
 
-			// Simple Field (sequenceNumber)
-			var sequenceNumber uint8 = m.sequenceNumber
-			io.WriteUint8(8, (sequenceNumber))
+	// Simple Field (sequenceNumber)
+	sequenceNumber := uint8(m.sequenceNumber)
+	io.WriteUint8(8, (sequenceNumber))
 
-			// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
-			var dataUnitReferenceNumber *uint8 = nil
-			if m.dataUnitReferenceNumber != nil {
-				dataUnitReferenceNumber = m.dataUnitReferenceNumber
-				io.WriteUint8(8, *(dataUnitReferenceNumber))
-			}
-
-			// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
-			var lastDataUnit *uint8 = nil
-			if m.lastDataUnit != nil {
-				lastDataUnit = m.lastDataUnit
-				io.WriteUint8(8, *(lastDataUnit))
-			}
-
-			// Optional Field (errorCode) (Can be skipped, if the value is null)
-			var errorCode *uint16 = nil
-			if m.errorCode != nil {
-				errorCode = m.errorCode
-				io.WriteUint16(16, *(errorCode))
-			}
-		}
+	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
+	var dataUnitReferenceNumber *uint8 = nil
+	if m.dataUnitReferenceNumber != nil {
+		dataUnitReferenceNumber = m.dataUnitReferenceNumber
+		io.WriteUint8(8, *(dataUnitReferenceNumber))
 	}
-	serializeFunc(m)
+
+	// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
+	var lastDataUnit *uint8 = nil
+	if m.lastDataUnit != nil {
+		lastDataUnit = m.lastDataUnit
+		io.WriteUint8(8, *(lastDataUnit))
+	}
+
+	// Optional Field (errorCode) (Can be skipped, if the value is null)
+	var errorCode *uint16 = nil
+	if m.errorCode != nil {
+		errorCode = m.errorCode
+		io.WriteUint16(16, *(errorCode))
+	}
 }

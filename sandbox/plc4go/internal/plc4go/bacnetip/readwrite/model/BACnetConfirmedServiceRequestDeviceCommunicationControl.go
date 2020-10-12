@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl() BACnetConfirme
 	return &BACnetConfirmedServiceRequestDeviceCommunicationControl{}
 }
 
+func CastIBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) IBACnetConfirmedServiceRequestDeviceCommunicationControl {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestDeviceCommunicationControl {
+		if iBACnetConfirmedServiceRequestDeviceCommunicationControl, ok := typ.(IBACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
+			return iBACnetConfirmedServiceRequestDeviceCommunicationControl
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
+		if sBACnetConfirmedServiceRequestDeviceCommunicationControl, ok := typ.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
+			return sBACnetConfirmedServiceRequestDeviceCommunicationControl
+		}
+		return BACnetConfirmedServiceRequestDeviceCommunicationControl{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io spi.ReadBuf
 }
 
 func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

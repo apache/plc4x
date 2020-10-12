@@ -58,6 +58,26 @@ func NewCEMIFramePollingDataExt() CEMIFrameInitializer {
 	return &CEMIFramePollingDataExt{}
 }
 
+func CastICEMIFramePollingDataExt(structType interface{}) ICEMIFramePollingDataExt {
+	castFunc := func(typ interface{}) ICEMIFramePollingDataExt {
+		if iCEMIFramePollingDataExt, ok := typ.(ICEMIFramePollingDataExt); ok {
+			return iCEMIFramePollingDataExt
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIFramePollingDataExt(structType interface{}) CEMIFramePollingDataExt {
+	castFunc := func(typ interface{}) CEMIFramePollingDataExt {
+		if sCEMIFramePollingDataExt, ok := typ.(CEMIFramePollingDataExt); ok {
+			return sCEMIFramePollingDataExt
+		}
+		return CEMIFramePollingDataExt{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIFramePollingDataExt) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
 
@@ -75,9 +95,5 @@ func CEMIFramePollingDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, erro
 }
 
 func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIFramePollingDataExt); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

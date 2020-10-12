@@ -50,6 +50,26 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8) COTP
 	return &COTPPacketTpduError{destinationReference: destinationReference, rejectCause: rejectCause}
 }
 
+func CastICOTPPacketTpduError(structType interface{}) ICOTPPacketTpduError {
+	castFunc := func(typ interface{}) ICOTPPacketTpduError {
+		if iCOTPPacketTpduError, ok := typ.(ICOTPPacketTpduError); ok {
+			return iCOTPPacketTpduError
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
+	castFunc := func(typ interface{}) COTPPacketTpduError {
+		if sCOTPPacketTpduError, ok := typ.(COTPPacketTpduError); ok {
+			return sCOTPPacketTpduError
+		}
+		return COTPPacketTpduError{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacketTpduError) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
@@ -79,17 +99,12 @@ func COTPPacketTpduErrorParse(io spi.ReadBuffer) (COTPPacketInitializer, error) 
 }
 
 func (m COTPPacketTpduError) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPPacketTpduError); ok {
 
-			// Simple Field (destinationReference)
-			var destinationReference uint16 = m.destinationReference
-			io.WriteUint16(16, (destinationReference))
+	// Simple Field (destinationReference)
+	destinationReference := uint16(m.destinationReference)
+	io.WriteUint16(16, (destinationReference))
 
-			// Simple Field (rejectCause)
-			var rejectCause uint8 = m.rejectCause
-			io.WriteUint8(8, (rejectCause))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (rejectCause)
+	rejectCause := uint8(m.rejectCause)
+	io.WriteUint8(8, (rejectCause))
 }

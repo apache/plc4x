@@ -58,6 +58,26 @@ func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedR
 	return &APDUConfirmedRequest{segmentedMessage: segmentedMessage, moreFollows: moreFollows, segmentedResponseAccepted: segmentedResponseAccepted, maxSegmentsAccepted: maxSegmentsAccepted, maxApduLengthAccepted: maxApduLengthAccepted, invokeId: invokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceRequest: serviceRequest}
 }
 
+func CastIAPDUConfirmedRequest(structType interface{}) IAPDUConfirmedRequest {
+	castFunc := func(typ interface{}) IAPDUConfirmedRequest {
+		if iAPDUConfirmedRequest, ok := typ.(IAPDUConfirmedRequest); ok {
+			return iAPDUConfirmedRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUConfirmedRequest(structType interface{}) APDUConfirmedRequest {
+	castFunc := func(typ interface{}) APDUConfirmedRequest {
+		if sAPDUConfirmedRequest, ok := typ.(APDUConfirmedRequest); ok {
+			return sAPDUConfirmedRequest
+		}
+		return APDUConfirmedRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUConfirmedRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -148,7 +168,7 @@ func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitia
 	}
 
 	// Simple Field (serviceRequest)
-	_serviceRequestMessage, _err := BACnetConfirmedServiceRequestParse(io, uint16((apduLength)-((3)+(spi.InlineIf((segmentedMessage), uint16(2), uint16(0))))))
+	_serviceRequestMessage, _err := BACnetConfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(uint16(uint16(3))+uint16(uint16(spi.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
 	}
@@ -163,54 +183,49 @@ func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitia
 }
 
 func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUConfirmedRequest); ok {
 
-			// Simple Field (segmentedMessage)
-			var segmentedMessage bool = m.segmentedMessage
-			io.WriteBit((bool)(segmentedMessage))
+	// Simple Field (segmentedMessage)
+	segmentedMessage := bool(m.segmentedMessage)
+	io.WriteBit((bool)(segmentedMessage))
 
-			// Simple Field (moreFollows)
-			var moreFollows bool = m.moreFollows
-			io.WriteBit((bool)(moreFollows))
+	// Simple Field (moreFollows)
+	moreFollows := bool(m.moreFollows)
+	io.WriteBit((bool)(moreFollows))
 
-			// Simple Field (segmentedResponseAccepted)
-			var segmentedResponseAccepted bool = m.segmentedResponseAccepted
-			io.WriteBit((bool)(segmentedResponseAccepted))
+	// Simple Field (segmentedResponseAccepted)
+	segmentedResponseAccepted := bool(m.segmentedResponseAccepted)
+	io.WriteBit((bool)(segmentedResponseAccepted))
 
-			// Reserved Field (reserved)
-			io.WriteUint8(2, uint8(0))
+	// Reserved Field (reserved)
+	io.WriteUint8(2, uint8(0))
 
-			// Simple Field (maxSegmentsAccepted)
-			var maxSegmentsAccepted uint8 = m.maxSegmentsAccepted
-			io.WriteUint8(3, (maxSegmentsAccepted))
+	// Simple Field (maxSegmentsAccepted)
+	maxSegmentsAccepted := uint8(m.maxSegmentsAccepted)
+	io.WriteUint8(3, (maxSegmentsAccepted))
 
-			// Simple Field (maxApduLengthAccepted)
-			var maxApduLengthAccepted uint8 = m.maxApduLengthAccepted
-			io.WriteUint8(4, (maxApduLengthAccepted))
+	// Simple Field (maxApduLengthAccepted)
+	maxApduLengthAccepted := uint8(m.maxApduLengthAccepted)
+	io.WriteUint8(4, (maxApduLengthAccepted))
 
-			// Simple Field (invokeId)
-			var invokeId uint8 = m.invokeId
-			io.WriteUint8(8, (invokeId))
+	// Simple Field (invokeId)
+	invokeId := uint8(m.invokeId)
+	io.WriteUint8(8, (invokeId))
 
-			// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-			var sequenceNumber *uint8 = nil
-			if m.sequenceNumber != nil {
-				sequenceNumber = m.sequenceNumber
-				io.WriteUint8(8, *(sequenceNumber))
-			}
-
-			// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
-			var proposedWindowSize *uint8 = nil
-			if m.proposedWindowSize != nil {
-				proposedWindowSize = m.proposedWindowSize
-				io.WriteUint8(8, *(proposedWindowSize))
-			}
-
-			// Simple Field (serviceRequest)
-			var serviceRequest BACnetConfirmedServiceRequest = m.serviceRequest
-			serviceRequest.Serialize(io)
-		}
+	// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
+	var sequenceNumber *uint8 = nil
+	if m.sequenceNumber != nil {
+		sequenceNumber = m.sequenceNumber
+		io.WriteUint8(8, *(sequenceNumber))
 	}
-	serializeFunc(m)
+
+	// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
+	var proposedWindowSize *uint8 = nil
+	if m.proposedWindowSize != nil {
+		proposedWindowSize = m.proposedWindowSize
+		io.WriteUint8(8, *(proposedWindowSize))
+	}
+
+	// Simple Field (serviceRequest)
+	serviceRequest := BACnetConfirmedServiceRequest(m.serviceRequest)
+	serviceRequest.Serialize(io)
 }

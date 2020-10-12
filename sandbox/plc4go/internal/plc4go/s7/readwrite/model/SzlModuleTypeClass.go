@@ -29,6 +29,16 @@ const (
 	SzlModuleTypeClass_CP  SzlModuleTypeClass = 0xC
 )
 
+func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
+	castFunc := func(typ interface{}) SzlModuleTypeClass {
+		if sSzlModuleTypeClass, ok := typ.(SzlModuleTypeClass); ok {
+			return sSzlModuleTypeClass
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func SzlModuleTypeClassParse(io spi.ReadBuffer) (SzlModuleTypeClass, error) {
 	// TODO: Implement ...
 	return 0, nil

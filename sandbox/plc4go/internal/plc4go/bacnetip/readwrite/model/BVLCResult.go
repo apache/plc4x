@@ -46,6 +46,26 @@ func NewBVLCResult() BVLCInitializer {
 	return &BVLCResult{}
 }
 
+func CastIBVLCResult(structType interface{}) IBVLCResult {
+	castFunc := func(typ interface{}) IBVLCResult {
+		if iBVLCResult, ok := typ.(IBVLCResult); ok {
+			return iBVLCResult
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCResult(structType interface{}) BVLCResult {
+	castFunc := func(typ interface{}) BVLCResult {
+		if sBVLCResult, ok := typ.(BVLCResult); ok {
+			return sBVLCResult
+		}
+		return BVLCResult{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCResult) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCResultParse(io spi.ReadBuffer) (BVLCInitializer, error) {
 }
 
 func (m BVLCResult) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCResult); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

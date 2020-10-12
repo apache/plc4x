@@ -53,6 +53,26 @@ func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTim
 	return &CEMIAdditionalInformationRelativeTimestamp{relativeTimestamp: relativeTimestamp}
 }
 
+func CastICEMIAdditionalInformationRelativeTimestamp(structType interface{}) ICEMIAdditionalInformationRelativeTimestamp {
+	castFunc := func(typ interface{}) ICEMIAdditionalInformationRelativeTimestamp {
+		if iCEMIAdditionalInformationRelativeTimestamp, ok := typ.(ICEMIAdditionalInformationRelativeTimestamp); ok {
+			return iCEMIAdditionalInformationRelativeTimestamp
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMIAdditionalInformationRelativeTimestamp {
+	castFunc := func(typ interface{}) CEMIAdditionalInformationRelativeTimestamp {
+		if sCEMIAdditionalInformationRelativeTimestamp, ok := typ.(CEMIAdditionalInformationRelativeTimestamp); ok {
+			return sCEMIAdditionalInformationRelativeTimestamp
+		}
+		return CEMIAdditionalInformationRelativeTimestamp{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMIAdditionalInformation.LengthInBits()
 
@@ -93,16 +113,11 @@ func CEMIAdditionalInformationRelativeTimestampParse(io spi.ReadBuffer) (CEMIAdd
 }
 
 func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIAdditionalInformationRelativeTimestamp); ok {
 
-			// Const Field (len)
-			io.WriteUint8(8, 2)
+	// Const Field (len)
+	io.WriteUint8(8, 2)
 
-			// Simple Field (relativeTimestamp)
-			var relativeTimestamp RelativeTimestamp = m.relativeTimestamp
-			relativeTimestamp.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (relativeTimestamp)
+	relativeTimestamp := RelativeTimestamp(m.relativeTimestamp)
+	relativeTimestamp.Serialize(io)
 }

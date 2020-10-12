@@ -38,6 +38,26 @@ func NewDeviceStatus(programMode bool) spi.Message {
 	return &DeviceStatus{programMode: programMode}
 }
 
+func CastIDeviceStatus(structType interface{}) IDeviceStatus {
+	castFunc := func(typ interface{}) IDeviceStatus {
+		if iDeviceStatus, ok := typ.(IDeviceStatus); ok {
+			return iDeviceStatus
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDeviceStatus(structType interface{}) DeviceStatus {
+	castFunc := func(typ interface{}) DeviceStatus {
+		if sDeviceStatus, ok := typ.(DeviceStatus); ok {
+			return sDeviceStatus
+		}
+		return DeviceStatus{}
+	}
+	return castFunc(structType)
+}
+
 func (m DeviceStatus) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -75,16 +95,11 @@ func DeviceStatusParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m DeviceStatus) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDeviceStatus); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(7, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(7, uint8(0x00))
 
-			// Simple Field (programMode)
-			var programMode bool = m.programMode
-			io.WriteBit((bool)(programMode))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (programMode)
+	programMode := bool(m.programMode)
+	io.WriteBit((bool)(programMode))
 }

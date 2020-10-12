@@ -37,6 +37,26 @@ func NewIPAddress(addr []int8) spi.Message {
 	return &IPAddress{addr: addr}
 }
 
+func CastIIPAddress(structType interface{}) IIPAddress {
+	castFunc := func(typ interface{}) IIPAddress {
+		if iIPAddress, ok := typ.(IIPAddress); ok {
+			return iIPAddress
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastIPAddress(structType interface{}) IPAddress {
+	castFunc := func(typ interface{}) IPAddress {
+		if sIPAddress, ok := typ.(IPAddress); ok {
+			return sIPAddress
+		}
+		return IPAddress{}
+	}
+	return castFunc(structType)
+}
+
 func (m IPAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -58,8 +78,8 @@ func IPAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 	var addr []int8
 	// Count array
 	{
-		addr := make([]int8, 4)
-		for curItem := uint16(0); curItem < uint16(4); curItem++ {
+		addr := make([]int8, uint16(4))
+		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
 			addr = append(addr, io.ReadInt8(8))
 		}
@@ -70,16 +90,11 @@ func IPAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m IPAddress) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IIPAddress); ok {
 
-			// Array Field (addr)
-			if m.addr != nil {
-				for _, _element := range m.addr {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (addr)
+	if m.addr != nil {
+		for _, _element := range m.addr {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

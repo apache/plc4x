@@ -42,6 +42,26 @@ func BACnetErrorServiceChoice(m IBACnetError) uint8 {
 	return m.ServiceChoice()
 }
 
+func CastIBACnetError(structType interface{}) IBACnetError {
+	castFunc := func(typ interface{}) IBACnetError {
+		if iBACnetError, ok := typ.(IBACnetError); ok {
+			return iBACnetError
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetError(structType interface{}) BACnetError {
+	castFunc := func(typ interface{}) BACnetError {
+		if sBACnetError, ok := typ.(BACnetError); ok {
+			return sBACnetError
+		}
+		return BACnetError{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetError) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -104,16 +124,12 @@ func BACnetErrorParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BACnetError) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBACnetError, ok := typ.(IBACnetError); ok {
+	iBACnetError := CastIBACnetError(m)
 
-			// Discriminator Field (serviceChoice) (Used as input to a switch field)
-			serviceChoice := BACnetErrorServiceChoice(iBACnetError)
-			io.WriteUint8(8, (serviceChoice))
+	// Discriminator Field (serviceChoice) (Used as input to a switch field)
+	serviceChoice := uint8(BACnetErrorServiceChoice(iBACnetError))
+	io.WriteUint8(8, (serviceChoice))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBACnetError.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBACnetError.Serialize(io)
 }

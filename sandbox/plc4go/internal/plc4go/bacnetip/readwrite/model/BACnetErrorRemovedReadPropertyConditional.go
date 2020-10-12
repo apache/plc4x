@@ -46,6 +46,26 @@ func NewBACnetErrorRemovedReadPropertyConditional() BACnetErrorInitializer {
 	return &BACnetErrorRemovedReadPropertyConditional{}
 }
 
+func CastIBACnetErrorRemovedReadPropertyConditional(structType interface{}) IBACnetErrorRemovedReadPropertyConditional {
+	castFunc := func(typ interface{}) IBACnetErrorRemovedReadPropertyConditional {
+		if iBACnetErrorRemovedReadPropertyConditional, ok := typ.(IBACnetErrorRemovedReadPropertyConditional); ok {
+			return iBACnetErrorRemovedReadPropertyConditional
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) BACnetErrorRemovedReadPropertyConditional {
+	castFunc := func(typ interface{}) BACnetErrorRemovedReadPropertyConditional {
+		if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
+			return sBACnetErrorRemovedReadPropertyConditional
+		}
+		return BACnetErrorRemovedReadPropertyConditional{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorRemovedReadPropertyConditionalParse(io spi.ReadBuffer) (BACnetEr
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorRemovedReadPropertyConditional); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

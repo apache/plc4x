@@ -79,6 +79,16 @@ func (e MemoryArea) GetShortName() string {
 	}
 }
 
+func CastMemoryArea(structType interface{}) MemoryArea {
+	castFunc := func(typ interface{}) MemoryArea {
+		if sMemoryArea, ok := typ.(MemoryArea); ok {
+			return sMemoryArea
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func MemoryAreaParse(io spi.ReadBuffer) (MemoryArea, error) {
 	// TODO: Implement ...
 	return 0, nil

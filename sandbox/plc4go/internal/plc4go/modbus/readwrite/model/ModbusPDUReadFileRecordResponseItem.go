@@ -38,6 +38,26 @@ func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) sp
 	return &ModbusPDUReadFileRecordResponseItem{referenceType: referenceType, data: data}
 }
 
+func CastIModbusPDUReadFileRecordResponseItem(structType interface{}) IModbusPDUReadFileRecordResponseItem {
+	castFunc := func(typ interface{}) IModbusPDUReadFileRecordResponseItem {
+		if iModbusPDUReadFileRecordResponseItem, ok := typ.(IModbusPDUReadFileRecordResponseItem); ok {
+			return iModbusPDUReadFileRecordResponseItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadFileRecordResponseItem(structType interface{}) ModbusPDUReadFileRecordResponseItem {
+	castFunc := func(typ interface{}) ModbusPDUReadFileRecordResponseItem {
+		if sModbusPDUReadFileRecordResponseItem, ok := typ.(ModbusPDUReadFileRecordResponseItem); ok {
+			return sModbusPDUReadFileRecordResponseItem
+		}
+		return ModbusPDUReadFileRecordResponseItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -70,8 +90,8 @@ func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, e
 	// Array field (data)
 	var data []int8
 	// Length array
-	_dataLength := uint16((dataLength) - (1))
-	_dataEndPos := io.GetPos() + _dataLength
+	_dataLength := uint16(dataLength) - uint16(uint16(1))
+	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
 		data = append(data, io.ReadInt8(8))
 	}
@@ -81,24 +101,19 @@ func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, e
 }
 
 func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadFileRecordResponseItem); ok {
 
-			// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			dataLength := uint8((uint8(len(m.data))) + (1))
-			io.WriteUint8(8, (dataLength))
+	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	dataLength := uint8(uint8(uint8(len(m.data))) + uint8(uint8(1)))
+	io.WriteUint8(8, (dataLength))
 
-			// Simple Field (referenceType)
-			var referenceType uint8 = m.referenceType
-			io.WriteUint8(8, (referenceType))
+	// Simple Field (referenceType)
+	referenceType := uint8(m.referenceType)
+	io.WriteUint8(8, (referenceType))
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

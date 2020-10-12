@@ -49,6 +49,26 @@ func NewConnectionResponseDataBlockTunnelConnection(knxAddress KNXAddress) Conne
 	return &ConnectionResponseDataBlockTunnelConnection{knxAddress: knxAddress}
 }
 
+func CastIConnectionResponseDataBlockTunnelConnection(structType interface{}) IConnectionResponseDataBlockTunnelConnection {
+	castFunc := func(typ interface{}) IConnectionResponseDataBlockTunnelConnection {
+		if iConnectionResponseDataBlockTunnelConnection, ok := typ.(IConnectionResponseDataBlockTunnelConnection); ok {
+			return iConnectionResponseDataBlockTunnelConnection
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) ConnectionResponseDataBlockTunnelConnection {
+	castFunc := func(typ interface{}) ConnectionResponseDataBlockTunnelConnection {
+		if sConnectionResponseDataBlockTunnelConnection, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
+			return sConnectionResponseDataBlockTunnelConnection
+		}
+		return ConnectionResponseDataBlockTunnelConnection{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
 
@@ -80,13 +100,8 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io spi.ReadBuffer) (Connec
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionResponseDataBlockTunnelConnection); ok {
 
-			// Simple Field (knxAddress)
-			var knxAddress KNXAddress = m.knxAddress
-			knxAddress.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (knxAddress)
+	knxAddress := KNXAddress(m.knxAddress)
+	knxAddress.Serialize(io)
 }

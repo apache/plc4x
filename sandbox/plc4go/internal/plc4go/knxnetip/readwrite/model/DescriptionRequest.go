@@ -49,6 +49,26 @@ func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) KNXNetIPMess
 	return &DescriptionRequest{hpaiControlEndpoint: hpaiControlEndpoint}
 }
 
+func CastIDescriptionRequest(structType interface{}) IDescriptionRequest {
+	castFunc := func(typ interface{}) IDescriptionRequest {
+		if iDescriptionRequest, ok := typ.(IDescriptionRequest); ok {
+			return iDescriptionRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDescriptionRequest(structType interface{}) DescriptionRequest {
+	castFunc := func(typ interface{}) DescriptionRequest {
+		if sDescriptionRequest, ok := typ.(DescriptionRequest); ok {
+			return sDescriptionRequest
+		}
+		return DescriptionRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m DescriptionRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -80,13 +100,8 @@ func DescriptionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 }
 
 func (m DescriptionRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDescriptionRequest); ok {
 
-			// Simple Field (hpaiControlEndpoint)
-			var hpaiControlEndpoint HPAIControlEndpoint = m.hpaiControlEndpoint
-			hpaiControlEndpoint.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (hpaiControlEndpoint)
+	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint.Serialize(io)
 }

@@ -47,6 +47,26 @@ func S7PayloadParameterParameterType(m IS7Payload) uint8 {
 	return m.ParameterParameterType()
 }
 
+func CastIS7Payload(structType interface{}) IS7Payload {
+	castFunc := func(typ interface{}) IS7Payload {
+		if iS7Payload, ok := typ.(IS7Payload); ok {
+			return iS7Payload
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7Payload(structType interface{}) S7Payload {
+	castFunc := func(typ interface{}) S7Payload {
+		if sS7Payload, ok := typ.(S7Payload); ok {
+			return sS7Payload
+		}
+		return S7Payload{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7Payload) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -65,13 +85,13 @@ func S7PayloadParse(io spi.ReadBuffer, messageType uint8, parameter S7Parameter)
 	var initializer S7PayloadInitializer
 	var typeSwitchError error
 	switch {
-	case parameter.parameterType == 0x04 && messageType == 0x03:
+	case CastIS7Parameter(parameter).ParameterType() == 0x04 && messageType == 0x03:
 		initializer, typeSwitchError = S7PayloadReadVarResponseParse(io, parameter)
-	case parameter.parameterType == 0x05 && messageType == 0x01:
+	case CastIS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x01:
 		initializer, typeSwitchError = S7PayloadWriteVarRequestParse(io, parameter)
-	case parameter.parameterType == 0x05 && messageType == 0x03:
+	case CastIS7Parameter(parameter).ParameterType() == 0x05 && messageType == 0x03:
 		initializer, typeSwitchError = S7PayloadWriteVarResponseParse(io, parameter)
-	case parameter.parameterType == 0x00 && messageType == 0x07:
+	case CastIS7Parameter(parameter).ParameterType() == 0x00 && messageType == 0x07:
 		initializer, typeSwitchError = S7PayloadUserDataParse(io, parameter)
 	}
 	if typeSwitchError != nil {
@@ -83,12 +103,8 @@ func S7PayloadParse(io spi.ReadBuffer, messageType uint8, parameter S7Parameter)
 }
 
 func (m S7Payload) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iS7Payload, ok := typ.(IS7Payload); ok {
+	iS7Payload := CastIS7Payload(m)
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iS7Payload.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iS7Payload.Serialize(io)
 }

@@ -49,6 +49,26 @@ func NewS7VarRequestParameterItemAddress(address S7Address) S7VarRequestParamete
 	return &S7VarRequestParameterItemAddress{address: address}
 }
 
+func CastIS7VarRequestParameterItemAddress(structType interface{}) IS7VarRequestParameterItemAddress {
+	castFunc := func(typ interface{}) IS7VarRequestParameterItemAddress {
+		if iS7VarRequestParameterItemAddress, ok := typ.(IS7VarRequestParameterItemAddress); ok {
+			return iS7VarRequestParameterItemAddress
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestParameterItemAddress {
+	castFunc := func(typ interface{}) S7VarRequestParameterItemAddress {
+		if sS7VarRequestParameterItemAddress, ok := typ.(S7VarRequestParameterItemAddress); ok {
+			return sS7VarRequestParameterItemAddress
+		}
+		return S7VarRequestParameterItemAddress{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7VarRequestParameterItemAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7VarRequestParameterItem.LengthInBits()
 
@@ -86,17 +106,12 @@ func S7VarRequestParameterItemAddressParse(io spi.ReadBuffer) (S7VarRequestParam
 }
 
 func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7VarRequestParameterItemAddress); ok {
 
-			// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			itemLength := uint8(m.address.LengthInBytes())
-			io.WriteUint8(8, (itemLength))
+	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	itemLength := uint8(m.address.LengthInBytes())
+	io.WriteUint8(8, (itemLength))
 
-			// Simple Field (address)
-			var address S7Address = m.address
-			address.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (address)
+	address := S7Address(m.address)
+	address.Serialize(io)
 }

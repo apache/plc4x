@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestCreateObject() BACnetConfirmedServiceReques
 	return &BACnetConfirmedServiceRequestCreateObject{}
 }
 
+func CastIBACnetConfirmedServiceRequestCreateObject(structType interface{}) IBACnetConfirmedServiceRequestCreateObject {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestCreateObject {
+		if iBACnetConfirmedServiceRequestCreateObject, ok := typ.(IBACnetConfirmedServiceRequestCreateObject); ok {
+			return iBACnetConfirmedServiceRequestCreateObject
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) BACnetConfirmedServiceRequestCreateObject {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestCreateObject {
+		if sBACnetConfirmedServiceRequestCreateObject, ok := typ.(BACnetConfirmedServiceRequestCreateObject); ok {
+			return sBACnetConfirmedServiceRequestCreateObject
+		}
+		return BACnetConfirmedServiceRequestCreateObject{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestCreateObject) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestCreateObjectParse(io spi.ReadBuffer) (BACnetCo
 }
 
 func (m BACnetConfirmedServiceRequestCreateObject) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestCreateObject); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

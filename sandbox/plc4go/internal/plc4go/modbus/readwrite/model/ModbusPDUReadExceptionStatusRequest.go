@@ -54,6 +54,26 @@ func NewModbusPDUReadExceptionStatusRequest() ModbusPDUInitializer {
 	return &ModbusPDUReadExceptionStatusRequest{}
 }
 
+func CastIModbusPDUReadExceptionStatusRequest(structType interface{}) IModbusPDUReadExceptionStatusRequest {
+	castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusRequest {
+		if iModbusPDUReadExceptionStatusRequest, ok := typ.(IModbusPDUReadExceptionStatusRequest); ok {
+			return iModbusPDUReadExceptionStatusRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadExceptionStatusRequest(structType interface{}) ModbusPDUReadExceptionStatusRequest {
+	castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusRequest {
+		if sModbusPDUReadExceptionStatusRequest, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
+			return sModbusPDUReadExceptionStatusRequest
+		}
+		return ModbusPDUReadExceptionStatusRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -71,9 +91,5 @@ func ModbusPDUReadExceptionStatusRequestParse(io spi.ReadBuffer) (ModbusPDUIniti
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadExceptionStatusRequest); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

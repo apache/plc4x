@@ -31,6 +31,16 @@ const (
 	DataTransportErrorCode_NOT_FOUND               DataTransportErrorCode = 0x0A
 )
 
+func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
+	castFunc := func(typ interface{}) DataTransportErrorCode {
+		if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
+			return sDataTransportErrorCode
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func DataTransportErrorCodeParse(io spi.ReadBuffer) (DataTransportErrorCode, error) {
 	// TODO: Implement ...
 	return 0, nil

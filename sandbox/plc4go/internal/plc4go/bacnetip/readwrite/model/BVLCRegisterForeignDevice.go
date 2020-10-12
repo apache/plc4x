@@ -46,6 +46,26 @@ func NewBVLCRegisterForeignDevice() BVLCInitializer {
 	return &BVLCRegisterForeignDevice{}
 }
 
+func CastIBVLCRegisterForeignDevice(structType interface{}) IBVLCRegisterForeignDevice {
+	castFunc := func(typ interface{}) IBVLCRegisterForeignDevice {
+		if iBVLCRegisterForeignDevice, ok := typ.(IBVLCRegisterForeignDevice); ok {
+			return iBVLCRegisterForeignDevice
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCRegisterForeignDevice(structType interface{}) BVLCRegisterForeignDevice {
+	castFunc := func(typ interface{}) BVLCRegisterForeignDevice {
+		if sBVLCRegisterForeignDevice, ok := typ.(BVLCRegisterForeignDevice); ok {
+			return sBVLCRegisterForeignDevice
+		}
+		return BVLCRegisterForeignDevice{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCRegisterForeignDevice) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCRegisterForeignDeviceParse(io spi.ReadBuffer) (BVLCInitializer, error) 
 }
 
 func (m BVLCRegisterForeignDevice) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCRegisterForeignDevice); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

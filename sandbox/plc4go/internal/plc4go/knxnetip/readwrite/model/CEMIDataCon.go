@@ -51,6 +51,26 @@ func NewCEMIDataCon(additionalInformationLength uint8, additionalInformation []C
 	return &CEMIDataCon{additionalInformationLength: additionalInformationLength, additionalInformation: additionalInformation, cemiDataFrame: cemiDataFrame}
 }
 
+func CastICEMIDataCon(structType interface{}) ICEMIDataCon {
+	castFunc := func(typ interface{}) ICEMIDataCon {
+		if iCEMIDataCon, ok := typ.(ICEMIDataCon); ok {
+			return iCEMIDataCon
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIDataCon(structType interface{}) CEMIDataCon {
+	castFunc := func(typ interface{}) CEMIDataCon {
+		if sCEMIDataCon, ok := typ.(CEMIDataCon); ok {
+			return sCEMIDataCon
+		}
+		return CEMIDataCon{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIDataCon) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMI.LengthInBits()
 
@@ -82,8 +102,8 @@ func CEMIDataConParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 	// Array field (additionalInformation)
 	var additionalInformation []CEMIAdditionalInformation
 	// Length array
-	_additionalInformationLength := uint16(additionalInformationLength)
-	_additionalInformationEndPos := io.GetPos() + _additionalInformationLength
+	_additionalInformationLength := additionalInformationLength
+	_additionalInformationEndPos := io.GetPos() + uint16(_additionalInformationLength)
 	for io.GetPos() < _additionalInformationEndPos {
 		_message, _err := CEMIAdditionalInformationParse(io)
 		if _err != nil {
@@ -113,24 +133,19 @@ func CEMIDataConParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIDataCon) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIDataCon); ok {
 
-			// Simple Field (additionalInformationLength)
-			var additionalInformationLength uint8 = m.additionalInformationLength
-			io.WriteUint8(8, (additionalInformationLength))
+	// Simple Field (additionalInformationLength)
+	additionalInformationLength := uint8(m.additionalInformationLength)
+	io.WriteUint8(8, (additionalInformationLength))
 
-			// Array Field (additionalInformation)
-			if m.additionalInformation != nil {
-				for _, _element := range m.additionalInformation {
-					_element.Serialize(io)
-				}
-			}
-
-			// Simple Field (cemiDataFrame)
-			var cemiDataFrame CEMIDataFrame = m.cemiDataFrame
-			cemiDataFrame.Serialize(io)
+	// Array Field (additionalInformation)
+	if m.additionalInformation != nil {
+		for _, _element := range m.additionalInformation {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (cemiDataFrame)
+	cemiDataFrame := CEMIDataFrame(m.cemiDataFrame)
+	cemiDataFrame.Serialize(io)
 }

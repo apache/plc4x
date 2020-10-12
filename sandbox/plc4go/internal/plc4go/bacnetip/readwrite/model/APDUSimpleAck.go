@@ -49,6 +49,26 @@ func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) APDUInitializ
 	return &APDUSimpleAck{originalInvokeId: originalInvokeId, serviceChoice: serviceChoice}
 }
 
+func CastIAPDUSimpleAck(structType interface{}) IAPDUSimpleAck {
+	castFunc := func(typ interface{}) IAPDUSimpleAck {
+		if iAPDUSimpleAck, ok := typ.(IAPDUSimpleAck); ok {
+			return iAPDUSimpleAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
+	castFunc := func(typ interface{}) APDUSimpleAck {
+		if sAPDUSimpleAck, ok := typ.(APDUSimpleAck); ok {
+			return sAPDUSimpleAck
+		}
+		return APDUSimpleAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUSimpleAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -92,20 +112,15 @@ func APDUSimpleAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUSimpleAck); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(4, uint8(0))
+	// Reserved Field (reserved)
+	io.WriteUint8(4, uint8(0))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Simple Field (serviceChoice)
-			var serviceChoice uint8 = m.serviceChoice
-			io.WriteUint8(8, (serviceChoice))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (serviceChoice)
+	serviceChoice := uint8(m.serviceChoice)
+	io.WriteUint8(8, (serviceChoice))
 }

@@ -46,6 +46,26 @@ func NewBVLCDistributeBroadcastToNetwork() BVLCInitializer {
 	return &BVLCDistributeBroadcastToNetwork{}
 }
 
+func CastIBVLCDistributeBroadcastToNetwork(structType interface{}) IBVLCDistributeBroadcastToNetwork {
+	castFunc := func(typ interface{}) IBVLCDistributeBroadcastToNetwork {
+		if iBVLCDistributeBroadcastToNetwork, ok := typ.(IBVLCDistributeBroadcastToNetwork); ok {
+			return iBVLCDistributeBroadcastToNetwork
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistributeBroadcastToNetwork {
+	castFunc := func(typ interface{}) BVLCDistributeBroadcastToNetwork {
+		if sBVLCDistributeBroadcastToNetwork, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
+			return sBVLCDistributeBroadcastToNetwork
+		}
+		return BVLCDistributeBroadcastToNetwork{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCDistributeBroadcastToNetwork) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCDistributeBroadcastToNetworkParse(io spi.ReadBuffer) (BVLCInitializer, 
 }
 
 func (m BVLCDistributeBroadcastToNetwork) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCDistributeBroadcastToNetwork); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

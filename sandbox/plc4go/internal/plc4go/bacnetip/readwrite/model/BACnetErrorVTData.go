@@ -46,6 +46,26 @@ func NewBACnetErrorVTData() BACnetErrorInitializer {
 	return &BACnetErrorVTData{}
 }
 
+func CastIBACnetErrorVTData(structType interface{}) IBACnetErrorVTData {
+	castFunc := func(typ interface{}) IBACnetErrorVTData {
+		if iBACnetErrorVTData, ok := typ.(IBACnetErrorVTData); ok {
+			return iBACnetErrorVTData
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorVTData(structType interface{}) BACnetErrorVTData {
+	castFunc := func(typ interface{}) BACnetErrorVTData {
+		if sBACnetErrorVTData, ok := typ.(BACnetErrorVTData); ok {
+			return sBACnetErrorVTData
+		}
+		return BACnetErrorVTData{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorVTData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorVTDataParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
 }
 
 func (m BACnetErrorVTData) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorVTData); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

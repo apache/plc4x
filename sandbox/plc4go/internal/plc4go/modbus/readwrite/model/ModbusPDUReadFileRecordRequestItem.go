@@ -40,6 +40,26 @@ func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint1
 	return &ModbusPDUReadFileRecordRequestItem{referenceType: referenceType, fileNumber: fileNumber, recordNumber: recordNumber, recordLength: recordLength}
 }
 
+func CastIModbusPDUReadFileRecordRequestItem(structType interface{}) IModbusPDUReadFileRecordRequestItem {
+	castFunc := func(typ interface{}) IModbusPDUReadFileRecordRequestItem {
+		if iModbusPDUReadFileRecordRequestItem, ok := typ.(IModbusPDUReadFileRecordRequestItem); ok {
+			return iModbusPDUReadFileRecordRequestItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadFileRecordRequestItem(structType interface{}) ModbusPDUReadFileRecordRequestItem {
+	castFunc := func(typ interface{}) ModbusPDUReadFileRecordRequestItem {
+		if sModbusPDUReadFileRecordRequestItem, ok := typ.(ModbusPDUReadFileRecordRequestItem); ok {
+			return sModbusPDUReadFileRecordRequestItem
+		}
+		return ModbusPDUReadFileRecordRequestItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadFileRecordRequestItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -81,25 +101,20 @@ func ModbusPDUReadFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, er
 }
 
 func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadFileRecordRequestItem); ok {
 
-			// Simple Field (referenceType)
-			var referenceType uint8 = m.referenceType
-			io.WriteUint8(8, (referenceType))
+	// Simple Field (referenceType)
+	referenceType := uint8(m.referenceType)
+	io.WriteUint8(8, (referenceType))
 
-			// Simple Field (fileNumber)
-			var fileNumber uint16 = m.fileNumber
-			io.WriteUint16(16, (fileNumber))
+	// Simple Field (fileNumber)
+	fileNumber := uint16(m.fileNumber)
+	io.WriteUint16(16, (fileNumber))
 
-			// Simple Field (recordNumber)
-			var recordNumber uint16 = m.recordNumber
-			io.WriteUint16(16, (recordNumber))
+	// Simple Field (recordNumber)
+	recordNumber := uint16(m.recordNumber)
+	io.WriteUint16(16, (recordNumber))
 
-			// Simple Field (recordLength)
-			var recordLength uint16 = m.recordLength
-			io.WriteUint16(16, (recordLength))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (recordLength)
+	recordLength := uint16(m.recordLength)
+	io.WriteUint16(16, (recordLength))
 }

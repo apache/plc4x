@@ -46,6 +46,26 @@ func NewBACnetErrorGetEventInformation() BACnetErrorInitializer {
 	return &BACnetErrorGetEventInformation{}
 }
 
+func CastIBACnetErrorGetEventInformation(structType interface{}) IBACnetErrorGetEventInformation {
+	castFunc := func(typ interface{}) IBACnetErrorGetEventInformation {
+		if iBACnetErrorGetEventInformation, ok := typ.(IBACnetErrorGetEventInformation); ok {
+			return iBACnetErrorGetEventInformation
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorGetEventInformation(structType interface{}) BACnetErrorGetEventInformation {
+	castFunc := func(typ interface{}) BACnetErrorGetEventInformation {
+		if sBACnetErrorGetEventInformation, ok := typ.(BACnetErrorGetEventInformation); ok {
+			return sBACnetErrorGetEventInformation
+		}
+		return BACnetErrorGetEventInformation{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorGetEventInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorGetEventInformationParse(io spi.ReadBuffer) (BACnetErrorInitiali
 }
 
 func (m BACnetErrorGetEventInformation) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorGetEventInformation); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

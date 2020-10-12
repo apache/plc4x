@@ -174,6 +174,16 @@ func (e ModbusDataType) GetDataTypeSize() uint8 {
 	}
 }
 
+func CastModbusDataType(structType interface{}) ModbusDataType {
+	castFunc := func(typ interface{}) ModbusDataType {
+		if sModbusDataType, ok := typ.(ModbusDataType); ok {
+			return sModbusDataType
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func ModbusDataTypeParse(io spi.ReadBuffer) (ModbusDataType, error) {
 	// TODO: Implement ...
 	return 0, nil

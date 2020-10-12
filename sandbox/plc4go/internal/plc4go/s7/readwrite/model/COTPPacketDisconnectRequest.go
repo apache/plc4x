@@ -52,6 +52,26 @@ func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference
 	return &COTPPacketDisconnectRequest{destinationReference: destinationReference, sourceReference: sourceReference, protocolClass: protocolClass}
 }
 
+func CastICOTPPacketDisconnectRequest(structType interface{}) ICOTPPacketDisconnectRequest {
+	castFunc := func(typ interface{}) ICOTPPacketDisconnectRequest {
+		if iCOTPPacketDisconnectRequest, ok := typ.(ICOTPPacketDisconnectRequest); ok {
+			return iCOTPPacketDisconnectRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacketDisconnectRequest(structType interface{}) COTPPacketDisconnectRequest {
+	castFunc := func(typ interface{}) COTPPacketDisconnectRequest {
+		if sCOTPPacketDisconnectRequest, ok := typ.(COTPPacketDisconnectRequest); ok {
+			return sCOTPPacketDisconnectRequest
+		}
+		return COTPPacketDisconnectRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacketDisconnectRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
@@ -90,21 +110,16 @@ func COTPPacketDisconnectRequestParse(io spi.ReadBuffer) (COTPPacketInitializer,
 }
 
 func (m COTPPacketDisconnectRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPPacketDisconnectRequest); ok {
 
-			// Simple Field (destinationReference)
-			var destinationReference uint16 = m.destinationReference
-			io.WriteUint16(16, (destinationReference))
+	// Simple Field (destinationReference)
+	destinationReference := uint16(m.destinationReference)
+	io.WriteUint16(16, (destinationReference))
 
-			// Simple Field (sourceReference)
-			var sourceReference uint16 = m.sourceReference
-			io.WriteUint16(16, (sourceReference))
+	// Simple Field (sourceReference)
+	sourceReference := uint16(m.sourceReference)
+	io.WriteUint16(16, (sourceReference))
 
-			// Enum field (protocolClass)
-			protocolClass := m.protocolClass
-			protocolClass.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (protocolClass)
+	protocolClass := COTPProtocolClass(m.protocolClass)
+	protocolClass.Serialize(io)
 }

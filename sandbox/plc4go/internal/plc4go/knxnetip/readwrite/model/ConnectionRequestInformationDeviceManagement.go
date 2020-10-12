@@ -46,6 +46,26 @@ func NewConnectionRequestInformationDeviceManagement() ConnectionRequestInformat
 	return &ConnectionRequestInformationDeviceManagement{}
 }
 
+func CastIConnectionRequestInformationDeviceManagement(structType interface{}) IConnectionRequestInformationDeviceManagement {
+	castFunc := func(typ interface{}) IConnectionRequestInformationDeviceManagement {
+		if iConnectionRequestInformationDeviceManagement, ok := typ.(IConnectionRequestInformationDeviceManagement); ok {
+			return iConnectionRequestInformationDeviceManagement
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionRequestInformationDeviceManagement(structType interface{}) ConnectionRequestInformationDeviceManagement {
+	castFunc := func(typ interface{}) ConnectionRequestInformationDeviceManagement {
+		if sConnectionRequestInformationDeviceManagement, ok := typ.(ConnectionRequestInformationDeviceManagement); ok {
+			return sConnectionRequestInformationDeviceManagement
+		}
+		return ConnectionRequestInformationDeviceManagement{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
 
@@ -63,9 +83,5 @@ func ConnectionRequestInformationDeviceManagementParse(io spi.ReadBuffer) (Conne
 }
 
 func (m ConnectionRequestInformationDeviceManagement) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionRequestInformationDeviceManagement); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

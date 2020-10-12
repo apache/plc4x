@@ -55,6 +55,26 @@ func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) ModbusPDUInitializer 
 	return &ModbusPDUReadFifoQueueResponse{fifoValue: fifoValue}
 }
 
+func CastIModbusPDUReadFifoQueueResponse(structType interface{}) IModbusPDUReadFifoQueueResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadFifoQueueResponse {
+		if iModbusPDUReadFifoQueueResponse, ok := typ.(IModbusPDUReadFifoQueueResponse); ok {
+			return iModbusPDUReadFifoQueueResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadFifoQueueResponse(structType interface{}) ModbusPDUReadFifoQueueResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadFifoQueueResponse {
+		if sModbusPDUReadFifoQueueResponse, ok := typ.(ModbusPDUReadFifoQueueResponse); ok {
+			return sModbusPDUReadFifoQueueResponse
+		}
+		return ModbusPDUReadFifoQueueResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -100,24 +120,19 @@ func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitialize
 }
 
 func (m ModbusPDUReadFifoQueueResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadFifoQueueResponse); ok {
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint16(((uint16(len(m.fifoValue))) * (2)) + (2))
-			io.WriteUint16(16, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint16(uint16(uint16(uint16(uint16(len(m.fifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
+	io.WriteUint16(16, (byteCount))
 
-			// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			fifoCount := uint16(((uint16(len(m.fifoValue))) * (2)) / (2))
-			io.WriteUint16(16, (fifoCount))
+	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.fifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
+	io.WriteUint16(16, (fifoCount))
 
-			// Array Field (fifoValue)
-			if m.fifoValue != nil {
-				for _, _element := range m.fifoValue {
-					io.WriteUint16(16, _element)
-				}
-			}
+	// Array Field (fifoValue)
+	if m.fifoValue != nil {
+		for _, _element := range m.fifoValue {
+			io.WriteUint16(16, _element)
 		}
 	}
-	serializeFunc(m)
 }

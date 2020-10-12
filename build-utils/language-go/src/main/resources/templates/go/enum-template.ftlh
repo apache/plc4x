@@ -79,7 +79,17 @@ func (e ${type.name}) Get${constantName?cap_first}() ${helper.getLanguageTypeNam
     </#list>
 </#if>
 
-<#if type.type?has_content>
+func Cast${type.name}(structType interface{}) ${type.name} {
+    castFunc := func(typ interface{}) ${type.name} {
+        if s${type.name}, ok := typ.(${type.name}); ok {
+            return s${type.name}
+        }
+        return 0
+    }
+    return castFunc(structType)
+}
+
+    <#if type.type?has_content>
 func ${type.name}Parse(io spi.ReadBuffer) (${type.name}, error) {
     // TODO: Implement ...
     return 0, nil

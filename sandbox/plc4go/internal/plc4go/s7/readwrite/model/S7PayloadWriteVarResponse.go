@@ -53,6 +53,26 @@ func NewS7PayloadWriteVarResponse(items []S7VarPayloadStatusItem) S7PayloadIniti
 	return &S7PayloadWriteVarResponse{items: items}
 }
 
+func CastIS7PayloadWriteVarResponse(structType interface{}) IS7PayloadWriteVarResponse {
+	castFunc := func(typ interface{}) IS7PayloadWriteVarResponse {
+		if iS7PayloadWriteVarResponse, ok := typ.(IS7PayloadWriteVarResponse); ok {
+			return iS7PayloadWriteVarResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResponse {
+	castFunc := func(typ interface{}) S7PayloadWriteVarResponse {
+		if sS7PayloadWriteVarResponse, ok := typ.(S7PayloadWriteVarResponse); ok {
+			return sS7PayloadWriteVarResponse
+		}
+		return S7PayloadWriteVarResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
@@ -76,8 +96,8 @@ func S7PayloadWriteVarResponseParse(io spi.ReadBuffer, parameter S7Parameter) (S
 	var items []S7VarPayloadStatusItem
 	// Count array
 	{
-		items := make([]S7VarPayloadStatusItem, S7ParameterWriteVarResponse(parameter).numItems)
-		for curItem := uint16(0); curItem < uint16(S7ParameterWriteVarResponse(parameter).numItems); curItem++ {
+		items := make([]S7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).numItems)
+		for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).numItems); curItem++ {
 
 			_message, _err := S7VarPayloadStatusItemParse(io)
 			if _err != nil {
@@ -97,16 +117,11 @@ func S7PayloadWriteVarResponseParse(io spi.ReadBuffer, parameter S7Parameter) (S
 }
 
 func (m S7PayloadWriteVarResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7PayloadWriteVarResponse); ok {
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

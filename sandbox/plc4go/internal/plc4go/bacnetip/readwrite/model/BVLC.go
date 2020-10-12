@@ -46,6 +46,26 @@ func BVLCBvlcFunction(m IBVLC) uint8 {
 	return m.BvlcFunction()
 }
 
+func CastIBVLC(structType interface{}) IBVLC {
+	castFunc := func(typ interface{}) IBVLC {
+		if iBVLC, ok := typ.(IBVLC); ok {
+			return iBVLC
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLC(structType interface{}) BVLC {
+	castFunc := func(typ interface{}) BVLC {
+		if sBVLC, ok := typ.(BVLC); ok {
+			return sBVLC
+		}
+		return BVLC{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLC) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -121,23 +141,19 @@ func BVLCParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m BVLC) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iBVLC, ok := typ.(IBVLC); ok {
+	iBVLC := CastIBVLC(m)
 
-			// Const Field (bacnetType)
-			io.WriteUint8(8, 0x81)
+	// Const Field (bacnetType)
+	io.WriteUint8(8, 0x81)
 
-			// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-			bvlcFunction := BVLCBvlcFunction(iBVLC)
-			io.WriteUint8(8, (bvlcFunction))
+	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
+	bvlcFunction := uint8(BVLCBvlcFunction(iBVLC))
+	io.WriteUint8(8, (bvlcFunction))
 
-			// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			bvlcLength := uint16(m.LengthInBytes())
-			io.WriteUint16(16, (bvlcLength))
+	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	bvlcLength := uint16(uint16(m.LengthInBytes()))
+	io.WriteUint16(16, (bvlcLength))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iBVLC.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iBVLC.Serialize(io)
 }

@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestReadPropertyMultiple() BACnetConfirmedServi
 	return &BACnetConfirmedServiceRequestReadPropertyMultiple{}
 }
 
+func CastIBACnetConfirmedServiceRequestReadPropertyMultiple(structType interface{}) IBACnetConfirmedServiceRequestReadPropertyMultiple {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadPropertyMultiple {
+		if iBACnetConfirmedServiceRequestReadPropertyMultiple, ok := typ.(IBACnetConfirmedServiceRequestReadPropertyMultiple); ok {
+			return iBACnetConfirmedServiceRequestReadPropertyMultiple
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestReadPropertyMultiple {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadPropertyMultiple {
+		if sBACnetConfirmedServiceRequestReadPropertyMultiple, ok := typ.(BACnetConfirmedServiceRequestReadPropertyMultiple); ok {
+			return sBACnetConfirmedServiceRequestReadPropertyMultiple
+		}
+		return BACnetConfirmedServiceRequestReadPropertyMultiple{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestReadPropertyMultiple) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParse(io spi.ReadBuffer) (
 }
 
 func (m BACnetConfirmedServiceRequestReadPropertyMultiple) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestReadPropertyMultiple); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

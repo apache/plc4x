@@ -28,6 +28,16 @@ const (
 	KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
+func CastKnxLayer(structType interface{}) KnxLayer {
+	castFunc := func(typ interface{}) KnxLayer {
+		if sKnxLayer, ok := typ.(KnxLayer); ok {
+			return sKnxLayer
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func KnxLayerParse(io spi.ReadBuffer) (KnxLayer, error) {
 	// TODO: Implement ...
 	return 0, nil

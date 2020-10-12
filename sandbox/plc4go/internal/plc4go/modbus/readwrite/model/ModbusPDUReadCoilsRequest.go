@@ -56,6 +56,26 @@ func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) Modbu
 	return &ModbusPDUReadCoilsRequest{startingAddress: startingAddress, quantity: quantity}
 }
 
+func CastIModbusPDUReadCoilsRequest(structType interface{}) IModbusPDUReadCoilsRequest {
+	castFunc := func(typ interface{}) IModbusPDUReadCoilsRequest {
+		if iModbusPDUReadCoilsRequest, ok := typ.(IModbusPDUReadCoilsRequest); ok {
+			return iModbusPDUReadCoilsRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadCoilsRequest(structType interface{}) ModbusPDUReadCoilsRequest {
+	castFunc := func(typ interface{}) ModbusPDUReadCoilsRequest {
+		if sModbusPDUReadCoilsRequest, ok := typ.(ModbusPDUReadCoilsRequest); ok {
+			return sModbusPDUReadCoilsRequest
+		}
+		return ModbusPDUReadCoilsRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadCoilsRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -85,17 +105,12 @@ func ModbusPDUReadCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, er
 }
 
 func (m ModbusPDUReadCoilsRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadCoilsRequest); ok {
 
-			// Simple Field (startingAddress)
-			var startingAddress uint16 = m.startingAddress
-			io.WriteUint16(16, (startingAddress))
+	// Simple Field (startingAddress)
+	startingAddress := uint16(m.startingAddress)
+	io.WriteUint16(16, (startingAddress))
 
-			// Simple Field (quantity)
-			var quantity uint16 = m.quantity
-			io.WriteUint16(16, (quantity))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (quantity)
+	quantity := uint16(m.quantity)
+	io.WriteUint16(16, (quantity))
 }

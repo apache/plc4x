@@ -57,6 +57,26 @@ func NewModbusPDUWriteMultipleHoldingRegistersRequest(startingAddress uint16, qu
 	return &ModbusPDUWriteMultipleHoldingRegistersRequest{startingAddress: startingAddress, quantity: quantity, value: value}
 }
 
+func CastIModbusPDUWriteMultipleHoldingRegistersRequest(structType interface{}) IModbusPDUWriteMultipleHoldingRegistersRequest {
+	castFunc := func(typ interface{}) IModbusPDUWriteMultipleHoldingRegistersRequest {
+		if iModbusPDUWriteMultipleHoldingRegistersRequest, ok := typ.(IModbusPDUWriteMultipleHoldingRegistersRequest); ok {
+			return iModbusPDUWriteMultipleHoldingRegistersRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUWriteMultipleHoldingRegistersRequest(structType interface{}) ModbusPDUWriteMultipleHoldingRegistersRequest {
+	castFunc := func(typ interface{}) ModbusPDUWriteMultipleHoldingRegistersRequest {
+		if sModbusPDUWriteMultipleHoldingRegistersRequest, ok := typ.(ModbusPDUWriteMultipleHoldingRegistersRequest); ok {
+			return sModbusPDUWriteMultipleHoldingRegistersRequest
+		}
+		return ModbusPDUWriteMultipleHoldingRegistersRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -108,28 +128,23 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (Modb
 }
 
 func (m ModbusPDUWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUWriteMultipleHoldingRegistersRequest); ok {
 
-			// Simple Field (startingAddress)
-			var startingAddress uint16 = m.startingAddress
-			io.WriteUint16(16, (startingAddress))
+	// Simple Field (startingAddress)
+	startingAddress := uint16(m.startingAddress)
+	io.WriteUint16(16, (startingAddress))
 
-			// Simple Field (quantity)
-			var quantity uint16 = m.quantity
-			io.WriteUint16(16, (quantity))
+	// Simple Field (quantity)
+	quantity := uint16(m.quantity)
+	io.WriteUint16(16, (quantity))
 
-			// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			byteCount := uint8(uint8(len(m.value)))
-			io.WriteUint8(8, (byteCount))
+	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	byteCount := uint8(uint8(len(m.value)))
+	io.WriteUint8(8, (byteCount))
 
-			// Array Field (value)
-			if m.value != nil {
-				for _, _element := range m.value {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (value)
+	if m.value != nil {
+		for _, _element := range m.value {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

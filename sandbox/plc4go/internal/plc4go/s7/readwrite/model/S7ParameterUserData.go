@@ -53,6 +53,26 @@ func NewS7ParameterUserData(items []S7ParameterUserDataItem) S7ParameterInitiali
 	return &S7ParameterUserData{items: items}
 }
 
+func CastIS7ParameterUserData(structType interface{}) IS7ParameterUserData {
+	castFunc := func(typ interface{}) IS7ParameterUserData {
+		if iS7ParameterUserData, ok := typ.(IS7ParameterUserData); ok {
+			return iS7ParameterUserData
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterUserData(structType interface{}) S7ParameterUserData {
+	castFunc := func(typ interface{}) S7ParameterUserData {
+		if sS7ParameterUserData, ok := typ.(S7ParameterUserData); ok {
+			return sS7ParameterUserData
+		}
+		return S7ParameterUserData{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterUserData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
 
@@ -103,20 +123,15 @@ func S7ParameterUserDataParse(io spi.ReadBuffer) (S7ParameterInitializer, error)
 }
 
 func (m S7ParameterUserData) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7ParameterUserData); ok {
 
-			// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			numItems := uint8(uint8(len(m.items)))
-			io.WriteUint8(8, (numItems))
+	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	numItems := uint8(uint8(len(m.items)))
+	io.WriteUint8(8, (numItems))
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

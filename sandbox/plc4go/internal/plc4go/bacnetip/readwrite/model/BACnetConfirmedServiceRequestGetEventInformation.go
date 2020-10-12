@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceRequestGetEventInformation() BACnetConfirmedServic
 	return &BACnetConfirmedServiceRequestGetEventInformation{}
 }
 
+func CastIBACnetConfirmedServiceRequestGetEventInformation(structType interface{}) IBACnetConfirmedServiceRequestGetEventInformation {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestGetEventInformation {
+		if iBACnetConfirmedServiceRequestGetEventInformation, ok := typ.(IBACnetConfirmedServiceRequestGetEventInformation); ok {
+			return iBACnetConfirmedServiceRequestGetEventInformation
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestGetEventInformation(structType interface{}) BACnetConfirmedServiceRequestGetEventInformation {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestGetEventInformation {
+		if sBACnetConfirmedServiceRequestGetEventInformation, ok := typ.(BACnetConfirmedServiceRequestGetEventInformation); ok {
+			return sBACnetConfirmedServiceRequestGetEventInformation
+		}
+		return BACnetConfirmedServiceRequestGetEventInformation{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestGetEventInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(io spi.ReadBuffer) (B
 }
 
 func (m BACnetConfirmedServiceRequestGetEventInformation) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestGetEventInformation); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

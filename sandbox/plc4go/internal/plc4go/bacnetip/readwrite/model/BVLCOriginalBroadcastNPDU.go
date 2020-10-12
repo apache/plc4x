@@ -49,6 +49,26 @@ func NewBVLCOriginalBroadcastNPDU(npdu NPDU) BVLCInitializer {
 	return &BVLCOriginalBroadcastNPDU{npdu: npdu}
 }
 
+func CastIBVLCOriginalBroadcastNPDU(structType interface{}) IBVLCOriginalBroadcastNPDU {
+	castFunc := func(typ interface{}) IBVLCOriginalBroadcastNPDU {
+		if iBVLCOriginalBroadcastNPDU, ok := typ.(IBVLCOriginalBroadcastNPDU); ok {
+			return iBVLCOriginalBroadcastNPDU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCOriginalBroadcastNPDU(structType interface{}) BVLCOriginalBroadcastNPDU {
+	castFunc := func(typ interface{}) BVLCOriginalBroadcastNPDU {
+		if sBVLCOriginalBroadcastNPDU, ok := typ.(BVLCOriginalBroadcastNPDU); ok {
+			return sBVLCOriginalBroadcastNPDU
+		}
+		return BVLCOriginalBroadcastNPDU{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCOriginalBroadcastNPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -65,7 +85,7 @@ func (m BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
 func BVLCOriginalBroadcastNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
 
 	// Simple Field (npdu)
-	_npduMessage, _err := NPDUParse(io, uint16((bvlcLength)-(4)))
+	_npduMessage, _err := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
 	}
@@ -80,13 +100,8 @@ func BVLCOriginalBroadcastNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCI
 }
 
 func (m BVLCOriginalBroadcastNPDU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCOriginalBroadcastNPDU); ok {
 
-			// Simple Field (npdu)
-			var npdu NPDU = m.npdu
-			npdu.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (npdu)
+	npdu := NPDU(m.npdu)
+	npdu.Serialize(io)
 }

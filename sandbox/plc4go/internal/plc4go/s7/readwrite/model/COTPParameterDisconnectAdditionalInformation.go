@@ -47,6 +47,26 @@ func NewCOTPParameterDisconnectAdditionalInformation(data []uint8) COTPParameter
 	return &COTPParameterDisconnectAdditionalInformation{data: data}
 }
 
+func CastICOTPParameterDisconnectAdditionalInformation(structType interface{}) ICOTPParameterDisconnectAdditionalInformation {
+	castFunc := func(typ interface{}) ICOTPParameterDisconnectAdditionalInformation {
+		if iCOTPParameterDisconnectAdditionalInformation, ok := typ.(ICOTPParameterDisconnectAdditionalInformation); ok {
+			return iCOTPParameterDisconnectAdditionalInformation
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) COTPParameterDisconnectAdditionalInformation {
+	castFunc := func(typ interface{}) COTPParameterDisconnectAdditionalInformation {
+		if sCOTPParameterDisconnectAdditionalInformation, ok := typ.(COTPParameterDisconnectAdditionalInformation); ok {
+			return sCOTPParameterDisconnectAdditionalInformation
+		}
+		return COTPParameterDisconnectAdditionalInformation{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
@@ -80,16 +100,11 @@ func COTPParameterDisconnectAdditionalInformationParse(io spi.ReadBuffer, rest u
 }
 
 func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPParameterDisconnectAdditionalInformation); ok {
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteUint8(8, _element)
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteUint8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

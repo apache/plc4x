@@ -42,6 +42,26 @@ func S7ParameterUserDataItemItemType(m IS7ParameterUserDataItem) uint8 {
 	return m.ItemType()
 }
 
+func CastIS7ParameterUserDataItem(structType interface{}) IS7ParameterUserDataItem {
+	castFunc := func(typ interface{}) IS7ParameterUserDataItem {
+		if iS7ParameterUserDataItem, ok := typ.(IS7ParameterUserDataItem); ok {
+			return iS7ParameterUserDataItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterUserDataItem(structType interface{}) S7ParameterUserDataItem {
+	castFunc := func(typ interface{}) S7ParameterUserDataItem {
+		if sS7ParameterUserDataItem, ok := typ.(S7ParameterUserDataItem); ok {
+			return sS7ParameterUserDataItem
+		}
+		return S7ParameterUserDataItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterUserDataItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -78,16 +98,12 @@ func S7ParameterUserDataItemParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m S7ParameterUserDataItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iS7ParameterUserDataItem, ok := typ.(IS7ParameterUserDataItem); ok {
+	iS7ParameterUserDataItem := CastIS7ParameterUserDataItem(m)
 
-			// Discriminator Field (itemType) (Used as input to a switch field)
-			itemType := S7ParameterUserDataItemItemType(iS7ParameterUserDataItem)
-			io.WriteUint8(8, (itemType))
+	// Discriminator Field (itemType) (Used as input to a switch field)
+	itemType := uint8(S7ParameterUserDataItemItemType(iS7ParameterUserDataItem))
+	io.WriteUint8(8, (itemType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iS7ParameterUserDataItem.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iS7ParameterUserDataItem.Serialize(io)
 }

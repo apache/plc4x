@@ -56,6 +56,26 @@ func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUI
 	return &ModbusPDUWriteSingleCoilRequest{address: address, value: value}
 }
 
+func CastIModbusPDUWriteSingleCoilRequest(structType interface{}) IModbusPDUWriteSingleCoilRequest {
+	castFunc := func(typ interface{}) IModbusPDUWriteSingleCoilRequest {
+		if iModbusPDUWriteSingleCoilRequest, ok := typ.(IModbusPDUWriteSingleCoilRequest); ok {
+			return iModbusPDUWriteSingleCoilRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteSingleCoilRequest {
+	castFunc := func(typ interface{}) ModbusPDUWriteSingleCoilRequest {
+		if sModbusPDUWriteSingleCoilRequest, ok := typ.(ModbusPDUWriteSingleCoilRequest); ok {
+			return sModbusPDUWriteSingleCoilRequest
+		}
+		return ModbusPDUWriteSingleCoilRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -85,17 +105,12 @@ func ModbusPDUWriteSingleCoilRequestParse(io spi.ReadBuffer) (ModbusPDUInitializ
 }
 
 func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUWriteSingleCoilRequest); ok {
 
-			// Simple Field (address)
-			var address uint16 = m.address
-			io.WriteUint16(16, (address))
+	// Simple Field (address)
+	address := uint16(m.address)
+	io.WriteUint16(16, (address))
 
-			// Simple Field (value)
-			var value uint16 = m.value
-			io.WriteUint16(16, (value))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (value)
+	value := uint16(m.value)
+	io.WriteUint16(16, (value))
 }

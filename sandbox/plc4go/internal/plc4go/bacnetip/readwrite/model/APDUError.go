@@ -51,6 +51,26 @@ func NewAPDUError(originalInvokeId uint8, error BACnetError) APDUInitializer {
 	return &APDUError{originalInvokeId: originalInvokeId, error: error}
 }
 
+func CastIAPDUError(structType interface{}) IAPDUError {
+	castFunc := func(typ interface{}) IAPDUError {
+		if iAPDUError, ok := typ.(IAPDUError); ok {
+			return iAPDUError
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUError(structType interface{}) APDUError {
+	castFunc := func(typ interface{}) APDUError {
+		if sAPDUError, ok := typ.(APDUError); ok {
+			return sAPDUError
+		}
+		return APDUError{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUError) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -102,20 +122,15 @@ func APDUErrorParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUError) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUError); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(4, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(4, uint8(0x00))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Simple Field (error)
-			var error BACnetError = m.error
-			error.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (error)
+	error := BACnetError(m.error)
+	error.Serialize(io)
 }

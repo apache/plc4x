@@ -56,6 +56,26 @@ func CEMIFrameStandardFrame(m ICEMIFrame) bool {
 	return m.StandardFrame()
 }
 
+func CastICEMIFrame(structType interface{}) ICEMIFrame {
+	castFunc := func(typ interface{}) ICEMIFrame {
+		if iCEMIFrame, ok := typ.(ICEMIFrame); ok {
+			return iCEMIFrame
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIFrame(structType interface{}) CEMIFrame {
+	castFunc := func(typ interface{}) CEMIFrame {
+		if sCEMIFrame, ok := typ.(CEMIFrame); ok {
+			return sCEMIFrame
+		}
+		return CEMIFrame{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIFrame) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -139,40 +159,36 @@ func CEMIFrameParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m CEMIFrame) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iCEMIFrame, ok := typ.(ICEMIFrame); ok {
+	iCEMIFrame := CastICEMIFrame(m)
 
-			// Discriminator Field (standardFrame) (Used as input to a switch field)
-			standardFrame := CEMIFrameStandardFrame(iCEMIFrame)
-			io.WriteBit((bool)(standardFrame))
+	// Discriminator Field (standardFrame) (Used as input to a switch field)
+	standardFrame := bool(CEMIFrameStandardFrame(iCEMIFrame))
+	io.WriteBit((bool)(standardFrame))
 
-			// Discriminator Field (polling) (Used as input to a switch field)
-			polling := CEMIFramePolling(iCEMIFrame)
-			io.WriteBit((bool)(polling))
+	// Discriminator Field (polling) (Used as input to a switch field)
+	polling := bool(CEMIFramePolling(iCEMIFrame))
+	io.WriteBit((bool)(polling))
 
-			// Simple Field (repeated)
-			var repeated bool = m.repeated
-			io.WriteBit((bool)(repeated))
+	// Simple Field (repeated)
+	repeated := bool(m.repeated)
+	io.WriteBit((bool)(repeated))
 
-			// Discriminator Field (notAckFrame) (Used as input to a switch field)
-			notAckFrame := CEMIFrameNotAckFrame(iCEMIFrame)
-			io.WriteBit((bool)(notAckFrame))
+	// Discriminator Field (notAckFrame) (Used as input to a switch field)
+	notAckFrame := bool(CEMIFrameNotAckFrame(iCEMIFrame))
+	io.WriteBit((bool)(notAckFrame))
 
-			// Enum field (priority)
-			priority := m.priority
-			priority.Serialize(io)
+	// Enum field (priority)
+	priority := CEMIPriority(m.priority)
+	priority.Serialize(io)
 
-			// Simple Field (acknowledgeRequested)
-			var acknowledgeRequested bool = m.acknowledgeRequested
-			io.WriteBit((bool)(acknowledgeRequested))
+	// Simple Field (acknowledgeRequested)
+	acknowledgeRequested := bool(m.acknowledgeRequested)
+	io.WriteBit((bool)(acknowledgeRequested))
 
-			// Simple Field (errorFlag)
-			var errorFlag bool = m.errorFlag
-			io.WriteBit((bool)(errorFlag))
+	// Simple Field (errorFlag)
+	errorFlag := bool(m.errorFlag)
+	io.WriteBit((bool)(errorFlag))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iCEMIFrame.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iCEMIFrame.Serialize(io)
 }

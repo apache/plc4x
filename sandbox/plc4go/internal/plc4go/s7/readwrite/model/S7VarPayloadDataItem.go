@@ -40,6 +40,26 @@ func NewS7VarPayloadDataItem(returnCode DataTransportErrorCode, transportSize Da
 	return &S7VarPayloadDataItem{returnCode: returnCode, transportSize: transportSize, data: data}
 }
 
+func CastIS7VarPayloadDataItem(structType interface{}) IS7VarPayloadDataItem {
+	castFunc := func(typ interface{}) IS7VarPayloadDataItem {
+		if iS7VarPayloadDataItem, ok := typ.(IS7VarPayloadDataItem); ok {
+			return iS7VarPayloadDataItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7VarPayloadDataItem(structType interface{}) S7VarPayloadDataItem {
+	castFunc := func(typ interface{}) S7VarPayloadDataItem {
+		if sS7VarPayloadDataItem, ok := typ.(S7VarPayloadDataItem); ok {
+			return sS7VarPayloadDataItem
+		}
+		return S7VarPayloadDataItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7VarPayloadDataItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -58,7 +78,7 @@ func (m S7VarPayloadDataItem) LengthInBits() uint16 {
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(spi.InlineIf((false), uint16(0), uint16((uint8(len(COUNT)))%(2))))
+	_timesPadding := uint8(spi.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.data)))%uint8(uint8(2)))))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -91,8 +111,8 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 	var data []int8
 	// Count array
 	{
-		data := make([]int8, spi.InlineIf((transportSize.sizeInBits), uint16(CEIL((dataLength)/(8.0))), uint16(dataLength)))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf((transportSize.sizeInBits), uint16(CEIL((dataLength)/(8.0))), uint16(dataLength))); curItem++ {
+		data := make([]int8, spi.InlineIf(transportSize.sizeInBits, uint16(CEIL(uint16(dataLength)/uint16(uint16(8.0)))), uint16(dataLength)))
+		for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.sizeInBits, uint16(CEIL(uint16(dataLength)/uint16(uint16(8.0)))), uint16(dataLength))); curItem++ {
 
 			data = append(data, io.ReadInt8(8))
 		}
@@ -100,7 +120,7 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 
 	// Padding Field (padding)
 	{
-		_timesPadding := (spi.InlineIf((lastItem), uint16(0), uint16((uint8(len(COUNT)))%(2))))
+		_timesPadding := (spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(data)))%uint8(uint8(2)))))
 		for ; (io.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
 			io.ReadUint8(8)
@@ -111,38 +131,33 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7VarPayloadDataItem); ok {
+func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
 
-			// Enum field (returnCode)
-			returnCode := m.returnCode
-			returnCode.Serialize(io)
+	// Enum field (returnCode)
+	returnCode := DataTransportErrorCode(m.returnCode)
+	returnCode.Serialize(io)
 
-			// Enum field (transportSize)
-			transportSize := m.transportSize
-			transportSize.Serialize(io)
+	// Enum field (transportSize)
+	transportSize := DataTransportSize(m.transportSize)
+	transportSize.Serialize(io)
 
-			// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			dataLength := uint16((uint16(len(m.data))) * (spi.InlineIf(((m.transportSize) == (DataTransportSize_BIT)), uint16(1), uint16((spi.InlineIf((m.transportSize.sizeInBits), uint16(8), uint16(1)))))))
-			io.WriteUint16(16, (dataLength))
+	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	dataLength := uint16(uint16(uint16(len(m.data))) * uint16(uint16(spi.InlineIf(bool(bool((m.transportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(m.transportSize.sizeInBits, uint16(uint16(8)), uint16(uint16(1)))))))))
+	io.WriteUint16(16, (dataLength))
 
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Padding Field (padding)
-			{
-				_timesPadding := uint8(spi.InlineIf((lastItem), uint16(0), uint16((uint8(len(m.data)))%(2))))
-				for ; _timesPadding > 0; _timesPadding-- {
-					_paddingValue := uint8(0)
-					io.WriteUint8(8, (_paddingValue))
-				}
-			}
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Padding Field (padding)
+	{
+		_timesPadding := uint8(spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.data)))%uint8(uint8(2)))))
+		for ; _timesPadding > 0; _timesPadding-- {
+			_paddingValue := uint8(uint8(0))
+			io.WriteUint8(8, (_paddingValue))
+		}
+	}
 }

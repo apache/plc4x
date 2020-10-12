@@ -54,6 +54,26 @@ func NewModbusPDUReadDeviceIdentificationResponse() ModbusPDUInitializer {
 	return &ModbusPDUReadDeviceIdentificationResponse{}
 }
 
+func CastIModbusPDUReadDeviceIdentificationResponse(structType interface{}) IModbusPDUReadDeviceIdentificationResponse {
+	castFunc := func(typ interface{}) IModbusPDUReadDeviceIdentificationResponse {
+		if iModbusPDUReadDeviceIdentificationResponse, ok := typ.(IModbusPDUReadDeviceIdentificationResponse); ok {
+			return iModbusPDUReadDeviceIdentificationResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReadDeviceIdentificationResponse(structType interface{}) ModbusPDUReadDeviceIdentificationResponse {
+	castFunc := func(typ interface{}) ModbusPDUReadDeviceIdentificationResponse {
+		if sModbusPDUReadDeviceIdentificationResponse, ok := typ.(ModbusPDUReadDeviceIdentificationResponse); ok {
+			return sModbusPDUReadDeviceIdentificationResponse
+		}
+		return ModbusPDUReadDeviceIdentificationResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReadDeviceIdentificationResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -71,9 +91,5 @@ func ModbusPDUReadDeviceIdentificationResponseParse(io spi.ReadBuffer) (ModbusPD
 }
 
 func (m ModbusPDUReadDeviceIdentificationResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReadDeviceIdentificationResponse); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

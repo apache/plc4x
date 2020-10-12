@@ -56,6 +56,26 @@ func NewBACnetConfirmedServiceRequestReadProperty(objectType uint16, objectInsta
 	return &BACnetConfirmedServiceRequestReadProperty{objectType: objectType, objectInstanceNumber: objectInstanceNumber, propertyIdentifierLength: propertyIdentifierLength, propertyIdentifier: propertyIdentifier}
 }
 
+func CastIBACnetConfirmedServiceRequestReadProperty(structType interface{}) IBACnetConfirmedServiceRequestReadProperty {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadProperty {
+		if iBACnetConfirmedServiceRequestReadProperty, ok := typ.(IBACnetConfirmedServiceRequestReadProperty); ok {
+			return iBACnetConfirmedServiceRequestReadProperty
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestReadProperty(structType interface{}) BACnetConfirmedServiceRequestReadProperty {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadProperty {
+		if sBACnetConfirmedServiceRequestReadProperty, ok := typ.(BACnetConfirmedServiceRequestReadProperty); ok {
+			return sBACnetConfirmedServiceRequestReadProperty
+		}
+		return BACnetConfirmedServiceRequestReadProperty{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -125,34 +145,29 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io spi.ReadBuffer) (BACnetCo
 }
 
 func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestReadProperty); ok {
 
-			// Const Field (objectIdentifierHeader)
-			io.WriteUint8(8, 0x0C)
+	// Const Field (objectIdentifierHeader)
+	io.WriteUint8(8, 0x0C)
 
-			// Simple Field (objectType)
-			var objectType uint16 = m.objectType
-			io.WriteUint16(10, (objectType))
+	// Simple Field (objectType)
+	objectType := uint16(m.objectType)
+	io.WriteUint16(10, (objectType))
 
-			// Simple Field (objectInstanceNumber)
-			var objectInstanceNumber uint32 = m.objectInstanceNumber
-			io.WriteUint32(22, (objectInstanceNumber))
+	// Simple Field (objectInstanceNumber)
+	objectInstanceNumber := uint32(m.objectInstanceNumber)
+	io.WriteUint32(22, (objectInstanceNumber))
 
-			// Const Field (propertyIdentifierHeader)
-			io.WriteUint8(5, 0x03)
+	// Const Field (propertyIdentifierHeader)
+	io.WriteUint8(5, 0x03)
 
-			// Simple Field (propertyIdentifierLength)
-			var propertyIdentifierLength uint8 = m.propertyIdentifierLength
-			io.WriteUint8(3, (propertyIdentifierLength))
+	// Simple Field (propertyIdentifierLength)
+	propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+	io.WriteUint8(3, (propertyIdentifierLength))
 
-			// Array Field (propertyIdentifier)
-			if m.propertyIdentifier != nil {
-				for _, _element := range m.propertyIdentifier {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (propertyIdentifier)
+	if m.propertyIdentifier != nil {
+		for _, _element := range m.propertyIdentifier {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

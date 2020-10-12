@@ -46,6 +46,26 @@ func NewBVLCReadBroadcastDistributionTableAck() BVLCInitializer {
 	return &BVLCReadBroadcastDistributionTableAck{}
 }
 
+func CastIBVLCReadBroadcastDistributionTableAck(structType interface{}) IBVLCReadBroadcastDistributionTableAck {
+	castFunc := func(typ interface{}) IBVLCReadBroadcastDistributionTableAck {
+		if iBVLCReadBroadcastDistributionTableAck, ok := typ.(IBVLCReadBroadcastDistributionTableAck); ok {
+			return iBVLCReadBroadcastDistributionTableAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) BVLCReadBroadcastDistributionTableAck {
+	castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTableAck {
+		if sBVLCReadBroadcastDistributionTableAck, ok := typ.(BVLCReadBroadcastDistributionTableAck); ok {
+			return sBVLCReadBroadcastDistributionTableAck
+		}
+		return BVLCReadBroadcastDistributionTableAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCReadBroadcastDistributionTableAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCReadBroadcastDistributionTableAckParse(io spi.ReadBuffer) (BVLCInitiali
 }
 
 func (m BVLCReadBroadcastDistributionTableAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCReadBroadcastDistributionTableAck); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

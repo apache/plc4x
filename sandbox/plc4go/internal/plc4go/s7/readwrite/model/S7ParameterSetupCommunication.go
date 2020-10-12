@@ -54,6 +54,26 @@ func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, 
 	return &S7ParameterSetupCommunication{maxAmqCaller: maxAmqCaller, maxAmqCallee: maxAmqCallee, pduLength: pduLength}
 }
 
+func CastIS7ParameterSetupCommunication(structType interface{}) IS7ParameterSetupCommunication {
+	castFunc := func(typ interface{}) IS7ParameterSetupCommunication {
+		if iS7ParameterSetupCommunication, ok := typ.(IS7ParameterSetupCommunication); ok {
+			return iS7ParameterSetupCommunication
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupCommunication {
+	castFunc := func(typ interface{}) S7ParameterSetupCommunication {
+		if sS7ParameterSetupCommunication, ok := typ.(S7ParameterSetupCommunication); ok {
+			return sS7ParameterSetupCommunication
+		}
+		return S7ParameterSetupCommunication{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterSetupCommunication) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
 
@@ -103,24 +123,19 @@ func S7ParameterSetupCommunicationParse(io spi.ReadBuffer) (S7ParameterInitializ
 }
 
 func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7ParameterSetupCommunication); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 
-			// Simple Field (maxAmqCaller)
-			var maxAmqCaller uint16 = m.maxAmqCaller
-			io.WriteUint16(16, (maxAmqCaller))
+	// Simple Field (maxAmqCaller)
+	maxAmqCaller := uint16(m.maxAmqCaller)
+	io.WriteUint16(16, (maxAmqCaller))
 
-			// Simple Field (maxAmqCallee)
-			var maxAmqCallee uint16 = m.maxAmqCallee
-			io.WriteUint16(16, (maxAmqCallee))
+	// Simple Field (maxAmqCallee)
+	maxAmqCallee := uint16(m.maxAmqCallee)
+	io.WriteUint16(16, (maxAmqCallee))
 
-			// Simple Field (pduLength)
-			var pduLength uint16 = m.pduLength
-			io.WriteUint16(16, (pduLength))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (pduLength)
+	pduLength := uint16(m.pduLength)
+	io.WriteUint16(16, (pduLength))
 }

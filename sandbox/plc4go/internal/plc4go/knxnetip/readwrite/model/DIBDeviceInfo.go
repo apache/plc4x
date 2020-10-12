@@ -47,6 +47,26 @@ func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus Devic
 	return &DIBDeviceInfo{descriptionType: descriptionType, knxMedium: knxMedium, deviceStatus: deviceStatus, knxAddress: knxAddress, projectInstallationIdentifier: projectInstallationIdentifier, knxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, knxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, knxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, deviceFriendlyName: deviceFriendlyName}
 }
 
+func CastIDIBDeviceInfo(structType interface{}) IDIBDeviceInfo {
+	castFunc := func(typ interface{}) IDIBDeviceInfo {
+		if iDIBDeviceInfo, ok := typ.(IDIBDeviceInfo); ok {
+			return iDIBDeviceInfo
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDIBDeviceInfo(structType interface{}) DIBDeviceInfo {
+	castFunc := func(typ interface{}) DIBDeviceInfo {
+		if sDIBDeviceInfo, ok := typ.(DIBDeviceInfo); ok {
+			return sDIBDeviceInfo
+		}
+		return DIBDeviceInfo{}
+	}
+	return castFunc(structType)
+}
+
 func (m DIBDeviceInfo) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -139,8 +159,8 @@ func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
 	var knxNetIpDeviceSerialNumber []int8
 	// Count array
 	{
-		knxNetIpDeviceSerialNumber := make([]int8, 6)
-		for curItem := uint16(0); curItem < uint16(6); curItem++ {
+		knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
+		for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
 
 			knxNetIpDeviceSerialNumber = append(knxNetIpDeviceSerialNumber, io.ReadInt8(8))
 		}
@@ -172,8 +192,8 @@ func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
 	var deviceFriendlyName []int8
 	// Count array
 	{
-		deviceFriendlyName := make([]int8, 30)
-		for curItem := uint16(0); curItem < uint16(30); curItem++ {
+		deviceFriendlyName := make([]int8, uint16(30))
+		for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
 
 			deviceFriendlyName = append(deviceFriendlyName, io.ReadInt8(8))
 		}
@@ -184,55 +204,50 @@ func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDIBDeviceInfo); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Simple Field (descriptionType)
-			var descriptionType uint8 = m.descriptionType
-			io.WriteUint8(8, (descriptionType))
+	// Simple Field (descriptionType)
+	descriptionType := uint8(m.descriptionType)
+	io.WriteUint8(8, (descriptionType))
 
-			// Simple Field (knxMedium)
-			var knxMedium uint8 = m.knxMedium
-			io.WriteUint8(8, (knxMedium))
+	// Simple Field (knxMedium)
+	knxMedium := uint8(m.knxMedium)
+	io.WriteUint8(8, (knxMedium))
 
-			// Simple Field (deviceStatus)
-			var deviceStatus DeviceStatus = m.deviceStatus
-			deviceStatus.Serialize(io)
+	// Simple Field (deviceStatus)
+	deviceStatus := DeviceStatus(m.deviceStatus)
+	deviceStatus.Serialize(io)
 
-			// Simple Field (knxAddress)
-			var knxAddress KNXAddress = m.knxAddress
-			knxAddress.Serialize(io)
+	// Simple Field (knxAddress)
+	knxAddress := KNXAddress(m.knxAddress)
+	knxAddress.Serialize(io)
 
-			// Simple Field (projectInstallationIdentifier)
-			var projectInstallationIdentifier ProjectInstallationIdentifier = m.projectInstallationIdentifier
-			projectInstallationIdentifier.Serialize(io)
+	// Simple Field (projectInstallationIdentifier)
+	projectInstallationIdentifier := ProjectInstallationIdentifier(m.projectInstallationIdentifier)
+	projectInstallationIdentifier.Serialize(io)
 
-			// Array Field (knxNetIpDeviceSerialNumber)
-			if m.knxNetIpDeviceSerialNumber != nil {
-				for _, _element := range m.knxNetIpDeviceSerialNumber {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Simple Field (knxNetIpDeviceMulticastAddress)
-			var knxNetIpDeviceMulticastAddress IPAddress = m.knxNetIpDeviceMulticastAddress
-			knxNetIpDeviceMulticastAddress.Serialize(io)
-
-			// Simple Field (knxNetIpDeviceMacAddress)
-			var knxNetIpDeviceMacAddress MACAddress = m.knxNetIpDeviceMacAddress
-			knxNetIpDeviceMacAddress.Serialize(io)
-
-			// Array Field (deviceFriendlyName)
-			if m.deviceFriendlyName != nil {
-				for _, _element := range m.deviceFriendlyName {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (knxNetIpDeviceSerialNumber)
+	if m.knxNetIpDeviceSerialNumber != nil {
+		for _, _element := range m.knxNetIpDeviceSerialNumber {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (knxNetIpDeviceMulticastAddress)
+	knxNetIpDeviceMulticastAddress := IPAddress(m.knxNetIpDeviceMulticastAddress)
+	knxNetIpDeviceMulticastAddress.Serialize(io)
+
+	// Simple Field (knxNetIpDeviceMacAddress)
+	knxNetIpDeviceMacAddress := MACAddress(m.knxNetIpDeviceMacAddress)
+	knxNetIpDeviceMacAddress.Serialize(io)
+
+	// Array Field (deviceFriendlyName)
+	if m.deviceFriendlyName != nil {
+		for _, _element := range m.deviceFriendlyName {
+			io.WriteInt8(8, _element)
+		}
+	}
 }

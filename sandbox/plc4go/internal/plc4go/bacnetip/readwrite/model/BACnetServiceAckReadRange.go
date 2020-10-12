@@ -46,6 +46,26 @@ func NewBACnetServiceAckReadRange() BACnetServiceAckInitializer {
 	return &BACnetServiceAckReadRange{}
 }
 
+func CastIBACnetServiceAckReadRange(structType interface{}) IBACnetServiceAckReadRange {
+	castFunc := func(typ interface{}) IBACnetServiceAckReadRange {
+		if iBACnetServiceAckReadRange, ok := typ.(IBACnetServiceAckReadRange); ok {
+			return iBACnetServiceAckReadRange
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckReadRange(structType interface{}) BACnetServiceAckReadRange {
+	castFunc := func(typ interface{}) BACnetServiceAckReadRange {
+		if sBACnetServiceAckReadRange, ok := typ.(BACnetServiceAckReadRange); ok {
+			return sBACnetServiceAckReadRange
+		}
+		return BACnetServiceAckReadRange{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckReadRange) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckReadRangeParse(io spi.ReadBuffer) (BACnetServiceAckInitiali
 }
 
 func (m BACnetServiceAckReadRange) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckReadRange); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

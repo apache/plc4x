@@ -565,7 +565,7 @@ func (e TransportSize) GetDataTransportSize() DataTransportSize {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
-			return -1
+			return 0
 		}
 	case 0x01:
 		{ /* '0x01' */
@@ -609,23 +609,23 @@ func (e TransportSize) GetDataTransportSize() DataTransportSize {
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return -1
+			return 0
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return -1
+			return 0
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return -1
+			return 0
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return -1
+			return 0
 		}
 	case 0x30:
 		{ /* '0x30' */
-			return -1
+			return 0
 		}
 	default:
 		{
@@ -638,27 +638,27 @@ func (e TransportSize) GetBaseType() TransportSize {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
-			return -1
+			return 0
 		}
 	case 0x01:
 		{ /* '0x01' */
-			return -1
+			return 0
 		}
 	case 0x02:
 		{ /* '0x02' */
-			return -1
+			return 0
 		}
 	case 0x03:
 		{ /* '0x03' */
-			return -1
+			return 0
 		}
 	case 0x04:
 		{ /* '0x04' */
-			return -1
+			return 0
 		}
 	case 0x05:
 		{ /* '0x05' */
-			return -1
+			return 0
 		}
 	case 0x06:
 		{ /* '0x06' */
@@ -670,31 +670,31 @@ func (e TransportSize) GetBaseType() TransportSize {
 		}
 	case 0x08:
 		{ /* '0x08' */
-			return -1
+			return 0
 		}
 	case 0x09:
 		{ /* '0x09' */
-			return -1
+			return 0
 		}
 	case 0x0A:
 		{ /* '0x0A' */
-			return -1
+			return 0
 		}
 	case 0x0B:
 		{ /* '0x0B' */
-			return -1
+			return 0
 		}
 	case 0x0C:
 		{ /* '0x0C' */
-			return -1
+			return 0
 		}
 	case 0x0F:
 		{ /* '0x0F' */
-			return -1
+			return 0
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return -1
+			return 0
 		}
 	case 0x30:
 		{ /* '0x30' */
@@ -778,6 +778,16 @@ func (e TransportSize) GetDataProtocolId() uint8 {
 			return 0
 		}
 	}
+}
+
+func CastTransportSize(structType interface{}) TransportSize {
+	castFunc := func(typ interface{}) TransportSize {
+		if sTransportSize, ok := typ.(TransportSize); ok {
+			return sTransportSize
+		}
+		return 0
+	}
+	return castFunc(structType)
 }
 
 func TransportSizeParse(io spi.ReadBuffer) (TransportSize, error) {

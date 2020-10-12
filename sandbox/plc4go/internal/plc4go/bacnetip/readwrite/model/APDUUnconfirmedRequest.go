@@ -50,6 +50,26 @@ func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest) A
 	return &APDUUnconfirmedRequest{serviceRequest: serviceRequest}
 }
 
+func CastIAPDUUnconfirmedRequest(structType interface{}) IAPDUUnconfirmedRequest {
+	castFunc := func(typ interface{}) IAPDUUnconfirmedRequest {
+		if iAPDUUnconfirmedRequest, ok := typ.(IAPDUUnconfirmedRequest); ok {
+			return iAPDUUnconfirmedRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUUnconfirmedRequest(structType interface{}) APDUUnconfirmedRequest {
+	castFunc := func(typ interface{}) APDUUnconfirmedRequest {
+		if sAPDUUnconfirmedRequest, ok := typ.(APDUUnconfirmedRequest); ok {
+			return sAPDUUnconfirmedRequest
+		}
+		return APDUUnconfirmedRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUUnconfirmedRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -80,7 +100,7 @@ func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInit
 	}
 
 	// Simple Field (serviceRequest)
-	_serviceRequestMessage, _err := BACnetUnconfirmedServiceRequestParse(io, uint16((apduLength)-(1)))
+	_serviceRequestMessage, _err := BACnetUnconfirmedServiceRequestParse(io, uint16(apduLength)-uint16(uint16(1)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
 	}
@@ -95,16 +115,11 @@ func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInit
 }
 
 func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUUnconfirmedRequest); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(4, uint8(0))
+	// Reserved Field (reserved)
+	io.WriteUint8(4, uint8(0))
 
-			// Simple Field (serviceRequest)
-			var serviceRequest BACnetUnconfirmedServiceRequest = m.serviceRequest
-			serviceRequest.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (serviceRequest)
+	serviceRequest := BACnetUnconfirmedServiceRequest(m.serviceRequest)
+	serviceRequest.Serialize(io)
 }

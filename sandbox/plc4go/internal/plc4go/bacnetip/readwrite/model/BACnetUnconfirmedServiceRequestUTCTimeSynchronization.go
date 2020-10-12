@@ -46,6 +46,26 @@ func NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization() BACnetUnconfirme
 	return &BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}
 }
 
+func CastIBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) IBACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+		if iBACnetUnconfirmedServiceRequestUTCTimeSynchronization, ok := typ.(IBACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
+			return iBACnetUnconfirmedServiceRequestUTCTimeSynchronization
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestUTCTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUTCTimeSynchronization {
+		if sBACnetUnconfirmedServiceRequestUTCTimeSynchronization, ok := typ.(BACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
+			return sBACnetUnconfirmedServiceRequestUTCTimeSynchronization
+		}
+		return BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io spi.ReadBuffe
 }
 
 func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestUTCTimeSynchronization); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

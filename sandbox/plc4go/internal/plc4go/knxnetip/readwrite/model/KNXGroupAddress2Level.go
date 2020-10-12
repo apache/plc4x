@@ -48,6 +48,26 @@ func NewKNXGroupAddress2Level(mainGroup uint8, subGroup uint16) KNXGroupAddressI
 	return &KNXGroupAddress2Level{mainGroup: mainGroup, subGroup: subGroup}
 }
 
+func CastIKNXGroupAddress2Level(structType interface{}) IKNXGroupAddress2Level {
+	castFunc := func(typ interface{}) IKNXGroupAddress2Level {
+		if iKNXGroupAddress2Level, ok := typ.(IKNXGroupAddress2Level); ok {
+			return iKNXGroupAddress2Level
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKNXGroupAddress2Level(structType interface{}) KNXGroupAddress2Level {
+	castFunc := func(typ interface{}) KNXGroupAddress2Level {
+		if sKNXGroupAddress2Level, ok := typ.(KNXGroupAddress2Level); ok {
+			return sKNXGroupAddress2Level
+		}
+		return KNXGroupAddress2Level{}
+	}
+	return castFunc(structType)
+}
+
 func (m KNXGroupAddress2Level) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
 
@@ -77,17 +97,12 @@ func KNXGroupAddress2LevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, 
 }
 
 func (m KNXGroupAddress2Level) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKNXGroupAddress2Level); ok {
 
-			// Simple Field (mainGroup)
-			var mainGroup uint8 = m.mainGroup
-			io.WriteUint8(5, (mainGroup))
+	// Simple Field (mainGroup)
+	mainGroup := uint8(m.mainGroup)
+	io.WriteUint8(5, (mainGroup))
 
-			// Simple Field (subGroup)
-			var subGroup uint16 = m.subGroup
-			io.WriteUint16(11, (subGroup))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (subGroup)
+	subGroup := uint16(m.subGroup)
+	io.WriteUint16(11, (subGroup))
 }

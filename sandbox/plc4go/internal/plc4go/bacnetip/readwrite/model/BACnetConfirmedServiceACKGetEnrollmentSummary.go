@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceACKGetEnrollmentSummary() BACnetConfirmedServiceAC
 	return &BACnetConfirmedServiceACKGetEnrollmentSummary{}
 }
 
+func CastIBACnetConfirmedServiceACKGetEnrollmentSummary(structType interface{}) IBACnetConfirmedServiceACKGetEnrollmentSummary {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKGetEnrollmentSummary {
+		if iBACnetConfirmedServiceACKGetEnrollmentSummary, ok := typ.(IBACnetConfirmedServiceACKGetEnrollmentSummary); ok {
+			return iBACnetConfirmedServiceACKGetEnrollmentSummary
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceACKGetEnrollmentSummary(structType interface{}) BACnetConfirmedServiceACKGetEnrollmentSummary {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceACKGetEnrollmentSummary {
+		if sBACnetConfirmedServiceACKGetEnrollmentSummary, ok := typ.(BACnetConfirmedServiceACKGetEnrollmentSummary); ok {
+			return sBACnetConfirmedServiceACKGetEnrollmentSummary
+		}
+		return BACnetConfirmedServiceACKGetEnrollmentSummary{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACn
 }
 
 func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceACKGetEnrollmentSummary); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

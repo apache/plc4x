@@ -42,6 +42,26 @@ func CEMIAdditionalInformationAdditionalInformationType(m ICEMIAdditionalInforma
 	return m.AdditionalInformationType()
 }
 
+func CastICEMIAdditionalInformation(structType interface{}) ICEMIAdditionalInformation {
+	castFunc := func(typ interface{}) ICEMIAdditionalInformation {
+		if iCEMIAdditionalInformation, ok := typ.(ICEMIAdditionalInformation); ok {
+			return iCEMIAdditionalInformation
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIAdditionalInformation(structType interface{}) CEMIAdditionalInformation {
+	castFunc := func(typ interface{}) CEMIAdditionalInformation {
+		if sCEMIAdditionalInformation, ok := typ.(CEMIAdditionalInformation); ok {
+			return sCEMIAdditionalInformation
+		}
+		return CEMIAdditionalInformation{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIAdditionalInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -80,16 +100,12 @@ func CEMIAdditionalInformationParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m CEMIAdditionalInformation) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iCEMIAdditionalInformation, ok := typ.(ICEMIAdditionalInformation); ok {
+	iCEMIAdditionalInformation := CastICEMIAdditionalInformation(m)
 
-			// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-			additionalInformationType := CEMIAdditionalInformationAdditionalInformationType(iCEMIAdditionalInformation)
-			io.WriteUint8(8, (additionalInformationType))
+	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
+	additionalInformationType := uint8(CEMIAdditionalInformationAdditionalInformationType(iCEMIAdditionalInformation))
+	io.WriteUint8(8, (additionalInformationType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iCEMIAdditionalInformation.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iCEMIAdditionalInformation.Serialize(io)
 }

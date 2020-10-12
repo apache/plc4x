@@ -38,6 +38,26 @@ func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber ui
 	return &ProjectInstallationIdentifier{projectNumber: projectNumber, installationNumber: installationNumber}
 }
 
+func CastIProjectInstallationIdentifier(structType interface{}) IProjectInstallationIdentifier {
+	castFunc := func(typ interface{}) IProjectInstallationIdentifier {
+		if iProjectInstallationIdentifier, ok := typ.(IProjectInstallationIdentifier); ok {
+			return iProjectInstallationIdentifier
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastProjectInstallationIdentifier(structType interface{}) ProjectInstallationIdentifier {
+	castFunc := func(typ interface{}) ProjectInstallationIdentifier {
+		if sProjectInstallationIdentifier, ok := typ.(ProjectInstallationIdentifier); ok {
+			return sProjectInstallationIdentifier
+		}
+		return ProjectInstallationIdentifier{}
+	}
+	return castFunc(structType)
+}
+
 func (m ProjectInstallationIdentifier) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -67,17 +87,12 @@ func ProjectInstallationIdentifierParse(io spi.ReadBuffer) (spi.Message, error) 
 }
 
 func (m ProjectInstallationIdentifier) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IProjectInstallationIdentifier); ok {
 
-			// Simple Field (projectNumber)
-			var projectNumber uint8 = m.projectNumber
-			io.WriteUint8(8, (projectNumber))
+	// Simple Field (projectNumber)
+	projectNumber := uint8(m.projectNumber)
+	io.WriteUint8(8, (projectNumber))
 
-			// Simple Field (installationNumber)
-			var installationNumber uint8 = m.installationNumber
-			io.WriteUint8(8, (installationNumber))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (installationNumber)
+	installationNumber := uint8(m.installationNumber)
+	io.WriteUint8(8, (installationNumber))
 }

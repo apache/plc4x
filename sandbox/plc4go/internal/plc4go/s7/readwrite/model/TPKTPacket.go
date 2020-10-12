@@ -44,6 +44,26 @@ func NewTPKTPacket(payload COTPPacket) spi.Message {
 	return &TPKTPacket{payload: payload}
 }
 
+func CastITPKTPacket(structType interface{}) ITPKTPacket {
+	castFunc := func(typ interface{}) ITPKTPacket {
+		if iTPKTPacket, ok := typ.(ITPKTPacket); ok {
+			return iTPKTPacket
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastTPKTPacket(structType interface{}) TPKTPacket {
+	castFunc := func(typ interface{}) TPKTPacket {
+		if sTPKTPacket, ok := typ.(TPKTPacket); ok {
+			return sTPKTPacket
+		}
+		return TPKTPacket{}
+	}
+	return castFunc(structType)
+}
+
 func (m TPKTPacket) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -89,7 +109,7 @@ func TPKTPacketParse(io spi.ReadBuffer) (spi.Message, error) {
 	var len uint16 = io.ReadUint16(16)
 
 	// Simple Field (payload)
-	_payloadMessage, _err := COTPPacketParse(io, uint16((len)-(4)))
+	_payloadMessage, _err := COTPPacketParse(io, uint16(len)-uint16(uint16(4)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'payload'. " + _err.Error())
 	}
@@ -104,23 +124,18 @@ func TPKTPacketParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m TPKTPacket) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ITPKTPacket); ok {
 
-			// Const Field (protocolId)
-			io.WriteUint8(8, 0x03)
+	// Const Field (protocolId)
+	io.WriteUint8(8, 0x03)
 
-			// Reserved Field (reserved)
-			io.WriteUint8(8, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(8, uint8(0x00))
 
-			// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			len := uint16((m.payload.LengthInBytes()) + (4))
-			io.WriteUint16(16, (len))
+	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	len := uint16(uint16(m.payload.LengthInBytes()) + uint16(uint16(4)))
+	io.WriteUint16(16, (len))
 
-			// Simple Field (payload)
-			var payload COTPPacket = m.payload
-			payload.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (payload)
+	payload := COTPPacket(m.payload)
+	payload.Serialize(io)
 }

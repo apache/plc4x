@@ -61,6 +61,26 @@ func NewBACnetConfirmedServiceRequestWriteProperty(objectType uint16, objectInst
 	return &BACnetConfirmedServiceRequestWriteProperty{objectType: objectType, objectInstanceNumber: objectInstanceNumber, propertyIdentifierLength: propertyIdentifierLength, propertyIdentifier: propertyIdentifier, value: value, priority: priority}
 }
 
+func CastIBACnetConfirmedServiceRequestWriteProperty(structType interface{}) IBACnetConfirmedServiceRequestWriteProperty {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestWriteProperty {
+		if iBACnetConfirmedServiceRequestWriteProperty, ok := typ.(IBACnetConfirmedServiceRequestWriteProperty); ok {
+			return iBACnetConfirmedServiceRequestWriteProperty
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceRequestWriteProperty(structType interface{}) BACnetConfirmedServiceRequestWriteProperty {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestWriteProperty {
+		if sBACnetConfirmedServiceRequestWriteProperty, ok := typ.(BACnetConfirmedServiceRequestWriteProperty); ok {
+			return sBACnetConfirmedServiceRequestWriteProperty
+		}
+		return BACnetConfirmedServiceRequestWriteProperty{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
@@ -167,7 +187,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io spi.ReadBuffer, len uint
 	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
 	curPos = io.GetPos() - startPos
 	var priority *BACnetTag = nil
-	if (curPos) < ((len) - (1)) {
+	if bool((curPos) < ((len) - (1))) {
 		_message, _err := BACnetTagParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'priority' field " + _err.Error())
@@ -185,51 +205,46 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io spi.ReadBuffer, len uint
 }
 
 func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceRequestWriteProperty); ok {
 
-			// Const Field (objectIdentifierHeader)
-			io.WriteUint8(8, 0x0C)
+	// Const Field (objectIdentifierHeader)
+	io.WriteUint8(8, 0x0C)
 
-			// Simple Field (objectType)
-			var objectType uint16 = m.objectType
-			io.WriteUint16(10, (objectType))
+	// Simple Field (objectType)
+	objectType := uint16(m.objectType)
+	io.WriteUint16(10, (objectType))
 
-			// Simple Field (objectInstanceNumber)
-			var objectInstanceNumber uint32 = m.objectInstanceNumber
-			io.WriteUint32(22, (objectInstanceNumber))
+	// Simple Field (objectInstanceNumber)
+	objectInstanceNumber := uint32(m.objectInstanceNumber)
+	io.WriteUint32(22, (objectInstanceNumber))
 
-			// Const Field (propertyIdentifierHeader)
-			io.WriteUint8(5, 0x03)
+	// Const Field (propertyIdentifierHeader)
+	io.WriteUint8(5, 0x03)
 
-			// Simple Field (propertyIdentifierLength)
-			var propertyIdentifierLength uint8 = m.propertyIdentifierLength
-			io.WriteUint8(3, (propertyIdentifierLength))
+	// Simple Field (propertyIdentifierLength)
+	propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+	io.WriteUint8(3, (propertyIdentifierLength))
 
-			// Array Field (propertyIdentifier)
-			if m.propertyIdentifier != nil {
-				for _, _element := range m.propertyIdentifier {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Const Field (openingTag)
-			io.WriteUint8(8, 0x3E)
-
-			// Simple Field (value)
-			var value BACnetTag = m.value
-			value.Serialize(io)
-
-			// Const Field (closingTag)
-			io.WriteUint8(8, 0x3F)
-
-			// Optional Field (priority) (Can be skipped, if the value is null)
-			var priority *BACnetTag = nil
-			if m.priority != nil {
-				priority = m.priority
-				priority.Serialize(io)
-			}
+	// Array Field (propertyIdentifier)
+	if m.propertyIdentifier != nil {
+		for _, _element := range m.propertyIdentifier {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (openingTag)
+	io.WriteUint8(8, 0x3E)
+
+	// Simple Field (value)
+	value := BACnetTag(m.value)
+	value.Serialize(io)
+
+	// Const Field (closingTag)
+	io.WriteUint8(8, 0x3F)
+
+	// Optional Field (priority) (Can be skipped, if the value is null)
+	var priority *BACnetTag = nil
+	if m.priority != nil {
+		priority = m.priority
+		priority.Serialize(io)
+	}
 }

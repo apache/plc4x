@@ -47,6 +47,26 @@ func NewKnxNetIpDeviceManagement(version uint8) ServiceIdInitializer {
 	return &KnxNetIpDeviceManagement{version: version}
 }
 
+func CastIKnxNetIpDeviceManagement(structType interface{}) IKnxNetIpDeviceManagement {
+	castFunc := func(typ interface{}) IKnxNetIpDeviceManagement {
+		if iKnxNetIpDeviceManagement, ok := typ.(IKnxNetIpDeviceManagement); ok {
+			return iKnxNetIpDeviceManagement
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManagement {
+	castFunc := func(typ interface{}) KnxNetIpDeviceManagement {
+		if sKnxNetIpDeviceManagement, ok := typ.(KnxNetIpDeviceManagement); ok {
+			return sKnxNetIpDeviceManagement
+		}
+		return KnxNetIpDeviceManagement{}
+	}
+	return castFunc(structType)
+}
+
 func (m KnxNetIpDeviceManagement) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
@@ -70,13 +90,8 @@ func KnxNetIpDeviceManagementParse(io spi.ReadBuffer) (ServiceIdInitializer, err
 }
 
 func (m KnxNetIpDeviceManagement) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKnxNetIpDeviceManagement); ok {
 
-			// Simple Field (version)
-			var version uint8 = m.version
-			io.WriteUint8(8, (version))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (version)
+	version := uint8(m.version)
+	io.WriteUint8(8, (version))
 }

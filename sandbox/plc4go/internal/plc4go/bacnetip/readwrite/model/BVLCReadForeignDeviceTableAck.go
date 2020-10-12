@@ -46,6 +46,26 @@ func NewBVLCReadForeignDeviceTableAck() BVLCInitializer {
 	return &BVLCReadForeignDeviceTableAck{}
 }
 
+func CastIBVLCReadForeignDeviceTableAck(structType interface{}) IBVLCReadForeignDeviceTableAck {
+	castFunc := func(typ interface{}) IBVLCReadForeignDeviceTableAck {
+		if iBVLCReadForeignDeviceTableAck, ok := typ.(IBVLCReadForeignDeviceTableAck); ok {
+			return iBVLCReadForeignDeviceTableAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
+	castFunc := func(typ interface{}) BVLCReadForeignDeviceTableAck {
+		if sBVLCReadForeignDeviceTableAck, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
+			return sBVLCReadForeignDeviceTableAck
+		}
+		return BVLCReadForeignDeviceTableAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
@@ -63,9 +83,5 @@ func BVLCReadForeignDeviceTableAckParse(io spi.ReadBuffer) (BVLCInitializer, err
 }
 
 func (m BVLCReadForeignDeviceTableAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBVLCReadForeignDeviceTableAck); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

@@ -47,6 +47,26 @@ func NewUnknownMessage(unknownData []int8) KNXNetIPMessageInitializer {
 	return &UnknownMessage{unknownData: unknownData}
 }
 
+func CastIUnknownMessage(structType interface{}) IUnknownMessage {
+	castFunc := func(typ interface{}) IUnknownMessage {
+		if iUnknownMessage, ok := typ.(IUnknownMessage); ok {
+			return iUnknownMessage
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastUnknownMessage(structType interface{}) UnknownMessage {
+	castFunc := func(typ interface{}) UnknownMessage {
+		if sUnknownMessage, ok := typ.(UnknownMessage); ok {
+			return sUnknownMessage
+		}
+		return UnknownMessage{}
+	}
+	return castFunc(structType)
+}
+
 func (m UnknownMessage) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -68,8 +88,8 @@ func UnknownMessageParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessage
 	var unknownData []int8
 	// Count array
 	{
-		unknownData := make([]int8, (totalLength)-(6))
-		for curItem := uint16(0); curItem < uint16((totalLength)-(6)); curItem++ {
+		unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
+		for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
 
 			unknownData = append(unknownData, io.ReadInt8(8))
 		}
@@ -80,16 +100,11 @@ func UnknownMessageParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessage
 }
 
 func (m UnknownMessage) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IUnknownMessage); ok {
 
-			// Array Field (unknownData)
-			if m.unknownData != nil {
-				for _, _element := range m.unknownData {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (unknownData)
+	if m.unknownData != nil {
+		for _, _element := range m.unknownData {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

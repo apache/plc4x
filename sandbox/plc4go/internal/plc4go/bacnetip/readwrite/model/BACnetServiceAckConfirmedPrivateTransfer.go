@@ -46,6 +46,26 @@ func NewBACnetServiceAckConfirmedPrivateTransfer() BACnetServiceAckInitializer {
 	return &BACnetServiceAckConfirmedPrivateTransfer{}
 }
 
+func CastIBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
+		if iBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(IBACnetServiceAckConfirmedPrivateTransfer); ok {
+			return iBACnetServiceAckConfirmedPrivateTransfer
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) BACnetServiceAckConfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) BACnetServiceAckConfirmedPrivateTransfer {
+		if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
+			return sBACnetServiceAckConfirmedPrivateTransfer
+		}
+		return BACnetServiceAckConfirmedPrivateTransfer{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckConfirmedPrivateTransferParse(io spi.ReadBuffer) (BACnetSer
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckConfirmedPrivateTransfer); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

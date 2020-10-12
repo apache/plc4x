@@ -42,6 +42,26 @@ func APDUApduType(m IAPDU) uint8 {
 	return m.ApduType()
 }
 
+func CastIAPDU(structType interface{}) IAPDU {
+	castFunc := func(typ interface{}) IAPDU {
+		if iAPDU, ok := typ.(IAPDU); ok {
+			return iAPDU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDU(structType interface{}) APDU {
+	castFunc := func(typ interface{}) APDU {
+		if sAPDU, ok := typ.(APDU); ok {
+			return sAPDU
+		}
+		return APDU{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -92,16 +112,12 @@ func APDUParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 }
 
 func (m APDU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iAPDU, ok := typ.(IAPDU); ok {
+	iAPDU := CastIAPDU(m)
 
-			// Discriminator Field (apduType) (Used as input to a switch field)
-			apduType := APDUApduType(iAPDU)
-			io.WriteUint8(4, (apduType))
+	// Discriminator Field (apduType) (Used as input to a switch field)
+	apduType := uint8(APDUApduType(iAPDU))
+	io.WriteUint8(4, (apduType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iAPDU.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iAPDU.Serialize(io)
 }

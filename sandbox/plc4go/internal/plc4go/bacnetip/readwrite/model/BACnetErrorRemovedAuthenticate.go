@@ -46,6 +46,26 @@ func NewBACnetErrorRemovedAuthenticate() BACnetErrorInitializer {
 	return &BACnetErrorRemovedAuthenticate{}
 }
 
+func CastIBACnetErrorRemovedAuthenticate(structType interface{}) IBACnetErrorRemovedAuthenticate {
+	castFunc := func(typ interface{}) IBACnetErrorRemovedAuthenticate {
+		if iBACnetErrorRemovedAuthenticate, ok := typ.(IBACnetErrorRemovedAuthenticate); ok {
+			return iBACnetErrorRemovedAuthenticate
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemovedAuthenticate {
+	castFunc := func(typ interface{}) BACnetErrorRemovedAuthenticate {
+		if sBACnetErrorRemovedAuthenticate, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
+			return sBACnetErrorRemovedAuthenticate
+		}
+		return BACnetErrorRemovedAuthenticate{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorRemovedAuthenticate) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetErrorInitiali
 }
 
 func (m BACnetErrorRemovedAuthenticate) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorRemovedAuthenticate); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

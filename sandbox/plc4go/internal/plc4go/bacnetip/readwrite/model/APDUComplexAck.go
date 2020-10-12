@@ -55,6 +55,26 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 	return &APDUComplexAck{segmentedMessage: segmentedMessage, moreFollows: moreFollows, originalInvokeId: originalInvokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceAck: serviceAck}
 }
 
+func CastIAPDUComplexAck(structType interface{}) IAPDUComplexAck {
+	castFunc := func(typ interface{}) IAPDUComplexAck {
+		if iAPDUComplexAck, ok := typ.(IAPDUComplexAck); ok {
+			return iAPDUComplexAck
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUComplexAck(structType interface{}) APDUComplexAck {
+	castFunc := func(typ interface{}) APDUComplexAck {
+		if sAPDUComplexAck, ok := typ.(APDUComplexAck); ok {
+			return sAPDUComplexAck
+		}
+		return APDUComplexAck{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUComplexAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -142,42 +162,37 @@ func APDUComplexAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUComplexAck) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUComplexAck); ok {
 
-			// Simple Field (segmentedMessage)
-			var segmentedMessage bool = m.segmentedMessage
-			io.WriteBit((bool)(segmentedMessage))
+	// Simple Field (segmentedMessage)
+	segmentedMessage := bool(m.segmentedMessage)
+	io.WriteBit((bool)(segmentedMessage))
 
-			// Simple Field (moreFollows)
-			var moreFollows bool = m.moreFollows
-			io.WriteBit((bool)(moreFollows))
+	// Simple Field (moreFollows)
+	moreFollows := bool(m.moreFollows)
+	io.WriteBit((bool)(moreFollows))
 
-			// Reserved Field (reserved)
-			io.WriteUint8(2, uint8(0))
+	// Reserved Field (reserved)
+	io.WriteUint8(2, uint8(0))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-			var sequenceNumber *uint8 = nil
-			if m.sequenceNumber != nil {
-				sequenceNumber = m.sequenceNumber
-				io.WriteUint8(8, *(sequenceNumber))
-			}
-
-			// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
-			var proposedWindowSize *uint8 = nil
-			if m.proposedWindowSize != nil {
-				proposedWindowSize = m.proposedWindowSize
-				io.WriteUint8(8, *(proposedWindowSize))
-			}
-
-			// Simple Field (serviceAck)
-			var serviceAck BACnetServiceAck = m.serviceAck
-			serviceAck.Serialize(io)
-		}
+	// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
+	var sequenceNumber *uint8 = nil
+	if m.sequenceNumber != nil {
+		sequenceNumber = m.sequenceNumber
+		io.WriteUint8(8, *(sequenceNumber))
 	}
-	serializeFunc(m)
+
+	// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
+	var proposedWindowSize *uint8 = nil
+	if m.proposedWindowSize != nil {
+		proposedWindowSize = m.proposedWindowSize
+		io.WriteUint8(8, *(proposedWindowSize))
+	}
+
+	// Simple Field (serviceAck)
+	serviceAck := BACnetServiceAck(m.serviceAck)
+	serviceAck.Serialize(io)
 }

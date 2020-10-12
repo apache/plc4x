@@ -54,6 +54,26 @@ func NewModbusPDUReportServerIdRequest() ModbusPDUInitializer {
 	return &ModbusPDUReportServerIdRequest{}
 }
 
+func CastIModbusPDUReportServerIdRequest(structType interface{}) IModbusPDUReportServerIdRequest {
+	castFunc := func(typ interface{}) IModbusPDUReportServerIdRequest {
+		if iModbusPDUReportServerIdRequest, ok := typ.(IModbusPDUReportServerIdRequest); ok {
+			return iModbusPDUReportServerIdRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusPDUReportServerIdRequest(structType interface{}) ModbusPDUReportServerIdRequest {
+	castFunc := func(typ interface{}) ModbusPDUReportServerIdRequest {
+		if sModbusPDUReportServerIdRequest, ok := typ.(ModbusPDUReportServerIdRequest); ok {
+			return sModbusPDUReportServerIdRequest
+		}
+		return ModbusPDUReportServerIdRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusPDUReportServerIdRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
@@ -71,9 +91,5 @@ func ModbusPDUReportServerIdRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 }
 
 func (m ModbusPDUReportServerIdRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusPDUReportServerIdRequest); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

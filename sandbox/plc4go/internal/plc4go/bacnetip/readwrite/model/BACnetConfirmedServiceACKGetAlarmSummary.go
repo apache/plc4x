@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceACKGetAlarmSummary() BACnetConfirmedServiceACKInit
 	return &BACnetConfirmedServiceACKGetAlarmSummary{}
 }
 
+func CastIBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) IBACnetConfirmedServiceACKGetAlarmSummary {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKGetAlarmSummary {
+		if iBACnetConfirmedServiceACKGetAlarmSummary, ok := typ.(IBACnetConfirmedServiceACKGetAlarmSummary); ok {
+			return iBACnetConfirmedServiceACKGetAlarmSummary
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceACKGetAlarmSummary(structType interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceACKGetAlarmSummary {
+		if sBACnetConfirmedServiceACKGetAlarmSummary, ok := typ.(BACnetConfirmedServiceACKGetAlarmSummary); ok {
+			return sBACnetConfirmedServiceACKGetAlarmSummary
+		}
+		return BACnetConfirmedServiceACKGetAlarmSummary{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceACKGetAlarmSummary) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceACKGetAlarmSummaryParse(io spi.ReadBuffer) (BACnetCon
 }
 
 func (m BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceACKGetAlarmSummary); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

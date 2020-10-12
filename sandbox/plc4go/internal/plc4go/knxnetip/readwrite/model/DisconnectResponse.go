@@ -49,6 +49,26 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status) KNXNetIP
 	return &DisconnectResponse{communicationChannelId: communicationChannelId, status: status}
 }
 
+func CastIDisconnectResponse(structType interface{}) IDisconnectResponse {
+	castFunc := func(typ interface{}) IDisconnectResponse {
+		if iDisconnectResponse, ok := typ.(IDisconnectResponse); ok {
+			return iDisconnectResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDisconnectResponse(structType interface{}) DisconnectResponse {
+	castFunc := func(typ interface{}) DisconnectResponse {
+		if sDisconnectResponse, ok := typ.(DisconnectResponse); ok {
+			return sDisconnectResponse
+		}
+		return DisconnectResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m DisconnectResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -81,17 +101,12 @@ func DisconnectResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 }
 
 func (m DisconnectResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDisconnectResponse); ok {
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Enum field (status)
-			status := m.status
-			status.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (status)
+	status := Status(m.status)
+	status.Serialize(io)
 }

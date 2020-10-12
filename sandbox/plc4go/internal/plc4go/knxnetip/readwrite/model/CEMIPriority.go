@@ -29,6 +29,16 @@ const (
 	CEMIPriority_LOW    CEMIPriority = 0x3
 )
 
+func CastCEMIPriority(structType interface{}) CEMIPriority {
+	castFunc := func(typ interface{}) CEMIPriority {
+		if sCEMIPriority, ok := typ.(CEMIPriority); ok {
+			return sCEMIPriority
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func CEMIPriorityParse(io spi.ReadBuffer) (CEMIPriority, error) {
 	// TODO: Implement ...
 	return 0, nil

@@ -45,6 +45,26 @@ func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu Mod
 	return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
 }
 
+func CastIModbusTcpADU(structType interface{}) IModbusTcpADU {
+	castFunc := func(typ interface{}) IModbusTcpADU {
+		if iModbusTcpADU, ok := typ.(IModbusTcpADU); ok {
+			return iModbusTcpADU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusTcpADU(structType interface{}) ModbusTcpADU {
+	castFunc := func(typ interface{}) ModbusTcpADU {
+		if sModbusTcpADU, ok := typ.(ModbusTcpADU); ok {
+			return sModbusTcpADU
+		}
+		return ModbusTcpADU{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusTcpADU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -88,7 +108,7 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 	var unitIdentifier uint8 = io.ReadUint8(8)
 
 	// Simple Field (pdu)
-	_pduMessage, _err := ModbusPDUParse(io, bool(response))
+	_pduMessage, _err := ModbusPDUParse(io, response)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'pdu'. " + _err.Error())
 	}
@@ -103,28 +123,23 @@ func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 }
 
 func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusTcpADU); ok {
 
-			// Simple Field (transactionIdentifier)
-			var transactionIdentifier uint16 = m.transactionIdentifier
-			io.WriteUint16(16, (transactionIdentifier))
+	// Simple Field (transactionIdentifier)
+	transactionIdentifier := uint16(m.transactionIdentifier)
+	io.WriteUint16(16, (transactionIdentifier))
 
-			// Const Field (protocolIdentifier)
-			io.WriteUint16(16, 0x0000)
+	// Const Field (protocolIdentifier)
+	io.WriteUint16(16, 0x0000)
 
-			// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			length := uint16((m.pdu.LengthInBytes()) + (1))
-			io.WriteUint16(16, (length))
+	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	length := uint16(uint16(m.pdu.LengthInBytes()) + uint16(uint16(1)))
+	io.WriteUint16(16, (length))
 
-			// Simple Field (unitIdentifier)
-			var unitIdentifier uint8 = m.unitIdentifier
-			io.WriteUint8(8, (unitIdentifier))
+	// Simple Field (unitIdentifier)
+	unitIdentifier := uint8(m.unitIdentifier)
+	io.WriteUint8(8, (unitIdentifier))
 
-			// Simple Field (pdu)
-			var pdu ModbusPDU = m.pdu
-			pdu.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (pdu)
+	pdu := ModbusPDU(m.pdu)
+	pdu.Serialize(io)
 }

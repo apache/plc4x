@@ -47,6 +47,26 @@ func NewCOTPParameterCallingTsap(tsapId uint16) COTPParameterInitializer {
 	return &COTPParameterCallingTsap{tsapId: tsapId}
 }
 
+func CastICOTPParameterCallingTsap(structType interface{}) ICOTPParameterCallingTsap {
+	castFunc := func(typ interface{}) ICOTPParameterCallingTsap {
+		if iCOTPParameterCallingTsap, ok := typ.(ICOTPParameterCallingTsap); ok {
+			return iCOTPParameterCallingTsap
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPParameterCallingTsap(structType interface{}) COTPParameterCallingTsap {
+	castFunc := func(typ interface{}) COTPParameterCallingTsap {
+		if sCOTPParameterCallingTsap, ok := typ.(COTPParameterCallingTsap); ok {
+			return sCOTPParameterCallingTsap
+		}
+		return COTPParameterCallingTsap{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPParameterCallingTsap) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
@@ -70,13 +90,8 @@ func COTPParameterCallingTsapParse(io spi.ReadBuffer) (COTPParameterInitializer,
 }
 
 func (m COTPParameterCallingTsap) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPParameterCallingTsap); ok {
 
-			// Simple Field (tsapId)
-			var tsapId uint16 = m.tsapId
-			io.WriteUint16(16, (tsapId))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (tsapId)
+	tsapId := uint16(m.tsapId)
+	io.WriteUint16(16, (tsapId))
 }

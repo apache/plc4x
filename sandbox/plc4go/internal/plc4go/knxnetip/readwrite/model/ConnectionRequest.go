@@ -51,6 +51,26 @@ func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataE
 	return &ConnectionRequest{hpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint, hpaiDataEndpoint: hpaiDataEndpoint, connectionRequestInformation: connectionRequestInformation}
 }
 
+func CastIConnectionRequest(structType interface{}) IConnectionRequest {
+	castFunc := func(typ interface{}) IConnectionRequest {
+		if iConnectionRequest, ok := typ.(IConnectionRequest); ok {
+			return iConnectionRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionRequest(structType interface{}) ConnectionRequest {
+	castFunc := func(typ interface{}) ConnectionRequest {
+		if sConnectionRequest, ok := typ.(ConnectionRequest); ok {
+			return sConnectionRequest
+		}
+		return ConnectionRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -110,21 +130,16 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m ConnectionRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionRequest); ok {
 
-			// Simple Field (hpaiDiscoveryEndpoint)
-			var hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint = m.hpaiDiscoveryEndpoint
-			hpaiDiscoveryEndpoint.Serialize(io)
+	// Simple Field (hpaiDiscoveryEndpoint)
+	hpaiDiscoveryEndpoint := HPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
+	hpaiDiscoveryEndpoint.Serialize(io)
 
-			// Simple Field (hpaiDataEndpoint)
-			var hpaiDataEndpoint HPAIDataEndpoint = m.hpaiDataEndpoint
-			hpaiDataEndpoint.Serialize(io)
+	// Simple Field (hpaiDataEndpoint)
+	hpaiDataEndpoint := HPAIDataEndpoint(m.hpaiDataEndpoint)
+	hpaiDataEndpoint.Serialize(io)
 
-			// Simple Field (connectionRequestInformation)
-			var connectionRequestInformation ConnectionRequestInformation = m.connectionRequestInformation
-			connectionRequestInformation.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (connectionRequestInformation)
+	connectionRequestInformation := ConnectionRequestInformation(m.connectionRequestInformation)
+	connectionRequestInformation.Serialize(io)
 }

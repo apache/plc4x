@@ -41,6 +41,26 @@ func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress,
 	return &HPAIDataEndpoint{hostProtocolCode: hostProtocolCode, ipAddress: ipAddress, ipPort: ipPort}
 }
 
+func CastIHPAIDataEndpoint(structType interface{}) IHPAIDataEndpoint {
+	castFunc := func(typ interface{}) IHPAIDataEndpoint {
+		if iHPAIDataEndpoint, ok := typ.(IHPAIDataEndpoint); ok {
+			return iHPAIDataEndpoint
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastHPAIDataEndpoint(structType interface{}) HPAIDataEndpoint {
+	castFunc := func(typ interface{}) HPAIDataEndpoint {
+		if sHPAIDataEndpoint, ok := typ.(HPAIDataEndpoint); ok {
+			return sHPAIDataEndpoint
+		}
+		return HPAIDataEndpoint{}
+	}
+	return castFunc(structType)
+}
+
 func (m HPAIDataEndpoint) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -93,25 +113,20 @@ func HPAIDataEndpointParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m HPAIDataEndpoint) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IHPAIDataEndpoint); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Enum field (hostProtocolCode)
-			hostProtocolCode := m.hostProtocolCode
-			hostProtocolCode.Serialize(io)
+	// Enum field (hostProtocolCode)
+	hostProtocolCode := HostProtocolCode(m.hostProtocolCode)
+	hostProtocolCode.Serialize(io)
 
-			// Simple Field (ipAddress)
-			var ipAddress IPAddress = m.ipAddress
-			ipAddress.Serialize(io)
+	// Simple Field (ipAddress)
+	ipAddress := IPAddress(m.ipAddress)
+	ipAddress.Serialize(io)
 
-			// Simple Field (ipPort)
-			var ipPort uint16 = m.ipPort
-			io.WriteUint16(16, (ipPort))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (ipPort)
+	ipPort := uint16(m.ipPort)
+	io.WriteUint16(16, (ipPort))
 }

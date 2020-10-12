@@ -46,6 +46,26 @@ func NewBACnetServiceAckRemovedReadPropertyConditional() BACnetServiceAckInitial
 	return &BACnetServiceAckRemovedReadPropertyConditional{}
 }
 
+func CastIBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) IBACnetServiceAckRemovedReadPropertyConditional {
+	castFunc := func(typ interface{}) IBACnetServiceAckRemovedReadPropertyConditional {
+		if iBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(IBACnetServiceAckRemovedReadPropertyConditional); ok {
+			return iBACnetServiceAckRemovedReadPropertyConditional
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) BACnetServiceAckRemovedReadPropertyConditional {
+	castFunc := func(typ interface{}) BACnetServiceAckRemovedReadPropertyConditional {
+		if sBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(BACnetServiceAckRemovedReadPropertyConditional); ok {
+			return sBACnetServiceAckRemovedReadPropertyConditional
+		}
+		return BACnetServiceAckRemovedReadPropertyConditional{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetServiceAckRemovedReadPropertyConditional) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetServiceAckRemovedReadPropertyConditionalParse(io spi.ReadBuffer) (BAC
 }
 
 func (m BACnetServiceAckRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetServiceAckRemovedReadPropertyConditional); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

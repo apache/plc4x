@@ -47,6 +47,26 @@ func NewKNXGroupAddressFreeLevel(subGroup uint16) KNXGroupAddressInitializer {
 	return &KNXGroupAddressFreeLevel{subGroup: subGroup}
 }
 
+func CastIKNXGroupAddressFreeLevel(structType interface{}) IKNXGroupAddressFreeLevel {
+	castFunc := func(typ interface{}) IKNXGroupAddressFreeLevel {
+		if iKNXGroupAddressFreeLevel, ok := typ.(IKNXGroupAddressFreeLevel); ok {
+			return iKNXGroupAddressFreeLevel
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKNXGroupAddressFreeLevel(structType interface{}) KNXGroupAddressFreeLevel {
+	castFunc := func(typ interface{}) KNXGroupAddressFreeLevel {
+		if sKNXGroupAddressFreeLevel, ok := typ.(KNXGroupAddressFreeLevel); ok {
+			return sKNXGroupAddressFreeLevel
+		}
+		return KNXGroupAddressFreeLevel{}
+	}
+	return castFunc(structType)
+}
+
 func (m KNXGroupAddressFreeLevel) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
 
@@ -70,13 +90,8 @@ func KNXGroupAddressFreeLevelParse(io spi.ReadBuffer) (KNXGroupAddressInitialize
 }
 
 func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKNXGroupAddressFreeLevel); ok {
 
-			// Simple Field (subGroup)
-			var subGroup uint16 = m.subGroup
-			io.WriteUint16(16, (subGroup))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (subGroup)
+	subGroup := uint16(m.subGroup)
+	io.WriteUint16(16, (subGroup))
 }

@@ -57,6 +57,26 @@ func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceLowLimit uint32, dev
 	return &BACnetUnconfirmedServiceRequestWhoHas{deviceInstanceLowLimit: deviceInstanceLowLimit, deviceInstanceHighLimit: deviceInstanceHighLimit, objectNameCharacterSet: objectNameCharacterSet, objectName: objectName}
 }
 
+func CastIBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) IBACnetUnconfirmedServiceRequestWhoHas {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWhoHas {
+		if iBACnetUnconfirmedServiceRequestWhoHas, ok := typ.(IBACnetUnconfirmedServiceRequestWhoHas); ok {
+			return iBACnetUnconfirmedServiceRequestWhoHas
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) BACnetUnconfirmedServiceRequestWhoHas {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWhoHas {
+		if sBACnetUnconfirmedServiceRequestWhoHas, ok := typ.(BACnetUnconfirmedServiceRequestWhoHas); ok {
+			return sBACnetUnconfirmedServiceRequestWhoHas
+		}
+		return BACnetUnconfirmedServiceRequestWhoHas{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -128,8 +148,8 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconf
 	// Array field (objectName)
 	var objectName []int8
 	// Length array
-	_objectNameLength := uint16((objectNameLength) - (1))
-	_objectNameEndPos := io.GetPos() + _objectNameLength
+	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
+	_objectNameEndPos := io.GetPos() + uint16(_objectNameLength)
 	for io.GetPos() < _objectNameEndPos {
 		objectName = append(objectName, io.ReadInt8(8))
 	}
@@ -139,41 +159,36 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconf
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestWhoHas); ok {
 
-			// Const Field (deviceInstanceLowLimitHeader)
-			io.WriteUint8(8, 0x0B)
+	// Const Field (deviceInstanceLowLimitHeader)
+	io.WriteUint8(8, 0x0B)
 
-			// Simple Field (deviceInstanceLowLimit)
-			var deviceInstanceLowLimit uint32 = m.deviceInstanceLowLimit
-			io.WriteUint32(24, (deviceInstanceLowLimit))
+	// Simple Field (deviceInstanceLowLimit)
+	deviceInstanceLowLimit := uint32(m.deviceInstanceLowLimit)
+	io.WriteUint32(24, (deviceInstanceLowLimit))
 
-			// Const Field (deviceInstanceHighLimitHeader)
-			io.WriteUint8(8, 0x1B)
+	// Const Field (deviceInstanceHighLimitHeader)
+	io.WriteUint8(8, 0x1B)
 
-			// Simple Field (deviceInstanceHighLimit)
-			var deviceInstanceHighLimit uint32 = m.deviceInstanceHighLimit
-			io.WriteUint32(24, (deviceInstanceHighLimit))
+	// Simple Field (deviceInstanceHighLimit)
+	deviceInstanceHighLimit := uint32(m.deviceInstanceHighLimit)
+	io.WriteUint32(24, (deviceInstanceHighLimit))
 
-			// Const Field (objectNameHeader)
-			io.WriteUint8(8, 0x3D)
+	// Const Field (objectNameHeader)
+	io.WriteUint8(8, 0x3D)
 
-			// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			objectNameLength := uint8((uint8(len(m.objectName))) + (1))
-			io.WriteUint8(8, (objectNameLength))
+	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	objectNameLength := uint8(uint8(uint8(len(m.objectName))) + uint8(uint8(1)))
+	io.WriteUint8(8, (objectNameLength))
 
-			// Simple Field (objectNameCharacterSet)
-			var objectNameCharacterSet uint8 = m.objectNameCharacterSet
-			io.WriteUint8(8, (objectNameCharacterSet))
+	// Simple Field (objectNameCharacterSet)
+	objectNameCharacterSet := uint8(m.objectNameCharacterSet)
+	io.WriteUint8(8, (objectNameCharacterSet))
 
-			// Array Field (objectName)
-			if m.objectName != nil {
-				for _, _element := range m.objectName {
-					io.WriteInt8(8, _element)
-				}
-			}
+	// Array Field (objectName)
+	if m.objectName != nil {
+		for _, _element := range m.objectName {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
 }

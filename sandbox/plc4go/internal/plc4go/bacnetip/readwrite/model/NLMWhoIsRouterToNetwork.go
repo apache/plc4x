@@ -48,6 +48,26 @@ func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16) NLMInitializ
 	return &NLMWhoIsRouterToNetwork{destinationNetworkAddress: destinationNetworkAddress}
 }
 
+func CastINLMWhoIsRouterToNetwork(structType interface{}) INLMWhoIsRouterToNetwork {
+	castFunc := func(typ interface{}) INLMWhoIsRouterToNetwork {
+		if iNLMWhoIsRouterToNetwork, ok := typ.(INLMWhoIsRouterToNetwork); ok {
+			return iNLMWhoIsRouterToNetwork
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastNLMWhoIsRouterToNetwork(structType interface{}) NLMWhoIsRouterToNetwork {
+	castFunc := func(typ interface{}) NLMWhoIsRouterToNetwork {
+		if sNLMWhoIsRouterToNetwork, ok := typ.(NLMWhoIsRouterToNetwork); ok {
+			return sNLMWhoIsRouterToNetwork
+		}
+		return NLMWhoIsRouterToNetwork{}
+	}
+	return castFunc(structType)
+}
+
 func (m NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.NLM.LengthInBits()
 
@@ -68,8 +88,8 @@ func NLMWhoIsRouterToNetworkParse(io spi.ReadBuffer, apduLength uint16, messageT
 	// Array field (destinationNetworkAddress)
 	var destinationNetworkAddress []uint16
 	// Length array
-	_destinationNetworkAddressLength := uint16((apduLength) - (spi.InlineIf((((messageType) >= (128)) && ((messageType) <= (255))), uint16(3), uint16(1))))
-	_destinationNetworkAddressEndPos := io.GetPos() + _destinationNetworkAddressLength
+	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(spi.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), uint16(uint16(3)), uint16(uint16(1)))))
+	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
 		destinationNetworkAddress = append(destinationNetworkAddress, io.ReadUint16(16))
 	}
@@ -79,16 +99,11 @@ func NLMWhoIsRouterToNetworkParse(io spi.ReadBuffer, apduLength uint16, messageT
 }
 
 func (m NLMWhoIsRouterToNetwork) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(INLMWhoIsRouterToNetwork); ok {
 
-			// Array Field (destinationNetworkAddress)
-			if m.destinationNetworkAddress != nil {
-				for _, _element := range m.destinationNetworkAddress {
-					io.WriteUint16(16, _element)
-				}
-			}
+	// Array Field (destinationNetworkAddress)
+	if m.destinationNetworkAddress != nil {
+		for _, _element := range m.destinationNetworkAddress {
+			io.WriteUint16(16, _element)
 		}
 	}
-	serializeFunc(m)
 }

@@ -41,6 +41,26 @@ func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausb
 	return &SzlDataTreeItem{itemIndex: itemIndex, mlfb: mlfb, moduleTypeId: moduleTypeId, ausbg: ausbg, ausbe: ausbe}
 }
 
+func CastISzlDataTreeItem(structType interface{}) ISzlDataTreeItem {
+	castFunc := func(typ interface{}) ISzlDataTreeItem {
+		if iSzlDataTreeItem, ok := typ.(ISzlDataTreeItem); ok {
+			return iSzlDataTreeItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastSzlDataTreeItem(structType interface{}) SzlDataTreeItem {
+	castFunc := func(typ interface{}) SzlDataTreeItem {
+		if sSzlDataTreeItem, ok := typ.(SzlDataTreeItem); ok {
+			return sSzlDataTreeItem
+		}
+		return SzlDataTreeItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m SzlDataTreeItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -77,8 +97,8 @@ func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
 	var mlfb []int8
 	// Count array
 	{
-		mlfb := make([]int8, 20)
-		for curItem := uint16(0); curItem < uint16(20); curItem++ {
+		mlfb := make([]int8, uint16(20))
+		for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
 
 			mlfb = append(mlfb, io.ReadInt8(8))
 		}
@@ -98,32 +118,27 @@ func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ISzlDataTreeItem); ok {
 
-			// Simple Field (itemIndex)
-			var itemIndex uint16 = m.itemIndex
-			io.WriteUint16(16, (itemIndex))
+	// Simple Field (itemIndex)
+	itemIndex := uint16(m.itemIndex)
+	io.WriteUint16(16, (itemIndex))
 
-			// Array Field (mlfb)
-			if m.mlfb != nil {
-				for _, _element := range m.mlfb {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Simple Field (moduleTypeId)
-			var moduleTypeId uint16 = m.moduleTypeId
-			io.WriteUint16(16, (moduleTypeId))
-
-			// Simple Field (ausbg)
-			var ausbg uint16 = m.ausbg
-			io.WriteUint16(16, (ausbg))
-
-			// Simple Field (ausbe)
-			var ausbe uint16 = m.ausbe
-			io.WriteUint16(16, (ausbe))
+	// Array Field (mlfb)
+	if m.mlfb != nil {
+		for _, _element := range m.mlfb {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (moduleTypeId)
+	moduleTypeId := uint16(m.moduleTypeId)
+	io.WriteUint16(16, (moduleTypeId))
+
+	// Simple Field (ausbg)
+	ausbg := uint16(m.ausbg)
+	io.WriteUint16(16, (ausbg))
+
+	// Simple Field (ausbe)
+	ausbe := uint16(m.ausbe)
+	io.WriteUint16(16, (ausbe))
 }

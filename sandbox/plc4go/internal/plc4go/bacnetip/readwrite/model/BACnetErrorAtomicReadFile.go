@@ -46,6 +46,26 @@ func NewBACnetErrorAtomicReadFile() BACnetErrorInitializer {
 	return &BACnetErrorAtomicReadFile{}
 }
 
+func CastIBACnetErrorAtomicReadFile(structType interface{}) IBACnetErrorAtomicReadFile {
+	castFunc := func(typ interface{}) IBACnetErrorAtomicReadFile {
+		if iBACnetErrorAtomicReadFile, ok := typ.(IBACnetErrorAtomicReadFile); ok {
+			return iBACnetErrorAtomicReadFile
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetErrorAtomicReadFile(structType interface{}) BACnetErrorAtomicReadFile {
+	castFunc := func(typ interface{}) BACnetErrorAtomicReadFile {
+		if sBACnetErrorAtomicReadFile, ok := typ.(BACnetErrorAtomicReadFile); ok {
+			return sBACnetErrorAtomicReadFile
+		}
+		return BACnetErrorAtomicReadFile{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetErrorAtomicReadFile) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetErrorAtomicReadFileParse(io spi.ReadBuffer) (BACnetErrorInitializer, 
 }
 
 func (m BACnetErrorAtomicReadFile) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetErrorAtomicReadFile); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

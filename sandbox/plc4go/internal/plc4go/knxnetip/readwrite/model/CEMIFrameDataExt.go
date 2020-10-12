@@ -72,6 +72,26 @@ func NewCEMIFrameDataExt(groupAddress bool, hopCount uint8, extendedFrameFormat 
 	return &CEMIFrameDataExt{groupAddress: groupAddress, hopCount: hopCount, extendedFrameFormat: extendedFrameFormat, sourceAddress: sourceAddress, destinationAddress: destinationAddress, dataLength: dataLength, tcpi: tcpi, counter: counter, apci: apci, dataFirstByte: dataFirstByte, data: data, crc: crc}
 }
 
+func CastICEMIFrameDataExt(structType interface{}) ICEMIFrameDataExt {
+	castFunc := func(typ interface{}) ICEMIFrameDataExt {
+		if iCEMIFrameDataExt, ok := typ.(ICEMIFrameDataExt); ok {
+			return iCEMIFrameDataExt
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCEMIFrameDataExt(structType interface{}) CEMIFrameDataExt {
+	castFunc := func(typ interface{}) CEMIFrameDataExt {
+		if sCEMIFrameDataExt, ok := typ.(CEMIFrameDataExt); ok {
+			return sCEMIFrameDataExt
+		}
+		return CEMIFrameDataExt{}
+	}
+	return castFunc(structType)
+}
+
 func (m CEMIFrameDataExt) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
 
@@ -148,8 +168,8 @@ func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	var destinationAddress []int8
 	// Count array
 	{
-		destinationAddress := make([]int8, 2)
-		for curItem := uint16(0); curItem < uint16(2); curItem++ {
+		destinationAddress := make([]int8, uint16(2))
+		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 
 			destinationAddress = append(destinationAddress, io.ReadInt8(8))
 		}
@@ -180,8 +200,8 @@ func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	var data []int8
 	// Count array
 	{
-		data := make([]int8, (dataLength)-(1))
-		for curItem := uint16(0); curItem < uint16((dataLength)-(1)); curItem++ {
+		data := make([]int8, uint16(dataLength)-uint16(uint16(1)))
+		for curItem := uint16(0); curItem < uint16(uint16(dataLength)-uint16(uint16(1))); curItem++ {
 
 			data = append(data, io.ReadInt8(8))
 		}
@@ -195,63 +215,58 @@ func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 }
 
 func (m CEMIFrameDataExt) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICEMIFrameDataExt); ok {
 
-			// Simple Field (groupAddress)
-			var groupAddress bool = m.groupAddress
-			io.WriteBit((bool)(groupAddress))
+	// Simple Field (groupAddress)
+	groupAddress := bool(m.groupAddress)
+	io.WriteBit((bool)(groupAddress))
 
-			// Simple Field (hopCount)
-			var hopCount uint8 = m.hopCount
-			io.WriteUint8(3, (hopCount))
+	// Simple Field (hopCount)
+	hopCount := uint8(m.hopCount)
+	io.WriteUint8(3, (hopCount))
 
-			// Simple Field (extendedFrameFormat)
-			var extendedFrameFormat uint8 = m.extendedFrameFormat
-			io.WriteUint8(4, (extendedFrameFormat))
+	// Simple Field (extendedFrameFormat)
+	extendedFrameFormat := uint8(m.extendedFrameFormat)
+	io.WriteUint8(4, (extendedFrameFormat))
 
-			// Simple Field (sourceAddress)
-			var sourceAddress KNXAddress = m.sourceAddress
-			sourceAddress.Serialize(io)
+	// Simple Field (sourceAddress)
+	sourceAddress := KNXAddress(m.sourceAddress)
+	sourceAddress.Serialize(io)
 
-			// Array Field (destinationAddress)
-			if m.destinationAddress != nil {
-				for _, _element := range m.destinationAddress {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Simple Field (dataLength)
-			var dataLength uint8 = m.dataLength
-			io.WriteUint8(8, (dataLength))
-
-			// Enum field (tcpi)
-			tcpi := m.tcpi
-			tcpi.Serialize(io)
-
-			// Simple Field (counter)
-			var counter uint8 = m.counter
-			io.WriteUint8(4, (counter))
-
-			// Enum field (apci)
-			apci := m.apci
-			apci.Serialize(io)
-
-			// Simple Field (dataFirstByte)
-			var dataFirstByte int8 = m.dataFirstByte
-			io.WriteInt8(6, (dataFirstByte))
-
-			// Array Field (data)
-			if m.data != nil {
-				for _, _element := range m.data {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Simple Field (crc)
-			var crc uint8 = m.crc
-			io.WriteUint8(8, (crc))
+	// Array Field (destinationAddress)
+	if m.destinationAddress != nil {
+		for _, _element := range m.destinationAddress {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Simple Field (dataLength)
+	dataLength := uint8(m.dataLength)
+	io.WriteUint8(8, (dataLength))
+
+	// Enum field (tcpi)
+	tcpi := TPCI(m.tcpi)
+	tcpi.Serialize(io)
+
+	// Simple Field (counter)
+	counter := uint8(m.counter)
+	io.WriteUint8(4, (counter))
+
+	// Enum field (apci)
+	apci := APCI(m.apci)
+	apci.Serialize(io)
+
+	// Simple Field (dataFirstByte)
+	dataFirstByte := int8(m.dataFirstByte)
+	io.WriteInt8(6, (dataFirstByte))
+
+	// Array Field (data)
+	if m.data != nil {
+		for _, _element := range m.data {
+			io.WriteInt8(8, _element)
+		}
+	}
+
+	// Simple Field (crc)
+	crc := uint8(m.crc)
+	io.WriteUint8(8, (crc))
 }

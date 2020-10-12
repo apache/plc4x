@@ -53,6 +53,26 @@ func NewS7ParameterWriteVarRequest(items []S7VarRequestParameterItem) S7Paramete
 	return &S7ParameterWriteVarRequest{items: items}
 }
 
+func CastIS7ParameterWriteVarRequest(structType interface{}) IS7ParameterWriteVarRequest {
+	castFunc := func(typ interface{}) IS7ParameterWriteVarRequest {
+		if iS7ParameterWriteVarRequest, ok := typ.(IS7ParameterWriteVarRequest); ok {
+			return iS7ParameterWriteVarRequest
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterWriteVarRequest(structType interface{}) S7ParameterWriteVarRequest {
+	castFunc := func(typ interface{}) S7ParameterWriteVarRequest {
+		if sS7ParameterWriteVarRequest, ok := typ.(S7ParameterWriteVarRequest); ok {
+			return sS7ParameterWriteVarRequest
+		}
+		return S7ParameterWriteVarRequest{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterWriteVarRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
 
@@ -103,20 +123,15 @@ func S7ParameterWriteVarRequestParse(io spi.ReadBuffer) (S7ParameterInitializer,
 }
 
 func (m S7ParameterWriteVarRequest) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7ParameterWriteVarRequest); ok {
 
-			// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			numItems := uint8(uint8(len(m.items)))
-			io.WriteUint8(8, (numItems))
+	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	numItems := uint8(uint8(len(m.items)))
+	io.WriteUint8(8, (numItems))
 
-			// Array Field (items)
-			if m.items != nil {
-				for _, _element := range m.items {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (items)
+	if m.items != nil {
+		for _, _element := range m.items {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

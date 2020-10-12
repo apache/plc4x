@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceACKReadRange() BACnetConfirmedServiceACKInitialize
 	return &BACnetConfirmedServiceACKReadRange{}
 }
 
+func CastIBACnetConfirmedServiceACKReadRange(structType interface{}) IBACnetConfirmedServiceACKReadRange {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadRange {
+		if iBACnetConfirmedServiceACKReadRange, ok := typ.(IBACnetConfirmedServiceACKReadRange); ok {
+			return iBACnetConfirmedServiceACKReadRange
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceACKReadRange(structType interface{}) BACnetConfirmedServiceACKReadRange {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadRange {
+		if sBACnetConfirmedServiceACKReadRange, ok := typ.(BACnetConfirmedServiceACKReadRange); ok {
+			return sBACnetConfirmedServiceACKReadRange
+		}
+		return BACnetConfirmedServiceACKReadRange{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceACKReadRangeParse(io spi.ReadBuffer) (BACnetConfirmed
 }
 
 func (m BACnetConfirmedServiceACKReadRange) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceACKReadRange); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

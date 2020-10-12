@@ -46,6 +46,26 @@ func NewBACnetUnconfirmedServiceRequestIHave() BACnetUnconfirmedServiceRequestIn
 	return &BACnetUnconfirmedServiceRequestIHave{}
 }
 
+func CastIBACnetUnconfirmedServiceRequestIHave(structType interface{}) IBACnetUnconfirmedServiceRequestIHave {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIHave {
+		if iBACnetUnconfirmedServiceRequestIHave, ok := typ.(IBACnetUnconfirmedServiceRequestIHave); ok {
+			return iBACnetUnconfirmedServiceRequestIHave
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIHave {
+		if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
+			return sBACnetUnconfirmedServiceRequestIHave
+		}
+		return BACnetUnconfirmedServiceRequestIHave{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestIHave) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetUnconfirmedServiceRequestIHaveParse(io spi.ReadBuffer) (BACnetUnconfi
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestIHave); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

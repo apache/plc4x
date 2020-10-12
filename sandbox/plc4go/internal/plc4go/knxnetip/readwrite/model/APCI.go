@@ -41,6 +41,16 @@ const (
 	APCI_OTHER_PDU                       APCI = 0xF
 )
 
+func CastAPCI(structType interface{}) APCI {
+	castFunc := func(typ interface{}) APCI {
+		if sAPCI, ok := typ.(APCI); ok {
+			return sAPCI
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func APCIParse(io spi.ReadBuffer) (APCI, error) {
 	// TODO: Implement ...
 	return 0, nil

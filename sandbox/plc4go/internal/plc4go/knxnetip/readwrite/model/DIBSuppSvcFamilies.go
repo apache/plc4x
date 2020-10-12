@@ -40,6 +40,26 @@ func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) spi.Me
 	return &DIBSuppSvcFamilies{descriptionType: descriptionType, serviceIds: serviceIds}
 }
 
+func CastIDIBSuppSvcFamilies(structType interface{}) IDIBSuppSvcFamilies {
+	castFunc := func(typ interface{}) IDIBSuppSvcFamilies {
+		if iDIBSuppSvcFamilies, ok := typ.(IDIBSuppSvcFamilies); ok {
+			return iDIBSuppSvcFamilies
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastDIBSuppSvcFamilies(structType interface{}) DIBSuppSvcFamilies {
+	castFunc := func(typ interface{}) DIBSuppSvcFamilies {
+		if sDIBSuppSvcFamilies, ok := typ.(DIBSuppSvcFamilies); ok {
+			return sDIBSuppSvcFamilies
+		}
+		return DIBSuppSvcFamilies{}
+	}
+	return castFunc(structType)
+}
+
 func (m DIBSuppSvcFamilies) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -75,8 +95,8 @@ func DIBSuppSvcFamiliesParse(io spi.ReadBuffer) (spi.Message, error) {
 	var serviceIds []ServiceId
 	// Count array
 	{
-		serviceIds := make([]ServiceId, 3)
-		for curItem := uint16(0); curItem < uint16(3); curItem++ {
+		serviceIds := make([]ServiceId, uint16(3))
+		for curItem := uint16(0); curItem < uint16(uint16(3)); curItem++ {
 
 			_message, _err := ServiceIdParse(io)
 			if _err != nil {
@@ -96,24 +116,19 @@ func DIBSuppSvcFamiliesParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IDIBSuppSvcFamilies); ok {
 
-			// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			structureLength := uint8(m.LengthInBytes())
-			io.WriteUint8(8, (structureLength))
+	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	structureLength := uint8(uint8(m.LengthInBytes()))
+	io.WriteUint8(8, (structureLength))
 
-			// Simple Field (descriptionType)
-			var descriptionType uint8 = m.descriptionType
-			io.WriteUint8(8, (descriptionType))
+	// Simple Field (descriptionType)
+	descriptionType := uint8(m.descriptionType)
+	io.WriteUint8(8, (descriptionType))
 
-			// Array Field (serviceIds)
-			if m.serviceIds != nil {
-				for _, _element := range m.serviceIds {
-					_element.Serialize(io)
-				}
-			}
+	// Array Field (serviceIds)
+	if m.serviceIds != nil {
+		for _, _element := range m.serviceIds {
+			_element.Serialize(io)
 		}
 	}
-	serializeFunc(m)
 }

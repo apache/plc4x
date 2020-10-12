@@ -38,6 +38,16 @@ const (
 	ApplicationTag_BACNET_OBJECT_IDENTIFIER ApplicationTag = 0xC
 )
 
+func CastApplicationTag(structType interface{}) ApplicationTag {
+	castFunc := func(typ interface{}) ApplicationTag {
+		if sApplicationTag, ok := typ.(ApplicationTag); ok {
+			return sApplicationTag
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func ApplicationTagParse(io spi.ReadBuffer) (ApplicationTag, error) {
 	// TODO: Implement ...
 	return 0, nil

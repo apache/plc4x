@@ -46,6 +46,26 @@ func NewBACnetConfirmedServiceACKRemovedAuthenticate() BACnetConfirmedServiceACK
 	return &BACnetConfirmedServiceACKRemovedAuthenticate{}
 }
 
+func CastIBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) IBACnetConfirmedServiceACKRemovedAuthenticate {
+	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKRemovedAuthenticate {
+		if iBACnetConfirmedServiceACKRemovedAuthenticate, ok := typ.(IBACnetConfirmedServiceACKRemovedAuthenticate); ok {
+			return iBACnetConfirmedServiceACKRemovedAuthenticate
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetConfirmedServiceACKRemovedAuthenticate(structType interface{}) BACnetConfirmedServiceACKRemovedAuthenticate {
+	castFunc := func(typ interface{}) BACnetConfirmedServiceACKRemovedAuthenticate {
+		if sBACnetConfirmedServiceACKRemovedAuthenticate, ok := typ.(BACnetConfirmedServiceACKRemovedAuthenticate); ok {
+			return sBACnetConfirmedServiceACKRemovedAuthenticate
+		}
+		return BACnetConfirmedServiceACKRemovedAuthenticate{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
@@ -63,9 +83,5 @@ func BACnetConfirmedServiceACKRemovedAuthenticateParse(io spi.ReadBuffer) (BACne
 }
 
 func (m BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetConfirmedServiceACKRemovedAuthenticate); ok {
-		}
-	}
-	serializeFunc(m)
+
 }

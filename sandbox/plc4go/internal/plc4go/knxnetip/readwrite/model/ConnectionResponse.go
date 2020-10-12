@@ -52,6 +52,26 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 	return &ConnectionResponse{communicationChannelId: communicationChannelId, status: status, hpaiDataEndpoint: hpaiDataEndpoint, connectionResponseDataBlock: connectionResponseDataBlock}
 }
 
+func CastIConnectionResponse(structType interface{}) IConnectionResponse {
+	castFunc := func(typ interface{}) IConnectionResponse {
+		if iConnectionResponse, ok := typ.(IConnectionResponse); ok {
+			return iConnectionResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastConnectionResponse(structType interface{}) ConnectionResponse {
+	castFunc := func(typ interface{}) ConnectionResponse {
+		if sConnectionResponse, ok := typ.(ConnectionResponse); ok {
+			return sConnectionResponse
+		}
+		return ConnectionResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m ConnectionResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
@@ -91,7 +111,7 @@ func ConnectionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
 	var hpaiDataEndpoint *HPAIDataEndpoint = nil
-	if (status) == (Status_NO_ERROR) {
+	if bool((status) == (Status_NO_ERROR)) {
 		_message, _err := HPAIDataEndpointParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
@@ -106,7 +126,7 @@ func ConnectionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
 	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
-	if (status) == (Status_NO_ERROR) {
+	if bool((status) == (Status_NO_ERROR)) {
 		_message, _err := ConnectionResponseDataBlockParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
@@ -124,31 +144,26 @@ func ConnectionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 }
 
 func (m ConnectionResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IConnectionResponse); ok {
 
-			// Simple Field (communicationChannelId)
-			var communicationChannelId uint8 = m.communicationChannelId
-			io.WriteUint8(8, (communicationChannelId))
+	// Simple Field (communicationChannelId)
+	communicationChannelId := uint8(m.communicationChannelId)
+	io.WriteUint8(8, (communicationChannelId))
 
-			// Enum field (status)
-			status := m.status
-			status.Serialize(io)
+	// Enum field (status)
+	status := Status(m.status)
+	status.Serialize(io)
 
-			// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
-			var hpaiDataEndpoint *HPAIDataEndpoint = nil
-			if m.hpaiDataEndpoint != nil {
-				hpaiDataEndpoint = m.hpaiDataEndpoint
-				hpaiDataEndpoint.Serialize(io)
-			}
-
-			// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
-			var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
-			if m.connectionResponseDataBlock != nil {
-				connectionResponseDataBlock = m.connectionResponseDataBlock
-				connectionResponseDataBlock.Serialize(io)
-			}
-		}
+	// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
+	var hpaiDataEndpoint *HPAIDataEndpoint = nil
+	if m.hpaiDataEndpoint != nil {
+		hpaiDataEndpoint = m.hpaiDataEndpoint
+		hpaiDataEndpoint.Serialize(io)
 	}
-	serializeFunc(m)
+
+	// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
+	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
+	if m.connectionResponseDataBlock != nil {
+		connectionResponseDataBlock = m.connectionResponseDataBlock
+		connectionResponseDataBlock.Serialize(io)
+	}
 }

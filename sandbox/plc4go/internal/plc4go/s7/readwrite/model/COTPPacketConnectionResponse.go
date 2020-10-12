@@ -52,6 +52,26 @@ func NewCOTPPacketConnectionResponse(destinationReference uint16, sourceReferenc
 	return &COTPPacketConnectionResponse{destinationReference: destinationReference, sourceReference: sourceReference, protocolClass: protocolClass}
 }
 
+func CastICOTPPacketConnectionResponse(structType interface{}) ICOTPPacketConnectionResponse {
+	castFunc := func(typ interface{}) ICOTPPacketConnectionResponse {
+		if iCOTPPacketConnectionResponse, ok := typ.(ICOTPPacketConnectionResponse); ok {
+			return iCOTPPacketConnectionResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastCOTPPacketConnectionResponse(structType interface{}) COTPPacketConnectionResponse {
+	castFunc := func(typ interface{}) COTPPacketConnectionResponse {
+		if sCOTPPacketConnectionResponse, ok := typ.(COTPPacketConnectionResponse); ok {
+			return sCOTPPacketConnectionResponse
+		}
+		return COTPPacketConnectionResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m COTPPacketConnectionResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
@@ -90,21 +110,16 @@ func COTPPacketConnectionResponseParse(io spi.ReadBuffer) (COTPPacketInitializer
 }
 
 func (m COTPPacketConnectionResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(ICOTPPacketConnectionResponse); ok {
 
-			// Simple Field (destinationReference)
-			var destinationReference uint16 = m.destinationReference
-			io.WriteUint16(16, (destinationReference))
+	// Simple Field (destinationReference)
+	destinationReference := uint16(m.destinationReference)
+	io.WriteUint16(16, (destinationReference))
 
-			// Simple Field (sourceReference)
-			var sourceReference uint16 = m.sourceReference
-			io.WriteUint16(16, (sourceReference))
+	// Simple Field (sourceReference)
+	sourceReference := uint16(m.sourceReference)
+	io.WriteUint16(16, (sourceReference))
 
-			// Enum field (protocolClass)
-			protocolClass := m.protocolClass
-			protocolClass.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Enum field (protocolClass)
+	protocolClass := COTPProtocolClass(m.protocolClass)
+	protocolClass.Serialize(io)
 }

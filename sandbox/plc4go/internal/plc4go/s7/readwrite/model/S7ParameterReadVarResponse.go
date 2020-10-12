@@ -51,6 +51,26 @@ func NewS7ParameterReadVarResponse(numItems uint8) S7ParameterInitializer {
 	return &S7ParameterReadVarResponse{numItems: numItems}
 }
 
+func CastIS7ParameterReadVarResponse(structType interface{}) IS7ParameterReadVarResponse {
+	castFunc := func(typ interface{}) IS7ParameterReadVarResponse {
+		if iS7ParameterReadVarResponse, ok := typ.(IS7ParameterReadVarResponse); ok {
+			return iS7ParameterReadVarResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7ParameterReadVarResponse(structType interface{}) S7ParameterReadVarResponse {
+	castFunc := func(typ interface{}) S7ParameterReadVarResponse {
+		if sS7ParameterReadVarResponse, ok := typ.(S7ParameterReadVarResponse); ok {
+			return sS7ParameterReadVarResponse
+		}
+		return S7ParameterReadVarResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7ParameterReadVarResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
 
@@ -74,13 +94,8 @@ func S7ParameterReadVarResponseParse(io spi.ReadBuffer) (S7ParameterInitializer,
 }
 
 func (m S7ParameterReadVarResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7ParameterReadVarResponse); ok {
 
-			// Simple Field (numItems)
-			var numItems uint8 = m.numItems
-			io.WriteUint8(8, (numItems))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (numItems)
+	numItems := uint8(m.numItems)
+	io.WriteUint8(8, (numItems))
 }

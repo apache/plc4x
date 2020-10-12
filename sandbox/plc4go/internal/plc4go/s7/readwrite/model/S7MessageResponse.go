@@ -51,6 +51,26 @@ func NewS7MessageResponse(errorClass uint8, errorCode uint8) S7MessageInitialize
 	return &S7MessageResponse{errorClass: errorClass, errorCode: errorCode}
 }
 
+func CastIS7MessageResponse(structType interface{}) IS7MessageResponse {
+	castFunc := func(typ interface{}) IS7MessageResponse {
+		if iS7MessageResponse, ok := typ.(IS7MessageResponse); ok {
+			return iS7MessageResponse
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7MessageResponse(structType interface{}) S7MessageResponse {
+	castFunc := func(typ interface{}) S7MessageResponse {
+		if sS7MessageResponse, ok := typ.(S7MessageResponse); ok {
+			return sS7MessageResponse
+		}
+		return S7MessageResponse{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7MessageResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Message.LengthInBits()
 
@@ -80,17 +100,12 @@ func S7MessageResponseParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
 }
 
 func (m S7MessageResponse) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IS7MessageResponse); ok {
 
-			// Simple Field (errorClass)
-			var errorClass uint8 = m.errorClass
-			io.WriteUint8(8, (errorClass))
+	// Simple Field (errorClass)
+	errorClass := uint8(m.errorClass)
+	io.WriteUint8(8, (errorClass))
 
-			// Simple Field (errorCode)
-			var errorCode uint8 = m.errorCode
-			io.WriteUint8(8, (errorCode))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (errorCode)
+	errorCode := uint8(m.errorCode)
+	io.WriteUint8(8, (errorCode))
 }

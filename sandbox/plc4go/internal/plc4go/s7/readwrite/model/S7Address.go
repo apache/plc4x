@@ -42,6 +42,26 @@ func S7AddressAddressType(m IS7Address) uint8 {
 	return m.AddressType()
 }
 
+func CastIS7Address(structType interface{}) IS7Address {
+	castFunc := func(typ interface{}) IS7Address {
+		if iS7Address, ok := typ.(IS7Address); ok {
+			return iS7Address
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7Address(structType interface{}) S7Address {
+	castFunc := func(typ interface{}) S7Address {
+		if sS7Address, ok := typ.(S7Address); ok {
+			return sS7Address
+		}
+		return S7Address{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7Address) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -78,16 +98,12 @@ func S7AddressParse(io spi.ReadBuffer) (spi.Message, error) {
 }
 
 func (m S7Address) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iS7Address, ok := typ.(IS7Address); ok {
+	iS7Address := CastIS7Address(m)
 
-			// Discriminator Field (addressType) (Used as input to a switch field)
-			addressType := S7AddressAddressType(iS7Address)
-			io.WriteUint8(8, (addressType))
+	// Discriminator Field (addressType) (Used as input to a switch field)
+	addressType := uint8(S7AddressAddressType(iS7Address))
+	io.WriteUint8(8, (addressType))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iS7Address.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iS7Address.Serialize(io)
 }

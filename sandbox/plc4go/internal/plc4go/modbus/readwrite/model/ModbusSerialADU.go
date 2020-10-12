@@ -43,6 +43,26 @@ func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu 
 	return &ModbusSerialADU{transactionId: transactionId, length: length, address: address, pdu: pdu}
 }
 
+func CastIModbusSerialADU(structType interface{}) IModbusSerialADU {
+	castFunc := func(typ interface{}) IModbusSerialADU {
+		if iModbusSerialADU, ok := typ.(IModbusSerialADU); ok {
+			return iModbusSerialADU
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastModbusSerialADU(structType interface{}) ModbusSerialADU {
+	castFunc := func(typ interface{}) ModbusSerialADU {
+		if sModbusSerialADU, ok := typ.(ModbusSerialADU); ok {
+			return sModbusSerialADU
+		}
+		return ModbusSerialADU{}
+	}
+	return castFunc(structType)
+}
+
 func (m ModbusSerialADU) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -91,7 +111,7 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error)
 	var address uint8 = io.ReadUint8(8)
 
 	// Simple Field (pdu)
-	_pduMessage, _err := ModbusPDUParse(io, bool(response))
+	_pduMessage, _err := ModbusPDUParse(io, response)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'pdu'. " + _err.Error())
 	}
@@ -106,28 +126,23 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error)
 }
 
 func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IModbusSerialADU); ok {
 
-			// Simple Field (transactionId)
-			var transactionId uint16 = m.transactionId
-			io.WriteUint16(16, (transactionId))
+	// Simple Field (transactionId)
+	transactionId := uint16(m.transactionId)
+	io.WriteUint16(16, (transactionId))
 
-			// Reserved Field (reserved)
-			io.WriteUint16(16, uint16(0x0000))
+	// Reserved Field (reserved)
+	io.WriteUint16(16, uint16(0x0000))
 
-			// Simple Field (length)
-			var length uint16 = m.length
-			io.WriteUint16(16, (length))
+	// Simple Field (length)
+	length := uint16(m.length)
+	io.WriteUint16(16, (length))
 
-			// Simple Field (address)
-			var address uint8 = m.address
-			io.WriteUint8(8, (address))
+	// Simple Field (address)
+	address := uint8(m.address)
+	io.WriteUint8(8, (address))
 
-			// Simple Field (pdu)
-			var pdu ModbusPDU = m.pdu
-			pdu.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (pdu)
+	pdu := ModbusPDU(m.pdu)
+	pdu.Serialize(io)
 }

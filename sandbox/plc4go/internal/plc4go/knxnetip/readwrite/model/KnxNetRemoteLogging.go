@@ -47,6 +47,26 @@ func NewKnxNetRemoteLogging(version uint8) ServiceIdInitializer {
 	return &KnxNetRemoteLogging{version: version}
 }
 
+func CastIKnxNetRemoteLogging(structType interface{}) IKnxNetRemoteLogging {
+	castFunc := func(typ interface{}) IKnxNetRemoteLogging {
+		if iKnxNetRemoteLogging, ok := typ.(IKnxNetRemoteLogging); ok {
+			return iKnxNetRemoteLogging
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastKnxNetRemoteLogging(structType interface{}) KnxNetRemoteLogging {
+	castFunc := func(typ interface{}) KnxNetRemoteLogging {
+		if sKnxNetRemoteLogging, ok := typ.(KnxNetRemoteLogging); ok {
+			return sKnxNetRemoteLogging
+		}
+		return KnxNetRemoteLogging{}
+	}
+	return castFunc(structType)
+}
+
 func (m KnxNetRemoteLogging) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
@@ -70,13 +90,8 @@ func KnxNetRemoteLoggingParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
 }
 
 func (m KnxNetRemoteLogging) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IKnxNetRemoteLogging); ok {
 
-			// Simple Field (version)
-			var version uint8 = m.version
-			io.WriteUint8(8, (version))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (version)
+	version := uint8(m.version)
+	io.WriteUint8(8, (version))
 }

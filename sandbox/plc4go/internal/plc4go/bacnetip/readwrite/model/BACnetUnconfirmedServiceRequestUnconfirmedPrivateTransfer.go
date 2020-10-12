@@ -57,6 +57,26 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8
 	return &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{vendorId: vendorId, serviceNumber: serviceNumber, values: values}
 }
 
+func CastIBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+		if iBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
+			return iBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+		if sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
+			return sBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+		}
+		return BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{}
+	}
+	return castFunc(structType)
+}
+
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
@@ -119,8 +139,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io spi.ReadB
 	// Array field (values)
 	var values []int8
 	// Length array
-	_valuesLength := uint16((len) - (8))
-	_valuesEndPos := io.GetPos() + _valuesLength
+	_valuesLength := uint16(len) - uint16(uint16(8))
+	_valuesEndPos := io.GetPos() + uint16(_valuesLength)
 	for io.GetPos() < _valuesEndPos {
 		values = append(values, io.ReadInt8(8))
 	}
@@ -136,36 +156,31 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io spi.ReadB
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer); ok {
 
-			// Const Field (vendorIdHeader)
-			io.WriteUint8(8, 0x09)
+	// Const Field (vendorIdHeader)
+	io.WriteUint8(8, 0x09)
 
-			// Simple Field (vendorId)
-			var vendorId uint8 = m.vendorId
-			io.WriteUint8(8, (vendorId))
+	// Simple Field (vendorId)
+	vendorId := uint8(m.vendorId)
+	io.WriteUint8(8, (vendorId))
 
-			// Const Field (serviceNumberHeader)
-			io.WriteUint8(8, 0x1A)
+	// Const Field (serviceNumberHeader)
+	io.WriteUint8(8, 0x1A)
 
-			// Simple Field (serviceNumber)
-			var serviceNumber uint16 = m.serviceNumber
-			io.WriteUint16(16, (serviceNumber))
+	// Simple Field (serviceNumber)
+	serviceNumber := uint16(m.serviceNumber)
+	io.WriteUint16(16, (serviceNumber))
 
-			// Const Field (listOfValuesOpeningTag)
-			io.WriteUint8(8, 0x2E)
+	// Const Field (listOfValuesOpeningTag)
+	io.WriteUint8(8, 0x2E)
 
-			// Array Field (values)
-			if m.values != nil {
-				for _, _element := range m.values {
-					io.WriteInt8(8, _element)
-				}
-			}
-
-			// Const Field (listOfValuesClosingTag)
-			io.WriteUint8(8, 0x2F)
+	// Array Field (values)
+	if m.values != nil {
+		for _, _element := range m.values {
+			io.WriteInt8(8, _element)
 		}
 	}
-	serializeFunc(m)
+
+	// Const Field (listOfValuesClosingTag)
+	io.WriteUint8(8, 0x2F)
 }

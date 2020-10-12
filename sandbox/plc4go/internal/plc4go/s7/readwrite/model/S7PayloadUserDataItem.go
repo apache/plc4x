@@ -47,6 +47,26 @@ func S7PayloadUserDataItemCpuFunctionType(m IS7PayloadUserDataItem) uint8 {
 	return m.CpuFunctionType()
 }
 
+func CastIS7PayloadUserDataItem(structType interface{}) IS7PayloadUserDataItem {
+	castFunc := func(typ interface{}) IS7PayloadUserDataItem {
+		if iS7PayloadUserDataItem, ok := typ.(IS7PayloadUserDataItem); ok {
+			return iS7PayloadUserDataItem
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastS7PayloadUserDataItem(structType interface{}) S7PayloadUserDataItem {
+	castFunc := func(typ interface{}) S7PayloadUserDataItem {
+		if sS7PayloadUserDataItem, ok := typ.(S7PayloadUserDataItem); ok {
+			return sS7PayloadUserDataItem
+		}
+		return S7PayloadUserDataItem{}
+	}
+	return castFunc(structType)
+}
+
 func (m S7PayloadUserDataItem) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
@@ -123,32 +143,28 @@ func S7PayloadUserDataItemParse(io spi.ReadBuffer, cpuFunctionType uint8) (spi.M
 }
 
 func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if iS7PayloadUserDataItem, ok := typ.(IS7PayloadUserDataItem); ok {
+	iS7PayloadUserDataItem := CastIS7PayloadUserDataItem(m)
 
-			// Enum field (returnCode)
-			returnCode := m.returnCode
-			returnCode.Serialize(io)
+	// Enum field (returnCode)
+	returnCode := DataTransportErrorCode(m.returnCode)
+	returnCode.Serialize(io)
 
-			// Enum field (transportSize)
-			transportSize := m.transportSize
-			transportSize.Serialize(io)
+	// Enum field (transportSize)
+	transportSize := DataTransportSize(m.transportSize)
+	transportSize.Serialize(io)
 
-			// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-			dataLength := uint16((m.LengthInBytes()) - (4))
-			io.WriteUint16(16, (dataLength))
+	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
+	io.WriteUint16(16, (dataLength))
 
-			// Simple Field (szlId)
-			var szlId SzlId = m.szlId
-			szlId.Serialize(io)
+	// Simple Field (szlId)
+	szlId := SzlId(m.szlId)
+	szlId.Serialize(io)
 
-			// Simple Field (szlIndex)
-			var szlIndex uint16 = m.szlIndex
-			io.WriteUint16(16, (szlIndex))
+	// Simple Field (szlIndex)
+	szlIndex := uint16(m.szlIndex)
+	io.WriteUint16(16, (szlIndex))
 
-			// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-			iS7PayloadUserDataItem.Serialize(io)
-		}
-	}
-	serializeFunc(m)
+	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+	iS7PayloadUserDataItem.Serialize(io)
 }

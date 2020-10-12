@@ -69,6 +69,16 @@ func (e DataTransportSize) GetSizeInBits() bool {
 	}
 }
 
+func CastDataTransportSize(structType interface{}) DataTransportSize {
+	castFunc := func(typ interface{}) DataTransportSize {
+		if sDataTransportSize, ok := typ.(DataTransportSize); ok {
+			return sDataTransportSize
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func DataTransportSizeParse(io spi.ReadBuffer) (DataTransportSize, error) {
 	// TODO: Implement ...
 	return 0, nil

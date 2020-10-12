@@ -49,6 +49,26 @@ func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) APDUInitializer {
 	return &APDUReject{originalInvokeId: originalInvokeId, rejectReason: rejectReason}
 }
 
+func CastIAPDUReject(structType interface{}) IAPDUReject {
+	castFunc := func(typ interface{}) IAPDUReject {
+		if iAPDUReject, ok := typ.(IAPDUReject); ok {
+			return iAPDUReject
+		}
+		return nil
+	}
+	return castFunc(structType)
+}
+
+func CastAPDUReject(structType interface{}) APDUReject {
+	castFunc := func(typ interface{}) APDUReject {
+		if sAPDUReject, ok := typ.(APDUReject); ok {
+			return sAPDUReject
+		}
+		return APDUReject{}
+	}
+	return castFunc(structType)
+}
+
 func (m APDUReject) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.APDU.LengthInBits()
 
@@ -92,20 +112,15 @@ func APDURejectParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUReject) Serialize(io spi.WriteBuffer) {
-	serializeFunc := func(typ interface{}) {
-		if _, ok := typ.(IAPDUReject); ok {
 
-			// Reserved Field (reserved)
-			io.WriteUint8(4, uint8(0x00))
+	// Reserved Field (reserved)
+	io.WriteUint8(4, uint8(0x00))
 
-			// Simple Field (originalInvokeId)
-			var originalInvokeId uint8 = m.originalInvokeId
-			io.WriteUint8(8, (originalInvokeId))
+	// Simple Field (originalInvokeId)
+	originalInvokeId := uint8(m.originalInvokeId)
+	io.WriteUint8(8, (originalInvokeId))
 
-			// Simple Field (rejectReason)
-			var rejectReason uint8 = m.rejectReason
-			io.WriteUint8(8, (rejectReason))
-		}
-	}
-	serializeFunc(m)
+	// Simple Field (rejectReason)
+	rejectReason := uint8(m.rejectReason)
+	io.WriteUint8(8, (rejectReason))
 }

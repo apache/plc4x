@@ -69,6 +69,16 @@ func (e COTPTpduSize) GetSizeInBytes() uint16 {
 	}
 }
 
+func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
+	castFunc := func(typ interface{}) COTPTpduSize {
+		if sCOTPTpduSize, ok := typ.(COTPTpduSize); ok {
+			return sCOTPTpduSize
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func COTPTpduSizeParse(io spi.ReadBuffer) (COTPTpduSize, error) {
 	// TODO: Implement ...
 	return 0, nil

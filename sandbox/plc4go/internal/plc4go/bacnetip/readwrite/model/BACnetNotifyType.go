@@ -28,6 +28,16 @@ const (
 	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
+func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
+	castFunc := func(typ interface{}) BACnetNotifyType {
+		if sBACnetNotifyType, ok := typ.(BACnetNotifyType); ok {
+			return sBACnetNotifyType
+		}
+		return 0
+	}
+	return castFunc(structType)
+}
+
 func BACnetNotifyTypeParse(io spi.ReadBuffer) (BACnetNotifyType, error) {
 	// TODO: Implement ...
 	return 0, nil
