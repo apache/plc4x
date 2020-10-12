@@ -20,6 +20,7 @@ package model
 
 import (
 	"errors"
+	"math"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -111,8 +112,8 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 	var data []int8
 	// Count array
 	{
-		data := make([]int8, spi.InlineIf(transportSize.sizeInBits, uint16(CEIL(uint16(dataLength)/uint16(uint16(8.0)))), uint16(dataLength)))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.sizeInBits, uint16(CEIL(uint16(dataLength)/uint16(uint16(8.0)))), uint16(dataLength))); curItem++ {
+		data := make([]int8, spi.InlineIf(transportSize.GetSizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(uint16(8.0)))), uint16(dataLength)))
+		for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.GetSizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(uint16(8.0)))), uint16(dataLength))); curItem++ {
 
 			data = append(data, io.ReadInt8(8))
 		}
@@ -142,7 +143,7 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
 	transportSize.Serialize(io)
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.data))) * uint16(uint16(spi.InlineIf(bool(bool((m.transportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(m.transportSize.sizeInBits, uint16(uint16(8)), uint16(uint16(1)))))))))
+	dataLength := uint16(uint16(uint16(len(m.data))) * uint16(uint16(spi.InlineIf(bool(bool((m.transportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(m.transportSize.GetSizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
 	io.WriteUint16(16, (dataLength))
 
 	// Array Field (data)
