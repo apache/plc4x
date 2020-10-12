@@ -63,7 +63,6 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/m
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 <#if helper.getRequiredImports()?has_content>
     <#list helper.getRequiredImports() as import>
     ${import}
