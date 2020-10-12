@@ -18,15 +18,9 @@ under the License.
 */
 package org.apache.plc4x.language.go.hack;
 
-import org.apache.plc4x.plugins.codegenerator.types.references.IntegerTypeReference;
+import org.apache.plc4x.plugins.codegenerator.types.references.FloatTypeReference;
 
-public class DefaultFloatTypeReference implements IntegerTypeReference {
-
-    private final int sizeInBits;
-
-    public DefaultFloatTypeReference(int sizeInBits) {
-        this.sizeInBits = sizeInBits;
-    }
+public class DefaultFloatTypeReference implements FloatTypeReference {
 
     @Override
     public SimpleBaseType getBaseType() {
@@ -35,7 +29,17 @@ public class DefaultFloatTypeReference implements IntegerTypeReference {
 
     @Override
     public int getSizeInBits() {
-        return sizeInBits;
+        return 64;
+    }
+
+    @Override
+    public int getExponent() {
+        return 11;
+    }
+
+    @Override
+    public int getMantissa() {
+        return 52;
     }
 
 }

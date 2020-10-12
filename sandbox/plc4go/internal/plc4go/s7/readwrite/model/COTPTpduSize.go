@@ -32,7 +32,7 @@ const (
 	COTPTpduSize_SIZE_8192 COTPTpduSize = 0x0d
 )
 
-func (e COTPTpduSize) GetSizeInBytes() uint16 {
+func (e COTPTpduSize) SizeInBytes() uint16 {
 	switch e {
 	case 0x07:
 		{ /* '0x07' */

@@ -50,7 +50,7 @@ const (
 	TransportSize_DATE_AND_TIME TransportSize = 0x0F
 )
 
-func (e TransportSize) GetSupported_S7_300() bool {
+func (e TransportSize) Supported_S7_300() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -123,7 +123,7 @@ func (e TransportSize) GetSupported_S7_300() bool {
 	}
 }
 
-func (e TransportSize) GetSupported_LOGO() bool {
+func (e TransportSize) Supported_LOGO() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -196,7 +196,7 @@ func (e TransportSize) GetSupported_LOGO() bool {
 	}
 }
 
-func (e TransportSize) GetSizeInBytes() uint8 {
+func (e TransportSize) SizeInBytes() uint8 {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -269,7 +269,7 @@ func (e TransportSize) GetSizeInBytes() uint8 {
 	}
 }
 
-func (e TransportSize) GetSupported_S7_400() bool {
+func (e TransportSize) Supported_S7_400() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -342,7 +342,7 @@ func (e TransportSize) GetSupported_S7_400() bool {
 	}
 }
 
-func (e TransportSize) GetSupported_S7_1200() bool {
+func (e TransportSize) Supported_S7_1200() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -415,7 +415,7 @@ func (e TransportSize) GetSupported_S7_1200() bool {
 	}
 }
 
-func (e TransportSize) GetSizeCode() uint8 {
+func (e TransportSize) SizeCode() uint8 {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -488,7 +488,7 @@ func (e TransportSize) GetSizeCode() uint8 {
 	}
 }
 
-func (e TransportSize) GetSupported_S7_1500() bool {
+func (e TransportSize) Supported_S7_1500() bool {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -561,7 +561,7 @@ func (e TransportSize) GetSupported_S7_1500() bool {
 	}
 }
 
-func (e TransportSize) GetDataTransportSize() DataTransportSize {
+func (e TransportSize) DataTransportSize() DataTransportSize {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -634,7 +634,7 @@ func (e TransportSize) GetDataTransportSize() DataTransportSize {
 	}
 }
 
-func (e TransportSize) GetBaseType() TransportSize {
+func (e TransportSize) BaseType() TransportSize {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */
@@ -707,7 +707,7 @@ func (e TransportSize) GetBaseType() TransportSize {
 	}
 }
 
-func (e TransportSize) GetDataProtocolId() uint8 {
+func (e TransportSize) DataProtocolId() uint8 {
 	switch e {
 	case 0x00:
 		{ /* '0x00' */

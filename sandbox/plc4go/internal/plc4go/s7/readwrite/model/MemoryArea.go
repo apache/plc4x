@@ -34,7 +34,7 @@ const (
 	MemoryArea_LOCAL_DATA               MemoryArea = 0x86
 )
 
-func (e MemoryArea) GetShortName() string {
+func (e MemoryArea) ShortName() string {
 	switch e {
 	case 0x1C:
 		{ /* '0x1C' */

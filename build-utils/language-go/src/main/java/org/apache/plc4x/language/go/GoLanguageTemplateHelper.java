@@ -24,6 +24,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.plc4x.language.go.hack.DefaultBooleanTypeReference;
 import org.apache.plc4x.language.go.hack.DefaultFloatTypeReference;
 import org.apache.plc4x.language.go.hack.DefaultIntegerTypeReference;
+import org.apache.plc4x.language.go.utils.FieldUtils;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
 import org.apache.plc4x.plugins.codegenerator.types.enums.EnumValue;
@@ -432,6 +433,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 ((vl.getChild().getChild() != null) ?
                     "." + toVariableExpression(typeReference, vl.getChild().getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
+        // If we are accessing enum constants, these also need to be output differently.
+        else if ((getFieldForNameFromCurrent(vl.getName()) instanceof EnumField) && (vl.getChild() != null)) {
+            return vl.getName() + "." + StringUtils.capitalize(vl.getChild().getName()) + "()" +
+                ((vl.getChild().getChild() != null) ?
+                    "." + toVariableExpression(typeReference, vl.getChild().getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+        }
         // CAST expressions are special as we need to add a ".class" to the second parameter in Java.
         else if ("CAST".equals(vl.getName())) {
             if ((vl.getArgs() == null) || (vl.getArgs().size() != 2)) {
@@ -530,10 +537,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return getCastExpressionForTypeReference(typeReference) + "(" + ((VariableLiteral) vl.getArgs().get(0)).getName() + "ArraySizeInBytes(" + sb.toString() + "))";
         }
         else if("CEIL".equals(vl.getName())) {
-            VariableLiteral va = (VariableLiteral) vl.getArgs().get(0);
+            Term va = vl.getArgs().get(0);
             // The Ceil function expects 64 bit floating point values.
-            TypeReference tr = new DefaultFloatTypeReference(64);
-            return "math.Ceil(" + toVariableExpression(tr, va, parserArguments, serializerArguments, true, suppressPointerAccess);
+            TypeReference tr = new DefaultFloatTypeReference();
+            return "math.Ceil(" + toExpression(tr, va, parserArguments, serializerArguments, serialize, suppressPointerAccess) + ")";
         }
         // All uppercase names are not fields, but utility methods.
         else if (vl.getName().equals(vl.getName().toUpperCase())) {
@@ -700,6 +707,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
             (field instanceof ConstField))) {
             imports.add("\"strconv\"");
+        }
+
+        // For CEIL functions: "math"
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            FieldUtils.contains(field, "CEIL"))) {
+            imports.add("\"math\"");
         }
 
         return imports;
