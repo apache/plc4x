@@ -683,17 +683,24 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public List<String> getRequiredImports() {
         List<String> imports = new ArrayList<>();
-        // At least one reserved field or simple field with complex type
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
-            (field instanceof ReservedField))) {
-            imports.add("log \"github.com/sirupsen/logrus\"");
-        }
 
         // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
             (field instanceof ConstField) || (field instanceof SwitchField) ||
                 ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
             imports.add("\"errors\"");
+        }
+
+        // At least one reserved field or simple field with complex type
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            (field instanceof ReservedField))) {
+            imports.add("log \"github.com/sirupsen/logrus\"");
+        }
+
+        // For CEIL functions: "math"
+        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+            FieldUtils.contains(field, "CEIL"))) {
+            imports.add("\"math\"");
         }
 
         // "Fields with complex type": "reflect"
@@ -707,12 +714,6 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
             (field instanceof ConstField))) {
             imports.add("\"strconv\"");
-        }
-
-        // For CEIL functions: "math"
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
-            FieldUtils.contains(field, "CEIL"))) {
-            imports.add("\"math\"");
         }
 
         return imports;
