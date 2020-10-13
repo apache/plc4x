@@ -31,7 +31,7 @@ type BACnetServiceAck struct {
 type IBACnetServiceAck interface {
 	spi.Message
 	ServiceChoice() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type BACnetServiceAckInitializer interface {
@@ -126,13 +126,20 @@ func BACnetServiceAckParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func BACnetServiceAckSerialize(io spi.WriteBuffer, m BACnetServiceAck, i IBACnetServiceAck, childSerialize func()) {
+func BACnetServiceAckSerialize(io spi.WriteBuffer, m BACnetServiceAck, i IBACnetServiceAck, childSerialize func() error) error {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(i.ServiceChoice())
-	io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	if _serviceChoiceErr != nil {
+		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

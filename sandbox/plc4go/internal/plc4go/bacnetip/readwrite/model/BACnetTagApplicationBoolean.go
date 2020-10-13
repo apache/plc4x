@@ -30,7 +30,7 @@ type BACnetTagApplicationBoolean struct {
 // The corresponding interface
 type IBACnetTagApplicationBoolean interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,9 +86,10 @@ func BACnetTagApplicationBooleanParse(io *spi.ReadBuffer) (BACnetTagInitializer,
 	return NewBACnetTagApplicationBoolean(), nil
 }
 
-func (m BACnetTagApplicationBoolean) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationBoolean) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

@@ -33,7 +33,7 @@ type TunnelingResponseDataBlock struct {
 // The corresponding interface
 type ITunnelingResponseDataBlock interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status IStatus) spi.Message {
@@ -112,22 +112,35 @@ func TunnelingResponseDataBlockParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewTunnelingResponseDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
-func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) {
+func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	if _structureLengthErr != nil {
+		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.communicationChannelId)
-	io.WriteUint8(8, (communicationChannelId))
+	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+	if _communicationChannelIdErr != nil {
+		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.sequenceCounter)
-	io.WriteUint8(8, (sequenceCounter))
+	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
+	if _sequenceCounterErr != nil {
+		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+	}
 
 	// Enum field (status)
 	status := CastStatus(m.status)
-	status.Serialize(io)
+	_statusErr := status.Serialize(io)
+	if _statusErr != nil {
+		return errors.New("Error serializing 'status' field " + _statusErr.Error())
+	}
 
+	return nil
 }

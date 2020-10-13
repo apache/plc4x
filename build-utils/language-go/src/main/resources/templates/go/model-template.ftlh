@@ -107,7 +107,7 @@ type I${type.name} interface {
         </#if>
     </#list>
 </#if>
-    Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>)
+    Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
 }
 
 <#if helper.isDiscriminatedChildTypeDefinition()>
@@ -663,9 +663,9 @@ func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>,
 }
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
-func ${type.name}Serialize(io spi.WriteBuffer, m ${type.name}, i I${type.name}, childSerialize func()<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) {
+func ${type.name}Serialize(io spi.WriteBuffer, m ${type.name}, i I${type.name}, childSerialize func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 <#else>
-func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) {
+func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 </#if>
     <#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
     <#if arraySizeInBytesHelpers?has_content>
@@ -681,7 +681,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
         </#list>
     </#if>
     <#if helper.isDiscriminatedChildTypeDefinition()>
-    ser := func() {
+    ser := func() error {
     </#if>
     <#list type.fields as field>
         <#switch field.typeName>
@@ -698,17 +698,20 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
         for _, _element := range m.${arrayField.name} {
                 <#if helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type>
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element")}
+            _elementErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element")}
                 <#else>
                     <#assign complexTypeReference = arrayField.type>
                     <#if helper.needsVariable(arrayField, "lastItem", true)>
             var lastItem bool = curItem == (itemCount - 1)
                     </#if>
-            _element.Serialize(io<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+            _elementErr := _element.Serialize(io<#if helper.getSerializerTerms(field.params)?has_content>, <#list helper.getSerializerTerms(field.params) as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
                 </#if>
-                    <#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
+            if _elementErr != nil {
+                return errors.New("Error serializing '${arrayField.name}' field " + _elementErr.Error())
+            }
+                <#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
             curItem++
-                    </#if>
+                </#if>
         }
     }
                 <#break>
@@ -722,7 +725,10 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
         // Create an array of all the bytes written in this message element so far.
         checksumRawData []uint8 = io.getBytes(startPos, io.GetPos())
         _checksum = ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")}
+        _checksumErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_checksum)")}
+        if _elementErr != nil {
+            return errors.New("Error serializing 'checksum' field " + _elementErr.Error())
+        }
     }
                 <#break>
             <#case "const">
@@ -730,7 +736,10 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign simpleTypeReference = constField.type>
 
     // Const Field (${constField.name})
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)}
+    _${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, constField.referenceValue)}
+    if _${constField.name}Err != nil {
+        return errors.New("Error serializing '${constField.name}' field " + _${constField.name}Err.Error())
+    }
                 <#break>
             <#case "discriminator">
                 <#assign discriminatorField = field>
@@ -738,14 +747,20 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
 
     // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
     ${discriminatorField.name} := ${helper.getLanguageTypeNameForField(field)}(i.${discriminatorField.name?cap_first}())
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")}
+    _${discriminatorField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + discriminatorField.name + ")")}
+    if _${discriminatorField.name}Err != nil {
+        return errors.New("Error serializing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
+    }
                 <#break>
             <#case "enum">
                 <#assign enumField = field>
 
     // Enum field (${enumField.name})
     ${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name})
-    ${enumField.name}.Serialize(io)
+    _${enumField.name}Err := ${enumField.name}.Serialize(io)
+    if _${enumField.name}Err != nil {
+        return errors.New("Error serializing '${enumField.name}' field " + _${enumField.name}Err.Error())
+    }
                 <#break>
             <#case "implicit">
                 <#assign implicitField = field>
@@ -753,7 +768,10 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
 
     // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     ${implicitField.name} := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(implicitField, implicitField.serializeExpression, type.parserArguments)})
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")}
+    _${implicitField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + implicitField.name + ")")}
+    if _${implicitField.name}Err != nil {
+        return errors.New("Error serializing '${implicitField.name}' field " + _${implicitField.name}Err.Error())
+    }
                 <#break>
             <#case "manualArray">
                 <#assign manualArrayField = field>
@@ -780,12 +798,15 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#if helper.isSimpleTypeReference(optionalField.type)>
                     <#assign simpleTypeReference = optionalField.type>
         ${optionalField.name} = m.${optionalField.name}
-        ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")")}
+        _${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = optionalField.type>
         ${optionalField.name} = m.${optionalField.name}
-        CastI${helper.getLanguageTypeNameForField(field)}(*${optionalField.name}).Serialize(io)
+        _${optionalField.name}Err := CastI${helper.getLanguageTypeNameForField(field)}(*${optionalField.name}).Serialize(io)
                 </#if>
+        if _${optionalField.name}Err != nil {
+            return errors.New("Error serializing '${optionalField.name}' field " + _${optionalField.name}Err.Error())
+        }
     }
                 <#break>
             <#case "padding">
@@ -797,7 +818,10 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
         _timesPadding := uint8(${helper.toSerializationExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
         for ;_timesPadding > 0; _timesPadding-- {
             _paddingValue := ${helper.getLanguageTypeNameForField(field)}(${helper.toSerializationExpression(paddingField, paddingField.paddingValue, type.parserArguments)})
-            ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")}
+            _paddingErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(_paddingValue)")}
+            if _paddingErr != nil {
+                return errors.New("Error serializing 'padding' field " + _paddingErr.Error())
+            }
         }
     }
                 <#break>
@@ -806,7 +830,12 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign simpleTypeReference = reservedField.type>
 
     // Reserved Field (reserved)
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))}
+    {
+        _err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, helper.getReservedValue(field))}
+        if _err != nil {
+            return errors.New("Error serializing 'reserved' field " + _err.Error())
+        }
+    }
                 <#break>
             <#case "simple">
                 <#assign simpleField = field>
@@ -815,18 +844,24 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#if helper.isSimpleTypeReference(simpleField.type)>
                     <#assign simpleTypeReference = simpleField.type>
     ${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
-    ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")}
+    _${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = simpleField.type>
     ${simpleField.name} := CastI${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
-    ${simpleField.name}.Serialize(io)
+    _${simpleField.name}Err := ${simpleField.name}.Serialize(io)
                 </#if>
+    if _${simpleField.name}Err != nil {
+        return errors.New("Error serializing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+    }
                 <#break>
             <#case "switch">
                 <#assign switchField = field>
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-    childSerialize()
+    _typeSwitchErr := childSerialize()
+    if _typeSwitchErr != nil {
+        return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+    }
                 <#break>
             <#case "virtual">
                 <#break>
@@ -834,8 +869,11 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
     </#list>
 
     <#if helper.isDiscriminatedChildTypeDefinition()>
+        return nil
     }
-    ${type.parentType.name}Serialize(io, m.${type.parentType.name}, CastI${type.parentType.name}(m), ser)
+    return ${type.parentType.name}Serialize(io, m.${type.parentType.name}, CastI${type.parentType.name}(m), ser)
+    <#else>
+    return nil
     </#if>
 }
 </#outputformat>

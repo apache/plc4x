@@ -33,7 +33,7 @@ type SzlId struct {
 // The corresponding interface
 type ISzlId interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewSzlId(typeClass ISzlModuleTypeClass, sublistExtract uint8, sublistList ISzlSublist) spi.Message {
@@ -103,18 +103,28 @@ func SzlIdParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewSzlId(typeClass, sublistExtract, sublistList), nil
 }
 
-func (m SzlId) Serialize(io spi.WriteBuffer) {
+func (m SzlId) Serialize(io spi.WriteBuffer) error {
 
 	// Enum field (typeClass)
 	typeClass := CastSzlModuleTypeClass(m.typeClass)
-	typeClass.Serialize(io)
+	_typeClassErr := typeClass.Serialize(io)
+	if _typeClassErr != nil {
+		return errors.New("Error serializing 'typeClass' field " + _typeClassErr.Error())
+	}
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.sublistExtract)
-	io.WriteUint8(4, (sublistExtract))
+	_sublistExtractErr := io.WriteUint8(4, (sublistExtract))
+	if _sublistExtractErr != nil {
+		return errors.New("Error serializing 'sublistExtract' field " + _sublistExtractErr.Error())
+	}
 
 	// Enum field (sublistList)
 	sublistList := CastSzlSublist(m.sublistList)
-	sublistList.Serialize(io)
+	_sublistListErr := sublistList.Serialize(io)
+	if _sublistListErr != nil {
+		return errors.New("Error serializing 'sublistList' field " + _sublistListErr.Error())
+	}
 
+	return nil
 }

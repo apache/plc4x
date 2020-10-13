@@ -39,7 +39,7 @@ type S7ParameterUserDataItemCPUFunctions struct {
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
 	IS7ParameterUserDataItem
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -193,54 +193,82 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *spi.ReadBuffer) (S7ParameterUs
 	return NewS7ParameterUserDataItemCPUFunctions(method, cpuFunctionType, cpuFunctionGroup, cpuSubfunction, sequenceNumber, dataUnitReferenceNumber, lastDataUnit, errorCode), nil
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-		io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		if _itemLengthErr != nil {
+			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
+		}
 
 		// Simple Field (method)
 		method := uint8(m.method)
-		io.WriteUint8(8, (method))
+		_methodErr := io.WriteUint8(8, (method))
+		if _methodErr != nil {
+			return errors.New("Error serializing 'method' field " + _methodErr.Error())
+		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.cpuFunctionType)
-		io.WriteUint8(4, (cpuFunctionType))
+		_cpuFunctionTypeErr := io.WriteUint8(4, (cpuFunctionType))
+		if _cpuFunctionTypeErr != nil {
+			return errors.New("Error serializing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
+		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.cpuFunctionGroup)
-		io.WriteUint8(4, (cpuFunctionGroup))
+		_cpuFunctionGroupErr := io.WriteUint8(4, (cpuFunctionGroup))
+		if _cpuFunctionGroupErr != nil {
+			return errors.New("Error serializing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
+		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.cpuSubfunction)
-		io.WriteUint8(8, (cpuSubfunction))
+		_cpuSubfunctionErr := io.WriteUint8(8, (cpuSubfunction))
+		if _cpuSubfunctionErr != nil {
+			return errors.New("Error serializing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
+		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.sequenceNumber)
-		io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		if _sequenceNumberErr != nil {
+			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		}
 
 		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
 		var dataUnitReferenceNumber *uint8 = nil
 		if m.dataUnitReferenceNumber != nil {
 			dataUnitReferenceNumber = m.dataUnitReferenceNumber
-			io.WriteUint8(8, *(dataUnitReferenceNumber))
+			_dataUnitReferenceNumberErr := io.WriteUint8(8, *(dataUnitReferenceNumber))
+			if _dataUnitReferenceNumberErr != nil {
+				return errors.New("Error serializing 'dataUnitReferenceNumber' field " + _dataUnitReferenceNumberErr.Error())
+			}
 		}
 
 		// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
 		var lastDataUnit *uint8 = nil
 		if m.lastDataUnit != nil {
 			lastDataUnit = m.lastDataUnit
-			io.WriteUint8(8, *(lastDataUnit))
+			_lastDataUnitErr := io.WriteUint8(8, *(lastDataUnit))
+			if _lastDataUnitErr != nil {
+				return errors.New("Error serializing 'lastDataUnit' field " + _lastDataUnitErr.Error())
+			}
 		}
 
 		// Optional Field (errorCode) (Can be skipped, if the value is null)
 		var errorCode *uint16 = nil
 		if m.errorCode != nil {
 			errorCode = m.errorCode
-			io.WriteUint16(16, *(errorCode))
+			_errorCodeErr := io.WriteUint16(16, *(errorCode))
+			if _errorCodeErr != nil {
+				return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+			}
 		}
 
+		return nil
 	}
-	S7ParameterUserDataItemSerialize(io, m.S7ParameterUserDataItem, CastIS7ParameterUserDataItem(m), ser)
+	return S7ParameterUserDataItemSerialize(io, m.S7ParameterUserDataItem, CastIS7ParameterUserDataItem(m), ser)
 }

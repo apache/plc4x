@@ -31,7 +31,7 @@ type S7Address struct {
 type IS7Address interface {
 	spi.Message
 	AddressType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7AddressInitializer interface {
@@ -100,13 +100,20 @@ func S7AddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func S7AddressSerialize(io spi.WriteBuffer, m S7Address, i IS7Address, childSerialize func()) {
+func S7AddressSerialize(io spi.WriteBuffer, m S7Address, i IS7Address, childSerialize func() error) error {
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(i.AddressType())
-	io.WriteUint8(8, (addressType))
+	_addressTypeErr := io.WriteUint8(8, (addressType))
+	if _addressTypeErr != nil {
+		return errors.New("Error serializing 'addressType' field " + _addressTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

@@ -31,7 +31,7 @@ type KNXGroupAddress struct {
 type IKNXGroupAddress interface {
 	spi.Message
 	NumLevels() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type KNXGroupAddressInitializer interface {
@@ -95,9 +95,13 @@ func KNXGroupAddressParse(io *spi.ReadBuffer, numLevels uint8) (spi.Message, err
 	return initializer.initialize(), nil
 }
 
-func KNXGroupAddressSerialize(io spi.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func()) {
+func KNXGroupAddressSerialize(io spi.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func() error) error {
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

@@ -31,7 +31,7 @@ type ConnectionResponseDataBlock struct {
 type IConnectionResponseDataBlock interface {
 	spi.Message
 	ConnectionType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type ConnectionResponseDataBlockInitializer interface {
@@ -111,17 +111,27 @@ func ConnectionResponseDataBlockParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func ConnectionResponseDataBlockSerialize(io spi.WriteBuffer, m ConnectionResponseDataBlock, i IConnectionResponseDataBlock, childSerialize func()) {
+func ConnectionResponseDataBlockSerialize(io spi.WriteBuffer, m ConnectionResponseDataBlock, i IConnectionResponseDataBlock, childSerialize func() error) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	if _structureLengthErr != nil {
+		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(i.ConnectionType())
-	io.WriteUint8(8, (connectionType))
+	_connectionTypeErr := io.WriteUint8(8, (connectionType))
+	if _connectionTypeErr != nil {
+		return errors.New("Error serializing 'connectionType' field " + _connectionTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

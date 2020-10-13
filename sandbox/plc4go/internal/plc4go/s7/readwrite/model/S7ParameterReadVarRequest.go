@@ -33,7 +33,7 @@ type S7ParameterReadVarRequest struct {
 // The corresponding interface
 type IS7ParameterReadVarRequest interface {
 	IS7Parameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -122,20 +122,27 @@ func S7ParameterReadVarRequestParse(io *spi.ReadBuffer) (S7ParameterInitializer,
 	return NewS7ParameterReadVarRequest(items), nil
 }
 
-func (m S7ParameterReadVarRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7ParameterReadVarRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.items)))
-		io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8(8, (numItems))
+		if _numItemsErr != nil {
+			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+		}
 
 		// Array Field (items)
 		if m.items != nil {
 			for _, _element := range m.items {
-				_element.Serialize(io)
+				_elementErr := _element.Serialize(io)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+	return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

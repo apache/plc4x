@@ -34,7 +34,7 @@ type COTPPacket struct {
 type ICOTPPacket interface {
 	spi.Message
 	TpduCode() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type COTPPacketInitializer interface {
@@ -172,23 +172,35 @@ func COTPPacketParse(io *spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 	return initializer.initialize(parameters, payload), nil
 }
 
-func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func()) {
+func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func() error) error {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.payload) != (nil))), uint16((*m.payload).LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
-	io.WriteUint8(8, (headerLength))
+	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	if _headerLengthErr != nil {
+		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
+	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(i.TpduCode())
-	io.WriteUint8(8, (tpduCode))
+	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
+	if _tpduCodeErr != nil {
+		return errors.New("Error serializing 'tpduCode' field " + _tpduCodeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
 	// Array Field (parameters)
 	if m.parameters != nil {
 		for _, _element := range m.parameters {
-			_element.Serialize(io)
+			_elementErr := _element.Serialize(io)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'parameters' field " + _elementErr.Error())
+			}
 		}
 	}
 
@@ -196,7 +208,11 @@ func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childS
 	var payload *IS7Message = nil
 	if m.payload != nil {
 		payload = m.payload
-		CastIS7Message(*payload).Serialize(io)
+		_payloadErr := CastIS7Message(*payload).Serialize(io)
+		if _payloadErr != nil {
+			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+		}
 	}
 
+	return nil
 }

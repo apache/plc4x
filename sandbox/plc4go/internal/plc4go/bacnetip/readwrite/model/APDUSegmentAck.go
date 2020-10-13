@@ -37,7 +37,7 @@ type APDUSegmentAck struct {
 // The corresponding interface
 type IAPDUSegmentAck interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -151,32 +151,53 @@ func APDUSegmentAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 	return NewAPDUSegmentAck(negativeAck, server, originalInvokeId, sequenceNumber, proposedWindowSize), nil
 }
 
-func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(2, uint8(0x00))
+		{
+			_err := io.WriteUint8(2, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (negativeAck)
 		negativeAck := bool(m.negativeAck)
-		io.WriteBit((bool)(negativeAck))
+		_negativeAckErr := io.WriteBit((bool)(negativeAck))
+		if _negativeAckErr != nil {
+			return errors.New("Error serializing 'negativeAck' field " + _negativeAckErr.Error())
+		}
 
 		// Simple Field (server)
 		server := bool(m.server)
-		io.WriteBit((bool)(server))
+		_serverErr := io.WriteBit((bool)(server))
+		if _serverErr != nil {
+			return errors.New("Error serializing 'server' field " + _serverErr.Error())
+		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.originalInvokeId)
-		io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		if _originalInvokeIdErr != nil {
+			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.sequenceNumber)
-		io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		if _sequenceNumberErr != nil {
+			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		}
 
 		// Simple Field (proposedWindowSize)
 		proposedWindowSize := uint8(m.proposedWindowSize)
-		io.WriteUint8(8, (proposedWindowSize))
+		_proposedWindowSizeErr := io.WriteUint8(8, (proposedWindowSize))
+		if _proposedWindowSizeErr != nil {
+			return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

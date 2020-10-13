@@ -30,7 +30,7 @@ type BACnetServiceAckReadRange struct {
 // The corresponding interface
 type IBACnetServiceAckReadRange interface {
 	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetServiceAckReadRangeParse(io *spi.ReadBuffer) (BACnetServiceAckInitial
 	return NewBACnetServiceAckReadRange(), nil
 }
 
-func (m BACnetServiceAckReadRange) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetServiceAckReadRange) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

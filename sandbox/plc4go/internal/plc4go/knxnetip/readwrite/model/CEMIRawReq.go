@@ -30,7 +30,7 @@ type CEMIRawReq struct {
 // The corresponding interface
 type ICEMIRawReq interface {
 	ICEMI
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func CEMIRawReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 	return NewCEMIRawReq(), nil
 }
 
-func (m CEMIRawReq) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIRawReq) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

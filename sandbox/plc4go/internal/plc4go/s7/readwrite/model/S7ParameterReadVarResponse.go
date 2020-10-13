@@ -32,7 +32,7 @@ type S7ParameterReadVarResponse struct {
 // The corresponding interface
 type IS7ParameterReadVarResponse interface {
 	IS7Parameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -97,13 +97,17 @@ func S7ParameterReadVarResponseParse(io *spi.ReadBuffer) (S7ParameterInitializer
 	return NewS7ParameterReadVarResponse(numItems), nil
 }
 
-func (m S7ParameterReadVarResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7ParameterReadVarResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (numItems)
 		numItems := uint8(m.numItems)
-		io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8(8, (numItems))
+		if _numItemsErr != nil {
+			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+		}
 
+		return nil
 	}
-	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+	return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

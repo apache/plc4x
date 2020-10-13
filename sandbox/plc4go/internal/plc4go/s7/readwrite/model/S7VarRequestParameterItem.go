@@ -31,7 +31,7 @@ type S7VarRequestParameterItem struct {
 type IS7VarRequestParameterItem interface {
 	spi.Message
 	ItemType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7VarRequestParameterItemInitializer interface {
@@ -100,13 +100,20 @@ func S7VarRequestParameterItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func S7VarRequestParameterItemSerialize(io spi.WriteBuffer, m S7VarRequestParameterItem, i IS7VarRequestParameterItem, childSerialize func()) {
+func S7VarRequestParameterItemSerialize(io spi.WriteBuffer, m S7VarRequestParameterItem, i IS7VarRequestParameterItem, childSerialize func() error) error {
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(i.ItemType())
-	io.WriteUint8(8, (itemType))
+	_itemTypeErr := io.WriteUint8(8, (itemType))
+	if _itemTypeErr != nil {
+		return errors.New("Error serializing 'itemType' field " + _itemTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

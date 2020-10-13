@@ -32,7 +32,7 @@ type NLMWhoIsRouterToNetwork struct {
 // The corresponding interface
 type INLMWhoIsRouterToNetwork interface {
 	INLM
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -103,16 +103,20 @@ func NLMWhoIsRouterToNetworkParse(io *spi.ReadBuffer, apduLength uint16, message
 	return NewNLMWhoIsRouterToNetwork(destinationNetworkAddress), nil
 }
 
-func (m NLMWhoIsRouterToNetwork) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m NLMWhoIsRouterToNetwork) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (destinationNetworkAddress)
 		if m.destinationNetworkAddress != nil {
 			for _, _element := range m.destinationNetworkAddress {
-				io.WriteUint16(16, _element)
+				_elementErr := io.WriteUint16(16, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'destinationNetworkAddress' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	NLMSerialize(io, m.NLM, CastINLM(m), ser)
+	return NLMSerialize(io, m.NLM, CastINLM(m), ser)
 }

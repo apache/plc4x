@@ -30,7 +30,7 @@ type BACnetErrorVTData struct {
 // The corresponding interface
 type IBACnetErrorVTData interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorVTDataParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) 
 	return NewBACnetErrorVTData(), nil
 }
 
-func (m BACnetErrorVTData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorVTData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

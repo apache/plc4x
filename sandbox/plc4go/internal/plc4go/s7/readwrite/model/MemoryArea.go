@@ -25,7 +25,7 @@ type MemoryArea uint8
 type IMemoryArea interface {
 	spi.Message
 	ShortName() string
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -108,6 +108,7 @@ func MemoryAreaParse(io *spi.ReadBuffer) (MemoryArea, error) {
 	return 0, nil
 }
 
-func (e MemoryArea) Serialize(io spi.WriteBuffer) {
+func (e MemoryArea) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

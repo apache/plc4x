@@ -34,7 +34,7 @@ type DescriptionResponse struct {
 // The corresponding interface
 type IDescriptionResponse interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -114,17 +114,24 @@ func DescriptionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, e
 	return NewDescriptionResponse(dibDeviceInfo, dibSuppSvcFamilies), nil
 }
 
-func (m DescriptionResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m DescriptionResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (dibDeviceInfo)
 		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
-		dibDeviceInfo.Serialize(io)
+		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+		if _dibDeviceInfoErr != nil {
+			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+		}
 
 		// Simple Field (dibSuppSvcFamilies)
 		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
-		dibSuppSvcFamilies.Serialize(io)
+		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+		if _dibSuppSvcFamiliesErr != nil {
+			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

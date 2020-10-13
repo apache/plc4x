@@ -33,7 +33,7 @@ type COTPPacketData struct {
 // The corresponding interface
 type ICOTPPacketData interface {
 	ICOTPPacket
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -105,17 +105,24 @@ func COTPPacketDataParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
 	return NewCOTPPacketData(eot, tpduRef), nil
 }
 
-func (m COTPPacketData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPPacketData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (eot)
 		eot := bool(m.eot)
-		io.WriteBit((bool)(eot))
+		_eotErr := io.WriteBit((bool)(eot))
+		if _eotErr != nil {
+			return errors.New("Error serializing 'eot' field " + _eotErr.Error())
+		}
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.tpduRef)
-		io.WriteUint8(7, (tpduRef))
+		_tpduRefErr := io.WriteUint8(7, (tpduRef))
+		if _tpduRefErr != nil {
+			return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())
+		}
 
+		return nil
 	}
-	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+	return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

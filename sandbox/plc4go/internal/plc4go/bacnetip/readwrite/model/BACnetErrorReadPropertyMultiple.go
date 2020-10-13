@@ -30,7 +30,7 @@ type BACnetErrorReadPropertyMultiple struct {
 // The corresponding interface
 type IBACnetErrorReadPropertyMultiple interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetErrorInitia
 	return NewBACnetErrorReadPropertyMultiple(), nil
 }
 
-func (m BACnetErrorReadPropertyMultiple) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorReadPropertyMultiple) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

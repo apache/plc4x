@@ -31,7 +31,7 @@ type ServiceId struct {
 type IServiceId interface {
 	spi.Message
 	ServiceType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type ServiceIdInitializer interface {
@@ -110,13 +110,20 @@ func ServiceIdParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func ServiceIdSerialize(io spi.WriteBuffer, m ServiceId, i IServiceId, childSerialize func()) {
+func ServiceIdSerialize(io spi.WriteBuffer, m ServiceId, i IServiceId, childSerialize func() error) error {
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(i.ServiceType())
-	io.WriteUint8(8, (serviceType))
+	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+	if _serviceTypeErr != nil {
+		return errors.New("Error serializing 'serviceType' field " + _serviceTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

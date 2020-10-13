@@ -32,7 +32,7 @@ type ModbusPDUReadFileRecordResponseItem struct {
 // The corresponding interface
 type IModbusPDUReadFileRecordResponseItem interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) spi.Message {
@@ -111,21 +111,31 @@ func ModbusPDUReadFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, 
 	return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.data))) + uint8(uint8(1)))
-	io.WriteUint8(8, (dataLength))
+	_dataLengthErr := io.WriteUint8(8, (dataLength))
+	if _dataLengthErr != nil {
+		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.referenceType)
-	io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	if _referenceTypeErr != nil {
+		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
 	// Array Field (data)
 	if m.data != nil {
 		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

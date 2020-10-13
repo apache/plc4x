@@ -24,7 +24,7 @@ type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -56,6 +56,7 @@ func BACnetNotifyTypeParse(io *spi.ReadBuffer) (BACnetNotifyType, error) {
 	return 0, nil
 }
 
-func (e BACnetNotifyType) Serialize(io spi.WriteBuffer) {
+func (e BACnetNotifyType) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

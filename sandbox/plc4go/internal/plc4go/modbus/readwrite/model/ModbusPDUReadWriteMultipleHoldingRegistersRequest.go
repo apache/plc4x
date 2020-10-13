@@ -36,7 +36,7 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -158,36 +158,55 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *spi.ReadBuffer) 
 	return NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress, readQuantity, writeStartingAddress, writeQuantity, value), nil
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (readStartingAddress)
 		readStartingAddress := uint16(m.readStartingAddress)
-		io.WriteUint16(16, (readStartingAddress))
+		_readStartingAddressErr := io.WriteUint16(16, (readStartingAddress))
+		if _readStartingAddressErr != nil {
+			return errors.New("Error serializing 'readStartingAddress' field " + _readStartingAddressErr.Error())
+		}
 
 		// Simple Field (readQuantity)
 		readQuantity := uint16(m.readQuantity)
-		io.WriteUint16(16, (readQuantity))
+		_readQuantityErr := io.WriteUint16(16, (readQuantity))
+		if _readQuantityErr != nil {
+			return errors.New("Error serializing 'readQuantity' field " + _readQuantityErr.Error())
+		}
 
 		// Simple Field (writeStartingAddress)
 		writeStartingAddress := uint16(m.writeStartingAddress)
-		io.WriteUint16(16, (writeStartingAddress))
+		_writeStartingAddressErr := io.WriteUint16(16, (writeStartingAddress))
+		if _writeStartingAddressErr != nil {
+			return errors.New("Error serializing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
+		}
 
 		// Simple Field (writeQuantity)
 		writeQuantity := uint16(m.writeQuantity)
-		io.WriteUint16(16, (writeQuantity))
+		_writeQuantityErr := io.WriteUint16(16, (writeQuantity))
+		if _writeQuantityErr != nil {
+			return errors.New("Error serializing 'writeQuantity' field " + _writeQuantityErr.Error())
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.value)))
-		io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Array Field (value)
 		if m.value != nil {
 			for _, _element := range m.value {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

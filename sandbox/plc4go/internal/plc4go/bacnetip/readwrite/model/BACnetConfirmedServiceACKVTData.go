@@ -30,7 +30,7 @@ type BACnetConfirmedServiceACKVTData struct {
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTData interface {
 	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceACKVTDataParse(io *spi.ReadBuffer) (BACnetConfirmedSe
 	return NewBACnetConfirmedServiceACKVTData(), nil
 }
 
-func (m BACnetConfirmedServiceACKVTData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceACKVTData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

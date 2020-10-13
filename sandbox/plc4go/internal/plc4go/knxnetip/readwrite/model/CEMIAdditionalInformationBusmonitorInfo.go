@@ -41,7 +41,7 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
 	ICEMIAdditionalInformation
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -159,36 +159,58 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *spi.ReadBuffer) (CEMIAddit
 	return NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber), nil
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (len)
-		io.WriteUint8(8, 1)
+		_lenErr := io.WriteUint8(8, 1)
+		if _lenErr != nil {
+			return errors.New("Error serializing 'len' field " + _lenErr.Error())
+		}
 
 		// Simple Field (frameErrorFlag)
 		frameErrorFlag := bool(m.frameErrorFlag)
-		io.WriteBit((bool)(frameErrorFlag))
+		_frameErrorFlagErr := io.WriteBit((bool)(frameErrorFlag))
+		if _frameErrorFlagErr != nil {
+			return errors.New("Error serializing 'frameErrorFlag' field " + _frameErrorFlagErr.Error())
+		}
 
 		// Simple Field (bitErrorFlag)
 		bitErrorFlag := bool(m.bitErrorFlag)
-		io.WriteBit((bool)(bitErrorFlag))
+		_bitErrorFlagErr := io.WriteBit((bool)(bitErrorFlag))
+		if _bitErrorFlagErr != nil {
+			return errors.New("Error serializing 'bitErrorFlag' field " + _bitErrorFlagErr.Error())
+		}
 
 		// Simple Field (parityErrorFlag)
 		parityErrorFlag := bool(m.parityErrorFlag)
-		io.WriteBit((bool)(parityErrorFlag))
+		_parityErrorFlagErr := io.WriteBit((bool)(parityErrorFlag))
+		if _parityErrorFlagErr != nil {
+			return errors.New("Error serializing 'parityErrorFlag' field " + _parityErrorFlagErr.Error())
+		}
 
 		// Simple Field (unknownFlag)
 		unknownFlag := bool(m.unknownFlag)
-		io.WriteBit((bool)(unknownFlag))
+		_unknownFlagErr := io.WriteBit((bool)(unknownFlag))
+		if _unknownFlagErr != nil {
+			return errors.New("Error serializing 'unknownFlag' field " + _unknownFlagErr.Error())
+		}
 
 		// Simple Field (lostFlag)
 		lostFlag := bool(m.lostFlag)
-		io.WriteBit((bool)(lostFlag))
+		_lostFlagErr := io.WriteBit((bool)(lostFlag))
+		if _lostFlagErr != nil {
+			return errors.New("Error serializing 'lostFlag' field " + _lostFlagErr.Error())
+		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.sequenceNumber)
-		io.WriteUint8(3, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(3, (sequenceNumber))
+		if _sequenceNumberErr != nil {
+			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+		}
 
+		return nil
 	}
-	CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
+	return CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
 }

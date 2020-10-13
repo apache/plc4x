@@ -17,19 +17,21 @@ package drivers
 
 import (
 	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/s7/readwrite/model"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/knxnetip/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"testing"
 )
 
-func S7() {
+func TestKnxNetIp(t *testing.T) {
+	t.Skip()
 	request, err := hex.DecodeString("000a00000006010300000004")
 	if err != nil {
-		// Output an error ...
+		t.Errorf("Error decoding test input")
 	}
 	rb := spi.ReadBufferNew(request)
-	adu, err := model.TPKTPacketParse(rb)
+	adu, err := model.KNXNetIPMessageParse(rb)
 	if err != nil {
-		// Output an error ...
+		t.Errorf("Error parsing: %s", err)
 	}
 	if adu != nil {
 		// Output success ...

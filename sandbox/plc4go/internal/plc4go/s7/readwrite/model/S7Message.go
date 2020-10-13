@@ -40,7 +40,7 @@ type S7Message struct {
 type IS7Message interface {
 	spi.Message
 	MessageType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7MessageInitializer interface {
@@ -211,45 +211,75 @@ func S7MessageParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(tpduReference, parameter, payload), nil
 }
 
-func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSerialize func()) {
+func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSerialize func() error) error {
 
 	// Const Field (protocolId)
-	io.WriteUint8(8, 0x32)
+	_protocolIdErr := io.WriteUint8(8, 0x32)
+	if _protocolIdErr != nil {
+		return errors.New("Error serializing 'protocolId' field " + _protocolIdErr.Error())
+	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(i.MessageType())
-	io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8(8, (messageType))
+	if _messageTypeErr != nil {
+		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
+	}
 
 	// Reserved Field (reserved)
-	io.WriteUint16(16, uint16(0x0000))
+	{
+		_err := io.WriteUint16(16, uint16(0x0000))
+		if _err != nil {
+			return errors.New("Error serializing 'reserved' field " + _err.Error())
+		}
+	}
 
 	// Simple Field (tpduReference)
 	tpduReference := uint16(m.tpduReference)
-	io.WriteUint16(16, (tpduReference))
+	_tpduReferenceErr := io.WriteUint16(16, (tpduReference))
+	if _tpduReferenceErr != nil {
+		return errors.New("Error serializing 'tpduReference' field " + _tpduReferenceErr.Error())
+	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint16(spi.InlineIf(bool((m.parameter) != (nil)), uint16((*m.parameter).LengthInBytes()), uint16(uint16(0))))
-	io.WriteUint16(16, (parameterLength))
+	_parameterLengthErr := io.WriteUint16(16, (parameterLength))
+	if _parameterLengthErr != nil {
+		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
+	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength := uint16(spi.InlineIf(bool((m.payload) != (nil)), uint16((*m.payload).LengthInBytes()), uint16(uint16(0))))
-	io.WriteUint16(16, (payloadLength))
+	_payloadLengthErr := io.WriteUint16(16, (payloadLength))
+	if _payloadLengthErr != nil {
+		return errors.New("Error serializing 'payloadLength' field " + _payloadLengthErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
 	// Optional Field (parameter) (Can be skipped, if the value is null)
 	var parameter *IS7Parameter = nil
 	if m.parameter != nil {
 		parameter = m.parameter
-		CastIS7Parameter(*parameter).Serialize(io)
+		_parameterErr := CastIS7Parameter(*parameter).Serialize(io)
+		if _parameterErr != nil {
+			return errors.New("Error serializing 'parameter' field " + _parameterErr.Error())
+		}
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *IS7Payload = nil
 	if m.payload != nil {
 		payload = m.payload
-		CastIS7Payload(*payload).Serialize(io)
+		_payloadErr := CastIS7Payload(*payload).Serialize(io)
+		if _payloadErr != nil {
+			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+		}
 	}
 
+	return nil
 }

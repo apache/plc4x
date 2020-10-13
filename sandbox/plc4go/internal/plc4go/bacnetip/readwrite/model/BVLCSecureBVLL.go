@@ -30,7 +30,7 @@ type BVLCSecureBVLL struct {
 // The corresponding interface
 type IBVLCSecureBVLL interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCSecureBVLLParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 	return NewBVLCSecureBVLL(), nil
 }
 
-func (m BVLCSecureBVLL) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCSecureBVLL) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

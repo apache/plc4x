@@ -32,7 +32,7 @@ type DeviceStatus struct {
 // The corresponding interface
 type IDeviceStatus interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewDeviceStatus(programMode bool) spi.Message {
@@ -101,13 +101,22 @@ func DeviceStatusParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewDeviceStatus(programMode), nil
 }
 
-func (m DeviceStatus) Serialize(io spi.WriteBuffer) {
+func (m DeviceStatus) Serialize(io spi.WriteBuffer) error {
 
 	// Reserved Field (reserved)
-	io.WriteUint8(7, uint8(0x00))
+	{
+		_err := io.WriteUint8(7, uint8(0x00))
+		if _err != nil {
+			return errors.New("Error serializing 'reserved' field " + _err.Error())
+		}
+	}
 
 	// Simple Field (programMode)
 	programMode := bool(m.programMode)
-	io.WriteBit((bool)(programMode))
+	_programModeErr := io.WriteBit((bool)(programMode))
+	if _programModeErr != nil {
+		return errors.New("Error serializing 'programMode' field " + _programModeErr.Error())
+	}
 
+	return nil
 }

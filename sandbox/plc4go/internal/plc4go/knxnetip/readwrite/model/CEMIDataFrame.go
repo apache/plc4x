@@ -49,7 +49,7 @@ type CEMIDataFrame struct {
 // The corresponding interface
 type ICEMIDataFrame interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewCEMIDataFrame(standardFrame bool, polling bool, notRepeated bool, notAckFrame bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool, groupDestinationAddress bool, hopCount uint8, extendedFrameFormat uint8, sourceAddress IKNXAddress, destinationAddress []int8, dataLength uint8, tcpi ITPCI, counter uint8, apci IAPCI, dataFirstByte int8, data []int8) spi.Message {
@@ -275,84 +275,139 @@ func CEMIDataFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewCEMIDataFrame(standardFrame, polling, notRepeated, notAckFrame, priority, acknowledgeRequested, errorFlag, groupDestinationAddress, hopCount, extendedFrameFormat, sourceAddress, destinationAddress, dataLength, tcpi, counter, apci, dataFirstByte, data), nil
 }
 
-func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
+func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (standardFrame)
 	standardFrame := bool(m.standardFrame)
-	io.WriteBit((bool)(standardFrame))
+	_standardFrameErr := io.WriteBit((bool)(standardFrame))
+	if _standardFrameErr != nil {
+		return errors.New("Error serializing 'standardFrame' field " + _standardFrameErr.Error())
+	}
 
 	// Simple Field (polling)
 	polling := bool(m.polling)
-	io.WriteBit((bool)(polling))
+	_pollingErr := io.WriteBit((bool)(polling))
+	if _pollingErr != nil {
+		return errors.New("Error serializing 'polling' field " + _pollingErr.Error())
+	}
 
 	// Simple Field (notRepeated)
 	notRepeated := bool(m.notRepeated)
-	io.WriteBit((bool)(notRepeated))
+	_notRepeatedErr := io.WriteBit((bool)(notRepeated))
+	if _notRepeatedErr != nil {
+		return errors.New("Error serializing 'notRepeated' field " + _notRepeatedErr.Error())
+	}
 
 	// Simple Field (notAckFrame)
 	notAckFrame := bool(m.notAckFrame)
-	io.WriteBit((bool)(notAckFrame))
+	_notAckFrameErr := io.WriteBit((bool)(notAckFrame))
+	if _notAckFrameErr != nil {
+		return errors.New("Error serializing 'notAckFrame' field " + _notAckFrameErr.Error())
+	}
 
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.priority)
-	priority.Serialize(io)
+	_priorityErr := priority.Serialize(io)
+	if _priorityErr != nil {
+		return errors.New("Error serializing 'priority' field " + _priorityErr.Error())
+	}
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.acknowledgeRequested)
-	io.WriteBit((bool)(acknowledgeRequested))
+	_acknowledgeRequestedErr := io.WriteBit((bool)(acknowledgeRequested))
+	if _acknowledgeRequestedErr != nil {
+		return errors.New("Error serializing 'acknowledgeRequested' field " + _acknowledgeRequestedErr.Error())
+	}
 
 	// Simple Field (errorFlag)
 	errorFlag := bool(m.errorFlag)
-	io.WriteBit((bool)(errorFlag))
+	_errorFlagErr := io.WriteBit((bool)(errorFlag))
+	if _errorFlagErr != nil {
+		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())
+	}
 
 	// Simple Field (groupDestinationAddress)
 	groupDestinationAddress := bool(m.groupDestinationAddress)
-	io.WriteBit((bool)(groupDestinationAddress))
+	_groupDestinationAddressErr := io.WriteBit((bool)(groupDestinationAddress))
+	if _groupDestinationAddressErr != nil {
+		return errors.New("Error serializing 'groupDestinationAddress' field " + _groupDestinationAddressErr.Error())
+	}
 
 	// Simple Field (hopCount)
 	hopCount := uint8(m.hopCount)
-	io.WriteUint8(3, (hopCount))
+	_hopCountErr := io.WriteUint8(3, (hopCount))
+	if _hopCountErr != nil {
+		return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
+	}
 
 	// Simple Field (extendedFrameFormat)
 	extendedFrameFormat := uint8(m.extendedFrameFormat)
-	io.WriteUint8(4, (extendedFrameFormat))
+	_extendedFrameFormatErr := io.WriteUint8(4, (extendedFrameFormat))
+	if _extendedFrameFormatErr != nil {
+		return errors.New("Error serializing 'extendedFrameFormat' field " + _extendedFrameFormatErr.Error())
+	}
 
 	// Simple Field (sourceAddress)
 	sourceAddress := CastIKNXAddress(m.sourceAddress)
-	sourceAddress.Serialize(io)
+	_sourceAddressErr := sourceAddress.Serialize(io)
+	if _sourceAddressErr != nil {
+		return errors.New("Error serializing 'sourceAddress' field " + _sourceAddressErr.Error())
+	}
 
 	// Array Field (destinationAddress)
 	if m.destinationAddress != nil {
 		for _, _element := range m.destinationAddress {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'destinationAddress' field " + _elementErr.Error())
+			}
 		}
 	}
 
 	// Simple Field (dataLength)
 	dataLength := uint8(m.dataLength)
-	io.WriteUint8(8, (dataLength))
+	_dataLengthErr := io.WriteUint8(8, (dataLength))
+	if _dataLengthErr != nil {
+		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Enum field (tcpi)
 	tcpi := CastTPCI(m.tcpi)
-	tcpi.Serialize(io)
+	_tcpiErr := tcpi.Serialize(io)
+	if _tcpiErr != nil {
+		return errors.New("Error serializing 'tcpi' field " + _tcpiErr.Error())
+	}
 
 	// Simple Field (counter)
 	counter := uint8(m.counter)
-	io.WriteUint8(4, (counter))
+	_counterErr := io.WriteUint8(4, (counter))
+	if _counterErr != nil {
+		return errors.New("Error serializing 'counter' field " + _counterErr.Error())
+	}
 
 	// Enum field (apci)
 	apci := CastAPCI(m.apci)
-	apci.Serialize(io)
+	_apciErr := apci.Serialize(io)
+	if _apciErr != nil {
+		return errors.New("Error serializing 'apci' field " + _apciErr.Error())
+	}
 
 	// Simple Field (dataFirstByte)
 	dataFirstByte := int8(m.dataFirstByte)
-	io.WriteInt8(6, (dataFirstByte))
+	_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+	if _dataFirstByteErr != nil {
+		return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+	}
 
 	// Array Field (data)
 	if m.data != nil {
 		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

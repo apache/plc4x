@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestWriteGroup struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWriteGroup interface {
 	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(io *spi.ReadBuffer) (BACnetU
 	return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

@@ -32,7 +32,7 @@ type BACnetTagApplicationSignedInteger struct {
 // The corresponding interface
 type IBACnetTagApplicationSignedInteger interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -106,16 +106,20 @@ func BACnetTagApplicationSignedIntegerParse(io *spi.ReadBuffer, lengthValueType 
 	return NewBACnetTagApplicationSignedInteger(data), nil
 }
 
-func (m BACnetTagApplicationSignedInteger) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationSignedInteger) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (data)
 		if m.data != nil {
 			for _, _element := range m.data {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

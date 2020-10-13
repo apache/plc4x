@@ -44,7 +44,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
 	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -206,48 +206,79 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *spi.ReadBuffer) (BACnetUnconfir
 	return NewBACnetUnconfirmedServiceRequestIAm(objectType, objectInstanceNumber, maximumApduLengthAcceptedLength, maximumApduLengthAccepted, segmentationSupported, vendorId), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (objectIdentifierHeader)
-		io.WriteUint8(8, 0xC4)
+		_objectIdentifierHeaderErr := io.WriteUint8(8, 0xC4)
+		if _objectIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.objectType)
-		io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16(10, (objectType))
+		if _objectTypeErr != nil {
+			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
+		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.objectInstanceNumber)
-		io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		if _objectInstanceNumberErr != nil {
+			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+		}
 
 		// Const Field (maximumApduLengthAcceptedHeader)
-		io.WriteUint8(5, 0x04)
+		_maximumApduLengthAcceptedHeaderErr := io.WriteUint8(5, 0x04)
+		if _maximumApduLengthAcceptedHeaderErr != nil {
+			return errors.New("Error serializing 'maximumApduLengthAcceptedHeader' field " + _maximumApduLengthAcceptedHeaderErr.Error())
+		}
 
 		// Simple Field (maximumApduLengthAcceptedLength)
 		maximumApduLengthAcceptedLength := uint8(m.maximumApduLengthAcceptedLength)
-		io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		if _maximumApduLengthAcceptedLengthErr != nil {
+			return errors.New("Error serializing 'maximumApduLengthAcceptedLength' field " + _maximumApduLengthAcceptedLengthErr.Error())
+		}
 
 		// Array Field (maximumApduLengthAccepted)
 		if m.maximumApduLengthAccepted != nil {
 			for _, _element := range m.maximumApduLengthAccepted {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'maximumApduLengthAccepted' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Const Field (segmentationSupportedHeader)
-		io.WriteUint8(8, 0x91)
+		_segmentationSupportedHeaderErr := io.WriteUint8(8, 0x91)
+		if _segmentationSupportedHeaderErr != nil {
+			return errors.New("Error serializing 'segmentationSupportedHeader' field " + _segmentationSupportedHeaderErr.Error())
+		}
 
 		// Simple Field (segmentationSupported)
 		segmentationSupported := uint8(m.segmentationSupported)
-		io.WriteUint8(8, (segmentationSupported))
+		_segmentationSupportedErr := io.WriteUint8(8, (segmentationSupported))
+		if _segmentationSupportedErr != nil {
+			return errors.New("Error serializing 'segmentationSupported' field " + _segmentationSupportedErr.Error())
+		}
 
 		// Const Field (vendorIdHeader)
-		io.WriteUint8(8, 0x21)
+		_vendorIdHeaderErr := io.WriteUint8(8, 0x21)
+		if _vendorIdHeaderErr != nil {
+			return errors.New("Error serializing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.vendorId)
-		io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		if _vendorIdErr != nil {
+			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+		}
 
+		return nil
 	}
-	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

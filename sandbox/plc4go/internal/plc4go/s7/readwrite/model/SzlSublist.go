@@ -24,7 +24,7 @@ type SzlSublist uint8
 
 type ISzlSublist interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -72,6 +72,7 @@ func SzlSublistParse(io *spi.ReadBuffer) (SzlSublist, error) {
 	return 0, nil
 }
 
-func (e SzlSublist) Serialize(io spi.WriteBuffer) {
+func (e SzlSublist) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

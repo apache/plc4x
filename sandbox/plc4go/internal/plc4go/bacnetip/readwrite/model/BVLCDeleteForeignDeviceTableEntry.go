@@ -30,7 +30,7 @@ type BVLCDeleteForeignDeviceTableEntry struct {
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCDeleteForeignDeviceTableEntryParse(io *spi.ReadBuffer) (BVLCInitializer
 	return NewBVLCDeleteForeignDeviceTableEntry(), nil
 }
 
-func (m BVLCDeleteForeignDeviceTableEntry) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCDeleteForeignDeviceTableEntry) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

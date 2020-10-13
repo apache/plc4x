@@ -33,7 +33,7 @@ type TunnelingResponse struct {
 // The corresponding interface
 type ITunnelingResponse interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -99,13 +99,17 @@ func TunnelingResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 	return NewTunnelingResponse(tunnelingResponseDataBlock), nil
 }
 
-func (m TunnelingResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m TunnelingResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (tunnelingResponseDataBlock)
 		tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
-		tunnelingResponseDataBlock.Serialize(io)
+		_tunnelingResponseDataBlockErr := tunnelingResponseDataBlock.Serialize(io)
+		if _tunnelingResponseDataBlockErr != nil {
+			return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

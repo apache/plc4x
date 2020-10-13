@@ -32,7 +32,7 @@ type COTPParameterDisconnectAdditionalInformation struct {
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
 	ICOTPParameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,16 +101,20 @@ func COTPParameterDisconnectAdditionalInformationParse(io *spi.ReadBuffer, rest 
 	return NewCOTPParameterDisconnectAdditionalInformation(data), nil
 }
 
-func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (data)
 		if m.data != nil {
 			for _, _element := range m.data {
-				io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

@@ -40,7 +40,7 @@ type BACnetErrorReadProperty struct {
 // The corresponding interface
 type IBACnetErrorReadProperty interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -168,37 +168,56 @@ func BACnetErrorReadPropertyParse(io *spi.ReadBuffer) (BACnetErrorInitializer, e
 	return NewBACnetErrorReadProperty(errorClassLength, errorClass, errorCodeLength, errorCode), nil
 }
 
-func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (errorClassHeader)
-		io.WriteUint8(5, 0x12)
+		_errorClassHeaderErr := io.WriteUint8(5, 0x12)
+		if _errorClassHeaderErr != nil {
+			return errors.New("Error serializing 'errorClassHeader' field " + _errorClassHeaderErr.Error())
+		}
 
 		// Simple Field (errorClassLength)
 		errorClassLength := uint8(m.errorClassLength)
-		io.WriteUint8(3, (errorClassLength))
+		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
+		if _errorClassLengthErr != nil {
+			return errors.New("Error serializing 'errorClassLength' field " + _errorClassLengthErr.Error())
+		}
 
 		// Array Field (errorClass)
 		if m.errorClass != nil {
 			for _, _element := range m.errorClass {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'errorClass' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Const Field (errorCodeHeader)
-		io.WriteUint8(5, 0x12)
+		_errorCodeHeaderErr := io.WriteUint8(5, 0x12)
+		if _errorCodeHeaderErr != nil {
+			return errors.New("Error serializing 'errorCodeHeader' field " + _errorCodeHeaderErr.Error())
+		}
 
 		// Simple Field (errorCodeLength)
 		errorCodeLength := uint8(m.errorCodeLength)
-		io.WriteUint8(3, (errorCodeLength))
+		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
+		if _errorCodeLengthErr != nil {
+			return errors.New("Error serializing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
+		}
 
 		// Array Field (errorCode)
 		if m.errorCode != nil {
 			for _, _element := range m.errorCode {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'errorCode' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

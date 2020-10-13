@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io *spi.
 	return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(), nil
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

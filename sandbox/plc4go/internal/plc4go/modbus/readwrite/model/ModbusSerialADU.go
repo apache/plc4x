@@ -36,7 +36,7 @@ type ModbusSerialADU struct {
 // The corresponding interface
 type IModbusSerialADU interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu IModbusPDU) spi.Message {
@@ -137,25 +137,43 @@ func ModbusSerialADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error
 	return NewModbusSerialADU(transactionId, length, address, pdu), nil
 }
 
-func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
+func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionId)
 	transactionId := uint16(m.transactionId)
-	io.WriteUint16(16, (transactionId))
+	_transactionIdErr := io.WriteUint16(16, (transactionId))
+	if _transactionIdErr != nil {
+		return errors.New("Error serializing 'transactionId' field " + _transactionIdErr.Error())
+	}
 
 	// Reserved Field (reserved)
-	io.WriteUint16(16, uint16(0x0000))
+	{
+		_err := io.WriteUint16(16, uint16(0x0000))
+		if _err != nil {
+			return errors.New("Error serializing 'reserved' field " + _err.Error())
+		}
+	}
 
 	// Simple Field (length)
 	length := uint16(m.length)
-	io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16(16, (length))
+	if _lengthErr != nil {
+		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+	}
 
 	// Simple Field (address)
 	address := uint8(m.address)
-	io.WriteUint8(8, (address))
+	_addressErr := io.WriteUint8(8, (address))
+	if _addressErr != nil {
+		return errors.New("Error serializing 'address' field " + _addressErr.Error())
+	}
 
 	// Simple Field (pdu)
 	pdu := CastIModbusPDU(m.pdu)
-	pdu.Serialize(io)
+	_pduErr := pdu.Serialize(io)
+	if _pduErr != nil {
+		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())
+	}
 
+	return nil
 }

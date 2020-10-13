@@ -30,7 +30,7 @@ type BACnetServiceAckAtomicWriteFile struct {
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
 	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetServiceAckAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetServiceAckI
 	return NewBACnetServiceAckAtomicWriteFile(), nil
 }
 
-func (m BACnetServiceAckAtomicWriteFile) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetServiceAckAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

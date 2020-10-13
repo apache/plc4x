@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestDeleteObject struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeleteObject interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(io *spi.ReadBuffer) (BACnetC
 	return NewBACnetConfirmedServiceRequestDeleteObject(), nil
 }
 
-func (m BACnetConfirmedServiceRequestDeleteObject) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestDeleteObject) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

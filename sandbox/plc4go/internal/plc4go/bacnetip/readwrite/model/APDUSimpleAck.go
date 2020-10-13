@@ -34,7 +34,7 @@ type APDUSimpleAck struct {
 // The corresponding interface
 type IAPDUSimpleAck interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -121,20 +121,32 @@ func APDUSimpleAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 	return NewAPDUSimpleAck(originalInvokeId, serviceChoice), nil
 }
 
-func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(4, uint8(0))
+		{
+			_err := io.WriteUint8(4, uint8(0))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.originalInvokeId)
-		io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		if _originalInvokeIdErr != nil {
+			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		}
 
 		// Simple Field (serviceChoice)
 		serviceChoice := uint8(m.serviceChoice)
-		io.WriteUint8(8, (serviceChoice))
+		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+		if _serviceChoiceErr != nil {
+			return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

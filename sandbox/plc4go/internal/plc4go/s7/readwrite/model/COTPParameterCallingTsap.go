@@ -32,7 +32,7 @@ type COTPParameterCallingTsap struct {
 // The corresponding interface
 type ICOTPParameterCallingTsap interface {
 	ICOTPParameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func COTPParameterCallingTsapParse(io *spi.ReadBuffer) (COTPParameterInitializer
 	return NewCOTPParameterCallingTsap(tsapId), nil
 }
 
-func (m COTPParameterCallingTsap) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPParameterCallingTsap) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.tsapId)
-		io.WriteUint16(16, (tsapId))
+		_tsapIdErr := io.WriteUint16(16, (tsapId))
+		if _tsapIdErr != nil {
+			return errors.New("Error serializing 'tsapId' field " + _tsapIdErr.Error())
+		}
 
+		return nil
 	}
-	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

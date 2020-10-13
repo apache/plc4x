@@ -35,7 +35,7 @@ type SearchResponse struct {
 // The corresponding interface
 type ISearchResponse interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -129,21 +129,31 @@ func SearchResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error)
 	return NewSearchResponse(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies), nil
 }
 
-func (m SearchResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m SearchResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (hpaiControlEndpoint)
 		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
-		hpaiControlEndpoint.Serialize(io)
+		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+		if _hpaiControlEndpointErr != nil {
+			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+		}
 
 		// Simple Field (dibDeviceInfo)
 		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
-		dibDeviceInfo.Serialize(io)
+		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+		if _dibDeviceInfoErr != nil {
+			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+		}
 
 		// Simple Field (dibSuppSvcFamilies)
 		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
-		dibSuppSvcFamilies.Serialize(io)
+		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+		if _dibSuppSvcFamiliesErr != nil {
+			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -31,7 +31,7 @@ type BACnetUnconfirmedServiceRequest struct {
 type IBACnetUnconfirmedServiceRequest interface {
 	spi.Message
 	ServiceChoice() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type BACnetUnconfirmedServiceRequestInitializer interface {
@@ -122,13 +122,20 @@ func BACnetUnconfirmedServiceRequestParse(io *spi.ReadBuffer, len uint16) (spi.M
 	return initializer.initialize(), nil
 }
 
-func BACnetUnconfirmedServiceRequestSerialize(io spi.WriteBuffer, m BACnetUnconfirmedServiceRequest, i IBACnetUnconfirmedServiceRequest, childSerialize func()) {
+func BACnetUnconfirmedServiceRequestSerialize(io spi.WriteBuffer, m BACnetUnconfirmedServiceRequest, i IBACnetUnconfirmedServiceRequest, childSerialize func() error) error {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(i.ServiceChoice())
-	io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	if _serviceChoiceErr != nil {
+		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

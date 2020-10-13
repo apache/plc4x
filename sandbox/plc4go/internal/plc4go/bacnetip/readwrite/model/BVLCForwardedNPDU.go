@@ -35,7 +35,7 @@ type BVLCForwardedNPDU struct {
 // The corresponding interface
 type IBVLCForwardedNPDU interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -127,24 +127,34 @@ func BVLCForwardedNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLCInitiali
 	return NewBVLCForwardedNPDU(ip, port, npdu), nil
 }
 
-func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (ip)
 		if m.ip != nil {
 			for _, _element := range m.ip {
-				io.WriteUint8(8, _element)
+				_elementErr := io.WriteUint8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'ip' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Simple Field (port)
 		port := uint16(m.port)
-		io.WriteUint16(16, (port))
+		_portErr := io.WriteUint16(16, (port))
+		if _portErr != nil {
+			return errors.New("Error serializing 'port' field " + _portErr.Error())
+		}
 
 		// Simple Field (npdu)
 		npdu := CastINPDU(m.npdu)
-		npdu.Serialize(io)
+		_npduErr := npdu.Serialize(io)
+		if _npduErr != nil {
+			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+		}
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

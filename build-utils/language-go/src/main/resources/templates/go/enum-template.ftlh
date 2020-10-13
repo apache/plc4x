@@ -58,7 +58,7 @@ type I${type.name} interface {
     ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}
     </#list>
 </#if>
-    Serialize(io spi.WriteBuffer)
+    Serialize(io spi.WriteBuffer) error
 }
 
 const(
@@ -115,8 +115,9 @@ func ${type.name}Parse(io *spi.ReadBuffer) (${type.name}, error) {
     return 0, nil
 }
 
-func (e ${type.name}) Serialize(io spi.WriteBuffer) {
+func (e ${type.name}) Serialize(io spi.WriteBuffer) error {
     // TODO: Implement ...
+    return nil
 }
 </#if>
 </#outputformat>

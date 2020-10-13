@@ -32,7 +32,7 @@ type NLM struct {
 type INLM interface {
 	spi.Message
 	MessageType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type NLMInitializer interface {
@@ -119,20 +119,30 @@ func NLMParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 	return initializer.initialize(vendorId), nil
 }
 
-func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func()) {
+func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func() error) error {
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(i.MessageType())
-	io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8(8, (messageType))
+	if _messageTypeErr != nil {
+		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
+	}
 
 	// Optional Field (vendorId) (Can be skipped, if the value is null)
 	var vendorId *uint16 = nil
 	if m.vendorId != nil {
 		vendorId = m.vendorId
-		io.WriteUint16(16, *(vendorId))
+		_vendorIdErr := io.WriteUint16(16, *(vendorId))
+		if _vendorIdErr != nil {
+			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+		}
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

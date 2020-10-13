@@ -32,7 +32,7 @@ type KnxNetIpCore struct {
 // The corresponding interface
 type IKnxNetIpCore interface {
 	IServiceId
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func KnxNetIpCoreParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 	return NewKnxNetIpCore(version), nil
 }
 
-func (m KnxNetIpCore) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m KnxNetIpCore) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (version)
 		version := uint8(m.version)
-		io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8(8, (version))
+		if _versionErr != nil {
+			return errors.New("Error serializing 'version' field " + _versionErr.Error())
+		}
 
+		return nil
 	}
-	ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+	return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

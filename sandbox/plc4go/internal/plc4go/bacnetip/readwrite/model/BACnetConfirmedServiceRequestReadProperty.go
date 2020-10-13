@@ -40,7 +40,7 @@ type BACnetConfirmedServiceRequestReadProperty struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadProperty interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -160,34 +160,53 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io *spi.ReadBuffer) (BACnetC
 	return NewBACnetConfirmedServiceRequestReadProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier), nil
 }
 
-func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (objectIdentifierHeader)
-		io.WriteUint8(8, 0x0C)
+		_objectIdentifierHeaderErr := io.WriteUint8(8, 0x0C)
+		if _objectIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.objectType)
-		io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16(10, (objectType))
+		if _objectTypeErr != nil {
+			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
+		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.objectInstanceNumber)
-		io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		if _objectInstanceNumberErr != nil {
+			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+		}
 
 		// Const Field (propertyIdentifierHeader)
-		io.WriteUint8(5, 0x03)
+		_propertyIdentifierHeaderErr := io.WriteUint8(5, 0x03)
+		if _propertyIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'propertyIdentifierHeader' field " + _propertyIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (propertyIdentifierLength)
 		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
-		io.WriteUint8(3, (propertyIdentifierLength))
+		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
+		if _propertyIdentifierLengthErr != nil {
+			return errors.New("Error serializing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
+		}
 
 		// Array Field (propertyIdentifier)
 		if m.propertyIdentifier != nil {
 			for _, _element := range m.propertyIdentifier {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'propertyIdentifier' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

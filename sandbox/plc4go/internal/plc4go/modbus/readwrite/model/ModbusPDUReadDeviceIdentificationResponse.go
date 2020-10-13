@@ -30,7 +30,7 @@ type ModbusPDUReadDeviceIdentificationResponse struct {
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -90,9 +90,10 @@ func ModbusPDUReadDeviceIdentificationResponseParse(io *spi.ReadBuffer) (ModbusP
 	return NewModbusPDUReadDeviceIdentificationResponse(), nil
 }
 
-func (m ModbusPDUReadDeviceIdentificationResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadDeviceIdentificationResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

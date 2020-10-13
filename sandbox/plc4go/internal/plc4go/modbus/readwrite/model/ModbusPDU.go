@@ -33,7 +33,7 @@ type IModbusPDU interface {
 	ErrorFlag() bool
 	FunctionFlag() uint8
 	Response() bool
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type ModbusPDUInitializer interface {
@@ -189,17 +189,27 @@ func ModbusPDUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func ModbusPDUSerialize(io spi.WriteBuffer, m ModbusPDU, i IModbusPDU, childSerialize func()) {
+func ModbusPDUSerialize(io spi.WriteBuffer, m ModbusPDU, i IModbusPDU, childSerialize func() error) error {
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(i.ErrorFlag())
-	io.WriteBit((bool)(errorFlag))
+	_errorFlagErr := io.WriteBit((bool)(errorFlag))
+	if _errorFlagErr != nil {
+		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())
+	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(i.FunctionFlag())
-	io.WriteUint8(7, (functionFlag))
+	_functionFlagErr := io.WriteUint8(7, (functionFlag))
+	if _functionFlagErr != nil {
+		return errors.New("Error serializing 'functionFlag' field " + _functionFlagErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

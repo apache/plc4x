@@ -25,7 +25,7 @@ type DataTransportSize uint8
 type IDataTransportSize interface {
 	spi.Message
 	SizeInBits() bool
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -98,6 +98,7 @@ func DataTransportSizeParse(io *spi.ReadBuffer) (DataTransportSize, error) {
 	return 0, nil
 }
 
-func (e DataTransportSize) Serialize(io spi.WriteBuffer) {
+func (e DataTransportSize) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

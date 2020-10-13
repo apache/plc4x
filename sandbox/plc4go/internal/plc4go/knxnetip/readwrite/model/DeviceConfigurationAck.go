@@ -33,7 +33,7 @@ type DeviceConfigurationAck struct {
 // The corresponding interface
 type IDeviceConfigurationAck interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -99,13 +99,17 @@ func DeviceConfigurationAckParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer
 	return NewDeviceConfigurationAck(deviceConfigurationAckDataBlock), nil
 }
 
-func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (deviceConfigurationAckDataBlock)
 		deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
-		deviceConfigurationAckDataBlock.Serialize(io)
+		_deviceConfigurationAckDataBlockErr := deviceConfigurationAckDataBlock.Serialize(io)
+		if _deviceConfigurationAckDataBlockErr != nil {
+			return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -37,7 +37,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
 	IS7PayloadUserDataItem
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -138,23 +138,33 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *spi.ReadBuffer) (S
 	return NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items), nil
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (szlItemLength)
-		io.WriteUint16(16, 28)
+		_szlItemLengthErr := io.WriteUint16(16, 28)
+		if _szlItemLengthErr != nil {
+			return errors.New("Error serializing 'szlItemLength' field " + _szlItemLengthErr.Error())
+		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		szlItemCount := uint16(uint16(len(m.items)))
-		io.WriteUint16(16, (szlItemCount))
+		_szlItemCountErr := io.WriteUint16(16, (szlItemCount))
+		if _szlItemCountErr != nil {
+			return errors.New("Error serializing 'szlItemCount' field " + _szlItemCountErr.Error())
+		}
 
 		// Array Field (items)
 		if m.items != nil {
 			for _, _element := range m.items {
-				_element.Serialize(io)
+				_elementErr := _element.Serialize(io)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
+	return S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
 }

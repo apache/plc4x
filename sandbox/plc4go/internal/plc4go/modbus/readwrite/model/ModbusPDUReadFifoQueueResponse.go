@@ -32,7 +32,7 @@ type ModbusPDUReadFifoQueueResponse struct {
 // The corresponding interface
 type IModbusPDUReadFifoQueueResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -127,24 +127,34 @@ func ModbusPDUReadFifoQueueResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializ
 	return NewModbusPDUReadFifoQueueResponse(fifoValue), nil
 }
 
-func (m ModbusPDUReadFifoQueueResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadFifoQueueResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.fifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
-		io.WriteUint16(16, (byteCount))
+		_byteCountErr := io.WriteUint16(16, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.fifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
-		io.WriteUint16(16, (fifoCount))
+		_fifoCountErr := io.WriteUint16(16, (fifoCount))
+		if _fifoCountErr != nil {
+			return errors.New("Error serializing 'fifoCount' field " + _fifoCountErr.Error())
+		}
 
 		// Array Field (fifoValue)
 		if m.fifoValue != nil {
 			for _, _element := range m.fifoValue {
-				io.WriteUint16(16, _element)
+				_elementErr := io.WriteUint16(16, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'fifoValue' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

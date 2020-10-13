@@ -32,7 +32,7 @@ type BACnetTagApplicationReal struct {
 // The corresponding interface
 type IBACnetTagApplicationReal interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -97,13 +97,17 @@ func BACnetTagApplicationRealParse(io *spi.ReadBuffer, lengthValueType uint8, ex
 	return NewBACnetTagApplicationReal(value), nil
 }
 
-func (m BACnetTagApplicationReal) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationReal) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (value)
 		value := float32(m.value)
-		io.WriteFloat32(32, (value))
+		_valueErr := io.WriteFloat32(32, (value))
+		if _valueErr != nil {
+			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+		}
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

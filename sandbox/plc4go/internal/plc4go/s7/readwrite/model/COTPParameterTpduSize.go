@@ -32,7 +32,7 @@ type COTPParameterTpduSize struct {
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
 	ICOTPParameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func COTPParameterTpduSizeParse(io *spi.ReadBuffer) (COTPParameterInitializer, e
 	return NewCOTPParameterTpduSize(tpduSize), nil
 }
 
-func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Enum field (tpduSize)
 		tpduSize := CastCOTPTpduSize(m.tpduSize)
-		tpduSize.Serialize(io)
+		_tpduSizeErr := tpduSize.Serialize(io)
+		if _tpduSizeErr != nil {
+			return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())
+		}
 
+		return nil
 	}
-	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

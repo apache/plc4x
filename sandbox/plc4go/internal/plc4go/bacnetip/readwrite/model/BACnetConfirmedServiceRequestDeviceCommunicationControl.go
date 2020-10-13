@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControl struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeviceCommunicationControl interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io *spi.ReadBu
 	return NewBACnetConfirmedServiceRequestDeviceCommunicationControl(), nil
 }
 
-func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

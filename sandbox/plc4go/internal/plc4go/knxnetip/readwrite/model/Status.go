@@ -24,7 +24,7 @@ type Status uint8
 
 type IStatus interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -65,6 +65,7 @@ func StatusParse(io *spi.ReadBuffer) (Status, error) {
 	return 0, nil
 }
 
-func (e Status) Serialize(io spi.WriteBuffer) {
+func (e Status) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

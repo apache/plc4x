@@ -32,7 +32,7 @@ type KNXGroupAddressFreeLevel struct {
 // The corresponding interface
 type IKNXGroupAddressFreeLevel interface {
 	IKNXGroupAddress
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func KNXGroupAddressFreeLevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializ
 	return NewKNXGroupAddressFreeLevel(subGroup), nil
 }
 
-func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.subGroup)
-		io.WriteUint16(16, (subGroup))
+		_subGroupErr := io.WriteUint16(16, (subGroup))
+		if _subGroupErr != nil {
+			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+		}
 
+		return nil
 	}
-	KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
+	return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

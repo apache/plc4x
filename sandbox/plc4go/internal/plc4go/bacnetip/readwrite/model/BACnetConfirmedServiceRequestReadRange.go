@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestReadRange struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadRange interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestReadRangeParse(io *spi.ReadBuffer) (BACnetConf
 	return NewBACnetConfirmedServiceRequestReadRange(), nil
 }
 
-func (m BACnetConfirmedServiceRequestReadRange) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestReadRange) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

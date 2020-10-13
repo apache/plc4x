@@ -33,7 +33,7 @@ type BACnetTagApplicationBitString struct {
 // The corresponding interface
 type IBACnetTagApplicationBitString interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -116,20 +116,27 @@ func BACnetTagApplicationBitStringParse(io *spi.ReadBuffer, lengthValueType uint
 	return NewBACnetTagApplicationBitString(unusedBits, data), nil
 }
 
-func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (unusedBits)
 		unusedBits := uint8(m.unusedBits)
-		io.WriteUint8(8, (unusedBits))
+		_unusedBitsErr := io.WriteUint8(8, (unusedBits))
+		if _unusedBitsErr != nil {
+			return errors.New("Error serializing 'unusedBits' field " + _unusedBitsErr.Error())
+		}
 
 		// Array Field (data)
 		if m.data != nil {
 			for _, _element := range m.data {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

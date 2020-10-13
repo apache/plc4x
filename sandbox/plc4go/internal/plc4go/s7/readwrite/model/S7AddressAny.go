@@ -38,7 +38,7 @@ type S7AddressAny struct {
 // The corresponding interface
 type IS7AddressAny interface {
 	IS7Address
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -161,36 +161,60 @@ func S7AddressAnyParse(io *spi.ReadBuffer) (S7AddressInitializer, error) {
 	return NewS7AddressAny(transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress), nil
 }
 
-func (m S7AddressAny) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7AddressAny) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Enum field (transportSize)
 		transportSize := CastTransportSize(m.transportSize)
-		transportSize.Serialize(io)
+		_transportSizeErr := transportSize.Serialize(io)
+		if _transportSizeErr != nil {
+			return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
+		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.numberOfElements)
-		io.WriteUint16(16, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint16(16, (numberOfElements))
+		if _numberOfElementsErr != nil {
+			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
+		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.dbNumber)
-		io.WriteUint16(16, (dbNumber))
+		_dbNumberErr := io.WriteUint16(16, (dbNumber))
+		if _dbNumberErr != nil {
+			return errors.New("Error serializing 'dbNumber' field " + _dbNumberErr.Error())
+		}
 
 		// Enum field (area)
 		area := CastMemoryArea(m.area)
-		area.Serialize(io)
+		_areaErr := area.Serialize(io)
+		if _areaErr != nil {
+			return errors.New("Error serializing 'area' field " + _areaErr.Error())
+		}
 
 		// Reserved Field (reserved)
-		io.WriteUint8(5, uint8(0x00))
+		{
+			_err := io.WriteUint8(5, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (byteAddress)
 		byteAddress := uint16(m.byteAddress)
-		io.WriteUint16(16, (byteAddress))
+		_byteAddressErr := io.WriteUint16(16, (byteAddress))
+		if _byteAddressErr != nil {
+			return errors.New("Error serializing 'byteAddress' field " + _byteAddressErr.Error())
+		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.bitAddress)
-		io.WriteUint8(3, (bitAddress))
+		_bitAddressErr := io.WriteUint8(3, (bitAddress))
+		if _bitAddressErr != nil {
+			return errors.New("Error serializing 'bitAddress' field " + _bitAddressErr.Error())
+		}
 
+		return nil
 	}
-	S7AddressSerialize(io, m.S7Address, CastIS7Address(m), ser)
+	return S7AddressSerialize(io, m.S7Address, CastIS7Address(m), ser)
 }

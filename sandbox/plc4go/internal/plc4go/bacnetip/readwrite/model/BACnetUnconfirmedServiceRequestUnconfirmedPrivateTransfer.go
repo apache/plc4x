@@ -41,7 +41,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -177,36 +177,58 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *spi.Read
 	return NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId, serviceNumber, values), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (vendorIdHeader)
-		io.WriteUint8(8, 0x09)
+		_vendorIdHeaderErr := io.WriteUint8(8, 0x09)
+		if _vendorIdHeaderErr != nil {
+			return errors.New("Error serializing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+		}
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.vendorId)
-		io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		if _vendorIdErr != nil {
+			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
+		}
 
 		// Const Field (serviceNumberHeader)
-		io.WriteUint8(8, 0x1A)
+		_serviceNumberHeaderErr := io.WriteUint8(8, 0x1A)
+		if _serviceNumberHeaderErr != nil {
+			return errors.New("Error serializing 'serviceNumberHeader' field " + _serviceNumberHeaderErr.Error())
+		}
 
 		// Simple Field (serviceNumber)
 		serviceNumber := uint16(m.serviceNumber)
-		io.WriteUint16(16, (serviceNumber))
+		_serviceNumberErr := io.WriteUint16(16, (serviceNumber))
+		if _serviceNumberErr != nil {
+			return errors.New("Error serializing 'serviceNumber' field " + _serviceNumberErr.Error())
+		}
 
 		// Const Field (listOfValuesOpeningTag)
-		io.WriteUint8(8, 0x2E)
+		_listOfValuesOpeningTagErr := io.WriteUint8(8, 0x2E)
+		if _listOfValuesOpeningTagErr != nil {
+			return errors.New("Error serializing 'listOfValuesOpeningTag' field " + _listOfValuesOpeningTagErr.Error())
+		}
 
 		// Array Field (values)
 		if m.values != nil {
 			for _, _element := range m.values {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'values' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Const Field (listOfValuesClosingTag)
-		io.WriteUint8(8, 0x2F)
+		_listOfValuesClosingTagErr := io.WriteUint8(8, 0x2F)
+		if _listOfValuesClosingTagErr != nil {
+			return errors.New("Error serializing 'listOfValuesClosingTag' field " + _listOfValuesClosingTagErr.Error())
+		}
 
+		return nil
 	}
-	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

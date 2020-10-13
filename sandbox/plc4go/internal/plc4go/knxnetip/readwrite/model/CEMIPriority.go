@@ -24,7 +24,7 @@ type CEMIPriority uint8
 
 type ICEMIPriority interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -57,6 +57,7 @@ func CEMIPriorityParse(io *spi.ReadBuffer) (CEMIPriority, error) {
 	return 0, nil
 }
 
-func (e CEMIPriority) Serialize(io spi.WriteBuffer) {
+func (e CEMIPriority) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

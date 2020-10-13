@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestTimeSynchronization interface {
 	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io *spi.ReadBuffer)
 	return NewBACnetUnconfirmedServiceRequestTimeSynchronization(), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

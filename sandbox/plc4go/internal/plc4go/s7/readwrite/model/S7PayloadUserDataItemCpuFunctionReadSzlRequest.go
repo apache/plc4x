@@ -30,7 +30,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
 	IS7PayloadUserDataItem
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,9 +86,10 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *spi.ReadBuffer) (S7
 	return NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(), nil
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
+	return S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
 }

@@ -35,7 +35,7 @@ type KNXNetIPMessage struct {
 type IKNXNetIPMessage interface {
 	spi.Message
 	MsgType() uint16
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type KNXNetIPMessageInitializer interface {
@@ -164,24 +164,40 @@ func KNXNetIPMessageParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func()) {
+func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func() error) error {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
-	io.WriteUint8(8, (headerLength))
+	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	if _headerLengthErr != nil {
+		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
+	}
 
 	// Const Field (protocolVersion)
-	io.WriteUint8(8, 0x10)
+	_protocolVersionErr := io.WriteUint8(8, 0x10)
+	if _protocolVersionErr != nil {
+		return errors.New("Error serializing 'protocolVersion' field " + _protocolVersionErr.Error())
+	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType := uint16(i.MsgType())
-	io.WriteUint16(16, (msgType))
+	_msgTypeErr := io.WriteUint16(16, (msgType))
+	if _msgTypeErr != nil {
+		return errors.New("Error serializing 'msgType' field " + _msgTypeErr.Error())
+	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.LengthInBytes()))
-	io.WriteUint16(16, (totalLength))
+	_totalLengthErr := io.WriteUint16(16, (totalLength))
+	if _totalLengthErr != nil {
+		return errors.New("Error serializing 'totalLength' field " + _totalLengthErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

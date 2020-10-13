@@ -31,7 +31,7 @@ type IPAddress struct {
 // The corresponding interface
 type IIPAddress interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewIPAddress(addr []int8) spi.Message {
@@ -91,13 +91,17 @@ func IPAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewIPAddress(addr), nil
 }
 
-func (m IPAddress) Serialize(io spi.WriteBuffer) {
+func (m IPAddress) Serialize(io spi.WriteBuffer) error {
 
 	// Array Field (addr)
 	if m.addr != nil {
 		for _, _element := range m.addr {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'addr' field " + _elementErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

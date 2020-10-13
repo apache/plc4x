@@ -37,7 +37,7 @@ type TPKTPacket struct {
 // The corresponding interface
 type ITPKTPacket interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewTPKTPacket(payload ICOTPPacket) spi.Message {
@@ -132,20 +132,35 @@ func TPKTPacketParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewTPKTPacket(payload), nil
 }
 
-func (m TPKTPacket) Serialize(io spi.WriteBuffer) {
+func (m TPKTPacket) Serialize(io spi.WriteBuffer) error {
 
 	// Const Field (protocolId)
-	io.WriteUint8(8, 0x03)
+	_protocolIdErr := io.WriteUint8(8, 0x03)
+	if _protocolIdErr != nil {
+		return errors.New("Error serializing 'protocolId' field " + _protocolIdErr.Error())
+	}
 
 	// Reserved Field (reserved)
-	io.WriteUint8(8, uint8(0x00))
+	{
+		_err := io.WriteUint8(8, uint8(0x00))
+		if _err != nil {
+			return errors.New("Error serializing 'reserved' field " + _err.Error())
+		}
+	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.payload.LengthInBytes()) + uint16(uint16(4)))
-	io.WriteUint16(16, (len))
+	_lenErr := io.WriteUint16(16, (len))
+	if _lenErr != nil {
+		return errors.New("Error serializing 'len' field " + _lenErr.Error())
+	}
 
 	// Simple Field (payload)
 	payload := CastICOTPPacket(m.payload)
-	payload.Serialize(io)
+	_payloadErr := payload.Serialize(io)
+	if _payloadErr != nil {
+		return errors.New("Error serializing 'payload' field " + _payloadErr.Error())
+	}
 
+	return nil
 }

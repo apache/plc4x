@@ -34,7 +34,7 @@ type APDUReject struct {
 // The corresponding interface
 type IAPDUReject interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -121,20 +121,32 @@ func APDURejectParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 	return NewAPDUReject(originalInvokeId, rejectReason), nil
 }
 
-func (m APDUReject) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUReject) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(4, uint8(0x00))
+		{
+			_err := io.WriteUint8(4, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.originalInvokeId)
-		io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		if _originalInvokeIdErr != nil {
+			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		}
 
 		// Simple Field (rejectReason)
 		rejectReason := uint8(m.rejectReason)
-		io.WriteUint8(8, (rejectReason))
+		_rejectReasonErr := io.WriteUint8(8, (rejectReason))
+		if _rejectReasonErr != nil {
+			return errors.New("Error serializing 'rejectReason' field " + _rejectReasonErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

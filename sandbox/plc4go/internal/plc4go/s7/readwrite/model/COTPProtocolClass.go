@@ -24,7 +24,7 @@ type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -58,6 +58,7 @@ func COTPProtocolClassParse(io *spi.ReadBuffer) (COTPProtocolClass, error) {
 	return 0, nil
 }
 
-func (e COTPProtocolClass) Serialize(io spi.WriteBuffer) {
+func (e COTPProtocolClass) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

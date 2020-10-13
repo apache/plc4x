@@ -31,7 +31,7 @@ type CEMIAdditionalInformation struct {
 type ICEMIAdditionalInformation interface {
 	spi.Message
 	AdditionalInformationType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type CEMIAdditionalInformationInitializer interface {
@@ -102,13 +102,20 @@ func CEMIAdditionalInformationParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func CEMIAdditionalInformationSerialize(io spi.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func()) {
+func CEMIAdditionalInformationSerialize(io spi.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func() error) error {
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(i.AdditionalInformationType())
-	io.WriteUint8(8, (additionalInformationType))
+	_additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
+	if _additionalInformationTypeErr != nil {
+		return errors.New("Error serializing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

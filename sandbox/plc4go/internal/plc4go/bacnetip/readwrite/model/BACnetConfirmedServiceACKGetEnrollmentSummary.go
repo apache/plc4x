@@ -30,7 +30,7 @@ type BACnetConfirmedServiceACKGetEnrollmentSummary struct {
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetEnrollmentSummary interface {
 	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io *spi.ReadBuffer) (BAC
 	return NewBACnetConfirmedServiceACKGetEnrollmentSummary(), nil
 }
 
-func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

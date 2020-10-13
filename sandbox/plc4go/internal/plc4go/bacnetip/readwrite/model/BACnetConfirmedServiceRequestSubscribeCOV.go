@@ -45,7 +45,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -219,51 +219,85 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *spi.ReadBuffer) (BACnetC
 	return NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier, monitoredObjectType, monitoredObjectInstanceNumber, issueConfirmedNotifications, lifetimeLength, lifetimeSeconds), nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (subscriberProcessIdentifierHeader)
-		io.WriteUint8(8, 0x09)
+		_subscriberProcessIdentifierHeaderErr := io.WriteUint8(8, 0x09)
+		if _subscriberProcessIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'subscriberProcessIdentifierHeader' field " + _subscriberProcessIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (subscriberProcessIdentifier)
 		subscriberProcessIdentifier := uint8(m.subscriberProcessIdentifier)
-		io.WriteUint8(8, (subscriberProcessIdentifier))
+		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
+		if _subscriberProcessIdentifierErr != nil {
+			return errors.New("Error serializing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
+		}
 
 		// Const Field (monitoredObjectIdentifierHeader)
-		io.WriteUint8(8, 0x1C)
+		_monitoredObjectIdentifierHeaderErr := io.WriteUint8(8, 0x1C)
+		if _monitoredObjectIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'monitoredObjectIdentifierHeader' field " + _monitoredObjectIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (monitoredObjectType)
 		monitoredObjectType := uint16(m.monitoredObjectType)
-		io.WriteUint16(10, (monitoredObjectType))
+		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
+		if _monitoredObjectTypeErr != nil {
+			return errors.New("Error serializing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
+		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
 		monitoredObjectInstanceNumber := uint32(m.monitoredObjectInstanceNumber)
-		io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		if _monitoredObjectInstanceNumberErr != nil {
+			return errors.New("Error serializing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
+		}
 
 		// Const Field (issueConfirmedNotificationsHeader)
-		io.WriteUint8(8, 0x29)
+		_issueConfirmedNotificationsHeaderErr := io.WriteUint8(8, 0x29)
+		if _issueConfirmedNotificationsHeaderErr != nil {
+			return errors.New("Error serializing 'issueConfirmedNotificationsHeader' field " + _issueConfirmedNotificationsHeaderErr.Error())
+		}
 
 		// Const Field (issueConfirmedNotificationsSkipBits)
-		io.WriteUint8(7, 0x00)
+		_issueConfirmedNotificationsSkipBitsErr := io.WriteUint8(7, 0x00)
+		if _issueConfirmedNotificationsSkipBitsErr != nil {
+			return errors.New("Error serializing 'issueConfirmedNotificationsSkipBits' field " + _issueConfirmedNotificationsSkipBitsErr.Error())
+		}
 
 		// Simple Field (issueConfirmedNotifications)
 		issueConfirmedNotifications := bool(m.issueConfirmedNotifications)
-		io.WriteBit((bool)(issueConfirmedNotifications))
+		_issueConfirmedNotificationsErr := io.WriteBit((bool)(issueConfirmedNotifications))
+		if _issueConfirmedNotificationsErr != nil {
+			return errors.New("Error serializing 'issueConfirmedNotifications' field " + _issueConfirmedNotificationsErr.Error())
+		}
 
 		// Const Field (lifetimeHeader)
-		io.WriteUint8(5, 0x07)
+		_lifetimeHeaderErr := io.WriteUint8(5, 0x07)
+		if _lifetimeHeaderErr != nil {
+			return errors.New("Error serializing 'lifetimeHeader' field " + _lifetimeHeaderErr.Error())
+		}
 
 		// Simple Field (lifetimeLength)
 		lifetimeLength := uint8(m.lifetimeLength)
-		io.WriteUint8(3, (lifetimeLength))
+		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
+		if _lifetimeLengthErr != nil {
+			return errors.New("Error serializing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
+		}
 
 		// Array Field (lifetimeSeconds)
 		if m.lifetimeSeconds != nil {
 			for _, _element := range m.lifetimeSeconds {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'lifetimeSeconds' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

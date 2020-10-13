@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestWritePropertyMultiple struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWritePropertyMultiple interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io *spi.ReadBuffer)
 	return NewBACnetConfirmedServiceRequestWritePropertyMultiple(), nil
 }
 
-func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

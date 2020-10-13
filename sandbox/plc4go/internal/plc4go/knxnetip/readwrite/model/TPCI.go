@@ -24,7 +24,7 @@ type TPCI uint8
 
 type ITPCI interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -57,6 +57,7 @@ func TPCIParse(io *spi.ReadBuffer) (TPCI, error) {
 	return 0, nil
 }
 
-func (e TPCI) Serialize(io spi.WriteBuffer) {
+func (e TPCI) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

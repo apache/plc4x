@@ -32,7 +32,7 @@ type ModbusPDUReadFifoQueueRequest struct {
 // The corresponding interface
 type IModbusPDUReadFifoQueueRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,13 +101,17 @@ func ModbusPDUReadFifoQueueRequestParse(io *spi.ReadBuffer) (ModbusPDUInitialize
 	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil
 }
 
-func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.fifoPointerAddress)
-		io.WriteUint16(16, (fifoPointerAddress))
+		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
+		if _fifoPointerAddressErr != nil {
+			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

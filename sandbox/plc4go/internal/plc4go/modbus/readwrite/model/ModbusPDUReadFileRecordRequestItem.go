@@ -34,7 +34,7 @@ type ModbusPDUReadFileRecordRequestItem struct {
 // The corresponding interface
 type IModbusPDUReadFileRecordRequestItem interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordLength uint16) spi.Message {
@@ -113,22 +113,35 @@ func ModbusPDUReadFileRecordRequestItemParse(io *spi.ReadBuffer) (spi.Message, e
 	return NewModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength), nil
 }
 
-func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.referenceType)
-	io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	if _referenceTypeErr != nil {
+		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.fileNumber)
-	io.WriteUint16(16, (fileNumber))
+	_fileNumberErr := io.WriteUint16(16, (fileNumber))
+	if _fileNumberErr != nil {
+		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
+	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.recordNumber)
-	io.WriteUint16(16, (recordNumber))
+	_recordNumberErr := io.WriteUint16(16, (recordNumber))
+	if _recordNumberErr != nil {
+		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
+	}
 
 	// Simple Field (recordLength)
 	recordLength := uint16(m.recordLength)
-	io.WriteUint16(16, (recordLength))
+	_recordLengthErr := io.WriteUint16(16, (recordLength))
+	if _recordLengthErr != nil {
+		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
+	}
 
+	return nil
 }

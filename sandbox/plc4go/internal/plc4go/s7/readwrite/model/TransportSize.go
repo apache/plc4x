@@ -34,7 +34,7 @@ type ITransportSize interface {
 	DataTransportSize() DataTransportSize
 	BaseType() TransportSize
 	DataProtocolId() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -818,6 +818,7 @@ func TransportSizeParse(io *spi.ReadBuffer) (TransportSize, error) {
 	return 0, nil
 }
 
-func (e TransportSize) Serialize(io spi.WriteBuffer) {
+func (e TransportSize) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

@@ -30,7 +30,7 @@ type ConnectionResponseDataBlockDeviceManagement struct {
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
 	IConnectionResponseDataBlock
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func ConnectionResponseDataBlockDeviceManagementParse(io *spi.ReadBuffer) (Conne
 	return NewConnectionResponseDataBlockDeviceManagement(), nil
 }
 
-func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
+	return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

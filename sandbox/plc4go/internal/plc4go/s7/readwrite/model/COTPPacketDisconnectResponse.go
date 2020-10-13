@@ -33,7 +33,7 @@ type COTPPacketDisconnectResponse struct {
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
 	ICOTPPacket
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -105,17 +105,24 @@ func COTPPacketDisconnectResponseParse(io *spi.ReadBuffer) (COTPPacketInitialize
 	return NewCOTPPacketDisconnectResponse(destinationReference, sourceReference), nil
 }
 
-func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.destinationReference)
-		io.WriteUint16(16, (destinationReference))
+		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+		if _destinationReferenceErr != nil {
+			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
+		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.sourceReference)
-		io.WriteUint16(16, (sourceReference))
+		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
+		if _sourceReferenceErr != nil {
+			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
+		}
 
+		return nil
 	}
-	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+	return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

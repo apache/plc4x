@@ -30,7 +30,7 @@ type BACnetErrorGetEnrollmentSummary struct {
 // The corresponding interface
 type IBACnetErrorGetEnrollmentSummary interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorGetEnrollmentSummaryParse(io *spi.ReadBuffer) (BACnetErrorInitia
 	return NewBACnetErrorGetEnrollmentSummary(), nil
 }
 
-func (m BACnetErrorGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorGetEnrollmentSummary) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

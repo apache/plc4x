@@ -33,7 +33,7 @@ type S7VarRequestParameterItemAddress struct {
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
 	IS7VarRequestParameterItem
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -108,17 +108,24 @@ func S7VarRequestParameterItemAddressParse(io *spi.ReadBuffer) (S7VarRequestPara
 	return NewS7VarRequestParameterItemAddress(address), nil
 }
 
-func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.address.LengthInBytes())
-		io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		if _itemLengthErr != nil {
+			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
+		}
 
 		// Simple Field (address)
 		address := CastIS7Address(m.address)
-		address.Serialize(io)
+		_addressErr := address.Serialize(io)
+		if _addressErr != nil {
+			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+		}
 
+		return nil
 	}
-	S7VarRequestParameterItemSerialize(io, m.S7VarRequestParameterItem, CastIS7VarRequestParameterItem(m), ser)
+	return S7VarRequestParameterItemSerialize(io, m.S7VarRequestParameterItem, CastIS7VarRequestParameterItem(m), ser)
 }

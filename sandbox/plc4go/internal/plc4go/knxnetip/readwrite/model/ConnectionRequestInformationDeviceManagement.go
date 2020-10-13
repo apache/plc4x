@@ -30,7 +30,7 @@ type ConnectionRequestInformationDeviceManagement struct {
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
 	IConnectionRequestInformation
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func ConnectionRequestInformationDeviceManagementParse(io *spi.ReadBuffer) (Conn
 	return NewConnectionRequestInformationDeviceManagement(), nil
 }
 
-func (m ConnectionRequestInformationDeviceManagement) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionRequestInformationDeviceManagement) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
+	return ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
 }

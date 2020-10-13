@@ -35,7 +35,7 @@ type ModbusPDUGetComEventLogResponse struct {
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -148,32 +148,48 @@ func ModbusPDUGetComEventLogResponseParse(io *spi.ReadBuffer) (ModbusPDUInitiali
 	return NewModbusPDUGetComEventLogResponse(status, eventCount, messageCount, events), nil
 }
 
-func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.events))) + uint8(uint8(6)))
-		io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Simple Field (status)
 		status := uint16(m.status)
-		io.WriteUint16(16, (status))
+		_statusErr := io.WriteUint16(16, (status))
+		if _statusErr != nil {
+			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.eventCount)
-		io.WriteUint16(16, (eventCount))
+		_eventCountErr := io.WriteUint16(16, (eventCount))
+		if _eventCountErr != nil {
+			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
+		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.messageCount)
-		io.WriteUint16(16, (messageCount))
+		_messageCountErr := io.WriteUint16(16, (messageCount))
+		if _messageCountErr != nil {
+			return errors.New("Error serializing 'messageCount' field " + _messageCountErr.Error())
+		}
 
 		// Array Field (events)
 		if m.events != nil {
 			for _, _element := range m.events {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'events' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

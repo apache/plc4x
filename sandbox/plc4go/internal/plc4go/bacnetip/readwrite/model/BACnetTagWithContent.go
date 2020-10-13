@@ -43,7 +43,7 @@ type BACnetTagWithContent struct {
 // The corresponding interface
 type IBACnetTagWithContent interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value IBACnetTag) spi.Message {
@@ -201,49 +201,77 @@ func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
 }
 
-func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) {
+func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.typeOrTagNumber)
-	io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	if _typeOrTagNumberErr != nil {
+		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+	}
 
 	// Simple Field (contextSpecificTag)
 	contextSpecificTag := uint8(m.contextSpecificTag)
-	io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	if _contextSpecificTagErr != nil {
+		return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.lengthValueType)
-	io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	if _lengthValueTypeErr != nil {
+		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
 	var extTagNumber *uint8 = nil
 	if m.extTagNumber != nil {
 		extTagNumber = m.extTagNumber
-		io.WriteUint8(8, *(extTagNumber))
+		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
+		if _extTagNumberErr != nil {
+			return errors.New("Error serializing 'extTagNumber' field " + _extTagNumberErr.Error())
+		}
 	}
 
 	// Optional Field (extLength) (Can be skipped, if the value is null)
 	var extLength *uint8 = nil
 	if m.extLength != nil {
 		extLength = m.extLength
-		io.WriteUint8(8, *(extLength))
+		_extLengthErr := io.WriteUint8(8, *(extLength))
+		if _extLengthErr != nil {
+			return errors.New("Error serializing 'extLength' field " + _extLengthErr.Error())
+		}
 	}
 
 	// Array Field (propertyIdentifier)
 	if m.propertyIdentifier != nil {
 		for _, _element := range m.propertyIdentifier {
-			io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'propertyIdentifier' field " + _elementErr.Error())
+			}
 		}
 	}
 
 	// Const Field (openTag)
-	io.WriteUint8(8, 0x2e)
+	_openTagErr := io.WriteUint8(8, 0x2e)
+	if _openTagErr != nil {
+		return errors.New("Error serializing 'openTag' field " + _openTagErr.Error())
+	}
 
 	// Simple Field (value)
 	value := CastIBACnetTag(m.value)
-	value.Serialize(io)
+	_valueErr := value.Serialize(io)
+	if _valueErr != nil {
+		return errors.New("Error serializing 'value' field " + _valueErr.Error())
+	}
 
 	// Const Field (closingTag)
-	io.WriteUint8(8, 0x2f)
+	_closingTagErr := io.WriteUint8(8, 0x2f)
+	if _closingTagErr != nil {
+		return errors.New("Error serializing 'closingTag' field " + _closingTagErr.Error())
+	}
 
+	return nil
 }

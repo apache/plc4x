@@ -25,7 +25,7 @@ type ModbusDataType uint8
 type IModbusDataType interface {
 	spi.Message
 	DataTypeSize() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -203,6 +203,7 @@ func ModbusDataTypeParse(io *spi.ReadBuffer) (ModbusDataType, error) {
 	return 0, nil
 }
 
-func (e ModbusDataType) Serialize(io spi.WriteBuffer) {
+func (e ModbusDataType) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

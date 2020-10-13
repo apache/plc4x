@@ -30,7 +30,7 @@ type BACnetConfirmedServiceACKRemovedReadPropertyConditional struct {
 // The corresponding interface
 type IBACnetConfirmedServiceACKRemovedReadPropertyConditional interface {
 	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io *spi.ReadBu
 	return NewBACnetConfirmedServiceACKRemovedReadPropertyConditional(), nil
 }
 
-func (m BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceACKRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

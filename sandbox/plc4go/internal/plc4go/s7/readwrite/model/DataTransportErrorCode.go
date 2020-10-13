@@ -24,7 +24,7 @@ type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -59,6 +59,7 @@ func DataTransportErrorCodeParse(io *spi.ReadBuffer) (DataTransportErrorCode, er
 	return 0, nil
 }
 
-func (e DataTransportErrorCode) Serialize(io spi.WriteBuffer) {
+func (e DataTransportErrorCode) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

@@ -33,7 +33,7 @@ type DeviceConfigurationRequestDataBlock struct {
 // The corresponding interface
 type IDeviceConfigurationRequestDataBlock interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) spi.Message {
@@ -120,21 +120,36 @@ func DeviceConfigurationRequestDataBlockParse(io *spi.ReadBuffer) (spi.Message, 
 	return NewDeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter), nil
 }
 
-func (m DeviceConfigurationRequestDataBlock) Serialize(io spi.WriteBuffer) {
+func (m DeviceConfigurationRequestDataBlock) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	if _structureLengthErr != nil {
+		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.communicationChannelId)
-	io.WriteUint8(8, (communicationChannelId))
+	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+	if _communicationChannelIdErr != nil {
+		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.sequenceCounter)
-	io.WriteUint8(8, (sequenceCounter))
+	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
+	if _sequenceCounterErr != nil {
+		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+	}
 
 	// Reserved Field (reserved)
-	io.WriteUint8(8, uint8(0x00))
+	{
+		_err := io.WriteUint8(8, uint8(0x00))
+		if _err != nil {
+			return errors.New("Error serializing 'reserved' field " + _err.Error())
+		}
+	}
 
+	return nil
 }

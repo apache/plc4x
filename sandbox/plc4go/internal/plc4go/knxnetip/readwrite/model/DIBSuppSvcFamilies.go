@@ -33,7 +33,7 @@ type DIBSuppSvcFamilies struct {
 // The corresponding interface
 type IDIBSuppSvcFamilies interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []IServiceId) spi.Message {
@@ -118,21 +118,31 @@ func DIBSuppSvcFamiliesParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil
 }
 
-func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) {
+func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	if _structureLengthErr != nil {
+		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.descriptionType)
-	io.WriteUint8(8, (descriptionType))
+	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
+	if _descriptionTypeErr != nil {
+		return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
+	}
 
 	// Array Field (serviceIds)
 	if m.serviceIds != nil {
 		for _, _element := range m.serviceIds {
-			_element.Serialize(io)
+			_elementErr := _element.Serialize(io)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'serviceIds' field " + _elementErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

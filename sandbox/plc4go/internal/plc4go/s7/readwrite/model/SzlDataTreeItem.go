@@ -35,7 +35,7 @@ type SzlDataTreeItem struct {
 // The corresponding interface
 type ISzlDataTreeItem interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) spi.Message {
@@ -131,29 +131,45 @@ func SzlDataTreeItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
 }
 
-func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) {
+func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.itemIndex)
-	io.WriteUint16(16, (itemIndex))
+	_itemIndexErr := io.WriteUint16(16, (itemIndex))
+	if _itemIndexErr != nil {
+		return errors.New("Error serializing 'itemIndex' field " + _itemIndexErr.Error())
+	}
 
 	// Array Field (mlfb)
 	if m.mlfb != nil {
 		for _, _element := range m.mlfb {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'mlfb' field " + _elementErr.Error())
+			}
 		}
 	}
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId := uint16(m.moduleTypeId)
-	io.WriteUint16(16, (moduleTypeId))
+	_moduleTypeIdErr := io.WriteUint16(16, (moduleTypeId))
+	if _moduleTypeIdErr != nil {
+		return errors.New("Error serializing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
+	}
 
 	// Simple Field (ausbg)
 	ausbg := uint16(m.ausbg)
-	io.WriteUint16(16, (ausbg))
+	_ausbgErr := io.WriteUint16(16, (ausbg))
+	if _ausbgErr != nil {
+		return errors.New("Error serializing 'ausbg' field " + _ausbgErr.Error())
+	}
 
 	// Simple Field (ausbe)
 	ausbe := uint16(m.ausbe)
-	io.WriteUint16(16, (ausbe))
+	_ausbeErr := io.WriteUint16(16, (ausbe))
+	if _ausbeErr != nil {
+		return errors.New("Error serializing 'ausbe' field " + _ausbeErr.Error())
+	}
 
+	return nil
 }

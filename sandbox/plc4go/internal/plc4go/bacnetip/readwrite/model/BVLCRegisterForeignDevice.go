@@ -30,7 +30,7 @@ type BVLCRegisterForeignDevice struct {
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCRegisterForeignDeviceParse(io *spi.ReadBuffer) (BVLCInitializer, error)
 	return NewBVLCRegisterForeignDevice(), nil
 }
 
-func (m BVLCRegisterForeignDevice) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCRegisterForeignDevice) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

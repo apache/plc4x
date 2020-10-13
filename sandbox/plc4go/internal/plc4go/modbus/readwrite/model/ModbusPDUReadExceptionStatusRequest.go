@@ -30,7 +30,7 @@ type ModbusPDUReadExceptionStatusRequest struct {
 // The corresponding interface
 type IModbusPDUReadExceptionStatusRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -90,9 +90,10 @@ func ModbusPDUReadExceptionStatusRequestParse(io *spi.ReadBuffer) (ModbusPDUInit
 	return NewModbusPDUReadExceptionStatusRequest(), nil
 }
 
-func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

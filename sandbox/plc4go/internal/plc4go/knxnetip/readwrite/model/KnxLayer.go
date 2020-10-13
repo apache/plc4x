@@ -24,7 +24,7 @@ type KnxLayer uint8
 
 type IKnxLayer interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -56,6 +56,7 @@ func KnxLayerParse(io *spi.ReadBuffer) (KnxLayer, error) {
 	return 0, nil
 }
 
-func (e KnxLayer) Serialize(io spi.WriteBuffer) {
+func (e KnxLayer) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

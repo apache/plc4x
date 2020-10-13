@@ -42,7 +42,7 @@ type APDUConfirmedRequest struct {
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -211,54 +211,87 @@ func APDUConfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUIniti
 	return NewAPDUConfirmedRequest(segmentedMessage, moreFollows, segmentedResponseAccepted, maxSegmentsAccepted, maxApduLengthAccepted, invokeId, sequenceNumber, proposedWindowSize, serviceRequest), nil
 }
 
-func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.segmentedMessage)
-		io.WriteBit((bool)(segmentedMessage))
+		_segmentedMessageErr := io.WriteBit((bool)(segmentedMessage))
+		if _segmentedMessageErr != nil {
+			return errors.New("Error serializing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.moreFollows)
-		io.WriteBit((bool)(moreFollows))
+		_moreFollowsErr := io.WriteBit((bool)(moreFollows))
+		if _moreFollowsErr != nil {
+			return errors.New("Error serializing 'moreFollows' field " + _moreFollowsErr.Error())
+		}
 
 		// Simple Field (segmentedResponseAccepted)
 		segmentedResponseAccepted := bool(m.segmentedResponseAccepted)
-		io.WriteBit((bool)(segmentedResponseAccepted))
+		_segmentedResponseAcceptedErr := io.WriteBit((bool)(segmentedResponseAccepted))
+		if _segmentedResponseAcceptedErr != nil {
+			return errors.New("Error serializing 'segmentedResponseAccepted' field " + _segmentedResponseAcceptedErr.Error())
+		}
 
 		// Reserved Field (reserved)
-		io.WriteUint8(2, uint8(0))
+		{
+			_err := io.WriteUint8(2, uint8(0))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (maxSegmentsAccepted)
 		maxSegmentsAccepted := uint8(m.maxSegmentsAccepted)
-		io.WriteUint8(3, (maxSegmentsAccepted))
+		_maxSegmentsAcceptedErr := io.WriteUint8(3, (maxSegmentsAccepted))
+		if _maxSegmentsAcceptedErr != nil {
+			return errors.New("Error serializing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
+		}
 
 		// Simple Field (maxApduLengthAccepted)
 		maxApduLengthAccepted := uint8(m.maxApduLengthAccepted)
-		io.WriteUint8(4, (maxApduLengthAccepted))
+		_maxApduLengthAcceptedErr := io.WriteUint8(4, (maxApduLengthAccepted))
+		if _maxApduLengthAcceptedErr != nil {
+			return errors.New("Error serializing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
+		}
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.invokeId)
-		io.WriteUint8(8, (invokeId))
+		_invokeIdErr := io.WriteUint8(8, (invokeId))
+		if _invokeIdErr != nil {
+			return errors.New("Error serializing 'invokeId' field " + _invokeIdErr.Error())
+		}
 
 		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
 		var sequenceNumber *uint8 = nil
 		if m.sequenceNumber != nil {
 			sequenceNumber = m.sequenceNumber
-			io.WriteUint8(8, *(sequenceNumber))
+			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
+			if _sequenceNumberErr != nil {
+				return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+			}
 		}
 
 		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
 		var proposedWindowSize *uint8 = nil
 		if m.proposedWindowSize != nil {
 			proposedWindowSize = m.proposedWindowSize
-			io.WriteUint8(8, *(proposedWindowSize))
+			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
+			if _proposedWindowSizeErr != nil {
+				return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+			}
 		}
 
 		// Simple Field (serviceRequest)
 		serviceRequest := CastIBACnetConfirmedServiceRequest(m.serviceRequest)
-		serviceRequest.Serialize(io)
+		_serviceRequestErr := serviceRequest.Serialize(io)
+		if _serviceRequestErr != nil {
+			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

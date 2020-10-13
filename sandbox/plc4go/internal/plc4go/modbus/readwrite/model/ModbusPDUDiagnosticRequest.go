@@ -33,7 +33,7 @@ type ModbusPDUDiagnosticRequest struct {
 // The corresponding interface
 type IModbusPDUDiagnosticRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,17 +111,24 @@ func ModbusPDUDiagnosticRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, 
 	return NewModbusPDUDiagnosticRequest(status, eventCount), nil
 }
 
-func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (status)
 		status := uint16(m.status)
-		io.WriteUint16(16, (status))
+		_statusErr := io.WriteUint16(16, (status))
+		if _statusErr != nil {
+			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.eventCount)
-		io.WriteUint16(16, (eventCount))
+		_eventCountErr := io.WriteUint16(16, (eventCount))
+		if _eventCountErr != nil {
+			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

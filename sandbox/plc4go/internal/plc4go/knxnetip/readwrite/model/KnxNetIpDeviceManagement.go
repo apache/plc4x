@@ -32,7 +32,7 @@ type KnxNetIpDeviceManagement struct {
 // The corresponding interface
 type IKnxNetIpDeviceManagement interface {
 	IServiceId
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func KnxNetIpDeviceManagementParse(io *spi.ReadBuffer) (ServiceIdInitializer, er
 	return NewKnxNetIpDeviceManagement(version), nil
 }
 
-func (m KnxNetIpDeviceManagement) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m KnxNetIpDeviceManagement) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (version)
 		version := uint8(m.version)
-		io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8(8, (version))
+		if _versionErr != nil {
+			return errors.New("Error serializing 'version' field " + _versionErr.Error())
+		}
 
+		return nil
 	}
-	ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+	return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

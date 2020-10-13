@@ -34,7 +34,7 @@ type ModbusPDUWriteMultipleCoilsRequest struct {
 // The corresponding interface
 type IModbusPDUWriteMultipleCoilsRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -138,28 +138,41 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io *spi.ReadBuffer) (ModbusPDUIniti
 	return NewModbusPDUWriteMultipleCoilsRequest(startingAddress, quantity, value), nil
 }
 
-func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.startingAddress)
-		io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		if _startingAddressErr != nil {
+			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
+		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.quantity)
-		io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16(16, (quantity))
+		if _quantityErr != nil {
+			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
+		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.value)))
-		io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Array Field (value)
 		if m.value != nil {
 			for _, _element := range m.value {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -34,7 +34,7 @@ type DeviceConfigurationRequest struct {
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -114,17 +114,24 @@ func DeviceConfigurationRequestParse(io *spi.ReadBuffer, totalLength uint16) (KN
 	return NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi), nil
 }
 
-func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
 		deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
-		deviceConfigurationRequestDataBlock.Serialize(io)
+		_deviceConfigurationRequestDataBlockErr := deviceConfigurationRequestDataBlock.Serialize(io)
+		if _deviceConfigurationRequestDataBlockErr != nil {
+			return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
+		}
 
 		// Simple Field (cemi)
 		cemi := CastICEMI(m.cemi)
-		cemi.Serialize(io)
+		_cemiErr := cemi.Serialize(io)
+		if _cemiErr != nil {
+			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }
