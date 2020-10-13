@@ -17,22 +17,31 @@ package drivers
 
 import (
 	"encoding/hex"
+	"fmt"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
 func Modbus() {
+	// Create the input data
+	// "000a 0000 0006 01 03 00 00 00 04"
 	request, err := hex.DecodeString("000a00000006010300000004")
 	if err != nil {
-		// Output an error ...
+		fmt.Errorf("error preparing input buffer")
+		return
 	}
 	rb := spi.ReadBufferNew(request)
 	adu, err := model.ModbusTcpADUParse(*rb, false)
 	if err != nil {
-		// Output an error ...
+		fmt.Errorf("error parsing input")
+		return
 	}
 	if adu != nil {
-		// Output success ...
+		wb := spi.WriteBufferNew()
+		val := model.CastIModbusTcpADU(adu)
+		val.Serialize(*wb)
+		serializedRequest := hex.EncodeToString(wb.GetBytes())
+		fmt.Printf("Got result: %s", serializedRequest)
 	}
 
 }

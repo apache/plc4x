@@ -145,11 +145,11 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
 
 	// Enum field (returnCode)
-	returnCode := IDataTransportErrorCode(m.returnCode)
+	returnCode := CastDataTransportErrorCode(m.returnCode)
 	returnCode.Serialize(io)
 
 	// Enum field (transportSize)
-	transportSize := IDataTransportSize(m.transportSize)
+	transportSize := CastDataTransportSize(m.transportSize)
 	transportSize.Serialize(io)
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -171,4 +171,5 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
 			io.WriteUint8(8, (_paddingValue))
 		}
 	}
+
 }

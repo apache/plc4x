@@ -83,5 +83,8 @@ func BACnetErrorReadRangeParse(io spi.ReadBuffer) (BACnetErrorInitializer, error
 }
 
 func (m BACnetErrorReadRange) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

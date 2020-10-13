@@ -122,15 +122,19 @@ func APDUSimpleAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(4, uint8(0))
+		// Reserved Field (reserved)
+		io.WriteUint8(4, uint8(0))
 
-	// Simple Field (originalInvokeId)
-	originalInvokeId := uint8(m.originalInvokeId)
-	io.WriteUint8(8, (originalInvokeId))
+		// Simple Field (originalInvokeId)
+		originalInvokeId := uint8(m.originalInvokeId)
+		io.WriteUint8(8, (originalInvokeId))
 
-	// Simple Field (serviceChoice)
-	serviceChoice := uint8(m.serviceChoice)
-	io.WriteUint8(8, (serviceChoice))
+		// Simple Field (serviceChoice)
+		serviceChoice := uint8(m.serviceChoice)
+		io.WriteUint8(8, (serviceChoice))
+
+	}
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

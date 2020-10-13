@@ -115,13 +115,13 @@ func S7ParameterParse(io spi.ReadBuffer, messageType uint8) (spi.Message, error)
 	return initializer.initialize(), nil
 }
 
-func (m S7Parameter) Serialize(io spi.WriteBuffer) {
-	iS7Parameter := CastIS7Parameter(m)
+func S7ParameterSerialize(io spi.WriteBuffer, m S7Parameter, i IS7Parameter, childSerialize func()) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(S7ParameterParameterType(iS7Parameter))
+	parameterType := uint8(i.ParameterType())
 	io.WriteUint8(8, (parameterType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7Parameter.Serialize(io)
+	childSerialize()
+
 }

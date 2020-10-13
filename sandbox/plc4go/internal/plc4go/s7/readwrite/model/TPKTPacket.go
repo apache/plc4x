@@ -145,6 +145,7 @@ func (m TPKTPacket) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (len))
 
 	// Simple Field (payload)
-	payload := ICOTPPacket(m.payload)
+	payload := CastICOTPPacket(m.payload)
 	payload.Serialize(io)
+
 }

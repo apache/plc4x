@@ -142,23 +142,27 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitia
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (startingAddress)
-	startingAddress := uint16(m.startingAddress)
-	io.WriteUint16(16, (startingAddress))
+		// Simple Field (startingAddress)
+		startingAddress := uint16(m.startingAddress)
+		io.WriteUint16(16, (startingAddress))
 
-	// Simple Field (quantity)
-	quantity := uint16(m.quantity)
-	io.WriteUint16(16, (quantity))
+		// Simple Field (quantity)
+		quantity := uint16(m.quantity)
+		io.WriteUint16(16, (quantity))
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount := uint8(uint8(len(m.value)))
-	io.WriteUint8(8, (byteCount))
+		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		byteCount := uint8(uint8(len(m.value)))
+		io.WriteUint8(8, (byteCount))
 
-	// Array Field (value)
-	if m.value != nil {
-		for _, _element := range m.value {
-			io.WriteInt8(8, _element)
+		// Array Field (value)
+		if m.value != nil {
+			for _, _element := range m.value {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

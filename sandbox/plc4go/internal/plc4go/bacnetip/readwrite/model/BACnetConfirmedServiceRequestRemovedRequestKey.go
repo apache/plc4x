@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestRemovedRequestKeyParse(io spi.ReadBuffer) (BAC
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

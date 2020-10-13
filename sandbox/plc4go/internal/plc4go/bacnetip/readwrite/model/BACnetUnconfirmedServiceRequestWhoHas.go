@@ -184,36 +184,40 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconf
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (deviceInstanceLowLimitHeader)
-	io.WriteUint8(8, 0x0B)
+		// Const Field (deviceInstanceLowLimitHeader)
+		io.WriteUint8(8, 0x0B)
 
-	// Simple Field (deviceInstanceLowLimit)
-	deviceInstanceLowLimit := uint32(m.deviceInstanceLowLimit)
-	io.WriteUint32(24, (deviceInstanceLowLimit))
+		// Simple Field (deviceInstanceLowLimit)
+		deviceInstanceLowLimit := uint32(m.deviceInstanceLowLimit)
+		io.WriteUint32(24, (deviceInstanceLowLimit))
 
-	// Const Field (deviceInstanceHighLimitHeader)
-	io.WriteUint8(8, 0x1B)
+		// Const Field (deviceInstanceHighLimitHeader)
+		io.WriteUint8(8, 0x1B)
 
-	// Simple Field (deviceInstanceHighLimit)
-	deviceInstanceHighLimit := uint32(m.deviceInstanceHighLimit)
-	io.WriteUint32(24, (deviceInstanceHighLimit))
+		// Simple Field (deviceInstanceHighLimit)
+		deviceInstanceHighLimit := uint32(m.deviceInstanceHighLimit)
+		io.WriteUint32(24, (deviceInstanceHighLimit))
 
-	// Const Field (objectNameHeader)
-	io.WriteUint8(8, 0x3D)
+		// Const Field (objectNameHeader)
+		io.WriteUint8(8, 0x3D)
 
-	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	objectNameLength := uint8(uint8(uint8(len(m.objectName))) + uint8(uint8(1)))
-	io.WriteUint8(8, (objectNameLength))
+		// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		objectNameLength := uint8(uint8(uint8(len(m.objectName))) + uint8(uint8(1)))
+		io.WriteUint8(8, (objectNameLength))
 
-	// Simple Field (objectNameCharacterSet)
-	objectNameCharacterSet := uint8(m.objectNameCharacterSet)
-	io.WriteUint8(8, (objectNameCharacterSet))
+		// Simple Field (objectNameCharacterSet)
+		objectNameCharacterSet := uint8(m.objectNameCharacterSet)
+		io.WriteUint8(8, (objectNameCharacterSet))
 
-	// Array Field (objectName)
-	if m.objectName != nil {
-		for _, _element := range m.objectName {
-			io.WriteInt8(8, _element)
+		// Array Field (objectName)
+		if m.objectName != nil {
+			for _, _element := range m.objectName {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

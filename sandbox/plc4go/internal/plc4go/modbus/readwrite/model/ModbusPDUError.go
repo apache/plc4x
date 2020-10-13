@@ -102,8 +102,12 @@ func ModbusPDUErrorParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 }
 
 func (m ModbusPDUError) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (exceptionCode)
-	exceptionCode := uint8(m.exceptionCode)
-	io.WriteUint8(8, (exceptionCode))
+		// Simple Field (exceptionCode)
+		exceptionCode := uint8(m.exceptionCode)
+		io.WriteUint8(8, (exceptionCode))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

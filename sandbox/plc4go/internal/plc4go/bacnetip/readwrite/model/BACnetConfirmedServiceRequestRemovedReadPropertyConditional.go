@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestRemovedReadPropertyConditionalParse(io spi.Rea
 }
 
 func (m BACnetConfirmedServiceRequestRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

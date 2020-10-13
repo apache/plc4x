@@ -83,5 +83,8 @@ func BACnetServiceAckGetEventInformationParse(io spi.ReadBuffer) (BACnetServiceA
 }
 
 func (m BACnetServiceAckGetEventInformation) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

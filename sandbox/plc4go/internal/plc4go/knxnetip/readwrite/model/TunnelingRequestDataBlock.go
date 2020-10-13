@@ -136,4 +136,5 @@ func (m TunnelingRequestDataBlock) Serialize(io spi.WriteBuffer) {
 
 	// Reserved Field (reserved)
 	io.WriteUint8(8, uint8(0x00))
+
 }

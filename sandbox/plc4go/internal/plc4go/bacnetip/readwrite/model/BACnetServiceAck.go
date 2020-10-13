@@ -126,13 +126,13 @@ func BACnetServiceAckParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m BACnetServiceAck) Serialize(io spi.WriteBuffer) {
-	iBACnetServiceAck := CastIBACnetServiceAck(m)
+func BACnetServiceAckSerialize(io spi.WriteBuffer, m BACnetServiceAck, i IBACnetServiceAck, childSerialize func()) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(BACnetServiceAckServiceChoice(iBACnetServiceAck))
+	serviceChoice := uint8(i.ServiceChoice())
 	io.WriteUint8(8, (serviceChoice))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iBACnetServiceAck.Serialize(io)
+	childSerialize()
+
 }

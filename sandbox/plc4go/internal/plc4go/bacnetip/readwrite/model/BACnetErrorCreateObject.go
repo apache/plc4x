@@ -83,5 +83,8 @@ func BACnetErrorCreateObjectParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 }
 
 func (m BACnetErrorCreateObject) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

@@ -144,28 +144,32 @@ func CEMIMPropReadConParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIMPropReadCon) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (interfaceObjectType)
-	interfaceObjectType := uint16(m.interfaceObjectType)
-	io.WriteUint16(16, (interfaceObjectType))
+		// Simple Field (interfaceObjectType)
+		interfaceObjectType := uint16(m.interfaceObjectType)
+		io.WriteUint16(16, (interfaceObjectType))
 
-	// Simple Field (objectInstance)
-	objectInstance := uint8(m.objectInstance)
-	io.WriteUint8(8, (objectInstance))
+		// Simple Field (objectInstance)
+		objectInstance := uint8(m.objectInstance)
+		io.WriteUint8(8, (objectInstance))
 
-	// Simple Field (propertyId)
-	propertyId := uint8(m.propertyId)
-	io.WriteUint8(8, (propertyId))
+		// Simple Field (propertyId)
+		propertyId := uint8(m.propertyId)
+		io.WriteUint8(8, (propertyId))
 
-	// Simple Field (numberOfElements)
-	numberOfElements := uint8(m.numberOfElements)
-	io.WriteUint8(4, (numberOfElements))
+		// Simple Field (numberOfElements)
+		numberOfElements := uint8(m.numberOfElements)
+		io.WriteUint8(4, (numberOfElements))
 
-	// Simple Field (startIndex)
-	startIndex := uint16(m.startIndex)
-	io.WriteUint16(12, (startIndex))
+		// Simple Field (startIndex)
+		startIndex := uint16(m.startIndex)
+		io.WriteUint16(12, (startIndex))
 
-	// Simple Field (unknown)
-	unknown := uint16(m.unknown)
-	io.WriteUint16(16, (unknown))
+		// Simple Field (unknown)
+		unknown := uint16(m.unknown)
+		io.WriteUint16(16, (unknown))
+
+	}
+	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

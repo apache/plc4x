@@ -94,8 +94,12 @@ func KNXGroupAddressFreeLevelParse(io spi.ReadBuffer) (KNXGroupAddressInitialize
 }
 
 func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (subGroup)
-	subGroup := uint16(m.subGroup)
-	io.WriteUint16(16, (subGroup))
+		// Simple Field (subGroup)
+		subGroup := uint16(m.subGroup)
+		io.WriteUint16(16, (subGroup))
+
+	}
+	KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

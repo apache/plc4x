@@ -107,11 +107,15 @@ func BACnetTagApplicationUnsignedIntegerParse(io spi.ReadBuffer, lengthValueType
 }
 
 func (m BACnetTagApplicationUnsignedInteger) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+		// Array Field (data)
+		if m.data != nil {
+			for _, _element := range m.data {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

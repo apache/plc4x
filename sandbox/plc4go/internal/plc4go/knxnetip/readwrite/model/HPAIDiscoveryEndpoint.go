@@ -125,14 +125,15 @@ func (m HPAIDiscoveryEndpoint) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (structureLength))
 
 	// Enum field (hostProtocolCode)
-	hostProtocolCode := IHostProtocolCode(m.hostProtocolCode)
+	hostProtocolCode := CastHostProtocolCode(m.hostProtocolCode)
 	hostProtocolCode.Serialize(io)
 
 	// Simple Field (ipAddress)
-	ipAddress := IIPAddress(m.ipAddress)
+	ipAddress := CastIIPAddress(m.ipAddress)
 	ipAddress.Serialize(io)
 
 	// Simple Field (ipPort)
 	ipPort := uint16(m.ipPort)
 	io.WriteUint16(16, (ipPort))
+
 }

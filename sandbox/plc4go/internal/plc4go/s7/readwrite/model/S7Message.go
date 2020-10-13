@@ -211,14 +211,13 @@ func S7MessageParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(tpduReference, parameter, payload), nil
 }
 
-func (m S7Message) Serialize(io spi.WriteBuffer) {
-	iS7Message := CastIS7Message(m)
+func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSerialize func()) {
 
 	// Const Field (protocolId)
 	io.WriteUint8(8, 0x32)
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(S7MessageMessageType(iS7Message))
+	messageType := uint8(i.MessageType())
 	io.WriteUint8(8, (messageType))
 
 	// Reserved Field (reserved)
@@ -237,19 +236,20 @@ func (m S7Message) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (payloadLength))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7Message.Serialize(io)
+	childSerialize()
 
 	// Optional Field (parameter) (Can be skipped, if the value is null)
 	var parameter *IS7Parameter = nil
 	if m.parameter != nil {
 		parameter = m.parameter
-		(*parameter).Serialize(io)
+		CastIS7Parameter(*parameter).Serialize(io)
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *IS7Payload = nil
 	if m.payload != nil {
 		payload = m.payload
-		(*payload).Serialize(io)
+		CastIS7Payload(*payload).Serialize(io)
 	}
+
 }

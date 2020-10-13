@@ -152,27 +152,31 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 }
 
 func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount := uint8(uint8(uint8(len(m.events))) + uint8(uint8(6)))
-	io.WriteUint8(8, (byteCount))
+		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		byteCount := uint8(uint8(uint8(len(m.events))) + uint8(uint8(6)))
+		io.WriteUint8(8, (byteCount))
 
-	// Simple Field (status)
-	status := uint16(m.status)
-	io.WriteUint16(16, (status))
+		// Simple Field (status)
+		status := uint16(m.status)
+		io.WriteUint16(16, (status))
 
-	// Simple Field (eventCount)
-	eventCount := uint16(m.eventCount)
-	io.WriteUint16(16, (eventCount))
+		// Simple Field (eventCount)
+		eventCount := uint16(m.eventCount)
+		io.WriteUint16(16, (eventCount))
 
-	// Simple Field (messageCount)
-	messageCount := uint16(m.messageCount)
-	io.WriteUint16(16, (messageCount))
+		// Simple Field (messageCount)
+		messageCount := uint16(m.messageCount)
+		io.WriteUint16(16, (messageCount))
 
-	// Array Field (events)
-	if m.events != nil {
-		for _, _element := range m.events {
-			io.WriteInt8(8, _element)
+		// Array Field (events)
+		if m.events != nil {
+			for _, _element := range m.events {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

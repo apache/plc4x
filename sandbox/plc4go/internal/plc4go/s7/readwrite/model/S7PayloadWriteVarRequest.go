@@ -117,15 +117,19 @@ func S7PayloadWriteVarRequestParse(io spi.ReadBuffer, parameter IS7Parameter) (S
 }
 
 func (m S7PayloadWriteVarRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (items)
-	if m.items != nil {
-		itemCount := uint16(len(m.items))
-		var curItem uint16 = 0
-		for _, _element := range m.items {
-			var lastItem bool = curItem == (itemCount - 1)
-			_element.Serialize(io, lastItem)
-			curItem++
+		// Array Field (items)
+		if m.items != nil {
+			itemCount := uint16(len(m.items))
+			var curItem uint16 = 0
+			for _, _element := range m.items {
+				var lastItem bool = curItem == (itemCount - 1)
+				_element.Serialize(io, lastItem)
+				curItem++
+			}
 		}
+
 	}
+	S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
 }

@@ -94,8 +94,12 @@ func KnxNetIpDeviceManagementParse(io spi.ReadBuffer) (ServiceIdInitializer, err
 }
 
 func (m KnxNetIpDeviceManagement) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (version)
-	version := uint8(m.version)
-	io.WriteUint8(8, (version))
+		// Simple Field (version)
+		version := uint8(m.version)
+		io.WriteUint8(8, (version))
+
+	}
+	ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

@@ -132,19 +132,23 @@ func APDUAbortParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUAbort) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(3, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(3, uint8(0x00))
 
-	// Simple Field (server)
-	server := bool(m.server)
-	io.WriteBit((bool)(server))
+		// Simple Field (server)
+		server := bool(m.server)
+		io.WriteBit((bool)(server))
 
-	// Simple Field (originalInvokeId)
-	originalInvokeId := uint8(m.originalInvokeId)
-	io.WriteUint8(8, (originalInvokeId))
+		// Simple Field (originalInvokeId)
+		originalInvokeId := uint8(m.originalInvokeId)
+		io.WriteUint8(8, (originalInvokeId))
 
-	// Simple Field (abortReason)
-	abortReason := uint8(m.abortReason)
-	io.WriteUint8(8, (abortReason))
+		// Simple Field (abortReason)
+		abortReason := uint8(m.abortReason)
+		io.WriteUint8(8, (abortReason))
+
+	}
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

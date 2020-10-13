@@ -178,31 +178,35 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io spi.ReadB
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (vendorIdHeader)
-	io.WriteUint8(8, 0x09)
+		// Const Field (vendorIdHeader)
+		io.WriteUint8(8, 0x09)
 
-	// Simple Field (vendorId)
-	vendorId := uint8(m.vendorId)
-	io.WriteUint8(8, (vendorId))
+		// Simple Field (vendorId)
+		vendorId := uint8(m.vendorId)
+		io.WriteUint8(8, (vendorId))
 
-	// Const Field (serviceNumberHeader)
-	io.WriteUint8(8, 0x1A)
+		// Const Field (serviceNumberHeader)
+		io.WriteUint8(8, 0x1A)
 
-	// Simple Field (serviceNumber)
-	serviceNumber := uint16(m.serviceNumber)
-	io.WriteUint16(16, (serviceNumber))
+		// Simple Field (serviceNumber)
+		serviceNumber := uint16(m.serviceNumber)
+		io.WriteUint16(16, (serviceNumber))
 
-	// Const Field (listOfValuesOpeningTag)
-	io.WriteUint8(8, 0x2E)
+		// Const Field (listOfValuesOpeningTag)
+		io.WriteUint8(8, 0x2E)
 
-	// Array Field (values)
-	if m.values != nil {
-		for _, _element := range m.values {
-			io.WriteInt8(8, _element)
+		// Array Field (values)
+		if m.values != nil {
+			for _, _element := range m.values {
+				io.WriteInt8(8, _element)
+			}
 		}
-	}
 
-	// Const Field (listOfValuesClosingTag)
-	io.WriteUint8(8, 0x2F)
+		// Const Field (listOfValuesClosingTag)
+		io.WriteUint8(8, 0x2F)
+
+	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

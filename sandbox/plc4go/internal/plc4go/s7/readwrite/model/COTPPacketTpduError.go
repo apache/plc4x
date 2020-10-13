@@ -106,12 +106,16 @@ func COTPPacketTpduErrorParse(io spi.ReadBuffer) (COTPPacketInitializer, error) 
 }
 
 func (m COTPPacketTpduError) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (destinationReference)
-	destinationReference := uint16(m.destinationReference)
-	io.WriteUint16(16, (destinationReference))
+		// Simple Field (destinationReference)
+		destinationReference := uint16(m.destinationReference)
+		io.WriteUint16(16, (destinationReference))
 
-	// Simple Field (rejectCause)
-	rejectCause := uint8(m.rejectCause)
-	io.WriteUint8(8, (rejectCause))
+		// Simple Field (rejectCause)
+		rejectCause := uint8(m.rejectCause)
+		io.WriteUint8(8, (rejectCause))
+
+	}
+	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

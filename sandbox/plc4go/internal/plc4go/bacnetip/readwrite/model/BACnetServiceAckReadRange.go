@@ -83,5 +83,8 @@ func BACnetServiceAckReadRangeParse(io spi.ReadBuffer) (BACnetServiceAckInitiali
 }
 
 func (m BACnetServiceAckReadRange) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

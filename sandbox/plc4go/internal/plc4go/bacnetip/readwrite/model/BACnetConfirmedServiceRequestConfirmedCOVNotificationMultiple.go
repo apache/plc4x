@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io spi.R
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

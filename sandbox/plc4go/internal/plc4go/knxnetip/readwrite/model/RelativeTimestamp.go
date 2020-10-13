@@ -88,4 +88,5 @@ func (m RelativeTimestamp) Serialize(io spi.WriteBuffer) {
 	// Simple Field (timestamp)
 	timestamp := uint16(m.timestamp)
 	io.WriteUint16(16, (timestamp))
+
 }

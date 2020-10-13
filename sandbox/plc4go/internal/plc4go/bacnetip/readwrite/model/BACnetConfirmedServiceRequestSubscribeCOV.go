@@ -223,46 +223,50 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io spi.ReadBuffer) (BACnetCo
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (subscriberProcessIdentifierHeader)
-	io.WriteUint8(8, 0x09)
+		// Const Field (subscriberProcessIdentifierHeader)
+		io.WriteUint8(8, 0x09)
 
-	// Simple Field (subscriberProcessIdentifier)
-	subscriberProcessIdentifier := uint8(m.subscriberProcessIdentifier)
-	io.WriteUint8(8, (subscriberProcessIdentifier))
+		// Simple Field (subscriberProcessIdentifier)
+		subscriberProcessIdentifier := uint8(m.subscriberProcessIdentifier)
+		io.WriteUint8(8, (subscriberProcessIdentifier))
 
-	// Const Field (monitoredObjectIdentifierHeader)
-	io.WriteUint8(8, 0x1C)
+		// Const Field (monitoredObjectIdentifierHeader)
+		io.WriteUint8(8, 0x1C)
 
-	// Simple Field (monitoredObjectType)
-	monitoredObjectType := uint16(m.monitoredObjectType)
-	io.WriteUint16(10, (monitoredObjectType))
+		// Simple Field (monitoredObjectType)
+		monitoredObjectType := uint16(m.monitoredObjectType)
+		io.WriteUint16(10, (monitoredObjectType))
 
-	// Simple Field (monitoredObjectInstanceNumber)
-	monitoredObjectInstanceNumber := uint32(m.monitoredObjectInstanceNumber)
-	io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		// Simple Field (monitoredObjectInstanceNumber)
+		monitoredObjectInstanceNumber := uint32(m.monitoredObjectInstanceNumber)
+		io.WriteUint32(22, (monitoredObjectInstanceNumber))
 
-	// Const Field (issueConfirmedNotificationsHeader)
-	io.WriteUint8(8, 0x29)
+		// Const Field (issueConfirmedNotificationsHeader)
+		io.WriteUint8(8, 0x29)
 
-	// Const Field (issueConfirmedNotificationsSkipBits)
-	io.WriteUint8(7, 0x00)
+		// Const Field (issueConfirmedNotificationsSkipBits)
+		io.WriteUint8(7, 0x00)
 
-	// Simple Field (issueConfirmedNotifications)
-	issueConfirmedNotifications := bool(m.issueConfirmedNotifications)
-	io.WriteBit((bool)(issueConfirmedNotifications))
+		// Simple Field (issueConfirmedNotifications)
+		issueConfirmedNotifications := bool(m.issueConfirmedNotifications)
+		io.WriteBit((bool)(issueConfirmedNotifications))
 
-	// Const Field (lifetimeHeader)
-	io.WriteUint8(5, 0x07)
+		// Const Field (lifetimeHeader)
+		io.WriteUint8(5, 0x07)
 
-	// Simple Field (lifetimeLength)
-	lifetimeLength := uint8(m.lifetimeLength)
-	io.WriteUint8(3, (lifetimeLength))
+		// Simple Field (lifetimeLength)
+		lifetimeLength := uint8(m.lifetimeLength)
+		io.WriteUint8(3, (lifetimeLength))
 
-	// Array Field (lifetimeSeconds)
-	if m.lifetimeSeconds != nil {
-		for _, _element := range m.lifetimeSeconds {
-			io.WriteInt8(8, _element)
+		// Array Field (lifetimeSeconds)
+		if m.lifetimeSeconds != nil {
+			for _, _element := range m.lifetimeSeconds {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

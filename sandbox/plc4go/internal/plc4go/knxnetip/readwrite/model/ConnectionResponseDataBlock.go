@@ -111,17 +111,17 @@ func ConnectionResponseDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m ConnectionResponseDataBlock) Serialize(io spi.WriteBuffer) {
-	iConnectionResponseDataBlock := CastIConnectionResponseDataBlock(m)
+func ConnectionResponseDataBlockSerialize(io spi.WriteBuffer, m ConnectionResponseDataBlock, i IConnectionResponseDataBlock, childSerialize func()) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
 	io.WriteUint8(8, (structureLength))
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType := uint8(ConnectionResponseDataBlockConnectionType(iConnectionResponseDataBlock))
+	connectionType := uint8(i.ConnectionType())
 	io.WriteUint8(8, (connectionType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iConnectionResponseDataBlock.Serialize(io)
+	childSerialize()
+
 }

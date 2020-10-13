@@ -100,8 +100,12 @@ func DeviceConfigurationAckParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 }
 
 func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (deviceConfigurationAckDataBlock)
-	deviceConfigurationAckDataBlock := IDeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
-	deviceConfigurationAckDataBlock.Serialize(io)
+		// Simple Field (deviceConfigurationAckDataBlock)
+		deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
+		deviceConfigurationAckDataBlock.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

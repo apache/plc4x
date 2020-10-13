@@ -126,13 +126,13 @@ func BACnetErrorParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m BACnetError) Serialize(io spi.WriteBuffer) {
-	iBACnetError := CastIBACnetError(m)
+func BACnetErrorSerialize(io spi.WriteBuffer, m BACnetError, i IBACnetError, childSerialize func()) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(BACnetErrorServiceChoice(iBACnetError))
+	serviceChoice := uint8(i.ServiceChoice())
 	io.WriteUint8(8, (serviceChoice))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iBACnetError.Serialize(io)
+	childSerialize()
+
 }

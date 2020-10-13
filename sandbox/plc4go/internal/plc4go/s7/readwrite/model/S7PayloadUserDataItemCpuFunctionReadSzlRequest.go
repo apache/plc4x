@@ -87,5 +87,8 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io spi.ReadBuffer) (S7P
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
 }

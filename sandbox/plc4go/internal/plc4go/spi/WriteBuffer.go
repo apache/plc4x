@@ -18,10 +18,24 @@
 //
 package spi
 
+import (
+	"bytes"
+	"errors"
+	"github.com/icza/bitio"
+)
+
 type WriteBuffer struct {
-	data    []uint8
-	bytePos uint8
-	bitPos  uint8
+	data   *bytes.Buffer
+	writer *bitio.Writer
+}
+
+func WriteBufferNew() *WriteBuffer {
+	data := &bytes.Buffer{}
+	writer := bitio.NewWriter(data)
+	return &WriteBuffer{
+		data:   data,
+		writer: writer,
+	}
 }
 
 func (rb WriteBuffer) GetPos() uint16 {
@@ -29,45 +43,57 @@ func (rb WriteBuffer) GetPos() uint16 {
 }
 
 func (rb WriteBuffer) GetBytes() []uint8 {
-	return rb.data
+	return rb.data.Bytes()
 }
 
 func (rb WriteBuffer) GetTotalBytes() uint64 {
-	return 0
+	return uint64(rb.data.Len())
 }
 
-func (rb WriteBuffer) WriteBit(value bool) {
+func (rb WriteBuffer) WriteBit(value bool) error {
+	return rb.writer.WriteBool(value)
 }
 
-func (rb WriteBuffer) WriteUint8(bitLength uint8, value uint8) {
+func (rb WriteBuffer) WriteUint8(bitLength uint8, value uint8) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteUint16(bitLength uint8, value uint16) {
+func (rb WriteBuffer) WriteUint16(bitLength uint8, value uint16) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteUint32(bitLength uint8, value uint32) {
+func (rb WriteBuffer) WriteUint32(bitLength uint8, value uint32) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteUint64(bitLength uint8, value uint64) {
+func (rb WriteBuffer) WriteUint64(bitLength uint8, value uint64) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteInt8(bitLength uint8, value int8) {
+func (rb WriteBuffer) WriteInt8(bitLength uint8, value int8) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteInt16(bitLength uint8, value int16) {
+func (rb WriteBuffer) WriteInt16(bitLength uint8, value int16) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteInt32(bitLength uint8, value int32) {
+func (rb WriteBuffer) WriteInt32(bitLength uint8, value int32) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteInt64(bitLength uint8, value int64) {
+func (rb WriteBuffer) WriteInt64(bitLength uint8, value int64) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteFloat32(bitLength uint8, value float32) {
+func (rb WriteBuffer) WriteFloat32(bitLength uint8, value float32) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteFloat64(bitLength uint8, value float64) {
+func (rb WriteBuffer) WriteFloat64(bitLength uint8, value float64) error {
+	return rb.writer.WriteBits(uint64(value), bitLength)
 }
 
-func (rb WriteBuffer) WriteString(bitLength uint8, value string) {
+func (rb WriteBuffer) WriteString(bitLength uint8, value string) error {
+	return errors.New("WriteString is currently not implemented")
 }

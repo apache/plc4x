@@ -83,5 +83,8 @@ func BACnetUnconfirmedServiceRequestIHaveParse(io spi.ReadBuffer) (BACnetUnconfi
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

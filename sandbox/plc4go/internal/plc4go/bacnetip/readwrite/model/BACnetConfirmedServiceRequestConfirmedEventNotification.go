@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io spi.ReadBuf
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

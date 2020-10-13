@@ -164,8 +164,7 @@ func KNXNetIPMessageParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m KNXNetIPMessage) Serialize(io spi.WriteBuffer) {
-	iKNXNetIPMessage := CastIKNXNetIPMessage(m)
+func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func()) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
@@ -175,7 +174,7 @@ func (m KNXNetIPMessage) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, 0x10)
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType := uint16(KNXNetIPMessageMsgType(iKNXNetIPMessage))
+	msgType := uint16(i.MsgType())
 	io.WriteUint16(16, (msgType))
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -183,5 +182,6 @@ func (m KNXNetIPMessage) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (totalLength))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iKNXNetIPMessage.Serialize(io)
+	childSerialize()
+
 }

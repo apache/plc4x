@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io spi.ReadBuffer) 
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

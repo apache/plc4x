@@ -98,8 +98,12 @@ func BACnetTagApplicationDoubleParse(io spi.ReadBuffer, lengthValueType uint8, e
 }
 
 func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (value)
-	value := float64(m.value)
-	io.WriteFloat64(64, (value))
+		// Simple Field (value)
+		value := float64(m.value)
+		io.WriteFloat64(64, (value))
+
+	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

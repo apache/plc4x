@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io spi.ReadBuffer) (B
 }
 
 func (m BACnetConfirmedServiceRequestLifeSafetyOperation) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

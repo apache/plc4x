@@ -106,12 +106,16 @@ func COTPPacketDataParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
 }
 
 func (m COTPPacketData) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (eot)
-	eot := bool(m.eot)
-	io.WriteBit((bool)(eot))
+		// Simple Field (eot)
+		eot := bool(m.eot)
+		io.WriteBit((bool)(eot))
 
-	// Simple Field (tpduRef)
-	tpduRef := uint8(m.tpduRef)
-	io.WriteUint8(7, (tpduRef))
+		// Simple Field (tpduRef)
+		tpduRef := uint8(m.tpduRef)
+		io.WriteUint8(7, (tpduRef))
+
+	}
+	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

@@ -112,12 +112,16 @@ func ModbusPDUWriteSingleRegisterResponseParse(io spi.ReadBuffer) (ModbusPDUInit
 }
 
 func (m ModbusPDUWriteSingleRegisterResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (address)
-	address := uint16(m.address)
-	io.WriteUint16(16, (address))
+		// Simple Field (address)
+		address := uint16(m.address)
+		io.WriteUint16(16, (address))
 
-	// Simple Field (value)
-	value := uint16(m.value)
-	io.WriteUint16(16, (value))
+		// Simple Field (value)
+		value := uint16(m.value)
+		io.WriteUint16(16, (value))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -87,5 +87,8 @@ func BACnetTagApplicationNullParse(io spi.ReadBuffer) (BACnetTagInitializer, err
 }
 
 func (m BACnetTagApplicationNull) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

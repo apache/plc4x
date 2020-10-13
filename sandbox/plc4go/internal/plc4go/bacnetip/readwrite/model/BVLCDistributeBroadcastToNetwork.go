@@ -83,5 +83,8 @@ func BVLCDistributeBroadcastToNetworkParse(io spi.ReadBuffer) (BVLCInitializer, 
 }
 
 func (m BVLCDistributeBroadcastToNetwork) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

@@ -83,5 +83,8 @@ func BACnetErrorGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACnetErrorInitial
 }
 
 func (m BACnetErrorGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

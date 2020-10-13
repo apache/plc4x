@@ -102,8 +102,12 @@ func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer
 }
 
 func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (fifoPointerAddress)
-	fifoPointerAddress := uint16(m.fifoPointerAddress)
-	io.WriteUint16(16, (fifoPointerAddress))
+		// Simple Field (fifoPointerAddress)
+		fifoPointerAddress := uint16(m.fifoPointerAddress)
+		io.WriteUint16(16, (fifoPointerAddress))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

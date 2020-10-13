@@ -83,5 +83,8 @@ func BACnetErrorAtomicReadFileParse(io spi.ReadBuffer) (BACnetErrorInitializer, 
 }
 
 func (m BACnetErrorAtomicReadFile) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

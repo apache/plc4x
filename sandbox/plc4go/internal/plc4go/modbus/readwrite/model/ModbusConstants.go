@@ -93,4 +93,5 @@ func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
 
 	// Const Field (modbusTcpDefaultPort)
 	io.WriteUint16(16, 502)
+
 }

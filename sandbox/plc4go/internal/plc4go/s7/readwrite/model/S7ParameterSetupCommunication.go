@@ -136,19 +136,23 @@ func S7ParameterSetupCommunicationParse(io spi.ReadBuffer) (S7ParameterInitializ
 }
 
 func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(8, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(8, uint8(0x00))
 
-	// Simple Field (maxAmqCaller)
-	maxAmqCaller := uint16(m.maxAmqCaller)
-	io.WriteUint16(16, (maxAmqCaller))
+		// Simple Field (maxAmqCaller)
+		maxAmqCaller := uint16(m.maxAmqCaller)
+		io.WriteUint16(16, (maxAmqCaller))
 
-	// Simple Field (maxAmqCallee)
-	maxAmqCallee := uint16(m.maxAmqCallee)
-	io.WriteUint16(16, (maxAmqCallee))
+		// Simple Field (maxAmqCallee)
+		maxAmqCallee := uint16(m.maxAmqCallee)
+		io.WriteUint16(16, (maxAmqCallee))
 
-	// Simple Field (pduLength)
-	pduLength := uint16(m.pduLength)
-	io.WriteUint16(16, (pduLength))
+		// Simple Field (pduLength)
+		pduLength := uint16(m.pduLength)
+		io.WriteUint16(16, (pduLength))
+
+	}
+	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

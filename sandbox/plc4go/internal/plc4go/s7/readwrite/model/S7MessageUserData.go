@@ -86,5 +86,8 @@ func S7MessageUserDataParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
 }
 
 func (m S7MessageUserData) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

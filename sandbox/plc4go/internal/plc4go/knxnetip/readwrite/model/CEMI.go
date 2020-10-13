@@ -120,13 +120,13 @@ func CEMIParse(io spi.ReadBuffer, size uint8) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m CEMI) Serialize(io spi.WriteBuffer) {
-	iCEMI := CastICEMI(m)
+func CEMISerialize(io spi.WriteBuffer, m CEMI, i ICEMI, childSerialize func()) {
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode := uint8(CEMIMessageCode(iCEMI))
+	messageCode := uint8(i.MessageCode())
 	io.WriteUint8(8, (messageCode))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iCEMI.Serialize(io)
+	childSerialize()
+
 }

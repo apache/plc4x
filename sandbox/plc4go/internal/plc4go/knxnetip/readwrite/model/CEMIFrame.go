@@ -176,15 +176,14 @@ func CEMIFrameParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(repeated, priority, acknowledgeRequested, errorFlag), nil
 }
 
-func (m CEMIFrame) Serialize(io spi.WriteBuffer) {
-	iCEMIFrame := CastICEMIFrame(m)
+func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func()) {
 
 	// Discriminator Field (standardFrame) (Used as input to a switch field)
-	standardFrame := bool(CEMIFrameStandardFrame(iCEMIFrame))
+	standardFrame := bool(i.StandardFrame())
 	io.WriteBit((bool)(standardFrame))
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling := bool(CEMIFramePolling(iCEMIFrame))
+	polling := bool(i.Polling())
 	io.WriteBit((bool)(polling))
 
 	// Simple Field (repeated)
@@ -192,11 +191,11 @@ func (m CEMIFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteBit((bool)(repeated))
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame := bool(CEMIFrameNotAckFrame(iCEMIFrame))
+	notAckFrame := bool(i.NotAckFrame())
 	io.WriteBit((bool)(notAckFrame))
 
 	// Enum field (priority)
-	priority := ICEMIPriority(m.priority)
+	priority := CastCEMIPriority(m.priority)
 	priority.Serialize(io)
 
 	// Simple Field (acknowledgeRequested)
@@ -208,5 +207,6 @@ func (m CEMIFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteBit((bool)(errorFlag))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iCEMIFrame.Serialize(io)
+	childSerialize()
+
 }

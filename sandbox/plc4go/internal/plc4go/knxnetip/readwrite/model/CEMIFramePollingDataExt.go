@@ -95,5 +95,8 @@ func CEMIFramePollingDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, erro
 }
 
 func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

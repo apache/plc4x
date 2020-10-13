@@ -128,15 +128,19 @@ func ConnectionStateRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 }
 
 func (m ConnectionStateRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.communicationChannelId)
-	io.WriteUint8(8, (communicationChannelId))
+		// Simple Field (communicationChannelId)
+		communicationChannelId := uint8(m.communicationChannelId)
+		io.WriteUint8(8, (communicationChannelId))
 
-	// Reserved Field (reserved)
-	io.WriteUint8(8, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(8, uint8(0x00))
 
-	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
-	hpaiControlEndpoint.Serialize(io)
+		// Simple Field (hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

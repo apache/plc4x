@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io spi.ReadBuffer) (BACn
 }
 
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

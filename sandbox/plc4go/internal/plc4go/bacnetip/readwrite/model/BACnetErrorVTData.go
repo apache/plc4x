@@ -83,5 +83,8 @@ func BACnetErrorVTDataParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
 }
 
 func (m BACnetErrorVTData) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

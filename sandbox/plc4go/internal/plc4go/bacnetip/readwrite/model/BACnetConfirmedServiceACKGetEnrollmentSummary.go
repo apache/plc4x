@@ -83,5 +83,8 @@ func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACn
 }
 
 func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

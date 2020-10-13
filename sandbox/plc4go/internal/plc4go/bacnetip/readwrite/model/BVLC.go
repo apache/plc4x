@@ -149,14 +149,13 @@ func BVLCParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m BVLC) Serialize(io spi.WriteBuffer) {
-	iBVLC := CastIBVLC(m)
+func BVLCSerialize(io spi.WriteBuffer, m BVLC, i IBVLC, childSerialize func()) {
 
 	// Const Field (bacnetType)
 	io.WriteUint8(8, 0x81)
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction := uint8(BVLCBvlcFunction(iBVLC))
+	bvlcFunction := uint8(i.BvlcFunction())
 	io.WriteUint8(8, (bvlcFunction))
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -164,5 +163,6 @@ func (m BVLC) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (bvlcLength))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iBVLC.Serialize(io)
+	childSerialize()
+
 }

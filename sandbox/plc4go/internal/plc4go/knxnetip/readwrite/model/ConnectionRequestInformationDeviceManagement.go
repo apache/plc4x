@@ -83,5 +83,8 @@ func ConnectionRequestInformationDeviceManagementParse(io spi.ReadBuffer) (Conne
 }
 
 func (m ConnectionRequestInformationDeviceManagement) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
 }

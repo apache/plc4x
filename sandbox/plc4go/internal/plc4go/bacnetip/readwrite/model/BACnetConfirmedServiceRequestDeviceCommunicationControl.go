@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io spi.ReadBuf
 }
 
 func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

@@ -83,5 +83,8 @@ func CEMIRawIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIRawInd) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

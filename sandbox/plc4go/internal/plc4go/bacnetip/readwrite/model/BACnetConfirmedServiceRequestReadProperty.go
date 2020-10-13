@@ -164,29 +164,33 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io spi.ReadBuffer) (BACnetCo
 }
 
 func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (objectIdentifierHeader)
-	io.WriteUint8(8, 0x0C)
+		// Const Field (objectIdentifierHeader)
+		io.WriteUint8(8, 0x0C)
 
-	// Simple Field (objectType)
-	objectType := uint16(m.objectType)
-	io.WriteUint16(10, (objectType))
+		// Simple Field (objectType)
+		objectType := uint16(m.objectType)
+		io.WriteUint16(10, (objectType))
 
-	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber := uint32(m.objectInstanceNumber)
-	io.WriteUint32(22, (objectInstanceNumber))
+		// Simple Field (objectInstanceNumber)
+		objectInstanceNumber := uint32(m.objectInstanceNumber)
+		io.WriteUint32(22, (objectInstanceNumber))
 
-	// Const Field (propertyIdentifierHeader)
-	io.WriteUint8(5, 0x03)
+		// Const Field (propertyIdentifierHeader)
+		io.WriteUint8(5, 0x03)
 
-	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength := uint8(m.propertyIdentifierLength)
-	io.WriteUint8(3, (propertyIdentifierLength))
+		// Simple Field (propertyIdentifierLength)
+		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+		io.WriteUint8(3, (propertyIdentifierLength))
 
-	// Array Field (propertyIdentifier)
-	if m.propertyIdentifier != nil {
-		for _, _element := range m.propertyIdentifier {
-			io.WriteInt8(8, _element)
+		// Array Field (propertyIdentifier)
+		if m.propertyIdentifier != nil {
+			for _, _element := range m.propertyIdentifier {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

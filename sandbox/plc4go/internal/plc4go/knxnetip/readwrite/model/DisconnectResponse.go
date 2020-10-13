@@ -104,12 +104,16 @@ func DisconnectResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 }
 
 func (m DisconnectResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.communicationChannelId)
-	io.WriteUint8(8, (communicationChannelId))
+		// Simple Field (communicationChannelId)
+		communicationChannelId := uint8(m.communicationChannelId)
+		io.WriteUint8(8, (communicationChannelId))
 
-	// Enum field (status)
-	status := IStatus(m.status)
-	status.Serialize(io)
+		// Enum field (status)
+		status := CastStatus(m.status)
+		status.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

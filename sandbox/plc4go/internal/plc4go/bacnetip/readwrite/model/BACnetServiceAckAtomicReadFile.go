@@ -83,5 +83,8 @@ func BACnetServiceAckAtomicReadFileParse(io spi.ReadBuffer) (BACnetServiceAckIni
 }
 
 func (m BACnetServiceAckAtomicReadFile) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

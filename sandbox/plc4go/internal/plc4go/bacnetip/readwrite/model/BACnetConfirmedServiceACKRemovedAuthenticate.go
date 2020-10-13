@@ -83,5 +83,8 @@ func BACnetConfirmedServiceACKRemovedAuthenticateParse(io spi.ReadBuffer) (BACne
 }
 
 func (m BACnetConfirmedServiceACKRemovedAuthenticate) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

@@ -100,13 +100,13 @@ func S7VarRequestParameterItemParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m S7VarRequestParameterItem) Serialize(io spi.WriteBuffer) {
-	iS7VarRequestParameterItem := CastIS7VarRequestParameterItem(m)
+func S7VarRequestParameterItemSerialize(io spi.WriteBuffer, m S7VarRequestParameterItem, i IS7VarRequestParameterItem, childSerialize func()) {
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType := uint8(S7VarRequestParameterItemItemType(iS7VarRequestParameterItem))
+	itemType := uint8(i.ItemType())
 	io.WriteUint8(8, (itemType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7VarRequestParameterItem.Serialize(io)
+	childSerialize()
+
 }

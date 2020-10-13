@@ -106,12 +106,16 @@ func COTPPacketDisconnectResponseParse(io spi.ReadBuffer) (COTPPacketInitializer
 }
 
 func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (destinationReference)
-	destinationReference := uint16(m.destinationReference)
-	io.WriteUint16(16, (destinationReference))
+		// Simple Field (destinationReference)
+		destinationReference := uint16(m.destinationReference)
+		io.WriteUint16(16, (destinationReference))
 
-	// Simple Field (sourceReference)
-	sourceReference := uint16(m.sourceReference)
-	io.WriteUint16(16, (sourceReference))
+		// Simple Field (sourceReference)
+		sourceReference := uint16(m.sourceReference)
+		io.WriteUint16(16, (sourceReference))
+
+	}
+	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

@@ -86,6 +86,7 @@ func S7VarPayloadStatusItemParse(io spi.ReadBuffer) (spi.Message, error) {
 func (m S7VarPayloadStatusItem) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (returnCode)
-	returnCode := IDataTransportErrorCode(m.returnCode)
+	returnCode := CastDataTransportErrorCode(m.returnCode)
 	returnCode.Serialize(io)
+
 }

@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestRemoveListElementParse(io spi.ReadBuffer) (BAC
 }
 
 func (m BACnetConfirmedServiceRequestRemoveListElement) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

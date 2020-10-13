@@ -206,39 +206,43 @@ func BACnetServiceAckReadPropertyParse(io spi.ReadBuffer) (BACnetServiceAckIniti
 }
 
 func (m BACnetServiceAckReadProperty) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (objectIdentifierHeader)
-	io.WriteUint8(8, 0x0C)
+		// Const Field (objectIdentifierHeader)
+		io.WriteUint8(8, 0x0C)
 
-	// Simple Field (objectType)
-	objectType := uint16(m.objectType)
-	io.WriteUint16(10, (objectType))
+		// Simple Field (objectType)
+		objectType := uint16(m.objectType)
+		io.WriteUint16(10, (objectType))
 
-	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber := uint32(m.objectInstanceNumber)
-	io.WriteUint32(22, (objectInstanceNumber))
+		// Simple Field (objectInstanceNumber)
+		objectInstanceNumber := uint32(m.objectInstanceNumber)
+		io.WriteUint32(22, (objectInstanceNumber))
 
-	// Const Field (propertyIdentifierHeader)
-	io.WriteUint8(5, 0x03)
+		// Const Field (propertyIdentifierHeader)
+		io.WriteUint8(5, 0x03)
 
-	// Simple Field (propertyIdentifierLength)
-	propertyIdentifierLength := uint8(m.propertyIdentifierLength)
-	io.WriteUint8(3, (propertyIdentifierLength))
+		// Simple Field (propertyIdentifierLength)
+		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+		io.WriteUint8(3, (propertyIdentifierLength))
 
-	// Array Field (propertyIdentifier)
-	if m.propertyIdentifier != nil {
-		for _, _element := range m.propertyIdentifier {
-			io.WriteInt8(8, _element)
+		// Array Field (propertyIdentifier)
+		if m.propertyIdentifier != nil {
+			for _, _element := range m.propertyIdentifier {
+				io.WriteInt8(8, _element)
+			}
 		}
+
+		// Const Field (openingTag)
+		io.WriteUint8(8, 0x3E)
+
+		// Simple Field (value)
+		value := CastIBACnetTag(m.value)
+		value.Serialize(io)
+
+		// Const Field (closingTag)
+		io.WriteUint8(8, 0x3F)
+
 	}
-
-	// Const Field (openingTag)
-	io.WriteUint8(8, 0x3E)
-
-	// Simple Field (value)
-	value := IBACnetTag(m.value)
-	value.Serialize(io)
-
-	// Const Field (closingTag)
-	io.WriteUint8(8, 0x3F)
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

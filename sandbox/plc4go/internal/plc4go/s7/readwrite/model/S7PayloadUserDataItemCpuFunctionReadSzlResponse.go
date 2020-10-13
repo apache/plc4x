@@ -142,18 +142,22 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io spi.ReadBuffer) (S7
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (szlItemLength)
-	io.WriteUint16(16, 28)
+		// Const Field (szlItemLength)
+		io.WriteUint16(16, 28)
 
-	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	szlItemCount := uint16(uint16(len(m.items)))
-	io.WriteUint16(16, (szlItemCount))
+		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		szlItemCount := uint16(uint16(len(m.items)))
+		io.WriteUint16(16, (szlItemCount))
 
-	// Array Field (items)
-	if m.items != nil {
-		for _, _element := range m.items {
-			_element.Serialize(io)
+		// Array Field (items)
+		if m.items != nil {
+			for _, _element := range m.items {
+				_element.Serialize(io)
+			}
 		}
+
 	}
+	S7PayloadUserDataItemSerialize(io, m.S7PayloadUserDataItem, CastIS7PayloadUserDataItem(m), ser)
 }

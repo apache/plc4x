@@ -112,11 +112,15 @@ func ConnectionRequestInformationTunnelConnectionParse(io spi.ReadBuffer) (Conne
 }
 
 func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Enum field (knxLayer)
-	knxLayer := IKnxLayer(m.knxLayer)
-	knxLayer.Serialize(io)
+		// Enum field (knxLayer)
+		knxLayer := CastKnxLayer(m.knxLayer)
+		knxLayer.Serialize(io)
 
-	// Reserved Field (reserved)
-	io.WriteUint8(8, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(8, uint8(0x00))
+
+	}
+	ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
 }

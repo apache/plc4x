@@ -83,5 +83,8 @@ func BVLCDeleteForeignDeviceTableEntryParse(io spi.ReadBuffer) (BVLCInitializer,
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

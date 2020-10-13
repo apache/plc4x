@@ -83,5 +83,8 @@ func RoutingIndicationParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m RoutingIndication) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

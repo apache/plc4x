@@ -130,16 +130,20 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m ConnectionRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (hpaiDiscoveryEndpoint)
-	hpaiDiscoveryEndpoint := IHPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
-	hpaiDiscoveryEndpoint.Serialize(io)
+		// Simple Field (hpaiDiscoveryEndpoint)
+		hpaiDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
+		hpaiDiscoveryEndpoint.Serialize(io)
 
-	// Simple Field (hpaiDataEndpoint)
-	hpaiDataEndpoint := IHPAIDataEndpoint(m.hpaiDataEndpoint)
-	hpaiDataEndpoint.Serialize(io)
+		// Simple Field (hpaiDataEndpoint)
+		hpaiDataEndpoint := CastIHPAIDataEndpoint(m.hpaiDataEndpoint)
+		hpaiDataEndpoint.Serialize(io)
 
-	// Simple Field (connectionRequestInformation)
-	connectionRequestInformation := IConnectionRequestInformation(m.connectionRequestInformation)
-	connectionRequestInformation.Serialize(io)
+		// Simple Field (connectionRequestInformation)
+		connectionRequestInformation := CastIConnectionRequestInformation(m.connectionRequestInformation)
+		connectionRequestInformation.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

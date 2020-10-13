@@ -423,13 +423,14 @@ func (m NPDU) Serialize(io spi.WriteBuffer) {
 	var nlm *INLM = nil
 	if m.nlm != nil {
 		nlm = m.nlm
-		(*nlm).Serialize(io)
+		CastINLM(*nlm).Serialize(io)
 	}
 
 	// Optional Field (apdu) (Can be skipped, if the value is null)
 	var apdu *IAPDU = nil
 	if m.apdu != nil {
 		apdu = m.apdu
-		(*apdu).Serialize(io)
+		CastIAPDU(*apdu).Serialize(io)
 	}
+
 }

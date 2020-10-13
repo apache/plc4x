@@ -83,5 +83,8 @@ func BACnetErrorRemovedReadPropertyConditionalParse(io spi.ReadBuffer) (BACnetEr
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

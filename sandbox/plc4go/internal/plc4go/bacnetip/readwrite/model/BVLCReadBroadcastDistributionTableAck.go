@@ -83,5 +83,8 @@ func BVLCReadBroadcastDistributionTableAckParse(io spi.ReadBuffer) (BVLCInitiali
 }
 
 func (m BVLCReadBroadcastDistributionTableAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

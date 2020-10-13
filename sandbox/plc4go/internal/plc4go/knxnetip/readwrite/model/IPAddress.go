@@ -102,4 +102,5 @@ func (m IPAddress) Serialize(io spi.WriteBuffer) {
 			io.WriteInt8(8, _element)
 		}
 	}
+
 }

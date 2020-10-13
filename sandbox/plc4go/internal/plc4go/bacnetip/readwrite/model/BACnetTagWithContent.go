@@ -240,9 +240,10 @@ func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, 0x2e)
 
 	// Simple Field (value)
-	value := IBACnetTag(m.value)
+	value := CastIBACnetTag(m.value)
 	value.Serialize(io)
 
 	// Const Field (closingTag)
 	io.WriteUint8(8, 0x2f)
+
 }

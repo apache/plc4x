@@ -102,8 +102,12 @@ func ModbusPDUReadExceptionStatusResponseParse(io spi.ReadBuffer) (ModbusPDUInit
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (value)
-	value := uint8(m.value)
-	io.WriteUint8(8, (value))
+		// Simple Field (value)
+		value := uint8(m.value)
+		io.WriteUint8(8, (value))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -235,15 +235,15 @@ func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (knxMedium))
 
 	// Simple Field (deviceStatus)
-	deviceStatus := IDeviceStatus(m.deviceStatus)
+	deviceStatus := CastIDeviceStatus(m.deviceStatus)
 	deviceStatus.Serialize(io)
 
 	// Simple Field (knxAddress)
-	knxAddress := IKNXAddress(m.knxAddress)
+	knxAddress := CastIKNXAddress(m.knxAddress)
 	knxAddress.Serialize(io)
 
 	// Simple Field (projectInstallationIdentifier)
-	projectInstallationIdentifier := IProjectInstallationIdentifier(m.projectInstallationIdentifier)
+	projectInstallationIdentifier := CastIProjectInstallationIdentifier(m.projectInstallationIdentifier)
 	projectInstallationIdentifier.Serialize(io)
 
 	// Array Field (knxNetIpDeviceSerialNumber)
@@ -254,11 +254,11 @@ func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
-	knxNetIpDeviceMulticastAddress := IIPAddress(m.knxNetIpDeviceMulticastAddress)
+	knxNetIpDeviceMulticastAddress := CastIIPAddress(m.knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress.Serialize(io)
 
 	// Simple Field (knxNetIpDeviceMacAddress)
-	knxNetIpDeviceMacAddress := IMACAddress(m.knxNetIpDeviceMacAddress)
+	knxNetIpDeviceMacAddress := CastIMACAddress(m.knxNetIpDeviceMacAddress)
 	knxNetIpDeviceMacAddress.Serialize(io)
 
 	// Array Field (deviceFriendlyName)
@@ -267,4 +267,5 @@ func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) {
 			io.WriteInt8(8, _element)
 		}
 	}
+
 }

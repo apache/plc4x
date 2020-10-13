@@ -83,5 +83,8 @@ func BACnetServiceAckGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACnetService
 }
 
 func (m BACnetServiceAckGetEnrollmentSummary) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

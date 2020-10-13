@@ -116,11 +116,15 @@ func CEMIAdditionalInformationRelativeTimestampParse(io spi.ReadBuffer) (CEMIAdd
 }
 
 func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (len)
-	io.WriteUint8(8, 2)
+		// Const Field (len)
+		io.WriteUint8(8, 2)
 
-	// Simple Field (relativeTimestamp)
-	relativeTimestamp := IRelativeTimestamp(m.relativeTimestamp)
-	relativeTimestamp.Serialize(io)
+		// Simple Field (relativeTimestamp)
+		relativeTimestamp := CastIRelativeTimestamp(m.relativeTimestamp)
+		relativeTimestamp.Serialize(io)
+
+	}
+	CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
 }

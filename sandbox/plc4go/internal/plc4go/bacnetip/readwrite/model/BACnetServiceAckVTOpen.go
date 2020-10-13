@@ -83,5 +83,8 @@ func BACnetServiceAckVTOpenParse(io spi.ReadBuffer) (BACnetServiceAckInitializer
 }
 
 func (m BACnetServiceAckVTOpen) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

@@ -122,16 +122,20 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io spi.ReadBuffer) (ModbusPDU
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (referenceAddress)
-	referenceAddress := uint16(m.referenceAddress)
-	io.WriteUint16(16, (referenceAddress))
+		// Simple Field (referenceAddress)
+		referenceAddress := uint16(m.referenceAddress)
+		io.WriteUint16(16, (referenceAddress))
 
-	// Simple Field (andMask)
-	andMask := uint16(m.andMask)
-	io.WriteUint16(16, (andMask))
+		// Simple Field (andMask)
+		andMask := uint16(m.andMask)
+		io.WriteUint16(16, (andMask))
 
-	// Simple Field (orMask)
-	orMask := uint16(m.orMask)
-	io.WriteUint16(16, (orMask))
+		// Simple Field (orMask)
+		orMask := uint16(m.orMask)
+		io.WriteUint16(16, (orMask))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -94,8 +94,12 @@ func COTPParameterTpduSizeParse(io spi.ReadBuffer) (COTPParameterInitializer, er
 }
 
 func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Enum field (tpduSize)
-	tpduSize := ICOTPTpduSize(m.tpduSize)
-	tpduSize.Serialize(io)
+		// Enum field (tpduSize)
+		tpduSize := CastCOTPTpduSize(m.tpduSize)
+		tpduSize.Serialize(io)
+
+	}
+	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

@@ -117,11 +117,10 @@ func COTPParameterParse(io spi.ReadBuffer, rest uint8) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m COTPParameter) Serialize(io spi.WriteBuffer) {
-	iCOTPParameter := CastICOTPParameter(m)
+func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func()) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(COTPParameterParameterType(iCOTPParameter))
+	parameterType := uint8(i.ParameterType())
 	io.WriteUint8(8, (parameterType))
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -129,5 +128,6 @@ func (m COTPParameter) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (parameterLength))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iCOTPParameter.Serialize(io)
+	childSerialize()
+
 }

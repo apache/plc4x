@@ -115,12 +115,16 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 }
 
 func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (deviceConfigurationRequestDataBlock)
-	deviceConfigurationRequestDataBlock := IDeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
-	deviceConfigurationRequestDataBlock.Serialize(io)
+		// Simple Field (deviceConfigurationRequestDataBlock)
+		deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
+		deviceConfigurationRequestDataBlock.Serialize(io)
 
-	// Simple Field (cemi)
-	cemi := ICEMI(m.cemi)
-	cemi.Serialize(io)
+		// Simple Field (cemi)
+		cemi := CastICEMI(m.cemi)
+		cemi.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

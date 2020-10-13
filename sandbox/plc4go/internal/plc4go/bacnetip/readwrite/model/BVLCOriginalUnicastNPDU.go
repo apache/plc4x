@@ -100,8 +100,12 @@ func BVLCOriginalUnicastNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCIni
 }
 
 func (m BVLCOriginalUnicastNPDU) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (npdu)
-	npdu := INPDU(m.npdu)
-	npdu.Serialize(io)
+		// Simple Field (npdu)
+		npdu := CastINPDU(m.npdu)
+		npdu.Serialize(io)
+
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

@@ -116,4 +116,5 @@ func (m BACnetAddress) Serialize(io spi.WriteBuffer) {
 	// Simple Field (port)
 	port := uint16(m.port)
 	io.WriteUint16(16, (port))
+
 }

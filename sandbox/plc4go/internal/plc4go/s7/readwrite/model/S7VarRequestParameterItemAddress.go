@@ -109,12 +109,16 @@ func S7VarRequestParameterItemAddressParse(io spi.ReadBuffer) (S7VarRequestParam
 }
 
 func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	itemLength := uint8(m.address.LengthInBytes())
-	io.WriteUint8(8, (itemLength))
+		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		itemLength := uint8(m.address.LengthInBytes())
+		io.WriteUint8(8, (itemLength))
 
-	// Simple Field (address)
-	address := IS7Address(m.address)
-	address.Serialize(io)
+		// Simple Field (address)
+		address := CastIS7Address(m.address)
+		address.Serialize(io)
+
+	}
+	S7VarRequestParameterItemSerialize(io, m.S7VarRequestParameterItem, CastIS7VarRequestParameterItem(m), ser)
 }

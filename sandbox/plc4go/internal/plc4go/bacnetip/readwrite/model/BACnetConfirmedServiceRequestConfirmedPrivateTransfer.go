@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io spi.ReadBuffe
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

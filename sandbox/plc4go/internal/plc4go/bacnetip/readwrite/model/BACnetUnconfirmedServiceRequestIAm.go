@@ -210,43 +210,47 @@ func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirm
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (objectIdentifierHeader)
-	io.WriteUint8(8, 0xC4)
+		// Const Field (objectIdentifierHeader)
+		io.WriteUint8(8, 0xC4)
 
-	// Simple Field (objectType)
-	objectType := uint16(m.objectType)
-	io.WriteUint16(10, (objectType))
+		// Simple Field (objectType)
+		objectType := uint16(m.objectType)
+		io.WriteUint16(10, (objectType))
 
-	// Simple Field (objectInstanceNumber)
-	objectInstanceNumber := uint32(m.objectInstanceNumber)
-	io.WriteUint32(22, (objectInstanceNumber))
+		// Simple Field (objectInstanceNumber)
+		objectInstanceNumber := uint32(m.objectInstanceNumber)
+		io.WriteUint32(22, (objectInstanceNumber))
 
-	// Const Field (maximumApduLengthAcceptedHeader)
-	io.WriteUint8(5, 0x04)
+		// Const Field (maximumApduLengthAcceptedHeader)
+		io.WriteUint8(5, 0x04)
 
-	// Simple Field (maximumApduLengthAcceptedLength)
-	maximumApduLengthAcceptedLength := uint8(m.maximumApduLengthAcceptedLength)
-	io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		// Simple Field (maximumApduLengthAcceptedLength)
+		maximumApduLengthAcceptedLength := uint8(m.maximumApduLengthAcceptedLength)
+		io.WriteUint8(3, (maximumApduLengthAcceptedLength))
 
-	// Array Field (maximumApduLengthAccepted)
-	if m.maximumApduLengthAccepted != nil {
-		for _, _element := range m.maximumApduLengthAccepted {
-			io.WriteInt8(8, _element)
+		// Array Field (maximumApduLengthAccepted)
+		if m.maximumApduLengthAccepted != nil {
+			for _, _element := range m.maximumApduLengthAccepted {
+				io.WriteInt8(8, _element)
+			}
 		}
+
+		// Const Field (segmentationSupportedHeader)
+		io.WriteUint8(8, 0x91)
+
+		// Simple Field (segmentationSupported)
+		segmentationSupported := uint8(m.segmentationSupported)
+		io.WriteUint8(8, (segmentationSupported))
+
+		// Const Field (vendorIdHeader)
+		io.WriteUint8(8, 0x21)
+
+		// Simple Field (vendorId)
+		vendorId := uint8(m.vendorId)
+		io.WriteUint8(8, (vendorId))
+
 	}
-
-	// Const Field (segmentationSupportedHeader)
-	io.WriteUint8(8, 0x91)
-
-	// Simple Field (segmentationSupported)
-	segmentationSupported := uint8(m.segmentationSupported)
-	io.WriteUint8(8, (segmentationSupported))
-
-	// Const Field (vendorIdHeader)
-	io.WriteUint8(8, 0x21)
-
-	// Simple Field (vendorId)
-	vendorId := uint8(m.vendorId)
-	io.WriteUint8(8, (vendorId))
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

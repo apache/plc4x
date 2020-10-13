@@ -102,13 +102,13 @@ func CEMIAdditionalInformationParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m CEMIAdditionalInformation) Serialize(io spi.WriteBuffer) {
-	iCEMIAdditionalInformation := CastICEMIAdditionalInformation(m)
+func CEMIAdditionalInformationSerialize(io spi.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func()) {
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType := uint8(CEMIAdditionalInformationAdditionalInformationType(iCEMIAdditionalInformation))
+	additionalInformationType := uint8(i.AdditionalInformationType())
 	io.WriteUint8(8, (additionalInformationType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iCEMIAdditionalInformation.Serialize(io)
+	childSerialize()
+
 }

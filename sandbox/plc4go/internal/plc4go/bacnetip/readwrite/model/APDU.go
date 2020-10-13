@@ -114,13 +114,13 @@ func APDUParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m APDU) Serialize(io spi.WriteBuffer) {
-	iAPDU := CastIAPDU(m)
+func APDUSerialize(io spi.WriteBuffer, m APDU, i IAPDU, childSerialize func()) {
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	apduType := uint8(APDUApduType(iAPDU))
+	apduType := uint8(i.ApduType())
 	io.WriteUint8(4, (apduType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iAPDU.Serialize(io)
+	childSerialize()
+
 }

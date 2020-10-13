@@ -95,5 +95,8 @@ func CEMIFrameAckParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 }
 
 func (m CEMIFrameAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

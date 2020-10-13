@@ -100,13 +100,13 @@ func S7AddressParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m S7Address) Serialize(io spi.WriteBuffer) {
-	iS7Address := CastIS7Address(m)
+func S7AddressSerialize(io spi.WriteBuffer, m S7Address, i IS7Address, childSerialize func()) {
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType := uint8(S7AddressAddressType(iS7Address))
+	addressType := uint8(i.AddressType())
 	io.WriteUint8(8, (addressType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7Address.Serialize(io)
+	childSerialize()
+
 }

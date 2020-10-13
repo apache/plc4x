@@ -130,4 +130,5 @@ func (m ModbusPDUReadFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 	// Simple Field (recordLength)
 	recordLength := uint16(m.recordLength)
 	io.WriteUint16(16, (recordLength))
+
 }

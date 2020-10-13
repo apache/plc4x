@@ -152,27 +152,31 @@ func APDUSegmentAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(2, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(2, uint8(0x00))
 
-	// Simple Field (negativeAck)
-	negativeAck := bool(m.negativeAck)
-	io.WriteBit((bool)(negativeAck))
+		// Simple Field (negativeAck)
+		negativeAck := bool(m.negativeAck)
+		io.WriteBit((bool)(negativeAck))
 
-	// Simple Field (server)
-	server := bool(m.server)
-	io.WriteBit((bool)(server))
+		// Simple Field (server)
+		server := bool(m.server)
+		io.WriteBit((bool)(server))
 
-	// Simple Field (originalInvokeId)
-	originalInvokeId := uint8(m.originalInvokeId)
-	io.WriteUint8(8, (originalInvokeId))
+		// Simple Field (originalInvokeId)
+		originalInvokeId := uint8(m.originalInvokeId)
+		io.WriteUint8(8, (originalInvokeId))
 
-	// Simple Field (sequenceNumber)
-	sequenceNumber := uint8(m.sequenceNumber)
-	io.WriteUint8(8, (sequenceNumber))
+		// Simple Field (sequenceNumber)
+		sequenceNumber := uint8(m.sequenceNumber)
+		io.WriteUint8(8, (sequenceNumber))
 
-	// Simple Field (proposedWindowSize)
-	proposedWindowSize := uint8(m.proposedWindowSize)
-	io.WriteUint8(8, (proposedWindowSize))
+		// Simple Field (proposedWindowSize)
+		proposedWindowSize := uint8(m.proposedWindowSize)
+		io.WriteUint8(8, (proposedWindowSize))
+
+	}
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

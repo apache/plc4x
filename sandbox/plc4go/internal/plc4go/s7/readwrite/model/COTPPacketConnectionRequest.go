@@ -116,16 +116,20 @@ func COTPPacketConnectionRequestParse(io spi.ReadBuffer) (COTPPacketInitializer,
 }
 
 func (m COTPPacketConnectionRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (destinationReference)
-	destinationReference := uint16(m.destinationReference)
-	io.WriteUint16(16, (destinationReference))
+		// Simple Field (destinationReference)
+		destinationReference := uint16(m.destinationReference)
+		io.WriteUint16(16, (destinationReference))
 
-	// Simple Field (sourceReference)
-	sourceReference := uint16(m.sourceReference)
-	io.WriteUint16(16, (sourceReference))
+		// Simple Field (sourceReference)
+		sourceReference := uint16(m.sourceReference)
+		io.WriteUint16(16, (sourceReference))
 
-	// Enum field (protocolClass)
-	protocolClass := ICOTPProtocolClass(m.protocolClass)
-	protocolClass.Serialize(io)
+		// Enum field (protocolClass)
+		protocolClass := CastCOTPProtocolClass(m.protocolClass)
+		protocolClass.Serialize(io)
+
+	}
+	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

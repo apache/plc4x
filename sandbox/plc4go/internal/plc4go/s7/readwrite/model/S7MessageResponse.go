@@ -107,12 +107,16 @@ func S7MessageResponseParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
 }
 
 func (m S7MessageResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (errorClass)
-	errorClass := uint8(m.errorClass)
-	io.WriteUint8(8, (errorClass))
+		// Simple Field (errorClass)
+		errorClass := uint8(m.errorClass)
+		io.WriteUint8(8, (errorClass))
 
-	// Simple Field (errorCode)
-	errorCode := uint8(m.errorCode)
-	io.WriteUint8(8, (errorCode))
+		// Simple Field (errorCode)
+		errorCode := uint8(m.errorCode)
+		io.WriteUint8(8, (errorCode))
+
+	}
+	S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

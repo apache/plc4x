@@ -105,11 +105,15 @@ func COTPParameterDisconnectAdditionalInformationParse(io spi.ReadBuffer, rest u
 }
 
 func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
-			io.WriteUint8(8, _element)
+		// Array Field (data)
+		if m.data != nil {
+			for _, _element := range m.data {
+				io.WriteUint8(8, _element)
+			}
 		}
+
 	}
+	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

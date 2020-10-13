@@ -115,12 +115,16 @@ func TunnelingRequestParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessa
 }
 
 func (m TunnelingRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (tunnelingRequestDataBlock)
-	tunnelingRequestDataBlock := ITunnelingRequestDataBlock(m.tunnelingRequestDataBlock)
-	tunnelingRequestDataBlock.Serialize(io)
+		// Simple Field (tunnelingRequestDataBlock)
+		tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.tunnelingRequestDataBlock)
+		tunnelingRequestDataBlock.Serialize(io)
 
-	// Simple Field (cemi)
-	cemi := ICEMI(m.cemi)
-	cemi.Serialize(io)
+		// Simple Field (cemi)
+		cemi := CastICEMI(m.cemi)
+		cemi.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

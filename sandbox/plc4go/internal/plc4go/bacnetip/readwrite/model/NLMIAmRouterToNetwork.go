@@ -104,11 +104,15 @@ func NLMIAmRouterToNetworkParse(io spi.ReadBuffer, apduLength uint16, messageTyp
 }
 
 func (m NLMIAmRouterToNetwork) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (destinationNetworkAddress)
-	if m.destinationNetworkAddress != nil {
-		for _, _element := range m.destinationNetworkAddress {
-			io.WriteUint16(16, _element)
+		// Array Field (destinationNetworkAddress)
+		if m.destinationNetworkAddress != nil {
+			for _, _element := range m.destinationNetworkAddress {
+				io.WriteUint16(16, _element)
+			}
 		}
+
 	}
+	NLMSerialize(io, m.NLM, CastINLM(m), ser)
 }
