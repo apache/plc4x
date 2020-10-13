@@ -24,7 +24,7 @@ type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -75,6 +75,7 @@ func BACnetNodeTypeParse(io *spi.ReadBuffer) (BACnetNodeType, error) {
 	return 0, nil
 }
 
-func (e BACnetNodeType) Serialize(io spi.WriteBuffer) {
+func (e BACnetNodeType) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

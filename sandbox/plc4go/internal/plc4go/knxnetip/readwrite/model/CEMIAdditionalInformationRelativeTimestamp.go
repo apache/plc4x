@@ -37,7 +37,7 @@ type CEMIAdditionalInformationRelativeTimestamp struct {
 // The corresponding interface
 type ICEMIAdditionalInformationRelativeTimestamp interface {
 	ICEMIAdditionalInformation
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -115,16 +115,23 @@ func CEMIAdditionalInformationRelativeTimestampParse(io *spi.ReadBuffer) (CEMIAd
 	return NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp), nil
 }
 
-func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (len)
-		io.WriteUint8(8, 2)
+		_lenErr := io.WriteUint8(8, 2)
+		if _lenErr != nil {
+			return errors.New("Error serializing 'len' field " + _lenErr.Error())
+		}
 
 		// Simple Field (relativeTimestamp)
 		relativeTimestamp := CastIRelativeTimestamp(m.relativeTimestamp)
-		relativeTimestamp.Serialize(io)
+		_relativeTimestampErr := relativeTimestamp.Serialize(io)
+		if _relativeTimestampErr != nil {
+			return errors.New("Error serializing 'relativeTimestamp' field " + _relativeTimestampErr.Error())
+		}
 
+		return nil
 	}
-	CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
+	return CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
 }

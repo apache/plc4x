@@ -34,7 +34,7 @@ type TunnelingRequest struct {
 // The corresponding interface
 type ITunnelingRequest interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -114,17 +114,24 @@ func TunnelingRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMess
 	return NewTunnelingRequest(tunnelingRequestDataBlock, cemi), nil
 }
 
-func (m TunnelingRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m TunnelingRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (tunnelingRequestDataBlock)
 		tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.tunnelingRequestDataBlock)
-		tunnelingRequestDataBlock.Serialize(io)
+		_tunnelingRequestDataBlockErr := tunnelingRequestDataBlock.Serialize(io)
+		if _tunnelingRequestDataBlockErr != nil {
+			return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+		}
 
 		// Simple Field (cemi)
 		cemi := CastICEMI(m.cemi)
-		cemi.Serialize(io)
+		_cemiErr := cemi.Serialize(io)
+		if _cemiErr != nil {
+			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

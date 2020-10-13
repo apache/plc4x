@@ -30,7 +30,7 @@ type BACnetTagApplicationTime struct {
 // The corresponding interface
 type IBACnetTagApplicationTime interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,9 +86,10 @@ func BACnetTagApplicationTimeParse(io *spi.ReadBuffer) (BACnetTagInitializer, er
 	return NewBACnetTagApplicationTime(), nil
 }
 
-func (m BACnetTagApplicationTime) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationTime) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

@@ -30,7 +30,7 @@ type CEMIFramePollingDataExt struct {
 // The corresponding interface
 type ICEMIFramePollingDataExt interface {
 	ICEMIFrame
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -94,9 +94,10 @@ func CEMIFramePollingDataExtParse(io *spi.ReadBuffer) (CEMIFrameInitializer, err
 	return NewCEMIFramePollingDataExt(), nil
 }
 
-func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+	return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

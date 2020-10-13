@@ -36,7 +36,7 @@ type CEMIMPropReadReq struct {
 // The corresponding interface
 type ICEMIMPropReadReq interface {
 	ICEMI
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -133,29 +133,45 @@ func CEMIMPropReadReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 	return NewCEMIMPropReadReq(interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex), nil
 }
 
-func (m CEMIMPropReadReq) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIMPropReadReq) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.interfaceObjectType)
-		io.WriteUint16(16, (interfaceObjectType))
+		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
+		if _interfaceObjectTypeErr != nil {
+			return errors.New("Error serializing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.objectInstance)
-		io.WriteUint8(8, (objectInstance))
+		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
+		if _objectInstanceErr != nil {
+			return errors.New("Error serializing 'objectInstance' field " + _objectInstanceErr.Error())
+		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.propertyId)
-		io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		if _propertyIdErr != nil {
+			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
+		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.numberOfElements)
-		io.WriteUint8(4, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
+		if _numberOfElementsErr != nil {
+			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
+		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.startIndex)
-		io.WriteUint16(12, (startIndex))
+		_startIndexErr := io.WriteUint16(12, (startIndex))
+		if _startIndexErr != nil {
+			return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
+		}
 
+		return nil
 	}
-	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

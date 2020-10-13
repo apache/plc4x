@@ -36,7 +36,7 @@ type S7PayloadUserDataItem struct {
 type IS7PayloadUserDataItem interface {
 	spi.Message
 	CpuFunctionType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7PayloadUserDataItemInitializer interface {
@@ -148,29 +148,48 @@ func S7PayloadUserDataItemParse(io *spi.ReadBuffer, cpuFunctionType uint8) (spi.
 	return initializer.initialize(returnCode, transportSize, szlId, szlIndex), nil
 }
 
-func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func()) {
+func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func() error) error {
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.returnCode)
-	returnCode.Serialize(io)
+	_returnCodeErr := returnCode.Serialize(io)
+	if _returnCodeErr != nil {
+		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+	}
 
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.transportSize)
-	transportSize.Serialize(io)
+	_transportSizeErr := transportSize.Serialize(io)
+	if _transportSizeErr != nil {
+		return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
+	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
-	io.WriteUint16(16, (dataLength))
+	_dataLengthErr := io.WriteUint16(16, (dataLength))
+	if _dataLengthErr != nil {
+		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Simple Field (szlId)
 	szlId := CastISzlId(m.szlId)
-	szlId.Serialize(io)
+	_szlIdErr := szlId.Serialize(io)
+	if _szlIdErr != nil {
+		return errors.New("Error serializing 'szlId' field " + _szlIdErr.Error())
+	}
 
 	// Simple Field (szlIndex)
 	szlIndex := uint16(m.szlIndex)
-	io.WriteUint16(16, (szlIndex))
+	_szlIndexErr := io.WriteUint16(16, (szlIndex))
+	if _szlIndexErr != nil {
+		return errors.New("Error serializing 'szlIndex' field " + _szlIndexErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

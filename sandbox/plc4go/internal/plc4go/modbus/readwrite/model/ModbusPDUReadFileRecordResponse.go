@@ -33,7 +33,7 @@ type ModbusPDUReadFileRecordResponse struct {
 // The corresponding interface
 type IModbusPDUReadFileRecordResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -127,7 +127,7 @@ func ModbusPDUReadFileRecordResponseParse(io *spi.ReadBuffer) (ModbusPDUInitiali
 	return NewModbusPDUReadFileRecordResponse(items), nil
 }
 
-func (m ModbusPDUReadFileRecordResponse) Serialize(io spi.WriteBuffer) {
+func (m ModbusPDUReadFileRecordResponse) Serialize(io spi.WriteBuffer) error {
 	itemsArraySizeInBytes := func(items []IModbusPDUReadFileRecordResponseItem) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
@@ -135,19 +135,26 @@ func (m ModbusPDUReadFileRecordResponse) Serialize(io spi.WriteBuffer) {
 		}
 		return sizeInBytes
 	}
-	ser := func() {
+	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
-		io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Array Field (items)
 		if m.items != nil {
 			for _, _element := range m.items {
-				_element.Serialize(io)
+				_elementErr := _element.Serialize(io)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

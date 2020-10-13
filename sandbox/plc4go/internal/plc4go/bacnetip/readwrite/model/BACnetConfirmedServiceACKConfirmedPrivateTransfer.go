@@ -30,7 +30,7 @@ type BACnetConfirmedServiceACKConfirmedPrivateTransfer struct {
 // The corresponding interface
 type IBACnetConfirmedServiceACKConfirmedPrivateTransfer interface {
 	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io *spi.ReadBuffer) 
 	return NewBACnetConfirmedServiceACKConfirmedPrivateTransfer(), nil
 }
 
-func (m BACnetConfirmedServiceACKConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceACKConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

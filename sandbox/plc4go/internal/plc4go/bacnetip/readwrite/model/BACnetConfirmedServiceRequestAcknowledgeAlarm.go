@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io *spi.ReadBuffer) (BAC
 	return NewBACnetConfirmedServiceRequestAcknowledgeAlarm(), nil
 }
 
-func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

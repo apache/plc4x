@@ -30,7 +30,7 @@ type CEMIFrameAck struct {
 // The corresponding interface
 type ICEMIFrameAck interface {
 	ICEMIFrame
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -94,9 +94,10 @@ func CEMIFrameAckParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	return NewCEMIFrameAck(), nil
 }
 
-func (m CEMIFrameAck) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIFrameAck) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+	return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

@@ -37,7 +37,7 @@ type ICEMIFrame interface {
 	NotAckFrame() bool
 	Polling() bool
 	StandardFrame() bool
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type CEMIFrameInitializer interface {
@@ -176,37 +176,62 @@ func CEMIFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(repeated, priority, acknowledgeRequested, errorFlag), nil
 }
 
-func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func()) {
+func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func() error) error {
 
 	// Discriminator Field (standardFrame) (Used as input to a switch field)
 	standardFrame := bool(i.StandardFrame())
-	io.WriteBit((bool)(standardFrame))
+	_standardFrameErr := io.WriteBit((bool)(standardFrame))
+	if _standardFrameErr != nil {
+		return errors.New("Error serializing 'standardFrame' field " + _standardFrameErr.Error())
+	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling := bool(i.Polling())
-	io.WriteBit((bool)(polling))
+	_pollingErr := io.WriteBit((bool)(polling))
+	if _pollingErr != nil {
+		return errors.New("Error serializing 'polling' field " + _pollingErr.Error())
+	}
 
 	// Simple Field (repeated)
 	repeated := bool(m.repeated)
-	io.WriteBit((bool)(repeated))
+	_repeatedErr := io.WriteBit((bool)(repeated))
+	if _repeatedErr != nil {
+		return errors.New("Error serializing 'repeated' field " + _repeatedErr.Error())
+	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame := bool(i.NotAckFrame())
-	io.WriteBit((bool)(notAckFrame))
+	_notAckFrameErr := io.WriteBit((bool)(notAckFrame))
+	if _notAckFrameErr != nil {
+		return errors.New("Error serializing 'notAckFrame' field " + _notAckFrameErr.Error())
+	}
 
 	// Enum field (priority)
 	priority := CastCEMIPriority(m.priority)
-	priority.Serialize(io)
+	_priorityErr := priority.Serialize(io)
+	if _priorityErr != nil {
+		return errors.New("Error serializing 'priority' field " + _priorityErr.Error())
+	}
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.acknowledgeRequested)
-	io.WriteBit((bool)(acknowledgeRequested))
+	_acknowledgeRequestedErr := io.WriteBit((bool)(acknowledgeRequested))
+	if _acknowledgeRequestedErr != nil {
+		return errors.New("Error serializing 'acknowledgeRequested' field " + _acknowledgeRequestedErr.Error())
+	}
 
 	// Simple Field (errorFlag)
 	errorFlag := bool(m.errorFlag)
-	io.WriteBit((bool)(errorFlag))
+	_errorFlagErr := io.WriteBit((bool)(errorFlag))
+	if _errorFlagErr != nil {
+		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

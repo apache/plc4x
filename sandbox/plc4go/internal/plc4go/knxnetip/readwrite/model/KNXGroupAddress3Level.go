@@ -34,7 +34,7 @@ type KNXGroupAddress3Level struct {
 // The corresponding interface
 type IKNXGroupAddress3Level interface {
 	IKNXGroupAddress
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -113,21 +113,31 @@ func KNXGroupAddress3LevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializer,
 	return NewKNXGroupAddress3Level(mainGroup, middleGroup, subGroup), nil
 }
 
-func (m KNXGroupAddress3Level) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m KNXGroupAddress3Level) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.mainGroup)
-		io.WriteUint8(5, (mainGroup))
+		_mainGroupErr := io.WriteUint8(5, (mainGroup))
+		if _mainGroupErr != nil {
+			return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
+		}
 
 		// Simple Field (middleGroup)
 		middleGroup := uint8(m.middleGroup)
-		io.WriteUint8(3, (middleGroup))
+		_middleGroupErr := io.WriteUint8(3, (middleGroup))
+		if _middleGroupErr != nil {
+			return errors.New("Error serializing 'middleGroup' field " + _middleGroupErr.Error())
+		}
 
 		// Simple Field (subGroup)
 		subGroup := uint8(m.subGroup)
-		io.WriteUint8(8, (subGroup))
+		_subGroupErr := io.WriteUint8(8, (subGroup))
+		if _subGroupErr != nil {
+			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+		}
 
+		return nil
 	}
-	KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
+	return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

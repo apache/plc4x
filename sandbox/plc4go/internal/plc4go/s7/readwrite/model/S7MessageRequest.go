@@ -30,7 +30,7 @@ type S7MessageRequest struct {
 // The corresponding interface
 type IS7MessageRequest interface {
 	IS7Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -85,9 +85,10 @@ func S7MessageRequestParse(io *spi.ReadBuffer) (S7MessageInitializer, error) {
 	return NewS7MessageRequest(), nil
 }
 
-func (m S7MessageRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7MessageRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+	return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

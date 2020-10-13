@@ -33,7 +33,7 @@ type BVLCOriginalUnicastNPDU struct {
 // The corresponding interface
 type IBVLCOriginalUnicastNPDU interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -99,13 +99,17 @@ func BVLCOriginalUnicastNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLCIn
 	return NewBVLCOriginalUnicastNPDU(npdu), nil
 }
 
-func (m BVLCOriginalUnicastNPDU) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCOriginalUnicastNPDU) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (npdu)
 		npdu := CastINPDU(m.npdu)
-		npdu.Serialize(io)
+		_npduErr := npdu.Serialize(io)
+		if _npduErr != nil {
+			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+		}
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

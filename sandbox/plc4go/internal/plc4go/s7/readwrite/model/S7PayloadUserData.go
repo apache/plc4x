@@ -33,7 +33,7 @@ type S7PayloadUserData struct {
 // The corresponding interface
 type IS7PayloadUserData interface {
 	IS7Payload
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -113,16 +113,20 @@ func S7PayloadUserDataParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7Paylo
 	return NewS7PayloadUserData(items), nil
 }
 
-func (m S7PayloadUserData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7PayloadUserData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (items)
 		if m.items != nil {
 			for _, _element := range m.items {
-				_element.Serialize(io)
+				_elementErr := _element.Serialize(io)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'items' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
+	return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
 }

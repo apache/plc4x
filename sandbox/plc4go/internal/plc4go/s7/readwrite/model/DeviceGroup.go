@@ -24,7 +24,7 @@ type DeviceGroup int8
 
 type IDeviceGroup interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -56,6 +56,7 @@ func DeviceGroupParse(io *spi.ReadBuffer) (DeviceGroup, error) {
 	return 0, nil
 }
 
-func (e DeviceGroup) Serialize(io spi.WriteBuffer) {
+func (e DeviceGroup) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

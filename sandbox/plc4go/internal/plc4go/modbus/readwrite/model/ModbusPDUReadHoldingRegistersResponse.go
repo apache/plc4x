@@ -32,7 +32,7 @@ type ModbusPDUReadHoldingRegistersResponse struct {
 // The corresponding interface
 type IModbusPDUReadHoldingRegistersResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -118,20 +118,27 @@ func ModbusPDUReadHoldingRegistersResponseParse(io *spi.ReadBuffer) (ModbusPDUIn
 	return NewModbusPDUReadHoldingRegistersResponse(value), nil
 }
 
-func (m ModbusPDUReadHoldingRegistersResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadHoldingRegistersResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.value)))
-		io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, (byteCount))
+		if _byteCountErr != nil {
+			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+		}
 
 		// Array Field (value)
 		if m.value != nil {
 			for _, _element := range m.value {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'value' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

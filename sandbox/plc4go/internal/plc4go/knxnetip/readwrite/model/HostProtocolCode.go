@@ -24,7 +24,7 @@ type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -55,6 +55,7 @@ func HostProtocolCodeParse(io *spi.ReadBuffer) (HostProtocolCode, error) {
 	return 0, nil
 }
 
-func (e HostProtocolCode) Serialize(io spi.WriteBuffer) {
+func (e HostProtocolCode) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

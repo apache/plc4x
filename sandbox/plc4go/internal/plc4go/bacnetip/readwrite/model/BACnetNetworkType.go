@@ -24,7 +24,7 @@ type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -64,6 +64,7 @@ func BACnetNetworkTypeParse(io *spi.ReadBuffer) (BACnetNetworkType, error) {
 	return 0, nil
 }
 
-func (e BACnetNetworkType) Serialize(io spi.WriteBuffer) {
+func (e BACnetNetworkType) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

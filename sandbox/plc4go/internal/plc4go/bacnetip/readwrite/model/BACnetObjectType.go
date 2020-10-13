@@ -24,7 +24,7 @@ type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -112,6 +112,7 @@ func BACnetObjectTypeParse(io *spi.ReadBuffer) (BACnetObjectType, error) {
 	return 0, nil
 }
 
-func (e BACnetObjectType) Serialize(io spi.WriteBuffer) {
+func (e BACnetObjectType) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

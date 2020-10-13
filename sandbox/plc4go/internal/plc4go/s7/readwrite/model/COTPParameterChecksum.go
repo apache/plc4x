@@ -32,7 +32,7 @@ type COTPParameterChecksum struct {
 // The corresponding interface
 type ICOTPParameterChecksum interface {
 	ICOTPParameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,13 +93,17 @@ func COTPParameterChecksumParse(io *spi.ReadBuffer) (COTPParameterInitializer, e
 	return NewCOTPParameterChecksum(crc), nil
 }
 
-func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (crc)
 		crc := uint8(m.crc)
-		io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8(8, (crc))
+		if _crcErr != nil {
+			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+		}
 
+		return nil
 	}
-	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

@@ -32,7 +32,7 @@ type IS7Payload interface {
 	spi.Message
 	MessageType() uint8
 	ParameterParameterType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7PayloadInitializer interface {
@@ -102,9 +102,13 @@ func S7PayloadParse(io *spi.ReadBuffer, messageType uint8, parameter IS7Paramete
 	return initializer.initialize(), nil
 }
 
-func S7PayloadSerialize(io spi.WriteBuffer, m S7Payload, i IS7Payload, childSerialize func()) {
+func S7PayloadSerialize(io spi.WriteBuffer, m S7Payload, i IS7Payload, childSerialize func() error) error {
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

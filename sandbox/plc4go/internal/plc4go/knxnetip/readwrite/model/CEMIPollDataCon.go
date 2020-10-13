@@ -30,7 +30,7 @@ type CEMIPollDataCon struct {
 // The corresponding interface
 type ICEMIPollDataCon interface {
 	ICEMI
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func CEMIPollDataConParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 	return NewCEMIPollDataCon(), nil
 }
 
-func (m CEMIPollDataCon) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIPollDataCon) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

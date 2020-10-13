@@ -33,7 +33,7 @@ type SearchRequest struct {
 // The corresponding interface
 type ISearchRequest interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -99,13 +99,17 @@ func SearchRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 	return NewSearchRequest(hpaiIDiscoveryEndpoint), nil
 }
 
-func (m SearchRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m SearchRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
 		hpaiIDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.hpaiIDiscoveryEndpoint)
-		hpaiIDiscoveryEndpoint.Serialize(io)
+		_hpaiIDiscoveryEndpointErr := hpaiIDiscoveryEndpoint.Serialize(io)
+		if _hpaiIDiscoveryEndpointErr != nil {
+			return errors.New("Error serializing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

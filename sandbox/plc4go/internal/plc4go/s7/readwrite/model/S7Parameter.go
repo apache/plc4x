@@ -32,7 +32,7 @@ type IS7Parameter interface {
 	spi.Message
 	MessageType() uint8
 	ParameterType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type S7ParameterInitializer interface {
@@ -115,13 +115,20 @@ func S7ParameterParse(io *spi.ReadBuffer, messageType uint8) (spi.Message, error
 	return initializer.initialize(), nil
 }
 
-func S7ParameterSerialize(io spi.WriteBuffer, m S7Parameter, i IS7Parameter, childSerialize func()) {
+func S7ParameterSerialize(io spi.WriteBuffer, m S7Parameter, i IS7Parameter, childSerialize func() error) error {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(i.ParameterType())
-	io.WriteUint8(8, (parameterType))
+	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+	if _parameterTypeErr != nil {
+		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

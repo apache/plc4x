@@ -30,7 +30,7 @@ type BVLCReadBroadcastDistributionTable struct {
 // The corresponding interface
 type IBVLCReadBroadcastDistributionTable interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCReadBroadcastDistributionTableParse(io *spi.ReadBuffer) (BVLCInitialize
 	return NewBVLCReadBroadcastDistributionTable(), nil
 }
 
-func (m BVLCReadBroadcastDistributionTable) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCReadBroadcastDistributionTable) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

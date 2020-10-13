@@ -32,7 +32,7 @@ type UnknownMessage struct {
 // The corresponding interface
 type IUnknownMessage interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,16 +101,20 @@ func UnknownMessageParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessag
 	return NewUnknownMessage(unknownData), nil
 }
 
-func (m UnknownMessage) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m UnknownMessage) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Array Field (unknownData)
 		if m.unknownData != nil {
 			for _, _element := range m.unknownData {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())
+				}
 			}
 		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

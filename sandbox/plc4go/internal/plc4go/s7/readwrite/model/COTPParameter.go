@@ -31,7 +31,7 @@ type COTPParameter struct {
 type ICOTPParameter interface {
 	spi.Message
 	ParameterType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type COTPParameterInitializer interface {
@@ -117,17 +117,27 @@ func COTPParameterParse(io *spi.ReadBuffer, rest uint8) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func()) {
+func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func() error) error {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(i.ParameterType())
-	io.WriteUint8(8, (parameterType))
+	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+	if _parameterTypeErr != nil {
+		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
+	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-	io.WriteUint8(8, (parameterLength))
+	_parameterLengthErr := io.WriteUint8(8, (parameterLength))
+	if _parameterLengthErr != nil {
+		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

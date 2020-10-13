@@ -33,7 +33,7 @@ type ModbusPDUWriteSingleCoilRequest struct {
 // The corresponding interface
 type IModbusPDUWriteSingleCoilRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,17 +111,24 @@ func ModbusPDUWriteSingleCoilRequestParse(io *spi.ReadBuffer) (ModbusPDUInitiali
 	return NewModbusPDUWriteSingleCoilRequest(address, value), nil
 }
 
-func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (address)
 		address := uint16(m.address)
-		io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16(16, (address))
+		if _addressErr != nil {
+			return errors.New("Error serializing 'address' field " + _addressErr.Error())
+		}
 
 		// Simple Field (value)
 		value := uint16(m.value)
-		io.WriteUint16(16, (value))
+		_valueErr := io.WriteUint16(16, (value))
+		if _valueErr != nil {
+			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

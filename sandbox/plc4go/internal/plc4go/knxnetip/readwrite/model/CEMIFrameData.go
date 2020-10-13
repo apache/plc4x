@@ -43,7 +43,7 @@ type CEMIFrameData struct {
 // The corresponding interface
 type ICEMIFrameData interface {
 	ICEMIFrame
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -227,59 +227,93 @@ func CEMIFrameDataParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	return NewCEMIFrameData(sourceAddress, destinationAddress, groupAddress, hopCount, dataLength, tcpi, counter, apci, dataFirstByte, data, crc), nil
 }
 
-func (m CEMIFrameData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (sourceAddress)
 		sourceAddress := CastIKNXAddress(m.sourceAddress)
-		sourceAddress.Serialize(io)
+		_sourceAddressErr := sourceAddress.Serialize(io)
+		if _sourceAddressErr != nil {
+			return errors.New("Error serializing 'sourceAddress' field " + _sourceAddressErr.Error())
+		}
 
 		// Array Field (destinationAddress)
 		if m.destinationAddress != nil {
 			for _, _element := range m.destinationAddress {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'destinationAddress' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.groupAddress)
-		io.WriteBit((bool)(groupAddress))
+		_groupAddressErr := io.WriteBit((bool)(groupAddress))
+		if _groupAddressErr != nil {
+			return errors.New("Error serializing 'groupAddress' field " + _groupAddressErr.Error())
+		}
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.hopCount)
-		io.WriteUint8(3, (hopCount))
+		_hopCountErr := io.WriteUint8(3, (hopCount))
+		if _hopCountErr != nil {
+			return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
+		}
 
 		// Simple Field (dataLength)
 		dataLength := uint8(m.dataLength)
-		io.WriteUint8(4, (dataLength))
+		_dataLengthErr := io.WriteUint8(4, (dataLength))
+		if _dataLengthErr != nil {
+			return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+		}
 
 		// Enum field (tcpi)
 		tcpi := CastTPCI(m.tcpi)
-		tcpi.Serialize(io)
+		_tcpiErr := tcpi.Serialize(io)
+		if _tcpiErr != nil {
+			return errors.New("Error serializing 'tcpi' field " + _tcpiErr.Error())
+		}
 
 		// Simple Field (counter)
 		counter := uint8(m.counter)
-		io.WriteUint8(4, (counter))
+		_counterErr := io.WriteUint8(4, (counter))
+		if _counterErr != nil {
+			return errors.New("Error serializing 'counter' field " + _counterErr.Error())
+		}
 
 		// Enum field (apci)
 		apci := CastAPCI(m.apci)
-		apci.Serialize(io)
+		_apciErr := apci.Serialize(io)
+		if _apciErr != nil {
+			return errors.New("Error serializing 'apci' field " + _apciErr.Error())
+		}
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.dataFirstByte)
-		io.WriteInt8(6, (dataFirstByte))
+		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+		if _dataFirstByteErr != nil {
+			return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+		}
 
 		// Array Field (data)
 		if m.data != nil {
 			for _, _element := range m.data {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'data' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Simple Field (crc)
 		crc := uint8(m.crc)
-		io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8(8, (crc))
+		if _crcErr != nil {
+			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+		}
 
+		return nil
 	}
-	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+	return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

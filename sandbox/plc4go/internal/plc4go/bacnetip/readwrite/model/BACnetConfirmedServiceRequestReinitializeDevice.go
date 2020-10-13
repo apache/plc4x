@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestReinitializeDevice struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReinitializeDevice interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *spi.ReadBuffer) (B
 	return NewBACnetConfirmedServiceRequestReinitializeDevice(), nil
 }
 
-func (m BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestReinitializeDevice) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

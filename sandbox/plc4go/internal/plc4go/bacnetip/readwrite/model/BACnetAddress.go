@@ -32,7 +32,7 @@ type BACnetAddress struct {
 // The corresponding interface
 type IBACnetAddress interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewBACnetAddress(address []uint8, port uint16) spi.Message {
@@ -101,17 +101,24 @@ func BACnetAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewBACnetAddress(address, port), nil
 }
 
-func (m BACnetAddress) Serialize(io spi.WriteBuffer) {
+func (m BACnetAddress) Serialize(io spi.WriteBuffer) error {
 
 	// Array Field (address)
 	if m.address != nil {
 		for _, _element := range m.address {
-			io.WriteUint8(8, _element)
+			_elementErr := io.WriteUint8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'address' field " + _elementErr.Error())
+			}
 		}
 	}
 
 	// Simple Field (port)
 	port := uint16(m.port)
-	io.WriteUint16(16, (port))
+	_portErr := io.WriteUint16(16, (port))
+	if _portErr != nil {
+		return errors.New("Error serializing 'port' field " + _portErr.Error())
+	}
 
+	return nil
 }

@@ -36,7 +36,7 @@ type ConnectionResponse struct {
 // The corresponding interface
 type IConnectionResponse interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -146,31 +146,44 @@ func ConnectionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 	return NewConnectionResponse(communicationChannelId, status, hpaiDataEndpoint, connectionResponseDataBlock), nil
 }
 
-func (m ConnectionResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.communicationChannelId)
-		io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		if _communicationChannelIdErr != nil {
+			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		}
 
 		// Enum field (status)
 		status := CastStatus(m.status)
-		status.Serialize(io)
+		_statusErr := status.Serialize(io)
+		if _statusErr != nil {
+			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+		}
 
 		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
 		var hpaiDataEndpoint *IHPAIDataEndpoint = nil
 		if m.hpaiDataEndpoint != nil {
 			hpaiDataEndpoint = m.hpaiDataEndpoint
-			CastIHPAIDataEndpoint(*hpaiDataEndpoint).Serialize(io)
+			_hpaiDataEndpointErr := CastIHPAIDataEndpoint(*hpaiDataEndpoint).Serialize(io)
+			if _hpaiDataEndpointErr != nil {
+				return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
+			}
 		}
 
 		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
 		var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
 		if m.connectionResponseDataBlock != nil {
 			connectionResponseDataBlock = m.connectionResponseDataBlock
-			CastIConnectionResponseDataBlock(*connectionResponseDataBlock).Serialize(io)
+			_connectionResponseDataBlockErr := CastIConnectionResponseDataBlock(*connectionResponseDataBlock).Serialize(io)
+			if _connectionResponseDataBlockErr != nil {
+				return errors.New("Error serializing 'connectionResponseDataBlock' field " + _connectionResponseDataBlockErr.Error())
+			}
 		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

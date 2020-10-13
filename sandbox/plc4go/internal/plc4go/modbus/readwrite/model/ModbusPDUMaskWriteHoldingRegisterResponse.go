@@ -34,7 +34,7 @@ type ModbusPDUMaskWriteHoldingRegisterResponse struct {
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -121,21 +121,31 @@ func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *spi.ReadBuffer) (ModbusP
 	return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask), nil
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.referenceAddress)
-		io.WriteUint16(16, (referenceAddress))
+		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
+		if _referenceAddressErr != nil {
+			return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
+		}
 
 		// Simple Field (andMask)
 		andMask := uint16(m.andMask)
-		io.WriteUint16(16, (andMask))
+		_andMaskErr := io.WriteUint16(16, (andMask))
+		if _andMaskErr != nil {
+			return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
+		}
 
 		// Simple Field (orMask)
 		orMask := uint16(m.orMask)
-		io.WriteUint16(16, (orMask))
+		_orMaskErr := io.WriteUint16(16, (orMask))
+		if _orMaskErr != nil {
+			return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

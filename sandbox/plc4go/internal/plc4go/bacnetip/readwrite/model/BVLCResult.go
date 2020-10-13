@@ -30,7 +30,7 @@ type BVLCResult struct {
 // The corresponding interface
 type IBVLCResult interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCResultParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 	return NewBVLCResult(), nil
 }
 
-func (m BVLCResult) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCResult) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

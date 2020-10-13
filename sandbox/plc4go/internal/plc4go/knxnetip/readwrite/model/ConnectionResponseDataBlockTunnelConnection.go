@@ -33,7 +33,7 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
 	IConnectionResponseDataBlock
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -99,13 +99,17 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *spi.ReadBuffer) (Conne
 	return NewConnectionResponseDataBlockTunnelConnection(knxAddress), nil
 }
 
-func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (knxAddress)
 		knxAddress := CastIKNXAddress(m.knxAddress)
-		knxAddress.Serialize(io)
+		_knxAddressErr := knxAddress.Serialize(io)
+		if _knxAddressErr != nil {
+			return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
+		}
 
+		return nil
 	}
-	ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
+	return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

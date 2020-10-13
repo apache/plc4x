@@ -34,7 +34,7 @@ type APDUUnconfirmedRequest struct {
 // The corresponding interface
 type IAPDUUnconfirmedRequest interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -117,16 +117,25 @@ func APDUUnconfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUIni
 	return NewAPDUUnconfirmedRequest(serviceRequest), nil
 }
 
-func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(4, uint8(0))
+		{
+			_err := io.WriteUint8(4, uint8(0))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (serviceRequest)
 		serviceRequest := CastIBACnetUnconfirmedServiceRequest(m.serviceRequest)
-		serviceRequest.Serialize(io)
+		_serviceRequestErr := serviceRequest.Serialize(io)
+		if _serviceRequestErr != nil {
+			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

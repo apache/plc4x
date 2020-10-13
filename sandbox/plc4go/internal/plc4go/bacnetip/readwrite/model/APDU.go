@@ -31,7 +31,7 @@ type APDU struct {
 type IAPDU interface {
 	spi.Message
 	ApduType() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type APDUInitializer interface {
@@ -114,13 +114,20 @@ func APDUParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func APDUSerialize(io spi.WriteBuffer, m APDU, i IAPDU, childSerialize func()) {
+func APDUSerialize(io spi.WriteBuffer, m APDU, i IAPDU, childSerialize func() error) error {
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
 	apduType := uint8(i.ApduType())
-	io.WriteUint8(4, (apduType))
+	_apduTypeErr := io.WriteUint8(4, (apduType))
+	if _apduTypeErr != nil {
+		return errors.New("Error serializing 'apduType' field " + _apduTypeErr.Error())
+	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

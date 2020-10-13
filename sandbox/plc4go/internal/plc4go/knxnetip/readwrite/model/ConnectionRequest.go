@@ -35,7 +35,7 @@ type ConnectionRequest struct {
 // The corresponding interface
 type IConnectionRequest interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -129,21 +129,31 @@ func ConnectionRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 	return NewConnectionRequest(hpaiDiscoveryEndpoint, hpaiDataEndpoint, connectionRequestInformation), nil
 }
 
-func (m ConnectionRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (hpaiDiscoveryEndpoint)
 		hpaiDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
-		hpaiDiscoveryEndpoint.Serialize(io)
+		_hpaiDiscoveryEndpointErr := hpaiDiscoveryEndpoint.Serialize(io)
+		if _hpaiDiscoveryEndpointErr != nil {
+			return errors.New("Error serializing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
+		}
 
 		// Simple Field (hpaiDataEndpoint)
 		hpaiDataEndpoint := CastIHPAIDataEndpoint(m.hpaiDataEndpoint)
-		hpaiDataEndpoint.Serialize(io)
+		_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(io)
+		if _hpaiDataEndpointErr != nil {
+			return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
+		}
 
 		// Simple Field (connectionRequestInformation)
 		connectionRequestInformation := CastIConnectionRequestInformation(m.connectionRequestInformation)
-		connectionRequestInformation.Serialize(io)
+		_connectionRequestInformationErr := connectionRequestInformation.Serialize(io)
+		if _connectionRequestInformationErr != nil {
+			return errors.New("Error serializing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -30,7 +30,7 @@ type BACnetErrorAtomicReadFile struct {
 // The corresponding interface
 type IBACnetErrorAtomicReadFile interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorAtomicReadFileParse(io *spi.ReadBuffer) (BACnetErrorInitializer,
 	return NewBACnetErrorAtomicReadFile(), nil
 }
 
-func (m BACnetErrorAtomicReadFile) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorAtomicReadFile) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

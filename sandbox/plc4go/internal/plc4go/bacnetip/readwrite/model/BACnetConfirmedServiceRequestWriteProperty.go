@@ -45,7 +45,7 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWriteProperty interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -226,51 +226,82 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *spi.ReadBuffer, len uin
 	return NewBACnetConfirmedServiceRequestWriteProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier, value, priority), nil
 }
 
-func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Const Field (objectIdentifierHeader)
-		io.WriteUint8(8, 0x0C)
+		_objectIdentifierHeaderErr := io.WriteUint8(8, 0x0C)
+		if _objectIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (objectType)
 		objectType := uint16(m.objectType)
-		io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16(10, (objectType))
+		if _objectTypeErr != nil {
+			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
+		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.objectInstanceNumber)
-		io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		if _objectInstanceNumberErr != nil {
+			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+		}
 
 		// Const Field (propertyIdentifierHeader)
-		io.WriteUint8(5, 0x03)
+		_propertyIdentifierHeaderErr := io.WriteUint8(5, 0x03)
+		if _propertyIdentifierHeaderErr != nil {
+			return errors.New("Error serializing 'propertyIdentifierHeader' field " + _propertyIdentifierHeaderErr.Error())
+		}
 
 		// Simple Field (propertyIdentifierLength)
 		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
-		io.WriteUint8(3, (propertyIdentifierLength))
+		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
+		if _propertyIdentifierLengthErr != nil {
+			return errors.New("Error serializing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
+		}
 
 		// Array Field (propertyIdentifier)
 		if m.propertyIdentifier != nil {
 			for _, _element := range m.propertyIdentifier {
-				io.WriteInt8(8, _element)
+				_elementErr := io.WriteInt8(8, _element)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'propertyIdentifier' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Const Field (openingTag)
-		io.WriteUint8(8, 0x3E)
+		_openingTagErr := io.WriteUint8(8, 0x3E)
+		if _openingTagErr != nil {
+			return errors.New("Error serializing 'openingTag' field " + _openingTagErr.Error())
+		}
 
 		// Simple Field (value)
 		value := CastIBACnetTag(m.value)
-		value.Serialize(io)
+		_valueErr := value.Serialize(io)
+		if _valueErr != nil {
+			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+		}
 
 		// Const Field (closingTag)
-		io.WriteUint8(8, 0x3F)
+		_closingTagErr := io.WriteUint8(8, 0x3F)
+		if _closingTagErr != nil {
+			return errors.New("Error serializing 'closingTag' field " + _closingTagErr.Error())
+		}
 
 		// Optional Field (priority) (Can be skipped, if the value is null)
 		var priority *IBACnetTag = nil
 		if m.priority != nil {
 			priority = m.priority
-			CastIBACnetTag(*priority).Serialize(io)
+			_priorityErr := CastIBACnetTag(*priority).Serialize(io)
+			if _priorityErr != nil {
+				return errors.New("Error serializing 'priority' field " + _priorityErr.Error())
+			}
 		}
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

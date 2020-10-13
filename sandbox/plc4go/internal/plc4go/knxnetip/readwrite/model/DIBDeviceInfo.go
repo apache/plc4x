@@ -40,7 +40,7 @@ type DIBDeviceInfo struct {
 // The corresponding interface
 type IDIBDeviceInfo interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewDIBDeviceInfo(descriptionType uint8, knxMedium uint8, deviceStatus IDeviceStatus, knxAddress IKNXAddress, projectInstallationIdentifier IProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []int8, knxNetIpDeviceMulticastAddress IIPAddress, knxNetIpDeviceMacAddress IMACAddress, deviceFriendlyName []int8) spi.Message {
@@ -214,52 +214,83 @@ func DIBDeviceInfoParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewDIBDeviceInfo(descriptionType, knxMedium, deviceStatus, knxAddress, projectInstallationIdentifier, knxNetIpDeviceSerialNumber, knxNetIpDeviceMulticastAddress, knxNetIpDeviceMacAddress, deviceFriendlyName), nil
 }
 
-func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) {
+func (m DIBDeviceInfo) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	if _structureLengthErr != nil {
+		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.descriptionType)
-	io.WriteUint8(8, (descriptionType))
+	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
+	if _descriptionTypeErr != nil {
+		return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
+	}
 
 	// Simple Field (knxMedium)
 	knxMedium := uint8(m.knxMedium)
-	io.WriteUint8(8, (knxMedium))
+	_knxMediumErr := io.WriteUint8(8, (knxMedium))
+	if _knxMediumErr != nil {
+		return errors.New("Error serializing 'knxMedium' field " + _knxMediumErr.Error())
+	}
 
 	// Simple Field (deviceStatus)
 	deviceStatus := CastIDeviceStatus(m.deviceStatus)
-	deviceStatus.Serialize(io)
+	_deviceStatusErr := deviceStatus.Serialize(io)
+	if _deviceStatusErr != nil {
+		return errors.New("Error serializing 'deviceStatus' field " + _deviceStatusErr.Error())
+	}
 
 	// Simple Field (knxAddress)
 	knxAddress := CastIKNXAddress(m.knxAddress)
-	knxAddress.Serialize(io)
+	_knxAddressErr := knxAddress.Serialize(io)
+	if _knxAddressErr != nil {
+		return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
+	}
 
 	// Simple Field (projectInstallationIdentifier)
 	projectInstallationIdentifier := CastIProjectInstallationIdentifier(m.projectInstallationIdentifier)
-	projectInstallationIdentifier.Serialize(io)
+	_projectInstallationIdentifierErr := projectInstallationIdentifier.Serialize(io)
+	if _projectInstallationIdentifierErr != nil {
+		return errors.New("Error serializing 'projectInstallationIdentifier' field " + _projectInstallationIdentifierErr.Error())
+	}
 
 	// Array Field (knxNetIpDeviceSerialNumber)
 	if m.knxNetIpDeviceSerialNumber != nil {
 		for _, _element := range m.knxNetIpDeviceSerialNumber {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'knxNetIpDeviceSerialNumber' field " + _elementErr.Error())
+			}
 		}
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
 	knxNetIpDeviceMulticastAddress := CastIIPAddress(m.knxNetIpDeviceMulticastAddress)
-	knxNetIpDeviceMulticastAddress.Serialize(io)
+	_knxNetIpDeviceMulticastAddressErr := knxNetIpDeviceMulticastAddress.Serialize(io)
+	if _knxNetIpDeviceMulticastAddressErr != nil {
+		return errors.New("Error serializing 'knxNetIpDeviceMulticastAddress' field " + _knxNetIpDeviceMulticastAddressErr.Error())
+	}
 
 	// Simple Field (knxNetIpDeviceMacAddress)
 	knxNetIpDeviceMacAddress := CastIMACAddress(m.knxNetIpDeviceMacAddress)
-	knxNetIpDeviceMacAddress.Serialize(io)
+	_knxNetIpDeviceMacAddressErr := knxNetIpDeviceMacAddress.Serialize(io)
+	if _knxNetIpDeviceMacAddressErr != nil {
+		return errors.New("Error serializing 'knxNetIpDeviceMacAddress' field " + _knxNetIpDeviceMacAddressErr.Error())
+	}
 
 	// Array Field (deviceFriendlyName)
 	if m.deviceFriendlyName != nil {
 		for _, _element := range m.deviceFriendlyName {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'deviceFriendlyName' field " + _elementErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

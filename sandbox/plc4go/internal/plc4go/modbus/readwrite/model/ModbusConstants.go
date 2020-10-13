@@ -34,7 +34,7 @@ type ModbusConstants struct {
 // The corresponding interface
 type IModbusConstants interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewModbusConstants() spi.Message {
@@ -89,9 +89,13 @@ func ModbusConstantsParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return NewModbusConstants(), nil
 }
 
-func (m ModbusConstants) Serialize(io spi.WriteBuffer) {
+func (m ModbusConstants) Serialize(io spi.WriteBuffer) error {
 
 	// Const Field (modbusTcpDefaultPort)
-	io.WriteUint16(16, 502)
+	_modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
+	if _modbusTcpDefaultPortErr != nil {
+		return errors.New("Error serializing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
+	}
 
+	return nil
 }

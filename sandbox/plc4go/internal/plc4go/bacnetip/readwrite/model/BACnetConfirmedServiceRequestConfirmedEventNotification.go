@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io *spi.ReadBu
 	return NewBACnetConfirmedServiceRequestConfirmedEventNotification(), nil
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

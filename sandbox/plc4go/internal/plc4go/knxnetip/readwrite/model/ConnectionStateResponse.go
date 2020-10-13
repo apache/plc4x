@@ -33,7 +33,7 @@ type ConnectionStateResponse struct {
 // The corresponding interface
 type IConnectionStateResponse interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -103,17 +103,24 @@ func ConnectionStateResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitialize
 	return NewConnectionStateResponse(communicationChannelId, status), nil
 }
 
-func (m ConnectionStateResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionStateResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.communicationChannelId)
-		io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		if _communicationChannelIdErr != nil {
+			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		}
 
 		// Enum field (status)
 		status := CastStatus(m.status)
-		status.Serialize(io)
+		_statusErr := status.Serialize(io)
+		if _statusErr != nil {
+			return errors.New("Error serializing 'status' field " + _statusErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

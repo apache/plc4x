@@ -24,7 +24,7 @@ type ApplicationTag int8
 
 type IApplicationTag interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -66,6 +66,7 @@ func ApplicationTagParse(io *spi.ReadBuffer) (ApplicationTag, error) {
 	return 0, nil
 }
 
-func (e ApplicationTag) Serialize(io spi.WriteBuffer) {
+func (e ApplicationTag) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

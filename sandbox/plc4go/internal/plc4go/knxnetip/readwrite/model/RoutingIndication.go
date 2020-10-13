@@ -30,7 +30,7 @@ type RoutingIndication struct {
 // The corresponding interface
 type IRoutingIndication interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func RoutingIndicationParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 	return NewRoutingIndication(), nil
 }
 
-func (m RoutingIndication) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m RoutingIndication) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

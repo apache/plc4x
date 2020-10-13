@@ -35,7 +35,7 @@ type CEMIBusmonInd struct {
 // The corresponding interface
 type ICEMIBusmonInd interface {
 	ICEMI
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -135,24 +135,34 @@ func CEMIBusmonIndParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 	return NewCEMIBusmonInd(additionalInformationLength, additionalInformation, cemiFrame), nil
 }
 
-func (m CEMIBusmonInd) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m CEMIBusmonInd) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.additionalInformationLength)
-		io.WriteUint8(8, (additionalInformationLength))
+		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
+		if _additionalInformationLengthErr != nil {
+			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+		}
 
 		// Array Field (additionalInformation)
 		if m.additionalInformation != nil {
 			for _, _element := range m.additionalInformation {
-				_element.Serialize(io)
+				_elementErr := _element.Serialize(io)
+				if _elementErr != nil {
+					return errors.New("Error serializing 'additionalInformation' field " + _elementErr.Error())
+				}
 			}
 		}
 
 		// Simple Field (cemiFrame)
 		cemiFrame := CastICEMIFrame(m.cemiFrame)
-		cemiFrame.Serialize(io)
+		_cemiFrameErr := cemiFrame.Serialize(io)
+		if _cemiFrameErr != nil {
+			return errors.New("Error serializing 'cemiFrame' field " + _cemiFrameErr.Error())
+		}
 
+		return nil
 	}
-	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

@@ -30,7 +30,7 @@ type BACnetTagApplicationCharacterString struct {
 // The corresponding interface
 type IBACnetTagApplicationCharacterString interface {
 	IBACnetTag
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,9 +86,10 @@ func BACnetTagApplicationCharacterStringParse(io *spi.ReadBuffer) (BACnetTagInit
 	return NewBACnetTagApplicationCharacterString(), nil
 }
 
-func (m BACnetTagApplicationCharacterString) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetTagApplicationCharacterString) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

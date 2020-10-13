@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestAtomicWriteFile struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParse(io *spi.ReadBuffer) (BACn
 	return NewBACnetConfirmedServiceRequestAtomicWriteFile(), nil
 }
 
-func (m BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

@@ -32,7 +32,7 @@ type ModbusPDUError struct {
 // The corresponding interface
 type IModbusPDUError interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,13 +101,17 @@ func ModbusPDUErrorParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 	return NewModbusPDUError(exceptionCode), nil
 }
 
-func (m ModbusPDUError) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUError) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (exceptionCode)
 		exceptionCode := uint8(m.exceptionCode)
-		io.WriteUint8(8, (exceptionCode))
+		_exceptionCodeErr := io.WriteUint8(8, (exceptionCode))
+		if _exceptionCodeErr != nil {
+			return errors.New("Error serializing 'exceptionCode' field " + _exceptionCodeErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

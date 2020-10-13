@@ -39,7 +39,7 @@ type APDUComplexAck struct {
 // The corresponding interface
 type IAPDUComplexAck interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -181,42 +181,66 @@ func APDUComplexAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 	return NewAPDUComplexAck(segmentedMessage, moreFollows, originalInvokeId, sequenceNumber, proposedWindowSize, serviceAck), nil
 }
 
-func (m APDUComplexAck) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.segmentedMessage)
-		io.WriteBit((bool)(segmentedMessage))
+		_segmentedMessageErr := io.WriteBit((bool)(segmentedMessage))
+		if _segmentedMessageErr != nil {
+			return errors.New("Error serializing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.moreFollows)
-		io.WriteBit((bool)(moreFollows))
+		_moreFollowsErr := io.WriteBit((bool)(moreFollows))
+		if _moreFollowsErr != nil {
+			return errors.New("Error serializing 'moreFollows' field " + _moreFollowsErr.Error())
+		}
 
 		// Reserved Field (reserved)
-		io.WriteUint8(2, uint8(0))
+		{
+			_err := io.WriteUint8(2, uint8(0))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.originalInvokeId)
-		io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		if _originalInvokeIdErr != nil {
+			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		}
 
 		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
 		var sequenceNumber *uint8 = nil
 		if m.sequenceNumber != nil {
 			sequenceNumber = m.sequenceNumber
-			io.WriteUint8(8, *(sequenceNumber))
+			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
+			if _sequenceNumberErr != nil {
+				return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+			}
 		}
 
 		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
 		var proposedWindowSize *uint8 = nil
 		if m.proposedWindowSize != nil {
 			proposedWindowSize = m.proposedWindowSize
-			io.WriteUint8(8, *(proposedWindowSize))
+			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
+			if _proposedWindowSizeErr != nil {
+				return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+			}
 		}
 
 		// Simple Field (serviceAck)
 		serviceAck := CastIBACnetServiceAck(m.serviceAck)
-		serviceAck.Serialize(io)
+		_serviceAckErr := serviceAck.Serialize(io)
+		if _serviceAckErr != nil {
+			return errors.New("Error serializing 'serviceAck' field " + _serviceAckErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

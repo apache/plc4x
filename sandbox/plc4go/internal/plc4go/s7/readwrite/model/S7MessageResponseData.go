@@ -33,7 +33,7 @@ type S7MessageResponseData struct {
 // The corresponding interface
 type IS7MessageResponseData interface {
 	IS7Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -106,17 +106,24 @@ func S7MessageResponseDataParse(io *spi.ReadBuffer) (S7MessageInitializer, error
 	return NewS7MessageResponseData(errorClass, errorCode), nil
 }
 
-func (m S7MessageResponseData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7MessageResponseData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.errorClass)
-		io.WriteUint8(8, (errorClass))
+		_errorClassErr := io.WriteUint8(8, (errorClass))
+		if _errorClassErr != nil {
+			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
+		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.errorCode)
-		io.WriteUint8(8, (errorCode))
+		_errorCodeErr := io.WriteUint8(8, (errorCode))
+		if _errorCodeErr != nil {
+			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+		}
 
+		return nil
 	}
-	S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+	return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

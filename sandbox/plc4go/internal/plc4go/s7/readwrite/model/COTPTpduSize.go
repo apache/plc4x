@@ -25,7 +25,7 @@ type COTPTpduSize int8
 type ICOTPTpduSize interface {
 	spi.Message
 	SizeInBytes() uint16
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -98,6 +98,7 @@ func COTPTpduSizeParse(io *spi.ReadBuffer) (COTPTpduSize, error) {
 	return 0, nil
 }
 
-func (e COTPTpduSize) Serialize(io spi.WriteBuffer) {
+func (e COTPTpduSize) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

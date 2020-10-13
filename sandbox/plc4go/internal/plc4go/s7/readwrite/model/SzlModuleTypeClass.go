@@ -24,7 +24,7 @@ type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 const (
@@ -57,6 +57,7 @@ func SzlModuleTypeClassParse(io *spi.ReadBuffer) (SzlModuleTypeClass, error) {
 	return 0, nil
 }
 
-func (e SzlModuleTypeClass) Serialize(io spi.WriteBuffer) {
+func (e SzlModuleTypeClass) Serialize(io spi.WriteBuffer) error {
 	// TODO: Implement ...
+	return nil
 }

@@ -30,7 +30,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
 	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io *spi.Read
 	return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

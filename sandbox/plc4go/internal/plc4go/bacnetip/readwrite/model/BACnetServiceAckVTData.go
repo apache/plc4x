@@ -30,7 +30,7 @@ type BACnetServiceAckVTData struct {
 // The corresponding interface
 type IBACnetServiceAckVTData interface {
 	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetServiceAckVTDataParse(io *spi.ReadBuffer) (BACnetServiceAckInitialize
 	return NewBACnetServiceAckVTData(), nil
 }
 
-func (m BACnetServiceAckVTData) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetServiceAckVTData) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

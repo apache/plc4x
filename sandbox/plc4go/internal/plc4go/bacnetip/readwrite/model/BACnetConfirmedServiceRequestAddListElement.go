@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestAddListElement struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAddListElement interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestAddListElementParse(io *spi.ReadBuffer) (BACne
 	return NewBACnetConfirmedServiceRequestAddListElement(), nil
 }
 
-func (m BACnetConfirmedServiceRequestAddListElement) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestAddListElement) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

@@ -30,7 +30,7 @@ type BACnetConfirmedServiceRequestVTOpen struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestVTOpen interface {
 	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetConfirmedServiceRequestVTOpenParse(io *spi.ReadBuffer) (BACnetConfirm
 	return NewBACnetConfirmedServiceRequestVTOpen(), nil
 }
 
-func (m BACnetConfirmedServiceRequestVTOpen) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetConfirmedServiceRequestVTOpen) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

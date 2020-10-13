@@ -33,7 +33,7 @@ type ConnectionRequestInformationTunnelConnection struct {
 // The corresponding interface
 type IConnectionRequestInformationTunnelConnection interface {
 	IConnectionRequestInformation
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,16 +111,25 @@ func ConnectionRequestInformationTunnelConnectionParse(io *spi.ReadBuffer) (Conn
 	return NewConnectionRequestInformationTunnelConnection(knxLayer), nil
 }
 
-func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Enum field (knxLayer)
 		knxLayer := CastKnxLayer(m.knxLayer)
-		knxLayer.Serialize(io)
+		_knxLayerErr := knxLayer.Serialize(io)
+		if _knxLayerErr != nil {
+			return errors.New("Error serializing 'knxLayer' field " + _knxLayerErr.Error())
+		}
 
 		// Reserved Field (reserved)
-		io.WriteUint8(8, uint8(0x00))
+		{
+			_err := io.WriteUint8(8, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
+		return nil
 	}
-	ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
+	return ConnectionRequestInformationSerialize(io, m.ConnectionRequestInformation, CastIConnectionRequestInformation(m), ser)
 }

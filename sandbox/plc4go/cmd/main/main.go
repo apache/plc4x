@@ -15,13 +15,5 @@
 //
 package main
 
-import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/cmd/main/drivers"
-)
-
 func main() {
-	drivers.BacnetIp()
-	drivers.KnxNetIp()
-	drivers.Modbus()
-	drivers.S7()
 }

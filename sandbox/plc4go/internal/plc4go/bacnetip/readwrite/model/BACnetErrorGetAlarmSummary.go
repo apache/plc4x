@@ -30,7 +30,7 @@ type BACnetErrorGetAlarmSummary struct {
 // The corresponding interface
 type IBACnetErrorGetAlarmSummary interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorGetAlarmSummaryParse(io *spi.ReadBuffer) (BACnetErrorInitializer
 	return NewBACnetErrorGetAlarmSummary(), nil
 }
 
-func (m BACnetErrorGetAlarmSummary) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorGetAlarmSummary) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

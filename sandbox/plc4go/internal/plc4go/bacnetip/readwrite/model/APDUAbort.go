@@ -35,7 +35,7 @@ type APDUAbort struct {
 // The corresponding interface
 type IAPDUAbort interface {
 	IAPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -131,24 +131,39 @@ func APDUAbortParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 	return NewAPDUAbort(server, originalInvokeId, abortReason), nil
 }
 
-func (m APDUAbort) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m APDUAbort) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(3, uint8(0x00))
+		{
+			_err := io.WriteUint8(3, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (server)
 		server := bool(m.server)
-		io.WriteBit((bool)(server))
+		_serverErr := io.WriteBit((bool)(server))
+		if _serverErr != nil {
+			return errors.New("Error serializing 'server' field " + _serverErr.Error())
+		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.originalInvokeId)
-		io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		if _originalInvokeIdErr != nil {
+			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+		}
 
 		// Simple Field (abortReason)
 		abortReason := uint8(m.abortReason)
-		io.WriteUint8(8, (abortReason))
+		_abortReasonErr := io.WriteUint8(8, (abortReason))
+		if _abortReasonErr != nil {
+			return errors.New("Error serializing 'abortReason' field " + _abortReasonErr.Error())
+		}
 
+		return nil
 	}
-	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
+	return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

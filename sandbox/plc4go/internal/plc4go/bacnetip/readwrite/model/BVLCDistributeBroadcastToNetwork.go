@@ -30,7 +30,7 @@ type BVLCDistributeBroadcastToNetwork struct {
 // The corresponding interface
 type IBVLCDistributeBroadcastToNetwork interface {
 	IBVLC
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BVLCDistributeBroadcastToNetworkParse(io *spi.ReadBuffer) (BVLCInitializer,
 	return NewBVLCDistributeBroadcastToNetwork(), nil
 }
 
-func (m BVLCDistributeBroadcastToNetwork) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BVLCDistributeBroadcastToNetwork) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

@@ -30,7 +30,7 @@ type BACnetErrorCreateObject struct {
 // The corresponding interface
 type IBACnetErrorCreateObject interface {
 	IBACnetError
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -82,9 +82,10 @@ func BACnetErrorCreateObjectParse(io *spi.ReadBuffer) (BACnetErrorInitializer, e
 	return NewBACnetErrorCreateObject(), nil
 }
 
-func (m BACnetErrorCreateObject) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m BACnetErrorCreateObject) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
+		return nil
 	}
-	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

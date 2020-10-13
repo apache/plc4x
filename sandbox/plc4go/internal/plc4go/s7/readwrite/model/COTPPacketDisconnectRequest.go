@@ -34,7 +34,7 @@ type COTPPacketDisconnectRequest struct {
 // The corresponding interface
 type ICOTPPacketDisconnectRequest interface {
 	ICOTPPacket
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -115,21 +115,31 @@ func COTPPacketDisconnectRequestParse(io *spi.ReadBuffer) (COTPPacketInitializer
 	return NewCOTPPacketDisconnectRequest(destinationReference, sourceReference, protocolClass), nil
 }
 
-func (m COTPPacketDisconnectRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m COTPPacketDisconnectRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.destinationReference)
-		io.WriteUint16(16, (destinationReference))
+		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+		if _destinationReferenceErr != nil {
+			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
+		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.sourceReference)
-		io.WriteUint16(16, (sourceReference))
+		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
+		if _sourceReferenceErr != nil {
+			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
+		}
 
 		// Enum field (protocolClass)
 		protocolClass := CastCOTPProtocolClass(m.protocolClass)
-		protocolClass.Serialize(io)
+		_protocolClassErr := protocolClass.Serialize(io)
+		if _protocolClassErr != nil {
+			return errors.New("Error serializing 'protocolClass' field " + _protocolClassErr.Error())
+		}
 
+		return nil
 	}
-	COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+	return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

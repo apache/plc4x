@@ -35,7 +35,7 @@ type ConnectionStateRequest struct {
 // The corresponding interface
 type IConnectionStateRequest interface {
 	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -127,20 +127,32 @@ func ConnectionStateRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer
 	return NewConnectionStateRequest(communicationChannelId, hpaiControlEndpoint), nil
 }
 
-func (m ConnectionStateRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ConnectionStateRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.communicationChannelId)
-		io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		if _communicationChannelIdErr != nil {
+			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+		}
 
 		// Reserved Field (reserved)
-		io.WriteUint8(8, uint8(0x00))
+		{
+			_err := io.WriteUint8(8, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (hpaiControlEndpoint)
 		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
-		hpaiControlEndpoint.Serialize(io)
+		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+		if _hpaiControlEndpointErr != nil {
+			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+		}
 
+		return nil
 	}
-	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

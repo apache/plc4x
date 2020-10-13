@@ -35,7 +35,7 @@ type BACnetTag struct {
 type IBACnetTag interface {
 	spi.Message
 	ContextSpecificTag() uint8
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 type BACnetTagInitializer interface {
@@ -180,35 +180,54 @@ func BACnetTagParse(io *spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(typeOrTagNumber, lengthValueType, extTagNumber, extLength), nil
 }
 
-func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func()) {
+func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func() error) error {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.typeOrTagNumber)
-	io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	if _typeOrTagNumberErr != nil {
+		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
 	contextSpecificTag := uint8(i.ContextSpecificTag())
-	io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	if _contextSpecificTagErr != nil {
+		return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.lengthValueType)
-	io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	if _lengthValueTypeErr != nil {
+		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
 	var extTagNumber *uint8 = nil
 	if m.extTagNumber != nil {
 		extTagNumber = m.extTagNumber
-		io.WriteUint8(8, *(extTagNumber))
+		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
+		if _extTagNumberErr != nil {
+			return errors.New("Error serializing 'extTagNumber' field " + _extTagNumberErr.Error())
+		}
 	}
 
 	// Optional Field (extLength) (Can be skipped, if the value is null)
 	var extLength *uint8 = nil
 	if m.extLength != nil {
 		extLength = m.extLength
-		io.WriteUint8(8, *(extLength))
+		_extLengthErr := io.WriteUint8(8, *(extLength))
+		if _extLengthErr != nil {
+			return errors.New("Error serializing 'extLength' field " + _extLengthErr.Error())
+		}
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	childSerialize()
+	_typeSwitchErr := childSerialize()
+	if _typeSwitchErr != nil {
+		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+	}
 
+	return nil
 }

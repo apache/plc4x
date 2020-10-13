@@ -38,7 +38,7 @@ type ModbusTcpADU struct {
 // The corresponding interface
 type IModbusTcpADU interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu IModbusPDU) spi.Message {
@@ -134,25 +134,41 @@ func ModbusTcpADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 	return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
 }
 
-func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
+func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.transactionIdentifier)
-	io.WriteUint16(16, (transactionIdentifier))
+	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
+	if _transactionIdentifierErr != nil {
+		return errors.New("Error serializing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
+	}
 
 	// Const Field (protocolIdentifier)
-	io.WriteUint16(16, 0x0000)
+	_protocolIdentifierErr := io.WriteUint16(16, 0x0000)
+	if _protocolIdentifierErr != nil {
+		return errors.New("Error serializing 'protocolIdentifier' field " + _protocolIdentifierErr.Error())
+	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint16(uint16(m.pdu.LengthInBytes()) + uint16(uint16(1)))
-	io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16(16, (length))
+	if _lengthErr != nil {
+		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
+	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier := uint8(m.unitIdentifier)
-	io.WriteUint8(8, (unitIdentifier))
+	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
+	if _unitIdentifierErr != nil {
+		return errors.New("Error serializing 'unitIdentifier' field " + _unitIdentifierErr.Error())
+	}
 
 	// Simple Field (pdu)
 	pdu := CastIModbusPDU(m.pdu)
-	pdu.Serialize(io)
+	_pduErr := pdu.Serialize(io)
+	if _pduErr != nil {
+		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())
+	}
 
+	return nil
 }

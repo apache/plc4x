@@ -32,7 +32,7 @@ type ModbusPDUReadExceptionStatusResponse struct {
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,13 +101,17 @@ func ModbusPDUReadExceptionStatusResponseParse(io *spi.ReadBuffer) (ModbusPDUIni
 	return NewModbusPDUReadExceptionStatusResponse(value), nil
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (value)
 		value := uint8(m.value)
-		io.WriteUint8(8, (value))
+		_valueErr := io.WriteUint8(8, (value))
+		if _valueErr != nil {
+			return errors.New("Error serializing 'value' field " + _valueErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

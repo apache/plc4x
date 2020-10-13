@@ -33,7 +33,7 @@ type ModbusPDUReadHoldingRegistersRequest struct {
 // The corresponding interface
 type IModbusPDUReadHoldingRegistersRequest interface {
 	IModbusPDU
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,17 +111,24 @@ func ModbusPDUReadHoldingRegistersRequestParse(io *spi.ReadBuffer) (ModbusPDUIni
 	return NewModbusPDUReadHoldingRegistersRequest(startingAddress, quantity), nil
 }
 
-func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.startingAddress)
-		io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		if _startingAddressErr != nil {
+			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
+		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.quantity)
-		io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16(16, (quantity))
+		if _quantityErr != nil {
+			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
+		}
 
+		return nil
 	}
-	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

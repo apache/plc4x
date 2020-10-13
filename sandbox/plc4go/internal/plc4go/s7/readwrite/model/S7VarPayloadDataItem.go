@@ -34,7 +34,7 @@ type S7VarPayloadDataItem struct {
 // The corresponding interface
 type IS7VarPayloadDataItem interface {
 	spi.Message
-	Serialize(io spi.WriteBuffer, lastItem bool)
+	Serialize(io spi.WriteBuffer, lastItem bool) error
 }
 
 func NewS7VarPayloadDataItem(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, data []int8) spi.Message {
@@ -139,24 +139,36 @@ func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, 
 	return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
+func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error {
 
 	// Enum field (returnCode)
 	returnCode := CastDataTransportErrorCode(m.returnCode)
-	returnCode.Serialize(io)
+	_returnCodeErr := returnCode.Serialize(io)
+	if _returnCodeErr != nil {
+		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+	}
 
 	// Enum field (transportSize)
 	transportSize := CastDataTransportSize(m.transportSize)
-	transportSize.Serialize(io)
+	_transportSizeErr := transportSize.Serialize(io)
+	if _transportSizeErr != nil {
+		return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
+	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(len(m.data))) * uint16(uint16(spi.InlineIf(bool(bool((m.transportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
-	io.WriteUint16(16, (dataLength))
+	_dataLengthErr := io.WriteUint16(16, (dataLength))
+	if _dataLengthErr != nil {
+		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Array Field (data)
 	if m.data != nil {
 		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+			_elementErr := io.WriteInt8(8, _element)
+			if _elementErr != nil {
+				return errors.New("Error serializing 'data' field " + _elementErr.Error())
+			}
 		}
 	}
 
@@ -165,8 +177,12 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) {
 		_timesPadding := uint8(spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.data)))%uint8(uint8(2)))))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
-			io.WriteUint8(8, (_paddingValue))
+			_paddingErr := io.WriteUint8(8, (_paddingValue))
+			if _paddingErr != nil {
+				return errors.New("Error serializing 'padding' field " + _paddingErr.Error())
+			}
 		}
 	}
 
+	return nil
 }

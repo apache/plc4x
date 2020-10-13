@@ -35,7 +35,7 @@ type S7ParameterSetupCommunication struct {
 // The corresponding interface
 type IS7ParameterSetupCommunication interface {
 	IS7Parameter
-	Serialize(io spi.WriteBuffer)
+	Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -135,24 +135,39 @@ func S7ParameterSetupCommunicationParse(io *spi.ReadBuffer) (S7ParameterInitiali
 	return NewS7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduLength), nil
 }
 
-func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) {
-	ser := func() {
+func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) error {
+	ser := func() error {
 
 		// Reserved Field (reserved)
-		io.WriteUint8(8, uint8(0x00))
+		{
+			_err := io.WriteUint8(8, uint8(0x00))
+			if _err != nil {
+				return errors.New("Error serializing 'reserved' field " + _err.Error())
+			}
+		}
 
 		// Simple Field (maxAmqCaller)
 		maxAmqCaller := uint16(m.maxAmqCaller)
-		io.WriteUint16(16, (maxAmqCaller))
+		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
+		if _maxAmqCallerErr != nil {
+			return errors.New("Error serializing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
+		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.maxAmqCallee)
-		io.WriteUint16(16, (maxAmqCallee))
+		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
+		if _maxAmqCalleeErr != nil {
+			return errors.New("Error serializing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
+		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.pduLength)
-		io.WriteUint16(16, (pduLength))
+		_pduLengthErr := io.WriteUint16(16, (pduLength))
+		if _pduLengthErr != nil {
+			return errors.New("Error serializing 'pduLength' field " + _pduLengthErr.Error())
+		}
 
+		return nil
 	}
-	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+	return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }
