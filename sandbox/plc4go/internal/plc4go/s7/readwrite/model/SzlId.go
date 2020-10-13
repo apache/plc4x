@@ -79,7 +79,7 @@ func (m SzlId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlIdParse(io spi.ReadBuffer) (spi.Message, error) {
+func SzlIdParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Enum field (typeClass)
 	typeClass, _typeClassErr := SzlModuleTypeClassParse(io)

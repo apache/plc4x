@@ -93,7 +93,7 @@ func (m ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadCoilsRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)

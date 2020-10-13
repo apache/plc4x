@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceACKRemovedAuthenticate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKRemovedAuthenticateParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceACKRemovedAuthenticate(), nil

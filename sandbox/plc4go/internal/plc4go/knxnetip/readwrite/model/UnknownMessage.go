@@ -83,21 +83,18 @@ func (m UnknownMessage) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func UnknownMessageParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func UnknownMessageParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
 	// Array field (unknownData)
-	var unknownData []int8
 	// Count array
-	{
-		unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
-		for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
+	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
+	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
 
-			_unknownDataVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
-			}
-			unknownData = append(unknownData, _unknownDataVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
 		}
+		unknownData[curItem] = _item
 	}
 
 	// Create the instance

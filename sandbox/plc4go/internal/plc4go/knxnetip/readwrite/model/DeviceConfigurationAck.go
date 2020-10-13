@@ -82,7 +82,7 @@ func (m DeviceConfigurationAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationAckParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DeviceConfigurationAckParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (deviceConfigurationAckDataBlock)
 	_deviceConfigurationAckDataBlockMessage, _err := DeviceConfigurationAckDataBlockParse(io)

@@ -82,7 +82,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(io spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
 	// Simple Field (knxAddress)
 	_knxAddressMessage, _err := KNXAddressParse(io)

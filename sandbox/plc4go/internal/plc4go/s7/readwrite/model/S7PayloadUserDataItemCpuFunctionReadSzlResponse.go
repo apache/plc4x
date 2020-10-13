@@ -100,7 +100,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
 
 	// Const Field (szlItemLength)
 	szlItemLength, _szlItemLengthErr := io.ReadUint16(16)
@@ -118,23 +118,20 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io spi.ReadBuffer) (S7
 	}
 
 	// Array field (items)
-	var items []ISzlDataTreeItem
 	// Count array
-	{
-		items := make([]ISzlDataTreeItem, szlItemCount)
-		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
+	items := make([]ISzlDataTreeItem, szlItemCount)
+	for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 
-			_message, _err := SzlDataTreeItemParse(io)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'items' field " + _err.Error())
-			}
-			var _item ISzlDataTreeItem
-			_item, _ok := _message.(ISzlDataTreeItem)
-			if !_ok {
-				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to SzlDataTreeItem")
-			}
-			items = append(items, _item)
+		_message, _err := SzlDataTreeItemParse(io)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
+		var _item ISzlDataTreeItem
+		_item, _ok := _message.(ISzlDataTreeItem)
+		if !_ok {
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to SzlDataTreeItem")
+		}
+		items[curItem] = _item
 	}
 
 	// Create the instance

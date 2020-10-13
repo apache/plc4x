@@ -87,7 +87,7 @@ func (m COTPPacketTpduError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketTpduErrorParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
 
 	// Simple Field (destinationReference)
 	destinationReference, _destinationReferenceErr := io.ReadUint16(16)

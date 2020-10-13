@@ -50,7 +50,7 @@ func (m HostProtocolCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HostProtocolCodeParse(io spi.ReadBuffer) (HostProtocolCode, error) {
+func HostProtocolCodeParse(io *spi.ReadBuffer) (HostProtocolCode, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

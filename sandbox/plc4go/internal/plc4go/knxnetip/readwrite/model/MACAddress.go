@@ -73,21 +73,18 @@ func (m MACAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MACAddressParse(io spi.ReadBuffer) (spi.Message, error) {
+func MACAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Array field (addr)
-	var addr []int8
 	// Count array
-	{
-		addr := make([]int8, uint16(6))
-		for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
+	addr := make([]int8, uint16(6))
+	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
 
-			_addrVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'addr' field " + _err.Error())
-			}
-			addr = append(addr, _addrVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'addr' field " + _err.Error())
 		}
+		addr[curItem] = _item
 	}
 
 	// Create the instance

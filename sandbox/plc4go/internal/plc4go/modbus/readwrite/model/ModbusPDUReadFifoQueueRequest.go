@@ -89,7 +89,7 @@ func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadFifoQueueRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (fifoPointerAddress)
 	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)

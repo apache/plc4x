@@ -94,7 +94,7 @@ func (m S7PayloadUserDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemParse(io spi.ReadBuffer, cpuFunctionType uint8) (spi.Message, error) {
+func S7PayloadUserDataItemParse(io *spi.ReadBuffer, cpuFunctionType uint8) (spi.Message, error) {
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)

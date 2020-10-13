@@ -87,7 +87,7 @@ func (m BVLC) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCParse(io spi.ReadBuffer) (spi.Message, error) {
+func BVLCParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (bacnetType)
 	bacnetType, _bacnetTypeErr := io.ReadUint8(8)

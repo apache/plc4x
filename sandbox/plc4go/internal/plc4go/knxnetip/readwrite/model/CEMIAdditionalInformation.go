@@ -77,7 +77,7 @@ func (m CEMIAdditionalInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationParse(io spi.ReadBuffer) (spi.Message, error) {
+func CEMIAdditionalInformationParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)

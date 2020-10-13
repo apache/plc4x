@@ -108,7 +108,7 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
 	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
@@ -126,18 +126,15 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfi
 	}
 
 	// Array field (deviceInstanceRangeLowLimit)
-	var deviceInstanceRangeLowLimit []int8
 	// Count array
-	{
-		deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
-		for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
+	deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
+	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
 
-			_deviceInstanceRangeLowLimitVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimit' field " + _err.Error())
-			}
-			deviceInstanceRangeLowLimit = append(deviceInstanceRangeLowLimit, _deviceInstanceRangeLowLimitVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimit' field " + _err.Error())
 		}
+		deviceInstanceRangeLowLimit[curItem] = _item
 	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
@@ -156,18 +153,15 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfi
 	}
 
 	// Array field (deviceInstanceRangeHighLimit)
-	var deviceInstanceRangeHighLimit []int8
 	// Count array
-	{
-		deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
-		for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
+	deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
+	for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
 
-			_deviceInstanceRangeHighLimitVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimit' field " + _err.Error())
-			}
-			deviceInstanceRangeHighLimit = append(deviceInstanceRangeHighLimit, _deviceInstanceRangeHighLimitVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimit' field " + _err.Error())
 		}
+		deviceInstanceRangeHighLimit[curItem] = _item
 	}
 
 	// Create the instance

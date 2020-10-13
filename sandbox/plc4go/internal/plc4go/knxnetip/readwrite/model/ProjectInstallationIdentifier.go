@@ -75,7 +75,7 @@ func (m ProjectInstallationIdentifier) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ProjectInstallationIdentifierParse(io spi.ReadBuffer) (spi.Message, error) {
+func ProjectInstallationIdentifierParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (projectNumber)
 	projectNumber, _projectNumberErr := io.ReadUint8(8)

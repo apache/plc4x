@@ -76,7 +76,7 @@ func (m CEMIRawReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIRawReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIRawReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Create the instance
 	return NewCEMIRawReq(), nil

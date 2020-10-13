@@ -81,7 +81,7 @@ func (m KnxNetIpCore) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetIpCoreParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetIpCoreParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)

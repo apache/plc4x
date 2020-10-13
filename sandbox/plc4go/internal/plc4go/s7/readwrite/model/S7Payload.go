@@ -79,7 +79,7 @@ func (m S7Payload) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadParse(io spi.ReadBuffer, messageType uint8, parameter IS7Parameter) (spi.Message, error) {
+func S7PayloadParse(io *spi.ReadBuffer, messageType uint8, parameter IS7Parameter) (spi.Message, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer S7PayloadInitializer

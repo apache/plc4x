@@ -88,7 +88,7 @@ func (m CEMIFramePollingData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIFramePollingDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFramePollingDataParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 
 	// Create the instance
 	return NewCEMIFramePollingData(), nil

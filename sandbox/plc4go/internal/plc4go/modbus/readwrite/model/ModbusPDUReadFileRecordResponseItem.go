@@ -80,7 +80,7 @@ func (m ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, error) {
+func ModbusPDUReadFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength, _dataLengthErr := io.ReadUint8(8)
@@ -95,16 +95,16 @@ func ModbusPDUReadFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, e
 	}
 
 	// Array field (data)
-	var data []int8
 	// Length array
+	data := make([]int8, 0)
 	_dataLength := uint16(dataLength) - uint16(uint16(1))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_dataVal, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())
 		}
-		data = append(data, _dataVal)
+		data = append(data, _item)
 	}
 
 	// Create the instance

@@ -89,7 +89,7 @@ func (m ModbusPDUError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUErrorParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUErrorParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (exceptionCode)
 	exceptionCode, _exceptionCodeErr := io.ReadUint8(8)

@@ -81,7 +81,7 @@ func (m COTPParameterChecksum) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(io spi.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterChecksumParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
 
 	// Simple Field (crc)
 	crc, _crcErr := io.ReadUint8(8)

@@ -76,7 +76,7 @@ func (m CEMIPollDataCon) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIPollDataConParse(io spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIPollDataConParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Create the instance
 	return NewCEMIPollDataCon(), nil

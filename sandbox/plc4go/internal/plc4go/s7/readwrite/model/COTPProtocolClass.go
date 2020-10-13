@@ -53,7 +53,7 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPProtocolClassParse(io spi.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParse(io *spi.ReadBuffer) (COTPProtocolClass, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

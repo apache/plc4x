@@ -76,7 +76,7 @@ func (m RoutingIndication) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func RoutingIndicationParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func RoutingIndicationParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Create the instance
 	return NewRoutingIndication(), nil

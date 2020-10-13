@@ -90,26 +90,23 @@ func (m S7PayloadWriteVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadWriteVarResponseParse(io spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadWriteVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
 	// Array field (items)
-	var items []IS7VarPayloadStatusItem
 	// Count array
-	{
-		items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).numItems)
-		for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).numItems); curItem++ {
+	items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).numItems)
+	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).numItems); curItem++ {
 
-			_message, _err := S7VarPayloadStatusItemParse(io)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'items' field " + _err.Error())
-			}
-			var _item IS7VarPayloadStatusItem
-			_item, _ok := _message.(IS7VarPayloadStatusItem)
-			if !_ok {
-				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadStatusItem")
-			}
-			items = append(items, _item)
+		_message, _err := S7VarPayloadStatusItemParse(io)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
+		var _item IS7VarPayloadStatusItem
+		_item, _ok := _message.(IS7VarPayloadStatusItem)
+		if !_ok {
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadStatusItem")
+		}
+		items[curItem] = _item
 	}
 
 	// Create the instance

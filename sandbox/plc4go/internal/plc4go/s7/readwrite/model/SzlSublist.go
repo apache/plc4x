@@ -67,7 +67,7 @@ func (m SzlSublist) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlSublistParse(io spi.ReadBuffer) (SzlSublist, error) {
+func SzlSublistParse(io *spi.ReadBuffer) (SzlSublist, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

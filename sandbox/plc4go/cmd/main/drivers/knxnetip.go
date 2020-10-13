@@ -27,7 +27,7 @@ func KnxNetIp() {
 		// Output an error ...
 	}
 	rb := spi.ReadBufferNew(request)
-	adu, err := model.KNXNetIPMessageParse(*rb)
+	adu, err := model.KNXNetIPMessageParse(rb)
 	if err != nil {
 		// Output an error ...
 	}

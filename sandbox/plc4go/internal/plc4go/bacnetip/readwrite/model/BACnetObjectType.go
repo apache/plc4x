@@ -107,7 +107,7 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(io spi.ReadBuffer) (BACnetObjectType, error) {
+func BACnetObjectTypeParse(io *spi.ReadBuffer) (BACnetObjectType, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

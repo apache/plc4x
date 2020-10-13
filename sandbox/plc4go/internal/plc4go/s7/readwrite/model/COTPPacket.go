@@ -95,7 +95,7 @@ func (m COTPPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
+func COTPPacketParse(io *spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 	var startPos = io.GetPos()
 	var curPos uint16
 
@@ -134,8 +134,8 @@ func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 
 	// Array field (parameters)
 	curPos = io.GetPos() - startPos
-	var parameters []ICOTPParameter
 	// Length array
+	parameters := make([]ICOTPParameter, 0)
 	_parametersLength := uint16(uint16(uint16(headerLength)+uint16(uint16(1)))) - uint16(curPos)
 	_parametersEndPos := io.GetPos() + uint16(_parametersLength)
 	for io.GetPos() < _parametersEndPos {

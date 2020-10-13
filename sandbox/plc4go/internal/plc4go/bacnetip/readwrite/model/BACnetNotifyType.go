@@ -51,7 +51,7 @@ func (m BACnetNotifyType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNotifyTypeParse(io spi.ReadBuffer) (BACnetNotifyType, error) {
+func BACnetNotifyTypeParse(io *spi.ReadBuffer) (BACnetNotifyType, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

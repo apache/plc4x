@@ -88,7 +88,7 @@ func (m ModbusSerialADU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusSerialADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Simple Field (transactionId)
 	transactionId, _transactionIdErr := io.ReadUint16(16)

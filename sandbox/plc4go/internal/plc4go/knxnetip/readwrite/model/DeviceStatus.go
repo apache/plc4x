@@ -75,7 +75,7 @@ func (m DeviceStatus) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceStatusParse(io spi.ReadBuffer) (spi.Message, error) {
+func DeviceStatusParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

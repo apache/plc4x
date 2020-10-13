@@ -122,7 +122,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -161,18 +161,15 @@ func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirm
 	}
 
 	// Array field (maximumApduLengthAccepted)
-	var maximumApduLengthAccepted []int8
 	// Count array
-	{
-		maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
-		for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
+	maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
+	for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
 
-			_maximumApduLengthAcceptedVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'maximumApduLengthAccepted' field " + _err.Error())
-			}
-			maximumApduLengthAccepted = append(maximumApduLengthAccepted, _maximumApduLengthAcceptedVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'maximumApduLengthAccepted' field " + _err.Error())
 		}
+		maximumApduLengthAccepted[curItem] = _item
 	}
 
 	// Const Field (segmentationSupportedHeader)

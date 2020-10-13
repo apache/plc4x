@@ -90,26 +90,23 @@ func (m S7PayloadReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(io spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadReadVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
 	// Array field (items)
-	var items []IS7VarPayloadDataItem
 	// Count array
-	{
-		items := make([]IS7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).numItems)
-		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).numItems); curItem++ {
-			lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).numItems-1)
-			_message, _err := S7VarPayloadDataItemParse(io, lastItem)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'items' field " + _err.Error())
-			}
-			var _item IS7VarPayloadDataItem
-			_item, _ok := _message.(IS7VarPayloadDataItem)
-			if !_ok {
-				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadDataItem")
-			}
-			items = append(items, _item)
+	items := make([]IS7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).numItems)
+	for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).numItems); curItem++ {
+		lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).numItems-1)
+		_message, _err := S7VarPayloadDataItemParse(io, lastItem)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
+		var _item IS7VarPayloadDataItem
+		_item, _ok := _message.(IS7VarPayloadDataItem)
+		if !_ok {
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadDataItem")
+		}
+		items[curItem] = _item
 	}
 
 	// Create the instance

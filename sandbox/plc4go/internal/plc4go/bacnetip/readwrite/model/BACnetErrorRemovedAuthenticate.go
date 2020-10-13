@@ -76,7 +76,7 @@ func (m BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorRemovedAuthenticateParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorRemovedAuthenticate(), nil

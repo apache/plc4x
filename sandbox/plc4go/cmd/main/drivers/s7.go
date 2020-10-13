@@ -27,7 +27,7 @@ func S7() {
 		// Output an error ...
 	}
 	rb := spi.ReadBufferNew(request)
-	adu, err := model.TPKTPacketParse(*rb)
+	adu, err := model.TPKTPacketParse(rb)
 	if err != nil {
 		// Output an error ...
 	}

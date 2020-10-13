@@ -51,7 +51,7 @@ func (m KnxLayer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxLayerParse(io spi.ReadBuffer) (KnxLayer, error) {
+func KnxLayerParse(io *spi.ReadBuffer) (KnxLayer, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

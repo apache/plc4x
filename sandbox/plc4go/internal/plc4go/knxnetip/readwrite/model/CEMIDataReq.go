@@ -94,7 +94,7 @@ func (m CEMIDataReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIDataReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIDataReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Simple Field (additionalInformationLength)
 	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -103,8 +103,8 @@ func CEMIDataReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 	}
 
 	// Array field (additionalInformation)
-	var additionalInformation []ICEMIAdditionalInformation
 	// Length array
+	additionalInformation := make([]ICEMIAdditionalInformation, 0)
 	_additionalInformationLength := additionalInformationLength
 	_additionalInformationEndPos := io.GetPos() + uint16(_additionalInformationLength)
 	for io.GetPos() < _additionalInformationEndPos {

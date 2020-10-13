@@ -52,7 +52,7 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(io spi.ReadBuffer) (SzlModuleTypeClass, error) {
+func SzlModuleTypeClassParse(io *spi.ReadBuffer) (SzlModuleTypeClass, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

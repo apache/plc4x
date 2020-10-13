@@ -90,7 +90,7 @@ func (m ConnectionRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (hpaiDiscoveryEndpoint)
 	_hpaiDiscoveryEndpointMessage, _err := HPAIDiscoveryEndpointParse(io)

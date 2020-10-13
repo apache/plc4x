@@ -84,7 +84,7 @@ func (m ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadExceptionStatusRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Create the instance
 	return NewModbusPDUReadExceptionStatusRequest(), nil

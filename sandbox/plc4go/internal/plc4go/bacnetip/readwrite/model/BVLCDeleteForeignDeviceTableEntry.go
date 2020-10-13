@@ -76,7 +76,7 @@ func (m BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCDeleteForeignDeviceTableEntryParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCDeleteForeignDeviceTableEntryParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCDeleteForeignDeviceTableEntry(), nil

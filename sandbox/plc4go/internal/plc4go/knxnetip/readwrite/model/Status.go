@@ -60,7 +60,7 @@ func (m Status) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func StatusParse(io spi.ReadBuffer) (Status, error) {
+func StatusParse(io *spi.ReadBuffer) (Status, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

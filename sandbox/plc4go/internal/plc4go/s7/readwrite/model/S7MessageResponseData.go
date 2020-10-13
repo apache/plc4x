@@ -88,7 +88,7 @@ func (m S7MessageResponseData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageResponseDataParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
+func S7MessageResponseDataParse(io *spi.ReadBuffer) (S7MessageInitializer, error) {
 
 	// Simple Field (errorClass)
 	errorClass, _errorClassErr := io.ReadUint8(8)

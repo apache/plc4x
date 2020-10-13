@@ -83,7 +83,7 @@ func (m HPAIDataEndpoint) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func HPAIDataEndpointParse(io spi.ReadBuffer) (spi.Message, error) {
+func HPAIDataEndpointParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _structureLengthErr := io.ReadUint8(8)

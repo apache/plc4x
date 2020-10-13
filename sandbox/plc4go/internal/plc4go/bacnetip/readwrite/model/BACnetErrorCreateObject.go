@@ -76,7 +76,7 @@ func (m BACnetErrorCreateObject) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorCreateObjectParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorCreateObjectParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorCreateObject(), nil

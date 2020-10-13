@@ -52,7 +52,7 @@ func (m TPCI) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TPCIParse(io spi.ReadBuffer) (TPCI, error) {
+func TPCIParse(io *spi.ReadBuffer) (TPCI, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

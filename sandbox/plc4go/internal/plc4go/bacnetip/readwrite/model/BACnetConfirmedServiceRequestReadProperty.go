@@ -106,7 +106,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReadPropertyParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestReadPropertyParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Const Field (objectIdentifierHeader)
 	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -145,18 +145,15 @@ func BACnetConfirmedServiceRequestReadPropertyParse(io spi.ReadBuffer) (BACnetCo
 	}
 
 	// Array field (propertyIdentifier)
-	var propertyIdentifier []int8
 	// Count array
-	{
-		propertyIdentifier := make([]int8, propertyIdentifierLength)
-		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+	propertyIdentifier := make([]int8, propertyIdentifierLength)
+	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
 
-			_propertyIdentifierVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
-			}
-			propertyIdentifier = append(propertyIdentifier, _propertyIdentifierVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
 		}
+		propertyIdentifier[curItem] = _item
 	}
 
 	// Create the instance

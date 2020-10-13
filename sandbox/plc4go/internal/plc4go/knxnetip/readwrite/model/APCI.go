@@ -64,7 +64,7 @@ func (m APCI) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APCIParse(io spi.ReadBuffer) (APCI, error) {
+func APCIParse(io *spi.ReadBuffer) (APCI, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

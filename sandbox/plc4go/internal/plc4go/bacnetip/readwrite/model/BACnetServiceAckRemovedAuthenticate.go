@@ -76,7 +76,7 @@ func (m BACnetServiceAckRemovedAuthenticate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckRemovedAuthenticateParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
 	// Create the instance
 	return NewBACnetServiceAckRemovedAuthenticate(), nil

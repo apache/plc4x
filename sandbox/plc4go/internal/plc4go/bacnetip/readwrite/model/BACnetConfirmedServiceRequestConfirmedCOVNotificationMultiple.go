@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthInB
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(), nil

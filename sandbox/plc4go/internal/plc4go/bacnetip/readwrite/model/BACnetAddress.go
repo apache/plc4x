@@ -77,21 +77,18 @@ func (m BACnetAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetAddressParse(io spi.ReadBuffer) (spi.Message, error) {
+func BACnetAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Array field (address)
-	var address []uint8
 	// Count array
-	{
-		address := make([]uint8, uint16(4))
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+	address := make([]uint8, uint16(4))
+	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
-			_addressVal, _err := io.ReadUint8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'address' field " + _err.Error())
-			}
-			address = append(address, _addressVal)
+		_item, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'address' field " + _err.Error())
 		}
+		address[curItem] = _item
 	}
 
 	// Simple Field (port)

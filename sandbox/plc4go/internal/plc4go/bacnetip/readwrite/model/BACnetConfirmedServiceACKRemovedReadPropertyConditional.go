@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceACKRemovedReadPropertyConditional) LengthInBytes()
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKRemovedReadPropertyConditionalParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceACKRemovedReadPropertyConditional(), nil

@@ -77,7 +77,7 @@ func (m ServiceId) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ServiceIdParse(io spi.ReadBuffer) (spi.Message, error) {
+func ServiceIdParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType, _serviceTypeErr := io.ReadUint8(8)

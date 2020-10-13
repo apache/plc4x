@@ -113,7 +113,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWhoHasParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (deviceInstanceLowLimitHeader)
 	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)
@@ -167,16 +167,16 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconf
 	}
 
 	// Array field (objectName)
-	var objectName []int8
 	// Length array
+	objectName := make([]int8, 0)
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
 	_objectNameEndPos := io.GetPos() + uint16(_objectNameLength)
 	for io.GetPos() < _objectNameEndPos {
-		_objectNameVal, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'objectName' field " + _err.Error())
 		}
-		objectName = append(objectName, _objectNameVal)
+		objectName = append(objectName, _item)
 	}
 
 	// Create the instance

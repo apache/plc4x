@@ -76,7 +76,7 @@ func (m BACnetErrorAtomicWriteFile) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorAtomicWriteFileParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorAtomicWriteFile(), nil

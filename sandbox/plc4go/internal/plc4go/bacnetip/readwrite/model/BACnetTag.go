@@ -97,7 +97,7 @@ func (m BACnetTag) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
+func BACnetTagParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)

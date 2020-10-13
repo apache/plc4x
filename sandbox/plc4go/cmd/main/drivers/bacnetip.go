@@ -27,7 +27,7 @@ func BacnetIp() {
 		// Output an error ...
 	}
 	rb := spi.ReadBufferNew(request)
-	adu, err := model.BVLCParse(*rb)
+	adu, err := model.BVLCParse(rb)
 	if err != nil {
 		// Output an error ...
 	}

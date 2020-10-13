@@ -76,7 +76,7 @@ func (m BVLCSecureBVLL) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCSecureBVLLParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCSecureBVLLParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCSecureBVLL(), nil

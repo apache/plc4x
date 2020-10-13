@@ -76,7 +76,7 @@ func (m BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetEnrollmentSummaryParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorGetEnrollmentSummaryParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorGetEnrollmentSummary(), nil

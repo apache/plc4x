@@ -76,7 +76,7 @@ func (m BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCReadForeignDeviceTableAckParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCReadForeignDeviceTableAckParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCReadForeignDeviceTableAck(), nil

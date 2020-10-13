@@ -102,7 +102,7 @@ func (m ModbusPDUWriteMultipleHoldingRegistersRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (startingAddress)
 	startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -123,18 +123,15 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (Modb
 	}
 
 	// Array field (value)
-	var value []int8
 	// Count array
-	{
-		value := make([]int8, byteCount)
-		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
+	value := make([]int8, byteCount)
+	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			_valueVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'value' field " + _err.Error())
-			}
-			value = append(value, _valueVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'value' field " + _err.Error())
 		}
+		value[curItem] = _item
 	}
 
 	// Create the instance

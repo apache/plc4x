@@ -92,21 +92,18 @@ func (m BVLCForwardedNPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
+func BVLCForwardedNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
 
 	// Array field (ip)
-	var ip []uint8
 	// Count array
-	{
-		ip := make([]uint8, uint16(4))
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+	ip := make([]uint8, uint16(4))
+	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
-			_ipVal, _err := io.ReadUint8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'ip' field " + _err.Error())
-			}
-			ip = append(ip, _ipVal)
+		_item, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'ip' field " + _err.Error())
 		}
+		ip[curItem] = _item
 	}
 
 	// Simple Field (port)

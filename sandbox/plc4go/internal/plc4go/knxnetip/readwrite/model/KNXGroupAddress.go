@@ -74,7 +74,7 @@ func (m KNXGroupAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KNXGroupAddressParse(io spi.ReadBuffer, numLevels uint8) (spi.Message, error) {
+func KNXGroupAddressParse(io *spi.ReadBuffer, numLevels uint8) (spi.Message, error) {
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer KNXGroupAddressInitializer

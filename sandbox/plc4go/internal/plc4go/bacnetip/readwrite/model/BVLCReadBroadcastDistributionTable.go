@@ -76,7 +76,7 @@ func (m BVLCReadBroadcastDistributionTable) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCReadBroadcastDistributionTableParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCReadBroadcastDistributionTableParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCReadBroadcastDistributionTable(), nil

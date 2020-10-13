@@ -85,7 +85,7 @@ func (m ConnectionRequestInformationTunnelConnection) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationTunnelConnectionParse(io spi.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
+func ConnectionRequestInformationTunnelConnectionParse(io *spi.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
 
 	// Enum field (knxLayer)
 	knxLayer, _knxLayerErr := KnxLayerParse(io)

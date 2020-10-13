@@ -106,7 +106,7 @@ func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUGetComEventLogResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
@@ -133,18 +133,15 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 	}
 
 	// Array field (events)
-	var events []int8
 	// Count array
-	{
-		events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
-		for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
+	events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
+	for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
 
-			_eventsVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'events' field " + _err.Error())
-			}
-			events = append(events, _eventsVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'events' field " + _err.Error())
 		}
+		events[curItem] = _item
 	}
 
 	// Create the instance

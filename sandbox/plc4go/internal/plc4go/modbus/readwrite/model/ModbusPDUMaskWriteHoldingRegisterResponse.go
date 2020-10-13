@@ -97,7 +97,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (referenceAddress)
 	referenceAddress, _referenceAddressErr := io.ReadUint16(16)

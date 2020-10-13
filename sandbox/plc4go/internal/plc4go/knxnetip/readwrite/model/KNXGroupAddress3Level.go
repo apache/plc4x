@@ -89,7 +89,7 @@ func (m KNXGroupAddress3Level) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KNXGroupAddress3LevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
+func KNXGroupAddress3LevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8(5)

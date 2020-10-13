@@ -89,7 +89,7 @@ func (m SzlDataTreeItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
+func SzlDataTreeItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (itemIndex)
 	itemIndex, _itemIndexErr := io.ReadUint16(16)
@@ -98,18 +98,15 @@ func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Array field (mlfb)
-	var mlfb []int8
 	// Count array
-	{
-		mlfb := make([]int8, uint16(20))
-		for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
+	mlfb := make([]int8, uint16(20))
+	for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
 
-			_mlfbVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'mlfb' field " + _err.Error())
-			}
-			mlfb = append(mlfb, _mlfbVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'mlfb' field " + _err.Error())
 		}
+		mlfb[curItem] = _item
 	}
 
 	// Simple Field (moduleTypeId)

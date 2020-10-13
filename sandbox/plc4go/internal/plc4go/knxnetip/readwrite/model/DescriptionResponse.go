@@ -86,7 +86,7 @@ func (m DescriptionResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DescriptionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (dibDeviceInfo)
 	_dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)

@@ -81,7 +81,7 @@ func (m KNXGroupAddressFreeLevel) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KNXGroupAddressFreeLevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
+func KNXGroupAddressFreeLevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
 	// Simple Field (subGroup)
 	subGroup, _subGroupErr := io.ReadUint16(16)

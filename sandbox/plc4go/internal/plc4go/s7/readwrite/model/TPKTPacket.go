@@ -86,7 +86,7 @@ func (m TPKTPacket) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TPKTPacketParse(io spi.ReadBuffer) (spi.Message, error) {
+func TPKTPacketParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (protocolId)
 	protocolId, _protocolIdErr := io.ReadUint8(8)
