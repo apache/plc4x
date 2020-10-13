@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type CEMIPriority uint8
 
+type ICEMIPriority interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	CEMIPriority_SYSTEM CEMIPriority = 0x0
 	CEMIPriority_NORMAL CEMIPriority = 0x1
@@ -37,6 +42,14 @@ func CastCEMIPriority(structType interface{}) CEMIPriority {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m CEMIPriority) LengthInBits() uint16 {
+	return 2
+}
+
+func (m CEMIPriority) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func CEMIPriorityParse(io spi.ReadBuffer) (CEMIPriority, error) {

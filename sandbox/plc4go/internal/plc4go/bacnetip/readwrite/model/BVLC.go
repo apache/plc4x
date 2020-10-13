@@ -90,16 +90,25 @@ func (m BVLC) LengthInBytes() uint16 {
 func BVLCParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (bacnetType)
-	var bacnetType uint8 = io.ReadUint8(8)
+	bacnetType, _bacnetTypeErr := io.ReadUint8(8)
+	if _bacnetTypeErr != nil {
+		return nil, errors.New("Error parsing 'bacnetType' field " + _bacnetTypeErr.Error())
+	}
 	if bacnetType != BVLC_BACNETTYPE {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BVLC_BACNETTYPE)) + " but got " + strconv.Itoa(int(bacnetType)))
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	var bvlcFunction uint8 = io.ReadUint8(8)
+	bvlcFunction, _bvlcFunctionErr := io.ReadUint8(8)
+	if _bvlcFunctionErr != nil {
+		return nil, errors.New("Error parsing 'bvlcFunction' field " + _bvlcFunctionErr.Error())
+	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var bvlcLength uint16 = io.ReadUint16(16)
+	bvlcLength, _bvlcLengthErr := io.ReadUint16(16)
+	if _bvlcLengthErr != nil {
+		return nil, errors.New("Error parsing 'bvlcLength' field " + _bvlcLengthErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer BVLCInitializer

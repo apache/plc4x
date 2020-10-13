@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type DataTransportErrorCode uint8
 
+type IDataTransportErrorCode interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	DataTransportErrorCode_RESERVED                DataTransportErrorCode = 0x00
 	DataTransportErrorCode_OK                      DataTransportErrorCode = 0xFF
@@ -39,6 +44,14 @@ func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m DataTransportErrorCode) LengthInBits() uint16 {
+	return 8
+}
+
+func (m DataTransportErrorCode) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func DataTransportErrorCodeParse(io spi.ReadBuffer) (DataTransportErrorCode, error) {

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -96,7 +97,10 @@ func (m ModbusPDUReadInputRegistersResponse) LengthInBytes() uint16 {
 func ModbusPDUReadInputRegistersResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var byteCount uint8 = io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8(8)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Array field (value)
 	var value []int8
@@ -105,7 +109,11 @@ func ModbusPDUReadInputRegistersResponseParse(io spi.ReadBuffer) (ModbusPDUIniti
 		value := make([]int8, byteCount)
 		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			value = append(value, io.ReadInt8(8))
+			_valueVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			}
+			value = append(value, _valueVal)
 		}
 	}
 

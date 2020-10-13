@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -93,7 +94,10 @@ func (m BACnetTagApplicationBitString) LengthInBytes() uint16 {
 func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
 	// Simple Field (unusedBits)
-	var unusedBits uint8 = io.ReadUint8(8)
+	unusedBits, _unusedBitsErr := io.ReadUint8(8)
+	if _unusedBitsErr != nil {
+		return nil, errors.New("Error parsing 'unusedBits' field " + _unusedBitsErr.Error())
+	}
 
 	// Array field (data)
 	var data []int8
@@ -101,7 +105,11 @@ func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8
 	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(uint16(uint16(extLength)-uint16(uint16(1)))), uint16(uint16(uint16(lengthValueType)-uint16(uint16(1)))))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		data = append(data, io.ReadInt8(8))
+		_dataVal, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+		}
+		data = append(data, _dataVal)
 	}
 
 	// Create the instance

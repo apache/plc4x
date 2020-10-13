@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,10 @@ func (m SzlDataTreeItem) LengthInBytes() uint16 {
 func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (itemIndex)
-	var itemIndex uint16 = io.ReadUint16(16)
+	itemIndex, _itemIndexErr := io.ReadUint16(16)
+	if _itemIndexErr != nil {
+		return nil, errors.New("Error parsing 'itemIndex' field " + _itemIndexErr.Error())
+	}
 
 	// Array field (mlfb)
 	var mlfb []int8
@@ -100,18 +104,31 @@ func SzlDataTreeItemParse(io spi.ReadBuffer) (spi.Message, error) {
 		mlfb := make([]int8, uint16(20))
 		for curItem := uint16(0); curItem < uint16(uint16(20)); curItem++ {
 
-			mlfb = append(mlfb, io.ReadInt8(8))
+			_mlfbVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'mlfb' field " + _err.Error())
+			}
+			mlfb = append(mlfb, _mlfbVal)
 		}
 	}
 
 	// Simple Field (moduleTypeId)
-	var moduleTypeId uint16 = io.ReadUint16(16)
+	moduleTypeId, _moduleTypeIdErr := io.ReadUint16(16)
+	if _moduleTypeIdErr != nil {
+		return nil, errors.New("Error parsing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
+	}
 
 	// Simple Field (ausbg)
-	var ausbg uint16 = io.ReadUint16(16)
+	ausbg, _ausbgErr := io.ReadUint16(16)
+	if _ausbgErr != nil {
+		return nil, errors.New("Error parsing 'ausbg' field " + _ausbgErr.Error())
+	}
 
 	// Simple Field (ausbe)
-	var ausbe uint16 = io.ReadUint16(16)
+	ausbe, _ausbeErr := io.ReadUint16(16)
+	if _ausbeErr != nil {
+		return nil, errors.New("Error parsing 'ausbe' field " + _ausbeErr.Error())
+	}
 
 	// Create the instance
 	return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil

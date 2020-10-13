@@ -26,7 +26,7 @@ import (
 // The data-structure of this message
 type ConnectionStateResponse struct {
 	communicationChannelId uint8
-	status                 Status
+	status                 IStatus
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m ConnectionStateResponse) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionStateResponse(communicationChannelId uint8, status Status) KNXNetIPMessageInitializer {
+func NewConnectionStateResponse(communicationChannelId uint8, status IStatus) KNXNetIPMessageInitializer {
 	return &ConnectionStateResponse{communicationChannelId: communicationChannelId, status: status}
 }
 
@@ -88,7 +88,10 @@ func (m ConnectionStateResponse) LengthInBytes() uint16 {
 func ConnectionStateResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Enum field (status)
 	status, _statusErr := StatusParse(io)
@@ -107,6 +110,6 @@ func (m ConnectionStateResponse) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (communicationChannelId))
 
 	// Enum field (status)
-	status := Status(m.status)
+	status := IStatus(m.status)
 	status.Serialize(io)
 }

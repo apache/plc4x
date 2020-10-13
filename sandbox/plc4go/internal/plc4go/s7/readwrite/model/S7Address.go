@@ -80,7 +80,10 @@ func (m S7Address) LengthInBytes() uint16 {
 func S7AddressParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	var addressType uint8 = io.ReadUint8(8)
+	addressType, _addressTypeErr := io.ReadUint8(8)
+	if _addressTypeErr != nil {
+		return nil, errors.New("Error parsing 'addressType' field " + _addressTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer S7AddressInitializer

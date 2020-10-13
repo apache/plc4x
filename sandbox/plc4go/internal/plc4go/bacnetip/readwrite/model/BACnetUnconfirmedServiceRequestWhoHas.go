@@ -116,34 +116,55 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBytes() uint16 {
 func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (deviceInstanceLowLimitHeader)
-	var deviceInstanceLowLimitHeader uint8 = io.ReadUint8(8)
+	deviceInstanceLowLimitHeader, _deviceInstanceLowLimitHeaderErr := io.ReadUint8(8)
+	if _deviceInstanceLowLimitHeaderErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceLowLimitHeader' field " + _deviceInstanceLowLimitHeaderErr.Error())
+	}
 	if deviceInstanceLowLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCELOWLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceLowLimitHeader)))
 	}
 
 	// Simple Field (deviceInstanceLowLimit)
-	var deviceInstanceLowLimit uint32 = io.ReadUint32(24)
+	deviceInstanceLowLimit, _deviceInstanceLowLimitErr := io.ReadUint32(24)
+	if _deviceInstanceLowLimitErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceLowLimit' field " + _deviceInstanceLowLimitErr.Error())
+	}
 
 	// Const Field (deviceInstanceHighLimitHeader)
-	var deviceInstanceHighLimitHeader uint8 = io.ReadUint8(8)
+	deviceInstanceHighLimitHeader, _deviceInstanceHighLimitHeaderErr := io.ReadUint8(8)
+	if _deviceInstanceHighLimitHeaderErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceHighLimitHeader' field " + _deviceInstanceHighLimitHeaderErr.Error())
+	}
 	if deviceInstanceHighLimitHeader != BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_DEVICEINSTANCEHIGHLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceHighLimitHeader)))
 	}
 
 	// Simple Field (deviceInstanceHighLimit)
-	var deviceInstanceHighLimit uint32 = io.ReadUint32(24)
+	deviceInstanceHighLimit, _deviceInstanceHighLimitErr := io.ReadUint32(24)
+	if _deviceInstanceHighLimitErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceHighLimit' field " + _deviceInstanceHighLimitErr.Error())
+	}
 
 	// Const Field (objectNameHeader)
-	var objectNameHeader uint8 = io.ReadUint8(8)
+	objectNameHeader, _objectNameHeaderErr := io.ReadUint8(8)
+	if _objectNameHeaderErr != nil {
+		return nil, errors.New("Error parsing 'objectNameHeader' field " + _objectNameHeaderErr.Error())
+	}
 	if objectNameHeader != BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER)) + " but got " + strconv.Itoa(int(objectNameHeader)))
 	}
 
 	// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var objectNameLength uint8 = io.ReadUint8(8)
+	objectNameLength, _objectNameLengthErr := io.ReadUint8(8)
+	if _objectNameLengthErr != nil {
+		return nil, errors.New("Error parsing 'objectNameLength' field " + _objectNameLengthErr.Error())
+	}
 
 	// Simple Field (objectNameCharacterSet)
-	var objectNameCharacterSet uint8 = io.ReadUint8(8)
+	objectNameCharacterSet, _objectNameCharacterSetErr := io.ReadUint8(8)
+	if _objectNameCharacterSetErr != nil {
+		return nil, errors.New("Error parsing 'objectNameCharacterSet' field " + _objectNameCharacterSetErr.Error())
+	}
 
 	// Array field (objectName)
 	var objectName []int8
@@ -151,7 +172,11 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(io spi.ReadBuffer) (BACnetUnconf
 	_objectNameLength := uint16(objectNameLength) - uint16(uint16(1))
 	_objectNameEndPos := io.GetPos() + uint16(_objectNameLength)
 	for io.GetPos() < _objectNameEndPos {
-		objectName = append(objectName, io.ReadInt8(8))
+		_objectNameVal, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'objectName' field " + _err.Error())
+		}
+		objectName = append(objectName, _objectNameVal)
 	}
 
 	// Create the instance

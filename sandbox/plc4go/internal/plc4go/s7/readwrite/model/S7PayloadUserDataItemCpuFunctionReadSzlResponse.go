@@ -30,7 +30,7 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = 28
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
-	items []SzlDataTreeItem
+	items []ISzlDataTreeItem
 	S7PayloadUserDataItem
 }
 
@@ -45,7 +45,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint8
 	return 0x08
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) initialize(returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId SzlId, szlIndex uint16) spi.Message {
+func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message {
 	m.returnCode = returnCode
 	m.transportSize = transportSize
 	m.szlId = szlId
@@ -53,7 +53,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) initialize(returnCode D
 	return m
 }
 
-func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []SzlDataTreeItem) S7PayloadUserDataItemInitializer {
+func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []ISzlDataTreeItem) S7PayloadUserDataItemInitializer {
 	return &S7PayloadUserDataItemCpuFunctionReadSzlResponse{items: items}
 }
 
@@ -103,27 +103,33 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16 
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
 
 	// Const Field (szlItemLength)
-	var szlItemLength uint16 = io.ReadUint16(16)
+	szlItemLength, _szlItemLengthErr := io.ReadUint16(16)
+	if _szlItemLengthErr != nil {
+		return nil, errors.New("Error parsing 'szlItemLength' field " + _szlItemLengthErr.Error())
+	}
 	if szlItemLength != S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH)) + " but got " + strconv.Itoa(int(szlItemLength)))
 	}
 
 	// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var szlItemCount uint16 = io.ReadUint16(16)
+	szlItemCount, _szlItemCountErr := io.ReadUint16(16)
+	if _szlItemCountErr != nil {
+		return nil, errors.New("Error parsing 'szlItemCount' field " + _szlItemCountErr.Error())
+	}
 
 	// Array field (items)
-	var items []SzlDataTreeItem
+	var items []ISzlDataTreeItem
 	// Count array
 	{
-		items := make([]SzlDataTreeItem, szlItemCount)
+		items := make([]ISzlDataTreeItem, szlItemCount)
 		for curItem := uint16(0); curItem < uint16(szlItemCount); curItem++ {
 
 			_message, _err := SzlDataTreeItemParse(io)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
-			var _item SzlDataTreeItem
-			_item, _ok := _message.(SzlDataTreeItem)
+			var _item ISzlDataTreeItem
+			_item, _ok := _message.(ISzlDataTreeItem)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to SzlDataTreeItem")
 			}

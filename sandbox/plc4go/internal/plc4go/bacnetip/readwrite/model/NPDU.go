@@ -40,8 +40,8 @@ type NPDU struct {
 	sourceLength              *uint8
 	sourceAddress             []uint8
 	hopCount                  *uint8
-	nlm                       *NLM
-	apdu                      *APDU
+	nlm                       *INLM
+	apdu                      *IAPDU
 }
 
 // The corresponding interface
@@ -50,7 +50,7 @@ type INPDU interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *NLM, apdu *APDU) spi.Message {
+func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *INLM, apdu *IAPDU) spi.Message {
 	return &NPDU{protocolVersionNumber: protocolVersionNumber, messageTypeFieldPresent: messageTypeFieldPresent, destinationSpecified: destinationSpecified, sourceSpecified: sourceSpecified, expectingReply: expectingReply, networkPriority: networkPriority, destinationNetworkAddress: destinationNetworkAddress, destinationLength: destinationLength, destinationAddress: destinationAddress, sourceNetworkAddress: sourceNetworkAddress, sourceLength: sourceLength, sourceAddress: sourceAddress, hopCount: hopCount, nlm: nlm, apdu: apdu}
 }
 
@@ -138,12 +138,12 @@ func (m NPDU) LengthInBits() uint16 {
 
 	// Optional Field (nlm)
 	if m.nlm != nil {
-		lengthInBits += m.nlm.LengthInBits()
+		lengthInBits += (*m.nlm).LengthInBits()
 	}
 
 	// Optional Field (apdu)
 	if m.apdu != nil {
-		lengthInBits += m.apdu.LengthInBits()
+		lengthInBits += (*m.apdu).LengthInBits()
 	}
 
 	return lengthInBits
@@ -156,14 +156,23 @@ func (m NPDU) LengthInBytes() uint16 {
 func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 
 	// Simple Field (protocolVersionNumber)
-	var protocolVersionNumber uint8 = io.ReadUint8(8)
+	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
+	if _protocolVersionNumberErr != nil {
+		return nil, errors.New("Error parsing 'protocolVersionNumber' field " + _protocolVersionNumberErr.Error())
+	}
 
 	// Simple Field (messageTypeFieldPresent)
-	var messageTypeFieldPresent bool = io.ReadBit()
+	messageTypeFieldPresent, _messageTypeFieldPresentErr := io.ReadBit()
+	if _messageTypeFieldPresentErr != nil {
+		return nil, errors.New("Error parsing 'messageTypeFieldPresent' field " + _messageTypeFieldPresentErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(1)
+		reserved, _err := io.ReadUint8(1)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -173,11 +182,17 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	}
 
 	// Simple Field (destinationSpecified)
-	var destinationSpecified bool = io.ReadBit()
+	destinationSpecified, _destinationSpecifiedErr := io.ReadBit()
+	if _destinationSpecifiedErr != nil {
+		return nil, errors.New("Error parsing 'destinationSpecified' field " + _destinationSpecifiedErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(1)
+		reserved, _err := io.ReadUint8(1)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -187,25 +202,42 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	}
 
 	// Simple Field (sourceSpecified)
-	var sourceSpecified bool = io.ReadBit()
+	sourceSpecified, _sourceSpecifiedErr := io.ReadBit()
+	if _sourceSpecifiedErr != nil {
+		return nil, errors.New("Error parsing 'sourceSpecified' field " + _sourceSpecifiedErr.Error())
+	}
 
 	// Simple Field (expectingReply)
-	var expectingReply bool = io.ReadBit()
+	expectingReply, _expectingReplyErr := io.ReadBit()
+	if _expectingReplyErr != nil {
+		return nil, errors.New("Error parsing 'expectingReply' field " + _expectingReplyErr.Error())
+	}
 
 	// Simple Field (networkPriority)
-	var networkPriority uint8 = io.ReadUint8(2)
+	networkPriority, _networkPriorityErr := io.ReadUint8(2)
+	if _networkPriorityErr != nil {
+		return nil, errors.New("Error parsing 'networkPriority' field " + _networkPriorityErr.Error())
+	}
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var destinationNetworkAddress *uint16 = nil
 	if destinationSpecified {
-		_val := io.ReadUint16(16)
+		_val, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
+		}
+
 		destinationNetworkAddress = &_val
 	}
 
 	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
 	var destinationLength *uint8 = nil
 	if destinationSpecified {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'destinationLength' field " + _err.Error())
+		}
+
 		destinationLength = &_val
 	}
 
@@ -213,24 +245,36 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	var destinationAddress []uint8
 	// Count array
 	{
-		destinationAddress := make([]uint8, spi.InlineIf(destinationSpecified, uint16(*destinationLength), uint16(uint16(0))))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(destinationSpecified, uint16(*destinationLength), uint16(uint16(0)))); curItem++ {
+		destinationAddress := make([]uint8, spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
+		for curItem := uint16(0); curItem < uint16(spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
 
-			destinationAddress = append(destinationAddress, io.ReadUint8(8))
+			_destinationAddressVal, _err := io.ReadUint8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
+			}
+			destinationAddress = append(destinationAddress, _destinationAddressVal)
 		}
 	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
 	if sourceSpecified {
-		_val := io.ReadUint16(16)
+		_val, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'sourceNetworkAddress' field " + _err.Error())
+		}
+
 		sourceNetworkAddress = &_val
 	}
 
 	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
 	var sourceLength *uint8 = nil
 	if sourceSpecified {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'sourceLength' field " + _err.Error())
+		}
+
 		sourceLength = &_val
 	}
 
@@ -238,46 +282,54 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	var sourceAddress []uint8
 	// Count array
 	{
-		sourceAddress := make([]uint8, spi.InlineIf(sourceSpecified, uint16(*sourceLength), uint16(uint16(0))))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(sourceSpecified, uint16(*sourceLength), uint16(uint16(0)))); curItem++ {
+		sourceAddress := make([]uint8, spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
+		for curItem := uint16(0); curItem < uint16(spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
 
-			sourceAddress = append(sourceAddress, io.ReadUint8(8))
+			_sourceAddressVal, _err := io.ReadUint8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())
+			}
+			sourceAddress = append(sourceAddress, _sourceAddressVal)
 		}
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
 	if destinationSpecified {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'hopCount' field " + _err.Error())
+		}
+
 		hopCount = &_val
 	}
 
 	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
-	var nlm *NLM = nil
+	var nlm *INLM = nil
 	if messageTypeFieldPresent {
-		_message, _err := NLMParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16(*sourceLength)), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16(*destinationLength)), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+		_message, _err := NLMParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16((*sourceLength))), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16((*destinationLength))), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
 		if _err != nil {
 			return nil, errors.New("Error parsing 'nlm' field " + _err.Error())
 		}
-		var _item NLM
-		_item, _ok := _message.(NLM)
+		var _item INLM
+		_item, _ok := _message.(INLM)
 		if !_ok {
-			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to NLM")
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to INLM")
 		}
 		nlm = &_item
 	}
 
 	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
-	var apdu *APDU = nil
+	var apdu *IAPDU = nil
 	if !(messageTypeFieldPresent) {
-		_message, _err := APDUParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16(*sourceLength)), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16(*destinationLength)), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+		_message, _err := APDUParse(io, uint16(npduLength)-uint16(uint16(uint16(uint16(uint16(uint16(2))+uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3))+uint16((*sourceLength))), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3))+uint16((*destinationLength))), uint16(uint16(0))))))+uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
 		if _err != nil {
 			return nil, errors.New("Error parsing 'apdu' field " + _err.Error())
 		}
-		var _item APDU
-		_item, _ok := _message.(APDU)
+		var _item IAPDU
+		_item, _ok := _message.(IAPDU)
 		if !_ok {
-			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to APDU")
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IAPDU")
 		}
 		apdu = &_item
 	}
@@ -368,16 +420,16 @@ func (m NPDU) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Optional Field (nlm) (Can be skipped, if the value is null)
-	var nlm *NLM = nil
+	var nlm *INLM = nil
 	if m.nlm != nil {
 		nlm = m.nlm
-		nlm.Serialize(io)
+		(*nlm).Serialize(io)
 	}
 
 	// Optional Field (apdu) (Can be skipped, if the value is null)
-	var apdu *APDU = nil
+	var apdu *IAPDU = nil
 	if m.apdu != nil {
 		apdu = m.apdu
-		apdu.Serialize(io)
+		(*apdu).Serialize(io)
 	}
 }

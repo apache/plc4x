@@ -80,7 +80,10 @@ func (m ServiceId) LengthInBytes() uint16 {
 func ServiceIdParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	var serviceType uint8 = io.ReadUint8(8)
+	serviceType, _serviceTypeErr := io.ReadUint8(8)
+	if _serviceTypeErr != nil {
+		return nil, errors.New("Error parsing 'serviceType' field " + _serviceTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer ServiceIdInitializer

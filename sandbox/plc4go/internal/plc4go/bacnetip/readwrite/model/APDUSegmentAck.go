@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
@@ -104,7 +105,10 @@ func APDUSegmentAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(2)
+		reserved, _err := io.ReadUint8(2)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -114,19 +118,34 @@ func APDUSegmentAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 	}
 
 	// Simple Field (negativeAck)
-	var negativeAck bool = io.ReadBit()
+	negativeAck, _negativeAckErr := io.ReadBit()
+	if _negativeAckErr != nil {
+		return nil, errors.New("Error parsing 'negativeAck' field " + _negativeAckErr.Error())
+	}
 
 	// Simple Field (server)
-	var server bool = io.ReadBit()
+	server, _serverErr := io.ReadBit()
+	if _serverErr != nil {
+		return nil, errors.New("Error parsing 'server' field " + _serverErr.Error())
+	}
 
 	// Simple Field (originalInvokeId)
-	var originalInvokeId uint8 = io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	if _originalInvokeIdErr != nil {
+		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+	}
 
 	// Simple Field (sequenceNumber)
-	var sequenceNumber uint8 = io.ReadUint8(8)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
+	if _sequenceNumberErr != nil {
+		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+	}
 
 	// Simple Field (proposedWindowSize)
-	var proposedWindowSize uint8 = io.ReadUint8(8)
+	proposedWindowSize, _proposedWindowSizeErr := io.ReadUint8(8)
+	if _proposedWindowSizeErr != nil {
+		return nil, errors.New("Error parsing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
+	}
 
 	// Create the instance
 	return NewAPDUSegmentAck(negativeAck, server, originalInvokeId, sequenceNumber, proposedWindowSize), nil

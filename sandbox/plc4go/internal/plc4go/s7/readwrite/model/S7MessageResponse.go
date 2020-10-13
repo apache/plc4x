@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -40,7 +41,7 @@ func (m S7MessageResponse) MessageType() uint8 {
 	return 0x02
 }
 
-func (m S7MessageResponse) initialize(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) spi.Message {
+func (m S7MessageResponse) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
 	m.tpduReference = tpduReference
 	m.parameter = parameter
 	m.payload = payload
@@ -90,10 +91,16 @@ func (m S7MessageResponse) LengthInBytes() uint16 {
 func S7MessageResponseParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
 
 	// Simple Field (errorClass)
-	var errorClass uint8 = io.ReadUint8(8)
+	errorClass, _errorClassErr := io.ReadUint8(8)
+	if _errorClassErr != nil {
+		return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
+	}
 
 	// Simple Field (errorCode)
-	var errorCode uint8 = io.ReadUint8(8)
+	errorCode, _errorCodeErr := io.ReadUint8(8)
+	if _errorCodeErr != nil {
+		return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
+	}
 
 	// Create the instance
 	return NewS7MessageResponse(errorClass, errorCode), nil

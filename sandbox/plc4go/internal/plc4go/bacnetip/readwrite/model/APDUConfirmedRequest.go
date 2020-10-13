@@ -35,7 +35,7 @@ type APDUConfirmedRequest struct {
 	invokeId                  uint8
 	sequenceNumber            *uint8
 	proposedWindowSize        *uint8
-	serviceRequest            BACnetConfirmedServiceRequest
+	serviceRequest            IBACnetConfirmedServiceRequest
 	APDU
 }
 
@@ -54,7 +54,7 @@ func (m APDUConfirmedRequest) initialize() spi.Message {
 	return m
 }
 
-func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest BACnetConfirmedServiceRequest) APDUInitializer {
+func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest IBACnetConfirmedServiceRequest) APDUInitializer {
 	return &APDUConfirmedRequest{segmentedMessage: segmentedMessage, moreFollows: moreFollows, segmentedResponseAccepted: segmentedResponseAccepted, maxSegmentsAccepted: maxSegmentsAccepted, maxApduLengthAccepted: maxApduLengthAccepted, invokeId: invokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceRequest: serviceRequest}
 }
 
@@ -125,17 +125,29 @@ func (m APDUConfirmedRequest) LengthInBytes() uint16 {
 func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
 
 	// Simple Field (segmentedMessage)
-	var segmentedMessage bool = io.ReadBit()
+	segmentedMessage, _segmentedMessageErr := io.ReadBit()
+	if _segmentedMessageErr != nil {
+		return nil, errors.New("Error parsing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+	}
 
 	// Simple Field (moreFollows)
-	var moreFollows bool = io.ReadBit()
+	moreFollows, _moreFollowsErr := io.ReadBit()
+	if _moreFollowsErr != nil {
+		return nil, errors.New("Error parsing 'moreFollows' field " + _moreFollowsErr.Error())
+	}
 
 	// Simple Field (segmentedResponseAccepted)
-	var segmentedResponseAccepted bool = io.ReadBit()
+	segmentedResponseAccepted, _segmentedResponseAcceptedErr := io.ReadBit()
+	if _segmentedResponseAcceptedErr != nil {
+		return nil, errors.New("Error parsing 'segmentedResponseAccepted' field " + _segmentedResponseAcceptedErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(2)
+		reserved, _err := io.ReadUint8(2)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -145,25 +157,42 @@ func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitia
 	}
 
 	// Simple Field (maxSegmentsAccepted)
-	var maxSegmentsAccepted uint8 = io.ReadUint8(3)
+	maxSegmentsAccepted, _maxSegmentsAcceptedErr := io.ReadUint8(3)
+	if _maxSegmentsAcceptedErr != nil {
+		return nil, errors.New("Error parsing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
+	}
 
 	// Simple Field (maxApduLengthAccepted)
-	var maxApduLengthAccepted uint8 = io.ReadUint8(4)
+	maxApduLengthAccepted, _maxApduLengthAcceptedErr := io.ReadUint8(4)
+	if _maxApduLengthAcceptedErr != nil {
+		return nil, errors.New("Error parsing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
+	}
 
 	// Simple Field (invokeId)
-	var invokeId uint8 = io.ReadUint8(8)
+	invokeId, _invokeIdErr := io.ReadUint8(8)
+	if _invokeIdErr != nil {
+		return nil, errors.New("Error parsing 'invokeId' field " + _invokeIdErr.Error())
+	}
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'sequenceNumber' field " + _err.Error())
+		}
+
 		sequenceNumber = &_val
 	}
 
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'proposedWindowSize' field " + _err.Error())
+		}
+
 		proposedWindowSize = &_val
 	}
 
@@ -172,10 +201,10 @@ func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitia
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
 	}
-	var serviceRequest BACnetConfirmedServiceRequest
-	serviceRequest, _serviceRequestOk := _serviceRequestMessage.(BACnetConfirmedServiceRequest)
+	var serviceRequest IBACnetConfirmedServiceRequest
+	serviceRequest, _serviceRequestOk := _serviceRequestMessage.(IBACnetConfirmedServiceRequest)
 	if !_serviceRequestOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to BACnetConfirmedServiceRequest")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to IBACnetConfirmedServiceRequest")
 	}
 
 	// Create the instance
@@ -226,6 +255,6 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Simple Field (serviceRequest)
-	serviceRequest := BACnetConfirmedServiceRequest(m.serviceRequest)
+	serviceRequest := IBACnetConfirmedServiceRequest(m.serviceRequest)
 	serviceRequest.Serialize(io)
 }

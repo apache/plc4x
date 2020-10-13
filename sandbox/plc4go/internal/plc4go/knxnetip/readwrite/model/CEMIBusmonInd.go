@@ -27,8 +27,8 @@ import (
 // The data-structure of this message
 type CEMIBusmonInd struct {
 	additionalInformationLength uint8
-	additionalInformation       []CEMIAdditionalInformation
-	cemiFrame                   CEMIFrame
+	additionalInformation       []ICEMIAdditionalInformation
+	cemiFrame                   ICEMIFrame
 	CEMI
 }
 
@@ -47,7 +47,7 @@ func (m CEMIBusmonInd) initialize() spi.Message {
 	return m
 }
 
-func NewCEMIBusmonInd(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, cemiFrame CEMIFrame) CEMIInitializer {
+func NewCEMIBusmonInd(additionalInformationLength uint8, additionalInformation []ICEMIAdditionalInformation, cemiFrame ICEMIFrame) CEMIInitializer {
 	return &CEMIBusmonInd{additionalInformationLength: additionalInformationLength, additionalInformation: additionalInformation, cemiFrame: cemiFrame}
 }
 
@@ -97,10 +97,13 @@ func (m CEMIBusmonInd) LengthInBytes() uint16 {
 func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Simple Field (additionalInformationLength)
-	var additionalInformationLength uint8 = io.ReadUint8(8)
+	additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
+	if _additionalInformationLengthErr != nil {
+		return nil, errors.New("Error parsing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
+	}
 
 	// Array field (additionalInformation)
-	var additionalInformation []CEMIAdditionalInformation
+	var additionalInformation []ICEMIAdditionalInformation
 	// Length array
 	_additionalInformationLength := additionalInformationLength
 	_additionalInformationEndPos := io.GetPos() + uint16(_additionalInformationLength)
@@ -109,8 +112,8 @@ func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 		if _err != nil {
 			return nil, errors.New("Error parsing 'additionalInformation' field " + _err.Error())
 		}
-		var _item CEMIAdditionalInformation
-		_item, _ok := _message.(CEMIAdditionalInformation)
+		var _item ICEMIAdditionalInformation
+		_item, _ok := _message.(ICEMIAdditionalInformation)
 		if !_ok {
 			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to CEMIAdditionalInformation")
 		}
@@ -122,10 +125,10 @@ func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'cemiFrame'. " + _err.Error())
 	}
-	var cemiFrame CEMIFrame
-	cemiFrame, _cemiFrameOk := _cemiFrameMessage.(CEMIFrame)
+	var cemiFrame ICEMIFrame
+	cemiFrame, _cemiFrameOk := _cemiFrameMessage.(ICEMIFrame)
 	if !_cemiFrameOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiFrameMessage).Name() + " to CEMIFrame")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiFrameMessage).Name() + " to ICEMIFrame")
 	}
 
 	// Create the instance
@@ -146,6 +149,6 @@ func (m CEMIBusmonInd) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Simple Field (cemiFrame)
-	cemiFrame := CEMIFrame(m.cemiFrame)
+	cemiFrame := ICEMIFrame(m.cemiFrame)
 	cemiFrame.Serialize(io)
 }

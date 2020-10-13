@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,13 +92,22 @@ func (m KNXGroupAddress3Level) LengthInBytes() uint16 {
 func KNXGroupAddress3LevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
 	// Simple Field (mainGroup)
-	var mainGroup uint8 = io.ReadUint8(5)
+	mainGroup, _mainGroupErr := io.ReadUint8(5)
+	if _mainGroupErr != nil {
+		return nil, errors.New("Error parsing 'mainGroup' field " + _mainGroupErr.Error())
+	}
 
 	// Simple Field (middleGroup)
-	var middleGroup uint8 = io.ReadUint8(3)
+	middleGroup, _middleGroupErr := io.ReadUint8(3)
+	if _middleGroupErr != nil {
+		return nil, errors.New("Error parsing 'middleGroup' field " + _middleGroupErr.Error())
+	}
 
 	// Simple Field (subGroup)
-	var subGroup uint8 = io.ReadUint8(8)
+	subGroup, _subGroupErr := io.ReadUint8(8)
+	if _subGroupErr != nil {
+		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+	}
 
 	// Create the instance
 	return NewKNXGroupAddress3Level(mainGroup, middleGroup, subGroup), nil

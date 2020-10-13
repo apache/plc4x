@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type TPCI uint8
 
+type ITPCI interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	TPCI_UNNUMBERED_DATA_PACKET TPCI = 0x0
 	TPCI_UNNUMBERED             TPCI = 0x1
@@ -37,6 +42,14 @@ func CastTPCI(structType interface{}) TPCI {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m TPCI) LengthInBits() uint16 {
+	return 2
+}
+
+func (m TPCI) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func TPCIParse(io spi.ReadBuffer) (TPCI, error) {

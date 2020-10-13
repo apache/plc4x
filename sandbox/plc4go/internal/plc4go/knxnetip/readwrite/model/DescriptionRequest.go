@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type DescriptionRequest struct {
-	hpaiControlEndpoint HPAIControlEndpoint
+	hpaiControlEndpoint IHPAIControlEndpoint
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m DescriptionRequest) initialize() spi.Message {
 	return m
 }
 
-func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) KNXNetIPMessageInitializer {
+func NewDescriptionRequest(hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
 	return &DescriptionRequest{hpaiControlEndpoint: hpaiControlEndpoint}
 }
 
@@ -89,10 +89,10 @@ func DescriptionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
 	}
-	var hpaiControlEndpoint HPAIControlEndpoint
-	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(HPAIControlEndpoint)
+	var hpaiControlEndpoint IHPAIControlEndpoint
+	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
 	if !_hpaiControlEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to HPAIControlEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func DescriptionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 func (m DescriptionRequest) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
 	hpaiControlEndpoint.Serialize(io)
 }

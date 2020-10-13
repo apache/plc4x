@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,11 @@ func UnknownMessageParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessage
 		unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
 		for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
 
-			unknownData = append(unknownData, io.ReadInt8(8))
+			_unknownDataVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
+			}
+			unknownData = append(unknownData, _unknownDataVal)
 		}
 	}
 

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -99,10 +100,16 @@ func (m ModbusPDUReadFifoQueueResponse) LengthInBytes() uint16 {
 func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint16 = io.ReadUint16(16)
+	_, _byteCountErr := io.ReadUint16(16)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var fifoCount uint16 = io.ReadUint16(16)
+	fifoCount, _fifoCountErr := io.ReadUint16(16)
+	if _fifoCountErr != nil {
+		return nil, errors.New("Error parsing 'fifoCount' field " + _fifoCountErr.Error())
+	}
 
 	// Array field (fifoValue)
 	var fifoValue []uint16
@@ -111,7 +118,11 @@ func ModbusPDUReadFifoQueueResponseParse(io spi.ReadBuffer) (ModbusPDUInitialize
 		fifoValue := make([]uint16, fifoCount)
 		for curItem := uint16(0); curItem < uint16(fifoCount); curItem++ {
 
-			fifoValue = append(fifoValue, io.ReadUint16(16))
+			_fifoValueVal, _err := io.ReadUint16(16)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'fifoValue' field " + _err.Error())
+			}
+			fifoValue = append(fifoValue, _fifoValueVal)
 		}
 	}
 

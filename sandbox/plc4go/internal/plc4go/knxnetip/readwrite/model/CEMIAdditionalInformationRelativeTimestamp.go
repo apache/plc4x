@@ -30,7 +30,7 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = 2
 
 // The data-structure of this message
 type CEMIAdditionalInformationRelativeTimestamp struct {
-	relativeTimestamp RelativeTimestamp
+	relativeTimestamp IRelativeTimestamp
 	CEMIAdditionalInformation
 }
 
@@ -49,7 +49,7 @@ func (m CEMIAdditionalInformationRelativeTimestamp) initialize() spi.Message {
 	return m
 }
 
-func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp RelativeTimestamp) CEMIAdditionalInformationInitializer {
+func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp IRelativeTimestamp) CEMIAdditionalInformationInitializer {
 	return &CEMIAdditionalInformationRelativeTimestamp{relativeTimestamp: relativeTimestamp}
 }
 
@@ -92,7 +92,10 @@ func (m CEMIAdditionalInformationRelativeTimestamp) LengthInBytes() uint16 {
 func CEMIAdditionalInformationRelativeTimestampParse(io spi.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
 
 	// Const Field (len)
-	var len uint8 = io.ReadUint8(8)
+	len, _lenErr := io.ReadUint8(8)
+	if _lenErr != nil {
+		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+	}
 	if len != CEMIAdditionalInformationRelativeTimestamp_LEN {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(CEMIAdditionalInformationRelativeTimestamp_LEN)) + " but got " + strconv.Itoa(int(len)))
 	}
@@ -102,10 +105,10 @@ func CEMIAdditionalInformationRelativeTimestampParse(io spi.ReadBuffer) (CEMIAdd
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'relativeTimestamp'. " + _err.Error())
 	}
-	var relativeTimestamp RelativeTimestamp
-	relativeTimestamp, _relativeTimestampOk := _relativeTimestampMessage.(RelativeTimestamp)
+	var relativeTimestamp IRelativeTimestamp
+	relativeTimestamp, _relativeTimestampOk := _relativeTimestampMessage.(IRelativeTimestamp)
 	if !_relativeTimestampOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_relativeTimestampMessage).Name() + " to RelativeTimestamp")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_relativeTimestampMessage).Name() + " to IRelativeTimestamp")
 	}
 
 	// Create the instance
@@ -118,6 +121,6 @@ func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer
 	io.WriteUint8(8, 2)
 
 	// Simple Field (relativeTimestamp)
-	relativeTimestamp := RelativeTimestamp(m.relativeTimestamp)
+	relativeTimestamp := IRelativeTimestamp(m.relativeTimestamp)
 	relativeTimestamp.Serialize(io)
 }

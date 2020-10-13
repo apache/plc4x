@@ -27,7 +27,7 @@ import (
 type COTPPacketConnectionRequest struct {
 	destinationReference uint16
 	sourceReference      uint16
-	protocolClass        COTPProtocolClass
+	protocolClass        ICOTPProtocolClass
 	COTPPacket
 }
 
@@ -42,13 +42,13 @@ func (m COTPPacketConnectionRequest) TpduCode() uint8 {
 	return 0xE0
 }
 
-func (m COTPPacketConnectionRequest) initialize(parameters []COTPParameter, payload *S7Message) spi.Message {
+func (m COTPPacketConnectionRequest) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
 	m.parameters = parameters
 	m.payload = payload
 	return m
 }
 
-func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketInitializer {
+func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference uint16, protocolClass ICOTPProtocolClass) COTPPacketInitializer {
 	return &COTPPacketConnectionRequest{destinationReference: destinationReference, sourceReference: sourceReference, protocolClass: protocolClass}
 }
 
@@ -94,10 +94,16 @@ func (m COTPPacketConnectionRequest) LengthInBytes() uint16 {
 func COTPPacketConnectionRequestParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
 
 	// Simple Field (destinationReference)
-	var destinationReference uint16 = io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	if _destinationReferenceErr != nil {
+		return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
+	}
 
 	// Simple Field (sourceReference)
-	var sourceReference uint16 = io.ReadUint16(16)
+	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
+	if _sourceReferenceErr != nil {
+		return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
+	}
 
 	// Enum field (protocolClass)
 	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
@@ -120,6 +126,6 @@ func (m COTPPacketConnectionRequest) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (sourceReference))
 
 	// Enum field (protocolClass)
-	protocolClass := COTPProtocolClass(m.protocolClass)
+	protocolClass := ICOTPProtocolClass(m.protocolClass)
 	protocolClass.Serialize(io)
 }

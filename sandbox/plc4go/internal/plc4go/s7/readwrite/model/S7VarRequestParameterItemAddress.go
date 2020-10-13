@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7VarRequestParameterItemAddress struct {
-	address S7Address
+	address IS7Address
 	S7VarRequestParameterItem
 }
 
@@ -45,7 +45,7 @@ func (m S7VarRequestParameterItemAddress) initialize() spi.Message {
 	return m
 }
 
-func NewS7VarRequestParameterItemAddress(address S7Address) S7VarRequestParameterItemInitializer {
+func NewS7VarRequestParameterItemAddress(address IS7Address) S7VarRequestParameterItemInitializer {
 	return &S7VarRequestParameterItemAddress{address: address}
 }
 
@@ -88,17 +88,20 @@ func (m S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
 func S7VarRequestParameterItemAddressParse(io spi.ReadBuffer) (S7VarRequestParameterItemInitializer, error) {
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _itemLengthErr := io.ReadUint8(8)
+	if _itemLengthErr != nil {
+		return nil, errors.New("Error parsing 'itemLength' field " + _itemLengthErr.Error())
+	}
 
 	// Simple Field (address)
 	_addressMessage, _err := S7AddressParse(io)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'address'. " + _err.Error())
 	}
-	var address S7Address
-	address, _addressOk := _addressMessage.(S7Address)
+	var address IS7Address
+	address, _addressOk := _addressMessage.(IS7Address)
 	if !_addressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_addressMessage).Name() + " to S7Address")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_addressMessage).Name() + " to IS7Address")
 	}
 
 	// Create the instance
@@ -112,6 +115,6 @@ func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (itemLength))
 
 	// Simple Field (address)
-	address := S7Address(m.address)
+	address := IS7Address(m.address)
 	address.Serialize(io)
 }

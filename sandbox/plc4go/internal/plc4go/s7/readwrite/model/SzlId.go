@@ -25,9 +25,9 @@ import (
 
 // The data-structure of this message
 type SzlId struct {
-	typeClass      SzlModuleTypeClass
+	typeClass      ISzlModuleTypeClass
 	sublistExtract uint8
-	sublistList    SzlSublist
+	sublistList    ISzlSublist
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type ISzlId interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) spi.Message {
+func NewSzlId(typeClass ISzlModuleTypeClass, sublistExtract uint8, sublistList ISzlSublist) spi.Message {
 	return &SzlId{typeClass: typeClass, sublistExtract: sublistExtract, sublistList: sublistList}
 }
 
@@ -88,7 +88,10 @@ func SzlIdParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Simple Field (sublistExtract)
-	var sublistExtract uint8 = io.ReadUint8(4)
+	sublistExtract, _sublistExtractErr := io.ReadUint8(4)
+	if _sublistExtractErr != nil {
+		return nil, errors.New("Error parsing 'sublistExtract' field " + _sublistExtractErr.Error())
+	}
 
 	// Enum field (sublistList)
 	sublistList, _sublistListErr := SzlSublistParse(io)
@@ -103,7 +106,7 @@ func SzlIdParse(io spi.ReadBuffer) (spi.Message, error) {
 func (m SzlId) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (typeClass)
-	typeClass := SzlModuleTypeClass(m.typeClass)
+	typeClass := ISzlModuleTypeClass(m.typeClass)
 	typeClass.Serialize(io)
 
 	// Simple Field (sublistExtract)
@@ -111,6 +114,6 @@ func (m SzlId) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (sublistExtract))
 
 	// Enum field (sublistList)
-	sublistList := SzlSublist(m.sublistList)
+	sublistList := ISzlSublist(m.sublistList)
 	sublistList.Serialize(io)
 }

@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type DeviceGroup int8
 
+type IDeviceGroup interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	DeviceGroup_PG_OR_PC DeviceGroup = 0x01
 	DeviceGroup_OS       DeviceGroup = 0x02
@@ -36,6 +41,14 @@ func CastDeviceGroup(structType interface{}) DeviceGroup {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m DeviceGroup) LengthInBits() uint16 {
+	return 8
+}
+
+func (m DeviceGroup) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func DeviceGroupParse(io spi.ReadBuffer) (DeviceGroup, error) {

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
@@ -92,7 +93,10 @@ func APDUSimpleAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(4)
+		reserved, _err := io.ReadUint8(4)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -102,10 +106,16 @@ func APDUSimpleAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	var originalInvokeId uint8 = io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	if _originalInvokeIdErr != nil {
+		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+	}
 
 	// Simple Field (serviceChoice)
-	var serviceChoice uint8 = io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	if _serviceChoiceErr != nil {
+		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+	}
 
 	// Create the instance
 	return NewAPDUSimpleAck(originalInvokeId, serviceChoice), nil

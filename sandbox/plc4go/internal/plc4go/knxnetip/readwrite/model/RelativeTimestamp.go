@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -73,7 +74,10 @@ func (m RelativeTimestamp) LengthInBytes() uint16 {
 func RelativeTimestampParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (timestamp)
-	var timestamp uint16 = io.ReadUint16(16)
+	timestamp, _timestampErr := io.ReadUint16(16)
+	if _timestampErr != nil {
+		return nil, errors.New("Error parsing 'timestamp' field " + _timestampErr.Error())
+	}
 
 	// Create the instance
 	return NewRelativeTimestamp(timestamp), nil

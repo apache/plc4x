@@ -111,13 +111,19 @@ func (m BACnetErrorReadProperty) LengthInBytes() uint16 {
 func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Const Field (errorClassHeader)
-	var errorClassHeader uint8 = io.ReadUint8(5)
+	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
+	if _errorClassHeaderErr != nil {
+		return nil, errors.New("Error parsing 'errorClassHeader' field " + _errorClassHeaderErr.Error())
+	}
 	if errorClassHeader != BACnetErrorReadProperty_ERRORCLASSHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCLASSHEADER)) + " but got " + strconv.Itoa(int(errorClassHeader)))
 	}
 
 	// Simple Field (errorClassLength)
-	var errorClassLength uint8 = io.ReadUint8(3)
+	errorClassLength, _errorClassLengthErr := io.ReadUint8(3)
+	if _errorClassLengthErr != nil {
+		return nil, errors.New("Error parsing 'errorClassLength' field " + _errorClassLengthErr.Error())
+	}
 
 	// Array field (errorClass)
 	var errorClass []int8
@@ -126,18 +132,28 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 		errorClass := make([]int8, errorClassLength)
 		for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
 
-			errorClass = append(errorClass, io.ReadInt8(8))
+			_errorClassVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'errorClass' field " + _err.Error())
+			}
+			errorClass = append(errorClass, _errorClassVal)
 		}
 	}
 
 	// Const Field (errorCodeHeader)
-	var errorCodeHeader uint8 = io.ReadUint8(5)
+	errorCodeHeader, _errorCodeHeaderErr := io.ReadUint8(5)
+	if _errorCodeHeaderErr != nil {
+		return nil, errors.New("Error parsing 'errorCodeHeader' field " + _errorCodeHeaderErr.Error())
+	}
 	if errorCodeHeader != BACnetErrorReadProperty_ERRORCODEHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetErrorReadProperty_ERRORCODEHEADER)) + " but got " + strconv.Itoa(int(errorCodeHeader)))
 	}
 
 	// Simple Field (errorCodeLength)
-	var errorCodeLength uint8 = io.ReadUint8(3)
+	errorCodeLength, _errorCodeLengthErr := io.ReadUint8(3)
+	if _errorCodeLengthErr != nil {
+		return nil, errors.New("Error parsing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
+	}
 
 	// Array field (errorCode)
 	var errorCode []int8
@@ -146,7 +162,11 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 		errorCode := make([]int8, errorCodeLength)
 		for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
 
-			errorCode = append(errorCode, io.ReadInt8(8))
+			_errorCodeVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
+			}
+			errorCode = append(errorCode, _errorCodeVal)
 		}
 	}
 

@@ -80,7 +80,10 @@ func (m APDU) LengthInBytes() uint16 {
 func APDUParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
 	// Discriminator Field (apduType) (Used as input to a switch field)
-	var apduType uint8 = io.ReadUint8(4)
+	apduType, _apduTypeErr := io.ReadUint8(4)
+	if _apduTypeErr != nil {
+		return nil, errors.New("Error parsing 'apduType' field " + _apduTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer APDUInitializer

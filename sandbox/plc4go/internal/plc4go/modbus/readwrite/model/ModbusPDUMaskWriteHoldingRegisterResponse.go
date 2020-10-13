@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -99,13 +100,22 @@ func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
 func ModbusPDUMaskWriteHoldingRegisterResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (referenceAddress)
-	var referenceAddress uint16 = io.ReadUint16(16)
+	referenceAddress, _referenceAddressErr := io.ReadUint16(16)
+	if _referenceAddressErr != nil {
+		return nil, errors.New("Error parsing 'referenceAddress' field " + _referenceAddressErr.Error())
+	}
 
 	// Simple Field (andMask)
-	var andMask uint16 = io.ReadUint16(16)
+	andMask, _andMaskErr := io.ReadUint16(16)
+	if _andMaskErr != nil {
+		return nil, errors.New("Error parsing 'andMask' field " + _andMaskErr.Error())
+	}
 
 	// Simple Field (orMask)
-	var orMask uint16 = io.ReadUint16(16)
+	orMask, _orMaskErr := io.ReadUint16(16)
+	if _orMaskErr != nil {
+		return nil, errors.New("Error parsing 'orMask' field " + _orMaskErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask), nil

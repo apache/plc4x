@@ -80,7 +80,10 @@ func (m CEMIAdditionalInformation) LengthInBytes() uint16 {
 func CEMIAdditionalInformationParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	var additionalInformationType uint8 = io.ReadUint8(8)
+	additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
+	if _additionalInformationTypeErr != nil {
+		return nil, errors.New("Error parsing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer CEMIAdditionalInformationInitializer

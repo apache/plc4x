@@ -93,19 +93,31 @@ func (m KNXNetIPMessage) LengthInBytes() uint16 {
 func KNXNetIPMessageParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _headerLengthErr := io.ReadUint8(8)
+	if _headerLengthErr != nil {
+		return nil, errors.New("Error parsing 'headerLength' field " + _headerLengthErr.Error())
+	}
 
 	// Const Field (protocolVersion)
-	var protocolVersion uint8 = io.ReadUint8(8)
+	protocolVersion, _protocolVersionErr := io.ReadUint8(8)
+	if _protocolVersionErr != nil {
+		return nil, errors.New("Error parsing 'protocolVersion' field " + _protocolVersionErr.Error())
+	}
 	if protocolVersion != KNXNetIPMessage_PROTOCOLVERSION {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(KNXNetIPMessage_PROTOCOLVERSION)) + " but got " + strconv.Itoa(int(protocolVersion)))
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	var msgType uint16 = io.ReadUint16(16)
+	msgType, _msgTypeErr := io.ReadUint16(16)
+	if _msgTypeErr != nil {
+		return nil, errors.New("Error parsing 'msgType' field " + _msgTypeErr.Error())
+	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var totalLength uint16 = io.ReadUint16(16)
+	totalLength, _totalLengthErr := io.ReadUint16(16)
+	if _totalLengthErr != nil {
+		return nil, errors.New("Error parsing 'totalLength' field " + _totalLengthErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer KNXNetIPMessageInitializer

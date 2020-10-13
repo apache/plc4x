@@ -25,6 +25,7 @@
 <#-- @ftlvariable name="outputFlavor" type="java.lang.String" -->
 <#-- @ftlvariable name="helper" type="org.apache.plc4x.language.go.GoLanguageTemplateHelper" -->
 <#-- @ftlvariable name="type" type="org.apache.plc4x.plugins.codegenerator.types.definitions.EnumTypeDefinition" -->
+<#-- @ftlvariable name="simpleTypeReference" type="org.apache.plc4x.plugins.codegenerator.types.references.SimpleTypeReference" -->
 ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/model/${type.name}.go
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -49,6 +50,16 @@ package model
 import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type ${type.name} <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>
+
+type I${type.name} interface {
+    spi.Message
+<#if type.constantNames?has_content>
+    <#list type.constantNames as constantName>
+    ${constantName?cap_first}() ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName))}
+    </#list>
+</#if>
+    Serialize(io spi.WriteBuffer)
+}
 
 const(
 <#list type.enumValues as enumValue>
@@ -89,7 +100,16 @@ func Cast${type.name}(structType interface{}) ${type.name} {
     return castFunc(structType)
 }
 
-    <#if type.type?has_content>
+func (m ${type.name}) LengthInBits() uint16 {
+    <#assign simpleTypeReference = type.type>
+    return ${simpleTypeReference.sizeInBits}
+}
+
+func (m ${type.name}) LengthInBytes() uint16 {
+    return m.LengthInBits() / 8
+}
+
+<#if type.type?has_content>
 func ${type.name}Parse(io spi.ReadBuffer) (${type.name}, error) {
     // TODO: Implement ...
     return 0, nil

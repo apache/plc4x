@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type APCI uint8
 
+type IAPCI interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	APCI_GROUP_VALUE_READ_PDU            APCI = 0x0
 	APCI_GROUP_VALUE_RESPONSE_PDU        APCI = 0x1
@@ -49,6 +54,14 @@ func CastAPCI(structType interface{}) APCI {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m APCI) LengthInBits() uint16 {
+	return 4
+}
+
+func (m APCI) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func APCIParse(io spi.ReadBuffer) (APCI, error) {

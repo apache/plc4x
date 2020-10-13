@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type BACnetNotifyType uint8
 
+type IBACnetNotifyType interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	BACnetNotifyType_ALARM            BACnetNotifyType = 0x0
 	BACnetNotifyType_EVENT            BACnetNotifyType = 0x1
@@ -36,6 +41,14 @@ func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m BACnetNotifyType) LengthInBits() uint16 {
+	return 4
+}
+
+func (m BACnetNotifyType) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func BACnetNotifyTypeParse(io spi.ReadBuffer) (BACnetNotifyType, error) {

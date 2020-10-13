@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -40,7 +41,7 @@ func (m COTPPacketData) TpduCode() uint8 {
 	return 0xF0
 }
 
-func (m COTPPacketData) initialize(parameters []COTPParameter, payload *S7Message) spi.Message {
+func (m COTPPacketData) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
 	m.parameters = parameters
 	m.payload = payload
 	return m
@@ -89,10 +90,16 @@ func (m COTPPacketData) LengthInBytes() uint16 {
 func COTPPacketDataParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
 
 	// Simple Field (eot)
-	var eot bool = io.ReadBit()
+	eot, _eotErr := io.ReadBit()
+	if _eotErr != nil {
+		return nil, errors.New("Error parsing 'eot' field " + _eotErr.Error())
+	}
 
 	// Simple Field (tpduRef)
-	var tpduRef uint8 = io.ReadUint8(7)
+	tpduRef, _tpduRefErr := io.ReadUint8(7)
+	if _tpduRefErr != nil {
+		return nil, errors.New("Error parsing 'tpduRef' field " + _tpduRefErr.Error())
+	}
 
 	// Create the instance
 	return NewCOTPPacketData(eot, tpduRef), nil

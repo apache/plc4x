@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,11 @@ func NLMIAmRouterToNetworkParse(io spi.ReadBuffer, apduLength uint16, messageTyp
 	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(spi.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), uint16(uint16(3)), uint16(uint16(1)))))
 	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
-		destinationNetworkAddress = append(destinationNetworkAddress, io.ReadUint16(16))
+		_destinationNetworkAddressVal, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
+		}
+		destinationNetworkAddress = append(destinationNetworkAddress, _destinationNetworkAddressVal)
 	}
 
 	// Create the instance

@@ -83,10 +83,16 @@ func (m ConnectionRequestInformation) LengthInBytes() uint16 {
 func ConnectionRequestInformationParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _structureLengthErr := io.ReadUint8(8)
+	if _structureLengthErr != nil {
+		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	var connectionType uint8 = io.ReadUint8(8)
+	connectionType, _connectionTypeErr := io.ReadUint8(8)
+	if _connectionTypeErr != nil {
+		return nil, errors.New("Error parsing 'connectionType' field " + _connectionTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer ConnectionRequestInformationInitializer

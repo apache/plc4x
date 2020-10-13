@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
-	knxLayer KnxLayer
+	knxLayer IKnxLayer
 	ConnectionRequestInformation
 }
 
@@ -45,7 +45,7 @@ func (m ConnectionRequestInformationTunnelConnection) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) ConnectionRequestInformationInitializer {
+func NewConnectionRequestInformationTunnelConnection(knxLayer IKnxLayer) ConnectionRequestInformationInitializer {
 	return &ConnectionRequestInformationTunnelConnection{knxLayer: knxLayer}
 }
 
@@ -95,7 +95,10 @@ func ConnectionRequestInformationTunnelConnectionParse(io spi.ReadBuffer) (Conne
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(8)
+		reserved, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -111,7 +114,7 @@ func ConnectionRequestInformationTunnelConnectionParse(io spi.ReadBuffer) (Conne
 func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (knxLayer)
-	knxLayer := KnxLayer(m.knxLayer)
+	knxLayer := IKnxLayer(m.knxLayer)
 	knxLayer.Serialize(io)
 
 	// Reserved Field (reserved)

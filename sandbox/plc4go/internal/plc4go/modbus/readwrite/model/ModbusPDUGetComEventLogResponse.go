@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -108,16 +109,28 @@ func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
 func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var byteCount uint8 = io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8(8)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Simple Field (status)
-	var status uint16 = io.ReadUint16(16)
+	status, _statusErr := io.ReadUint16(16)
+	if _statusErr != nil {
+		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+	}
 
 	// Simple Field (eventCount)
-	var eventCount uint16 = io.ReadUint16(16)
+	eventCount, _eventCountErr := io.ReadUint16(16)
+	if _eventCountErr != nil {
+		return nil, errors.New("Error parsing 'eventCount' field " + _eventCountErr.Error())
+	}
 
 	// Simple Field (messageCount)
-	var messageCount uint16 = io.ReadUint16(16)
+	messageCount, _messageCountErr := io.ReadUint16(16)
+	if _messageCountErr != nil {
+		return nil, errors.New("Error parsing 'messageCount' field " + _messageCountErr.Error())
+	}
 
 	// Array field (events)
 	var events []int8
@@ -126,7 +139,11 @@ func ModbusPDUGetComEventLogResponseParse(io spi.ReadBuffer) (ModbusPDUInitializ
 		events := make([]int8, uint16(byteCount)-uint16(uint16(6)))
 		for curItem := uint16(0); curItem < uint16(uint16(byteCount)-uint16(uint16(6))); curItem++ {
 
-			events = append(events, io.ReadInt8(8))
+			_eventsVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'events' field " + _err.Error())
+			}
+			events = append(events, _eventsVal)
 		}
 	}
 

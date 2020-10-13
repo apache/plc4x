@@ -82,7 +82,7 @@ type ${type.name} struct {
 <#-- Prpoerty fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 <#list type.propertyFields as field>
-    ${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}
+    ${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}
 </#list>
 </#if>
 <#--
@@ -107,7 +107,7 @@ type I${type.name} interface {
         </#if>
     </#list>
 </#if>
-    Serialize(io spi.WriteBuffer)
+    Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>)
 }
 
 <#if helper.isDiscriminatedChildTypeDefinition()>
@@ -126,7 +126,7 @@ func (m ${type.name}) ${discriminatorName?cap_first}() ${helper.getLanguageTypeN
 </#if>
 <#if helper.isDiscriminatedParentTypeDefinition()>
 type ${type.name}Initializer interface {
-    initialize(<#list type.getAllPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) spi.Message
+    initialize(<#list type.getAllPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) spi.Message
 }
 
     <#list helper.getDiscriminatorTypes() as discriminatorName, discriminatorType>
@@ -139,7 +139,7 @@ func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLan
         </#if>
     </#list>
 <#else>
-<#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) spi.Message {
+<#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) spi.Message {
     <#list type.parentType.getAllPropertyFields() as field>
     m.${field.name} = ${field.name}
     </#list>
@@ -147,7 +147,7 @@ func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLan
 }
 </#if>
 
-func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
+func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
     return &${type.name}{<#list type.getPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>}
 }
 </#if>
@@ -246,7 +246,7 @@ func (m ${type.name}) LengthInBits() uint16 {
                     <#assign simpleTypeReference = optionalField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits}
                 <#else>
-        lengthInBits += m.${optionalField.name}.LengthInBits()
+        lengthInBits += (*m.${optionalField.name}).LengthInBits()
                 </#if>
     }
                 <#break>
@@ -299,7 +299,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (<#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if>, error) {
+func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (<#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if>, error) {
     <#if helper.requiresStartPosAndCurPos()>
     var startPos = io.GetPos()
     var curPos uint16
@@ -314,24 +314,28 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#if arrayField.loopExpression.contains("curPos")>
     curPos = io.GetPos() - startPos
                 </#if>
-    var ${arrayField.name} []${helper.getLanguageTypeNameForField(arrayField)}
+    var ${arrayField.name} []<#if helper.isComplexTypeReference(arrayField.type)>I</#if>${helper.getLanguageTypeNameForField(arrayField)}
             <#-- If this is a count array, we can directly initialize an array with the given size -->
                 <#if helper.isCountArrayField(field)>
     // Count array
     {
-        ${arrayField.name} := make([]${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
+        ${arrayField.name} := make([]<#if helper.isComplexTypeReference(arrayField.type)>I</#if>${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)})
         for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(16, arrayField.loopExpression, type.parserArguments)}); curItem++ {
 <#if (!helper.isSimpleTypeReference(arrayField.type)) && helper.requiresVariable(arrayField, "lastItem")>            lastItem := curItem == uint16(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)} - 1)</#if>
                     <#if helper.isSimpleTypeReference(arrayField.type)>
                         <#assign simpleTypeReference = arrayField.type>
-            ${arrayField.name} = append(${arrayField.name}, ${helper.getReadBufferReadMethodCall(simpleTypeReference)})
+            _${arrayField.name}Val, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+            if _err != nil {
+                return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+            }
+            ${arrayField.name} = append(${arrayField.name}, _${arrayField.name}Val)
                     <#else>
             _message, _err := ${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
             if _err != nil {
                 return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
             }
-            var _item ${helper.getLanguageTypeNameForField(field)}
-            _item, _ok := _message.(${arrayField.type.name})
+            var _item I${helper.getLanguageTypeNameForField(field)}
+            _item, _ok := _message.(I${arrayField.type.name})
             if !_ok {
                 return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${arrayField.type.name}")
             }
@@ -348,14 +352,18 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     for ;io.GetPos() < _${arrayField.name}EndPos; {
                     <#if helper.isSimpleTypeReference(arrayField.type)>
                         <#assign simpleTypeReference = arrayField.type>
-        ${arrayField.name} = append(${arrayField.name}, ${helper.getReadBufferReadMethodCall(simpleTypeReference)})
+        _${arrayField.name}Val, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+        if _err != nil {
+            return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+        }
+        ${arrayField.name} = append(${arrayField.name}, _${arrayField.name}Val)
                     <#else>
         _message, _err := ${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
         if _err != nil {
             return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
         }
-        var _item ${helper.getLanguageTypeNameForField(field)}
-        _item, _ok := _message.(${arrayField.type.name})
+        var _item I${helper.getLanguageTypeNameForField(field)}
+        _item, _ok := _message.(I${arrayField.type.name})
         if !_ok {
             return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${arrayField.type.name}")
         }
@@ -372,13 +380,18 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     for ;!bool(${helper.toParseExpression(arrayField, arrayField.loopExpression, type.parserArguments)}); {
                     <#if helper.isSimpleTypeReference(arrayField.type)>
                         <#assign simpleTypeReference = arrayField.type>
-        ${arrayField.name} = append(${arrayField.name}, ${helper.getReadBufferReadMethodCall(simpleTypeReference)})
+        _${arrayField.name}Val, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+        if _err != nil {
+            return nil, errors.New("Error parsing '${arrayField.name}' field " + _err.Error())
+        }
+        ${arrayField.name} = append(${arrayField.name}, _${arrayField.name}Val)
                     <#else>
         _message, _err := ${arrayField.type.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(arrayField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
         if _err != nil {
+
         }
-        var _item ${helper.getLanguageTypeNameForField(field)}
-        _item, _ok := _message.(${arrayField.type.name})
+        var _item I${helper.getLanguageTypeNameForField(field)}
+        _item, _ok := _message.(I${arrayField.type.name})
         if !_ok {
             return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${arrayField.type.name}")
         }
@@ -400,9 +413,15 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     {
         checksum = ${helper.getNullValueForTypeReference(checksumField.type)}
         // Create an array of all the bytes read in this message element so far.
-        byte[] checksumRawData = io.getBytes(startPos, io.GetPos())
-        ${helper.getLanguageTypeNameForField(field)} checksumRef = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
-        checksum = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)})
+        checksumRawData := io.getBytes(startPos, io.GetPos())
+        checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+        if _checksumRefErr != nil {
+            return nil, errors.New("Error parsing 'checksum' field " + _checksumRefErr.Error())
+        }
+        checksum, _checksumErr = ${helper.toParseExpression(checksumField, checksumField.checksumExpression, type.parserArguments)}
+        if _checksumErr != nil {
+            return nil, errors.New("Error parsing 'checksum' field " + _checksumErr.Error())
+        }
         if checksum != checksumRef {
             return nil, errors.New("Checksum verification failed. Expected " + (checksumRef & 0xFFFF) + " but got " + (checksum & 0xFFFF)")
         }
@@ -413,7 +432,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign simpleTypeReference = constField.type>
 
     // Const Field (${constField.name})
-    var ${constField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    ${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    if _${constField.name}Err != nil {
+        return nil, errors.New("Error parsing '${constField.name}' field " + _${constField.name}Err.Error())
+    }
     if ${constField.name} != ${type.name}_${constField.name?upper_case} {
         return nil, errors.New("Expected constant value " + strconv.Itoa(int(${type.name}_${constField.name?upper_case})) + " but got " + strconv.Itoa(int(${constField.name})))
     }
@@ -423,7 +445,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign simpleTypeReference = discriminatorField.type>
 
     // Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-    var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    ${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    if _${discriminatorField.name}Err != nil {
+        return nil, errors.New("Error parsing '${discriminatorField.name}' field " + _${discriminatorField.name}Err.Error())
+    }
                 <#break>
             <#case "enum">
                 <#assign enumField = field>
@@ -439,7 +464,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign simpleTypeReference = implicitField.type>
 
     // Implicit Field (${implicitField.name}) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    ${helper.getVariableName(field)}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    if _${implicitField.name}Err != nil {
+        return nil, errors.New("Error parsing '${implicitField.name}' field " + _${implicitField.name}Err.Error())
+    }
                 <#break>
             <#case "manualArray">
                 <#assign manualArrayField = field>
@@ -504,7 +532,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign manualField = field>
 
     // Manual Field (${manualField.name})
-    var ${manualField.name} ${helper.getLanguageTypeNameForField(field)} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)})
+    ${manualField.name}, _${manualField.name}Err = ${helper.toParseExpression(manualField, manualField.parseExpression, type.parserArguments)}
+    if _${implicitField.name}Err != nil {
+        return nil, errors.New("Error parsing '${manualField.name}' field " + _${manualField.name}Err.Error())
+    }
             <#break>
             <#case "optional">
                 <#assign optionalField = field>
@@ -513,20 +544,24 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#if optionalField.conditionExpression.contains("curPos")>
     curPos = io.GetPos() - startPos
                 </#if>
-    var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
+    var ${optionalField.name} *<#if helper.isComplexTypeReference(optionalField.type)>I</#if>${helper.getLanguageTypeNameForField(field)} = nil
     if ${helper.toBooleanParseExpression(optionalField.conditionExpression, type.parserArguments)} {
             <#if helper.isSimpleTypeReference(optionalField.type)>
-        _val := ${helper.getReadBufferReadMethodCall(optionalField.type)}
+        _val, _err := ${helper.getReadBufferReadMethodCall(optionalField.type)}
+        if _err != nil {
+            return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
+        }
+
         ${optionalField.name} = &_val
             <#else>
         _message, _err := ${helper.getLanguageTypeNameForField(field)}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument>${helper.toTypedParseExpression(helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
         if _err != nil {
             return nil, errors.New("Error parsing '${optionalField.name}' field " + _err.Error())
         }
-        var _item ${helper.getLanguageTypeNameForField(field)}
-        _item, _ok := _message.(${helper.getLanguageTypeNameForField(field)})
+        var _item I${helper.getLanguageTypeNameForField(field)}
+        _item, _ok := _message.(I${helper.getLanguageTypeNameForField(field)})
         if !_ok {
-            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ${helper.getLanguageTypeNameForField(field)}")
+            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to I${helper.getLanguageTypeNameForField(field)}")
         }
         ${optionalField.name} = &_item
             </#if>
@@ -541,7 +576,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
         _timesPadding := (${helper.toParseExpression(paddingField, paddingField.paddingCondition, type.parserArguments)})
         for ;(io.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {
             // Just read the padding data and ignore it
-            ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+            _, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+            if _err != nil {
+                return nil, errors.New("Error parsing 'padding' field " + _err.Error())
+            }
         }
     }
                 <#break>
@@ -551,7 +589,10 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
-        var reserved ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+        reserved, _err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+        if _err != nil {
+            return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+        }
         if reserved != ${helper.getReservedValue(reservedField)} {
             log.WithFields(log.Fields{
                 "expected value": ${helper.getReservedValue(reservedField)},
@@ -566,17 +607,20 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
     // Simple Field (${simpleField.name})
                 <#if helper.isSimpleTypeReference(simpleField.type)>
                     <#assign simpleTypeReference = simpleField.type>
-    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    ${simpleField.name}, _${simpleField.name}Err := ${helper.getReadBufferReadMethodCall(simpleTypeReference)}
+    if _${simpleField.name}Err != nil {
+        return nil, errors.New("Error parsing '${simpleField.name}' field " + _${simpleField.name}Err.Error())
+    }
                 <#else>
                     <#assign complexTypeReference = simpleField.type>
     _${simpleField.name}Message, _err := ${complexTypeReference.name}Parse(io<#if field.params?has_content>, <#list field.params as parserArgument><#if helper.isOptionalField(helper.getFieldForNameFromCurrentOrParent(parserArgument.name))>*</#if>${helper.toTypedParseExpression(helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, type.parserArguments)}<#sep>, </#sep></#list></#if>)
     if _err != nil {
         return nil, errors.New("Error parsing simple field '${simpleField.name}'. " + _err.Error())
     }
-    var ${simpleField.name} ${helper.getLanguageTypeNameForField(field)}
-    ${simpleField.name}, _${simpleField.name}Ok := _${simpleField.name}Message.(${helper.getLanguageTypeNameForField(field)})
+    var ${simpleField.name} I${helper.getLanguageTypeNameForField(field)}
+    ${simpleField.name}, _${simpleField.name}Ok := _${simpleField.name}Message.(I${helper.getLanguageTypeNameForField(field)})
     if !_${simpleField.name}Ok {
-        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_${simpleField.name}Message).Name() + " to ${helper.getLanguageTypeNameForField(field)}")
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_${simpleField.name}Message).Name() + " to I${helper.getLanguageTypeNameForField(field)}")
     }
                 </#if>
                 <#break>
@@ -602,7 +646,11 @@ func ${type.name}Parse(io spi.ReadBuffer<#if type.parserArguments?has_content>, 
                 <#assign virtualField = field>
 
     // Virtual field (Just declare a local variable so we can access it in the parser)
-    var ${virtualField.name} ${helper.getLanguageTypeNameForField(field)} = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)})
+    ${virtualField.name}, _${virtualField.name}Err := ${helper.toParseExpression(virtualField, virtualField.valueExpression, type.parserArguments)}
+    if _${virtualField.name}Err != nil {
+        return nil, errors.New("Error parsing '${virtualField.name}' field " + _${virtualField.name}Err.Error())
+    }
+
                 <#break>
         </#switch>
     </#list>
@@ -620,7 +668,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
     <#if arraySizeInBytesHelpers?has_content>
         <#list arraySizeInBytesHelpers?keys as key>
             <#assign typeName=arraySizeInBytesHelpers[key]>
-    ${key}ArraySizeInBytes := func(items []${typeName}) uint32 {
+    ${key}ArraySizeInBytes := func(items []I${typeName}) uint32 {
         var sizeInBytes uint32 = 0
         for _, v := range items {
             sizeInBytes += uint32(v.LengthInBytes())
@@ -691,7 +739,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign enumField = field>
 
     // Enum field (${enumField.name})
-    ${enumField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${enumField.name})
+    ${enumField.name} := I${helper.getLanguageTypeNameForField(field)}(m.${enumField.name})
     ${enumField.name}.Serialize(io)
                 <#break>
             <#case "implicit">
@@ -722,7 +770,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign optionalField = field>
 
     // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
-    var ${optionalField.name} *${helper.getLanguageTypeNameForField(field)} = nil
+    var ${optionalField.name} *<#if helper.isComplexTypeReference(optionalField.type)>I</#if>${helper.getLanguageTypeNameForField(field)} = nil
     if m.${optionalField.name} != nil {
         ${optionalField.name} = m.${optionalField.name}
                 <#if helper.isSimpleTypeReference(optionalField.type)>
@@ -730,7 +778,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
         ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = optionalField.type>
-        ${optionalField.name}.Serialize(io)
+        (*${optionalField.name}).Serialize(io)
                 </#if>
     }
                 <#break>
@@ -758,12 +806,13 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign simpleField = field>
 
     // Simple Field (${simpleField.name})
-    ${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
                 <#if helper.isSimpleTypeReference(simpleField.type)>
                     <#assign simpleTypeReference = simpleField.type>
+    ${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
     ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = simpleField.type>
+    ${simpleField.name} := I${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
     ${simpleField.name}.Serialize(io)
                 </#if>
                 <#break>

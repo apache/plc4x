@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type ConnectionRequest struct {
-	hpaiDiscoveryEndpoint        HPAIDiscoveryEndpoint
-	hpaiDataEndpoint             HPAIDataEndpoint
-	connectionRequestInformation ConnectionRequestInformation
+	hpaiDiscoveryEndpoint        IHPAIDiscoveryEndpoint
+	hpaiDataEndpoint             IHPAIDataEndpoint
+	connectionRequestInformation IConnectionRequestInformation
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m ConnectionRequest) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) KNXNetIPMessageInitializer {
+func NewConnectionRequest(hpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint, hpaiDataEndpoint IHPAIDataEndpoint, connectionRequestInformation IConnectionRequestInformation) KNXNetIPMessageInitializer {
 	return &ConnectionRequest{hpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint, hpaiDataEndpoint: hpaiDataEndpoint, connectionRequestInformation: connectionRequestInformation}
 }
 
@@ -97,10 +97,10 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiDiscoveryEndpoint'. " + _err.Error())
 	}
-	var hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint
-	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointOk := _hpaiDiscoveryEndpointMessage.(HPAIDiscoveryEndpoint)
+	var hpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint
+	hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointOk := _hpaiDiscoveryEndpointMessage.(IHPAIDiscoveryEndpoint)
 	if !_hpaiDiscoveryEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDiscoveryEndpointMessage).Name() + " to HPAIDiscoveryEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDiscoveryEndpointMessage).Name() + " to IHPAIDiscoveryEndpoint")
 	}
 
 	// Simple Field (hpaiDataEndpoint)
@@ -108,10 +108,10 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiDataEndpoint'. " + _err.Error())
 	}
-	var hpaiDataEndpoint HPAIDataEndpoint
-	hpaiDataEndpoint, _hpaiDataEndpointOk := _hpaiDataEndpointMessage.(HPAIDataEndpoint)
+	var hpaiDataEndpoint IHPAIDataEndpoint
+	hpaiDataEndpoint, _hpaiDataEndpointOk := _hpaiDataEndpointMessage.(IHPAIDataEndpoint)
 	if !_hpaiDataEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDataEndpointMessage).Name() + " to HPAIDataEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiDataEndpointMessage).Name() + " to IHPAIDataEndpoint")
 	}
 
 	// Simple Field (connectionRequestInformation)
@@ -119,10 +119,10 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'connectionRequestInformation'. " + _err.Error())
 	}
-	var connectionRequestInformation ConnectionRequestInformation
-	connectionRequestInformation, _connectionRequestInformationOk := _connectionRequestInformationMessage.(ConnectionRequestInformation)
+	var connectionRequestInformation IConnectionRequestInformation
+	connectionRequestInformation, _connectionRequestInformationOk := _connectionRequestInformationMessage.(IConnectionRequestInformation)
 	if !_connectionRequestInformationOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_connectionRequestInformationMessage).Name() + " to ConnectionRequestInformation")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_connectionRequestInformationMessage).Name() + " to IConnectionRequestInformation")
 	}
 
 	// Create the instance
@@ -132,14 +132,14 @@ func ConnectionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 func (m ConnectionRequest) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (hpaiDiscoveryEndpoint)
-	hpaiDiscoveryEndpoint := HPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
+	hpaiDiscoveryEndpoint := IHPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
 	hpaiDiscoveryEndpoint.Serialize(io)
 
 	// Simple Field (hpaiDataEndpoint)
-	hpaiDataEndpoint := HPAIDataEndpoint(m.hpaiDataEndpoint)
+	hpaiDataEndpoint := IHPAIDataEndpoint(m.hpaiDataEndpoint)
 	hpaiDataEndpoint.Serialize(io)
 
 	// Simple Field (connectionRequestInformation)
-	connectionRequestInformation := ConnectionRequestInformation(m.connectionRequestInformation)
+	connectionRequestInformation := IConnectionRequestInformation(m.connectionRequestInformation)
 	connectionRequestInformation.Serialize(io)
 }

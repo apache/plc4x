@@ -30,7 +30,7 @@ type ModbusSerialADU struct {
 	transactionId uint16
 	length        uint16
 	address       uint8
-	pdu           ModbusPDU
+	pdu           IModbusPDU
 }
 
 // The corresponding interface
@@ -39,7 +39,7 @@ type IModbusSerialADU interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu ModbusPDU) spi.Message {
+func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu IModbusPDU) spi.Message {
 	return &ModbusSerialADU{transactionId: transactionId, length: length, address: address, pdu: pdu}
 }
 
@@ -91,11 +91,17 @@ func (m ModbusSerialADU) LengthInBytes() uint16 {
 func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Simple Field (transactionId)
-	var transactionId uint16 = io.ReadUint16(16)
+	transactionId, _transactionIdErr := io.ReadUint16(16)
+	if _transactionIdErr != nil {
+		return nil, errors.New("Error parsing 'transactionId' field " + _transactionIdErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint16 = io.ReadUint16(16)
+		reserved, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint16(0x0000) {
 			log.WithFields(log.Fields{
 				"expected value": uint16(0x0000),
@@ -105,20 +111,26 @@ func ModbusSerialADUParse(io spi.ReadBuffer, response bool) (spi.Message, error)
 	}
 
 	// Simple Field (length)
-	var length uint16 = io.ReadUint16(16)
+	length, _lengthErr := io.ReadUint16(16)
+	if _lengthErr != nil {
+		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+	}
 
 	// Simple Field (address)
-	var address uint8 = io.ReadUint8(8)
+	address, _addressErr := io.ReadUint8(8)
+	if _addressErr != nil {
+		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+	}
 
 	// Simple Field (pdu)
 	_pduMessage, _err := ModbusPDUParse(io, response)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'pdu'. " + _err.Error())
 	}
-	var pdu ModbusPDU
-	pdu, _pduOk := _pduMessage.(ModbusPDU)
+	var pdu IModbusPDU
+	pdu, _pduOk := _pduMessage.(IModbusPDU)
 	if !_pduOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_pduMessage).Name() + " to ModbusPDU")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_pduMessage).Name() + " to IModbusPDU")
 	}
 
 	// Create the instance
@@ -143,6 +155,6 @@ func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (address))
 
 	// Simple Field (pdu)
-	pdu := ModbusPDU(m.pdu)
+	pdu := IModbusPDU(m.pdu)
 	pdu.Serialize(io)
 }

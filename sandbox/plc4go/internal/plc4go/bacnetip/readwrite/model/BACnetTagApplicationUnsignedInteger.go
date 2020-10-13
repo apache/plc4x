@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -94,7 +95,11 @@ func BACnetTagApplicationUnsignedIntegerParse(io spi.ReadBuffer, lengthValueType
 	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(extLength), uint16(lengthValueType))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		data = append(data, io.ReadInt8(8))
+		_dataVal, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'data' field " + _err.Error())
+		}
+		data = append(data, _dataVal)
 	}
 
 	// Create the instance

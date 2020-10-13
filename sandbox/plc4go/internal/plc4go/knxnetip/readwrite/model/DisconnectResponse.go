@@ -26,7 +26,7 @@ import (
 // The data-structure of this message
 type DisconnectResponse struct {
 	communicationChannelId uint8
-	status                 Status
+	status                 IStatus
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m DisconnectResponse) initialize() spi.Message {
 	return m
 }
 
-func NewDisconnectResponse(communicationChannelId uint8, status Status) KNXNetIPMessageInitializer {
+func NewDisconnectResponse(communicationChannelId uint8, status IStatus) KNXNetIPMessageInitializer {
 	return &DisconnectResponse{communicationChannelId: communicationChannelId, status: status}
 }
 
@@ -88,7 +88,10 @@ func (m DisconnectResponse) LengthInBytes() uint16 {
 func DisconnectResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Enum field (status)
 	status, _statusErr := StatusParse(io)
@@ -107,6 +110,6 @@ func (m DisconnectResponse) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (communicationChannelId))
 
 	// Enum field (status)
-	status := Status(m.status)
+	status := IStatus(m.status)
 	status.Serialize(io)
 }

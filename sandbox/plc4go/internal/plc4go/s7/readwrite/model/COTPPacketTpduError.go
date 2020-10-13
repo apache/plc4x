@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -40,7 +41,7 @@ func (m COTPPacketTpduError) TpduCode() uint8 {
 	return 0x70
 }
 
-func (m COTPPacketTpduError) initialize(parameters []COTPParameter, payload *S7Message) spi.Message {
+func (m COTPPacketTpduError) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
 	m.parameters = parameters
 	m.payload = payload
 	return m
@@ -89,10 +90,16 @@ func (m COTPPacketTpduError) LengthInBytes() uint16 {
 func COTPPacketTpduErrorParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
 
 	// Simple Field (destinationReference)
-	var destinationReference uint16 = io.ReadUint16(16)
+	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+	if _destinationReferenceErr != nil {
+		return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
+	}
 
 	// Simple Field (rejectCause)
-	var rejectCause uint8 = io.ReadUint8(8)
+	rejectCause, _rejectCauseErr := io.ReadUint8(8)
+	if _rejectCauseErr != nil {
+		return nil, errors.New("Error parsing 'rejectCause' field " + _rejectCauseErr.Error())
+	}
 
 	// Create the instance
 	return NewCOTPPacketTpduError(destinationReference, rejectCause), nil

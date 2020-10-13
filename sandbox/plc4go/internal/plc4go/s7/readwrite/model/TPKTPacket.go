@@ -31,7 +31,7 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 
 // The data-structure of this message
 type TPKTPacket struct {
-	payload COTPPacket
+	payload ICOTPPacket
 }
 
 // The corresponding interface
@@ -40,7 +40,7 @@ type ITPKTPacket interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewTPKTPacket(payload COTPPacket) spi.Message {
+func NewTPKTPacket(payload ICOTPPacket) spi.Message {
 	return &TPKTPacket{payload: payload}
 }
 
@@ -89,14 +89,20 @@ func (m TPKTPacket) LengthInBytes() uint16 {
 func TPKTPacketParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (protocolId)
-	var protocolId uint8 = io.ReadUint8(8)
+	protocolId, _protocolIdErr := io.ReadUint8(8)
+	if _protocolIdErr != nil {
+		return nil, errors.New("Error parsing 'protocolId' field " + _protocolIdErr.Error())
+	}
 	if protocolId != TPKTPacket_PROTOCOLID {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(TPKTPacket_PROTOCOLID)) + " but got " + strconv.Itoa(int(protocolId)))
 	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(8)
+		reserved, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -106,17 +112,20 @@ func TPKTPacketParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var len uint16 = io.ReadUint16(16)
+	len, _lenErr := io.ReadUint16(16)
+	if _lenErr != nil {
+		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+	}
 
 	// Simple Field (payload)
 	_payloadMessage, _err := COTPPacketParse(io, uint16(len)-uint16(uint16(4)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'payload'. " + _err.Error())
 	}
-	var payload COTPPacket
-	payload, _payloadOk := _payloadMessage.(COTPPacket)
+	var payload ICOTPPacket
+	payload, _payloadOk := _payloadMessage.(ICOTPPacket)
 	if !_payloadOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_payloadMessage).Name() + " to COTPPacket")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_payloadMessage).Name() + " to ICOTPPacket")
 	}
 
 	// Create the instance
@@ -136,6 +145,6 @@ func (m TPKTPacket) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (len))
 
 	// Simple Field (payload)
-	payload := COTPPacket(m.payload)
+	payload := ICOTPPacket(m.payload)
 	payload.Serialize(io)
 }

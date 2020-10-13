@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationAck struct {
-	deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock
+	deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m DeviceConfigurationAck) initialize() spi.Message {
 	return m
 }
 
-func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock) KNXNetIPMessageInitializer {
+func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock) KNXNetIPMessageInitializer {
 	return &DeviceConfigurationAck{deviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
 }
 
@@ -89,10 +89,10 @@ func DeviceConfigurationAckParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'deviceConfigurationAckDataBlock'. " + _err.Error())
 	}
-	var deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock
-	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockOk := _deviceConfigurationAckDataBlockMessage.(DeviceConfigurationAckDataBlock)
+	var deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
+	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockOk := _deviceConfigurationAckDataBlockMessage.(IDeviceConfigurationAckDataBlock)
 	if !_deviceConfigurationAckDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationAckDataBlockMessage).Name() + " to DeviceConfigurationAckDataBlock")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationAckDataBlockMessage).Name() + " to IDeviceConfigurationAckDataBlock")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func DeviceConfigurationAckParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (deviceConfigurationAckDataBlock)
-	deviceConfigurationAckDataBlock := DeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
+	deviceConfigurationAckDataBlock := IDeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
 	deviceConfigurationAckDataBlock.Serialize(io)
 }

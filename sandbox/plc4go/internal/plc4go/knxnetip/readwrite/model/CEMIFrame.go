@@ -26,7 +26,7 @@ import (
 // The data-structure of this message
 type CEMIFrame struct {
 	repeated             bool
-	priority             CEMIPriority
+	priority             ICEMIPriority
 	acknowledgeRequested bool
 	errorFlag            bool
 }
@@ -41,7 +41,7 @@ type ICEMIFrame interface {
 }
 
 type CEMIFrameInitializer interface {
-	initialize(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message
+	initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message
 }
 
 func CEMIFrameNotAckFrame(m ICEMIFrame) bool {
@@ -112,16 +112,28 @@ func (m CEMIFrame) LengthInBytes() uint16 {
 func CEMIFrameParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (standardFrame) (Used as input to a switch field)
-	var standardFrame bool = io.ReadBit()
+	standardFrame, _standardFrameErr := io.ReadBit()
+	if _standardFrameErr != nil {
+		return nil, errors.New("Error parsing 'standardFrame' field " + _standardFrameErr.Error())
+	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	var polling bool = io.ReadBit()
+	polling, _pollingErr := io.ReadBit()
+	if _pollingErr != nil {
+		return nil, errors.New("Error parsing 'polling' field " + _pollingErr.Error())
+	}
 
 	// Simple Field (repeated)
-	var repeated bool = io.ReadBit()
+	repeated, _repeatedErr := io.ReadBit()
+	if _repeatedErr != nil {
+		return nil, errors.New("Error parsing 'repeated' field " + _repeatedErr.Error())
+	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	var notAckFrame bool = io.ReadBit()
+	notAckFrame, _notAckFrameErr := io.ReadBit()
+	if _notAckFrameErr != nil {
+		return nil, errors.New("Error parsing 'notAckFrame' field " + _notAckFrameErr.Error())
+	}
 
 	// Enum field (priority)
 	priority, _priorityErr := CEMIPriorityParse(io)
@@ -130,10 +142,16 @@ func CEMIFrameParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Simple Field (acknowledgeRequested)
-	var acknowledgeRequested bool = io.ReadBit()
+	acknowledgeRequested, _acknowledgeRequestedErr := io.ReadBit()
+	if _acknowledgeRequestedErr != nil {
+		return nil, errors.New("Error parsing 'acknowledgeRequested' field " + _acknowledgeRequestedErr.Error())
+	}
 
 	// Simple Field (errorFlag)
-	var errorFlag bool = io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit()
+	if _errorFlagErr != nil {
+		return nil, errors.New("Error parsing 'errorFlag' field " + _errorFlagErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer CEMIFrameInitializer
@@ -178,7 +196,7 @@ func (m CEMIFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteBit((bool)(notAckFrame))
 
 	// Enum field (priority)
-	priority := CEMIPriority(m.priority)
+	priority := ICEMIPriority(m.priority)
 	priority.Serialize(io)
 
 	// Simple Field (acknowledgeRequested)

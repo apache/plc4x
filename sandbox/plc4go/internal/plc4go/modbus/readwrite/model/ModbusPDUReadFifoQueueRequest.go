@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,10 @@ func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
 func ModbusPDUReadFifoQueueRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (fifoPointerAddress)
-	var fifoPointerAddress uint16 = io.ReadUint16(16)
+	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
+	if _fifoPointerAddressErr != nil {
+		return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil

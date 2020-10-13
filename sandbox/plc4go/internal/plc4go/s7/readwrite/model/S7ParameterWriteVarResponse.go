@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -87,7 +88,10 @@ func (m S7ParameterWriteVarResponse) LengthInBytes() uint16 {
 func S7ParameterWriteVarResponseParse(io spi.ReadBuffer) (S7ParameterInitializer, error) {
 
 	// Simple Field (numItems)
-	var numItems uint8 = io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8(8)
+	if _numItemsErr != nil {
+		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+	}
 
 	// Create the instance
 	return NewS7ParameterWriteVarResponse(numItems), nil

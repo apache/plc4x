@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type HPAIDiscoveryEndpoint struct {
-	hostProtocolCode HostProtocolCode
-	ipAddress        IPAddress
+	hostProtocolCode IHostProtocolCode
+	ipAddress        IIPAddress
 	ipPort           uint16
 }
 
@@ -37,7 +37,7 @@ type IHPAIDiscoveryEndpoint interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) spi.Message {
+func NewHPAIDiscoveryEndpoint(hostProtocolCode IHostProtocolCode, ipAddress IIPAddress, ipPort uint16) spi.Message {
 	return &HPAIDiscoveryEndpoint{hostProtocolCode: hostProtocolCode, ipAddress: ipAddress, ipPort: ipPort}
 }
 
@@ -86,7 +86,10 @@ func (m HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
 func HPAIDiscoveryEndpointParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _structureLengthErr := io.ReadUint8(8)
+	if _structureLengthErr != nil {
+		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Enum field (hostProtocolCode)
 	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
@@ -99,14 +102,17 @@ func HPAIDiscoveryEndpointParse(io spi.ReadBuffer) (spi.Message, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'ipAddress'. " + _err.Error())
 	}
-	var ipAddress IPAddress
-	ipAddress, _ipAddressOk := _ipAddressMessage.(IPAddress)
+	var ipAddress IIPAddress
+	ipAddress, _ipAddressOk := _ipAddressMessage.(IIPAddress)
 	if !_ipAddressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_ipAddressMessage).Name() + " to IPAddress")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_ipAddressMessage).Name() + " to IIPAddress")
 	}
 
 	// Simple Field (ipPort)
-	var ipPort uint16 = io.ReadUint16(16)
+	ipPort, _ipPortErr := io.ReadUint16(16)
+	if _ipPortErr != nil {
+		return nil, errors.New("Error parsing 'ipPort' field " + _ipPortErr.Error())
+	}
 
 	// Create the instance
 	return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
@@ -119,11 +125,11 @@ func (m HPAIDiscoveryEndpoint) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (structureLength))
 
 	// Enum field (hostProtocolCode)
-	hostProtocolCode := HostProtocolCode(m.hostProtocolCode)
+	hostProtocolCode := IHostProtocolCode(m.hostProtocolCode)
 	hostProtocolCode.Serialize(io)
 
 	// Simple Field (ipAddress)
-	ipAddress := IPAddress(m.ipAddress)
+	ipAddress := IIPAddress(m.ipAddress)
 	ipAddress.Serialize(io)
 
 	// Simple Field (ipPort)

@@ -111,13 +111,19 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
 func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (deviceInstanceRangeLowLimitHeader)
-	var deviceInstanceRangeLowLimitHeader uint8 = io.ReadUint8(5)
+	deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
+	if _deviceInstanceRangeLowLimitHeaderErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimitHeader' field " + _deviceInstanceRangeLowLimitHeaderErr.Error())
+	}
 	if deviceInstanceRangeLowLimitHeader != BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGELOWLIMITHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGELOWLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceRangeLowLimitHeader)))
 	}
 
 	// Simple Field (deviceInstanceRangeLowLimitLength)
-	var deviceInstanceRangeLowLimitLength uint8 = io.ReadUint8(3)
+	deviceInstanceRangeLowLimitLength, _deviceInstanceRangeLowLimitLengthErr := io.ReadUint8(3)
+	if _deviceInstanceRangeLowLimitLengthErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimitLength' field " + _deviceInstanceRangeLowLimitLengthErr.Error())
+	}
 
 	// Array field (deviceInstanceRangeLowLimit)
 	var deviceInstanceRangeLowLimit []int8
@@ -126,18 +132,28 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfi
 		deviceInstanceRangeLowLimit := make([]int8, deviceInstanceRangeLowLimitLength)
 		for curItem := uint16(0); curItem < uint16(deviceInstanceRangeLowLimitLength); curItem++ {
 
-			deviceInstanceRangeLowLimit = append(deviceInstanceRangeLowLimit, io.ReadInt8(8))
+			_deviceInstanceRangeLowLimitVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'deviceInstanceRangeLowLimit' field " + _err.Error())
+			}
+			deviceInstanceRangeLowLimit = append(deviceInstanceRangeLowLimit, _deviceInstanceRangeLowLimitVal)
 		}
 	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
-	var deviceInstanceRangeHighLimitHeader uint8 = io.ReadUint8(5)
+	deviceInstanceRangeHighLimitHeader, _deviceInstanceRangeHighLimitHeaderErr := io.ReadUint8(5)
+	if _deviceInstanceRangeHighLimitHeaderErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimitHeader' field " + _deviceInstanceRangeHighLimitHeaderErr.Error())
+	}
 	if deviceInstanceRangeHighLimitHeader != BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER)) + " but got " + strconv.Itoa(int(deviceInstanceRangeHighLimitHeader)))
 	}
 
 	// Simple Field (deviceInstanceRangeHighLimitLength)
-	var deviceInstanceRangeHighLimitLength uint8 = io.ReadUint8(3)
+	deviceInstanceRangeHighLimitLength, _deviceInstanceRangeHighLimitLengthErr := io.ReadUint8(3)
+	if _deviceInstanceRangeHighLimitLengthErr != nil {
+		return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimitLength' field " + _deviceInstanceRangeHighLimitLengthErr.Error())
+	}
 
 	// Array field (deviceInstanceRangeHighLimit)
 	var deviceInstanceRangeHighLimit []int8
@@ -146,7 +162,11 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfi
 		deviceInstanceRangeHighLimit := make([]int8, deviceInstanceRangeHighLimitLength)
 		for curItem := uint16(0); curItem < uint16(deviceInstanceRangeHighLimitLength); curItem++ {
 
-			deviceInstanceRangeHighLimit = append(deviceInstanceRangeHighLimit, io.ReadInt8(8))
+			_deviceInstanceRangeHighLimitVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'deviceInstanceRangeHighLimit' field " + _err.Error())
+			}
+			deviceInstanceRangeHighLimit = append(deviceInstanceRangeHighLimit, _deviceInstanceRangeHighLimitVal)
 		}
 	}
 

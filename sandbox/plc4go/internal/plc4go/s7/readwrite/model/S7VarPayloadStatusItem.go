@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type S7VarPayloadStatusItem struct {
-	returnCode DataTransportErrorCode
+	returnCode IDataTransportErrorCode
 }
 
 // The corresponding interface
@@ -34,7 +34,7 @@ type IS7VarPayloadStatusItem interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) spi.Message {
+func NewS7VarPayloadStatusItem(returnCode IDataTransportErrorCode) spi.Message {
 	return &S7VarPayloadStatusItem{returnCode: returnCode}
 }
 
@@ -86,6 +86,6 @@ func S7VarPayloadStatusItemParse(io spi.ReadBuffer) (spi.Message, error) {
 func (m S7VarPayloadStatusItem) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (returnCode)
-	returnCode := DataTransportErrorCode(m.returnCode)
+	returnCode := IDataTransportErrorCode(m.returnCode)
 	returnCode.Serialize(io)
 }

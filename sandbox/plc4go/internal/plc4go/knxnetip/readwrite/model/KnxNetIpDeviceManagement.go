@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -83,7 +84,10 @@ func (m KnxNetIpDeviceManagement) LengthInBytes() uint16 {
 func KnxNetIpDeviceManagementParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
 
 	// Simple Field (version)
-	var version uint8 = io.ReadUint8(8)
+	version, _versionErr := io.ReadUint8(8)
+	if _versionErr != nil {
+		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+	}
 
 	// Create the instance
 	return NewKnxNetIpDeviceManagement(version), nil

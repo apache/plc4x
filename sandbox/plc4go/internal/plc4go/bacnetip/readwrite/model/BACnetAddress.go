@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -85,12 +86,19 @@ func BACnetAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 		address := make([]uint8, uint16(4))
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
-			address = append(address, io.ReadUint8(8))
+			_addressVal, _err := io.ReadUint8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'address' field " + _err.Error())
+			}
+			address = append(address, _addressVal)
 		}
 	}
 
 	// Simple Field (port)
-	var port uint16 = io.ReadUint16(16)
+	port, _portErr := io.ReadUint16(16)
+	if _portErr != nil {
+		return nil, errors.New("Error parsing 'port' field " + _portErr.Error())
+	}
 
 	// Create the instance
 	return NewBACnetAddress(address, port), nil

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -120,41 +121,71 @@ func (m S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
 func S7ParameterUserDataItemCPUFunctionsParse(io spi.ReadBuffer) (S7ParameterUserDataItemInitializer, error) {
 
 	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _itemLengthErr := io.ReadUint8(8)
+	if _itemLengthErr != nil {
+		return nil, errors.New("Error parsing 'itemLength' field " + _itemLengthErr.Error())
+	}
 
 	// Simple Field (method)
-	var method uint8 = io.ReadUint8(8)
+	method, _methodErr := io.ReadUint8(8)
+	if _methodErr != nil {
+		return nil, errors.New("Error parsing 'method' field " + _methodErr.Error())
+	}
 
 	// Simple Field (cpuFunctionType)
-	var cpuFunctionType uint8 = io.ReadUint8(4)
+	cpuFunctionType, _cpuFunctionTypeErr := io.ReadUint8(4)
+	if _cpuFunctionTypeErr != nil {
+		return nil, errors.New("Error parsing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
+	}
 
 	// Simple Field (cpuFunctionGroup)
-	var cpuFunctionGroup uint8 = io.ReadUint8(4)
+	cpuFunctionGroup, _cpuFunctionGroupErr := io.ReadUint8(4)
+	if _cpuFunctionGroupErr != nil {
+		return nil, errors.New("Error parsing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
+	}
 
 	// Simple Field (cpuSubfunction)
-	var cpuSubfunction uint8 = io.ReadUint8(8)
+	cpuSubfunction, _cpuSubfunctionErr := io.ReadUint8(8)
+	if _cpuSubfunctionErr != nil {
+		return nil, errors.New("Error parsing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
+	}
 
 	// Simple Field (sequenceNumber)
-	var sequenceNumber uint8 = io.ReadUint8(8)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8(8)
+	if _sequenceNumberErr != nil {
+		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+	}
 
 	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var dataUnitReferenceNumber *uint8 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'dataUnitReferenceNumber' field " + _err.Error())
+		}
+
 		dataUnitReferenceNumber = &_val
 	}
 
 	// Optional Field (lastDataUnit) (Can be skipped, if a given expression evaluates to false)
 	var lastDataUnit *uint8 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'lastDataUnit' field " + _err.Error())
+		}
+
 		lastDataUnit = &_val
 	}
 
 	// Optional Field (errorCode) (Can be skipped, if a given expression evaluates to false)
 	var errorCode *uint16 = nil
 	if bool((cpuFunctionType) == (8)) {
-		_val := io.ReadUint16(16)
+		_val, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
+		}
+
 		errorCode = &_val
 	}
 

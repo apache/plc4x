@@ -125,25 +125,40 @@ func (m BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
 func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (objectIdentifierHeader)
-	var objectIdentifierHeader uint8 = io.ReadUint8(8)
+	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
+	if _objectIdentifierHeaderErr != nil {
+		return nil, errors.New("Error parsing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+	}
 	if objectIdentifierHeader != BACnetUnconfirmedServiceRequestIAm_OBJECTIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestIAm_OBJECTIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(objectIdentifierHeader)))
 	}
 
 	// Simple Field (objectType)
-	var objectType uint16 = io.ReadUint16(10)
+	objectType, _objectTypeErr := io.ReadUint16(10)
+	if _objectTypeErr != nil {
+		return nil, errors.New("Error parsing 'objectType' field " + _objectTypeErr.Error())
+	}
 
 	// Simple Field (objectInstanceNumber)
-	var objectInstanceNumber uint32 = io.ReadUint32(22)
+	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
+	if _objectInstanceNumberErr != nil {
+		return nil, errors.New("Error parsing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+	}
 
 	// Const Field (maximumApduLengthAcceptedHeader)
-	var maximumApduLengthAcceptedHeader uint8 = io.ReadUint8(5)
+	maximumApduLengthAcceptedHeader, _maximumApduLengthAcceptedHeaderErr := io.ReadUint8(5)
+	if _maximumApduLengthAcceptedHeaderErr != nil {
+		return nil, errors.New("Error parsing 'maximumApduLengthAcceptedHeader' field " + _maximumApduLengthAcceptedHeaderErr.Error())
+	}
 	if maximumApduLengthAcceptedHeader != BACnetUnconfirmedServiceRequestIAm_MAXIMUMAPDULENGTHACCEPTEDHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestIAm_MAXIMUMAPDULENGTHACCEPTEDHEADER)) + " but got " + strconv.Itoa(int(maximumApduLengthAcceptedHeader)))
 	}
 
 	// Simple Field (maximumApduLengthAcceptedLength)
-	var maximumApduLengthAcceptedLength uint8 = io.ReadUint8(3)
+	maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := io.ReadUint8(3)
+	if _maximumApduLengthAcceptedLengthErr != nil {
+		return nil, errors.New("Error parsing 'maximumApduLengthAcceptedLength' field " + _maximumApduLengthAcceptedLengthErr.Error())
+	}
 
 	// Array field (maximumApduLengthAccepted)
 	var maximumApduLengthAccepted []int8
@@ -152,27 +167,43 @@ func BACnetUnconfirmedServiceRequestIAmParse(io spi.ReadBuffer) (BACnetUnconfirm
 		maximumApduLengthAccepted := make([]int8, maximumApduLengthAcceptedLength)
 		for curItem := uint16(0); curItem < uint16(maximumApduLengthAcceptedLength); curItem++ {
 
-			maximumApduLengthAccepted = append(maximumApduLengthAccepted, io.ReadInt8(8))
+			_maximumApduLengthAcceptedVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'maximumApduLengthAccepted' field " + _err.Error())
+			}
+			maximumApduLengthAccepted = append(maximumApduLengthAccepted, _maximumApduLengthAcceptedVal)
 		}
 	}
 
 	// Const Field (segmentationSupportedHeader)
-	var segmentationSupportedHeader uint8 = io.ReadUint8(8)
+	segmentationSupportedHeader, _segmentationSupportedHeaderErr := io.ReadUint8(8)
+	if _segmentationSupportedHeaderErr != nil {
+		return nil, errors.New("Error parsing 'segmentationSupportedHeader' field " + _segmentationSupportedHeaderErr.Error())
+	}
 	if segmentationSupportedHeader != BACnetUnconfirmedServiceRequestIAm_SEGMENTATIONSUPPORTEDHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestIAm_SEGMENTATIONSUPPORTEDHEADER)) + " but got " + strconv.Itoa(int(segmentationSupportedHeader)))
 	}
 
 	// Simple Field (segmentationSupported)
-	var segmentationSupported uint8 = io.ReadUint8(8)
+	segmentationSupported, _segmentationSupportedErr := io.ReadUint8(8)
+	if _segmentationSupportedErr != nil {
+		return nil, errors.New("Error parsing 'segmentationSupported' field " + _segmentationSupportedErr.Error())
+	}
 
 	// Const Field (vendorIdHeader)
-	var vendorIdHeader uint8 = io.ReadUint8(8)
+	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
+	if _vendorIdHeaderErr != nil {
+		return nil, errors.New("Error parsing 'vendorIdHeader' field " + _vendorIdHeaderErr.Error())
+	}
 	if vendorIdHeader != BACnetUnconfirmedServiceRequestIAm_VENDORIDHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetUnconfirmedServiceRequestIAm_VENDORIDHEADER)) + " but got " + strconv.Itoa(int(vendorIdHeader)))
 	}
 
 	// Simple Field (vendorId)
-	var vendorId uint8 = io.ReadUint8(8)
+	vendorId, _vendorIdErr := io.ReadUint8(8)
+	if _vendorIdErr != nil {
+		return nil, errors.New("Error parsing 'vendorId' field " + _vendorIdErr.Error())
+	}
 
 	// Create the instance
 	return NewBACnetUnconfirmedServiceRequestIAm(objectType, objectInstanceNumber, maximumApduLengthAcceptedLength, maximumApduLengthAccepted, segmentationSupported, vendorId), nil

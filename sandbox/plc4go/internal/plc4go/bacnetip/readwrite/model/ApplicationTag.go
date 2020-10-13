@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type ApplicationTag int8
 
+type IApplicationTag interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	ApplicationTag_NULL                     ApplicationTag = 0x0
 	ApplicationTag_BOOLEAN                  ApplicationTag = 0x1
@@ -46,6 +51,14 @@ func CastApplicationTag(structType interface{}) ApplicationTag {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m ApplicationTag) LengthInBits() uint16 {
+	return 4
+}
+
+func (m ApplicationTag) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func ApplicationTagParse(io spi.ReadBuffer) (ApplicationTag, error) {

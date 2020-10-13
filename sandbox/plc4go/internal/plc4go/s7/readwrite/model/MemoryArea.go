@@ -22,6 +22,12 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type MemoryArea uint8
 
+type IMemoryArea interface {
+	spi.Message
+	ShortName() string
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	MemoryArea_COUNTERS                 MemoryArea = 0x1C
 	MemoryArea_TIMERS                   MemoryArea = 0x1D
@@ -87,6 +93,14 @@ func CastMemoryArea(structType interface{}) MemoryArea {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m MemoryArea) LengthInBits() uint16 {
+	return 8
+}
+
+func (m MemoryArea) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func MemoryAreaParse(io spi.ReadBuffer) (MemoryArea, error) {
