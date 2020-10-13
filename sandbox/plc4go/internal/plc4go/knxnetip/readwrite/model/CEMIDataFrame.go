@@ -300,7 +300,7 @@ func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteBit((bool)(notAckFrame))
 
 	// Enum field (priority)
-	priority := ICEMIPriority(m.priority)
+	priority := CastCEMIPriority(m.priority)
 	priority.Serialize(io)
 
 	// Simple Field (acknowledgeRequested)
@@ -324,7 +324,7 @@ func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (extendedFrameFormat))
 
 	// Simple Field (sourceAddress)
-	sourceAddress := IKNXAddress(m.sourceAddress)
+	sourceAddress := CastIKNXAddress(m.sourceAddress)
 	sourceAddress.Serialize(io)
 
 	// Array Field (destinationAddress)
@@ -339,7 +339,7 @@ func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (dataLength))
 
 	// Enum field (tcpi)
-	tcpi := ITPCI(m.tcpi)
+	tcpi := CastTPCI(m.tcpi)
 	tcpi.Serialize(io)
 
 	// Simple Field (counter)
@@ -347,7 +347,7 @@ func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (counter))
 
 	// Enum field (apci)
-	apci := IAPCI(m.apci)
+	apci := CastAPCI(m.apci)
 	apci.Serialize(io)
 
 	// Simple Field (dataFirstByte)
@@ -360,4 +360,5 @@ func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) {
 			io.WriteInt8(8, _element)
 		}
 	}
+
 }

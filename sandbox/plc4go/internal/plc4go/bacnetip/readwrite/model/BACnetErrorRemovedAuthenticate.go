@@ -83,5 +83,8 @@ func BACnetErrorRemovedAuthenticateParse(io spi.ReadBuffer) (BACnetErrorInitiali
 }
 
 func (m BACnetErrorRemovedAuthenticate) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

@@ -102,4 +102,5 @@ func (m ProjectInstallationIdentifier) Serialize(io spi.WriteBuffer) {
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.installationNumber)
 	io.WriteUint8(8, (installationNumber))
+
 }

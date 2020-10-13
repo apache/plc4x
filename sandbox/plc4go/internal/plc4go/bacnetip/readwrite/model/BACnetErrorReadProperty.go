@@ -175,32 +175,36 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 }
 
 func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (errorClassHeader)
-	io.WriteUint8(5, 0x12)
+		// Const Field (errorClassHeader)
+		io.WriteUint8(5, 0x12)
 
-	// Simple Field (errorClassLength)
-	errorClassLength := uint8(m.errorClassLength)
-	io.WriteUint8(3, (errorClassLength))
+		// Simple Field (errorClassLength)
+		errorClassLength := uint8(m.errorClassLength)
+		io.WriteUint8(3, (errorClassLength))
 
-	// Array Field (errorClass)
-	if m.errorClass != nil {
-		for _, _element := range m.errorClass {
-			io.WriteInt8(8, _element)
+		// Array Field (errorClass)
+		if m.errorClass != nil {
+			for _, _element := range m.errorClass {
+				io.WriteInt8(8, _element)
+			}
 		}
-	}
 
-	// Const Field (errorCodeHeader)
-	io.WriteUint8(5, 0x12)
+		// Const Field (errorCodeHeader)
+		io.WriteUint8(5, 0x12)
 
-	// Simple Field (errorCodeLength)
-	errorCodeLength := uint8(m.errorCodeLength)
-	io.WriteUint8(3, (errorCodeLength))
+		// Simple Field (errorCodeLength)
+		errorCodeLength := uint8(m.errorCodeLength)
+		io.WriteUint8(3, (errorCodeLength))
 
-	// Array Field (errorCode)
-	if m.errorCode != nil {
-		for _, _element := range m.errorCode {
-			io.WriteInt8(8, _element)
+		// Array Field (errorCode)
+		if m.errorCode != nil {
+			for _, _element := range m.errorCode {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

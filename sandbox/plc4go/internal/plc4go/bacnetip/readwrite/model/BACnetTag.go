@@ -180,15 +180,14 @@ func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(typeOrTagNumber, lengthValueType, extTagNumber, extLength), nil
 }
 
-func (m BACnetTag) Serialize(io spi.WriteBuffer) {
-	iBACnetTag := CastIBACnetTag(m)
+func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func()) {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.typeOrTagNumber)
 	io.WriteUint8(4, (typeOrTagNumber))
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-	contextSpecificTag := uint8(BACnetTagContextSpecificTag(iBACnetTag))
+	contextSpecificTag := uint8(i.ContextSpecificTag())
 	io.WriteUint8(1, (contextSpecificTag))
 
 	// Simple Field (lengthValueType)
@@ -210,5 +209,6 @@ func (m BACnetTag) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iBACnetTag.Serialize(io)
+	childSerialize()
+
 }

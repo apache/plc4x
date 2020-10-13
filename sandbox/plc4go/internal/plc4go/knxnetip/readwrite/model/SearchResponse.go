@@ -130,16 +130,20 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 }
 
 func (m SearchResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
-	hpaiControlEndpoint.Serialize(io)
+		// Simple Field (hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint.Serialize(io)
 
-	// Simple Field (dibDeviceInfo)
-	dibDeviceInfo := IDIBDeviceInfo(m.dibDeviceInfo)
-	dibDeviceInfo.Serialize(io)
+		// Simple Field (dibDeviceInfo)
+		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
+		dibDeviceInfo.Serialize(io)
 
-	// Simple Field (dibSuppSvcFamilies)
-	dibSuppSvcFamilies := IDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
-	dibSuppSvcFamilies.Serialize(io)
+		// Simple Field (dibSuppSvcFamilies)
+		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+		dibSuppSvcFamilies.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

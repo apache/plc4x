@@ -110,13 +110,13 @@ func ServiceIdParse(io spi.ReadBuffer) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m ServiceId) Serialize(io spi.WriteBuffer) {
-	iServiceId := CastIServiceId(m)
+func ServiceIdSerialize(io spi.WriteBuffer, m ServiceId, i IServiceId, childSerialize func()) {
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType := uint8(ServiceIdServiceType(iServiceId))
+	serviceType := uint8(i.ServiceType())
 	io.WriteUint8(8, (serviceType))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iServiceId.Serialize(io)
+	childSerialize()
+
 }

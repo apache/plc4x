@@ -131,19 +131,23 @@ func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializ
 }
 
 func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (ip)
-	if m.ip != nil {
-		for _, _element := range m.ip {
-			io.WriteUint8(8, _element)
+		// Array Field (ip)
+		if m.ip != nil {
+			for _, _element := range m.ip {
+				io.WriteUint8(8, _element)
+			}
 		}
+
+		// Simple Field (port)
+		port := uint16(m.port)
+		io.WriteUint16(16, (port))
+
+		// Simple Field (npdu)
+		npdu := CastINPDU(m.npdu)
+		npdu.Serialize(io)
+
 	}
-
-	// Simple Field (port)
-	port := uint16(m.port)
-	io.WriteUint16(16, (port))
-
-	// Simple Field (npdu)
-	npdu := INPDU(m.npdu)
-	npdu.Serialize(io)
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

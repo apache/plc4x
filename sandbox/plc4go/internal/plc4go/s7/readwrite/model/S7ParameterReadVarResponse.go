@@ -98,8 +98,12 @@ func S7ParameterReadVarResponseParse(io spi.ReadBuffer) (S7ParameterInitializer,
 }
 
 func (m S7ParameterReadVarResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (numItems)
-	numItems := uint8(m.numItems)
-	io.WriteUint8(8, (numItems))
+		// Simple Field (numItems)
+		numItems := uint8(m.numItems)
+		io.WriteUint8(8, (numItems))
+
+	}
+	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

@@ -87,5 +87,8 @@ func BACnetTagApplicationDateParse(io spi.ReadBuffer) (BACnetTagInitializer, err
 }
 
 func (m BACnetTagApplicationDate) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

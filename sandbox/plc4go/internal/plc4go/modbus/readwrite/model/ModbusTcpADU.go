@@ -152,6 +152,7 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (unitIdentifier))
 
 	// Simple Field (pdu)
-	pdu := IModbusPDU(m.pdu)
+	pdu := CastIModbusPDU(m.pdu)
 	pdu.Serialize(io)
+
 }

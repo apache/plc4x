@@ -114,16 +114,20 @@ func KNXGroupAddress3LevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, 
 }
 
 func (m KNXGroupAddress3Level) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (mainGroup)
-	mainGroup := uint8(m.mainGroup)
-	io.WriteUint8(5, (mainGroup))
+		// Simple Field (mainGroup)
+		mainGroup := uint8(m.mainGroup)
+		io.WriteUint8(5, (mainGroup))
 
-	// Simple Field (middleGroup)
-	middleGroup := uint8(m.middleGroup)
-	io.WriteUint8(3, (middleGroup))
+		// Simple Field (middleGroup)
+		middleGroup := uint8(m.middleGroup)
+		io.WriteUint8(3, (middleGroup))
 
-	// Simple Field (subGroup)
-	subGroup := uint8(m.subGroup)
-	io.WriteUint8(8, (subGroup))
+		// Simple Field (subGroup)
+		subGroup := uint8(m.subGroup)
+		io.WriteUint8(8, (subGroup))
+
+	}
+	KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

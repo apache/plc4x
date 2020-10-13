@@ -119,11 +119,10 @@ func NLMParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 	return initializer.initialize(vendorId), nil
 }
 
-func (m NLM) Serialize(io spi.WriteBuffer) {
-	iNLM := CastINLM(m)
+func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func()) {
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType := uint8(NLMMessageType(iNLM))
+	messageType := uint8(i.MessageType())
 	io.WriteUint8(8, (messageType))
 
 	// Optional Field (vendorId) (Can be skipped, if the value is null)
@@ -134,5 +133,6 @@ func (m NLM) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iNLM.Serialize(io)
+	childSerialize()
+
 }

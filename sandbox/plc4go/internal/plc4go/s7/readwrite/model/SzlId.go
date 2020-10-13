@@ -106,7 +106,7 @@ func SzlIdParse(io spi.ReadBuffer) (spi.Message, error) {
 func (m SzlId) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (typeClass)
-	typeClass := ISzlModuleTypeClass(m.typeClass)
+	typeClass := CastSzlModuleTypeClass(m.typeClass)
 	typeClass.Serialize(io)
 
 	// Simple Field (sublistExtract)
@@ -114,6 +114,7 @@ func (m SzlId) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (sublistExtract))
 
 	// Enum field (sublistList)
-	sublistList := ISzlSublist(m.sublistList)
+	sublistList := CastSzlSublist(m.sublistList)
 	sublistList.Serialize(io)
+
 }

@@ -83,5 +83,8 @@ func BVLCReadBroadcastDistributionTableParse(io spi.ReadBuffer) (BVLCInitializer
 }
 
 func (m BVLCReadBroadcastDistributionTable) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

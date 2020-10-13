@@ -94,8 +94,12 @@ func COTPParameterChecksumParse(io spi.ReadBuffer) (COTPParameterInitializer, er
 }
 
 func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (crc)
-	crc := uint8(m.crc)
-	io.WriteUint8(8, (crc))
+		// Simple Field (crc)
+		crc := uint8(m.crc)
+		io.WriteUint8(8, (crc))
+
+	}
+	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

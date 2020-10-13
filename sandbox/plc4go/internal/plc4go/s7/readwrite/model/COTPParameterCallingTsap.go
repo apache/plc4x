@@ -94,8 +94,12 @@ func COTPParameterCallingTsapParse(io spi.ReadBuffer) (COTPParameterInitializer,
 }
 
 func (m COTPParameterCallingTsap) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (tsapId)
-	tsapId := uint16(m.tsapId)
-	io.WriteUint16(16, (tsapId))
+		// Simple Field (tsapId)
+		tsapId := uint16(m.tsapId)
+		io.WriteUint16(16, (tsapId))
+
+	}
+	COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

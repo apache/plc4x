@@ -158,4 +158,5 @@ func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) {
 	// Simple Field (ausbe)
 	ausbe := uint16(m.ausbe)
 	io.WriteUint16(16, (ausbe))
+
 }

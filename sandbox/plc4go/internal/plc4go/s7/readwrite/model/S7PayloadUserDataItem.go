@@ -148,15 +148,14 @@ func S7PayloadUserDataItemParse(io spi.ReadBuffer, cpuFunctionType uint8) (spi.M
 	return initializer.initialize(returnCode, transportSize, szlId, szlIndex), nil
 }
 
-func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
-	iS7PayloadUserDataItem := CastIS7PayloadUserDataItem(m)
+func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func()) {
 
 	// Enum field (returnCode)
-	returnCode := IDataTransportErrorCode(m.returnCode)
+	returnCode := CastDataTransportErrorCode(m.returnCode)
 	returnCode.Serialize(io)
 
 	// Enum field (transportSize)
-	transportSize := IDataTransportSize(m.transportSize)
+	transportSize := CastDataTransportSize(m.transportSize)
 	transportSize.Serialize(io)
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -164,7 +163,7 @@ func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (dataLength))
 
 	// Simple Field (szlId)
-	szlId := ISzlId(m.szlId)
+	szlId := CastISzlId(m.szlId)
 	szlId.Serialize(io)
 
 	// Simple Field (szlIndex)
@@ -172,5 +171,6 @@ func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (szlIndex))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7PayloadUserDataItem.Serialize(io)
+	childSerialize()
+
 }

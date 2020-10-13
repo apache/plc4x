@@ -155,4 +155,5 @@ func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io spi.WriteBuffer) {
 			io.WriteInt8(8, _element)
 		}
 	}
+
 }

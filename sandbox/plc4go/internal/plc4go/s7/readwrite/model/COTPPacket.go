@@ -172,19 +172,18 @@ func COTPPacketParse(io spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 	return initializer.initialize(parameters, payload), nil
 }
 
-func (m COTPPacket) Serialize(io spi.WriteBuffer) {
-	iCOTPPacket := CastICOTPPacket(m)
+func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func()) {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.payload) != (nil))), uint16((*m.payload).LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
 	io.WriteUint8(8, (headerLength))
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode := uint8(COTPPacketTpduCode(iCOTPPacket))
+	tpduCode := uint8(i.TpduCode())
 	io.WriteUint8(8, (tpduCode))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iCOTPPacket.Serialize(io)
+	childSerialize()
 
 	// Array Field (parameters)
 	if m.parameters != nil {
@@ -197,6 +196,7 @@ func (m COTPPacket) Serialize(io spi.WriteBuffer) {
 	var payload *IS7Message = nil
 	if m.payload != nil {
 		payload = m.payload
-		(*payload).Serialize(io)
+		CastIS7Message(*payload).Serialize(io)
 	}
+
 }

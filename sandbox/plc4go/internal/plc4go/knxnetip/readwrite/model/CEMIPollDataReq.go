@@ -83,5 +83,8 @@ func CEMIPollDataReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIPollDataReq) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

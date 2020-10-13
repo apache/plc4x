@@ -83,5 +83,8 @@ func BACnetConfirmedServiceACKVTDataParse(io spi.ReadBuffer) (BACnetConfirmedSer
 }
 
 func (m BACnetConfirmedServiceACKVTData) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

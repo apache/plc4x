@@ -162,31 +162,35 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (readStartingAddress)
-	readStartingAddress := uint16(m.readStartingAddress)
-	io.WriteUint16(16, (readStartingAddress))
+		// Simple Field (readStartingAddress)
+		readStartingAddress := uint16(m.readStartingAddress)
+		io.WriteUint16(16, (readStartingAddress))
 
-	// Simple Field (readQuantity)
-	readQuantity := uint16(m.readQuantity)
-	io.WriteUint16(16, (readQuantity))
+		// Simple Field (readQuantity)
+		readQuantity := uint16(m.readQuantity)
+		io.WriteUint16(16, (readQuantity))
 
-	// Simple Field (writeStartingAddress)
-	writeStartingAddress := uint16(m.writeStartingAddress)
-	io.WriteUint16(16, (writeStartingAddress))
+		// Simple Field (writeStartingAddress)
+		writeStartingAddress := uint16(m.writeStartingAddress)
+		io.WriteUint16(16, (writeStartingAddress))
 
-	// Simple Field (writeQuantity)
-	writeQuantity := uint16(m.writeQuantity)
-	io.WriteUint16(16, (writeQuantity))
+		// Simple Field (writeQuantity)
+		writeQuantity := uint16(m.writeQuantity)
+		io.WriteUint16(16, (writeQuantity))
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount := uint8(uint8(len(m.value)))
-	io.WriteUint8(8, (byteCount))
+		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		byteCount := uint8(uint8(len(m.value)))
+		io.WriteUint8(8, (byteCount))
 
-	// Array Field (value)
-	if m.value != nil {
-		for _, _element := range m.value {
-			io.WriteInt8(8, _element)
+		// Array Field (value)
+		if m.value != nil {
+			for _, _element := range m.value {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

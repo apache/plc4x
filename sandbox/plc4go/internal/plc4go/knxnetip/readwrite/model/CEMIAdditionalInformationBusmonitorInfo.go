@@ -160,31 +160,35 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io spi.ReadBuffer) (CEMIAdditi
 }
 
 func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (len)
-	io.WriteUint8(8, 1)
+		// Const Field (len)
+		io.WriteUint8(8, 1)
 
-	// Simple Field (frameErrorFlag)
-	frameErrorFlag := bool(m.frameErrorFlag)
-	io.WriteBit((bool)(frameErrorFlag))
+		// Simple Field (frameErrorFlag)
+		frameErrorFlag := bool(m.frameErrorFlag)
+		io.WriteBit((bool)(frameErrorFlag))
 
-	// Simple Field (bitErrorFlag)
-	bitErrorFlag := bool(m.bitErrorFlag)
-	io.WriteBit((bool)(bitErrorFlag))
+		// Simple Field (bitErrorFlag)
+		bitErrorFlag := bool(m.bitErrorFlag)
+		io.WriteBit((bool)(bitErrorFlag))
 
-	// Simple Field (parityErrorFlag)
-	parityErrorFlag := bool(m.parityErrorFlag)
-	io.WriteBit((bool)(parityErrorFlag))
+		// Simple Field (parityErrorFlag)
+		parityErrorFlag := bool(m.parityErrorFlag)
+		io.WriteBit((bool)(parityErrorFlag))
 
-	// Simple Field (unknownFlag)
-	unknownFlag := bool(m.unknownFlag)
-	io.WriteBit((bool)(unknownFlag))
+		// Simple Field (unknownFlag)
+		unknownFlag := bool(m.unknownFlag)
+		io.WriteBit((bool)(unknownFlag))
 
-	// Simple Field (lostFlag)
-	lostFlag := bool(m.lostFlag)
-	io.WriteBit((bool)(lostFlag))
+		// Simple Field (lostFlag)
+		lostFlag := bool(m.lostFlag)
+		io.WriteBit((bool)(lostFlag))
 
-	// Simple Field (sequenceNumber)
-	sequenceNumber := uint8(m.sequenceNumber)
-	io.WriteUint8(3, (sequenceNumber))
+		// Simple Field (sequenceNumber)
+		sequenceNumber := uint8(m.sequenceNumber)
+		io.WriteUint8(3, (sequenceNumber))
+
+	}
+	CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
 }

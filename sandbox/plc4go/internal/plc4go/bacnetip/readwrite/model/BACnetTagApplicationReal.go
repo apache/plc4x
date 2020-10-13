@@ -98,8 +98,12 @@ func BACnetTagApplicationRealParse(io spi.ReadBuffer, lengthValueType uint8, ext
 }
 
 func (m BACnetTagApplicationReal) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (value)
-	value := float32(m.value)
-	io.WriteFloat32(32, (value))
+		// Simple Field (value)
+		value := float32(m.value)
+		io.WriteFloat32(32, (value))
+
+	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

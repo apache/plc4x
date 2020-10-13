@@ -117,15 +117,19 @@ func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8
 }
 
 func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (unusedBits)
-	unusedBits := uint8(m.unusedBits)
-	io.WriteUint8(8, (unusedBits))
+		// Simple Field (unusedBits)
+		unusedBits := uint8(m.unusedBits)
+		io.WriteUint8(8, (unusedBits))
 
-	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+		// Array Field (data)
+		if m.data != nil {
+			for _, _element := range m.data {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

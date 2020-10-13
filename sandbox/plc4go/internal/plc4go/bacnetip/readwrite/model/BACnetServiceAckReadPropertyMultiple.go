@@ -83,5 +83,8 @@ func BACnetServiceAckReadPropertyMultipleParse(io spi.ReadBuffer) (BACnetService
 }
 
 func (m BACnetServiceAckReadPropertyMultiple) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

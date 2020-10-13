@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestAddListElementParse(io spi.ReadBuffer) (BACnet
 }
 
 func (m BACnetConfirmedServiceRequestAddListElement) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

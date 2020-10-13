@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(io spi.ReadBuffer) (BACnet
 }
 
 func (m BACnetConfirmedServiceRequestAtomicReadFile) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

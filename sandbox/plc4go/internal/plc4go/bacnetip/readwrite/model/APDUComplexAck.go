@@ -182,37 +182,41 @@ func APDUComplexAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUComplexAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (segmentedMessage)
-	segmentedMessage := bool(m.segmentedMessage)
-	io.WriteBit((bool)(segmentedMessage))
+		// Simple Field (segmentedMessage)
+		segmentedMessage := bool(m.segmentedMessage)
+		io.WriteBit((bool)(segmentedMessage))
 
-	// Simple Field (moreFollows)
-	moreFollows := bool(m.moreFollows)
-	io.WriteBit((bool)(moreFollows))
+		// Simple Field (moreFollows)
+		moreFollows := bool(m.moreFollows)
+		io.WriteBit((bool)(moreFollows))
 
-	// Reserved Field (reserved)
-	io.WriteUint8(2, uint8(0))
+		// Reserved Field (reserved)
+		io.WriteUint8(2, uint8(0))
 
-	// Simple Field (originalInvokeId)
-	originalInvokeId := uint8(m.originalInvokeId)
-	io.WriteUint8(8, (originalInvokeId))
+		// Simple Field (originalInvokeId)
+		originalInvokeId := uint8(m.originalInvokeId)
+		io.WriteUint8(8, (originalInvokeId))
 
-	// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
-	var sequenceNumber *uint8 = nil
-	if m.sequenceNumber != nil {
-		sequenceNumber = m.sequenceNumber
-		io.WriteUint8(8, *(sequenceNumber))
+		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
+		var sequenceNumber *uint8 = nil
+		if m.sequenceNumber != nil {
+			sequenceNumber = m.sequenceNumber
+			io.WriteUint8(8, *(sequenceNumber))
+		}
+
+		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
+		var proposedWindowSize *uint8 = nil
+		if m.proposedWindowSize != nil {
+			proposedWindowSize = m.proposedWindowSize
+			io.WriteUint8(8, *(proposedWindowSize))
+		}
+
+		// Simple Field (serviceAck)
+		serviceAck := CastIBACnetServiceAck(m.serviceAck)
+		serviceAck.Serialize(io)
+
 	}
-
-	// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
-	var proposedWindowSize *uint8 = nil
-	if m.proposedWindowSize != nil {
-		proposedWindowSize = m.proposedWindowSize
-		io.WriteUint8(8, *(proposedWindowSize))
-	}
-
-	// Simple Field (serviceAck)
-	serviceAck := IBACnetServiceAck(m.serviceAck)
-	serviceAck.Serialize(io)
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

@@ -115,12 +115,16 @@ func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 }
 
 func (m DescriptionResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (dibDeviceInfo)
-	dibDeviceInfo := IDIBDeviceInfo(m.dibDeviceInfo)
-	dibDeviceInfo.Serialize(io)
+		// Simple Field (dibDeviceInfo)
+		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
+		dibDeviceInfo.Serialize(io)
 
-	// Simple Field (dibSuppSvcFamilies)
-	dibSuppSvcFamilies := IDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
-	dibSuppSvcFamilies.Serialize(io)
+		// Simple Field (dibSuppSvcFamilies)
+		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+		dibSuppSvcFamilies.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

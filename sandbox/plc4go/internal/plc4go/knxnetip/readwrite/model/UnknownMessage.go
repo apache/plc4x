@@ -105,11 +105,15 @@ func UnknownMessageParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessage
 }
 
 func (m UnknownMessage) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (unknownData)
-	if m.unknownData != nil {
-		for _, _element := range m.unknownData {
-			io.WriteInt8(8, _element)
+		// Array Field (unknownData)
+		if m.unknownData != nil {
+			for _, _element := range m.unknownData {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

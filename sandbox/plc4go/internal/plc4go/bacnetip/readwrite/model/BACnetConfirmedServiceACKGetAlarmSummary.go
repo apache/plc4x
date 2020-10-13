@@ -83,5 +83,8 @@ func BACnetConfirmedServiceACKGetAlarmSummaryParse(io spi.ReadBuffer) (BACnetCon
 }
 
 func (m BACnetConfirmedServiceACKGetAlarmSummary) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

@@ -91,5 +91,8 @@ func ModbusPDUReadDeviceIdentificationRequestParse(io spi.ReadBuffer) (ModbusPDU
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

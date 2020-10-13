@@ -189,17 +189,17 @@ func ModbusPDUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 	return initializer.initialize(), nil
 }
 
-func (m ModbusPDU) Serialize(io spi.WriteBuffer) {
-	iModbusPDU := CastIModbusPDU(m)
+func ModbusPDUSerialize(io spi.WriteBuffer, m ModbusPDU, i IModbusPDU, childSerialize func()) {
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag := bool(ModbusPDUErrorFlag(iModbusPDU))
+	errorFlag := bool(i.ErrorFlag())
 	io.WriteBit((bool)(errorFlag))
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag := uint8(ModbusPDUFunctionFlag(iModbusPDU))
+	functionFlag := uint8(i.FunctionFlag())
 	io.WriteUint8(7, (functionFlag))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iModbusPDU.Serialize(io)
+	childSerialize()
+
 }

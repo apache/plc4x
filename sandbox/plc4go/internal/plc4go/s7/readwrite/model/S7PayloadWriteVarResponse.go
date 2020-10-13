@@ -117,11 +117,15 @@ func S7PayloadWriteVarResponseParse(io spi.ReadBuffer, parameter IS7Parameter) (
 }
 
 func (m S7PayloadWriteVarResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Array Field (items)
-	if m.items != nil {
-		for _, _element := range m.items {
-			_element.Serialize(io)
+		// Array Field (items)
+		if m.items != nil {
+			for _, _element := range m.items {
+				_element.Serialize(io)
+			}
 		}
+
 	}
+	S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
 }

@@ -194,49 +194,53 @@ func S7ParameterUserDataItemCPUFunctionsParse(io spi.ReadBuffer) (S7ParameterUse
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-	io.WriteUint8(8, (itemLength))
+		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+		io.WriteUint8(8, (itemLength))
 
-	// Simple Field (method)
-	method := uint8(m.method)
-	io.WriteUint8(8, (method))
+		// Simple Field (method)
+		method := uint8(m.method)
+		io.WriteUint8(8, (method))
 
-	// Simple Field (cpuFunctionType)
-	cpuFunctionType := uint8(m.cpuFunctionType)
-	io.WriteUint8(4, (cpuFunctionType))
+		// Simple Field (cpuFunctionType)
+		cpuFunctionType := uint8(m.cpuFunctionType)
+		io.WriteUint8(4, (cpuFunctionType))
 
-	// Simple Field (cpuFunctionGroup)
-	cpuFunctionGroup := uint8(m.cpuFunctionGroup)
-	io.WriteUint8(4, (cpuFunctionGroup))
+		// Simple Field (cpuFunctionGroup)
+		cpuFunctionGroup := uint8(m.cpuFunctionGroup)
+		io.WriteUint8(4, (cpuFunctionGroup))
 
-	// Simple Field (cpuSubfunction)
-	cpuSubfunction := uint8(m.cpuSubfunction)
-	io.WriteUint8(8, (cpuSubfunction))
+		// Simple Field (cpuSubfunction)
+		cpuSubfunction := uint8(m.cpuSubfunction)
+		io.WriteUint8(8, (cpuSubfunction))
 
-	// Simple Field (sequenceNumber)
-	sequenceNumber := uint8(m.sequenceNumber)
-	io.WriteUint8(8, (sequenceNumber))
+		// Simple Field (sequenceNumber)
+		sequenceNumber := uint8(m.sequenceNumber)
+		io.WriteUint8(8, (sequenceNumber))
 
-	// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
-	var dataUnitReferenceNumber *uint8 = nil
-	if m.dataUnitReferenceNumber != nil {
-		dataUnitReferenceNumber = m.dataUnitReferenceNumber
-		io.WriteUint8(8, *(dataUnitReferenceNumber))
+		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
+		var dataUnitReferenceNumber *uint8 = nil
+		if m.dataUnitReferenceNumber != nil {
+			dataUnitReferenceNumber = m.dataUnitReferenceNumber
+			io.WriteUint8(8, *(dataUnitReferenceNumber))
+		}
+
+		// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
+		var lastDataUnit *uint8 = nil
+		if m.lastDataUnit != nil {
+			lastDataUnit = m.lastDataUnit
+			io.WriteUint8(8, *(lastDataUnit))
+		}
+
+		// Optional Field (errorCode) (Can be skipped, if the value is null)
+		var errorCode *uint16 = nil
+		if m.errorCode != nil {
+			errorCode = m.errorCode
+			io.WriteUint16(16, *(errorCode))
+		}
+
 	}
-
-	// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
-	var lastDataUnit *uint8 = nil
-	if m.lastDataUnit != nil {
-		lastDataUnit = m.lastDataUnit
-		io.WriteUint8(8, *(lastDataUnit))
-	}
-
-	// Optional Field (errorCode) (Can be skipped, if the value is null)
-	var errorCode *uint16 = nil
-	if m.errorCode != nil {
-		errorCode = m.errorCode
-		io.WriteUint16(16, *(errorCode))
-	}
+	S7ParameterUserDataItemSerialize(io, m.S7ParameterUserDataItem, CastIS7ParameterUserDataItem(m), ser)
 }

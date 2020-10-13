@@ -83,5 +83,8 @@ func BVLCResultParse(io spi.ReadBuffer) (BVLCInitializer, error) {
 }
 
 func (m BVLCResult) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

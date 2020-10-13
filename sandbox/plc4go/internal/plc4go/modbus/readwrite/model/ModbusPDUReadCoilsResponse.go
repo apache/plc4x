@@ -122,15 +122,19 @@ func ModbusPDUReadCoilsResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, e
 }
 
 func (m ModbusPDUReadCoilsResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount := uint8(uint8(len(m.value)))
-	io.WriteUint8(8, (byteCount))
+		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		byteCount := uint8(uint8(len(m.value)))
+		io.WriteUint8(8, (byteCount))
 
-	// Array Field (value)
-	if m.value != nil {
-		for _, _element := range m.value {
-			io.WriteInt8(8, _element)
+		// Array Field (value)
+		if m.value != nil {
+			for _, _element := range m.value {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

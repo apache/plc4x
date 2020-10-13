@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io spi.ReadBuffer) (
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

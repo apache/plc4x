@@ -118,11 +118,15 @@ func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInit
 }
 
 func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(4, uint8(0))
+		// Reserved Field (reserved)
+		io.WriteUint8(4, uint8(0))
 
-	// Simple Field (serviceRequest)
-	serviceRequest := IBACnetUnconfirmedServiceRequest(m.serviceRequest)
-	serviceRequest.Serialize(io)
+		// Simple Field (serviceRequest)
+		serviceRequest := CastIBACnetUnconfirmedServiceRequest(m.serviceRequest)
+		serviceRequest.Serialize(io)
+
+	}
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }

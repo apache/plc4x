@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestDeleteObjectParse(io spi.ReadBuffer) (BACnetCo
 }
 
 func (m BACnetConfirmedServiceRequestDeleteObject) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

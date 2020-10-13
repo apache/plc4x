@@ -83,5 +83,8 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io spi.Rea
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

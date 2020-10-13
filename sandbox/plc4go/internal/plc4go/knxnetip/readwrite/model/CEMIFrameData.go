@@ -234,54 +234,58 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 }
 
 func (m CEMIFrameData) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (sourceAddress)
-	sourceAddress := IKNXAddress(m.sourceAddress)
-	sourceAddress.Serialize(io)
+		// Simple Field (sourceAddress)
+		sourceAddress := CastIKNXAddress(m.sourceAddress)
+		sourceAddress.Serialize(io)
 
-	// Array Field (destinationAddress)
-	if m.destinationAddress != nil {
-		for _, _element := range m.destinationAddress {
-			io.WriteInt8(8, _element)
+		// Array Field (destinationAddress)
+		if m.destinationAddress != nil {
+			for _, _element := range m.destinationAddress {
+				io.WriteInt8(8, _element)
+			}
 		}
-	}
 
-	// Simple Field (groupAddress)
-	groupAddress := bool(m.groupAddress)
-	io.WriteBit((bool)(groupAddress))
+		// Simple Field (groupAddress)
+		groupAddress := bool(m.groupAddress)
+		io.WriteBit((bool)(groupAddress))
 
-	// Simple Field (hopCount)
-	hopCount := uint8(m.hopCount)
-	io.WriteUint8(3, (hopCount))
+		// Simple Field (hopCount)
+		hopCount := uint8(m.hopCount)
+		io.WriteUint8(3, (hopCount))
 
-	// Simple Field (dataLength)
-	dataLength := uint8(m.dataLength)
-	io.WriteUint8(4, (dataLength))
+		// Simple Field (dataLength)
+		dataLength := uint8(m.dataLength)
+		io.WriteUint8(4, (dataLength))
 
-	// Enum field (tcpi)
-	tcpi := ITPCI(m.tcpi)
-	tcpi.Serialize(io)
+		// Enum field (tcpi)
+		tcpi := CastTPCI(m.tcpi)
+		tcpi.Serialize(io)
 
-	// Simple Field (counter)
-	counter := uint8(m.counter)
-	io.WriteUint8(4, (counter))
+		// Simple Field (counter)
+		counter := uint8(m.counter)
+		io.WriteUint8(4, (counter))
 
-	// Enum field (apci)
-	apci := IAPCI(m.apci)
-	apci.Serialize(io)
+		// Enum field (apci)
+		apci := CastAPCI(m.apci)
+		apci.Serialize(io)
 
-	// Simple Field (dataFirstByte)
-	dataFirstByte := int8(m.dataFirstByte)
-	io.WriteInt8(6, (dataFirstByte))
+		// Simple Field (dataFirstByte)
+		dataFirstByte := int8(m.dataFirstByte)
+		io.WriteInt8(6, (dataFirstByte))
 
-	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
-			io.WriteInt8(8, _element)
+		// Array Field (data)
+		if m.data != nil {
+			for _, _element := range m.data {
+				io.WriteInt8(8, _element)
+			}
 		}
-	}
 
-	// Simple Field (crc)
-	crc := uint8(m.crc)
-	io.WriteUint8(8, (crc))
+		// Simple Field (crc)
+		crc := uint8(m.crc)
+		io.WriteUint8(8, (crc))
+
+	}
+	CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

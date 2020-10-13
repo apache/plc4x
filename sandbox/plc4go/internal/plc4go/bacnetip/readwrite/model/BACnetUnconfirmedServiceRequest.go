@@ -122,13 +122,13 @@ func BACnetUnconfirmedServiceRequestParse(io spi.ReadBuffer, len uint16) (spi.Me
 	return initializer.initialize(), nil
 }
 
-func (m BACnetUnconfirmedServiceRequest) Serialize(io spi.WriteBuffer) {
-	iBACnetUnconfirmedServiceRequest := CastIBACnetUnconfirmedServiceRequest(m)
+func BACnetUnconfirmedServiceRequestSerialize(io spi.WriteBuffer, m BACnetUnconfirmedServiceRequest, i IBACnetUnconfirmedServiceRequest, childSerialize func()) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	serviceChoice := uint8(BACnetUnconfirmedServiceRequestServiceChoice(iBACnetUnconfirmedServiceRequest))
+	serviceChoice := uint8(i.ServiceChoice())
 	io.WriteUint8(8, (serviceChoice))
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iBACnetUnconfirmedServiceRequest.Serialize(io)
+	childSerialize()
+
 }

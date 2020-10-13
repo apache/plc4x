@@ -83,5 +83,8 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io spi.ReadBuffe
 }
 
 func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

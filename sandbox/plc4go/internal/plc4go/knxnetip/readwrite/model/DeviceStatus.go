@@ -109,4 +109,5 @@ func (m DeviceStatus) Serialize(io spi.WriteBuffer) {
 	// Simple Field (programMode)
 	programMode := bool(m.programMode)
 	io.WriteBit((bool)(programMode))
+
 }

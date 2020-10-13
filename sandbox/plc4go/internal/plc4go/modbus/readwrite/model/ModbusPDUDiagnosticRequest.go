@@ -112,12 +112,16 @@ func ModbusPDUDiagnosticRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, e
 }
 
 func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (status)
-	status := uint16(m.status)
-	io.WriteUint16(16, (status))
+		// Simple Field (status)
+		status := uint16(m.status)
+		io.WriteUint16(16, (status))
 
-	// Simple Field (eventCount)
-	eventCount := uint16(m.eventCount)
-	io.WriteUint16(16, (eventCount))
+		// Simple Field (eventCount)
+		eventCount := uint16(m.eventCount)
+		io.WriteUint16(16, (eventCount))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

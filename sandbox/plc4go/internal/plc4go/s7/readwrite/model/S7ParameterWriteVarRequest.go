@@ -126,15 +126,19 @@ func S7ParameterWriteVarRequestParse(io spi.ReadBuffer) (S7ParameterInitializer,
 }
 
 func (m S7ParameterWriteVarRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	numItems := uint8(uint8(len(m.items)))
-	io.WriteUint8(8, (numItems))
+		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		numItems := uint8(uint8(len(m.items)))
+		io.WriteUint8(8, (numItems))
 
-	// Array Field (items)
-	if m.items != nil {
-		for _, _element := range m.items {
-			_element.Serialize(io)
+		// Array Field (items)
+		if m.items != nil {
+			for _, _element := range m.items {
+				_element.Serialize(io)
+			}
 		}
+
 	}
+	S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

@@ -91,5 +91,8 @@ func ModbusPDUReportServerIdRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 }
 
 func (m ModbusPDUReportServerIdRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

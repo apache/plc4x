@@ -83,5 +83,8 @@ func BACnetErrorReadPropertyMultipleParse(io spi.ReadBuffer) (BACnetErrorInitial
 }
 
 func (m BACnetErrorReadPropertyMultiple) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

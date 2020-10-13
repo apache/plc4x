@@ -100,8 +100,12 @@ func TunnelingResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 }
 
 func (m TunnelingResponse) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (tunnelingResponseDataBlock)
-	tunnelingResponseDataBlock := ITunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
-	tunnelingResponseDataBlock.Serialize(io)
+		// Simple Field (tunnelingResponseDataBlock)
+		tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
+		tunnelingResponseDataBlock.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

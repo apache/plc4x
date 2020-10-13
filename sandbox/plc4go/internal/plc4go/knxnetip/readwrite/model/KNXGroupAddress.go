@@ -95,9 +95,9 @@ func KNXGroupAddressParse(io spi.ReadBuffer, numLevels uint8) (spi.Message, erro
 	return initializer.initialize(), nil
 }
 
-func (m KNXGroupAddress) Serialize(io spi.WriteBuffer) {
-	iKNXGroupAddress := CastIKNXGroupAddress(m)
+func KNXGroupAddressSerialize(io spi.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func()) {
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iKNXGroupAddress.Serialize(io)
+	childSerialize()
+
 }

@@ -135,15 +135,19 @@ func (m ModbusPDUReadFileRecordRequest) Serialize(io spi.WriteBuffer) {
 		}
 		return sizeInBytes
 	}
+	ser := func() {
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
-	io.WriteUint8(8, (byteCount))
+		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		byteCount := uint8(uint8(itemsArraySizeInBytes(m.items)))
+		io.WriteUint8(8, (byteCount))
 
-	// Array Field (items)
-	if m.items != nil {
-		for _, _element := range m.items {
-			_element.Serialize(io)
+		// Array Field (items)
+		if m.items != nil {
+			for _, _element := range m.items {
+				_element.Serialize(io)
+			}
 		}
+
 	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -175,32 +175,36 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io spi.ReadBuffer) (BACnetUnconfi
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Const Field (deviceInstanceRangeLowLimitHeader)
-	io.WriteUint8(5, 0x01)
+		// Const Field (deviceInstanceRangeLowLimitHeader)
+		io.WriteUint8(5, 0x01)
 
-	// Simple Field (deviceInstanceRangeLowLimitLength)
-	deviceInstanceRangeLowLimitLength := uint8(m.deviceInstanceRangeLowLimitLength)
-	io.WriteUint8(3, (deviceInstanceRangeLowLimitLength))
+		// Simple Field (deviceInstanceRangeLowLimitLength)
+		deviceInstanceRangeLowLimitLength := uint8(m.deviceInstanceRangeLowLimitLength)
+		io.WriteUint8(3, (deviceInstanceRangeLowLimitLength))
 
-	// Array Field (deviceInstanceRangeLowLimit)
-	if m.deviceInstanceRangeLowLimit != nil {
-		for _, _element := range m.deviceInstanceRangeLowLimit {
-			io.WriteInt8(8, _element)
+		// Array Field (deviceInstanceRangeLowLimit)
+		if m.deviceInstanceRangeLowLimit != nil {
+			for _, _element := range m.deviceInstanceRangeLowLimit {
+				io.WriteInt8(8, _element)
+			}
 		}
-	}
 
-	// Const Field (deviceInstanceRangeHighLimitHeader)
-	io.WriteUint8(5, 0x03)
+		// Const Field (deviceInstanceRangeHighLimitHeader)
+		io.WriteUint8(5, 0x03)
 
-	// Simple Field (deviceInstanceRangeHighLimitLength)
-	deviceInstanceRangeHighLimitLength := uint8(m.deviceInstanceRangeHighLimitLength)
-	io.WriteUint8(3, (deviceInstanceRangeHighLimitLength))
+		// Simple Field (deviceInstanceRangeHighLimitLength)
+		deviceInstanceRangeHighLimitLength := uint8(m.deviceInstanceRangeHighLimitLength)
+		io.WriteUint8(3, (deviceInstanceRangeHighLimitLength))
 
-	// Array Field (deviceInstanceRangeHighLimit)
-	if m.deviceInstanceRangeHighLimit != nil {
-		for _, _element := range m.deviceInstanceRangeHighLimit {
-			io.WriteInt8(8, _element)
+		// Array Field (deviceInstanceRangeHighLimit)
+		if m.deviceInstanceRangeHighLimit != nil {
+			for _, _element := range m.deviceInstanceRangeHighLimit {
+				io.WriteInt8(8, _element)
+			}
 		}
+
 	}
+	BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

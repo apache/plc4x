@@ -83,5 +83,8 @@ func ConnectionResponseDataBlockDeviceManagementParse(io spi.ReadBuffer) (Connec
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

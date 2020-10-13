@@ -127,6 +127,7 @@ func (m DeviceConfigurationAckDataBlock) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (sequenceCounter))
 
 	// Enum field (status)
-	status := IStatus(m.status)
+	status := CastStatus(m.status)
 	status.Serialize(io)
+
 }

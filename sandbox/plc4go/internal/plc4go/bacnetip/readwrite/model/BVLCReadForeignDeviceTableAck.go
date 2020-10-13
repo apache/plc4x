@@ -83,5 +83,8 @@ func BVLCReadForeignDeviceTableAckParse(io spi.ReadBuffer) (BVLCInitializer, err
 }
 
 func (m BVLCReadForeignDeviceTableAck) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

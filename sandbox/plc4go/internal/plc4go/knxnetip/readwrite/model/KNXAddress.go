@@ -116,4 +116,5 @@ func (m KNXAddress) Serialize(io spi.WriteBuffer) {
 	// Simple Field (subGroup)
 	subGroup := uint8(m.subGroup)
 	io.WriteUint8(8, (subGroup))
+
 }

@@ -102,9 +102,9 @@ func S7PayloadParse(io spi.ReadBuffer, messageType uint8, parameter IS7Parameter
 	return initializer.initialize(), nil
 }
 
-func (m S7Payload) Serialize(io spi.WriteBuffer) {
-	iS7Payload := CastIS7Payload(m)
+func S7PayloadSerialize(io spi.WriteBuffer, m S7Payload, i IS7Payload, childSerialize func()) {
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	iS7Payload.Serialize(io)
+	childSerialize()
+
 }

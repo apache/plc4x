@@ -100,8 +100,12 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io spi.ReadBuffer) (Connec
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (knxAddress)
-	knxAddress := IKNXAddress(m.knxAddress)
-	knxAddress.Serialize(io)
+		// Simple Field (knxAddress)
+		knxAddress := CastIKNXAddress(m.knxAddress)
+		knxAddress.Serialize(io)
+
+	}
+	ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

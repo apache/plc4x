@@ -83,5 +83,8 @@ func BACnetConfirmedServiceACKAtomicWriteFileParse(io spi.ReadBuffer) (BACnetCon
 }
 
 func (m BACnetConfirmedServiceACKAtomicWriteFile) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

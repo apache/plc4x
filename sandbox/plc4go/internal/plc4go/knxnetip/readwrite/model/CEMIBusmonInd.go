@@ -136,19 +136,23 @@ func CEMIBusmonIndParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 }
 
 func (m CEMIBusmonInd) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (additionalInformationLength)
-	additionalInformationLength := uint8(m.additionalInformationLength)
-	io.WriteUint8(8, (additionalInformationLength))
+		// Simple Field (additionalInformationLength)
+		additionalInformationLength := uint8(m.additionalInformationLength)
+		io.WriteUint8(8, (additionalInformationLength))
 
-	// Array Field (additionalInformation)
-	if m.additionalInformation != nil {
-		for _, _element := range m.additionalInformation {
-			_element.Serialize(io)
+		// Array Field (additionalInformation)
+		if m.additionalInformation != nil {
+			for _, _element := range m.additionalInformation {
+				_element.Serialize(io)
+			}
 		}
-	}
 
-	// Simple Field (cemiFrame)
-	cemiFrame := ICEMIFrame(m.cemiFrame)
-	cemiFrame.Serialize(io)
+		// Simple Field (cemiFrame)
+		cemiFrame := CastICEMIFrame(m.cemiFrame)
+		cemiFrame.Serialize(io)
+
+	}
+	CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

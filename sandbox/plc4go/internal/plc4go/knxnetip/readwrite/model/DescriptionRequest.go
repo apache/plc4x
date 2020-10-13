@@ -100,8 +100,12 @@ func DescriptionRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 }
 
 func (m DescriptionRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
-	hpaiControlEndpoint.Serialize(io)
+		// Simple Field (hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint.Serialize(io)
+
+	}
+	KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

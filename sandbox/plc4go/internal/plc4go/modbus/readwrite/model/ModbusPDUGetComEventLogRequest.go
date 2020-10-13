@@ -91,5 +91,8 @@ func ModbusPDUGetComEventLogRequestParse(io spi.ReadBuffer) (ModbusPDUInitialize
 }
 
 func (m ModbusPDUGetComEventLogRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

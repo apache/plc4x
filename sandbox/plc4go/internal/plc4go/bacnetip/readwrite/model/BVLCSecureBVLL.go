@@ -83,5 +83,8 @@ func BVLCSecureBVLLParse(io spi.ReadBuffer) (BVLCInitializer, error) {
 }
 
 func (m BVLCSecureBVLL) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

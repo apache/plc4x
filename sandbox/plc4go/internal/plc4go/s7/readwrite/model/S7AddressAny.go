@@ -162,31 +162,35 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 }
 
 func (m S7AddressAny) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Enum field (transportSize)
-	transportSize := ITransportSize(m.transportSize)
-	transportSize.Serialize(io)
+		// Enum field (transportSize)
+		transportSize := CastTransportSize(m.transportSize)
+		transportSize.Serialize(io)
 
-	// Simple Field (numberOfElements)
-	numberOfElements := uint16(m.numberOfElements)
-	io.WriteUint16(16, (numberOfElements))
+		// Simple Field (numberOfElements)
+		numberOfElements := uint16(m.numberOfElements)
+		io.WriteUint16(16, (numberOfElements))
 
-	// Simple Field (dbNumber)
-	dbNumber := uint16(m.dbNumber)
-	io.WriteUint16(16, (dbNumber))
+		// Simple Field (dbNumber)
+		dbNumber := uint16(m.dbNumber)
+		io.WriteUint16(16, (dbNumber))
 
-	// Enum field (area)
-	area := IMemoryArea(m.area)
-	area.Serialize(io)
+		// Enum field (area)
+		area := CastMemoryArea(m.area)
+		area.Serialize(io)
 
-	// Reserved Field (reserved)
-	io.WriteUint8(5, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(5, uint8(0x00))
 
-	// Simple Field (byteAddress)
-	byteAddress := uint16(m.byteAddress)
-	io.WriteUint16(16, (byteAddress))
+		// Simple Field (byteAddress)
+		byteAddress := uint16(m.byteAddress)
+		io.WriteUint16(16, (byteAddress))
 
-	// Simple Field (bitAddress)
-	bitAddress := uint8(m.bitAddress)
-	io.WriteUint8(3, (bitAddress))
+		// Simple Field (bitAddress)
+		bitAddress := uint8(m.bitAddress)
+		io.WriteUint8(3, (bitAddress))
+
+	}
+	S7AddressSerialize(io, m.S7Address, CastIS7Address(m), ser)
 }

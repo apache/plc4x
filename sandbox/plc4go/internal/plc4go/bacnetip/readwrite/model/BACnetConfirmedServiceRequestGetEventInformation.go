@@ -83,5 +83,8 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(io spi.ReadBuffer) (B
 }
 
 func (m BACnetConfirmedServiceRequestGetEventInformation) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
+	}
+	BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

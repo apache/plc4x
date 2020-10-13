@@ -112,12 +112,16 @@ func ModbusPDUReadHoldingRegistersRequestParse(io spi.ReadBuffer) (ModbusPDUInit
 }
 
 func (m ModbusPDUReadHoldingRegistersRequest) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Simple Field (startingAddress)
-	startingAddress := uint16(m.startingAddress)
-	io.WriteUint16(16, (startingAddress))
+		// Simple Field (startingAddress)
+		startingAddress := uint16(m.startingAddress)
+		io.WriteUint16(16, (startingAddress))
 
-	// Simple Field (quantity)
-	quantity := uint16(m.quantity)
-	io.WriteUint16(16, (quantity))
+		// Simple Field (quantity)
+		quantity := uint16(m.quantity)
+		io.WriteUint16(16, (quantity))
+
+	}
+	ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

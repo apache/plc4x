@@ -122,15 +122,19 @@ func APDURejectParse(io spi.ReadBuffer) (APDUInitializer, error) {
 }
 
 func (m APDUReject) Serialize(io spi.WriteBuffer) {
+	ser := func() {
 
-	// Reserved Field (reserved)
-	io.WriteUint8(4, uint8(0x00))
+		// Reserved Field (reserved)
+		io.WriteUint8(4, uint8(0x00))
 
-	// Simple Field (originalInvokeId)
-	originalInvokeId := uint8(m.originalInvokeId)
-	io.WriteUint8(8, (originalInvokeId))
+		// Simple Field (originalInvokeId)
+		originalInvokeId := uint8(m.originalInvokeId)
+		io.WriteUint8(8, (originalInvokeId))
 
-	// Simple Field (rejectReason)
-	rejectReason := uint8(m.rejectReason)
-	io.WriteUint8(8, (rejectReason))
+		// Simple Field (rejectReason)
+		rejectReason := uint8(m.rejectReason)
+		io.WriteUint8(8, (rejectReason))
+
+	}
+	APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }
