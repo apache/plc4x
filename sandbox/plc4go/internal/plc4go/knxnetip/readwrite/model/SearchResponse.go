@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type SearchResponse struct {
-	hpaiControlEndpoint HPAIControlEndpoint
-	dibDeviceInfo       DIBDeviceInfo
-	dibSuppSvcFamilies  DIBSuppSvcFamilies
+	hpaiControlEndpoint IHPAIControlEndpoint
+	dibDeviceInfo       IDIBDeviceInfo
+	dibSuppSvcFamilies  IDIBSuppSvcFamilies
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m SearchResponse) initialize() spi.Message {
 	return m
 }
 
-func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) KNXNetIPMessageInitializer {
+func NewSearchResponse(hpaiControlEndpoint IHPAIControlEndpoint, dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
 	return &SearchResponse{hpaiControlEndpoint: hpaiControlEndpoint, dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
@@ -97,10 +97,10 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
 	}
-	var hpaiControlEndpoint HPAIControlEndpoint
-	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(HPAIControlEndpoint)
+	var hpaiControlEndpoint IHPAIControlEndpoint
+	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
 	if !_hpaiControlEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to HPAIControlEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
 	}
 
 	// Simple Field (dibDeviceInfo)
@@ -108,10 +108,10 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
 	}
-	var dibDeviceInfo DIBDeviceInfo
-	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(DIBDeviceInfo)
+	var dibDeviceInfo IDIBDeviceInfo
+	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
 	if !_dibDeviceInfoOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to DIBDeviceInfo")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
@@ -119,10 +119,10 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
 	}
-	var dibSuppSvcFamilies DIBSuppSvcFamilies
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(DIBSuppSvcFamilies)
+	var dibSuppSvcFamilies IDIBSuppSvcFamilies
+	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
 	if !_dibSuppSvcFamiliesOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to DIBSuppSvcFamilies")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
 	}
 
 	// Create the instance
@@ -132,14 +132,14 @@ func SearchResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
 func (m SearchResponse) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
 	hpaiControlEndpoint.Serialize(io)
 
 	// Simple Field (dibDeviceInfo)
-	dibDeviceInfo := DIBDeviceInfo(m.dibDeviceInfo)
+	dibDeviceInfo := IDIBDeviceInfo(m.dibDeviceInfo)
 	dibDeviceInfo.Serialize(io)
 
 	// Simple Field (dibSuppSvcFamilies)
-	dibSuppSvcFamilies := DIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+	dibSuppSvcFamilies := IDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
 	dibSuppSvcFamilies.Serialize(io)
 }

@@ -22,6 +22,12 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type COTPTpduSize int8
 
+type ICOTPTpduSize interface {
+	spi.Message
+	SizeInBytes() uint16
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	COTPTpduSize_SIZE_128  COTPTpduSize = 0x07
 	COTPTpduSize_SIZE_256  COTPTpduSize = 0x08
@@ -77,6 +83,14 @@ func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m COTPTpduSize) LengthInBits() uint16 {
+	return 8
+}
+
+func (m COTPTpduSize) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func COTPTpduSizeParse(io spi.ReadBuffer) (COTPTpduSize, error) {

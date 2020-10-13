@@ -28,7 +28,7 @@ import (
 type BVLCForwardedNPDU struct {
 	ip   []uint8
 	port uint16
-	npdu NPDU
+	npdu INPDU
 	BVLC
 }
 
@@ -47,7 +47,7 @@ func (m BVLCForwardedNPDU) initialize() spi.Message {
 	return m
 }
 
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU) BVLCInitializer {
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu INPDU) BVLCInitializer {
 	return &BVLCForwardedNPDU{ip: ip, port: port, npdu: npdu}
 }
 
@@ -101,22 +101,29 @@ func BVLCForwardedNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCInitializ
 		ip := make([]uint8, uint16(4))
 		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
-			ip = append(ip, io.ReadUint8(8))
+			_ipVal, _err := io.ReadUint8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'ip' field " + _err.Error())
+			}
+			ip = append(ip, _ipVal)
 		}
 	}
 
 	// Simple Field (port)
-	var port uint16 = io.ReadUint16(16)
+	port, _portErr := io.ReadUint16(16)
+	if _portErr != nil {
+		return nil, errors.New("Error parsing 'port' field " + _portErr.Error())
+	}
 
 	// Simple Field (npdu)
 	_npduMessage, _err := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(10)))
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
 	}
-	var npdu NPDU
-	npdu, _npduOk := _npduMessage.(NPDU)
+	var npdu INPDU
+	npdu, _npduOk := _npduMessage.(INPDU)
 	if !_npduOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to NPDU")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to INPDU")
 	}
 
 	// Create the instance
@@ -137,6 +144,6 @@ func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (port))
 
 	// Simple Field (npdu)
-	npdu := NPDU(m.npdu)
+	npdu := INPDU(m.npdu)
 	npdu.Serialize(io)
 }

@@ -80,7 +80,10 @@ func (m CEMI) LengthInBytes() uint16 {
 func CEMIParse(io spi.ReadBuffer, size uint8) (spi.Message, error) {
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	var messageCode uint8 = io.ReadUint8(8)
+	messageCode, _messageCodeErr := io.ReadUint8(8)
+	if _messageCodeErr != nil {
+		return nil, errors.New("Error parsing 'messageCode' field " + _messageCodeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer CEMIInitializer

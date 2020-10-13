@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -104,13 +105,22 @@ func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBytes() uint16 {
 func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (startingAddress)
-	var startingAddress uint16 = io.ReadUint16(16)
+	startingAddress, _startingAddressErr := io.ReadUint16(16)
+	if _startingAddressErr != nil {
+		return nil, errors.New("Error parsing 'startingAddress' field " + _startingAddressErr.Error())
+	}
 
 	// Simple Field (quantity)
-	var quantity uint16 = io.ReadUint16(16)
+	quantity, _quantityErr := io.ReadUint16(16)
+	if _quantityErr != nil {
+		return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var byteCount uint8 = io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8(8)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Array field (value)
 	var value []int8
@@ -119,7 +129,11 @@ func ModbusPDUWriteMultipleCoilsRequestParse(io spi.ReadBuffer) (ModbusPDUInitia
 		value := make([]int8, byteCount)
 		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			value = append(value, io.ReadInt8(8))
+			_valueVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			}
+			value = append(value, _valueVal)
 		}
 	}
 

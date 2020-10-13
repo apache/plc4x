@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -87,7 +88,10 @@ func (m BACnetTagApplicationDouble) LengthInBytes() uint16 {
 func BACnetTagApplicationDoubleParse(io spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
 	// Simple Field (value)
-	var value float64 = io.ReadFloat64(64)
+	value, _valueErr := io.ReadFloat64(64)
+	if _valueErr != nil {
+		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+	}
 
 	// Create the instance
 	return NewBACnetTagApplicationDouble(value), nil

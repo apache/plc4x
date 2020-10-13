@@ -27,9 +27,9 @@ import (
 // The data-structure of this message
 type ConnectionResponse struct {
 	communicationChannelId      uint8
-	status                      Status
-	hpaiDataEndpoint            *HPAIDataEndpoint
-	connectionResponseDataBlock *ConnectionResponseDataBlock
+	status                      IStatus
+	hpaiDataEndpoint            *IHPAIDataEndpoint
+	connectionResponseDataBlock *IConnectionResponseDataBlock
 	KNXNetIPMessage
 }
 
@@ -48,7 +48,7 @@ func (m ConnectionResponse) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiDataEndpoint *HPAIDataEndpoint, connectionResponseDataBlock *ConnectionResponseDataBlock) KNXNetIPMessageInitializer {
+func NewConnectionResponse(communicationChannelId uint8, status IStatus, hpaiDataEndpoint *IHPAIDataEndpoint, connectionResponseDataBlock *IConnectionResponseDataBlock) KNXNetIPMessageInitializer {
 	return &ConnectionResponse{communicationChannelId: communicationChannelId, status: status, hpaiDataEndpoint: hpaiDataEndpoint, connectionResponseDataBlock: connectionResponseDataBlock}
 }
 
@@ -83,12 +83,12 @@ func (m ConnectionResponse) LengthInBits() uint16 {
 
 	// Optional Field (hpaiDataEndpoint)
 	if m.hpaiDataEndpoint != nil {
-		lengthInBits += m.hpaiDataEndpoint.LengthInBits()
+		lengthInBits += (*m.hpaiDataEndpoint).LengthInBits()
 	}
 
 	// Optional Field (connectionResponseDataBlock)
 	if m.connectionResponseDataBlock != nil {
-		lengthInBits += m.connectionResponseDataBlock.LengthInBits()
+		lengthInBits += (*m.connectionResponseDataBlock).LengthInBits()
 	}
 
 	return lengthInBits
@@ -101,7 +101,10 @@ func (m ConnectionResponse) LengthInBytes() uint16 {
 func ConnectionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Enum field (status)
 	status, _statusErr := StatusParse(io)
@@ -110,31 +113,31 @@ func ConnectionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, err
 	}
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
-	var hpaiDataEndpoint *HPAIDataEndpoint = nil
+	var hpaiDataEndpoint *IHPAIDataEndpoint = nil
 	if bool((status) == (Status_NO_ERROR)) {
 		_message, _err := HPAIDataEndpointParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'hpaiDataEndpoint' field " + _err.Error())
 		}
-		var _item HPAIDataEndpoint
-		_item, _ok := _message.(HPAIDataEndpoint)
+		var _item IHPAIDataEndpoint
+		_item, _ok := _message.(IHPAIDataEndpoint)
 		if !_ok {
-			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to HPAIDataEndpoint")
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IHPAIDataEndpoint")
 		}
 		hpaiDataEndpoint = &_item
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
-	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
+	var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
 	if bool((status) == (Status_NO_ERROR)) {
 		_message, _err := ConnectionResponseDataBlockParse(io)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'connectionResponseDataBlock' field " + _err.Error())
 		}
-		var _item ConnectionResponseDataBlock
-		_item, _ok := _message.(ConnectionResponseDataBlock)
+		var _item IConnectionResponseDataBlock
+		_item, _ok := _message.(IConnectionResponseDataBlock)
 		if !_ok {
-			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ConnectionResponseDataBlock")
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to IConnectionResponseDataBlock")
 		}
 		connectionResponseDataBlock = &_item
 	}
@@ -150,20 +153,20 @@ func (m ConnectionResponse) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (communicationChannelId))
 
 	// Enum field (status)
-	status := Status(m.status)
+	status := IStatus(m.status)
 	status.Serialize(io)
 
 	// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
-	var hpaiDataEndpoint *HPAIDataEndpoint = nil
+	var hpaiDataEndpoint *IHPAIDataEndpoint = nil
 	if m.hpaiDataEndpoint != nil {
 		hpaiDataEndpoint = m.hpaiDataEndpoint
-		hpaiDataEndpoint.Serialize(io)
+		(*hpaiDataEndpoint).Serialize(io)
 	}
 
 	// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
-	var connectionResponseDataBlock *ConnectionResponseDataBlock = nil
+	var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
 	if m.connectionResponseDataBlock != nil {
 		connectionResponseDataBlock = m.connectionResponseDataBlock
-		connectionResponseDataBlock.Serialize(io)
+		(*connectionResponseDataBlock).Serialize(io)
 	}
 }

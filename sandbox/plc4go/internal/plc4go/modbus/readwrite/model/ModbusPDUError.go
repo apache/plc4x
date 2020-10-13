@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,10 @@ func (m ModbusPDUError) LengthInBytes() uint16 {
 func ModbusPDUErrorParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (exceptionCode)
-	var exceptionCode uint8 = io.ReadUint8(8)
+	exceptionCode, _exceptionCodeErr := io.ReadUint8(8)
+	if _exceptionCodeErr != nil {
+		return nil, errors.New("Error parsing 'exceptionCode' field " + _exceptionCodeErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUError(exceptionCode), nil

@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUWriteFileRecordRequest struct {
-	items []ModbusPDUWriteFileRecordRequestItem
+	items []IModbusPDUWriteFileRecordRequestItem
 	ModbusPDU
 }
 
@@ -53,7 +53,7 @@ func (m ModbusPDUWriteFileRecordRequest) initialize() spi.Message {
 	return m
 }
 
-func NewModbusPDUWriteFileRecordRequest(items []ModbusPDUWriteFileRecordRequestItem) ModbusPDUInitializer {
+func NewModbusPDUWriteFileRecordRequest(items []IModbusPDUWriteFileRecordRequestItem) ModbusPDUInitializer {
 	return &ModbusPDUWriteFileRecordRequest{items: items}
 }
 
@@ -100,10 +100,13 @@ func (m ModbusPDUWriteFileRecordRequest) LengthInBytes() uint16 {
 func ModbusPDUWriteFileRecordRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var byteCount uint8 = io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8(8)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Array field (items)
-	var items []ModbusPDUWriteFileRecordRequestItem
+	var items []IModbusPDUWriteFileRecordRequestItem
 	// Length array
 	_itemsLength := byteCount
 	_itemsEndPos := io.GetPos() + uint16(_itemsLength)
@@ -112,8 +115,8 @@ func ModbusPDUWriteFileRecordRequestParse(io spi.ReadBuffer) (ModbusPDUInitializ
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
-		var _item ModbusPDUWriteFileRecordRequestItem
-		_item, _ok := _message.(ModbusPDUWriteFileRecordRequestItem)
+		var _item IModbusPDUWriteFileRecordRequestItem
+		_item, _ok := _message.(IModbusPDUWriteFileRecordRequestItem)
 		if !_ok {
 			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ModbusPDUWriteFileRecordRequestItem")
 		}
@@ -125,7 +128,7 @@ func ModbusPDUWriteFileRecordRequestParse(io spi.ReadBuffer) (ModbusPDUInitializ
 }
 
 func (m ModbusPDUWriteFileRecordRequest) Serialize(io spi.WriteBuffer) {
-	itemsArraySizeInBytes := func(items []ModbusPDUWriteFileRecordRequestItem) uint32 {
+	itemsArraySizeInBytes := func(items []IModbusPDUWriteFileRecordRequestItem) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
 			sizeInBytes += uint32(v.LengthInBytes())

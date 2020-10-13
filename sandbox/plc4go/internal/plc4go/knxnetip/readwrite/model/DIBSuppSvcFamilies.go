@@ -27,7 +27,7 @@ import (
 // The data-structure of this message
 type DIBSuppSvcFamilies struct {
 	descriptionType uint8
-	serviceIds      []ServiceId
+	serviceIds      []IServiceId
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type IDIBSuppSvcFamilies interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) spi.Message {
+func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []IServiceId) spi.Message {
 	return &DIBSuppSvcFamilies{descriptionType: descriptionType, serviceIds: serviceIds}
 }
 
@@ -86,24 +86,30 @@ func (m DIBSuppSvcFamilies) LengthInBytes() uint16 {
 func DIBSuppSvcFamiliesParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _structureLengthErr := io.ReadUint8(8)
+	if _structureLengthErr != nil {
+		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (descriptionType)
-	var descriptionType uint8 = io.ReadUint8(8)
+	descriptionType, _descriptionTypeErr := io.ReadUint8(8)
+	if _descriptionTypeErr != nil {
+		return nil, errors.New("Error parsing 'descriptionType' field " + _descriptionTypeErr.Error())
+	}
 
 	// Array field (serviceIds)
-	var serviceIds []ServiceId
+	var serviceIds []IServiceId
 	// Count array
 	{
-		serviceIds := make([]ServiceId, uint16(3))
+		serviceIds := make([]IServiceId, uint16(3))
 		for curItem := uint16(0); curItem < uint16(uint16(3)); curItem++ {
 
 			_message, _err := ServiceIdParse(io)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'serviceIds' field " + _err.Error())
 			}
-			var _item ServiceId
-			_item, _ok := _message.(ServiceId)
+			var _item IServiceId
+			_item, _ok := _message.(IServiceId)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ServiceId")
 			}

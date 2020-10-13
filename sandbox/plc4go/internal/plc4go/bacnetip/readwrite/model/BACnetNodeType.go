@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type BACnetNodeType uint8
 
+type IBACnetNodeType interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	BACnetNodeType_UNKNOWN        BACnetNodeType = 0x00
 	BACnetNodeType_SYSTEM         BACnetNodeType = 0x01
@@ -55,6 +60,14 @@ func CastBACnetNodeType(structType interface{}) BACnetNodeType {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m BACnetNodeType) LengthInBits() uint16 {
+	return 8
+}
+
+func (m BACnetNodeType) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func BACnetNodeTypeParse(io spi.ReadBuffer) (BACnetNodeType, error) {

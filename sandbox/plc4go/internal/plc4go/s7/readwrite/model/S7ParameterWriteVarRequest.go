@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7ParameterWriteVarRequest struct {
-	items []S7VarRequestParameterItem
+	items []IS7VarRequestParameterItem
 	S7Parameter
 }
 
@@ -49,7 +49,7 @@ func (m S7ParameterWriteVarRequest) initialize() spi.Message {
 	return m
 }
 
-func NewS7ParameterWriteVarRequest(items []S7VarRequestParameterItem) S7ParameterInitializer {
+func NewS7ParameterWriteVarRequest(items []IS7VarRequestParameterItem) S7ParameterInitializer {
 	return &S7ParameterWriteVarRequest{items: items}
 }
 
@@ -96,21 +96,24 @@ func (m S7ParameterWriteVarRequest) LengthInBytes() uint16 {
 func S7ParameterWriteVarRequestParse(io spi.ReadBuffer) (S7ParameterInitializer, error) {
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var numItems uint8 = io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8(8)
+	if _numItemsErr != nil {
+		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+	}
 
 	// Array field (items)
-	var items []S7VarRequestParameterItem
+	var items []IS7VarRequestParameterItem
 	// Count array
 	{
-		items := make([]S7VarRequestParameterItem, numItems)
+		items := make([]IS7VarRequestParameterItem, numItems)
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 
 			_message, _err := S7VarRequestParameterItemParse(io)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
-			var _item S7VarRequestParameterItem
-			_item, _ok := _message.(S7VarRequestParameterItem)
+			var _item IS7VarRequestParameterItem
+			_item, _ok := _message.(IS7VarRequestParameterItem)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarRequestParameterItem")
 			}

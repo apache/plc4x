@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type ConnectionResponseDataBlockTunnelConnection struct {
-	knxAddress KNXAddress
+	knxAddress IKNXAddress
 	ConnectionResponseDataBlock
 }
 
@@ -45,7 +45,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionResponseDataBlockTunnelConnection(knxAddress KNXAddress) ConnectionResponseDataBlockInitializer {
+func NewConnectionResponseDataBlockTunnelConnection(knxAddress IKNXAddress) ConnectionResponseDataBlockInitializer {
 	return &ConnectionResponseDataBlockTunnelConnection{knxAddress: knxAddress}
 }
 
@@ -89,10 +89,10 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io spi.ReadBuffer) (Connec
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'knxAddress'. " + _err.Error())
 	}
-	var knxAddress KNXAddress
-	knxAddress, _knxAddressOk := _knxAddressMessage.(KNXAddress)
+	var knxAddress IKNXAddress
+	knxAddress, _knxAddressOk := _knxAddressMessage.(IKNXAddress)
 	if !_knxAddressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxAddressMessage).Name() + " to KNXAddress")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxAddressMessage).Name() + " to IKNXAddress")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io spi.ReadBuffer) (Connec
 func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (knxAddress)
-	knxAddress := KNXAddress(m.knxAddress)
+	knxAddress := IKNXAddress(m.knxAddress)
 	knxAddress.Serialize(io)
 }

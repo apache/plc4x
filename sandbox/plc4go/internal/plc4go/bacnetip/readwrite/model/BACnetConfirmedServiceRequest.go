@@ -80,7 +80,10 @@ func (m BACnetConfirmedServiceRequest) LengthInBytes() uint16 {
 func BACnetConfirmedServiceRequestParse(io spi.ReadBuffer, len uint16) (spi.Message, error) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	var serviceChoice uint8 = io.ReadUint8(8)
+	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
+	if _serviceChoiceErr != nil {
+		return nil, errors.New("Error parsing 'serviceChoice' field " + _serviceChoiceErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer BACnetConfirmedServiceRequestInitializer

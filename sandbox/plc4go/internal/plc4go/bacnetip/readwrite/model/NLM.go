@@ -86,12 +86,19 @@ func (m NLM) LengthInBytes() uint16 {
 func NLMParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	var messageType uint8 = io.ReadUint8(8)
+	messageType, _messageTypeErr := io.ReadUint8(8)
+	if _messageTypeErr != nil {
+		return nil, errors.New("Error parsing 'messageType' field " + _messageTypeErr.Error())
+	}
 
 	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
 	var vendorId *uint16 = nil
 	if bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255)))) {
-		_val := io.ReadUint16(16)
+		_val, _err := io.ReadUint16(16)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'vendorId' field " + _err.Error())
+		}
+
 		vendorId = &_val
 	}
 

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -81,7 +82,11 @@ func MACAddressParse(io spi.ReadBuffer) (spi.Message, error) {
 		addr := make([]int8, uint16(6))
 		for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
 
-			addr = append(addr, io.ReadInt8(8))
+			_addrVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'addr' field " + _err.Error())
+			}
+			addr = append(addr, _addrVal)
 		}
 	}
 

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -112,19 +113,34 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint1
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (readStartingAddress)
-	var readStartingAddress uint16 = io.ReadUint16(16)
+	readStartingAddress, _readStartingAddressErr := io.ReadUint16(16)
+	if _readStartingAddressErr != nil {
+		return nil, errors.New("Error parsing 'readStartingAddress' field " + _readStartingAddressErr.Error())
+	}
 
 	// Simple Field (readQuantity)
-	var readQuantity uint16 = io.ReadUint16(16)
+	readQuantity, _readQuantityErr := io.ReadUint16(16)
+	if _readQuantityErr != nil {
+		return nil, errors.New("Error parsing 'readQuantity' field " + _readQuantityErr.Error())
+	}
 
 	// Simple Field (writeStartingAddress)
-	var writeStartingAddress uint16 = io.ReadUint16(16)
+	writeStartingAddress, _writeStartingAddressErr := io.ReadUint16(16)
+	if _writeStartingAddressErr != nil {
+		return nil, errors.New("Error parsing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
+	}
 
 	// Simple Field (writeQuantity)
-	var writeQuantity uint16 = io.ReadUint16(16)
+	writeQuantity, _writeQuantityErr := io.ReadUint16(16)
+	if _writeQuantityErr != nil {
+		return nil, errors.New("Error parsing 'writeQuantity' field " + _writeQuantityErr.Error())
+	}
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var byteCount uint8 = io.ReadUint8(8)
+	byteCount, _byteCountErr := io.ReadUint8(8)
+	if _byteCountErr != nil {
+		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+	}
 
 	// Array field (value)
 	var value []int8
@@ -133,7 +149,11 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io spi.ReadBuffer) (
 		value := make([]int8, byteCount)
 		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			value = append(value, io.ReadInt8(8))
+			_valueVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'value' field " + _err.Error())
+			}
+			value = append(value, _valueVal)
 		}
 	}
 

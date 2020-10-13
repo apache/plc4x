@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -85,16 +86,28 @@ func (m ModbusPDUReadFileRecordRequestItem) LengthInBytes() uint16 {
 func ModbusPDUReadFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (referenceType)
-	var referenceType uint8 = io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	if _referenceTypeErr != nil {
+		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
 	// Simple Field (fileNumber)
-	var fileNumber uint16 = io.ReadUint16(16)
+	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	if _fileNumberErr != nil {
+		return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
+	}
 
 	// Simple Field (recordNumber)
-	var recordNumber uint16 = io.ReadUint16(16)
+	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	if _recordNumberErr != nil {
+		return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
+	}
 
 	// Simple Field (recordLength)
-	var recordLength uint16 = io.ReadUint16(16)
+	recordLength, _recordLengthErr := io.ReadUint16(16)
+	if _recordLengthErr != nil {
+		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUReadFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordLength), nil

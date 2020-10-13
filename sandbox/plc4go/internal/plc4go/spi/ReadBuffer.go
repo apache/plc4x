@@ -18,17 +18,20 @@
 //
 package spi
 
+import (
+	"bytes"
+	"github.com/icza/bitio"
+)
+
 type ReadBuffer struct {
-	data    []uint8
-	bytePos uint8
-	bitPos  uint8
+	reader *bitio.Reader
 }
 
 func ReadBufferNew(data []uint8) *ReadBuffer {
+	b := bytes.NewBuffer(data)
+	reader := bitio.NewReader(b)
 	return &ReadBuffer{
-		data:    data,
-		bytePos: 0,
-		bitPos:  0,
+		reader: reader,
 	}
 }
 
@@ -37,7 +40,7 @@ func (rb ReadBuffer) GetPos() uint16 {
 }
 
 func (rb ReadBuffer) GetBytes() []uint8 {
-	return rb.data
+	return nil
 }
 
 func (rb ReadBuffer) GetTotalBytes() uint64 {
@@ -52,50 +55,94 @@ func (rb ReadBuffer) PeekByte(offset uint8) uint8 {
 	return 0
 }
 
-func (rb ReadBuffer) ReadBit() bool {
-	return false
+func (rb ReadBuffer) ReadBit() (bool, error) {
+	return rb.reader.ReadBool()
 }
 
-func (rb ReadBuffer) ReadUint8(bitLength uint8) uint8 {
-	return 0
+func (rb ReadBuffer) ReadUint8(bitLength uint8) (uint8, error) {
+	res := uint8(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadUint16(bitLength uint8) uint16 {
-	return 0
+func (rb ReadBuffer) ReadUint16(bitLength uint8) (uint16, error) {
+	res := uint16(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadUint32(bitLength uint8) uint32 {
-	return 0
+func (rb ReadBuffer) ReadUint32(bitLength uint8) (uint32, error) {
+	res := uint32(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadUint64(bitLength uint8) uint64 {
-	return 0
+func (rb ReadBuffer) ReadUint64(bitLength uint8) (uint64, error) {
+	res := uint64(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadInt8(bitLength uint8) int8 {
-	return 0
+func (rb ReadBuffer) ReadInt8(bitLength uint8) (int8, error) {
+	res := int8(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadInt16(bitLength uint8) int16 {
-	return 0
+func (rb ReadBuffer) ReadInt16(bitLength uint8) (int16, error) {
+	res := int16(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadInt32(bitLength uint8) int32 {
-	return 0
+func (rb ReadBuffer) ReadInt32(bitLength uint8) (int32, error) {
+	res := int32(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadInt64(bitLength uint8) int64 {
-	return 0
+func (rb ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
+	res := int64(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadFloat32(bitLength uint8) float32 {
-	return 0
+func (rb ReadBuffer) ReadFloat32(bitLength uint8) (float32, error) {
+	res := float32(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadFloat64(bitLength uint8) float64 {
-	return 0
+func (rb ReadBuffer) ReadFloat64(bitLength uint8) (float64, error) {
+	res := float64(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return 0, rb.reader.TryError
+	}
+	return res, nil
 }
 
-func (rb ReadBuffer) ReadString(bitLength uint8) string {
-	return ""
+func (rb ReadBuffer) ReadString(bitLength uint8) (string, error) {
+	res := string(rb.reader.TryReadBits(bitLength))
+	if rb.reader.TryError != nil {
+		return "", rb.reader.TryError
+	}
+	return res, nil
 }

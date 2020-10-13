@@ -22,6 +22,21 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type TransportSize int8
 
+type ITransportSize interface {
+	spi.Message
+	Supported_S7_300() bool
+	Supported_LOGO() bool
+	SizeInBytes() uint8
+	Supported_S7_400() bool
+	Supported_S7_1200() bool
+	SizeCode() uint8
+	Supported_S7_1500() bool
+	DataTransportSize() DataTransportSize
+	BaseType() TransportSize
+	DataProtocolId() uint8
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	TransportSize_BOOL          TransportSize = 0x01
 	TransportSize_BYTE          TransportSize = 0x02
@@ -788,6 +803,14 @@ func CastTransportSize(structType interface{}) TransportSize {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m TransportSize) LengthInBits() uint16 {
+	return 8
+}
+
+func (m TransportSize) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func TransportSizeParse(io spi.ReadBuffer) (TransportSize, error) {

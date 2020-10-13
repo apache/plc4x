@@ -26,14 +26,14 @@ import (
 
 // The data-structure of this message
 type CEMIFrameData struct {
-	sourceAddress      KNXAddress
+	sourceAddress      IKNXAddress
 	destinationAddress []int8
 	groupAddress       bool
 	hopCount           uint8
 	dataLength         uint8
-	tcpi               TPCI
+	tcpi               ITPCI
 	counter            uint8
-	apci               APCI
+	apci               IAPCI
 	dataFirstByte      int8
 	data               []int8
 	crc                uint8
@@ -59,7 +59,7 @@ func (m CEMIFrameData) Polling() bool {
 	return false
 }
 
-func (m CEMIFrameData) initialize(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
+func (m CEMIFrameData) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
 	m.repeated = repeated
 	m.priority = priority
 	m.acknowledgeRequested = acknowledgeRequested
@@ -67,7 +67,7 @@ func (m CEMIFrameData) initialize(repeated bool, priority CEMIPriority, acknowle
 	return m
 }
 
-func NewCEMIFrameData(sourceAddress KNXAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, dataLength uint8, tcpi TPCI, counter uint8, apci APCI, dataFirstByte int8, data []int8, crc uint8) CEMIFrameInitializer {
+func NewCEMIFrameData(sourceAddress IKNXAddress, destinationAddress []int8, groupAddress bool, hopCount uint8, dataLength uint8, tcpi ITPCI, counter uint8, apci IAPCI, dataFirstByte int8, data []int8, crc uint8) CEMIFrameInitializer {
 	return &CEMIFrameData{sourceAddress: sourceAddress, destinationAddress: destinationAddress, groupAddress: groupAddress, hopCount: hopCount, dataLength: dataLength, tcpi: tcpi, counter: counter, apci: apci, dataFirstByte: dataFirstByte, data: data, crc: crc}
 }
 
@@ -145,10 +145,10 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'sourceAddress'. " + _err.Error())
 	}
-	var sourceAddress KNXAddress
-	sourceAddress, _sourceAddressOk := _sourceAddressMessage.(KNXAddress)
+	var sourceAddress IKNXAddress
+	sourceAddress, _sourceAddressOk := _sourceAddressMessage.(IKNXAddress)
 	if !_sourceAddressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_sourceAddressMessage).Name() + " to KNXAddress")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_sourceAddressMessage).Name() + " to IKNXAddress")
 	}
 
 	// Array field (destinationAddress)
@@ -158,18 +158,31 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 		destinationAddress := make([]int8, uint16(2))
 		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 
-			destinationAddress = append(destinationAddress, io.ReadInt8(8))
+			_destinationAddressVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
+			}
+			destinationAddress = append(destinationAddress, _destinationAddressVal)
 		}
 	}
 
 	// Simple Field (groupAddress)
-	var groupAddress bool = io.ReadBit()
+	groupAddress, _groupAddressErr := io.ReadBit()
+	if _groupAddressErr != nil {
+		return nil, errors.New("Error parsing 'groupAddress' field " + _groupAddressErr.Error())
+	}
 
 	// Simple Field (hopCount)
-	var hopCount uint8 = io.ReadUint8(3)
+	hopCount, _hopCountErr := io.ReadUint8(3)
+	if _hopCountErr != nil {
+		return nil, errors.New("Error parsing 'hopCount' field " + _hopCountErr.Error())
+	}
 
 	// Simple Field (dataLength)
-	var dataLength uint8 = io.ReadUint8(4)
+	dataLength, _dataLengthErr := io.ReadUint8(4)
+	if _dataLengthErr != nil {
+		return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Enum field (tcpi)
 	tcpi, _tcpiErr := TPCIParse(io)
@@ -178,7 +191,10 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	}
 
 	// Simple Field (counter)
-	var counter uint8 = io.ReadUint8(4)
+	counter, _counterErr := io.ReadUint8(4)
+	if _counterErr != nil {
+		return nil, errors.New("Error parsing 'counter' field " + _counterErr.Error())
+	}
 
 	// Enum field (apci)
 	apci, _apciErr := APCIParse(io)
@@ -187,7 +203,10 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	}
 
 	// Simple Field (dataFirstByte)
-	var dataFirstByte int8 = io.ReadInt8(6)
+	dataFirstByte, _dataFirstByteErr := io.ReadInt8(6)
+	if _dataFirstByteErr != nil {
+		return nil, errors.New("Error parsing 'dataFirstByte' field " + _dataFirstByteErr.Error())
+	}
 
 	// Array field (data)
 	var data []int8
@@ -196,12 +215,19 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 		data := make([]int8, uint16(dataLength)-uint16(uint16(1)))
 		for curItem := uint16(0); curItem < uint16(uint16(dataLength)-uint16(uint16(1))); curItem++ {
 
-			data = append(data, io.ReadInt8(8))
+			_dataVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			}
+			data = append(data, _dataVal)
 		}
 	}
 
 	// Simple Field (crc)
-	var crc uint8 = io.ReadUint8(8)
+	crc, _crcErr := io.ReadUint8(8)
+	if _crcErr != nil {
+		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+	}
 
 	// Create the instance
 	return NewCEMIFrameData(sourceAddress, destinationAddress, groupAddress, hopCount, dataLength, tcpi, counter, apci, dataFirstByte, data, crc), nil
@@ -210,7 +236,7 @@ func CEMIFrameDataParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 func (m CEMIFrameData) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (sourceAddress)
-	sourceAddress := KNXAddress(m.sourceAddress)
+	sourceAddress := IKNXAddress(m.sourceAddress)
 	sourceAddress.Serialize(io)
 
 	// Array Field (destinationAddress)
@@ -233,7 +259,7 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (dataLength))
 
 	// Enum field (tcpi)
-	tcpi := TPCI(m.tcpi)
+	tcpi := ITPCI(m.tcpi)
 	tcpi.Serialize(io)
 
 	// Simple Field (counter)
@@ -241,7 +267,7 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, (counter))
 
 	// Enum field (apci)
-	apci := APCI(m.apci)
+	apci := IAPCI(m.apci)
 	apci.Serialize(io)
 
 	// Simple Field (dataFirstByte)

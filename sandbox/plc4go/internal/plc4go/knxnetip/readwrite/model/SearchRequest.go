@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type SearchRequest struct {
-	hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint
+	hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m SearchRequest) initialize() spi.Message {
 	return m
 }
 
-func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) KNXNetIPMessageInitializer {
+func NewSearchRequest(hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint) KNXNetIPMessageInitializer {
 	return &SearchRequest{hpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint}
 }
 
@@ -89,10 +89,10 @@ func SearchRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiIDiscoveryEndpoint'. " + _err.Error())
 	}
-	var hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint
-	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointOk := _hpaiIDiscoveryEndpointMessage.(HPAIDiscoveryEndpoint)
+	var hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
+	hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointOk := _hpaiIDiscoveryEndpointMessage.(IHPAIDiscoveryEndpoint)
 	if !_hpaiIDiscoveryEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiIDiscoveryEndpointMessage).Name() + " to HPAIDiscoveryEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiIDiscoveryEndpointMessage).Name() + " to IHPAIDiscoveryEndpoint")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func SearchRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 func (m SearchRequest) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (hpaiIDiscoveryEndpoint)
-	hpaiIDiscoveryEndpoint := HPAIDiscoveryEndpoint(m.hpaiIDiscoveryEndpoint)
+	hpaiIDiscoveryEndpoint := IHPAIDiscoveryEndpoint(m.hpaiIDiscoveryEndpoint)
 	hpaiIDiscoveryEndpoint.Serialize(io)
 }

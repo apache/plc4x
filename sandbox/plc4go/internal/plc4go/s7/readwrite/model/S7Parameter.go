@@ -85,7 +85,10 @@ func (m S7Parameter) LengthInBytes() uint16 {
 func S7ParameterParse(io spi.ReadBuffer, messageType uint8) (spi.Message, error) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	var parameterType uint8 = io.ReadUint8(8)
+	parameterType, _parameterTypeErr := io.ReadUint8(8)
+	if _parameterTypeErr != nil {
+		return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer S7ParameterInitializer

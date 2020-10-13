@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserDataItem struct {
-	returnCode    DataTransportErrorCode
-	transportSize DataTransportSize
-	szlId         SzlId
+	returnCode    IDataTransportErrorCode
+	transportSize IDataTransportSize
+	szlId         ISzlId
 	szlIndex      uint16
 }
 
@@ -40,7 +40,7 @@ type IS7PayloadUserDataItem interface {
 }
 
 type S7PayloadUserDataItemInitializer interface {
-	initialize(returnCode DataTransportErrorCode, transportSize DataTransportSize, szlId SzlId, szlIndex uint16) spi.Message
+	initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message
 }
 
 func S7PayloadUserDataItemCpuFunctionType(m IS7PayloadUserDataItem) uint8 {
@@ -109,21 +109,27 @@ func S7PayloadUserDataItemParse(io spi.ReadBuffer, cpuFunctionType uint8) (spi.M
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint16 = io.ReadUint16(16)
+	_, _dataLengthErr := io.ReadUint16(16)
+	if _dataLengthErr != nil {
+		return nil, errors.New("Error parsing 'dataLength' field " + _dataLengthErr.Error())
+	}
 
 	// Simple Field (szlId)
 	_szlIdMessage, _err := SzlIdParse(io)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'szlId'. " + _err.Error())
 	}
-	var szlId SzlId
-	szlId, _szlIdOk := _szlIdMessage.(SzlId)
+	var szlId ISzlId
+	szlId, _szlIdOk := _szlIdMessage.(ISzlId)
 	if !_szlIdOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_szlIdMessage).Name() + " to SzlId")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_szlIdMessage).Name() + " to ISzlId")
 	}
 
 	// Simple Field (szlIndex)
-	var szlIndex uint16 = io.ReadUint16(16)
+	szlIndex, _szlIndexErr := io.ReadUint16(16)
+	if _szlIndexErr != nil {
+		return nil, errors.New("Error parsing 'szlIndex' field " + _szlIndexErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer S7PayloadUserDataItemInitializer
@@ -146,11 +152,11 @@ func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
 	iS7PayloadUserDataItem := CastIS7PayloadUserDataItem(m)
 
 	// Enum field (returnCode)
-	returnCode := DataTransportErrorCode(m.returnCode)
+	returnCode := IDataTransportErrorCode(m.returnCode)
 	returnCode.Serialize(io)
 
 	// Enum field (transportSize)
-	transportSize := DataTransportSize(m.transportSize)
+	transportSize := IDataTransportSize(m.transportSize)
 	transportSize.Serialize(io)
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
@@ -158,7 +164,7 @@ func (m S7PayloadUserDataItem) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (dataLength))
 
 	// Simple Field (szlId)
-	szlId := SzlId(m.szlId)
+	szlId := ISzlId(m.szlId)
 	szlId.Serialize(io)
 
 	// Simple Field (szlIndex)

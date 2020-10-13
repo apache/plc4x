@@ -32,7 +32,7 @@ type APDUComplexAck struct {
 	originalInvokeId   uint8
 	sequenceNumber     *uint8
 	proposedWindowSize *uint8
-	serviceAck         BACnetServiceAck
+	serviceAck         IBACnetServiceAck
 	APDU
 }
 
@@ -51,7 +51,7 @@ func (m APDUComplexAck) initialize() spi.Message {
 	return m
 }
 
-func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck BACnetServiceAck) APDUInitializer {
+func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck IBACnetServiceAck) APDUInitializer {
 	return &APDUComplexAck{segmentedMessage: segmentedMessage, moreFollows: moreFollows, originalInvokeId: originalInvokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceAck: serviceAck}
 }
 
@@ -113,14 +113,23 @@ func (m APDUComplexAck) LengthInBytes() uint16 {
 func APDUComplexAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 
 	// Simple Field (segmentedMessage)
-	var segmentedMessage bool = io.ReadBit()
+	segmentedMessage, _segmentedMessageErr := io.ReadBit()
+	if _segmentedMessageErr != nil {
+		return nil, errors.New("Error parsing 'segmentedMessage' field " + _segmentedMessageErr.Error())
+	}
 
 	// Simple Field (moreFollows)
-	var moreFollows bool = io.ReadBit()
+	moreFollows, _moreFollowsErr := io.ReadBit()
+	if _moreFollowsErr != nil {
+		return nil, errors.New("Error parsing 'moreFollows' field " + _moreFollowsErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(2)
+		reserved, _err := io.ReadUint8(2)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -130,19 +139,30 @@ func APDUComplexAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	var originalInvokeId uint8 = io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	if _originalInvokeIdErr != nil {
+		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+	}
 
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'sequenceNumber' field " + _err.Error())
+		}
+
 		sequenceNumber = &_val
 	}
 
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'proposedWindowSize' field " + _err.Error())
+		}
+
 		proposedWindowSize = &_val
 	}
 
@@ -151,10 +171,10 @@ func APDUComplexAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'serviceAck'. " + _err.Error())
 	}
-	var serviceAck BACnetServiceAck
-	serviceAck, _serviceAckOk := _serviceAckMessage.(BACnetServiceAck)
+	var serviceAck IBACnetServiceAck
+	serviceAck, _serviceAckOk := _serviceAckMessage.(IBACnetServiceAck)
 	if !_serviceAckOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceAckMessage).Name() + " to BACnetServiceAck")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceAckMessage).Name() + " to IBACnetServiceAck")
 	}
 
 	// Create the instance
@@ -193,6 +213,6 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) {
 	}
 
 	// Simple Field (serviceAck)
-	serviceAck := BACnetServiceAck(m.serviceAck)
+	serviceAck := IBACnetServiceAck(m.serviceAck)
 	serviceAck.Serialize(io)
 }

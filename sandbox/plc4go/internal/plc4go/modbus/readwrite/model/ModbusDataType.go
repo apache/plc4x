@@ -22,6 +22,12 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type ModbusDataType uint8
 
+type IModbusDataType interface {
+	spi.Message
+	DataTypeSize() uint8
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	ModbusDataType_NULL           ModbusDataType = 00
 	ModbusDataType_BOOL           ModbusDataType = 01
@@ -182,6 +188,14 @@ func CastModbusDataType(structType interface{}) ModbusDataType {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m ModbusDataType) LengthInBits() uint16 {
+	return 8
+}
+
+func (m ModbusDataType) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func ModbusDataTypeParse(io spi.ReadBuffer) (ModbusDataType, error) {

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -95,10 +96,16 @@ func (m ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
 func ModbusPDUDiagnosticRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (status)
-	var status uint16 = io.ReadUint16(16)
+	status, _statusErr := io.ReadUint16(16)
+	if _statusErr != nil {
+		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
+	}
 
 	// Simple Field (eventCount)
-	var eventCount uint16 = io.ReadUint16(16)
+	eventCount, _eventCountErr := io.ReadUint16(16)
+	if _eventCountErr != nil {
+		return nil, errors.New("Error parsing 'eventCount' field " + _eventCountErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUDiagnosticRequest(status, eventCount), nil

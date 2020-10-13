@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DescriptionResponse struct {
-	dibDeviceInfo      DIBDeviceInfo
-	dibSuppSvcFamilies DIBSuppSvcFamilies
+	dibDeviceInfo      IDIBDeviceInfo
+	dibSuppSvcFamilies IDIBSuppSvcFamilies
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m DescriptionResponse) initialize() spi.Message {
 	return m
 }
 
-func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) KNXNetIPMessageInitializer {
+func NewDescriptionResponse(dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
 	return &DescriptionResponse{dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
@@ -93,10 +93,10 @@ func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
 	}
-	var dibDeviceInfo DIBDeviceInfo
-	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(DIBDeviceInfo)
+	var dibDeviceInfo IDIBDeviceInfo
+	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
 	if !_dibDeviceInfoOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to DIBDeviceInfo")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
 	}
 
 	// Simple Field (dibSuppSvcFamilies)
@@ -104,10 +104,10 @@ func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
 	}
-	var dibSuppSvcFamilies DIBSuppSvcFamilies
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(DIBSuppSvcFamilies)
+	var dibSuppSvcFamilies IDIBSuppSvcFamilies
+	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
 	if !_dibSuppSvcFamiliesOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to DIBSuppSvcFamilies")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
 	}
 
 	// Create the instance
@@ -117,10 +117,10 @@ func DescriptionResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, er
 func (m DescriptionResponse) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (dibDeviceInfo)
-	dibDeviceInfo := DIBDeviceInfo(m.dibDeviceInfo)
+	dibDeviceInfo := IDIBDeviceInfo(m.dibDeviceInfo)
 	dibDeviceInfo.Serialize(io)
 
 	// Simple Field (dibSuppSvcFamilies)
-	dibSuppSvcFamilies := DIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+	dibSuppSvcFamilies := IDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
 	dibSuppSvcFamilies.Serialize(io)
 }

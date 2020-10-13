@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type TunnelingResponse struct {
-	tunnelingResponseDataBlock TunnelingResponseDataBlock
+	tunnelingResponseDataBlock ITunnelingResponseDataBlock
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m TunnelingResponse) initialize() spi.Message {
 	return m
 }
 
-func NewTunnelingResponse(tunnelingResponseDataBlock TunnelingResponseDataBlock) KNXNetIPMessageInitializer {
+func NewTunnelingResponse(tunnelingResponseDataBlock ITunnelingResponseDataBlock) KNXNetIPMessageInitializer {
 	return &TunnelingResponse{tunnelingResponseDataBlock: tunnelingResponseDataBlock}
 }
 
@@ -89,10 +89,10 @@ func TunnelingResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'tunnelingResponseDataBlock'. " + _err.Error())
 	}
-	var tunnelingResponseDataBlock TunnelingResponseDataBlock
-	tunnelingResponseDataBlock, _tunnelingResponseDataBlockOk := _tunnelingResponseDataBlockMessage.(TunnelingResponseDataBlock)
+	var tunnelingResponseDataBlock ITunnelingResponseDataBlock
+	tunnelingResponseDataBlock, _tunnelingResponseDataBlockOk := _tunnelingResponseDataBlockMessage.(ITunnelingResponseDataBlock)
 	if !_tunnelingResponseDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingResponseDataBlockMessage).Name() + " to TunnelingResponseDataBlock")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingResponseDataBlockMessage).Name() + " to ITunnelingResponseDataBlock")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func TunnelingResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, erro
 func (m TunnelingResponse) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (tunnelingResponseDataBlock)
-	tunnelingResponseDataBlock := TunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
+	tunnelingResponseDataBlock := ITunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
 	tunnelingResponseDataBlock.Serialize(io)
 }

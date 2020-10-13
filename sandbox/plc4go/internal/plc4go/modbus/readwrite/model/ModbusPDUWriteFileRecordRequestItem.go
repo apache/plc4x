@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -90,16 +91,28 @@ func (m ModbusPDUWriteFileRecordRequestItem) LengthInBytes() uint16 {
 func ModbusPDUWriteFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (referenceType)
-	var referenceType uint8 = io.ReadUint8(8)
+	referenceType, _referenceTypeErr := io.ReadUint8(8)
+	if _referenceTypeErr != nil {
+		return nil, errors.New("Error parsing 'referenceType' field " + _referenceTypeErr.Error())
+	}
 
 	// Simple Field (fileNumber)
-	var fileNumber uint16 = io.ReadUint16(16)
+	fileNumber, _fileNumberErr := io.ReadUint16(16)
+	if _fileNumberErr != nil {
+		return nil, errors.New("Error parsing 'fileNumber' field " + _fileNumberErr.Error())
+	}
 
 	// Simple Field (recordNumber)
-	var recordNumber uint16 = io.ReadUint16(16)
+	recordNumber, _recordNumberErr := io.ReadUint16(16)
+	if _recordNumberErr != nil {
+		return nil, errors.New("Error parsing 'recordNumber' field " + _recordNumberErr.Error())
+	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var recordLength uint16 = io.ReadUint16(16)
+	recordLength, _recordLengthErr := io.ReadUint16(16)
+	if _recordLengthErr != nil {
+		return nil, errors.New("Error parsing 'recordLength' field " + _recordLengthErr.Error())
+	}
 
 	// Array field (recordData)
 	var recordData []int8
@@ -107,7 +120,11 @@ func ModbusPDUWriteFileRecordRequestItemParse(io spi.ReadBuffer) (spi.Message, e
 	_recordDataLength := uint16(recordLength) * uint16(uint16(2))
 	_recordDataEndPos := io.GetPos() + uint16(_recordDataLength)
 	for io.GetPos() < _recordDataEndPos {
-		recordData = append(recordData, io.ReadInt8(8))
+		_recordDataVal, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'recordData' field " + _err.Error())
+		}
+		recordData = append(recordData, _recordDataVal)
 	}
 
 	// Create the instance

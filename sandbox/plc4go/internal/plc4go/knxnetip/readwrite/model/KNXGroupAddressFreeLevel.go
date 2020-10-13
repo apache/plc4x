@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -83,7 +84,10 @@ func (m KNXGroupAddressFreeLevel) LengthInBytes() uint16 {
 func KNXGroupAddressFreeLevelParse(io spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
 	// Simple Field (subGroup)
-	var subGroup uint16 = io.ReadUint16(16)
+	subGroup, _subGroupErr := io.ReadUint16(16)
+	if _subGroupErr != nil {
+		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+	}
 
 	// Create the instance
 	return NewKNXGroupAddressFreeLevel(subGroup), nil

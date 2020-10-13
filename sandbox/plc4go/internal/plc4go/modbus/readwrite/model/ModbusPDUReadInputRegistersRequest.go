@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -95,10 +96,16 @@ func (m ModbusPDUReadInputRegistersRequest) LengthInBytes() uint16 {
 func ModbusPDUReadInputRegistersRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (startingAddress)
-	var startingAddress uint16 = io.ReadUint16(16)
+	startingAddress, _startingAddressErr := io.ReadUint16(16)
+	if _startingAddressErr != nil {
+		return nil, errors.New("Error parsing 'startingAddress' field " + _startingAddressErr.Error())
+	}
 
 	// Simple Field (quantity)
-	var quantity uint16 = io.ReadUint16(16)
+	quantity, _quantityErr := io.ReadUint16(16)
+	if _quantityErr != nil {
+		return nil, errors.New("Error parsing 'quantity' field " + _quantityErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUReadInputRegistersRequest(startingAddress, quantity), nil

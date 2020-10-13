@@ -111,28 +111,49 @@ func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
 func CEMIAdditionalInformationBusmonitorInfoParse(io spi.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
 
 	// Const Field (len)
-	var len uint8 = io.ReadUint8(8)
+	len, _lenErr := io.ReadUint8(8)
+	if _lenErr != nil {
+		return nil, errors.New("Error parsing 'len' field " + _lenErr.Error())
+	}
 	if len != CEMIAdditionalInformationBusmonitorInfo_LEN {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(CEMIAdditionalInformationBusmonitorInfo_LEN)) + " but got " + strconv.Itoa(int(len)))
 	}
 
 	// Simple Field (frameErrorFlag)
-	var frameErrorFlag bool = io.ReadBit()
+	frameErrorFlag, _frameErrorFlagErr := io.ReadBit()
+	if _frameErrorFlagErr != nil {
+		return nil, errors.New("Error parsing 'frameErrorFlag' field " + _frameErrorFlagErr.Error())
+	}
 
 	// Simple Field (bitErrorFlag)
-	var bitErrorFlag bool = io.ReadBit()
+	bitErrorFlag, _bitErrorFlagErr := io.ReadBit()
+	if _bitErrorFlagErr != nil {
+		return nil, errors.New("Error parsing 'bitErrorFlag' field " + _bitErrorFlagErr.Error())
+	}
 
 	// Simple Field (parityErrorFlag)
-	var parityErrorFlag bool = io.ReadBit()
+	parityErrorFlag, _parityErrorFlagErr := io.ReadBit()
+	if _parityErrorFlagErr != nil {
+		return nil, errors.New("Error parsing 'parityErrorFlag' field " + _parityErrorFlagErr.Error())
+	}
 
 	// Simple Field (unknownFlag)
-	var unknownFlag bool = io.ReadBit()
+	unknownFlag, _unknownFlagErr := io.ReadBit()
+	if _unknownFlagErr != nil {
+		return nil, errors.New("Error parsing 'unknownFlag' field " + _unknownFlagErr.Error())
+	}
 
 	// Simple Field (lostFlag)
-	var lostFlag bool = io.ReadBit()
+	lostFlag, _lostFlagErr := io.ReadBit()
+	if _lostFlagErr != nil {
+		return nil, errors.New("Error parsing 'lostFlag' field " + _lostFlagErr.Error())
+	}
 
 	// Simple Field (sequenceNumber)
-	var sequenceNumber uint8 = io.ReadUint8(3)
+	sequenceNumber, _sequenceNumberErr := io.ReadUint8(3)
+	if _sequenceNumberErr != nil {
+		return nil, errors.New("Error parsing 'sequenceNumber' field " + _sequenceNumberErr.Error())
+	}
 
 	// Create the instance
 	return NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber), nil

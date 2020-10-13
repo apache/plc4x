@@ -32,7 +32,7 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 type ModbusTcpADU struct {
 	transactionIdentifier uint16
 	unitIdentifier        uint8
-	pdu                   ModbusPDU
+	pdu                   IModbusPDU
 }
 
 // The corresponding interface
@@ -41,7 +41,7 @@ type IModbusTcpADU interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu ModbusPDU) spi.Message {
+func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu IModbusPDU) spi.Message {
 	return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
 }
 
@@ -93,29 +93,41 @@ func (m ModbusTcpADU) LengthInBytes() uint16 {
 func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Simple Field (transactionIdentifier)
-	var transactionIdentifier uint16 = io.ReadUint16(16)
+	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)
+	if _transactionIdentifierErr != nil {
+		return nil, errors.New("Error parsing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
+	}
 
 	// Const Field (protocolIdentifier)
-	var protocolIdentifier uint16 = io.ReadUint16(16)
+	protocolIdentifier, _protocolIdentifierErr := io.ReadUint16(16)
+	if _protocolIdentifierErr != nil {
+		return nil, errors.New("Error parsing 'protocolIdentifier' field " + _protocolIdentifierErr.Error())
+	}
 	if protocolIdentifier != ModbusTcpADU_PROTOCOLIDENTIFIER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusTcpADU_PROTOCOLIDENTIFIER)) + " but got " + strconv.Itoa(int(protocolIdentifier)))
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint16 = io.ReadUint16(16)
+	_, _lengthErr := io.ReadUint16(16)
+	if _lengthErr != nil {
+		return nil, errors.New("Error parsing 'length' field " + _lengthErr.Error())
+	}
 
 	// Simple Field (unitIdentifier)
-	var unitIdentifier uint8 = io.ReadUint8(8)
+	unitIdentifier, _unitIdentifierErr := io.ReadUint8(8)
+	if _unitIdentifierErr != nil {
+		return nil, errors.New("Error parsing 'unitIdentifier' field " + _unitIdentifierErr.Error())
+	}
 
 	// Simple Field (pdu)
 	_pduMessage, _err := ModbusPDUParse(io, response)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'pdu'. " + _err.Error())
 	}
-	var pdu ModbusPDU
-	pdu, _pduOk := _pduMessage.(ModbusPDU)
+	var pdu IModbusPDU
+	pdu, _pduOk := _pduMessage.(IModbusPDU)
 	if !_pduOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_pduMessage).Name() + " to ModbusPDU")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_pduMessage).Name() + " to IModbusPDU")
 	}
 
 	// Create the instance
@@ -140,6 +152,6 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (unitIdentifier))
 
 	// Simple Field (pdu)
-	pdu := ModbusPDU(m.pdu)
+	pdu := IModbusPDU(m.pdu)
 	pdu.Serialize(io)
 }

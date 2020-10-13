@@ -37,7 +37,7 @@ type BACnetServiceAckReadProperty struct {
 	objectInstanceNumber     uint32
 	propertyIdentifierLength uint8
 	propertyIdentifier       []int8
-	value                    BACnetTag
+	value                    IBACnetTag
 	BACnetServiceAck
 }
 
@@ -56,7 +56,7 @@ func (m BACnetServiceAckReadProperty) initialize() spi.Message {
 	return m
 }
 
-func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value BACnetTag) BACnetServiceAckInitializer {
+func NewBACnetServiceAckReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value IBACnetTag) BACnetServiceAckInitializer {
 	return &BACnetServiceAckReadProperty{objectType: objectType, objectInstanceNumber: objectInstanceNumber, propertyIdentifierLength: propertyIdentifierLength, propertyIdentifier: propertyIdentifier, value: value}
 }
 
@@ -122,25 +122,40 @@ func (m BACnetServiceAckReadProperty) LengthInBytes() uint16 {
 func BACnetServiceAckReadPropertyParse(io spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
 	// Const Field (objectIdentifierHeader)
-	var objectIdentifierHeader uint8 = io.ReadUint8(8)
+	objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
+	if _objectIdentifierHeaderErr != nil {
+		return nil, errors.New("Error parsing 'objectIdentifierHeader' field " + _objectIdentifierHeaderErr.Error())
+	}
 	if objectIdentifierHeader != BACnetServiceAckReadProperty_OBJECTIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_OBJECTIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(objectIdentifierHeader)))
 	}
 
 	// Simple Field (objectType)
-	var objectType uint16 = io.ReadUint16(10)
+	objectType, _objectTypeErr := io.ReadUint16(10)
+	if _objectTypeErr != nil {
+		return nil, errors.New("Error parsing 'objectType' field " + _objectTypeErr.Error())
+	}
 
 	// Simple Field (objectInstanceNumber)
-	var objectInstanceNumber uint32 = io.ReadUint32(22)
+	objectInstanceNumber, _objectInstanceNumberErr := io.ReadUint32(22)
+	if _objectInstanceNumberErr != nil {
+		return nil, errors.New("Error parsing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
+	}
 
 	// Const Field (propertyIdentifierHeader)
-	var propertyIdentifierHeader uint8 = io.ReadUint8(5)
+	propertyIdentifierHeader, _propertyIdentifierHeaderErr := io.ReadUint8(5)
+	if _propertyIdentifierHeaderErr != nil {
+		return nil, errors.New("Error parsing 'propertyIdentifierHeader' field " + _propertyIdentifierHeaderErr.Error())
+	}
 	if propertyIdentifierHeader != BACnetServiceAckReadProperty_PROPERTYIDENTIFIERHEADER {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_PROPERTYIDENTIFIERHEADER)) + " but got " + strconv.Itoa(int(propertyIdentifierHeader)))
 	}
 
 	// Simple Field (propertyIdentifierLength)
-	var propertyIdentifierLength uint8 = io.ReadUint8(3)
+	propertyIdentifierLength, _propertyIdentifierLengthErr := io.ReadUint8(3)
+	if _propertyIdentifierLengthErr != nil {
+		return nil, errors.New("Error parsing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
+	}
 
 	// Array field (propertyIdentifier)
 	var propertyIdentifier []int8
@@ -149,12 +164,19 @@ func BACnetServiceAckReadPropertyParse(io spi.ReadBuffer) (BACnetServiceAckIniti
 		propertyIdentifier := make([]int8, propertyIdentifierLength)
 		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
 
-			propertyIdentifier = append(propertyIdentifier, io.ReadInt8(8))
+			_propertyIdentifierVal, _err := io.ReadInt8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
+			}
+			propertyIdentifier = append(propertyIdentifier, _propertyIdentifierVal)
 		}
 	}
 
 	// Const Field (openingTag)
-	var openingTag uint8 = io.ReadUint8(8)
+	openingTag, _openingTagErr := io.ReadUint8(8)
+	if _openingTagErr != nil {
+		return nil, errors.New("Error parsing 'openingTag' field " + _openingTagErr.Error())
+	}
 	if openingTag != BACnetServiceAckReadProperty_OPENINGTAG {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_OPENINGTAG)) + " but got " + strconv.Itoa(int(openingTag)))
 	}
@@ -164,14 +186,17 @@ func BACnetServiceAckReadPropertyParse(io spi.ReadBuffer) (BACnetServiceAckIniti
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'value'. " + _err.Error())
 	}
-	var value BACnetTag
-	value, _valueOk := _valueMessage.(BACnetTag)
+	var value IBACnetTag
+	value, _valueOk := _valueMessage.(IBACnetTag)
 	if !_valueOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_valueMessage).Name() + " to BACnetTag")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_valueMessage).Name() + " to IBACnetTag")
 	}
 
 	// Const Field (closingTag)
-	var closingTag uint8 = io.ReadUint8(8)
+	closingTag, _closingTagErr := io.ReadUint8(8)
+	if _closingTagErr != nil {
+		return nil, errors.New("Error parsing 'closingTag' field " + _closingTagErr.Error())
+	}
 	if closingTag != BACnetServiceAckReadProperty_CLOSINGTAG {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetServiceAckReadProperty_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
 	}
@@ -211,7 +236,7 @@ func (m BACnetServiceAckReadProperty) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, 0x3E)
 
 	// Simple Field (value)
-	value := BACnetTag(m.value)
+	value := IBACnetTag(m.value)
 	value.Serialize(io)
 
 	// Const Field (closingTag)

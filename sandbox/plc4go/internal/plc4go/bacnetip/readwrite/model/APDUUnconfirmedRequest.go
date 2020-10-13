@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type APDUUnconfirmedRequest struct {
-	serviceRequest BACnetUnconfirmedServiceRequest
+	serviceRequest IBACnetUnconfirmedServiceRequest
 	APDU
 }
 
@@ -46,7 +46,7 @@ func (m APDUUnconfirmedRequest) initialize() spi.Message {
 	return m
 }
 
-func NewAPDUUnconfirmedRequest(serviceRequest BACnetUnconfirmedServiceRequest) APDUInitializer {
+func NewAPDUUnconfirmedRequest(serviceRequest IBACnetUnconfirmedServiceRequest) APDUInitializer {
 	return &APDUUnconfirmedRequest{serviceRequest: serviceRequest}
 }
 
@@ -90,7 +90,10 @@ func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInit
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(4)
+		reserved, _err := io.ReadUint8(4)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0),
@@ -104,10 +107,10 @@ func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInit
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
 	}
-	var serviceRequest BACnetUnconfirmedServiceRequest
-	serviceRequest, _serviceRequestOk := _serviceRequestMessage.(BACnetUnconfirmedServiceRequest)
+	var serviceRequest IBACnetUnconfirmedServiceRequest
+	serviceRequest, _serviceRequestOk := _serviceRequestMessage.(IBACnetUnconfirmedServiceRequest)
 	if !_serviceRequestOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to BACnetUnconfirmedServiceRequest")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_serviceRequestMessage).Name() + " to IBACnetUnconfirmedServiceRequest")
 	}
 
 	// Create the instance
@@ -120,6 +123,6 @@ func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(4, uint8(0))
 
 	// Simple Field (serviceRequest)
-	serviceRequest := BACnetUnconfirmedServiceRequest(m.serviceRequest)
+	serviceRequest := IBACnetUnconfirmedServiceRequest(m.serviceRequest)
 	serviceRequest.Serialize(io)
 }

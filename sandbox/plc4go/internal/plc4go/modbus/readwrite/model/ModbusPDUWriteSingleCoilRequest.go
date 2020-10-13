@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -95,10 +96,16 @@ func (m ModbusPDUWriteSingleCoilRequest) LengthInBytes() uint16 {
 func ModbusPDUWriteSingleCoilRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (address)
-	var address uint16 = io.ReadUint16(16)
+	address, _addressErr := io.ReadUint16(16)
+	if _addressErr != nil {
+		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+	}
 
 	// Simple Field (value)
-	var value uint16 = io.ReadUint16(16)
+	value, _valueErr := io.ReadUint16(16)
+	if _valueErr != nil {
+		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUWriteSingleCoilRequest(address, value), nil

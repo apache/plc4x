@@ -26,10 +26,10 @@ import (
 
 // The data-structure of this message
 type S7AddressAny struct {
-	transportSize    TransportSize
+	transportSize    ITransportSize
 	numberOfElements uint16
 	dbNumber         uint16
-	area             MemoryArea
+	area             IMemoryArea
 	byteAddress      uint16
 	bitAddress       uint8
 	S7Address
@@ -50,7 +50,7 @@ func (m S7AddressAny) initialize() spi.Message {
 	return m
 }
 
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) S7AddressInitializer {
+func NewS7AddressAny(transportSize ITransportSize, numberOfElements uint16, dbNumber uint16, area IMemoryArea, byteAddress uint16, bitAddress uint8) S7AddressInitializer {
 	return &S7AddressAny{transportSize: transportSize, numberOfElements: numberOfElements, dbNumber: dbNumber, area: area, byteAddress: byteAddress, bitAddress: bitAddress}
 }
 
@@ -114,10 +114,16 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 	}
 
 	// Simple Field (numberOfElements)
-	var numberOfElements uint16 = io.ReadUint16(16)
+	numberOfElements, _numberOfElementsErr := io.ReadUint16(16)
+	if _numberOfElementsErr != nil {
+		return nil, errors.New("Error parsing 'numberOfElements' field " + _numberOfElementsErr.Error())
+	}
 
 	// Simple Field (dbNumber)
-	var dbNumber uint16 = io.ReadUint16(16)
+	dbNumber, _dbNumberErr := io.ReadUint16(16)
+	if _dbNumberErr != nil {
+		return nil, errors.New("Error parsing 'dbNumber' field " + _dbNumberErr.Error())
+	}
 
 	// Enum field (area)
 	area, _areaErr := MemoryAreaParse(io)
@@ -127,7 +133,10 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(5)
+		reserved, _err := io.ReadUint8(5)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -137,10 +146,16 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 	}
 
 	// Simple Field (byteAddress)
-	var byteAddress uint16 = io.ReadUint16(16)
+	byteAddress, _byteAddressErr := io.ReadUint16(16)
+	if _byteAddressErr != nil {
+		return nil, errors.New("Error parsing 'byteAddress' field " + _byteAddressErr.Error())
+	}
 
 	// Simple Field (bitAddress)
-	var bitAddress uint8 = io.ReadUint8(3)
+	bitAddress, _bitAddressErr := io.ReadUint8(3)
+	if _bitAddressErr != nil {
+		return nil, errors.New("Error parsing 'bitAddress' field " + _bitAddressErr.Error())
+	}
 
 	// Create the instance
 	return NewS7AddressAny(transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress), nil
@@ -149,7 +164,7 @@ func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
 func (m S7AddressAny) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (transportSize)
-	transportSize := TransportSize(m.transportSize)
+	transportSize := ITransportSize(m.transportSize)
 	transportSize.Serialize(io)
 
 	// Simple Field (numberOfElements)
@@ -161,7 +176,7 @@ func (m S7AddressAny) Serialize(io spi.WriteBuffer) {
 	io.WriteUint16(16, (dbNumber))
 
 	// Enum field (area)
-	area := MemoryArea(m.area)
+	area := IMemoryArea(m.area)
 	area.Serialize(io)
 
 	// Reserved Field (reserved)

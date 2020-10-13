@@ -37,7 +37,7 @@ type BACnetTagWithContent struct {
 	extTagNumber       *uint8
 	extLength          *uint8
 	propertyIdentifier []uint8
-	value              BACnetTag
+	value              IBACnetTag
 }
 
 // The corresponding interface
@@ -46,7 +46,7 @@ type IBACnetTagWithContent interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value BACnetTag) spi.Message {
+func NewBACnetTagWithContent(typeOrTagNumber uint8, contextSpecificTag uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8, propertyIdentifier []uint8, value IBACnetTag) spi.Message {
 	return &BACnetTagWithContent{typeOrTagNumber: typeOrTagNumber, contextSpecificTag: contextSpecificTag, lengthValueType: lengthValueType, extTagNumber: extTagNumber, extLength: extLength, propertyIdentifier: propertyIdentifier, value: value}
 }
 
@@ -116,39 +116,63 @@ func (m BACnetTagWithContent) LengthInBytes() uint16 {
 func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (typeOrTagNumber)
-	var typeOrTagNumber uint8 = io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	if _typeOrTagNumberErr != nil {
+		return nil, errors.New("Error parsing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+	}
 
 	// Simple Field (contextSpecificTag)
-	var contextSpecificTag uint8 = io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	if _contextSpecificTagErr != nil {
+		return nil, errors.New("Error parsing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+	}
 
 	// Simple Field (lengthValueType)
-	var lengthValueType uint8 = io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	if _lengthValueTypeErr != nil {
+		return nil, errors.New("Error parsing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'extTagNumber' field " + _err.Error())
+		}
+
 		extTagNumber = &_val
 	}
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'extLength' field " + _err.Error())
+		}
+
 		extLength = &_val
 	}
 
 	// Array field (propertyIdentifier)
 	var propertyIdentifier []uint8
 	// Length array
-	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(*extLength), uint16(lengthValueType))
+	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16((*extLength)), uint16(lengthValueType))
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
-		propertyIdentifier = append(propertyIdentifier, io.ReadUint8(8))
+		_propertyIdentifierVal, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
+		}
+		propertyIdentifier = append(propertyIdentifier, _propertyIdentifierVal)
 	}
 
 	// Const Field (openTag)
-	var openTag uint8 = io.ReadUint8(8)
+	openTag, _openTagErr := io.ReadUint8(8)
+	if _openTagErr != nil {
+		return nil, errors.New("Error parsing 'openTag' field " + _openTagErr.Error())
+	}
 	if openTag != BACnetTagWithContent_OPENTAG {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetTagWithContent_OPENTAG)) + " but got " + strconv.Itoa(int(openTag)))
 	}
@@ -158,14 +182,17 @@ func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'value'. " + _err.Error())
 	}
-	var value BACnetTag
-	value, _valueOk := _valueMessage.(BACnetTag)
+	var value IBACnetTag
+	value, _valueOk := _valueMessage.(IBACnetTag)
 	if !_valueOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_valueMessage).Name() + " to BACnetTag")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_valueMessage).Name() + " to IBACnetTag")
 	}
 
 	// Const Field (closingTag)
-	var closingTag uint8 = io.ReadUint8(8)
+	closingTag, _closingTagErr := io.ReadUint8(8)
+	if _closingTagErr != nil {
+		return nil, errors.New("Error parsing 'closingTag' field " + _closingTagErr.Error())
+	}
 	if closingTag != BACnetTagWithContent_CLOSINGTAG {
 		return nil, errors.New("Expected constant value " + strconv.Itoa(int(BACnetTagWithContent_CLOSINGTAG)) + " but got " + strconv.Itoa(int(closingTag)))
 	}
@@ -213,7 +240,7 @@ func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, 0x2e)
 
 	// Simple Field (value)
-	value := BACnetTag(m.value)
+	value := IBACnetTag(m.value)
 	value.Serialize(io)
 
 	// Const Field (closingTag)

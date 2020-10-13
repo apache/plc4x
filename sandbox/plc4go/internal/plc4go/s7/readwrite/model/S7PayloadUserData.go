@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserData struct {
-	items []S7PayloadUserDataItem
+	items []IS7PayloadUserDataItem
 	S7Payload
 }
 
@@ -49,7 +49,7 @@ func (m S7PayloadUserData) initialize() spi.Message {
 	return m
 }
 
-func NewS7PayloadUserData(items []S7PayloadUserDataItem) S7PayloadInitializer {
+func NewS7PayloadUserData(items []IS7PayloadUserDataItem) S7PayloadInitializer {
 	return &S7PayloadUserData{items: items}
 }
 
@@ -90,21 +90,21 @@ func (m S7PayloadUserData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataParse(io spi.ReadBuffer, parameter S7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadUserDataParse(io spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
 	// Array field (items)
-	var items []S7PayloadUserDataItem
+	var items []IS7PayloadUserDataItem
 	// Count array
 	{
-		items := make([]S7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).items)))
+		items := make([]IS7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).items)))
 		for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).items))); curItem++ {
 
 			_message, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).items).cpuFunctionType)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
-			var _item S7PayloadUserDataItem
-			_item, _ok := _message.(S7PayloadUserDataItem)
+			var _item IS7PayloadUserDataItem
+			_item, _ok := _message.(IS7PayloadUserDataItem)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7PayloadUserDataItem")
 			}

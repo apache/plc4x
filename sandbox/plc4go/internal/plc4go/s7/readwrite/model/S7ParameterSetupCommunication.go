@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
@@ -100,7 +101,10 @@ func S7ParameterSetupCommunicationParse(io spi.ReadBuffer) (S7ParameterInitializ
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(8)
+		reserved, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -110,13 +114,22 @@ func S7ParameterSetupCommunicationParse(io spi.ReadBuffer) (S7ParameterInitializ
 	}
 
 	// Simple Field (maxAmqCaller)
-	var maxAmqCaller uint16 = io.ReadUint16(16)
+	maxAmqCaller, _maxAmqCallerErr := io.ReadUint16(16)
+	if _maxAmqCallerErr != nil {
+		return nil, errors.New("Error parsing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
+	}
 
 	// Simple Field (maxAmqCallee)
-	var maxAmqCallee uint16 = io.ReadUint16(16)
+	maxAmqCallee, _maxAmqCalleeErr := io.ReadUint16(16)
+	if _maxAmqCalleeErr != nil {
+		return nil, errors.New("Error parsing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
+	}
 
 	// Simple Field (pduLength)
-	var pduLength uint16 = io.ReadUint16(16)
+	pduLength, _pduLengthErr := io.ReadUint16(16)
+	if _pduLengthErr != nil {
+		return nil, errors.New("Error parsing 'pduLength' field " + _pduLengthErr.Error())
+	}
 
 	// Create the instance
 	return NewS7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduLength), nil

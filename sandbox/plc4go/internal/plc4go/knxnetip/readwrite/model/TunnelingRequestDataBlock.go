@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
@@ -84,17 +85,29 @@ func (m TunnelingRequestDataBlock) LengthInBytes() uint16 {
 func TunnelingRequestDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _structureLengthErr := io.ReadUint8(8)
+	if _structureLengthErr != nil {
+		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Simple Field (sequenceCounter)
-	var sequenceCounter uint8 = io.ReadUint8(8)
+	sequenceCounter, _sequenceCounterErr := io.ReadUint8(8)
+	if _sequenceCounterErr != nil {
+		return nil, errors.New("Error parsing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(8)
+		reserved, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),

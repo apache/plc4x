@@ -38,7 +38,7 @@ func (m S7MessageUserData) MessageType() uint8 {
 	return 0x07
 }
 
-func (m S7MessageUserData) initialize(tpduReference uint16, parameter *S7Parameter, payload *S7Payload) spi.Message {
+func (m S7MessageUserData) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
 	m.tpduReference = tpduReference
 	m.parameter = parameter
 	m.payload = payload

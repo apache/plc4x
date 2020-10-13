@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -103,22 +104,40 @@ func (m CEMIMPropReadCon) LengthInBytes() uint16 {
 func CEMIMPropReadConParse(io spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Simple Field (interfaceObjectType)
-	var interfaceObjectType uint16 = io.ReadUint16(16)
+	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
+	if _interfaceObjectTypeErr != nil {
+		return nil, errors.New("Error parsing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
+	}
 
 	// Simple Field (objectInstance)
-	var objectInstance uint8 = io.ReadUint8(8)
+	objectInstance, _objectInstanceErr := io.ReadUint8(8)
+	if _objectInstanceErr != nil {
+		return nil, errors.New("Error parsing 'objectInstance' field " + _objectInstanceErr.Error())
+	}
 
 	// Simple Field (propertyId)
-	var propertyId uint8 = io.ReadUint8(8)
+	propertyId, _propertyIdErr := io.ReadUint8(8)
+	if _propertyIdErr != nil {
+		return nil, errors.New("Error parsing 'propertyId' field " + _propertyIdErr.Error())
+	}
 
 	// Simple Field (numberOfElements)
-	var numberOfElements uint8 = io.ReadUint8(4)
+	numberOfElements, _numberOfElementsErr := io.ReadUint8(4)
+	if _numberOfElementsErr != nil {
+		return nil, errors.New("Error parsing 'numberOfElements' field " + _numberOfElementsErr.Error())
+	}
 
 	// Simple Field (startIndex)
-	var startIndex uint16 = io.ReadUint16(12)
+	startIndex, _startIndexErr := io.ReadUint16(12)
+	if _startIndexErr != nil {
+		return nil, errors.New("Error parsing 'startIndex' field " + _startIndexErr.Error())
+	}
 
 	// Simple Field (unknown)
-	var unknown uint16 = io.ReadUint16(16)
+	unknown, _unknownErr := io.ReadUint16(16)
+	if _unknownErr != nil {
+		return nil, errors.New("Error parsing 'unknown' field " + _unknownErr.Error())
+	}
 
 	// Create the instance
 	return NewCEMIMPropReadCon(interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, unknown), nil

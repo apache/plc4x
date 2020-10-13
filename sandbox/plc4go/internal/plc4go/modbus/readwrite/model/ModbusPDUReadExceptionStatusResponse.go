@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,10 @@ func (m ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
 func ModbusPDUReadExceptionStatusResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Simple Field (value)
-	var value uint8 = io.ReadUint8(8)
+	value, _valueErr := io.ReadUint8(8)
+	if _valueErr != nil {
+		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+	}
 
 	// Create the instance
 	return NewModbusPDUReadExceptionStatusResponse(value), nil

@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationRequest struct {
-	deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock
-	cemi                                CEMI
+	deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
+	cemi                                ICEMI
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m DeviceConfigurationRequest) initialize() spi.Message {
 	return m
 }
 
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) KNXNetIPMessageInitializer {
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
 	return &DeviceConfigurationRequest{deviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, cemi: cemi}
 }
 
@@ -93,10 +93,10 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'deviceConfigurationRequestDataBlock'. " + _err.Error())
 	}
-	var deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock
-	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockOk := _deviceConfigurationRequestDataBlockMessage.(DeviceConfigurationRequestDataBlock)
+	var deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
+	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockOk := _deviceConfigurationRequestDataBlockMessage.(IDeviceConfigurationRequestDataBlock)
 	if !_deviceConfigurationRequestDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationRequestDataBlockMessage).Name() + " to DeviceConfigurationRequestDataBlock")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationRequestDataBlockMessage).Name() + " to IDeviceConfigurationRequestDataBlock")
 	}
 
 	// Simple Field (cemi)
@@ -104,10 +104,10 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
 	}
-	var cemi CEMI
-	cemi, _cemiOk := _cemiMessage.(CEMI)
+	var cemi ICEMI
+	cemi, _cemiOk := _cemiMessage.(ICEMI)
 	if !_cemiOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to CEMI")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
 	}
 
 	// Create the instance
@@ -117,10 +117,10 @@ func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNX
 func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
-	deviceConfigurationRequestDataBlock := DeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
+	deviceConfigurationRequestDataBlock := IDeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
 	deviceConfigurationRequestDataBlock.Serialize(io)
 
 	// Simple Field (cemi)
-	cemi := CEMI(m.cemi)
+	cemi := ICEMI(m.cemi)
 	cemi.Serialize(io)
 }

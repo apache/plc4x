@@ -100,25 +100,42 @@ func (m BACnetTag) LengthInBytes() uint16 {
 func BACnetTagParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (typeOrTagNumber)
-	var typeOrTagNumber uint8 = io.ReadUint8(4)
+	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
+	if _typeOrTagNumberErr != nil {
+		return nil, errors.New("Error parsing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
+	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
-	var contextSpecificTag uint8 = io.ReadUint8(1)
+	contextSpecificTag, _contextSpecificTagErr := io.ReadUint8(1)
+	if _contextSpecificTagErr != nil {
+		return nil, errors.New("Error parsing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
+	}
 
 	// Simple Field (lengthValueType)
-	var lengthValueType uint8 = io.ReadUint8(3)
+	lengthValueType, _lengthValueTypeErr := io.ReadUint8(3)
+	if _lengthValueTypeErr != nil {
+		return nil, errors.New("Error parsing 'lengthValueType' field " + _lengthValueTypeErr.Error())
+	}
 
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((typeOrTagNumber) == (15)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'extTagNumber' field " + _err.Error())
+		}
+
 		extTagNumber = &_val
 	}
 
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool((lengthValueType) == (5)) {
-		_val := io.ReadUint8(8)
+		_val, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'extLength' field " + _err.Error())
+		}
+
 		extLength = &_val
 	}
 

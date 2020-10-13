@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterTpduSize struct {
-	tpduSize COTPTpduSize
+	tpduSize ICOTPTpduSize
 	COTPParameter
 }
 
@@ -44,7 +44,7 @@ func (m COTPParameterTpduSize) initialize() spi.Message {
 	return m
 }
 
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize) COTPParameterInitializer {
+func NewCOTPParameterTpduSize(tpduSize ICOTPTpduSize) COTPParameterInitializer {
 	return &COTPParameterTpduSize{tpduSize: tpduSize}
 }
 
@@ -96,6 +96,6 @@ func COTPParameterTpduSizeParse(io spi.ReadBuffer) (COTPParameterInitializer, er
 func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) {
 
 	// Enum field (tpduSize)
-	tpduSize := COTPTpduSize(m.tpduSize)
+	tpduSize := ICOTPTpduSize(m.tpduSize)
 	tpduSize.Serialize(io)
 }

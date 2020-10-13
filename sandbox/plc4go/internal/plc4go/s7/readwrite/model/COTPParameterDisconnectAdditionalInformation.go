@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -91,7 +92,11 @@ func COTPParameterDisconnectAdditionalInformationParse(io spi.ReadBuffer, rest u
 		data := make([]uint8, rest)
 		for curItem := uint16(0); curItem < uint16(rest); curItem++ {
 
-			data = append(data, io.ReadUint8(8))
+			_dataVal, _err := io.ReadUint8(8)
+			if _err != nil {
+				return nil, errors.New("Error parsing 'data' field " + _err.Error())
+			}
+			data = append(data, _dataVal)
 		}
 	}
 

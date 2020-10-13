@@ -46,7 +46,7 @@ func (m CEMIFrameAck) Polling() bool {
 	return false
 }
 
-func (m CEMIFrameAck) initialize(repeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
+func (m CEMIFrameAck) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
 	m.repeated = repeated
 	m.priority = priority
 	m.acknowledgeRequested = acknowledgeRequested

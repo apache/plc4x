@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7ParameterUserData struct {
-	items []S7ParameterUserDataItem
+	items []IS7ParameterUserDataItem
 	S7Parameter
 }
 
@@ -49,7 +49,7 @@ func (m S7ParameterUserData) initialize() spi.Message {
 	return m
 }
 
-func NewS7ParameterUserData(items []S7ParameterUserDataItem) S7ParameterInitializer {
+func NewS7ParameterUserData(items []IS7ParameterUserDataItem) S7ParameterInitializer {
 	return &S7ParameterUserData{items: items}
 }
 
@@ -96,21 +96,24 @@ func (m S7ParameterUserData) LengthInBytes() uint16 {
 func S7ParameterUserDataParse(io spi.ReadBuffer) (S7ParameterInitializer, error) {
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var numItems uint8 = io.ReadUint8(8)
+	numItems, _numItemsErr := io.ReadUint8(8)
+	if _numItemsErr != nil {
+		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+	}
 
 	// Array field (items)
-	var items []S7ParameterUserDataItem
+	var items []IS7ParameterUserDataItem
 	// Count array
 	{
-		items := make([]S7ParameterUserDataItem, numItems)
+		items := make([]IS7ParameterUserDataItem, numItems)
 		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 
 			_message, _err := S7ParameterUserDataItemParse(io)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
-			var _item S7ParameterUserDataItem
-			_item, _ok := _message.(S7ParameterUserDataItem)
+			var _item IS7ParameterUserDataItem
+			_item, _ok := _message.(IS7ParameterUserDataItem)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7ParameterUserDataItem")
 			}

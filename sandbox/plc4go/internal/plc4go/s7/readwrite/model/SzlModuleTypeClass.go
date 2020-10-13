@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type SzlModuleTypeClass uint8
 
+type ISzlModuleTypeClass interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	SzlModuleTypeClass_CPU SzlModuleTypeClass = 0x0
 	SzlModuleTypeClass_IM  SzlModuleTypeClass = 0x4
@@ -37,6 +42,14 @@ func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m SzlModuleTypeClass) LengthInBits() uint16 {
+	return 4
+}
+
+func (m SzlModuleTypeClass) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func SzlModuleTypeClassParse(io spi.ReadBuffer) (SzlModuleTypeClass, error) {

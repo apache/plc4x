@@ -93,10 +93,16 @@ func (m ModbusPDU) LengthInBytes() uint16 {
 func ModbusPDUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	var errorFlag bool = io.ReadBit()
+	errorFlag, _errorFlagErr := io.ReadBit()
+	if _errorFlagErr != nil {
+		return nil, errors.New("Error parsing 'errorFlag' field " + _errorFlagErr.Error())
+	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	var functionFlag uint8 = io.ReadUint8(7)
+	functionFlag, _functionFlagErr := io.ReadUint8(7)
+	if _functionFlagErr != nil {
+		return nil, errors.New("Error parsing 'functionFlag' field " + _functionFlagErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer ModbusPDUInitializer

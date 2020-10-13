@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type COTPProtocolClass int8
 
+type ICOTPProtocolClass interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	COTPProtocolClass_CLASS_0 COTPProtocolClass = 0x00
 	COTPProtocolClass_CLASS_1 COTPProtocolClass = 0x10
@@ -38,6 +43,14 @@ func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m COTPProtocolClass) LengthInBits() uint16 {
+	return 8
+}
+
+func (m COTPProtocolClass) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func COTPProtocolClassParse(io spi.ReadBuffer) (COTPProtocolClass, error) {

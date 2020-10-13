@@ -27,7 +27,7 @@ import (
 type TunnelingResponseDataBlock struct {
 	communicationChannelId uint8
 	sequenceCounter        uint8
-	status                 Status
+	status                 IStatus
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type ITunnelingResponseDataBlock interface {
 	Serialize(io spi.WriteBuffer)
 }
 
-func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) spi.Message {
+func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status IStatus) spi.Message {
 	return &TunnelingResponseDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter, status: status}
 }
 
@@ -85,13 +85,22 @@ func (m TunnelingResponseDataBlock) LengthInBytes() uint16 {
 func TunnelingResponseDataBlockParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _structureLengthErr := io.ReadUint8(8)
+	if _structureLengthErr != nil {
+		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+	}
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Simple Field (sequenceCounter)
-	var sequenceCounter uint8 = io.ReadUint8(8)
+	sequenceCounter, _sequenceCounterErr := io.ReadUint8(8)
+	if _sequenceCounterErr != nil {
+		return nil, errors.New("Error parsing 'sequenceCounter' field " + _sequenceCounterErr.Error())
+	}
 
 	// Enum field (status)
 	status, _statusErr := StatusParse(io)
@@ -118,6 +127,6 @@ func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (sequenceCounter))
 
 	// Enum field (status)
-	status := Status(m.status)
+	status := IStatus(m.status)
 	status.Serialize(io)
 }

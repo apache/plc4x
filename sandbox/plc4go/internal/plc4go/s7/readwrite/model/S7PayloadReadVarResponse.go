@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadReadVarResponse struct {
-	items []S7VarPayloadDataItem
+	items []IS7VarPayloadDataItem
 	S7Payload
 }
 
@@ -49,7 +49,7 @@ func (m S7PayloadReadVarResponse) initialize() spi.Message {
 	return m
 }
 
-func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem) S7PayloadInitializer {
+func NewS7PayloadReadVarResponse(items []IS7VarPayloadDataItem) S7PayloadInitializer {
 	return &S7PayloadReadVarResponse{items: items}
 }
 
@@ -90,21 +90,21 @@ func (m S7PayloadReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(io spi.ReadBuffer, parameter S7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadReadVarResponseParse(io spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
 	// Array field (items)
-	var items []S7VarPayloadDataItem
+	var items []IS7VarPayloadDataItem
 	// Count array
 	{
-		items := make([]S7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).numItems)
+		items := make([]IS7VarPayloadDataItem, CastS7ParameterReadVarResponse(parameter).numItems)
 		for curItem := uint16(0); curItem < uint16(CastS7ParameterReadVarResponse(parameter).numItems); curItem++ {
 			lastItem := curItem == uint16(CastS7ParameterReadVarResponse(parameter).numItems-1)
 			_message, _err := S7VarPayloadDataItemParse(io, lastItem)
 			if _err != nil {
 				return nil, errors.New("Error parsing 'items' field " + _err.Error())
 			}
-			var _item S7VarPayloadDataItem
-			_item, _ok := _message.(S7VarPayloadDataItem)
+			var _item IS7VarPayloadDataItem
+			_item, _ok := _message.(IS7VarPayloadDataItem)
 			if !_ok {
 				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadDataItem")
 			}

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -77,10 +78,16 @@ func (m ProjectInstallationIdentifier) LengthInBytes() uint16 {
 func ProjectInstallationIdentifierParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (projectNumber)
-	var projectNumber uint8 = io.ReadUint8(8)
+	projectNumber, _projectNumberErr := io.ReadUint8(8)
+	if _projectNumberErr != nil {
+		return nil, errors.New("Error parsing 'projectNumber' field " + _projectNumberErr.Error())
+	}
 
 	// Simple Field (installationNumber)
-	var installationNumber uint8 = io.ReadUint8(8)
+	installationNumber, _installationNumberErr := io.ReadUint8(8)
+	if _installationNumberErr != nil {
+		return nil, errors.New("Error parsing 'installationNumber' field " + _installationNumberErr.Error())
+	}
 
 	// Create the instance
 	return NewProjectInstallationIdentifier(projectNumber, installationNumber), nil

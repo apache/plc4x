@@ -591,8 +591,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         // If the current term is an optional type, we need to add pointer access
         // (Except if we're doing a nil/not-nil check)
-        else if((getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) && !suppressPointerAccess) {
-            return "*" + (serialize ? "m." : "") + vl.getName() + ((vl.getChild() != null) ?
+        if((getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) && !suppressPointerAccess) {
+            return "(*" + (serialize ? "m." : "") + vl.getName() + ")" + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
         return (serialize ? "m." : "") + vl.getName() + ((vl.getChild() != null) ?
@@ -685,9 +685,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         List<String> imports = new ArrayList<>();
 
         // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
-            (field instanceof ConstField) || (field instanceof SwitchField) ||
-                ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
+        if(!((ComplexTypeDefinition) getThisTypeDefinition()).getFields().isEmpty()) {
             imports.add("\"errors\"");
         }
 

@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
@@ -78,7 +79,10 @@ func DeviceStatusParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(7)
+		reserved, _err := io.ReadUint8(7)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -88,7 +92,10 @@ func DeviceStatusParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Simple Field (programMode)
-	var programMode bool = io.ReadBit()
+	programMode, _programModeErr := io.ReadBit()
+	if _programModeErr != nil {
+		return nil, errors.New("Error parsing 'programMode' field " + _programModeErr.Error())
+	}
 
 	// Create the instance
 	return NewDeviceStatus(programMode), nil

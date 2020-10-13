@@ -28,7 +28,7 @@ import (
 // The data-structure of this message
 type ConnectionStateRequest struct {
 	communicationChannelId uint8
-	hpaiControlEndpoint    HPAIControlEndpoint
+	hpaiControlEndpoint    IHPAIControlEndpoint
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m ConnectionStateRequest) initialize() spi.Message {
 	return m
 }
 
-func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint HPAIControlEndpoint) KNXNetIPMessageInitializer {
+func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
 	return &ConnectionStateRequest{communicationChannelId: communicationChannelId, hpaiControlEndpoint: hpaiControlEndpoint}
 }
 
@@ -93,11 +93,17 @@ func (m ConnectionStateRequest) LengthInBytes() uint16 {
 func ConnectionStateRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (communicationChannelId)
-	var communicationChannelId uint8 = io.ReadUint8(8)
+	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
+	if _communicationChannelIdErr != nil {
+		return nil, errors.New("Error parsing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
+	}
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(8)
+		reserved, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -111,10 +117,10 @@ func ConnectionStateRequestParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer,
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
 	}
-	var hpaiControlEndpoint HPAIControlEndpoint
-	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(HPAIControlEndpoint)
+	var hpaiControlEndpoint IHPAIControlEndpoint
+	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
 	if !_hpaiControlEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to HPAIControlEndpoint")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
 	}
 
 	// Create the instance
@@ -131,6 +137,6 @@ func (m ConnectionStateRequest) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, uint8(0x00))
 
 	// Simple Field (hpaiControlEndpoint)
-	hpaiControlEndpoint := HPAIControlEndpoint(m.hpaiControlEndpoint)
+	hpaiControlEndpoint := IHPAIControlEndpoint(m.hpaiControlEndpoint)
 	hpaiControlEndpoint.Serialize(io)
 }

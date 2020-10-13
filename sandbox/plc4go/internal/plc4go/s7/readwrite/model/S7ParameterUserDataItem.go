@@ -80,7 +80,10 @@ func (m S7ParameterUserDataItem) LengthInBytes() uint16 {
 func S7ParameterUserDataItemParse(io spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	var itemType uint8 = io.ReadUint8(8)
+	itemType, _itemTypeErr := io.ReadUint8(8)
+	if _itemTypeErr != nil {
+		return nil, errors.New("Error parsing 'itemType' field " + _itemTypeErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer S7ParameterUserDataItemInitializer

@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type BVLCOriginalUnicastNPDU struct {
-	npdu NPDU
+	npdu INPDU
 	BVLC
 }
 
@@ -45,7 +45,7 @@ func (m BVLCOriginalUnicastNPDU) initialize() spi.Message {
 	return m
 }
 
-func NewBVLCOriginalUnicastNPDU(npdu NPDU) BVLCInitializer {
+func NewBVLCOriginalUnicastNPDU(npdu INPDU) BVLCInitializer {
 	return &BVLCOriginalUnicastNPDU{npdu: npdu}
 }
 
@@ -89,10 +89,10 @@ func BVLCOriginalUnicastNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCIni
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
 	}
-	var npdu NPDU
-	npdu, _npduOk := _npduMessage.(NPDU)
+	var npdu INPDU
+	npdu, _npduOk := _npduMessage.(INPDU)
 	if !_npduOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to NPDU")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to INPDU")
 	}
 
 	// Create the instance
@@ -102,6 +102,6 @@ func BVLCOriginalUnicastNPDUParse(io spi.ReadBuffer, bvlcLength uint16) (BVLCIni
 func (m BVLCOriginalUnicastNPDU) Serialize(io spi.WriteBuffer) {
 
 	// Simple Field (npdu)
-	npdu := NPDU(m.npdu)
+	npdu := INPDU(m.npdu)
 	npdu.Serialize(io)
 }

@@ -22,6 +22,11 @@ import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 
 type Status uint8
 
+type IStatus interface {
+	spi.Message
+	Serialize(io spi.WriteBuffer)
+}
+
 const (
 	Status_NO_ERROR                        Status = 0x00
 	Status_PROTOCOL_TYPE_NOT_SUPPORTED     Status = 0x01
@@ -45,6 +50,14 @@ func CastStatus(structType interface{}) Status {
 		return 0
 	}
 	return castFunc(structType)
+}
+
+func (m Status) LengthInBits() uint16 {
+	return 8
+}
+
+func (m Status) LengthInBytes() uint16 {
+	return m.LengthInBits() / 8
 }
 
 func StatusParse(io spi.ReadBuffer) (Status, error) {

@@ -28,7 +28,7 @@ import (
 // The data-structure of this message
 type APDUError struct {
 	originalInvokeId uint8
-	error            BACnetError
+	error            IBACnetError
 	APDU
 }
 
@@ -47,7 +47,7 @@ func (m APDUError) initialize() spi.Message {
 	return m
 }
 
-func NewAPDUError(originalInvokeId uint8, error BACnetError) APDUInitializer {
+func NewAPDUError(originalInvokeId uint8, error IBACnetError) APDUInitializer {
 	return &APDUError{originalInvokeId: originalInvokeId, error: error}
 }
 
@@ -94,7 +94,10 @@ func APDUErrorParse(io spi.ReadBuffer) (APDUInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		var reserved uint8 = io.ReadUint8(4)
+		reserved, _err := io.ReadUint8(4)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+		}
 		if reserved != uint8(0x00) {
 			log.WithFields(log.Fields{
 				"expected value": uint8(0x00),
@@ -104,17 +107,20 @@ func APDUErrorParse(io spi.ReadBuffer) (APDUInitializer, error) {
 	}
 
 	// Simple Field (originalInvokeId)
-	var originalInvokeId uint8 = io.ReadUint8(8)
+	originalInvokeId, _originalInvokeIdErr := io.ReadUint8(8)
+	if _originalInvokeIdErr != nil {
+		return nil, errors.New("Error parsing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
+	}
 
 	// Simple Field (error)
 	_errorMessage, _err := BACnetErrorParse(io)
 	if _err != nil {
 		return nil, errors.New("Error parsing simple field 'error'. " + _err.Error())
 	}
-	var error BACnetError
-	error, _errorOk := _errorMessage.(BACnetError)
+	var error IBACnetError
+	error, _errorOk := _errorMessage.(IBACnetError)
 	if !_errorOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_errorMessage).Name() + " to BACnetError")
+		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_errorMessage).Name() + " to IBACnetError")
 	}
 
 	// Create the instance
@@ -131,6 +137,6 @@ func (m APDUError) Serialize(io spi.WriteBuffer) {
 	io.WriteUint8(8, (originalInvokeId))
 
 	// Simple Field (error)
-	error := BACnetError(m.error)
+	error := IBACnetError(m.error)
 	error.Serialize(io)
 }

@@ -83,10 +83,16 @@ func (m COTPParameter) LengthInBytes() uint16 {
 func COTPParameterParse(io spi.ReadBuffer, rest uint8) (spi.Message, error) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	var parameterType uint8 = io.ReadUint8(8)
+	parameterType, _parameterTypeErr := io.ReadUint8(8)
+	if _parameterTypeErr != nil {
+		return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
+	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	var _ uint8 = io.ReadUint8(8)
+	_, _parameterLengthErr := io.ReadUint8(8)
+	if _parameterLengthErr != nil {
+		return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var initializer COTPParameterInitializer

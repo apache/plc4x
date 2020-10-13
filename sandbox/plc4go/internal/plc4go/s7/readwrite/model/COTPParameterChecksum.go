@@ -19,6 +19,7 @@
 package model
 
 import (
+	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 )
 
@@ -83,7 +84,10 @@ func (m COTPParameterChecksum) LengthInBytes() uint16 {
 func COTPParameterChecksumParse(io spi.ReadBuffer) (COTPParameterInitializer, error) {
 
 	// Simple Field (crc)
-	var crc uint8 = io.ReadUint8(8)
+	crc, _crcErr := io.ReadUint8(8)
+	if _crcErr != nil {
+		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+	}
 
 	// Create the instance
 	return NewCOTPParameterChecksum(crc), nil
