@@ -81,7 +81,7 @@ func (m KnxNetObjectServer) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetObjectServerParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)

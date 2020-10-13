@@ -91,7 +91,7 @@ func (m S7VarPayloadDataItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, error) {
+func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, error) {
 
 	// Enum field (returnCode)
 	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -112,18 +112,15 @@ func S7VarPayloadDataItemParse(io spi.ReadBuffer, lastItem bool) (spi.Message, e
 	}
 
 	// Array field (data)
-	var data []int8
 	// Count array
-	{
-		data := make([]int8, spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength)))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength))); curItem++ {
+	data := make([]int8, spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength)))
+	for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength)/float64(float64(8.0)))), uint16(dataLength))); curItem++ {
 
-			_dataVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'data' field " + _err.Error())
-			}
-			data = append(data, _dataVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'data' field " + _err.Error())
 		}
+		data[curItem] = _item
 	}
 
 	// Padding Field (padding)

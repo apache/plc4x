@@ -126,7 +126,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
@@ -204,18 +204,15 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io spi.ReadBuffer) (BACnetCo
 	}
 
 	// Array field (lifetimeSeconds)
-	var lifetimeSeconds []int8
 	// Count array
-	{
-		lifetimeSeconds := make([]int8, lifetimeLength)
-		for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
+	lifetimeSeconds := make([]int8, lifetimeLength)
+	for curItem := uint16(0); curItem < uint16(lifetimeLength); curItem++ {
 
-			_lifetimeSecondsVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())
-			}
-			lifetimeSeconds = append(lifetimeSeconds, _lifetimeSecondsVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'lifetimeSeconds' field " + _err.Error())
 		}
+		lifetimeSeconds[curItem] = _item
 	}
 
 	// Create the instance

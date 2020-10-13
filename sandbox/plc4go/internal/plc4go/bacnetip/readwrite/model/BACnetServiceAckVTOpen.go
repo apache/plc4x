@@ -76,7 +76,7 @@ func (m BACnetServiceAckVTOpen) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckVTOpenParse(io spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckVTOpenParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
 	// Create the instance
 	return NewBACnetServiceAckVTOpen(), nil

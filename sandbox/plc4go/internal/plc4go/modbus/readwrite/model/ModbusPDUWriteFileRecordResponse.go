@@ -97,7 +97,7 @@ func (m ModbusPDUWriteFileRecordResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteFileRecordResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
@@ -106,8 +106,8 @@ func ModbusPDUWriteFileRecordResponseParse(io spi.ReadBuffer) (ModbusPDUInitiali
 	}
 
 	// Array field (items)
-	var items []IModbusPDUWriteFileRecordResponseItem
 	// Length array
+	items := make([]IModbusPDUWriteFileRecordResponseItem, 0)
 	_itemsLength := byteCount
 	_itemsEndPos := io.GetPos() + uint16(_itemsLength)
 	for io.GetPos() < _itemsEndPos {

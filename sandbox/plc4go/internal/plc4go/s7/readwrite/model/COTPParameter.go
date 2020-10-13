@@ -80,7 +80,7 @@ func (m COTPParameter) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPParameterParse(io spi.ReadBuffer, rest uint8) (spi.Message, error) {
+func COTPParameterParse(io *spi.ReadBuffer, rest uint8) (spi.Message, error) {
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType, _parameterTypeErr := io.ReadUint8(8)

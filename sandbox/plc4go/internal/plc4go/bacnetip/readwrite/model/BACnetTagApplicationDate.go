@@ -80,7 +80,7 @@ func (m BACnetTagApplicationDate) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDateParse(io spi.ReadBuffer) (BACnetTagInitializer, error) {
+func BACnetTagApplicationDateParse(io *spi.ReadBuffer) (BACnetTagInitializer, error) {
 
 	// Create the instance
 	return NewBACnetTagApplicationDate(), nil

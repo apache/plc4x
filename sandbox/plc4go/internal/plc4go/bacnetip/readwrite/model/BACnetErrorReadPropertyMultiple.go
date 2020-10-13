@@ -76,7 +76,7 @@ func (m BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyMultipleParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorReadPropertyMultiple(), nil

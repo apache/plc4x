@@ -86,7 +86,7 @@ func (m TunnelingRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func TunnelingRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (tunnelingRequestDataBlock)
 	_tunnelingRequestDataBlockMessage, _err := TunnelingRequestDataBlockParse(io)

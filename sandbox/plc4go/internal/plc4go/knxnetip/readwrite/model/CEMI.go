@@ -77,7 +77,7 @@ func (m CEMI) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIParse(io spi.ReadBuffer, size uint8) (spi.Message, error) {
+func CEMIParse(io *spi.ReadBuffer, size uint8) (spi.Message, error) {
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode, _messageCodeErr := io.ReadUint8(8)

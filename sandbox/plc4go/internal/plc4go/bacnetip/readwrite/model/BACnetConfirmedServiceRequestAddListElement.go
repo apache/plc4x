@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestAddListElement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAddListElementParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestAddListElementParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestAddListElement(), nil

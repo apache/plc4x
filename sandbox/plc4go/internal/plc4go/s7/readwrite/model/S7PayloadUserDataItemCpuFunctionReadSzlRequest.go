@@ -80,7 +80,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
 
 	// Create the instance
 	return NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(), nil

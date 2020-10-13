@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestGetEventInformation) LengthInBytes() uint16
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestGetEventInformationParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestGetEventInformationParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestGetEventInformation(), nil

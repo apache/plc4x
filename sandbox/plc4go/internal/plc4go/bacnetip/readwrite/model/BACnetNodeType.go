@@ -70,7 +70,7 @@ func (m BACnetNodeType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNodeTypeParse(io spi.ReadBuffer) (BACnetNodeType, error) {
+func BACnetNodeTypeParse(io *spi.ReadBuffer) (BACnetNodeType, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

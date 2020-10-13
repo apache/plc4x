@@ -76,7 +76,7 @@ func (m BACnetUnconfirmedServiceRequestUTCTimeSynchronization) LengthInBytes() u
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetUnconfirmedServiceRequestUTCTimeSynchronization(), nil

@@ -77,7 +77,7 @@ func (m BACnetError) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorParse(io spi.ReadBuffer) (spi.Message, error) {
+func BACnetErrorParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice, _serviceChoiceErr := io.ReadUint8(8)

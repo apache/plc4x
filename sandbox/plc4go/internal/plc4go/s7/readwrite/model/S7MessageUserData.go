@@ -79,7 +79,7 @@ func (m S7MessageUserData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7MessageUserDataParse(io spi.ReadBuffer) (S7MessageInitializer, error) {
+func S7MessageUserDataParse(io *spi.ReadBuffer) (S7MessageInitializer, error) {
 
 	// Create the instance
 	return NewS7MessageUserData(), nil

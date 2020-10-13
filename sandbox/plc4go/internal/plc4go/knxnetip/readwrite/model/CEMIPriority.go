@@ -52,7 +52,7 @@ func (m CEMIPriority) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIPriorityParse(io spi.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParse(io *spi.ReadBuffer) (CEMIPriority, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

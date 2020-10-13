@@ -81,7 +81,7 @@ func (m KnxNetIpTunneling) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetIpTunnelingParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetIpTunnelingParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)

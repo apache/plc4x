@@ -93,7 +93,7 @@ func (m DataTransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DataTransportSizeParse(io spi.ReadBuffer) (DataTransportSize, error) {
+func DataTransportSizeParse(io *spi.ReadBuffer) (DataTransportSize, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

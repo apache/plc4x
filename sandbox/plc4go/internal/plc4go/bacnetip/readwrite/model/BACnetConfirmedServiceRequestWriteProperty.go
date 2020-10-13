@@ -125,7 +125,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(io spi.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestWritePropertyParse(io *spi.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
 	var startPos = io.GetPos()
 	var curPos uint16
 
@@ -166,18 +166,15 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io spi.ReadBuffer, len uint
 	}
 
 	// Array field (propertyIdentifier)
-	var propertyIdentifier []int8
 	// Count array
-	{
-		propertyIdentifier := make([]int8, propertyIdentifierLength)
-		for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
+	propertyIdentifier := make([]int8, propertyIdentifierLength)
+	for curItem := uint16(0); curItem < uint16(propertyIdentifierLength); curItem++ {
 
-			_propertyIdentifierVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
-			}
-			propertyIdentifier = append(propertyIdentifier, _propertyIdentifierVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
 		}
+		propertyIdentifier[curItem] = _item
 	}
 
 	// Const Field (openingTag)

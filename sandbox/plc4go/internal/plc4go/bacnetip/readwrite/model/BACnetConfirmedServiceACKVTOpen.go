@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKVTOpenParse(io spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKVTOpenParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceACKVTOpen(), nil

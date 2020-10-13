@@ -76,7 +76,7 @@ func (m ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(io spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
 	// Create the instance
 	return NewConnectionResponseDataBlockDeviceManagement(), nil

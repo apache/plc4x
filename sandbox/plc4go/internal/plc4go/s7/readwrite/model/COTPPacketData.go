@@ -87,7 +87,7 @@ func (m COTPPacketData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPPacketDataParse(io spi.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketDataParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
 
 	// Simple Field (eot)
 	eot, _eotErr := io.ReadBit()

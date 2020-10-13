@@ -51,7 +51,7 @@ func (m DeviceGroup) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceGroupParse(io spi.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(io *spi.ReadBuffer) (DeviceGroup, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

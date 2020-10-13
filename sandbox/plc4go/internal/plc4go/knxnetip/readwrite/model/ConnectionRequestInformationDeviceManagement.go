@@ -76,7 +76,7 @@ func (m ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(io spi.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
+func ConnectionRequestInformationDeviceManagementParse(io *spi.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
 
 	// Create the instance
 	return NewConnectionRequestInformationDeviceManagement(), nil

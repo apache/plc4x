@@ -85,7 +85,7 @@ func (m S7ParameterReadVarResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarResponseParse(io spi.ReadBuffer) (S7ParameterInitializer, error) {
+func S7ParameterReadVarResponseParse(io *spi.ReadBuffer) (S7ParameterInitializer, error) {
 
 	// Simple Field (numItems)
 	numItems, _numItemsErr := io.ReadUint8(8)

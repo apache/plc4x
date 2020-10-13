@@ -86,7 +86,7 @@ func (m DeviceConfigurationRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(io spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func DeviceConfigurationRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (deviceConfigurationRequestDataBlock)
 	_deviceConfigurationRequestDataBlockMessage, _err := DeviceConfigurationRequestDataBlockParse(io)

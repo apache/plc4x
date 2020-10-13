@@ -97,7 +97,7 @@ func (m CEMIMPropReadReq) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIMPropReadReqParse(io spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIMPropReadReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
 	// Simple Field (interfaceObjectType)
 	interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)

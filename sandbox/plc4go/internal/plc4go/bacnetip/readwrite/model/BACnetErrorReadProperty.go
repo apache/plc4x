@@ -108,7 +108,7 @@ func (m BACnetErrorReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadPropertyParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Const Field (errorClassHeader)
 	errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
@@ -126,18 +126,15 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 	}
 
 	// Array field (errorClass)
-	var errorClass []int8
 	// Count array
-	{
-		errorClass := make([]int8, errorClassLength)
-		for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
+	errorClass := make([]int8, errorClassLength)
+	for curItem := uint16(0); curItem < uint16(errorClassLength); curItem++ {
 
-			_errorClassVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'errorClass' field " + _err.Error())
-			}
-			errorClass = append(errorClass, _errorClassVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'errorClass' field " + _err.Error())
 		}
+		errorClass[curItem] = _item
 	}
 
 	// Const Field (errorCodeHeader)
@@ -156,18 +153,15 @@ func BACnetErrorReadPropertyParse(io spi.ReadBuffer) (BACnetErrorInitializer, er
 	}
 
 	// Array field (errorCode)
-	var errorCode []int8
 	// Count array
-	{
-		errorCode := make([]int8, errorCodeLength)
-		for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
+	errorCode := make([]int8, errorCodeLength)
+	for curItem := uint16(0); curItem < uint16(errorCodeLength); curItem++ {
 
-			_errorCodeVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
-			}
-			errorCode = append(errorCode, _errorCodeVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'errorCode' field " + _err.Error())
 		}
+		errorCode[curItem] = _item
 	}
 
 	// Create the instance

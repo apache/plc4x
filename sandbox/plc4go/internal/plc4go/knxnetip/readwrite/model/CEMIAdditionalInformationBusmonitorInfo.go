@@ -108,7 +108,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(io spi.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(io *spi.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
 
 	// Const Field (len)
 	len, _lenErr := io.ReadUint8(8)

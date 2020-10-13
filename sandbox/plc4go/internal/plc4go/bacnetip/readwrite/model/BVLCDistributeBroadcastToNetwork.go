@@ -76,7 +76,7 @@ func (m BVLCDistributeBroadcastToNetwork) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCDistributeBroadcastToNetworkParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCDistributeBroadcastToNetworkParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCDistributeBroadcastToNetwork(), nil

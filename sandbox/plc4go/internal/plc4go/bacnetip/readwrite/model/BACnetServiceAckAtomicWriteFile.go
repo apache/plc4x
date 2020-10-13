@@ -76,7 +76,7 @@ func (m BACnetServiceAckAtomicWriteFile) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckAtomicWriteFileParse(io spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
 	// Create the instance
 	return NewBACnetServiceAckAtomicWriteFile(), nil

@@ -113,7 +113,7 @@ func (m BACnetTagWithContent) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
+func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
@@ -156,16 +156,16 @@ func BACnetTagWithContentParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Array field (propertyIdentifier)
-	var propertyIdentifier []uint8
 	// Length array
+	propertyIdentifier := make([]uint8, 0)
 	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16((*extLength)), uint16(lengthValueType))
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
-		_propertyIdentifierVal, _err := io.ReadUint8(8)
+		_item, _err := io.ReadUint8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'propertyIdentifier' field " + _err.Error())
 		}
-		propertyIdentifier = append(propertyIdentifier, _propertyIdentifierVal)
+		propertyIdentifier = append(propertyIdentifier, _item)
 	}
 
 	// Const Field (openTag)

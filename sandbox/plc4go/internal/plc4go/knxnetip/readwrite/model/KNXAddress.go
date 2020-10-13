@@ -79,7 +79,7 @@ func (m KNXAddress) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KNXAddressParse(io spi.ReadBuffer) (spi.Message, error) {
+func KNXAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (mainGroup)
 	mainGroup, _mainGroupErr := io.ReadUint8(4)

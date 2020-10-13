@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceACKConfirmedPrivateTransfer) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKConfirmedPrivateTransferParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceACKConfirmedPrivateTransfer(), nil

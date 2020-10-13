@@ -153,7 +153,7 @@ func (m NPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
+func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
@@ -242,18 +242,15 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	}
 
 	// Array field (destinationAddress)
-	var destinationAddress []uint8
 	// Count array
-	{
-		destinationAddress := make([]uint8, spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
+	destinationAddress := make([]uint8, spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
+	for curItem := uint16(0); curItem < uint16(spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
 
-			_destinationAddressVal, _err := io.ReadUint8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
-			}
-			destinationAddress = append(destinationAddress, _destinationAddressVal)
+		_item, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
 		}
+		destinationAddress[curItem] = _item
 	}
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
@@ -279,18 +276,15 @@ func NPDUParse(io spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 	}
 
 	// Array field (sourceAddress)
-	var sourceAddress []uint8
 	// Count array
-	{
-		sourceAddress := make([]uint8, spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
-		for curItem := uint16(0); curItem < uint16(spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
+	sourceAddress := make([]uint8, spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
+	for curItem := uint16(0); curItem < uint16(spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
 
-			_sourceAddressVal, _err := io.ReadUint8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())
-			}
-			sourceAddress = append(sourceAddress, _sourceAddressVal)
+		_item, _err := io.ReadUint8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'sourceAddress' field " + _err.Error())
 		}
+		sourceAddress[curItem] = _item
 	}
 
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)

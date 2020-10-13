@@ -76,7 +76,7 @@ func (m BACnetErrorVTData) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorVTDataParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorVTDataParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorVTData(), nil

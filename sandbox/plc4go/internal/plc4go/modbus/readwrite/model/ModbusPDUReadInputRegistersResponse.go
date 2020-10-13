@@ -94,7 +94,7 @@ func (m ModbusPDUReadInputRegistersResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadInputRegistersResponseParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadInputRegistersResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	byteCount, _byteCountErr := io.ReadUint8(8)
@@ -103,18 +103,15 @@ func ModbusPDUReadInputRegistersResponseParse(io spi.ReadBuffer) (ModbusPDUIniti
 	}
 
 	// Array field (value)
-	var value []int8
 	// Count array
-	{
-		value := make([]int8, byteCount)
-		for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
+	value := make([]int8, byteCount)
+	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-			_valueVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'value' field " + _err.Error())
-			}
-			value = append(value, _valueVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'value' field " + _err.Error())
 		}
+		value[curItem] = _item
 	}
 
 	// Create the instance

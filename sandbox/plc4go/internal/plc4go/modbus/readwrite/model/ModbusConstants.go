@@ -74,7 +74,7 @@ func (m ModbusConstants) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusConstantsParse(io spi.ReadBuffer) (spi.Message, error) {
+func ModbusConstantsParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Const Field (modbusTcpDefaultPort)
 	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)

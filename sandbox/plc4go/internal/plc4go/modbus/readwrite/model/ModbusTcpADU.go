@@ -90,7 +90,7 @@ func (m ModbusTcpADU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusTcpADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)

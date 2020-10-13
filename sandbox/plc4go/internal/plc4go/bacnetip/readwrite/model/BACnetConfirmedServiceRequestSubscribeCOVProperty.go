@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint1
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestSubscribeCOVProperty(), nil

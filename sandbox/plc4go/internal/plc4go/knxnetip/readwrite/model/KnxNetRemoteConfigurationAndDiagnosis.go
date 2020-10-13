@@ -81,7 +81,7 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func KnxNetRemoteConfigurationAndDiagnosisParse(io spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetRemoteConfigurationAndDiagnosisParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
 	// Simple Field (version)
 	version, _versionErr := io.ReadUint8(8)

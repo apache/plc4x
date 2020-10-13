@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestDeviceCommunicationControl) LengthInBytes()
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestDeviceCommunicationControl(), nil

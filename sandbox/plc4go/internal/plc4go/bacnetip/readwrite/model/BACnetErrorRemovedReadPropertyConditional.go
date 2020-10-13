@@ -76,7 +76,7 @@ func (m BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorRemovedReadPropertyConditionalParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorRemovedReadPropertyConditionalParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorRemovedReadPropertyConditional(), nil

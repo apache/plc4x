@@ -85,7 +85,7 @@ func (m ConnectionStateResponse) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ConnectionStateResponseParse(io spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionStateResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)

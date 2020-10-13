@@ -76,7 +76,7 @@ func (m BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(io spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
 	// Create the instance
 	return NewBACnetServiceAckReadPropertyMultiple(), nil

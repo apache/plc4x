@@ -86,7 +86,7 @@ func (m APDUUnconfirmedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUUnconfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
+func APDUUnconfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

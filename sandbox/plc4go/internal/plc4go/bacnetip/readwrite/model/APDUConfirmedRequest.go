@@ -122,7 +122,7 @@ func (m APDUConfirmedRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(io spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
+func APDUConfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
 
 	// Simple Field (segmentedMessage)
 	segmentedMessage, _segmentedMessageErr := io.ReadBit()

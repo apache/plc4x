@@ -110,7 +110,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBytes
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io spi.ReadBuffer, len uint16) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *spi.ReadBuffer, len uint16) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Const Field (vendorIdHeader)
 	vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
@@ -152,16 +152,16 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io spi.ReadB
 	}
 
 	// Array field (values)
-	var values []int8
 	// Length array
+	values := make([]int8, 0)
 	_valuesLength := uint16(len) - uint16(uint16(8))
 	_valuesEndPos := io.GetPos() + uint16(_valuesLength)
 	for io.GetPos() < _valuesEndPos {
-		_valuesVal, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'values' field " + _err.Error())
 		}
-		values = append(values, _valuesVal)
+		values = append(values, _item)
 	}
 
 	// Const Field (listOfValuesClosingTag)

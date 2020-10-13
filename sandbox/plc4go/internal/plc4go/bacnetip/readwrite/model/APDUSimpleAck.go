@@ -89,7 +89,7 @@ func (m APDUSimpleAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func APDUSimpleAckParse(io spi.ReadBuffer) (APDUInitializer, error) {
+func APDUSimpleAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
 
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{

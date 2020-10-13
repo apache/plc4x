@@ -103,7 +103,7 @@ func (m MemoryArea) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func MemoryAreaParse(io spi.ReadBuffer) (MemoryArea, error) {
+func MemoryAreaParse(io *spi.ReadBuffer) (MemoryArea, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

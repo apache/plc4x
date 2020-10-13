@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestAtomicReadFile) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestAtomicReadFile(), nil

@@ -93,7 +93,7 @@ func (m COTPTpduSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func COTPTpduSizeParse(io spi.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(io *spi.ReadBuffer) (COTPTpduSize, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

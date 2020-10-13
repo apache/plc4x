@@ -61,7 +61,7 @@ func (m ApplicationTag) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ApplicationTagParse(io spi.ReadBuffer) (ApplicationTag, error) {
+func ApplicationTagParse(io *spi.ReadBuffer) (ApplicationTag, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

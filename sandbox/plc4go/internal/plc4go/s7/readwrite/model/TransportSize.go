@@ -813,7 +813,7 @@ func (m TransportSize) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func TransportSizeParse(io spi.ReadBuffer) (TransportSize, error) {
+func TransportSizeParse(io *spi.ReadBuffer) (TransportSize, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

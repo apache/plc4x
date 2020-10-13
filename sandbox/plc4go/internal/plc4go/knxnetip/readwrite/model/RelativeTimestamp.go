@@ -71,7 +71,7 @@ func (m RelativeTimestamp) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func RelativeTimestampParse(io spi.ReadBuffer) (spi.Message, error) {
+func RelativeTimestampParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (timestamp)
 	timestamp, _timestampErr := io.ReadUint16(16)

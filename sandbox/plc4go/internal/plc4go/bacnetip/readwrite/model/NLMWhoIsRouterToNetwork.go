@@ -84,19 +84,19 @@ func (m NLMWhoIsRouterToNetwork) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NLMWhoIsRouterToNetworkParse(io spi.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitializer, error) {
+func NLMWhoIsRouterToNetworkParse(io *spi.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitializer, error) {
 
 	// Array field (destinationNetworkAddress)
-	var destinationNetworkAddress []uint16
 	// Length array
+	destinationNetworkAddress := make([]uint16, 0)
 	_destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(spi.InlineIf(bool(bool(bool(bool((messageType) >= (128)))) && bool(bool(bool((messageType) <= (255))))), uint16(uint16(3)), uint16(uint16(1)))))
 	_destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
 	for io.GetPos() < _destinationNetworkAddressEndPos {
-		_destinationNetworkAddressVal, _err := io.ReadUint16(16)
+		_item, _err := io.ReadUint16(16)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'destinationNetworkAddress' field " + _err.Error())
 		}
-		destinationNetworkAddress = append(destinationNetworkAddress, _destinationNetworkAddressVal)
+		destinationNetworkAddress = append(destinationNetworkAddress, _item)
 	}
 
 	// Create the instance

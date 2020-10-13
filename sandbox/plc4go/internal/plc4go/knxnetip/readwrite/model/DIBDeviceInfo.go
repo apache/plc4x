@@ -111,7 +111,7 @@ func (m DIBDeviceInfo) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
+func DIBDeviceInfoParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _structureLengthErr := io.ReadUint8(8)
@@ -165,18 +165,15 @@ func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Array field (knxNetIpDeviceSerialNumber)
-	var knxNetIpDeviceSerialNumber []int8
 	// Count array
-	{
-		knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
-		for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
+	knxNetIpDeviceSerialNumber := make([]int8, uint16(6))
+	for curItem := uint16(0); curItem < uint16(uint16(6)); curItem++ {
 
-			_knxNetIpDeviceSerialNumberVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'knxNetIpDeviceSerialNumber' field " + _err.Error())
-			}
-			knxNetIpDeviceSerialNumber = append(knxNetIpDeviceSerialNumber, _knxNetIpDeviceSerialNumberVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'knxNetIpDeviceSerialNumber' field " + _err.Error())
 		}
+		knxNetIpDeviceSerialNumber[curItem] = _item
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -202,18 +199,15 @@ func DIBDeviceInfoParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Array field (deviceFriendlyName)
-	var deviceFriendlyName []int8
 	// Count array
-	{
-		deviceFriendlyName := make([]int8, uint16(30))
-		for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
+	deviceFriendlyName := make([]int8, uint16(30))
+	for curItem := uint16(0); curItem < uint16(uint16(30)); curItem++ {
 
-			_deviceFriendlyNameVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'deviceFriendlyName' field " + _err.Error())
-			}
-			deviceFriendlyName = append(deviceFriendlyName, _deviceFriendlyNameVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'deviceFriendlyName' field " + _err.Error())
 		}
+		deviceFriendlyName[curItem] = _item
 	}
 
 	// Create the instance

@@ -88,7 +88,7 @@ func (m ModbusPDUWriteFileRecordResponseItem) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, error) {
+func ModbusPDUWriteFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Simple Field (referenceType)
 	referenceType, _referenceTypeErr := io.ReadUint8(8)
@@ -115,16 +115,16 @@ func ModbusPDUWriteFileRecordResponseItemParse(io spi.ReadBuffer) (spi.Message, 
 	}
 
 	// Array field (recordData)
-	var recordData []int8
 	// Length array
+	recordData := make([]int8, 0)
 	_recordDataLength := recordLength
 	_recordDataEndPos := io.GetPos() + uint16(_recordDataLength)
 	for io.GetPos() < _recordDataEndPos {
-		_recordDataVal, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'recordData' field " + _err.Error())
 		}
-		recordData = append(recordData, _recordDataVal)
+		recordData = append(recordData, _item)
 	}
 
 	// Create the instance

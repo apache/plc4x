@@ -88,7 +88,7 @@ func (m CEMIFrameAck) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIFrameAckParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFrameAckParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 
 	// Create the instance
 	return NewCEMIFrameAck(), nil

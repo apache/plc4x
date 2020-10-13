@@ -84,7 +84,7 @@ func (m ModbusPDUReportServerIdRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUReportServerIdRequestParse(io spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReportServerIdRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
 	// Create the instance
 	return NewModbusPDUReportServerIdRequest(), nil

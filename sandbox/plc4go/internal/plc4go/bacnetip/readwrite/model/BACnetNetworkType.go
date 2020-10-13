@@ -59,7 +59,7 @@ func (m BACnetNetworkType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetNetworkTypeParse(io spi.ReadBuffer) (BACnetNetworkType, error) {
+func BACnetNetworkTypeParse(io *spi.ReadBuffer) (BACnetNetworkType, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

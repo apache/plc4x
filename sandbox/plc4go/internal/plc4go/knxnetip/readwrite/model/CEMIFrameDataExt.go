@@ -142,7 +142,7 @@ func (m CEMIFrameDataExt) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFrameDataExtParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 
 	// Simple Field (groupAddress)
 	groupAddress, _groupAddressErr := io.ReadBit()
@@ -174,18 +174,15 @@ func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	}
 
 	// Array field (destinationAddress)
-	var destinationAddress []int8
 	// Count array
-	{
-		destinationAddress := make([]int8, uint16(2))
-		for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
+	destinationAddress := make([]int8, uint16(2))
+	for curItem := uint16(0); curItem < uint16(uint16(2)); curItem++ {
 
-			_destinationAddressVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
-			}
-			destinationAddress = append(destinationAddress, _destinationAddressVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'destinationAddress' field " + _err.Error())
 		}
+		destinationAddress[curItem] = _item
 	}
 
 	// Simple Field (dataLength)
@@ -219,18 +216,15 @@ func CEMIFrameDataExtParse(io spi.ReadBuffer) (CEMIFrameInitializer, error) {
 	}
 
 	// Array field (data)
-	var data []int8
 	// Count array
-	{
-		data := make([]int8, uint16(dataLength)-uint16(uint16(1)))
-		for curItem := uint16(0); curItem < uint16(uint16(dataLength)-uint16(uint16(1))); curItem++ {
+	data := make([]int8, uint16(dataLength)-uint16(uint16(1)))
+	for curItem := uint16(0); curItem < uint16(uint16(dataLength)-uint16(uint16(1))); curItem++ {
 
-			_dataVal, _err := io.ReadInt8(8)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'data' field " + _err.Error())
-			}
-			data = append(data, _dataVal)
+		_item, _err := io.ReadInt8(8)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'data' field " + _err.Error())
 		}
+		data[curItem] = _item
 	}
 
 	// Simple Field (crc)

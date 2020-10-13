@@ -91,7 +91,7 @@ func (m BACnetTagApplicationBitString) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationBitStringParse(io *spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
 	// Simple Field (unusedBits)
 	unusedBits, _unusedBitsErr := io.ReadUint8(8)
@@ -100,16 +100,16 @@ func BACnetTagApplicationBitStringParse(io spi.ReadBuffer, lengthValueType uint8
 	}
 
 	// Array field (data)
-	var data []int8
 	// Length array
+	data := make([]int8, 0)
 	_dataLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(uint16(uint16(extLength)-uint16(uint16(1)))), uint16(uint16(uint16(lengthValueType)-uint16(uint16(1)))))
 	_dataEndPos := io.GetPos() + uint16(_dataLength)
 	for io.GetPos() < _dataEndPos {
-		_dataVal, _err := io.ReadInt8(8)
+		_item, _err := io.ReadInt8(8)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'data' field " + _err.Error())
 		}
-		data = append(data, _dataVal)
+		data = append(data, _item)
 	}
 
 	// Create the instance

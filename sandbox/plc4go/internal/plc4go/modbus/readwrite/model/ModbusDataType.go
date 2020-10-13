@@ -198,7 +198,7 @@ func (m ModbusDataType) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusDataTypeParse(io spi.ReadBuffer) (ModbusDataType, error) {
+func ModbusDataTypeParse(io *spi.ReadBuffer) (ModbusDataType, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

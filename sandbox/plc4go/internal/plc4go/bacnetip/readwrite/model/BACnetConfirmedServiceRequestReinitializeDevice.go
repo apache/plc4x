@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestReinitializeDevice) LengthInBytes() uint16 
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestReinitializeDevice(), nil

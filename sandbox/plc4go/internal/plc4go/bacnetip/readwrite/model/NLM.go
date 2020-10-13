@@ -83,7 +83,7 @@ func (m NLM) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func NLMParse(io spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
+func NLMParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType, _messageTypeErr := io.ReadUint8(8)

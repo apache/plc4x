@@ -76,7 +76,7 @@ func (m BVLCResult) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCResultParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCResultParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCResult(), nil

@@ -76,7 +76,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedEventNotification) LengthInByt
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(), nil

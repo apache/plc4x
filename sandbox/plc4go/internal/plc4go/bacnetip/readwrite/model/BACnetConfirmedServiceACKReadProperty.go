@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceACKReadProperty) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKReadPropertyParse(io spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKReadPropertyParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceACKReadProperty(), nil

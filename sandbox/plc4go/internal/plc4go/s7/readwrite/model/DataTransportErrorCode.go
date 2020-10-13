@@ -54,7 +54,7 @@ func (m DataTransportErrorCode) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DataTransportErrorCodeParse(io spi.ReadBuffer) (DataTransportErrorCode, error) {
+func DataTransportErrorCodeParse(io *spi.ReadBuffer) (DataTransportErrorCode, error) {
 	// TODO: Implement ...
 	return 0, nil
 }

@@ -76,7 +76,7 @@ func (m BVLCRegisterForeignDevice) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BVLCRegisterForeignDeviceParse(io spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCRegisterForeignDeviceParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
 	// Create the instance
 	return NewBVLCRegisterForeignDevice(), nil

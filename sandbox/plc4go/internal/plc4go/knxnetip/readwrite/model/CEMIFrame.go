@@ -109,7 +109,7 @@ func (m CEMIFrame) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func CEMIFrameParse(io spi.ReadBuffer) (spi.Message, error) {
+func CEMIFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Discriminator Field (standardFrame) (Used as input to a switch field)
 	standardFrame, _standardFrameErr := io.ReadBit()

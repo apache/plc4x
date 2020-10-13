@@ -105,7 +105,7 @@ func (m S7AddressAny) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7AddressAnyParse(io spi.ReadBuffer) (S7AddressInitializer, error) {
+func S7AddressAnyParse(io *spi.ReadBuffer) (S7AddressInitializer, error) {
 
 	// Enum field (transportSize)
 	transportSize, _transportSizeErr := TransportSizeParse(io)

@@ -90,7 +90,7 @@ func (m ModbusPDU) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func ModbusPDUParse(io spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusPDUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag, _errorFlagErr := io.ReadBit()

@@ -76,7 +76,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) LengthInBytes() u
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(), nil

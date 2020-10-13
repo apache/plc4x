@@ -85,7 +85,7 @@ func (m BACnetTagApplicationReal) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationRealParse(io spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationRealParse(io *spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
 	// Simple Field (value)
 	value, _valueErr := io.ReadFloat32(32)

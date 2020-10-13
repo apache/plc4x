@@ -76,7 +76,7 @@ func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(io spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil

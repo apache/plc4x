@@ -93,7 +93,7 @@ func (m S7ParameterReadVarRequest) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func S7ParameterReadVarRequestParse(io spi.ReadBuffer) (S7ParameterInitializer, error) {
+func S7ParameterReadVarRequestParse(io *spi.ReadBuffer) (S7ParameterInitializer, error) {
 
 	// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numItems, _numItemsErr := io.ReadUint8(8)
@@ -102,23 +102,20 @@ func S7ParameterReadVarRequestParse(io spi.ReadBuffer) (S7ParameterInitializer, 
 	}
 
 	// Array field (items)
-	var items []IS7VarRequestParameterItem
 	// Count array
-	{
-		items := make([]IS7VarRequestParameterItem, numItems)
-		for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
+	items := make([]IS7VarRequestParameterItem, numItems)
+	for curItem := uint16(0); curItem < uint16(numItems); curItem++ {
 
-			_message, _err := S7VarRequestParameterItemParse(io)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'items' field " + _err.Error())
-			}
-			var _item IS7VarRequestParameterItem
-			_item, _ok := _message.(IS7VarRequestParameterItem)
-			if !_ok {
-				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarRequestParameterItem")
-			}
-			items = append(items, _item)
+		_message, _err := S7VarRequestParameterItemParse(io)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
+		var _item IS7VarRequestParameterItem
+		_item, _ok := _message.(IS7VarRequestParameterItem)
+		if !_ok {
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarRequestParameterItem")
+		}
+		items[curItem] = _item
 	}
 
 	// Create the instance

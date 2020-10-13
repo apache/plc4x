@@ -83,7 +83,7 @@ func (m DIBSuppSvcFamilies) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(io spi.ReadBuffer) (spi.Message, error) {
+func DIBSuppSvcFamiliesParse(io *spi.ReadBuffer) (spi.Message, error) {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	_, _structureLengthErr := io.ReadUint8(8)
@@ -98,23 +98,20 @@ func DIBSuppSvcFamiliesParse(io spi.ReadBuffer) (spi.Message, error) {
 	}
 
 	// Array field (serviceIds)
-	var serviceIds []IServiceId
 	// Count array
-	{
-		serviceIds := make([]IServiceId, uint16(3))
-		for curItem := uint16(0); curItem < uint16(uint16(3)); curItem++ {
+	serviceIds := make([]IServiceId, uint16(3))
+	for curItem := uint16(0); curItem < uint16(uint16(3)); curItem++ {
 
-			_message, _err := ServiceIdParse(io)
-			if _err != nil {
-				return nil, errors.New("Error parsing 'serviceIds' field " + _err.Error())
-			}
-			var _item IServiceId
-			_item, _ok := _message.(IServiceId)
-			if !_ok {
-				return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ServiceId")
-			}
-			serviceIds = append(serviceIds, _item)
+		_message, _err := ServiceIdParse(io)
+		if _err != nil {
+			return nil, errors.New("Error parsing 'serviceIds' field " + _err.Error())
 		}
+		var _item IServiceId
+		_item, _ok := _message.(IServiceId)
+		if !_ok {
+			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to ServiceId")
+		}
+		serviceIds[curItem] = _item
 	}
 
 	// Create the instance

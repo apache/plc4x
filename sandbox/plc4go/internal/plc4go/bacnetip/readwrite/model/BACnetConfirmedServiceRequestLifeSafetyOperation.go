@@ -76,7 +76,7 @@ func (m BACnetConfirmedServiceRequestLifeSafetyOperation) LengthInBytes() uint16
 	return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestLifeSafetyOperationParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
 	// Create the instance
 	return NewBACnetConfirmedServiceRequestLifeSafetyOperation(), nil

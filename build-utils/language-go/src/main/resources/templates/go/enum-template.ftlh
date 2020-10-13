@@ -110,7 +110,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
 }
 
 <#if type.type?has_content>
-func ${type.name}Parse(io spi.ReadBuffer) (${type.name}, error) {
+func ${type.name}Parse(io *spi.ReadBuffer) (${type.name}, error) {
     // TODO: Implement ...
     return 0, nil
 }

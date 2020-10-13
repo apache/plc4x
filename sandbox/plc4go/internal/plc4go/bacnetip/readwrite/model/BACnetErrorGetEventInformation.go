@@ -76,7 +76,7 @@ func (m BACnetErrorGetEventInformation) LengthInBytes() uint16 {
 	return m.LengthInBits() / 8
 }
 
-func BACnetErrorGetEventInformationParse(io spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorGetEventInformationParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
 	// Create the instance
 	return NewBACnetErrorGetEventInformation(), nil
