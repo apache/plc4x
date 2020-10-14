@@ -24,16 +24,16 @@ Plc4x drivers to communicate.
 == Building the server
 
 The OPC UA server can be built using maven as part of the Plc4x build by using the with-opcua-server switch.
-
+```
 mvn install -P with-sandbox,with-opcua-server
-
+```
 
 == Running
 
 Once the OPC UA server is running you are able to connect to it from your favorite OPC UA client using the connection string
-
+```
 opc.tcp://{ip.address}:12687/plc4x
-
+```
 Replacing the {ip.address} with the servers IP address.
 
 == Configuration File
@@ -44,7 +44,7 @@ version: The version is just an check to confirm that the right version of the c
 
 dir: Before using it the `dir` that is used to store the security certificates should be defined.
 
-name:- This is the name of the OPC UA server. It can be anything but shouldn't contain spaces.
+name: This is the name of the OPC UA server. It can be anything but shouldn't contain spaces.
 
 tcpPort: this can be used to change the opc.tcp port that is used.
 
@@ -52,16 +52,18 @@ httpPort: this can be used to change the http.tcp port that is used.
 
 devices: is a list of PLC's or devices that the server should communicate with. Each device should included a name:, connectionString:, and a list of tags:.
 
-  name: This is the name of the device. It can anything as long as it doesn't contain spaces.
-  connectionString: Can be any valid Plc4x connection string.
+name: This is the name of the device. It can anything as long as it doesn't contain spaces.
+connectionString: Can be any valid Plc4x connection string.
 
 For each tag the alias: and address: should be defined.
 
-    alias: This is the name of tag it can be anything but shouldn't have spaces.
+alias: This is the name of tag it can be anything but shouldn't have spaces.
 
-    address: This is any valid Plc4x address.
+address: This is any valid Plc4x address.
 
 An example configuration file is shown below.
+
+```
 
 version: 0.1
 dir: {security.directory}
@@ -69,7 +71,7 @@ name: Plc4x.OPC.UA.Server
 tcpPort: 12687
 httpPort: 8445
 devices:
-      - name: ModbusDevice
+      - name: ModbusDevice01
         connectionString: modbus://127.0.0.1:5467
         tags:
             -   alias: TemporaryREAL1
@@ -88,3 +90,9 @@ devices:
                 address: 400007:REAL
             -   alias: TemporaryREAL8
                 address: 400008:REAL
+      - name: ModbusDevice02
+        connectionString: modbus://127.0.0.1:5467
+        tags:
+            -   alias: TemporaryREAL1
+                address: 400001:REAL
+```
