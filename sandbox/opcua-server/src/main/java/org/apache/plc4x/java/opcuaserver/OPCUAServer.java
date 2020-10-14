@@ -29,6 +29,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import java.io.IOException;
+import java.io.Console;
+import java.nio.file.Path;
+import java.nio.file.FileSystems;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -75,12 +79,49 @@ public class OPCUAServer {
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    private void checkPasswordsExist(boolean reset) {
+        Console cnsl = System.console();
+        //Checking if the security password has been set.
+        if (config.getSecurityPassword() == null || reset) {
+            System.out.println("Please enter password for certificate:- ");
+            try {
+                config.setSecurityPassword(String.valueOf(cnsl.readPassword()));
+            } catch (IOException e) {
+                System.out.println("Unable to save config file after setting security password");
+            }
+        }
+
+        //Checking if the Admin username has been set.
+        if (config.getAdminUserName() == null || reset) {
+            System.out.println("Please enter a username for the OPC UA server admin account:- ");
+            try {
+                config.setAdminUserName(String.valueOf(cnsl.readLine()));
+            } catch (IOException e) {
+                System.out.println("Unable to save config file after setting admin username");
+            }
+        }
+
+        //Checking if the Admin username has been set.
+        if (config.getAdminPassword() == null | reset) {
+            System.out.println("Please enter a password for the OPC UA server " + config.getAdminUserName() + " account:- ");
+            try {
+                config.setAdminPassword(String.valueOf(cnsl.readPassword()));
+            } catch (IOException e) {
+                System.out.println("Unable to save config file after setting " + config.getAdminUserName() + " password");
+            }
+        }
+    }
+
     private void readCommandLineArgs(String[] args) {
         Options options = new Options();
 
         Option input = new Option("c", "configfile", true, "configuration file");
         input.setRequired(true);
         options.addOption(input);
+
+        Option setPassword = new Option("s", "set-passwords", false, "Reset passwords");
+        setPassword.setRequired(false);
+        options.addOption(setPassword);
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -91,7 +132,6 @@ public class OPCUAServer {
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             formatter.printHelp("Plc4x OPC UA Server", options);
-
             System.exit(1);
         }
 
@@ -103,6 +143,12 @@ public class OPCUAServer {
         mapper.findAndRegisterModules();
         try {
             config = mapper.readValue(new File(configFile), Configuration.class);
+            config.setConfigFile(configFile);
+            //Checking if the security directory has been configured.
+            if (config.getDir() == null) {
+                throw new IOException("Please set the dir in the config file");
+            }
+            checkPasswordsExist(cmd.hasOption("set-passwords"));
         } catch (IOException e) {
             System.out.println("Error parsing config file " + e);
         }
@@ -123,24 +169,14 @@ public class OPCUAServer {
 
         readCommandLineArgs(args);
 
-        if (config.getDir() == null) {
-            throw new Exception("Please set the dir in the config file");
-        }
-
-        File securityTempDir = new File(config.getDir(), "security");
-        if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
-            throw new Exception("unable to create security dir: " + securityTempDir);
-        }
-        LoggerFactory.getLogger(getClass()).info("security dir: {}", securityTempDir.getAbsolutePath());
-
-        KeyStoreLoader loader = new KeyStoreLoader().load(securityTempDir);
+        KeyStoreLoader loader = new KeyStoreLoader(config);
 
         DefaultCertificateManager certificateManager = new DefaultCertificateManager(
             loader.getServerKeyPair(),
             loader.getServerCertificateChain()
         );
 
-        File pkiDir = securityTempDir.toPath().resolve("pki").toFile();
+        File pkiDir = FileSystems.getDefault().getPath(config.getDir()).resolve("pki").toFile();
         DefaultTrustListManager trustListManager = new DefaultTrustListManager(pkiDir);
         LoggerFactory.getLogger(getClass()).info("pki dir: {}", pkiDir.getAbsolutePath());
 
@@ -161,7 +197,7 @@ public class OPCUAServer {
                 String password = authChallenge.getPassword();
                 //TODO: This shouldn't be hard coded or stored in PTF
                 boolean userOk = "user".equals(username) && "password1".equals(password);
-                boolean adminOk = "admin".equals(username) && "password2".equals(password);
+                boolean adminOk = config.getAdminUserName().equals(username) && config.getAdminPassword().equals(password);
 
                 return userOk || adminOk;
             }

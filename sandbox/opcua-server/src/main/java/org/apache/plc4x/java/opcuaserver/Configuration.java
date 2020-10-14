@@ -20,10 +20,19 @@
 package org.apache.plc4x.java.opcuaserver;
 
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Configuration {
+
+    @JsonIgnore
+    private String configFile;
 
     @JsonProperty
     private String version;
@@ -33,6 +42,15 @@ public class Configuration {
 
     @JsonProperty
     private String name;
+
+    @JsonProperty
+    private String adminUserName;
+
+    @JsonProperty
+    private String adminPassword;
+
+    @JsonProperty
+    private String securityPassword;
 
     @JsonProperty
     private List<DeviceConfiguration> devices;
@@ -46,8 +64,47 @@ public class Configuration {
     public Configuration() {
     }
 
+    public void setConfigFile(String value) {
+        configFile = value;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getAdminUserName() {
+        return adminUserName;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public String getSecurityPassword() {
+        return securityPassword;
+    }
+
+    @JsonIgnore
+    public void setAdminUserName(String value) throws IOException {
+        adminUserName = value;
+        ObjectMapper om = new ObjectMapper(new YAMLFactory());
+        om.writeValue(new File(configFile), this);
+    }
+
+    @JsonIgnore
+    public void setAdminPassword(String value) throws IOException {
+        //TODO: This need to be encrypted
+        adminPassword = value;
+        ObjectMapper om = new ObjectMapper(new YAMLFactory());
+        om.writeValue(new File(configFile), this);
+    }
+
+    @JsonIgnore
+    public void setSecurityPassword(String value) throws IOException {
+        //TODO: This need to be encrypted
+        securityPassword = value;
+        ObjectMapper om = new ObjectMapper(new YAMLFactory());
+        om.writeValue(new File(configFile), this);
     }
 
     public String getDir() {
