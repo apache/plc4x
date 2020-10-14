@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadWriteVarRequest struct {
-	items []IS7VarPayloadDataItem
+	Items []IS7VarPayloadDataItem
 	S7Payload
 }
 
@@ -50,7 +50,7 @@ func (m S7PayloadWriteVarRequest) initialize() spi.Message {
 }
 
 func NewS7PayloadWriteVarRequest(items []IS7VarPayloadDataItem) S7PayloadInitializer {
-	return &S7PayloadWriteVarRequest{items: items}
+	return &S7PayloadWriteVarRequest{Items: items}
 }
 
 func CastIS7PayloadWriteVarRequest(structType interface{}) IS7PayloadWriteVarRequest {
@@ -77,8 +77,8 @@ func (m S7PayloadWriteVarRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
 	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
+	if len(m.Items) > 0 {
+		for _, element := range m.Items {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -94,9 +94,9 @@ func S7PayloadWriteVarRequestParse(io *spi.ReadBuffer, parameter IS7Parameter) (
 
 	// Array field (items)
 	// Count array
-	items := make([]IS7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).items)))
-	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).items))); curItem++ {
-		lastItem := curItem == uint16((len(CastS7ParameterWriteVarRequest(parameter).items))-1)
+	items := make([]IS7VarPayloadDataItem, uint16(len(CastS7ParameterWriteVarRequest(parameter).Items)))
+	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterWriteVarRequest(parameter).Items))); curItem++ {
+		lastItem := curItem == uint16((len(CastS7ParameterWriteVarRequest(parameter).Items))-1)
 		_message, _err := S7VarPayloadDataItemParse(io, lastItem)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())
@@ -117,10 +117,10 @@ func (m S7PayloadWriteVarRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (items)
-		if m.items != nil {
-			itemCount := uint16(len(m.items))
+		if m.Items != nil {
+			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
-			for _, _element := range m.items {
+			for _, _element := range m.Items {
 				var lastItem bool = curItem == (itemCount - 1)
 				_elementErr := _element.Serialize(io, lastItem)
 				if _elementErr != nil {

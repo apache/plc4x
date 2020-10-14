@@ -32,9 +32,9 @@ const BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer_LISTOFVALUESCLOS
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
-	vendorId      uint8
-	serviceNumber uint16
-	values        []int8
+	VendorId      uint8
+	ServiceNumber uint16
+	Values        []int8
 	BACnetUnconfirmedServiceRequest
 }
 
@@ -54,7 +54,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) initialize() 
 }
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId uint8, serviceNumber uint16, values []int8) BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{vendorId: vendorId, serviceNumber: serviceNumber, values: values}
+	return &BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{VendorId: vendorId, ServiceNumber: serviceNumber, Values: values}
 }
 
 func CastIBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
@@ -96,8 +96,8 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits(
 	lengthInBits += 8
 
 	// Array field
-	if len(m.values) > 0 {
-		lengthInBits += 8 * uint16(len(m.values))
+	if len(m.Values) > 0 {
+		lengthInBits += 8 * uint16(len(m.Values))
 	}
 
 	// Const Field (listOfValuesClosingTag)
@@ -187,7 +187,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 		}
 
 		// Simple Field (vendorId)
-		vendorId := uint8(m.vendorId)
+		vendorId := uint8(m.VendorId)
 		_vendorIdErr := io.WriteUint8(8, (vendorId))
 		if _vendorIdErr != nil {
 			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
@@ -200,7 +200,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 		}
 
 		// Simple Field (serviceNumber)
-		serviceNumber := uint16(m.serviceNumber)
+		serviceNumber := uint16(m.ServiceNumber)
 		_serviceNumberErr := io.WriteUint16(16, (serviceNumber))
 		if _serviceNumberErr != nil {
 			return errors.New("Error serializing 'serviceNumber' field " + _serviceNumberErr.Error())
@@ -213,8 +213,8 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 		}
 
 		// Array Field (values)
-		if m.values != nil {
-			for _, _element := range m.values {
+		if m.Values != nil {
+			for _, _element := range m.Values {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'values' field " + _elementErr.Error())

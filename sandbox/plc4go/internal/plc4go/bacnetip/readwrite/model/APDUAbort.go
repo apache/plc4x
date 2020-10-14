@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type APDUAbort struct {
-	server           bool
-	originalInvokeId uint8
-	abortReason      uint8
+	Server           bool
+	OriginalInvokeId uint8
+	AbortReason      uint8
 	APDU
 }
 
@@ -48,7 +48,7 @@ func (m APDUAbort) initialize() spi.Message {
 }
 
 func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason uint8) APDUInitializer {
-	return &APDUAbort{server: server, originalInvokeId: originalInvokeId, abortReason: abortReason}
+	return &APDUAbort{Server: server, OriginalInvokeId: originalInvokeId, AbortReason: abortReason}
 }
 
 func CastIAPDUAbort(structType interface{}) IAPDUAbort {
@@ -143,21 +143,21 @@ func (m APDUAbort) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (server)
-		server := bool(m.server)
+		server := bool(m.Server)
 		_serverErr := io.WriteBit((bool)(server))
 		if _serverErr != nil {
 			return errors.New("Error serializing 'server' field " + _serverErr.Error())
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (abortReason)
-		abortReason := uint8(m.abortReason)
+		abortReason := uint8(m.AbortReason)
 		_abortReasonErr := io.WriteUint8(8, (abortReason))
 		if _abortReasonErr != nil {
 			return errors.New("Error serializing 'abortReason' field " + _abortReasonErr.Error())

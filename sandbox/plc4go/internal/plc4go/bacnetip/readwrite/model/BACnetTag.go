@@ -25,10 +25,10 @@ import (
 
 // The data-structure of this message
 type BACnetTag struct {
-	typeOrTagNumber uint8
-	lengthValueType uint8
-	extTagNumber    *uint8
-	extLength       *uint8
+	TypeOrTagNumber uint8
+	LengthValueType uint8
+	ExtTagNumber    *uint8
+	ExtLength       *uint8
 }
 
 // The corresponding interface
@@ -79,12 +79,12 @@ func (m BACnetTag) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Optional Field (extTagNumber)
-	if m.extTagNumber != nil {
+	if m.ExtTagNumber != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (extLength)
-	if m.extLength != nil {
+	if m.ExtLength != nil {
 		lengthInBits += 8
 	}
 
@@ -183,7 +183,7 @@ func BACnetTagParse(io *spi.ReadBuffer) (spi.Message, error) {
 func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func() error) error {
 
 	// Simple Field (typeOrTagNumber)
-	typeOrTagNumber := uint8(m.typeOrTagNumber)
+	typeOrTagNumber := uint8(m.TypeOrTagNumber)
 	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
 	if _typeOrTagNumberErr != nil {
 		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
@@ -197,7 +197,7 @@ func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSeri
 	}
 
 	// Simple Field (lengthValueType)
-	lengthValueType := uint8(m.lengthValueType)
+	lengthValueType := uint8(m.LengthValueType)
 	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
 	if _lengthValueTypeErr != nil {
 		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
@@ -205,8 +205,8 @@ func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSeri
 
 	// Optional Field (extTagNumber) (Can be skipped, if the value is null)
 	var extTagNumber *uint8 = nil
-	if m.extTagNumber != nil {
-		extTagNumber = m.extTagNumber
+	if m.ExtTagNumber != nil {
+		extTagNumber = m.ExtTagNumber
 		_extTagNumberErr := io.WriteUint8(8, *(extTagNumber))
 		if _extTagNumberErr != nil {
 			return errors.New("Error serializing 'extTagNumber' field " + _extTagNumberErr.Error())
@@ -215,8 +215,8 @@ func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSeri
 
 	// Optional Field (extLength) (Can be skipped, if the value is null)
 	var extLength *uint8 = nil
-	if m.extLength != nil {
-		extLength = m.extLength
+	if m.ExtLength != nil {
+		extLength = m.ExtLength
 		_extLengthErr := io.WriteUint8(8, *(extLength))
 		if _extLengthErr != nil {
 			return errors.New("Error serializing 'extLength' field " + _extLengthErr.Error())

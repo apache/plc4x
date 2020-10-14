@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type HPAIControlEndpoint struct {
-	hostProtocolCode IHostProtocolCode
-	ipAddress        IIPAddress
-	ipPort           uint16
+	HostProtocolCode IHostProtocolCode
+	IpAddress        IIPAddress
+	IpPort           uint16
 }
 
 // The corresponding interface
@@ -38,7 +38,7 @@ type IHPAIControlEndpoint interface {
 }
 
 func NewHPAIControlEndpoint(hostProtocolCode IHostProtocolCode, ipAddress IIPAddress, ipPort uint16) spi.Message {
-	return &HPAIControlEndpoint{hostProtocolCode: hostProtocolCode, ipAddress: ipAddress, ipPort: ipPort}
+	return &HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
 func CastIHPAIControlEndpoint(structType interface{}) IHPAIControlEndpoint {
@@ -71,7 +71,7 @@ func (m HPAIControlEndpoint) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (ipAddress)
-	lengthInBits += m.ipAddress.LengthInBits()
+	lengthInBits += m.IpAddress.LengthInBits()
 
 	// Simple field (ipPort)
 	lengthInBits += 16
@@ -128,21 +128,21 @@ func (m HPAIControlEndpoint) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Enum field (hostProtocolCode)
-	hostProtocolCode := CastHostProtocolCode(m.hostProtocolCode)
+	hostProtocolCode := CastHostProtocolCode(m.HostProtocolCode)
 	_hostProtocolCodeErr := hostProtocolCode.Serialize(io)
 	if _hostProtocolCodeErr != nil {
 		return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
 	}
 
 	// Simple Field (ipAddress)
-	ipAddress := CastIIPAddress(m.ipAddress)
+	ipAddress := CastIIPAddress(m.IpAddress)
 	_ipAddressErr := ipAddress.Serialize(io)
 	if _ipAddressErr != nil {
 		return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
 	}
 
 	// Simple Field (ipPort)
-	ipPort := uint16(m.ipPort)
+	ipPort := uint16(m.IpPort)
 	_ipPortErr := io.WriteUint16(16, (ipPort))
 	if _ipPortErr != nil {
 		return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())

@@ -25,10 +25,10 @@ import (
 
 // The data-structure of this message
 type ModbusPDUWriteFileRecordResponseItem struct {
-	referenceType uint8
-	fileNumber    uint16
-	recordNumber  uint16
-	recordData    []int8
+	ReferenceType uint8
+	FileNumber    uint16
+	RecordNumber  uint16
+	RecordData    []int8
 }
 
 // The corresponding interface
@@ -38,7 +38,7 @@ type IModbusPDUWriteFileRecordResponseItem interface {
 }
 
 func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uint16, recordNumber uint16, recordData []int8) spi.Message {
-	return &ModbusPDUWriteFileRecordResponseItem{referenceType: referenceType, fileNumber: fileNumber, recordNumber: recordNumber, recordData: recordData}
+	return &ModbusPDUWriteFileRecordResponseItem{ReferenceType: referenceType, FileNumber: fileNumber, RecordNumber: recordNumber, RecordData: recordData}
 }
 
 func CastIModbusPDUWriteFileRecordResponseItem(structType interface{}) IModbusPDUWriteFileRecordResponseItem {
@@ -77,8 +77,8 @@ func (m ModbusPDUWriteFileRecordResponseItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Array field
-	if len(m.recordData) > 0 {
-		lengthInBits += 8 * uint16(len(m.recordData))
+	if len(m.RecordData) > 0 {
+		lengthInBits += 8 * uint16(len(m.RecordData))
 	}
 
 	return lengthInBits
@@ -134,36 +134,36 @@ func ModbusPDUWriteFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message,
 func (m ModbusPDUWriteFileRecordResponseItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (referenceType)
-	referenceType := uint8(m.referenceType)
+	referenceType := uint8(m.ReferenceType)
 	_referenceTypeErr := io.WriteUint8(8, (referenceType))
 	if _referenceTypeErr != nil {
 		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
 	}
 
 	// Simple Field (fileNumber)
-	fileNumber := uint16(m.fileNumber)
+	fileNumber := uint16(m.FileNumber)
 	_fileNumberErr := io.WriteUint16(16, (fileNumber))
 	if _fileNumberErr != nil {
 		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
 	}
 
 	// Simple Field (recordNumber)
-	recordNumber := uint16(m.recordNumber)
+	recordNumber := uint16(m.RecordNumber)
 	_recordNumberErr := io.WriteUint16(16, (recordNumber))
 	if _recordNumberErr != nil {
 		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	recordLength := uint16(uint16(uint16(len(m.recordData))) / uint16(uint16(2)))
+	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
 	_recordLengthErr := io.WriteUint16(16, (recordLength))
 	if _recordLengthErr != nil {
 		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
 	}
 
 	// Array Field (recordData)
-	if m.recordData != nil {
-		for _, _element := range m.recordData {
+	if m.RecordData != nil {
+		for _, _element := range m.RecordData {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'recordData' field " + _elementErr.Error())

@@ -25,14 +25,14 @@ import (
 
 // The data-structure of this message
 type S7ParameterUserDataItemCPUFunctions struct {
-	method                  uint8
-	cpuFunctionType         uint8
-	cpuFunctionGroup        uint8
-	cpuSubfunction          uint8
-	sequenceNumber          uint8
-	dataUnitReferenceNumber *uint8
-	lastDataUnit            *uint8
-	errorCode               *uint16
+	Method                  uint8
+	CpuFunctionType         uint8
+	CpuFunctionGroup        uint8
+	CpuSubfunction          uint8
+	SequenceNumber          uint8
+	DataUnitReferenceNumber *uint8
+	LastDataUnit            *uint8
+	ErrorCode               *uint16
 	S7ParameterUserDataItem
 }
 
@@ -52,7 +52,7 @@ func (m S7ParameterUserDataItemCPUFunctions) initialize() spi.Message {
 }
 
 func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) S7ParameterUserDataItemInitializer {
-	return &S7ParameterUserDataItemCPUFunctions{method: method, cpuFunctionType: cpuFunctionType, cpuFunctionGroup: cpuFunctionGroup, cpuSubfunction: cpuSubfunction, sequenceNumber: sequenceNumber, dataUnitReferenceNumber: dataUnitReferenceNumber, lastDataUnit: lastDataUnit, errorCode: errorCode}
+	return &S7ParameterUserDataItemCPUFunctions{Method: method, CpuFunctionType: cpuFunctionType, CpuFunctionGroup: cpuFunctionGroup, CpuSubfunction: cpuSubfunction, SequenceNumber: sequenceNumber, DataUnitReferenceNumber: dataUnitReferenceNumber, LastDataUnit: lastDataUnit, ErrorCode: errorCode}
 }
 
 func CastIS7ParameterUserDataItemCPUFunctions(structType interface{}) IS7ParameterUserDataItemCPUFunctions {
@@ -97,17 +97,17 @@ func (m S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Optional Field (dataUnitReferenceNumber)
-	if m.dataUnitReferenceNumber != nil {
+	if m.DataUnitReferenceNumber != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (lastDataUnit)
-	if m.lastDataUnit != nil {
+	if m.LastDataUnit != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (errorCode)
-	if m.errorCode != nil {
+	if m.ErrorCode != nil {
 		lengthInBits += 16
 	}
 
@@ -204,35 +204,35 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error
 		}
 
 		// Simple Field (method)
-		method := uint8(m.method)
+		method := uint8(m.Method)
 		_methodErr := io.WriteUint8(8, (method))
 		if _methodErr != nil {
 			return errors.New("Error serializing 'method' field " + _methodErr.Error())
 		}
 
 		// Simple Field (cpuFunctionType)
-		cpuFunctionType := uint8(m.cpuFunctionType)
+		cpuFunctionType := uint8(m.CpuFunctionType)
 		_cpuFunctionTypeErr := io.WriteUint8(4, (cpuFunctionType))
 		if _cpuFunctionTypeErr != nil {
 			return errors.New("Error serializing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
 		}
 
 		// Simple Field (cpuFunctionGroup)
-		cpuFunctionGroup := uint8(m.cpuFunctionGroup)
+		cpuFunctionGroup := uint8(m.CpuFunctionGroup)
 		_cpuFunctionGroupErr := io.WriteUint8(4, (cpuFunctionGroup))
 		if _cpuFunctionGroupErr != nil {
 			return errors.New("Error serializing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
 		}
 
 		// Simple Field (cpuSubfunction)
-		cpuSubfunction := uint8(m.cpuSubfunction)
+		cpuSubfunction := uint8(m.CpuSubfunction)
 		_cpuSubfunctionErr := io.WriteUint8(8, (cpuSubfunction))
 		if _cpuSubfunctionErr != nil {
 			return errors.New("Error serializing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
 		}
 
 		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.sequenceNumber)
+		sequenceNumber := uint8(m.SequenceNumber)
 		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
@@ -240,8 +240,8 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error
 
 		// Optional Field (dataUnitReferenceNumber) (Can be skipped, if the value is null)
 		var dataUnitReferenceNumber *uint8 = nil
-		if m.dataUnitReferenceNumber != nil {
-			dataUnitReferenceNumber = m.dataUnitReferenceNumber
+		if m.DataUnitReferenceNumber != nil {
+			dataUnitReferenceNumber = m.DataUnitReferenceNumber
 			_dataUnitReferenceNumberErr := io.WriteUint8(8, *(dataUnitReferenceNumber))
 			if _dataUnitReferenceNumberErr != nil {
 				return errors.New("Error serializing 'dataUnitReferenceNumber' field " + _dataUnitReferenceNumberErr.Error())
@@ -250,8 +250,8 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error
 
 		// Optional Field (lastDataUnit) (Can be skipped, if the value is null)
 		var lastDataUnit *uint8 = nil
-		if m.lastDataUnit != nil {
-			lastDataUnit = m.lastDataUnit
+		if m.LastDataUnit != nil {
+			lastDataUnit = m.LastDataUnit
 			_lastDataUnitErr := io.WriteUint8(8, *(lastDataUnit))
 			if _lastDataUnitErr != nil {
 				return errors.New("Error serializing 'lastDataUnit' field " + _lastDataUnitErr.Error())
@@ -260,8 +260,8 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error
 
 		// Optional Field (errorCode) (Can be skipped, if the value is null)
 		var errorCode *uint16 = nil
-		if m.errorCode != nil {
-			errorCode = m.errorCode
+		if m.ErrorCode != nil {
+			errorCode = m.ErrorCode
 			_errorCodeErr := io.WriteUint16(16, *(errorCode))
 			if _errorCodeErr != nil {
 				return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())

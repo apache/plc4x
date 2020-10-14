@@ -26,10 +26,10 @@ import (
 
 // The data-structure of this message
 type ConnectionResponse struct {
-	communicationChannelId      uint8
-	status                      IStatus
-	hpaiDataEndpoint            *IHPAIDataEndpoint
-	connectionResponseDataBlock *IConnectionResponseDataBlock
+	CommunicationChannelId      uint8
+	Status                      IStatus
+	HpaiDataEndpoint            *IHPAIDataEndpoint
+	ConnectionResponseDataBlock *IConnectionResponseDataBlock
 	KNXNetIPMessage
 }
 
@@ -49,7 +49,7 @@ func (m ConnectionResponse) initialize() spi.Message {
 }
 
 func NewConnectionResponse(communicationChannelId uint8, status IStatus, hpaiDataEndpoint *IHPAIDataEndpoint, connectionResponseDataBlock *IConnectionResponseDataBlock) KNXNetIPMessageInitializer {
-	return &ConnectionResponse{communicationChannelId: communicationChannelId, status: status, hpaiDataEndpoint: hpaiDataEndpoint, connectionResponseDataBlock: connectionResponseDataBlock}
+	return &ConnectionResponse{CommunicationChannelId: communicationChannelId, Status: status, HpaiDataEndpoint: hpaiDataEndpoint, ConnectionResponseDataBlock: connectionResponseDataBlock}
 }
 
 func CastIConnectionResponse(structType interface{}) IConnectionResponse {
@@ -82,13 +82,13 @@ func (m ConnectionResponse) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Optional Field (hpaiDataEndpoint)
-	if m.hpaiDataEndpoint != nil {
-		lengthInBits += (*m.hpaiDataEndpoint).LengthInBits()
+	if m.HpaiDataEndpoint != nil {
+		lengthInBits += (*m.HpaiDataEndpoint).LengthInBits()
 	}
 
 	// Optional Field (connectionResponseDataBlock)
-	if m.connectionResponseDataBlock != nil {
-		lengthInBits += (*m.connectionResponseDataBlock).LengthInBits()
+	if m.ConnectionResponseDataBlock != nil {
+		lengthInBits += (*m.ConnectionResponseDataBlock).LengthInBits()
 	}
 
 	return lengthInBits
@@ -150,14 +150,14 @@ func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (communicationChannelId)
-		communicationChannelId := uint8(m.communicationChannelId)
+		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 		}
 
 		// Enum field (status)
-		status := CastStatus(m.status)
+		status := CastStatus(m.Status)
 		_statusErr := status.Serialize(io)
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())
@@ -165,8 +165,8 @@ func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (hpaiDataEndpoint) (Can be skipped, if the value is null)
 		var hpaiDataEndpoint *IHPAIDataEndpoint = nil
-		if m.hpaiDataEndpoint != nil {
-			hpaiDataEndpoint = m.hpaiDataEndpoint
+		if m.HpaiDataEndpoint != nil {
+			hpaiDataEndpoint = m.HpaiDataEndpoint
 			_hpaiDataEndpointErr := CastIHPAIDataEndpoint(*hpaiDataEndpoint).Serialize(io)
 			if _hpaiDataEndpointErr != nil {
 				return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
@@ -175,8 +175,8 @@ func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
 		var connectionResponseDataBlock *IConnectionResponseDataBlock = nil
-		if m.connectionResponseDataBlock != nil {
-			connectionResponseDataBlock = m.connectionResponseDataBlock
+		if m.ConnectionResponseDataBlock != nil {
+			connectionResponseDataBlock = m.ConnectionResponseDataBlock
 			_connectionResponseDataBlockErr := CastIConnectionResponseDataBlock(*connectionResponseDataBlock).Serialize(io)
 			if _connectionResponseDataBlockErr != nil {
 				return errors.New("Error serializing 'connectionResponseDataBlock' field " + _connectionResponseDataBlockErr.Error())

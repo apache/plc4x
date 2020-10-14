@@ -26,11 +26,11 @@ import (
 
 // The data-structure of this message
 type APDUSegmentAck struct {
-	negativeAck        bool
-	server             bool
-	originalInvokeId   uint8
-	sequenceNumber     uint8
-	proposedWindowSize uint8
+	NegativeAck        bool
+	Server             bool
+	OriginalInvokeId   uint8
+	SequenceNumber     uint8
+	ProposedWindowSize uint8
 	APDU
 }
 
@@ -50,7 +50,7 @@ func (m APDUSegmentAck) initialize() spi.Message {
 }
 
 func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, proposedWindowSize uint8) APDUInitializer {
-	return &APDUSegmentAck{negativeAck: negativeAck, server: server, originalInvokeId: originalInvokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize}
+	return &APDUSegmentAck{NegativeAck: negativeAck, Server: server, OriginalInvokeId: originalInvokeId, SequenceNumber: sequenceNumber, ProposedWindowSize: proposedWindowSize}
 }
 
 func CastIAPDUSegmentAck(structType interface{}) IAPDUSegmentAck {
@@ -163,35 +163,35 @@ func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (negativeAck)
-		negativeAck := bool(m.negativeAck)
+		negativeAck := bool(m.NegativeAck)
 		_negativeAckErr := io.WriteBit((bool)(negativeAck))
 		if _negativeAckErr != nil {
 			return errors.New("Error serializing 'negativeAck' field " + _negativeAckErr.Error())
 		}
 
 		// Simple Field (server)
-		server := bool(m.server)
+		server := bool(m.Server)
 		_serverErr := io.WriteBit((bool)(server))
 		if _serverErr != nil {
 			return errors.New("Error serializing 'server' field " + _serverErr.Error())
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (sequenceNumber)
-		sequenceNumber := uint8(m.sequenceNumber)
+		sequenceNumber := uint8(m.SequenceNumber)
 		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
 		if _sequenceNumberErr != nil {
 			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
 		}
 
 		// Simple Field (proposedWindowSize)
-		proposedWindowSize := uint8(m.proposedWindowSize)
+		proposedWindowSize := uint8(m.ProposedWindowSize)
 		_proposedWindowSizeErr := io.WriteUint8(8, (proposedWindowSize))
 		if _proposedWindowSizeErr != nil {
 			return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())

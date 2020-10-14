@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type KnxNetObjectServer struct {
-	version uint8
+	Version uint8
 	ServiceId
 }
 
@@ -45,7 +45,7 @@ func (m KnxNetObjectServer) initialize() spi.Message {
 }
 
 func NewKnxNetObjectServer(version uint8) ServiceIdInitializer {
-	return &KnxNetObjectServer{version: version}
+	return &KnxNetObjectServer{Version: version}
 }
 
 func CastIKnxNetObjectServer(structType interface{}) IKnxNetObjectServer {
@@ -97,7 +97,7 @@ func (m KnxNetObjectServer) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (version)
-		version := uint8(m.version)
+		version := uint8(m.Version)
 		_versionErr := io.WriteUint8(8, (version))
 		if _versionErr != nil {
 			return errors.New("Error serializing 'version' field " + _versionErr.Error())

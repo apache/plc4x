@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type ConnectionRequest struct {
-	hpaiDiscoveryEndpoint        IHPAIDiscoveryEndpoint
-	hpaiDataEndpoint             IHPAIDataEndpoint
-	connectionRequestInformation IConnectionRequestInformation
+	HpaiDiscoveryEndpoint        IHPAIDiscoveryEndpoint
+	HpaiDataEndpoint             IHPAIDataEndpoint
+	ConnectionRequestInformation IConnectionRequestInformation
 	KNXNetIPMessage
 }
 
@@ -48,7 +48,7 @@ func (m ConnectionRequest) initialize() spi.Message {
 }
 
 func NewConnectionRequest(hpaiDiscoveryEndpoint IHPAIDiscoveryEndpoint, hpaiDataEndpoint IHPAIDataEndpoint, connectionRequestInformation IConnectionRequestInformation) KNXNetIPMessageInitializer {
-	return &ConnectionRequest{hpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint, hpaiDataEndpoint: hpaiDataEndpoint, connectionRequestInformation: connectionRequestInformation}
+	return &ConnectionRequest{HpaiDiscoveryEndpoint: hpaiDiscoveryEndpoint, HpaiDataEndpoint: hpaiDataEndpoint, ConnectionRequestInformation: connectionRequestInformation}
 }
 
 func CastIConnectionRequest(structType interface{}) IConnectionRequest {
@@ -75,13 +75,13 @@ func (m ConnectionRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (hpaiDiscoveryEndpoint)
-	lengthInBits += m.hpaiDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()
 
 	// Simple field (hpaiDataEndpoint)
-	lengthInBits += m.hpaiDataEndpoint.LengthInBits()
+	lengthInBits += m.HpaiDataEndpoint.LengthInBits()
 
 	// Simple field (connectionRequestInformation)
-	lengthInBits += m.connectionRequestInformation.LengthInBits()
+	lengthInBits += m.ConnectionRequestInformation.LengthInBits()
 
 	return lengthInBits
 }
@@ -133,21 +133,21 @@ func (m ConnectionRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (hpaiDiscoveryEndpoint)
-		hpaiDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.hpaiDiscoveryEndpoint)
+		hpaiDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.HpaiDiscoveryEndpoint)
 		_hpaiDiscoveryEndpointErr := hpaiDiscoveryEndpoint.Serialize(io)
 		if _hpaiDiscoveryEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiDiscoveryEndpoint' field " + _hpaiDiscoveryEndpointErr.Error())
 		}
 
 		// Simple Field (hpaiDataEndpoint)
-		hpaiDataEndpoint := CastIHPAIDataEndpoint(m.hpaiDataEndpoint)
+		hpaiDataEndpoint := CastIHPAIDataEndpoint(m.HpaiDataEndpoint)
 		_hpaiDataEndpointErr := hpaiDataEndpoint.Serialize(io)
 		if _hpaiDataEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiDataEndpoint' field " + _hpaiDataEndpointErr.Error())
 		}
 
 		// Simple Field (connectionRequestInformation)
-		connectionRequestInformation := CastIConnectionRequestInformation(m.connectionRequestInformation)
+		connectionRequestInformation := CastIConnectionRequestInformation(m.ConnectionRequestInformation)
 		_connectionRequestInformationErr := connectionRequestInformation.Serialize(io)
 		if _connectionRequestInformationErr != nil {
 			return errors.New("Error serializing 'connectionRequestInformation' field " + _connectionRequestInformationErr.Error())

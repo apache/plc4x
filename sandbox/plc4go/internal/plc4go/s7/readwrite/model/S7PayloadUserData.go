@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserData struct {
-	items []IS7PayloadUserDataItem
+	Items []IS7PayloadUserDataItem
 	S7Payload
 }
 
@@ -50,7 +50,7 @@ func (m S7PayloadUserData) initialize() spi.Message {
 }
 
 func NewS7PayloadUserData(items []IS7PayloadUserDataItem) S7PayloadInitializer {
-	return &S7PayloadUserData{items: items}
+	return &S7PayloadUserData{Items: items}
 }
 
 func CastIS7PayloadUserData(structType interface{}) IS7PayloadUserData {
@@ -77,8 +77,8 @@ func (m S7PayloadUserData) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
 	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
+	if len(m.Items) > 0 {
+		for _, element := range m.Items {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -94,10 +94,10 @@ func S7PayloadUserDataParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7Paylo
 
 	// Array field (items)
 	// Count array
-	items := make([]IS7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).items)))
-	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).items))); curItem++ {
+	items := make([]IS7PayloadUserDataItem, uint16(len(CastS7ParameterUserData(parameter).Items)))
+	for curItem := uint16(0); curItem < uint16(uint16(len(CastS7ParameterUserData(parameter).Items))); curItem++ {
 
-		_message, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).items).cpuFunctionType)
+		_message, _err := S7PayloadUserDataItemParse(io, CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).Items).CpuFunctionType)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'items' field " + _err.Error())
 		}
@@ -117,8 +117,8 @@ func (m S7PayloadUserData) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (items)
-		if m.items != nil {
-			for _, _element := range m.items {
+		if m.Items != nil {
+			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'items' field " + _elementErr.Error())

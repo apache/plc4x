@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type S7ParameterSetupCommunication struct {
-	maxAmqCaller uint16
-	maxAmqCallee uint16
-	pduLength    uint16
+	MaxAmqCaller uint16
+	MaxAmqCallee uint16
+	PduLength    uint16
 	S7Parameter
 }
 
@@ -52,7 +52,7 @@ func (m S7ParameterSetupCommunication) initialize() spi.Message {
 }
 
 func NewS7ParameterSetupCommunication(maxAmqCaller uint16, maxAmqCallee uint16, pduLength uint16) S7ParameterInitializer {
-	return &S7ParameterSetupCommunication{maxAmqCaller: maxAmqCaller, maxAmqCallee: maxAmqCallee, pduLength: pduLength}
+	return &S7ParameterSetupCommunication{MaxAmqCaller: maxAmqCaller, MaxAmqCallee: maxAmqCallee, PduLength: pduLength}
 }
 
 func CastIS7ParameterSetupCommunication(structType interface{}) IS7ParameterSetupCommunication {
@@ -147,21 +147,21 @@ func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (maxAmqCaller)
-		maxAmqCaller := uint16(m.maxAmqCaller)
+		maxAmqCaller := uint16(m.MaxAmqCaller)
 		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
 		if _maxAmqCallerErr != nil {
 			return errors.New("Error serializing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
 		}
 
 		// Simple Field (maxAmqCallee)
-		maxAmqCallee := uint16(m.maxAmqCallee)
+		maxAmqCallee := uint16(m.MaxAmqCallee)
 		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
 		if _maxAmqCalleeErr != nil {
 			return errors.New("Error serializing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
 		}
 
 		// Simple Field (pduLength)
-		pduLength := uint16(m.pduLength)
+		pduLength := uint16(m.PduLength)
 		_pduLengthErr := io.WriteUint16(16, (pduLength))
 		if _pduLengthErr != nil {
 			return errors.New("Error serializing 'pduLength' field " + _pduLengthErr.Error())

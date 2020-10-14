@@ -39,9 +39,9 @@ func (m S7MessageUserData) MessageType() uint8 {
 }
 
 func (m S7MessageUserData) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-	m.tpduReference = tpduReference
-	m.parameter = parameter
-	m.payload = payload
+	m.TpduReference = tpduReference
+	m.Parameter = parameter
+	m.Payload = payload
 	return m
 }
 

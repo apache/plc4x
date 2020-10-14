@@ -25,12 +25,12 @@ import (
 
 // The data-structure of this message
 type CEMIMPropReadCon struct {
-	interfaceObjectType uint16
-	objectInstance      uint8
-	propertyId          uint8
-	numberOfElements    uint8
-	startIndex          uint16
-	unknown             uint16
+	InterfaceObjectType uint16
+	ObjectInstance      uint8
+	PropertyId          uint8
+	NumberOfElements    uint8
+	StartIndex          uint16
+	Unknown             uint16
 	CEMI
 }
 
@@ -50,7 +50,7 @@ func (m CEMIMPropReadCon) initialize() spi.Message {
 }
 
 func NewCEMIMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, unknown uint16) CEMIInitializer {
-	return &CEMIMPropReadCon{interfaceObjectType: interfaceObjectType, objectInstance: objectInstance, propertyId: propertyId, numberOfElements: numberOfElements, startIndex: startIndex, unknown: unknown}
+	return &CEMIMPropReadCon{InterfaceObjectType: interfaceObjectType, ObjectInstance: objectInstance, PropertyId: propertyId, NumberOfElements: numberOfElements, StartIndex: startIndex, Unknown: unknown}
 }
 
 func CastICEMIMPropReadCon(structType interface{}) ICEMIMPropReadCon {
@@ -147,42 +147,42 @@ func (m CEMIMPropReadCon) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (interfaceObjectType)
-		interfaceObjectType := uint16(m.interfaceObjectType)
+		interfaceObjectType := uint16(m.InterfaceObjectType)
 		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
 		if _interfaceObjectTypeErr != nil {
 			return errors.New("Error serializing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstance)
-		objectInstance := uint8(m.objectInstance)
+		objectInstance := uint8(m.ObjectInstance)
 		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
 		if _objectInstanceErr != nil {
 			return errors.New("Error serializing 'objectInstance' field " + _objectInstanceErr.Error())
 		}
 
 		// Simple Field (propertyId)
-		propertyId := uint8(m.propertyId)
+		propertyId := uint8(m.PropertyId)
 		_propertyIdErr := io.WriteUint8(8, (propertyId))
 		if _propertyIdErr != nil {
 			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
 		}
 
 		// Simple Field (numberOfElements)
-		numberOfElements := uint8(m.numberOfElements)
+		numberOfElements := uint8(m.NumberOfElements)
 		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
 		}
 
 		// Simple Field (startIndex)
-		startIndex := uint16(m.startIndex)
+		startIndex := uint16(m.StartIndex)
 		_startIndexErr := io.WriteUint16(12, (startIndex))
 		if _startIndexErr != nil {
 			return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
 		}
 
 		// Simple Field (unknown)
-		unknown := uint16(m.unknown)
+		unknown := uint16(m.Unknown)
 		_unknownErr := io.WriteUint16(16, (unknown))
 		if _unknownErr != nil {
 			return errors.New("Error serializing 'unknown' field " + _unknownErr.Error())

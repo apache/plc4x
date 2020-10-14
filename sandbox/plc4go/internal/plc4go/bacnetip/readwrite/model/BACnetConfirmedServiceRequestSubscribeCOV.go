@@ -33,12 +33,12 @@ const BACnetConfirmedServiceRequestSubscribeCOV_LIFETIMEHEADER uint8 = 0x07
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOV struct {
-	subscriberProcessIdentifier   uint8
-	monitoredObjectType           uint16
-	monitoredObjectInstanceNumber uint32
-	issueConfirmedNotifications   bool
-	lifetimeLength                uint8
-	lifetimeSeconds               []int8
+	SubscriberProcessIdentifier   uint8
+	MonitoredObjectType           uint16
+	MonitoredObjectInstanceNumber uint32
+	IssueConfirmedNotifications   bool
+	LifetimeLength                uint8
+	LifetimeSeconds               []int8
 	BACnetConfirmedServiceRequest
 }
 
@@ -58,7 +58,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) initialize() spi.Message {
 }
 
 func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier uint8, monitoredObjectType uint16, monitoredObjectInstanceNumber uint32, issueConfirmedNotifications bool, lifetimeLength uint8, lifetimeSeconds []int8) BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestSubscribeCOV{subscriberProcessIdentifier: subscriberProcessIdentifier, monitoredObjectType: monitoredObjectType, monitoredObjectInstanceNumber: monitoredObjectInstanceNumber, issueConfirmedNotifications: issueConfirmedNotifications, lifetimeLength: lifetimeLength, lifetimeSeconds: lifetimeSeconds}
+	return &BACnetConfirmedServiceRequestSubscribeCOV{SubscriberProcessIdentifier: subscriberProcessIdentifier, MonitoredObjectType: monitoredObjectType, MonitoredObjectInstanceNumber: monitoredObjectInstanceNumber, IssueConfirmedNotifications: issueConfirmedNotifications, LifetimeLength: lifetimeLength, LifetimeSeconds: lifetimeSeconds}
 }
 
 func CastIBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) IBACnetConfirmedServiceRequestSubscribeCOV {
@@ -115,8 +115,8 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.lifetimeSeconds) > 0 {
-		lengthInBits += 8 * uint16(len(m.lifetimeSeconds))
+	if len(m.LifetimeSeconds) > 0 {
+		lengthInBits += 8 * uint16(len(m.LifetimeSeconds))
 	}
 
 	return lengthInBits
@@ -229,7 +229,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (subscriberProcessIdentifier)
-		subscriberProcessIdentifier := uint8(m.subscriberProcessIdentifier)
+		subscriberProcessIdentifier := uint8(m.SubscriberProcessIdentifier)
 		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.New("Error serializing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
@@ -242,14 +242,14 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (monitoredObjectType)
-		monitoredObjectType := uint16(m.monitoredObjectType)
+		monitoredObjectType := uint16(m.MonitoredObjectType)
 		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
 		if _monitoredObjectTypeErr != nil {
 			return errors.New("Error serializing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
 		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
-		monitoredObjectInstanceNumber := uint32(m.monitoredObjectInstanceNumber)
+		monitoredObjectInstanceNumber := uint32(m.MonitoredObjectInstanceNumber)
 		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
 		if _monitoredObjectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
@@ -268,7 +268,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (issueConfirmedNotifications)
-		issueConfirmedNotifications := bool(m.issueConfirmedNotifications)
+		issueConfirmedNotifications := bool(m.IssueConfirmedNotifications)
 		_issueConfirmedNotificationsErr := io.WriteBit((bool)(issueConfirmedNotifications))
 		if _issueConfirmedNotificationsErr != nil {
 			return errors.New("Error serializing 'issueConfirmedNotifications' field " + _issueConfirmedNotificationsErr.Error())
@@ -281,15 +281,15 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (lifetimeLength)
-		lifetimeLength := uint8(m.lifetimeLength)
+		lifetimeLength := uint8(m.LifetimeLength)
 		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
 		if _lifetimeLengthErr != nil {
 			return errors.New("Error serializing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
 		}
 
 		// Array Field (lifetimeSeconds)
-		if m.lifetimeSeconds != nil {
-			for _, _element := range m.lifetimeSeconds {
+		if m.LifetimeSeconds != nil {
+			for _, _element := range m.LifetimeSeconds {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'lifetimeSeconds' field " + _elementErr.Error())

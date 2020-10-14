@@ -39,10 +39,10 @@ func (m BACnetTagApplicationDate) ContextSpecificTag() uint8 {
 }
 
 func (m BACnetTagApplicationDate) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.typeOrTagNumber = typeOrTagNumber
-	m.lengthValueType = lengthValueType
-	m.extTagNumber = extTagNumber
-	m.extLength = extLength
+	m.TypeOrTagNumber = typeOrTagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
 	return m
 }
 

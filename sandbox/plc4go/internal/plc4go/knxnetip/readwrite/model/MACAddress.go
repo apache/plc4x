@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type MACAddress struct {
-	addr []int8
+	Addr []int8
 }
 
 // The corresponding interface
@@ -35,7 +35,7 @@ type IMACAddress interface {
 }
 
 func NewMACAddress(addr []int8) spi.Message {
-	return &MACAddress{addr: addr}
+	return &MACAddress{Addr: addr}
 }
 
 func CastIMACAddress(structType interface{}) IMACAddress {
@@ -62,8 +62,8 @@ func (m MACAddress) LengthInBits() uint16 {
 	var lengthInBits uint16 = 0
 
 	// Array field
-	if len(m.addr) > 0 {
-		lengthInBits += 8 * uint16(len(m.addr))
+	if len(m.Addr) > 0 {
+		lengthInBits += 8 * uint16(len(m.Addr))
 	}
 
 	return lengthInBits
@@ -94,8 +94,8 @@ func MACAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 func (m MACAddress) Serialize(io spi.WriteBuffer) error {
 
 	// Array Field (addr)
-	if m.addr != nil {
-		for _, _element := range m.addr {
+	if m.Addr != nil {
+		for _, _element := range m.Addr {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'addr' field " + _elementErr.Error())

@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterChecksum struct {
-	crc uint8
+	Crc uint8
 	COTPParameter
 }
 
@@ -45,7 +45,7 @@ func (m COTPParameterChecksum) initialize() spi.Message {
 }
 
 func NewCOTPParameterChecksum(crc uint8) COTPParameterInitializer {
-	return &COTPParameterChecksum{crc: crc}
+	return &COTPParameterChecksum{Crc: crc}
 }
 
 func CastICOTPParameterChecksum(structType interface{}) ICOTPParameterChecksum {
@@ -97,7 +97,7 @@ func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (crc)
-		crc := uint8(m.crc)
+		crc := uint8(m.Crc)
 		_crcErr := io.WriteUint8(8, (crc))
 		if _crcErr != nil {
 			return errors.New("Error serializing 'crc' field " + _crcErr.Error())

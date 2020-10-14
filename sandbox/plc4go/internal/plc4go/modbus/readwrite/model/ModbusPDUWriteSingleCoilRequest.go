@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUWriteSingleCoilRequest struct {
-	address uint16
-	value   uint16
+	Address uint16
+	Value   uint16
 	ModbusPDU
 }
 
@@ -54,7 +54,7 @@ func (m ModbusPDUWriteSingleCoilRequest) initialize() spi.Message {
 }
 
 func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) ModbusPDUInitializer {
-	return &ModbusPDUWriteSingleCoilRequest{address: address, value: value}
+	return &ModbusPDUWriteSingleCoilRequest{Address: address, Value: value}
 }
 
 func CastIModbusPDUWriteSingleCoilRequest(structType interface{}) IModbusPDUWriteSingleCoilRequest {
@@ -115,14 +115,14 @@ func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (address)
-		address := uint16(m.address)
+		address := uint16(m.Address)
 		_addressErr := io.WriteUint16(16, (address))
 		if _addressErr != nil {
 			return errors.New("Error serializing 'address' field " + _addressErr.Error())
 		}
 
 		// Simple Field (value)
-		value := uint16(m.value)
+		value := uint16(m.Value)
 		_valueErr := io.WriteUint16(16, (value))
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())

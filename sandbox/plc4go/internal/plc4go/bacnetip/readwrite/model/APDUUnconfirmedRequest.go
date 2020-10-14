@@ -27,7 +27,7 @@ import (
 
 // The data-structure of this message
 type APDUUnconfirmedRequest struct {
-	serviceRequest IBACnetUnconfirmedServiceRequest
+	ServiceRequest IBACnetUnconfirmedServiceRequest
 	APDU
 }
 
@@ -47,7 +47,7 @@ func (m APDUUnconfirmedRequest) initialize() spi.Message {
 }
 
 func NewAPDUUnconfirmedRequest(serviceRequest IBACnetUnconfirmedServiceRequest) APDUInitializer {
-	return &APDUUnconfirmedRequest{serviceRequest: serviceRequest}
+	return &APDUUnconfirmedRequest{ServiceRequest: serviceRequest}
 }
 
 func CastIAPDUUnconfirmedRequest(structType interface{}) IAPDUUnconfirmedRequest {
@@ -77,7 +77,7 @@ func (m APDUUnconfirmedRequest) LengthInBits() uint16 {
 	lengthInBits += 4
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.serviceRequest.LengthInBits()
+	lengthInBits += m.ServiceRequest.LengthInBits()
 
 	return lengthInBits
 }
@@ -129,7 +129,7 @@ func (m APDUUnconfirmedRequest) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
-		serviceRequest := CastIBACnetUnconfirmedServiceRequest(m.serviceRequest)
+		serviceRequest := CastIBACnetUnconfirmedServiceRequest(m.ServiceRequest)
 		_serviceRequestErr := serviceRequest.Serialize(io)
 		if _serviceRequestErr != nil {
 			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())

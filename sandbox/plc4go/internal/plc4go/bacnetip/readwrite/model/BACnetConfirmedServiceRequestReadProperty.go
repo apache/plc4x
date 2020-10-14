@@ -30,10 +30,10 @@ const BACnetConfirmedServiceRequestReadProperty_PROPERTYIDENTIFIERHEADER uint8 =
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReadProperty struct {
-	objectType               uint16
-	objectInstanceNumber     uint32
-	propertyIdentifierLength uint8
-	propertyIdentifier       []int8
+	ObjectType               uint16
+	ObjectInstanceNumber     uint32
+	PropertyIdentifierLength uint8
+	PropertyIdentifier       []int8
 	BACnetConfirmedServiceRequest
 }
 
@@ -53,7 +53,7 @@ func (m BACnetConfirmedServiceRequestReadProperty) initialize() spi.Message {
 }
 
 func NewBACnetConfirmedServiceRequestReadProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8) BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestReadProperty{objectType: objectType, objectInstanceNumber: objectInstanceNumber, propertyIdentifierLength: propertyIdentifierLength, propertyIdentifier: propertyIdentifier}
+	return &BACnetConfirmedServiceRequestReadProperty{ObjectType: objectType, ObjectInstanceNumber: objectInstanceNumber, PropertyIdentifierLength: propertyIdentifierLength, PropertyIdentifier: propertyIdentifier}
 }
 
 func CastIBACnetConfirmedServiceRequestReadProperty(structType interface{}) IBACnetConfirmedServiceRequestReadProperty {
@@ -95,8 +95,8 @@ func (m BACnetConfirmedServiceRequestReadProperty) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.propertyIdentifier) > 0 {
-		lengthInBits += 8 * uint16(len(m.propertyIdentifier))
+	if len(m.PropertyIdentifier) > 0 {
+		lengthInBits += 8 * uint16(len(m.PropertyIdentifier))
 	}
 
 	return lengthInBits
@@ -170,14 +170,14 @@ func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (objectType)
-		objectType := uint16(m.objectType)
+		objectType := uint16(m.ObjectType)
 		_objectTypeErr := io.WriteUint16(10, (objectType))
 		if _objectTypeErr != nil {
 			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstanceNumber)
-		objectInstanceNumber := uint32(m.objectInstanceNumber)
+		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
 		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
@@ -190,15 +190,15 @@ func (m BACnetConfirmedServiceRequestReadProperty) Serialize(io spi.WriteBuffer)
 		}
 
 		// Simple Field (propertyIdentifierLength)
-		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+		propertyIdentifierLength := uint8(m.PropertyIdentifierLength)
 		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
 		if _propertyIdentifierLengthErr != nil {
 			return errors.New("Error serializing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
 		}
 
 		// Array Field (propertyIdentifier)
-		if m.propertyIdentifier != nil {
-			for _, _element := range m.propertyIdentifier {
+		if m.PropertyIdentifier != nil {
+			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'propertyIdentifier' field " + _elementErr.Error())

@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationRequest struct {
-	deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
-	cemi                                ICEMI
+	DeviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
+	Cemi                                ICEMI
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m DeviceConfigurationRequest) initialize() spi.Message {
 }
 
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-	return &DeviceConfigurationRequest{deviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, cemi: cemi}
+	return &DeviceConfigurationRequest{DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, Cemi: cemi}
 }
 
 func CastIDeviceConfigurationRequest(structType interface{}) IDeviceConfigurationRequest {
@@ -74,10 +74,10 @@ func (m DeviceConfigurationRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (deviceConfigurationRequestDataBlock)
-	lengthInBits += m.deviceConfigurationRequestDataBlock.LengthInBits()
+	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
 
 	// Simple field (cemi)
-	lengthInBits += m.cemi.LengthInBits()
+	lengthInBits += m.Cemi.LengthInBits()
 
 	return lengthInBits
 }
@@ -118,14 +118,14 @@ func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (deviceConfigurationRequestDataBlock)
-		deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.deviceConfigurationRequestDataBlock)
+		deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.DeviceConfigurationRequestDataBlock)
 		_deviceConfigurationRequestDataBlockErr := deviceConfigurationRequestDataBlock.Serialize(io)
 		if _deviceConfigurationRequestDataBlockErr != nil {
 			return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
 		}
 
 		// Simple Field (cemi)
-		cemi := CastICEMI(m.cemi)
+		cemi := CastICEMI(m.Cemi)
 		_cemiErr := cemi.Serialize(io)
 		if _cemiErr != nil {
 			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())

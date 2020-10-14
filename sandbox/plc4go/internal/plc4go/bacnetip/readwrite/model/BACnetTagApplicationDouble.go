@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationDouble struct {
-	value float64
+	Value float64
 	BACnetTag
 }
 
@@ -41,15 +41,15 @@ func (m BACnetTagApplicationDouble) ContextSpecificTag() uint8 {
 }
 
 func (m BACnetTagApplicationDouble) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.typeOrTagNumber = typeOrTagNumber
-	m.lengthValueType = lengthValueType
-	m.extTagNumber = extTagNumber
-	m.extLength = extLength
+	m.TypeOrTagNumber = typeOrTagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
 	return m
 }
 
 func NewBACnetTagApplicationDouble(value float64) BACnetTagInitializer {
-	return &BACnetTagApplicationDouble{value: value}
+	return &BACnetTagApplicationDouble{Value: value}
 }
 
 func CastIBACnetTagApplicationDouble(structType interface{}) IBACnetTagApplicationDouble {
@@ -101,7 +101,7 @@ func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (value)
-		value := float64(m.value)
+		value := float64(m.Value)
 		_valueErr := io.WriteFloat64(64, (value))
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())

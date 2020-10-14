@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUDiagnosticRequest struct {
-	status     uint16
-	eventCount uint16
+	Status     uint16
+	EventCount uint16
 	ModbusPDU
 }
 
@@ -54,7 +54,7 @@ func (m ModbusPDUDiagnosticRequest) initialize() spi.Message {
 }
 
 func NewModbusPDUDiagnosticRequest(status uint16, eventCount uint16) ModbusPDUInitializer {
-	return &ModbusPDUDiagnosticRequest{status: status, eventCount: eventCount}
+	return &ModbusPDUDiagnosticRequest{Status: status, EventCount: eventCount}
 }
 
 func CastIModbusPDUDiagnosticRequest(structType interface{}) IModbusPDUDiagnosticRequest {
@@ -115,14 +115,14 @@ func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (status)
-		status := uint16(m.status)
+		status := uint16(m.Status)
 		_statusErr := io.WriteUint16(16, (status))
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())
 		}
 
 		// Simple Field (eventCount)
-		eventCount := uint16(m.eventCount)
+		eventCount := uint16(m.EventCount)
 		_eventCountErr := io.WriteUint16(16, (eventCount))
 		if _eventCountErr != nil {
 			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())

@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ConnectionStateResponse struct {
-	communicationChannelId uint8
-	status                 IStatus
+	CommunicationChannelId uint8
+	Status                 IStatus
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m ConnectionStateResponse) initialize() spi.Message {
 }
 
 func NewConnectionStateResponse(communicationChannelId uint8, status IStatus) KNXNetIPMessageInitializer {
-	return &ConnectionStateResponse{communicationChannelId: communicationChannelId, status: status}
+	return &ConnectionStateResponse{CommunicationChannelId: communicationChannelId, Status: status}
 }
 
 func CastIConnectionStateResponse(structType interface{}) IConnectionStateResponse {
@@ -107,14 +107,14 @@ func (m ConnectionStateResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (communicationChannelId)
-		communicationChannelId := uint8(m.communicationChannelId)
+		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 		}
 
 		// Enum field (status)
-		status := CastStatus(m.status)
+		status := CastStatus(m.Status)
 		_statusErr := status.Serialize(io)
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())

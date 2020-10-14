@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type TunnelingRequest struct {
-	tunnelingRequestDataBlock ITunnelingRequestDataBlock
-	cemi                      ICEMI
+	TunnelingRequestDataBlock ITunnelingRequestDataBlock
+	Cemi                      ICEMI
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m TunnelingRequest) initialize() spi.Message {
 }
 
 func NewTunnelingRequest(tunnelingRequestDataBlock ITunnelingRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-	return &TunnelingRequest{tunnelingRequestDataBlock: tunnelingRequestDataBlock, cemi: cemi}
+	return &TunnelingRequest{TunnelingRequestDataBlock: tunnelingRequestDataBlock, Cemi: cemi}
 }
 
 func CastITunnelingRequest(structType interface{}) ITunnelingRequest {
@@ -74,10 +74,10 @@ func (m TunnelingRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (tunnelingRequestDataBlock)
-	lengthInBits += m.tunnelingRequestDataBlock.LengthInBits()
+	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
 
 	// Simple field (cemi)
-	lengthInBits += m.cemi.LengthInBits()
+	lengthInBits += m.Cemi.LengthInBits()
 
 	return lengthInBits
 }
@@ -118,14 +118,14 @@ func (m TunnelingRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (tunnelingRequestDataBlock)
-		tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.tunnelingRequestDataBlock)
+		tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.TunnelingRequestDataBlock)
 		_tunnelingRequestDataBlockErr := tunnelingRequestDataBlock.Serialize(io)
 		if _tunnelingRequestDataBlockErr != nil {
 			return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
 		}
 
 		// Simple Field (cemi)
-		cemi := CastICEMI(m.cemi)
+		cemi := CastICEMI(m.Cemi)
 		_cemiErr := cemi.Serialize(io)
 		if _cemiErr != nil {
 			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())

@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type UnknownMessage struct {
-	unknownData []int8
+	UnknownData []int8
 	KNXNetIPMessage
 }
 
@@ -45,7 +45,7 @@ func (m UnknownMessage) initialize() spi.Message {
 }
 
 func NewUnknownMessage(unknownData []int8) KNXNetIPMessageInitializer {
-	return &UnknownMessage{unknownData: unknownData}
+	return &UnknownMessage{UnknownData: unknownData}
 }
 
 func CastIUnknownMessage(structType interface{}) IUnknownMessage {
@@ -72,8 +72,8 @@ func (m UnknownMessage) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Array field
-	if len(m.unknownData) > 0 {
-		lengthInBits += 8 * uint16(len(m.unknownData))
+	if len(m.UnknownData) > 0 {
+		lengthInBits += 8 * uint16(len(m.UnknownData))
 	}
 
 	return lengthInBits
@@ -105,8 +105,8 @@ func (m UnknownMessage) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (unknownData)
-		if m.unknownData != nil {
-			for _, _element := range m.unknownData {
+		if m.UnknownData != nil {
+			for _, _element := range m.UnknownData {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())

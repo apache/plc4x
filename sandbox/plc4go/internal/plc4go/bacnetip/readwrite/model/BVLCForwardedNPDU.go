@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type BVLCForwardedNPDU struct {
-	ip   []uint8
-	port uint16
-	npdu INPDU
+	Ip   []uint8
+	Port uint16
+	Npdu INPDU
 	BVLC
 }
 
@@ -48,7 +48,7 @@ func (m BVLCForwardedNPDU) initialize() spi.Message {
 }
 
 func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu INPDU) BVLCInitializer {
-	return &BVLCForwardedNPDU{ip: ip, port: port, npdu: npdu}
+	return &BVLCForwardedNPDU{Ip: ip, Port: port, Npdu: npdu}
 }
 
 func CastIBVLCForwardedNPDU(structType interface{}) IBVLCForwardedNPDU {
@@ -75,15 +75,15 @@ func (m BVLCForwardedNPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
 	// Array field
-	if len(m.ip) > 0 {
-		lengthInBits += 8 * uint16(len(m.ip))
+	if len(m.Ip) > 0 {
+		lengthInBits += 8 * uint16(len(m.Ip))
 	}
 
 	// Simple field (port)
 	lengthInBits += 16
 
 	// Simple field (npdu)
-	lengthInBits += m.npdu.LengthInBits()
+	lengthInBits += m.Npdu.LengthInBits()
 
 	return lengthInBits
 }
@@ -131,8 +131,8 @@ func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (ip)
-		if m.ip != nil {
-			for _, _element := range m.ip {
+		if m.Ip != nil {
+			for _, _element := range m.Ip {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'ip' field " + _elementErr.Error())
@@ -141,14 +141,14 @@ func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (port)
-		port := uint16(m.port)
+		port := uint16(m.Port)
 		_portErr := io.WriteUint16(16, (port))
 		if _portErr != nil {
 			return errors.New("Error serializing 'port' field " + _portErr.Error())
 		}
 
 		// Simple Field (npdu)
-		npdu := CastINPDU(m.npdu)
+		npdu := CastINPDU(m.Npdu)
 		_npduErr := npdu.Serialize(io)
 		if _npduErr != nil {
 			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())

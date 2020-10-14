@@ -27,8 +27,8 @@ import (
 
 // The data-structure of this message
 type APDUError struct {
-	originalInvokeId uint8
-	error            IBACnetError
+	OriginalInvokeId uint8
+	Error            IBACnetError
 	APDU
 }
 
@@ -48,7 +48,7 @@ func (m APDUError) initialize() spi.Message {
 }
 
 func NewAPDUError(originalInvokeId uint8, error IBACnetError) APDUInitializer {
-	return &APDUError{originalInvokeId: originalInvokeId, error: error}
+	return &APDUError{OriginalInvokeId: originalInvokeId, Error: error}
 }
 
 func CastIAPDUError(structType interface{}) IAPDUError {
@@ -81,7 +81,7 @@ func (m APDUError) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (error)
-	lengthInBits += m.error.LengthInBits()
+	lengthInBits += m.Error.LengthInBits()
 
 	return lengthInBits
 }
@@ -139,14 +139,14 @@ func (m APDUError) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (error)
-		error := CastIBACnetError(m.error)
+		error := CastIBACnetError(m.Error)
 		_errorErr := error.Serialize(io)
 		if _errorErr != nil {
 			return errors.New("Error serializing 'error' field " + _errorErr.Error())

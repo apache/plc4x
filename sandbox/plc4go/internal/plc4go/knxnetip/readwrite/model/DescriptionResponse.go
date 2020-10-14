@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DescriptionResponse struct {
-	dibDeviceInfo      IDIBDeviceInfo
-	dibSuppSvcFamilies IDIBSuppSvcFamilies
+	DibDeviceInfo      IDIBDeviceInfo
+	DibSuppSvcFamilies IDIBSuppSvcFamilies
 	KNXNetIPMessage
 }
 
@@ -47,7 +47,7 @@ func (m DescriptionResponse) initialize() spi.Message {
 }
 
 func NewDescriptionResponse(dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-	return &DescriptionResponse{dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
+	return &DescriptionResponse{DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
 func CastIDescriptionResponse(structType interface{}) IDescriptionResponse {
@@ -74,10 +74,10 @@ func (m DescriptionResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.dibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.LengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.dibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
 
 	return lengthInBits
 }
@@ -118,14 +118,14 @@ func (m DescriptionResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (dibDeviceInfo)
-		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
+		dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
 		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
 		if _dibDeviceInfoErr != nil {
 			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
-		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
 		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())

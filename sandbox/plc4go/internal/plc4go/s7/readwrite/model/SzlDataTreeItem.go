@@ -25,11 +25,11 @@ import (
 
 // The data-structure of this message
 type SzlDataTreeItem struct {
-	itemIndex    uint16
-	mlfb         []int8
-	moduleTypeId uint16
-	ausbg        uint16
-	ausbe        uint16
+	ItemIndex    uint16
+	Mlfb         []int8
+	ModuleTypeId uint16
+	Ausbg        uint16
+	Ausbe        uint16
 }
 
 // The corresponding interface
@@ -39,7 +39,7 @@ type ISzlDataTreeItem interface {
 }
 
 func NewSzlDataTreeItem(itemIndex uint16, mlfb []int8, moduleTypeId uint16, ausbg uint16, ausbe uint16) spi.Message {
-	return &SzlDataTreeItem{itemIndex: itemIndex, mlfb: mlfb, moduleTypeId: moduleTypeId, ausbg: ausbg, ausbe: ausbe}
+	return &SzlDataTreeItem{ItemIndex: itemIndex, Mlfb: mlfb, ModuleTypeId: moduleTypeId, Ausbg: ausbg, Ausbe: ausbe}
 }
 
 func CastISzlDataTreeItem(structType interface{}) ISzlDataTreeItem {
@@ -69,8 +69,8 @@ func (m SzlDataTreeItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Array field
-	if len(m.mlfb) > 0 {
-		lengthInBits += 8 * uint16(len(m.mlfb))
+	if len(m.Mlfb) > 0 {
+		lengthInBits += 8 * uint16(len(m.Mlfb))
 	}
 
 	// Simple field (moduleTypeId)
@@ -134,15 +134,15 @@ func SzlDataTreeItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (itemIndex)
-	itemIndex := uint16(m.itemIndex)
+	itemIndex := uint16(m.ItemIndex)
 	_itemIndexErr := io.WriteUint16(16, (itemIndex))
 	if _itemIndexErr != nil {
 		return errors.New("Error serializing 'itemIndex' field " + _itemIndexErr.Error())
 	}
 
 	// Array Field (mlfb)
-	if m.mlfb != nil {
-		for _, _element := range m.mlfb {
+	if m.Mlfb != nil {
+		for _, _element := range m.Mlfb {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'mlfb' field " + _elementErr.Error())
@@ -151,21 +151,21 @@ func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (moduleTypeId)
-	moduleTypeId := uint16(m.moduleTypeId)
+	moduleTypeId := uint16(m.ModuleTypeId)
 	_moduleTypeIdErr := io.WriteUint16(16, (moduleTypeId))
 	if _moduleTypeIdErr != nil {
 		return errors.New("Error serializing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
 	}
 
 	// Simple Field (ausbg)
-	ausbg := uint16(m.ausbg)
+	ausbg := uint16(m.Ausbg)
 	_ausbgErr := io.WriteUint16(16, (ausbg))
 	if _ausbgErr != nil {
 		return errors.New("Error serializing 'ausbg' field " + _ausbgErr.Error())
 	}
 
 	// Simple Field (ausbe)
-	ausbe := uint16(m.ausbe)
+	ausbe := uint16(m.Ausbe)
 	_ausbeErr := io.WriteUint16(16, (ausbe))
 	if _ausbeErr != nil {
 		return errors.New("Error serializing 'ausbe' field " + _ausbeErr.Error())

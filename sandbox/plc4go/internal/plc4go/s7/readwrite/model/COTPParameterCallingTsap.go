@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterCallingTsap struct {
-	tsapId uint16
+	TsapId uint16
 	COTPParameter
 }
 
@@ -45,7 +45,7 @@ func (m COTPParameterCallingTsap) initialize() spi.Message {
 }
 
 func NewCOTPParameterCallingTsap(tsapId uint16) COTPParameterInitializer {
-	return &COTPParameterCallingTsap{tsapId: tsapId}
+	return &COTPParameterCallingTsap{TsapId: tsapId}
 }
 
 func CastICOTPParameterCallingTsap(structType interface{}) ICOTPParameterCallingTsap {
@@ -97,7 +97,7 @@ func (m COTPParameterCallingTsap) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (tsapId)
-		tsapId := uint16(m.tsapId)
+		tsapId := uint16(m.TsapId)
 		_tsapIdErr := io.WriteUint16(16, (tsapId))
 		if _tsapIdErr != nil {
 			return errors.New("Error serializing 'tsapId' field " + _tsapIdErr.Error())

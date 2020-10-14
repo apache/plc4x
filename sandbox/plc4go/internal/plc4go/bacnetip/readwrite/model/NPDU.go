@@ -27,21 +27,21 @@ import (
 
 // The data-structure of this message
 type NPDU struct {
-	protocolVersionNumber     uint8
-	messageTypeFieldPresent   bool
-	destinationSpecified      bool
-	sourceSpecified           bool
-	expectingReply            bool
-	networkPriority           uint8
-	destinationNetworkAddress *uint16
-	destinationLength         *uint8
-	destinationAddress        []uint8
-	sourceNetworkAddress      *uint16
-	sourceLength              *uint8
-	sourceAddress             []uint8
-	hopCount                  *uint8
-	nlm                       *INLM
-	apdu                      *IAPDU
+	ProtocolVersionNumber     uint8
+	MessageTypeFieldPresent   bool
+	DestinationSpecified      bool
+	SourceSpecified           bool
+	ExpectingReply            bool
+	NetworkPriority           uint8
+	DestinationNetworkAddress *uint16
+	DestinationLength         *uint8
+	DestinationAddress        []uint8
+	SourceNetworkAddress      *uint16
+	SourceLength              *uint8
+	SourceAddress             []uint8
+	HopCount                  *uint8
+	Nlm                       *INLM
+	Apdu                      *IAPDU
 }
 
 // The corresponding interface
@@ -51,7 +51,7 @@ type INPDU interface {
 }
 
 func NewNPDU(protocolVersionNumber uint8, messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority uint8, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm *INLM, apdu *IAPDU) spi.Message {
-	return &NPDU{protocolVersionNumber: protocolVersionNumber, messageTypeFieldPresent: messageTypeFieldPresent, destinationSpecified: destinationSpecified, sourceSpecified: sourceSpecified, expectingReply: expectingReply, networkPriority: networkPriority, destinationNetworkAddress: destinationNetworkAddress, destinationLength: destinationLength, destinationAddress: destinationAddress, sourceNetworkAddress: sourceNetworkAddress, sourceLength: sourceLength, sourceAddress: sourceAddress, hopCount: hopCount, nlm: nlm, apdu: apdu}
+	return &NPDU{ProtocolVersionNumber: protocolVersionNumber, MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu}
 }
 
 func CastINPDU(structType interface{}) INPDU {
@@ -102,48 +102,48 @@ func (m NPDU) LengthInBits() uint16 {
 	lengthInBits += 2
 
 	// Optional Field (destinationNetworkAddress)
-	if m.destinationNetworkAddress != nil {
+	if m.DestinationNetworkAddress != nil {
 		lengthInBits += 16
 	}
 
 	// Optional Field (destinationLength)
-	if m.destinationLength != nil {
+	if m.DestinationLength != nil {
 		lengthInBits += 8
 	}
 
 	// Array field
-	if len(m.destinationAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.destinationAddress))
+	if len(m.DestinationAddress) > 0 {
+		lengthInBits += 8 * uint16(len(m.DestinationAddress))
 	}
 
 	// Optional Field (sourceNetworkAddress)
-	if m.sourceNetworkAddress != nil {
+	if m.SourceNetworkAddress != nil {
 		lengthInBits += 16
 	}
 
 	// Optional Field (sourceLength)
-	if m.sourceLength != nil {
+	if m.SourceLength != nil {
 		lengthInBits += 8
 	}
 
 	// Array field
-	if len(m.sourceAddress) > 0 {
-		lengthInBits += 8 * uint16(len(m.sourceAddress))
+	if len(m.SourceAddress) > 0 {
+		lengthInBits += 8 * uint16(len(m.SourceAddress))
 	}
 
 	// Optional Field (hopCount)
-	if m.hopCount != nil {
+	if m.HopCount != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (nlm)
-	if m.nlm != nil {
-		lengthInBits += (*m.nlm).LengthInBits()
+	if m.Nlm != nil {
+		lengthInBits += (*m.Nlm).LengthInBits()
 	}
 
 	// Optional Field (apdu)
-	if m.apdu != nil {
-		lengthInBits += (*m.apdu).LengthInBits()
+	if m.Apdu != nil {
+		lengthInBits += (*m.Apdu).LengthInBits()
 	}
 
 	return lengthInBits
@@ -335,14 +335,14 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (protocolVersionNumber)
-	protocolVersionNumber := uint8(m.protocolVersionNumber)
+	protocolVersionNumber := uint8(m.ProtocolVersionNumber)
 	_protocolVersionNumberErr := io.WriteUint8(8, (protocolVersionNumber))
 	if _protocolVersionNumberErr != nil {
 		return errors.New("Error serializing 'protocolVersionNumber' field " + _protocolVersionNumberErr.Error())
 	}
 
 	// Simple Field (messageTypeFieldPresent)
-	messageTypeFieldPresent := bool(m.messageTypeFieldPresent)
+	messageTypeFieldPresent := bool(m.MessageTypeFieldPresent)
 	_messageTypeFieldPresentErr := io.WriteBit((bool)(messageTypeFieldPresent))
 	if _messageTypeFieldPresentErr != nil {
 		return errors.New("Error serializing 'messageTypeFieldPresent' field " + _messageTypeFieldPresentErr.Error())
@@ -357,7 +357,7 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (destinationSpecified)
-	destinationSpecified := bool(m.destinationSpecified)
+	destinationSpecified := bool(m.DestinationSpecified)
 	_destinationSpecifiedErr := io.WriteBit((bool)(destinationSpecified))
 	if _destinationSpecifiedErr != nil {
 		return errors.New("Error serializing 'destinationSpecified' field " + _destinationSpecifiedErr.Error())
@@ -372,21 +372,21 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (sourceSpecified)
-	sourceSpecified := bool(m.sourceSpecified)
+	sourceSpecified := bool(m.SourceSpecified)
 	_sourceSpecifiedErr := io.WriteBit((bool)(sourceSpecified))
 	if _sourceSpecifiedErr != nil {
 		return errors.New("Error serializing 'sourceSpecified' field " + _sourceSpecifiedErr.Error())
 	}
 
 	// Simple Field (expectingReply)
-	expectingReply := bool(m.expectingReply)
+	expectingReply := bool(m.ExpectingReply)
 	_expectingReplyErr := io.WriteBit((bool)(expectingReply))
 	if _expectingReplyErr != nil {
 		return errors.New("Error serializing 'expectingReply' field " + _expectingReplyErr.Error())
 	}
 
 	// Simple Field (networkPriority)
-	networkPriority := uint8(m.networkPriority)
+	networkPriority := uint8(m.NetworkPriority)
 	_networkPriorityErr := io.WriteUint8(2, (networkPriority))
 	if _networkPriorityErr != nil {
 		return errors.New("Error serializing 'networkPriority' field " + _networkPriorityErr.Error())
@@ -394,8 +394,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if the value is null)
 	var destinationNetworkAddress *uint16 = nil
-	if m.destinationNetworkAddress != nil {
-		destinationNetworkAddress = m.destinationNetworkAddress
+	if m.DestinationNetworkAddress != nil {
+		destinationNetworkAddress = m.DestinationNetworkAddress
 		_destinationNetworkAddressErr := io.WriteUint16(16, *(destinationNetworkAddress))
 		if _destinationNetworkAddressErr != nil {
 			return errors.New("Error serializing 'destinationNetworkAddress' field " + _destinationNetworkAddressErr.Error())
@@ -404,8 +404,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (destinationLength) (Can be skipped, if the value is null)
 	var destinationLength *uint8 = nil
-	if m.destinationLength != nil {
-		destinationLength = m.destinationLength
+	if m.DestinationLength != nil {
+		destinationLength = m.DestinationLength
 		_destinationLengthErr := io.WriteUint8(8, *(destinationLength))
 		if _destinationLengthErr != nil {
 			return errors.New("Error serializing 'destinationLength' field " + _destinationLengthErr.Error())
@@ -413,8 +413,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Array Field (destinationAddress)
-	if m.destinationAddress != nil {
-		for _, _element := range m.destinationAddress {
+	if m.DestinationAddress != nil {
+		for _, _element := range m.DestinationAddress {
 			_elementErr := io.WriteUint8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'destinationAddress' field " + _elementErr.Error())
@@ -424,8 +424,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if the value is null)
 	var sourceNetworkAddress *uint16 = nil
-	if m.sourceNetworkAddress != nil {
-		sourceNetworkAddress = m.sourceNetworkAddress
+	if m.SourceNetworkAddress != nil {
+		sourceNetworkAddress = m.SourceNetworkAddress
 		_sourceNetworkAddressErr := io.WriteUint16(16, *(sourceNetworkAddress))
 		if _sourceNetworkAddressErr != nil {
 			return errors.New("Error serializing 'sourceNetworkAddress' field " + _sourceNetworkAddressErr.Error())
@@ -434,8 +434,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (sourceLength) (Can be skipped, if the value is null)
 	var sourceLength *uint8 = nil
-	if m.sourceLength != nil {
-		sourceLength = m.sourceLength
+	if m.SourceLength != nil {
+		sourceLength = m.SourceLength
 		_sourceLengthErr := io.WriteUint8(8, *(sourceLength))
 		if _sourceLengthErr != nil {
 			return errors.New("Error serializing 'sourceLength' field " + _sourceLengthErr.Error())
@@ -443,8 +443,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Array Field (sourceAddress)
-	if m.sourceAddress != nil {
-		for _, _element := range m.sourceAddress {
+	if m.SourceAddress != nil {
+		for _, _element := range m.SourceAddress {
 			_elementErr := io.WriteUint8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'sourceAddress' field " + _elementErr.Error())
@@ -454,8 +454,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (hopCount) (Can be skipped, if the value is null)
 	var hopCount *uint8 = nil
-	if m.hopCount != nil {
-		hopCount = m.hopCount
+	if m.HopCount != nil {
+		hopCount = m.HopCount
 		_hopCountErr := io.WriteUint8(8, *(hopCount))
 		if _hopCountErr != nil {
 			return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
@@ -464,8 +464,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (nlm) (Can be skipped, if the value is null)
 	var nlm *INLM = nil
-	if m.nlm != nil {
-		nlm = m.nlm
+	if m.Nlm != nil {
+		nlm = m.Nlm
 		_nlmErr := CastINLM(*nlm).Serialize(io)
 		if _nlmErr != nil {
 			return errors.New("Error serializing 'nlm' field " + _nlmErr.Error())
@@ -474,8 +474,8 @@ func (m NPDU) Serialize(io spi.WriteBuffer) error {
 
 	// Optional Field (apdu) (Can be skipped, if the value is null)
 	var apdu *IAPDU = nil
-	if m.apdu != nil {
-		apdu = m.apdu
+	if m.Apdu != nil {
+		apdu = m.Apdu
 		_apduErr := CastIAPDU(*apdu).Serialize(io)
 		if _apduErr != nil {
 			return errors.New("Error serializing 'apdu' field " + _apduErr.Error())

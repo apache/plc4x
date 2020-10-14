@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type CEMIDataCon struct {
-	additionalInformationLength uint8
-	additionalInformation       []ICEMIAdditionalInformation
-	cemiDataFrame               ICEMIDataFrame
+	AdditionalInformationLength uint8
+	AdditionalInformation       []ICEMIAdditionalInformation
+	CemiDataFrame               ICEMIDataFrame
 	CEMI
 }
 
@@ -48,7 +48,7 @@ func (m CEMIDataCon) initialize() spi.Message {
 }
 
 func NewCEMIDataCon(additionalInformationLength uint8, additionalInformation []ICEMIAdditionalInformation, cemiDataFrame ICEMIDataFrame) CEMIInitializer {
-	return &CEMIDataCon{additionalInformationLength: additionalInformationLength, additionalInformation: additionalInformation, cemiDataFrame: cemiDataFrame}
+	return &CEMIDataCon{AdditionalInformationLength: additionalInformationLength, AdditionalInformation: additionalInformation, CemiDataFrame: cemiDataFrame}
 }
 
 func CastICEMIDataCon(structType interface{}) ICEMIDataCon {
@@ -78,14 +78,14 @@ func (m CEMIDataCon) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.additionalInformation) > 0 {
-		for _, element := range m.additionalInformation {
+	if len(m.AdditionalInformation) > 0 {
+		for _, element := range m.AdditionalInformation {
 			lengthInBits += element.LengthInBits()
 		}
 	}
 
 	// Simple field (cemiDataFrame)
-	lengthInBits += m.cemiDataFrame.LengthInBits()
+	lengthInBits += m.CemiDataFrame.LengthInBits()
 
 	return lengthInBits
 }
@@ -139,15 +139,15 @@ func (m CEMIDataCon) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (additionalInformationLength)
-		additionalInformationLength := uint8(m.additionalInformationLength)
+		additionalInformationLength := uint8(m.AdditionalInformationLength)
 		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
 		if _additionalInformationLengthErr != nil {
 			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
 		}
 
 		// Array Field (additionalInformation)
-		if m.additionalInformation != nil {
-			for _, _element := range m.additionalInformation {
+		if m.AdditionalInformation != nil {
+			for _, _element := range m.AdditionalInformation {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'additionalInformation' field " + _elementErr.Error())
@@ -156,7 +156,7 @@ func (m CEMIDataCon) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (cemiDataFrame)
-		cemiDataFrame := CastICEMIDataFrame(m.cemiDataFrame)
+		cemiDataFrame := CastICEMIDataFrame(m.CemiDataFrame)
 		_cemiDataFrameErr := cemiDataFrame.Serialize(io)
 		if _cemiDataFrameErr != nil {
 			return errors.New("Error serializing 'cemiDataFrame' field " + _cemiDataFrameErr.Error())

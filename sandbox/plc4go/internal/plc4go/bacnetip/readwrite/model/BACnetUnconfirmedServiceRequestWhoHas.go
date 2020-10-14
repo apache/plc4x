@@ -31,10 +31,10 @@ const BACnetUnconfirmedServiceRequestWhoHas_OBJECTNAMEHEADER uint8 = 0x3D
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWhoHas struct {
-	deviceInstanceLowLimit  uint32
-	deviceInstanceHighLimit uint32
-	objectNameCharacterSet  uint8
-	objectName              []int8
+	DeviceInstanceLowLimit  uint32
+	DeviceInstanceHighLimit uint32
+	ObjectNameCharacterSet  uint8
+	ObjectName              []int8
 	BACnetUnconfirmedServiceRequest
 }
 
@@ -54,7 +54,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) initialize() spi.Message {
 }
 
 func NewBACnetUnconfirmedServiceRequestWhoHas(deviceInstanceLowLimit uint32, deviceInstanceHighLimit uint32, objectNameCharacterSet uint8, objectName []int8) BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestWhoHas{deviceInstanceLowLimit: deviceInstanceLowLimit, deviceInstanceHighLimit: deviceInstanceHighLimit, objectNameCharacterSet: objectNameCharacterSet, objectName: objectName}
+	return &BACnetUnconfirmedServiceRequestWhoHas{DeviceInstanceLowLimit: deviceInstanceLowLimit, DeviceInstanceHighLimit: deviceInstanceHighLimit, ObjectNameCharacterSet: objectNameCharacterSet, ObjectName: objectName}
 }
 
 func CastIBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) IBACnetUnconfirmedServiceRequestWhoHas {
@@ -102,8 +102,8 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.objectName) > 0 {
-		lengthInBits += 8 * uint16(len(m.objectName))
+	if len(m.ObjectName) > 0 {
+		lengthInBits += 8 * uint16(len(m.ObjectName))
 	}
 
 	return lengthInBits
@@ -193,7 +193,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 		}
 
 		// Simple Field (deviceInstanceLowLimit)
-		deviceInstanceLowLimit := uint32(m.deviceInstanceLowLimit)
+		deviceInstanceLowLimit := uint32(m.DeviceInstanceLowLimit)
 		_deviceInstanceLowLimitErr := io.WriteUint32(24, (deviceInstanceLowLimit))
 		if _deviceInstanceLowLimitErr != nil {
 			return errors.New("Error serializing 'deviceInstanceLowLimit' field " + _deviceInstanceLowLimitErr.Error())
@@ -206,7 +206,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 		}
 
 		// Simple Field (deviceInstanceHighLimit)
-		deviceInstanceHighLimit := uint32(m.deviceInstanceHighLimit)
+		deviceInstanceHighLimit := uint32(m.DeviceInstanceHighLimit)
 		_deviceInstanceHighLimitErr := io.WriteUint32(24, (deviceInstanceHighLimit))
 		if _deviceInstanceHighLimitErr != nil {
 			return errors.New("Error serializing 'deviceInstanceHighLimit' field " + _deviceInstanceHighLimitErr.Error())
@@ -219,22 +219,22 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 		}
 
 		// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		objectNameLength := uint8(uint8(uint8(len(m.objectName))) + uint8(uint8(1)))
+		objectNameLength := uint8(uint8(uint8(len(m.ObjectName))) + uint8(uint8(1)))
 		_objectNameLengthErr := io.WriteUint8(8, (objectNameLength))
 		if _objectNameLengthErr != nil {
 			return errors.New("Error serializing 'objectNameLength' field " + _objectNameLengthErr.Error())
 		}
 
 		// Simple Field (objectNameCharacterSet)
-		objectNameCharacterSet := uint8(m.objectNameCharacterSet)
+		objectNameCharacterSet := uint8(m.ObjectNameCharacterSet)
 		_objectNameCharacterSetErr := io.WriteUint8(8, (objectNameCharacterSet))
 		if _objectNameCharacterSetErr != nil {
 			return errors.New("Error serializing 'objectNameCharacterSet' field " + _objectNameCharacterSetErr.Error())
 		}
 
 		// Array Field (objectName)
-		if m.objectName != nil {
-			for _, _element := range m.objectName {
+		if m.ObjectName != nil {
+			for _, _element := range m.ObjectName {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'objectName' field " + _elementErr.Error())

@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type COTPPacket struct {
-	parameters []ICOTPParameter
-	payload    *IS7Message
+	Parameters []ICOTPParameter
+	Payload    *IS7Message
 }
 
 // The corresponding interface
@@ -77,15 +77,15 @@ func (m COTPPacket) LengthInBits() uint16 {
 	// Length of sub-type elements will be added by sub-type...
 
 	// Array field
-	if len(m.parameters) > 0 {
-		for _, element := range m.parameters {
+	if len(m.Parameters) > 0 {
+		for _, element := range m.Parameters {
 			lengthInBits += element.LengthInBits()
 		}
 	}
 
 	// Optional Field (payload)
-	if m.payload != nil {
-		lengthInBits += (*m.payload).LengthInBits()
+	if m.Payload != nil {
+		lengthInBits += (*m.Payload).LengthInBits()
 	}
 
 	return lengthInBits
@@ -175,7 +175,7 @@ func COTPPacketParse(io *spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
 func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func() error) error {
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.payload) != (nil))), uint16((*m.payload).LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.Payload) != (nil))), uint16((*m.Payload).LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
 	_headerLengthErr := io.WriteUint8(8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
@@ -195,8 +195,8 @@ func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childS
 	}
 
 	// Array Field (parameters)
-	if m.parameters != nil {
-		for _, _element := range m.parameters {
+	if m.Parameters != nil {
+		for _, _element := range m.Parameters {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'parameters' field " + _elementErr.Error())
@@ -206,8 +206,8 @@ func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childS
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *IS7Message = nil
-	if m.payload != nil {
-		payload = m.payload
+	if m.Payload != nil {
+		payload = m.Payload
 		_payloadErr := CastIS7Message(*payload).Serialize(io)
 		if _payloadErr != nil {
 			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())

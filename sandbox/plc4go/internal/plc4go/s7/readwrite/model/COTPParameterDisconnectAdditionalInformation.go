@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterDisconnectAdditionalInformation struct {
-	data []uint8
+	Data []uint8
 	COTPParameter
 }
 
@@ -45,7 +45,7 @@ func (m COTPParameterDisconnectAdditionalInformation) initialize() spi.Message {
 }
 
 func NewCOTPParameterDisconnectAdditionalInformation(data []uint8) COTPParameterInitializer {
-	return &COTPParameterDisconnectAdditionalInformation{data: data}
+	return &COTPParameterDisconnectAdditionalInformation{Data: data}
 }
 
 func CastICOTPParameterDisconnectAdditionalInformation(structType interface{}) ICOTPParameterDisconnectAdditionalInformation {
@@ -72,8 +72,8 @@ func (m COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
 	// Array field
-	if len(m.data) > 0 {
-		lengthInBits += 8 * uint16(len(m.data))
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -105,8 +105,8 @@ func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuff
 	ser := func() error {
 
 		// Array Field (data)
-		if m.data != nil {
-			for _, _element := range m.data {
+		if m.Data != nil {
+			for _, _element := range m.Data {
 				_elementErr := io.WriteUint8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'data' field " + _elementErr.Error())

@@ -25,10 +25,10 @@ import (
 
 // The data-structure of this message
 type CEMIFrame struct {
-	repeated             bool
-	priority             ICEMIPriority
-	acknowledgeRequested bool
-	errorFlag            bool
+	Repeated             bool
+	Priority             ICEMIPriority
+	AcknowledgeRequested bool
+	ErrorFlag            bool
 }
 
 // The corresponding interface
@@ -193,7 +193,7 @@ func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSeri
 	}
 
 	// Simple Field (repeated)
-	repeated := bool(m.repeated)
+	repeated := bool(m.Repeated)
 	_repeatedErr := io.WriteBit((bool)(repeated))
 	if _repeatedErr != nil {
 		return errors.New("Error serializing 'repeated' field " + _repeatedErr.Error())
@@ -207,21 +207,21 @@ func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSeri
 	}
 
 	// Enum field (priority)
-	priority := CastCEMIPriority(m.priority)
+	priority := CastCEMIPriority(m.Priority)
 	_priorityErr := priority.Serialize(io)
 	if _priorityErr != nil {
 		return errors.New("Error serializing 'priority' field " + _priorityErr.Error())
 	}
 
 	// Simple Field (acknowledgeRequested)
-	acknowledgeRequested := bool(m.acknowledgeRequested)
+	acknowledgeRequested := bool(m.AcknowledgeRequested)
 	_acknowledgeRequestedErr := io.WriteBit((bool)(acknowledgeRequested))
 	if _acknowledgeRequestedErr != nil {
 		return errors.New("Error serializing 'acknowledgeRequested' field " + _acknowledgeRequestedErr.Error())
 	}
 
 	// Simple Field (errorFlag)
-	errorFlag := bool(m.errorFlag)
+	errorFlag := bool(m.ErrorFlag)
 	_errorFlagErr := io.WriteBit((bool)(errorFlag))
 	if _errorFlagErr != nil {
 		return errors.New("Error serializing 'errorFlag' field " + _errorFlagErr.Error())

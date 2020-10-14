@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type S7ParameterWriteVarResponse struct {
-	numItems uint8
+	NumItems uint8
 	S7Parameter
 }
 
@@ -49,7 +49,7 @@ func (m S7ParameterWriteVarResponse) initialize() spi.Message {
 }
 
 func NewS7ParameterWriteVarResponse(numItems uint8) S7ParameterInitializer {
-	return &S7ParameterWriteVarResponse{numItems: numItems}
+	return &S7ParameterWriteVarResponse{NumItems: numItems}
 }
 
 func CastIS7ParameterWriteVarResponse(structType interface{}) IS7ParameterWriteVarResponse {
@@ -101,7 +101,7 @@ func (m S7ParameterWriteVarResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (numItems)
-		numItems := uint8(m.numItems)
+		numItems := uint8(m.NumItems)
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
 			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())

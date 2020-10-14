@@ -25,9 +25,9 @@ import (
 
 // The data-structure of this message
 type COTPPacketDisconnectRequest struct {
-	destinationReference uint16
-	sourceReference      uint16
-	protocolClass        ICOTPProtocolClass
+	DestinationReference uint16
+	SourceReference      uint16
+	ProtocolClass        ICOTPProtocolClass
 	COTPPacket
 }
 
@@ -43,13 +43,13 @@ func (m COTPPacketDisconnectRequest) TpduCode() uint8 {
 }
 
 func (m COTPPacketDisconnectRequest) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.parameters = parameters
-	m.payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 	return m
 }
 
 func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass ICOTPProtocolClass) COTPPacketInitializer {
-	return &COTPPacketDisconnectRequest{destinationReference: destinationReference, sourceReference: sourceReference, protocolClass: protocolClass}
+	return &COTPPacketDisconnectRequest{DestinationReference: destinationReference, SourceReference: sourceReference, ProtocolClass: protocolClass}
 }
 
 func CastICOTPPacketDisconnectRequest(structType interface{}) ICOTPPacketDisconnectRequest {
@@ -119,21 +119,21 @@ func (m COTPPacketDisconnectRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (destinationReference)
-		destinationReference := uint16(m.destinationReference)
+		destinationReference := uint16(m.DestinationReference)
 		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
 		if _destinationReferenceErr != nil {
 			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
 		}
 
 		// Simple Field (sourceReference)
-		sourceReference := uint16(m.sourceReference)
+		sourceReference := uint16(m.SourceReference)
 		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
 		if _sourceReferenceErr != nil {
 			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
 		}
 
 		// Enum field (protocolClass)
-		protocolClass := CastCOTPProtocolClass(m.protocolClass)
+		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
 		_protocolClassErr := protocolClass.Serialize(io)
 		if _protocolClassErr != nil {
 			return errors.New("Error serializing 'protocolClass' field " + _protocolClassErr.Error())

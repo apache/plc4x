@@ -27,12 +27,12 @@ import (
 
 // The data-structure of this message
 type APDUComplexAck struct {
-	segmentedMessage   bool
-	moreFollows        bool
-	originalInvokeId   uint8
-	sequenceNumber     *uint8
-	proposedWindowSize *uint8
-	serviceAck         IBACnetServiceAck
+	SegmentedMessage   bool
+	MoreFollows        bool
+	OriginalInvokeId   uint8
+	SequenceNumber     *uint8
+	ProposedWindowSize *uint8
+	ServiceAck         IBACnetServiceAck
 	APDU
 }
 
@@ -52,7 +52,7 @@ func (m APDUComplexAck) initialize() spi.Message {
 }
 
 func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceAck IBACnetServiceAck) APDUInitializer {
-	return &APDUComplexAck{segmentedMessage: segmentedMessage, moreFollows: moreFollows, originalInvokeId: originalInvokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceAck: serviceAck}
+	return &APDUComplexAck{SegmentedMessage: segmentedMessage, MoreFollows: moreFollows, OriginalInvokeId: originalInvokeId, SequenceNumber: sequenceNumber, ProposedWindowSize: proposedWindowSize, ServiceAck: serviceAck}
 }
 
 func CastIAPDUComplexAck(structType interface{}) IAPDUComplexAck {
@@ -91,17 +91,17 @@ func (m APDUComplexAck) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Optional Field (sequenceNumber)
-	if m.sequenceNumber != nil {
+	if m.SequenceNumber != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (proposedWindowSize)
-	if m.proposedWindowSize != nil {
+	if m.ProposedWindowSize != nil {
 		lengthInBits += 8
 	}
 
 	// Simple field (serviceAck)
-	lengthInBits += m.serviceAck.LengthInBits()
+	lengthInBits += m.ServiceAck.LengthInBits()
 
 	return lengthInBits
 }
@@ -185,14 +185,14 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (segmentedMessage)
-		segmentedMessage := bool(m.segmentedMessage)
+		segmentedMessage := bool(m.SegmentedMessage)
 		_segmentedMessageErr := io.WriteBit((bool)(segmentedMessage))
 		if _segmentedMessageErr != nil {
 			return errors.New("Error serializing 'segmentedMessage' field " + _segmentedMessageErr.Error())
 		}
 
 		// Simple Field (moreFollows)
-		moreFollows := bool(m.moreFollows)
+		moreFollows := bool(m.MoreFollows)
 		_moreFollowsErr := io.WriteBit((bool)(moreFollows))
 		if _moreFollowsErr != nil {
 			return errors.New("Error serializing 'moreFollows' field " + _moreFollowsErr.Error())
@@ -207,7 +207,7 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
@@ -215,8 +215,8 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
 		var sequenceNumber *uint8 = nil
-		if m.sequenceNumber != nil {
-			sequenceNumber = m.sequenceNumber
+		if m.SequenceNumber != nil {
+			sequenceNumber = m.SequenceNumber
 			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
 			if _sequenceNumberErr != nil {
 				return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
@@ -225,8 +225,8 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
 		var proposedWindowSize *uint8 = nil
-		if m.proposedWindowSize != nil {
-			proposedWindowSize = m.proposedWindowSize
+		if m.ProposedWindowSize != nil {
+			proposedWindowSize = m.ProposedWindowSize
 			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
 			if _proposedWindowSizeErr != nil {
 				return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
@@ -234,7 +234,7 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceAck)
-		serviceAck := CastIBACnetServiceAck(m.serviceAck)
+		serviceAck := CastIBACnetServiceAck(m.ServiceAck)
 		_serviceAckErr := serviceAck.Serialize(io)
 		if _serviceAckErr != nil {
 			return errors.New("Error serializing 'serviceAck' field " + _serviceAckErr.Error())

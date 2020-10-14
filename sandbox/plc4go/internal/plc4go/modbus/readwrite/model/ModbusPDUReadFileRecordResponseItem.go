@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadFileRecordResponseItem struct {
-	referenceType uint8
-	data          []int8
+	ReferenceType uint8
+	Data          []int8
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type IModbusPDUReadFileRecordResponseItem interface {
 }
 
 func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []int8) spi.Message {
-	return &ModbusPDUReadFileRecordResponseItem{referenceType: referenceType, data: data}
+	return &ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
 }
 
 func CastIModbusPDUReadFileRecordResponseItem(structType interface{}) IModbusPDUReadFileRecordResponseItem {
@@ -69,8 +69,8 @@ func (m ModbusPDUReadFileRecordResponseItem) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.data) > 0 {
-		lengthInBits += 8 * uint16(len(m.data))
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -114,22 +114,22 @@ func ModbusPDUReadFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, 
 func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint8(uint8(uint8(len(m.data))) + uint8(uint8(1)))
+	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
 	_dataLengthErr := io.WriteUint8(8, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
 	}
 
 	// Simple Field (referenceType)
-	referenceType := uint8(m.referenceType)
+	referenceType := uint8(m.ReferenceType)
 	_referenceTypeErr := io.WriteUint8(8, (referenceType))
 	if _referenceTypeErr != nil {
 		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
 	}
 
 	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
+	if m.Data != nil {
+		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'data' field " + _elementErr.Error())

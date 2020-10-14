@@ -25,9 +25,9 @@ import (
 
 // The data-structure of this message
 type TunnelingResponseDataBlock struct {
-	communicationChannelId uint8
-	sequenceCounter        uint8
-	status                 IStatus
+	CommunicationChannelId uint8
+	SequenceCounter        uint8
+	Status                 IStatus
 }
 
 // The corresponding interface
@@ -37,7 +37,7 @@ type ITunnelingResponseDataBlock interface {
 }
 
 func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status IStatus) spi.Message {
-	return &TunnelingResponseDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter, status: status}
+	return &TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
 }
 
 func CastITunnelingResponseDataBlock(structType interface{}) ITunnelingResponseDataBlock {
@@ -122,21 +122,21 @@ func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.communicationChannelId)
+	communicationChannelId := uint8(m.CommunicationChannelId)
 	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 	if _communicationChannelIdErr != nil {
 		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 	}
 
 	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.sequenceCounter)
+	sequenceCounter := uint8(m.SequenceCounter)
 	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
 	if _sequenceCounterErr != nil {
 		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
 	}
 
 	// Enum field (status)
-	status := CastStatus(m.status)
+	status := CastStatus(m.Status)
 	_statusErr := status.Serialize(io)
 	if _statusErr != nil {
 		return errors.New("Error serializing 'status' field " + _statusErr.Error())

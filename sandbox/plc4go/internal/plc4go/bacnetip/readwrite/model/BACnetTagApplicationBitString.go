@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationBitString struct {
-	unusedBits uint8
-	data       []int8
+	UnusedBits uint8
+	Data       []int8
 	BACnetTag
 }
 
@@ -42,15 +42,15 @@ func (m BACnetTagApplicationBitString) ContextSpecificTag() uint8 {
 }
 
 func (m BACnetTagApplicationBitString) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.typeOrTagNumber = typeOrTagNumber
-	m.lengthValueType = lengthValueType
-	m.extTagNumber = extTagNumber
-	m.extLength = extLength
+	m.TypeOrTagNumber = typeOrTagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
 	return m
 }
 
 func NewBACnetTagApplicationBitString(unusedBits uint8, data []int8) BACnetTagInitializer {
-	return &BACnetTagApplicationBitString{unusedBits: unusedBits, data: data}
+	return &BACnetTagApplicationBitString{UnusedBits: unusedBits, Data: data}
 }
 
 func CastIBACnetTagApplicationBitString(structType interface{}) IBACnetTagApplicationBitString {
@@ -80,8 +80,8 @@ func (m BACnetTagApplicationBitString) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.data) > 0 {
-		lengthInBits += 8 * uint16(len(m.data))
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -120,15 +120,15 @@ func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (unusedBits)
-		unusedBits := uint8(m.unusedBits)
+		unusedBits := uint8(m.UnusedBits)
 		_unusedBitsErr := io.WriteUint8(8, (unusedBits))
 		if _unusedBitsErr != nil {
 			return errors.New("Error serializing 'unusedBits' field " + _unusedBitsErr.Error())
 		}
 
 		// Array Field (data)
-		if m.data != nil {
-			for _, _element := range m.data {
+		if m.Data != nil {
+			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'data' field " + _elementErr.Error())

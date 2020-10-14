@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type COTPPacketTpduError struct {
-	destinationReference uint16
-	rejectCause          uint8
+	DestinationReference uint16
+	RejectCause          uint8
 	COTPPacket
 }
 
@@ -42,13 +42,13 @@ func (m COTPPacketTpduError) TpduCode() uint8 {
 }
 
 func (m COTPPacketTpduError) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.parameters = parameters
-	m.payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 	return m
 }
 
 func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8) COTPPacketInitializer {
-	return &COTPPacketTpduError{destinationReference: destinationReference, rejectCause: rejectCause}
+	return &COTPPacketTpduError{DestinationReference: destinationReference, RejectCause: rejectCause}
 }
 
 func CastICOTPPacketTpduError(structType interface{}) ICOTPPacketTpduError {
@@ -109,14 +109,14 @@ func (m COTPPacketTpduError) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (destinationReference)
-		destinationReference := uint16(m.destinationReference)
+		destinationReference := uint16(m.DestinationReference)
 		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
 		if _destinationReferenceErr != nil {
 			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
 		}
 
 		// Simple Field (rejectCause)
-		rejectCause := uint8(m.rejectCause)
+		rejectCause := uint8(m.RejectCause)
 		_rejectCauseErr := io.WriteUint8(8, (rejectCause))
 		if _rejectCauseErr != nil {
 			return errors.New("Error serializing 'rejectCause' field " + _rejectCauseErr.Error())
