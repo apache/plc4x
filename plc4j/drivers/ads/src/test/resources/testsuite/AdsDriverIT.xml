@@ -156,7 +156,7 @@
           </request>
           <hurz>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>true</object>
             </value>
           </hurz>
@@ -303,13 +303,13 @@
           </request>
           <hurz1>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>true</object>
             </value>
           </hurz1>
           <hurz2>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>true</object>
             </value>
           </hurz2>
@@ -520,7 +520,7 @@
           </request>
           <hurz1>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>false</object>
             </value>
           </hurz1>
@@ -730,7 +730,7 @@
           </request>
           <hurz1>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>false</object>
             </value>
           </hurz1>
@@ -843,7 +843,7 @@
           </request>
           <hurz1>
             <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBoolean">
+            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
               <object>false</object>
             </value>
           </hurz1>

@@ -105,12 +105,12 @@ public class ${type.name}IO {
             if(${helper.toParseExpression(field, field.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
                 throw new ParseException("Array count of " + (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
             }
-            ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[] ${field.name};
+            List<Plc${case.name}> ${field.name};
             {
                 int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
-                ${field.name} = new ${helper.getNonPrimitiveLanguageTypeNameForField(field)}[itemCount];
+                ${field.name} = new LinkedList<>();
                 for(int curItem = 0; curItem < itemCount; curItem++) {
-                    ${field.name}[curItem] = <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)}<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
+                    ${field.name}.add(new Plc${case.name}((${helper.getNonPrimitiveLanguageTypeNameForField(field)}) <#if helper.isSimpleTypeReference(field.type)>${helper.getReadBufferReadMethodCall(field.type)})<#else>${field.type.name}IO.staticParse(io<#if field.params?has_content>, <#list field.params as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(field.type, parserArgument?index), true)}) (${helper.toParseExpression(field, parserArgument, type.parserArguments)})<#sep>, </#sep></#list></#if>)</#if>);
                 }
             }
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -234,14 +234,18 @@ public class ${type.name}IO {
             return new PlcStruct(_map);
                     <#break>
                     <#case "List">
-            return new PlcList(Arrays.asList(value));
+            return new PlcList(value);
                     <#break>
             <#-- Disable this for now as Strings will only be parsed as manual fields -->
                     <#case "String">
             //return new PlcString(_map);
                     <#break>
                     <#default>
+                    <#if helper.isCountArrayField(case.fields[0])>
+            return new PlcList(value);
+                    <#else>
             return new Plc${case.name}(value);
+                    </#if>
                 </#switch>
             </#if>
         }<#sep> else </#sep></#list>
@@ -256,6 +260,7 @@ public class ${type.name}IO {
     public static WriteBuffer staticSerialize(PlcValue _value<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if>, boolean littleEndian) throws ParseException {
         <#list type.switchField.cases as case><#if case.discriminatorValues?has_content>if(<#list case.discriminatorValues as discriminatorValue>EvaluationHelper.equals(${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)}, ${discriminatorValue})<#sep> && </#sep></#list>) </#if>{ // ${case.name}
             WriteBuffer io = new WriteBuffer(${helper.getSizeInBits(case, type.parserArguments)} / 8, littleEndian);
+
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
@@ -283,7 +288,7 @@ public class ${type.name}IO {
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.getStruct().get("${field.name}").get${helper.getLanguageTypeNameForField(field)?cap_first}();
                         <#else>
                             <#if field.name == "value">
-            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${case.name}();
+            ${helper.getLanguageTypeNameForField(field)} ${field.name} = (${helper.getLanguageTypeNameForField(field)}) _value.get${helper.getLanguageTypeNameForField(field)?cap_first}();
                             <#else>
                                 <#-- Just for now -->
             ${helper.getLanguageTypeNameForField(field)} ${field.name} = ${helper.getNullValueForTypeReference(field.type)};

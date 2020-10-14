@@ -40,49 +40,63 @@ typedef void (*plc4c_data_custom_printf)(plc4c_data *data);
  * @param b the bool value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_boolean_data(bool b);
+plc4c_data *plc4c_data_create_bool_data(bool b);
 
 /**
  * Creates a plc4c_data with char
  * @param c the char value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_char_data(char c);
+plc4c_data *plc4c_data_create_int8_t_data(int8_t c);
 
 /**
  * Creates a plc4c_data with unsigned char
  * @param uc the unsigned char value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uchar_data(unsigned char uc);
+plc4c_data *plc4c_data_create_uint8_t_data(uint8_t uc);
 
 /**
  * Creates a plc4c_data with short
  * @param s the short value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_short_data(short s);
+plc4c_data *plc4c_data_create_int16_t_data(int16_t s);
 
 /**
  * Creates a plc4c_data with unsigned short
  * @param us the unsigned short value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_ushort_data(unsigned short us);
+plc4c_data *plc4c_data_create_uint16_t_data(uint16_t us);
 
 /**
  * Creates a plc4c_data with int
  * @param i the int value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_int_data(int i);
+plc4c_data *plc4c_data_create_int32_t_data(int32_t i);
 
 /**
  * Creates a plc4c_data with unsigned int
  * @param ui the unsigned int value
  * @return pointer to plc4c_data
  */
-plc4c_data *plc4c_data_create_uint_data(unsigned int ui);
+plc4c_data *plc4c_data_create_uint32_t_data(uint32_t ui);
+
+/**
+ * Creates a plc4c_data with int
+ * @param i the int value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_int64_t_data(int64_t i);
+
+/**
+ * Creates a plc4c_data with unsigned int
+ * @param ui the unsigned int value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_uint64_t_data(uint64_t ui);
 
 /**
  * Creates a plc4c_data with void*
@@ -97,6 +111,13 @@ plc4c_data *plc4c_data_create_void_pointer_data(void *v);
  * @return pointer to plc4c_data
  */
 plc4c_data *plc4c_data_create_float_data(float f);
+
+/**
+ * Creates a plc4c_data with float
+ * @param f the float value
+ * @return pointer to plc4c_data
+ */
+plc4c_data *plc4c_data_create_double_data(double d);
 
 /**
  * Creates a plc4c_data with char*

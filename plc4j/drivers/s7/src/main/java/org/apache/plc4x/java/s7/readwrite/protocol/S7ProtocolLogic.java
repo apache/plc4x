@@ -306,11 +306,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     private TPKTPacket createIdentifyRemoteMessage() {
-        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1, new S7ParameterUserData(new S7ParameterUserDataItem[]{
-            new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
-        }), new S7PayloadUserData(new S7PayloadUserDataItem[]{
-            new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
-        }));
+        S7MessageUserData identifyRemoteMessage = new S7MessageUserData(1,
+            new S7ParameterUserData(new S7ParameterUserDataItem[]{
+                new S7ParameterUserDataItemCPUFunctions((short) 0x11, (byte) 0x4, (byte) 0x4, (short) 0x01, (short) 0x00, null, null, null)
+            }),
+            new S7PayloadUserData(new S7PayloadUserDataItem[]{
+                new S7PayloadUserDataItemCpuFunctionReadSzlRequest(DataTransportErrorCode.OK, DataTransportSize.OCTET_STRING, new SzlId(SzlModuleTypeClass.CPU, (byte) 0x00, SzlSublist.MODULE_IDENTIFICATION), 0x0000)
+            })
+        );
         COTPPacketData cotpPacketData = new COTPPacketData(null, identifyRemoteMessage, true, (short) 2);
         return new TPKTPacket(cotpPacketData);
     }
@@ -603,7 +606,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         if(transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
-            int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
+            int stringLength = ((S7StringField) s7Field).getStringLength();
             numElements = numElements * (stringLength + 2);
         }
         return new S7AddressAny(transportSize, numElements, s7Field.getBlockNumber(),

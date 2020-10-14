@@ -121,6 +121,16 @@ public class PlcValueAdapter implements PlcValue {
         throw new PlcIncompatibleDatatypeException("");
     }
 
+    /**
+     * int vs. Integer is the only primitive type where the complex type doesn't have just a capitalized first letter.
+     * @return well ... an Integer ... ahem ... int ...
+     */
+    @Override
+    @JsonIgnore
+    public int getInt() {
+        return getInteger();
+    }
+
     @Override
     @JsonIgnore
     public boolean isLong() {

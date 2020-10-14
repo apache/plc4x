@@ -26,7 +26,7 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcInteger;
+import org.apache.plc4x.java.api.value.PlcDINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.df1.field.Df1Field;
 import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
@@ -98,7 +98,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                     new DefaultPlcReadResponse(
                         ((InternalPlcReadRequest) entry.getValue().getRequest()),
                         Collections.singletonMap("erster",
-                            new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcInteger(-1)))
+                            new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcDINT(-1)))
                     ));
             }
             return;
@@ -144,7 +144,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                     break;
                 case INTEGER:
                     // TODO: type conversion is untested
-                    responseItem = new PlcInteger((int)data[0] + ((int) data[1] << 8));
+                    responseItem = new PlcDINT((int)data[0] + ((int) data[1] << 8));
                     break;
                 case FLOAT:
                     break;

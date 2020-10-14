@@ -284,7 +284,7 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBoolean(booleanValues.get(0));
+            return new PlcBOOL(booleanValues.get(0));
         } else {
             return new PlcList(booleanValues);
         }
@@ -403,13 +403,13 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         // Create the field item.
         if(integerValues.size() == 1) {
             if (valueType == Byte.class) {
-                return new PlcByte((Byte) integerValues.get(0));
+                return new PlcSINT((Byte) integerValues.get(0));
             } else if (valueType == Short.class) {
-                return new PlcShort((Short) integerValues.get(0));
+                return new PlcINT((Short) integerValues.get(0));
             } else if (valueType == Integer.class) {
-                return new PlcInteger((Integer) integerValues.get(0));
+                return new PlcDINT((Integer) integerValues.get(0));
             } else if (valueType == Long.class) {
-                return new PlcLong((Long) integerValues.get(0));
+                return new PlcLINT((Long) integerValues.get(0));
             } else {
                 return new PlcBigInteger((BigInteger) integerValues.get(0));
             }
@@ -478,9 +478,9 @@ public class S7PlcFieldHandler extends DefaultPlcFieldHandler {
         // Create the field item.
         if(floatingPointValues.size() == 1) {
             if (valueType == Float.class) {
-                return new PlcFloat((Float) floatingPointValues.get(0));
+                return new PlcREAL((Float) floatingPointValues.get(0));
             } else {
-                return new PlcDouble((Double) floatingPointValues.get(0));
+                return new PlcLREAL((Double) floatingPointValues.get(0));
             }
         } else {
             return new PlcList(floatingPointValues);

@@ -9,10 +9,14 @@ a particular topic.
 New Features
 ------------
 
-The KNXnet/IP Driver now supports writing of values.
+- The KNXnet/IP Driver now supports writing of values.
 
-The Modbus driver now supports more common notations of
-Modbus addresses using a pure-numeric notation.
+- The Modbus driver now supports more common notations of
+  Modbus addresses using a pure-numeric notation.
+
+- Especially the Modbus driver has been enhanced to read
+  more complex types such as REAL, DINT, ... not just BOOL
+  and INT
 
 Incompatible changes
 --------------------
@@ -30,6 +34,10 @@ Incompatible changes
   Read an array of 3 Strings where each is max 10 chars long:
   %DB2:30:STRING(10)[3]
 
+- The PLCValue types have been refactored to align with the types
+  defined in IEC 61131-3 (https://en.wikipedia.org/wiki/IEC_61131-3)
+  directly using the older Java types (PlcBoolean) is no longer
+  possible.
 
 Bug Fixes
 ---------

@@ -152,7 +152,27 @@ public class ReadBuffer {
     }
 
     public BigInteger readUnsignedBigInteger(int bitLength) throws ParseException {
-        throw new UnsupportedOperationException("not implemented yet");
+        //Support specific case where value less than 64 bits and big endian.
+        if (bitLength <= 0) {
+            throw new ParseException("unsigned long must contain at least 1 bit");
+        }
+        if (bitLength > 64) {
+            throw new ParseException("unsigned long can only contain max 64 bits");
+        }
+        try {
+            Long val = bi.readLong(false, bitLength);
+            if (littleEndian) {
+                throw new UnsupportedOperationException("not implemented yet");
+            }
+            if (val >= 0) {
+                return BigInteger.valueOf(val);
+            } else {
+                BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
+                return BigInteger.valueOf(val).add(constant);
+            }
+        } catch (IOException e) {
+            throw new ParseException("Error reading", e);
+        }
     }
 
     public byte readByte(int bitLength) throws ParseException {
@@ -280,7 +300,7 @@ public class ReadBuffer {
                 throw new PlcRuntimeException(e);
             }
         }
-        return new String(strBytes, Charset.forName(encoding));
+        return new String(strBytes, Charset.forName(encoding.replaceAll("[^a-zA-Z0-9]","")));
     }
 
 }

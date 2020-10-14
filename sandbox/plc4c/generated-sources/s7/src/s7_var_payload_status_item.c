@@ -23,8 +23,8 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi_read_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item** _message) {
-  uint16_t startPos = plc4c_spi_read_get_pos(buf);
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi_read_buffer* io, plc4c_s7_read_write_s7_var_payload_status_item** _message) {
+  uint16_t startPos = plc4c_spi_read_get_pos(io);
   uint16_t curPos;
   plc4c_return_code _res = OK;
 
@@ -36,7 +36,7 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
 
   // Enum field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode = plc4c_s7_read_write_data_transport_error_code_null();
-  _res = plc4c_spi_read_signed_byte(buf, 8, (int8_t*) &returnCode);
+  _res = plc4c_spi_read_signed_byte(io, 8, (int8_t*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -45,11 +45,11 @@ plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4c_spi
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c_spi_write_buffer* buf, plc4c_s7_read_write_s7_var_payload_status_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4c_spi_write_buffer* io, plc4c_s7_read_write_s7_var_payload_status_item* _message) {
   plc4c_return_code _res = OK;
 
   // Enum field (returnCode)
-  _res = plc4c_spi_write_signed_byte(buf, 8, _message->return_code);
+  _res = plc4c_spi_write_signed_byte(io, 8, _message->return_code);
   if(_res != OK) {
     return _res;
   }

@@ -21,6 +21,8 @@
 #include "plc4c/spi/read_buffer.h"
 #include "tpkt_packet.h"
 
+void s7_address_parser_test();
+
 void internal_assert_arrays_equal(uint8_t* expected_array,
                                   plc4c_spi_write_buffer* write_buffer,
                                   uint8_t num_bytes) {
@@ -37,7 +39,7 @@ void internal_assert_arrays_equal(uint8_t* expected_array,
   }
 }
 
-void internal_parse_serialize_test(const uint8_t* payload,
+void internal_parse_serialize_test(uint8_t* payload,
                                    uint8_t payload_size) {
   // Create a new read_buffer instance
   plc4c_spi_read_buffer* read_buffer;
@@ -229,6 +231,9 @@ int main(void) {
   RUN_TEST(parse_s7_read_error_response);
   RUN_TEST(parse_s7_write_request);
   RUN_TEST(parse_s7_write_response);
+
+  // Run the address parser tests ...
+  RUN_TEST(s7_address_parser_test);
 
   return UNITY_END();
 }

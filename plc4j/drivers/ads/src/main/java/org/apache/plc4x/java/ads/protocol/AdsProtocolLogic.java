@@ -316,7 +316,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 }).toArray(PlcValue[]::new);
                 return new ResponseItem<>(PlcResponseCode.OK, PlcValues.of(resultItems));
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getAdsDataType()), e);
             return new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null);
         }
@@ -601,18 +601,23 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .check(adsDataResponse -> adsDataResponse instanceof AdsReadWriteResponse)
             .unwrap(adsDataResponse -> (AdsReadWriteResponse) adsDataResponse)
             .handle(responseAdsData -> {
-                ReadBuffer readBuffer = new ReadBuffer(responseAdsData.getData(), true);
-                try {
-                    // Read the handle.
-                    long handle = readBuffer.readUnsignedLong(32);
+                if(responseAdsData.getResult() != ReturnCode.OK) {
+                    future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic field " +
+                        symbolicAdsField.getSymbolicField() + " got return code " + responseAdsData.getResult().name()));
+                } else {
+                    ReadBuffer readBuffer = new ReadBuffer(responseAdsData.getData(), true);
+                    try {
+                        // Read the handle.
+                        long handle = readBuffer.readUnsignedLong(32);
 
-                    DirectAdsField directAdsField = new DirectAdsField(
-                        ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
-                        symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
-                    symbolicFieldMapping.put(symbolicAdsField, directAdsField);
-                    future.complete(null);
-                } catch (ParseException e) {
-                    future.completeExceptionally(e);
+                        DirectAdsField directAdsField = new DirectAdsField(
+                            ReservedIndexGroups.ADSIGRP_SYM_VALBYHND.getValue(), handle,
+                            symbolicAdsField.getAdsDataType(), symbolicAdsField.getNumberOfElements());
+                        symbolicFieldMapping.put(symbolicAdsField, directAdsField);
+                        future.complete(null);
+                    } catch (ParseException e) {
+                        future.completeExceptionally(e);
+                    }
                 }
                 transaction.endRequest();
             }));

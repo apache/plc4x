@@ -63,7 +63,9 @@ public class CLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.emptyList();
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/c/data-io-template-h.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/c/data-io-template-c.ftlh"));
     }
 
     @Override

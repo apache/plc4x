@@ -116,7 +116,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         Object objValue = value.getValue().getValue();
 
         if (typeNode.equals(Identifiers.Boolean)) {
-            return new PlcBoolean((Boolean) objValue);
+            return new PlcBOOL((Boolean) objValue);
         /*} else if (typeNode.equals(Identifiers.ByteString)) {
             byte[] array = ((ByteString) objValue).bytes();
             Byte[] byteArry = new Byte[array.length];
@@ -128,29 +128,29 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             }
             return new DefaultByteArrayPlcValue(byteArry);*/
         } else if (typeNode.equals(Identifiers.Integer)) {
-            return new PlcInteger((Integer) objValue);
+            return new PlcDINT((Integer) objValue);
         } else if (typeNode.equals(Identifiers.Int16)) {
-            return new PlcInteger((Short) objValue);
+            return new PlcINT((Short) objValue);
         } else if (typeNode.equals(Identifiers.Int32)) {
-            return new PlcInteger((Integer) objValue);
+            return new PlcDINT((Integer) objValue);
         } else if (typeNode.equals(Identifiers.Int64)) {
-            return new PlcLong((Long) objValue);
+            return new PlcLINT((Long) objValue);
         } else if (typeNode.equals(Identifiers.UInteger)) {
-            return new PlcLong((Long) objValue);
+            return new PlcLINT((Long) objValue);
         } else if (typeNode.equals(Identifiers.UInt16)) {
-            return new PlcInteger(((UShort) objValue).intValue());
+            return new PlcUINT(((UShort) objValue).intValue());
         } else if (typeNode.equals(Identifiers.UInt32)) {
-            return new PlcLong(((UInteger) objValue).longValue());
+            return new PlcUDINT(((UInteger) objValue).longValue());
         } else if (typeNode.equals(Identifiers.UInt64)) {
-            return new PlcBigInteger(new BigInteger(objValue.toString()));
+            return new PlcULINT(new BigInteger(objValue.toString()));
         } else if (typeNode.equals(Identifiers.Byte)) {
-            return new PlcInteger(Short.valueOf(objValue.toString()));
+            return new PlcINT(Short.valueOf(objValue.toString()));
         } else if (typeNode.equals(Identifiers.Float)) {
-            return new PlcFloat((Float) objValue);
+            return new PlcREAL((Float) objValue);
         } else if (typeNode.equals(Identifiers.Double)) {
-            return new PlcDouble((Double) objValue);
+            return new PlcLREAL((Double) objValue);
         } else if (typeNode.equals(Identifiers.SByte)) {
-            return new PlcInteger((Byte) objValue);
+            return new PlcSINT((Byte) objValue);
         } else {
             return new PlcString(objValue.toString());
         }

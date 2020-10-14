@@ -326,17 +326,23 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             for (int i = 0; i < nb; i++) {
                 switch (type) {
                     case DINT:
+                        list.add(new PlcDINT(Integer.reverseBytes(data.getInt(index))));
+                        index += type.getSize();
+                        break;
                     case INT:
+                        list.add(new PlcINT(Integer.reverseBytes(data.getInt(index))));
+                        index += type.getSize();
+                        break;
                     case SINT:
-                        list.add(new PlcInteger(Integer.reverseBytes(data.getInt(index))));
+                        list.add(new PlcSINT(Integer.reverseBytes(data.getInt(index))));
                         index += type.getSize();
                         break;
                     case REAL:
-                        list.add(new PlcDouble(swap(data.getFloat(index))));
+                        list.add(new PlcLREAL(swap(data.getFloat(index))));
                         index += type.getSize();
                         break;
                     case BOOL:
-                        list.add(new PlcBoolean(data.getBoolean(index)));
+                        list.add(new PlcBOOL(data.getBoolean(index)));
                         index += type.getSize();
                     default:
                         return null;
@@ -346,15 +352,15 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         } else {
             switch (type) {
                 case SINT:
-                    return new PlcByte(data.getByte(0));
+                    return new PlcSINT(data.getByte(0));
                 case INT:
-                    return new PlcInteger(Short.reverseBytes(data.getShort(0)));
+                    return new PlcINT(Short.reverseBytes(data.getShort(0)));
                 case DINT:
-                    return new PlcInteger(Integer.reverseBytes(data.getInt(0)));
+                    return new PlcDINT(Integer.reverseBytes(data.getInt(0)));
                 case REAL:
-                    return new PlcDouble(swap(data.getFloat(0)));
+                    return new PlcREAL(swap(data.getFloat(0)));
                 case BOOL:
-                    return new PlcBoolean(data.getBoolean(0));
+                    return new PlcBOOL(data.getBoolean(0));
                 default:
                     return null;
             }

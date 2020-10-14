@@ -192,7 +192,7 @@ public class EipFieldHandler implements PlcFieldHandler {
             }
         }
         if(booleanValues.size() == 1) {
-            return new PlcBoolean(booleanValues.get(0));
+            return new PlcBOOL(booleanValues.get(0));
         } else {
             return new PlcList(booleanValues);
         }
@@ -210,28 +210,28 @@ public class EipFieldHandler implements PlcFieldHandler {
             case SINT:
                 minValue = BigInteger.valueOf(Byte.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Byte.MAX_VALUE);
-                fieldType = PlcByte.class;
+                fieldType = PlcSINT.class;
                 valueType = Byte.class;
                 castedValues = new Byte[values.length];
                 break;
             case INT:
                 minValue = BigInteger.valueOf(Short.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Short.MAX_VALUE);
-                fieldType = PlcShort.class;
+                fieldType = PlcINT.class;
                 valueType = Short.class;
                 castedValues = new Short[values.length];
                 break;
             case DINT:
                 minValue = BigInteger.valueOf(Integer.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Integer.MAX_VALUE);
-                fieldType = PlcInteger.class;
+                fieldType = PlcDINT.class;
                 valueType= Integer.class;
                 castedValues = new Integer[values.length];
                 break;
             case LINT:
                 minValue = BigInteger.valueOf(Long.MIN_VALUE);
                 maxValue = BigInteger.valueOf(Long.MAX_VALUE);
-                fieldType = PlcLong.class;
+                fieldType = PlcLINT.class;
                 valueType= Long.class;
                 castedValues = new Long[values.length];
                 break;
@@ -292,7 +292,7 @@ public class EipFieldHandler implements PlcFieldHandler {
         if (eipField.getType() == CIPDataTypeCode.REAL) {
             minValue = (double) -Float.MAX_VALUE;
             maxValue = (double) Float.MAX_VALUE;
-            fieldType = PlcFloat.class;
+            fieldType = PlcREAL.class;
             valueType = Float.class;
             castedValues = new Float[values.length];
         } else {

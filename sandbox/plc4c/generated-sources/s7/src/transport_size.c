@@ -18,6 +18,7 @@
 */
 
 #include "transport_size.h"
+#include <string.h>
 
 #include "data_transport_size.h"
 #include "transport_size.h"
@@ -29,6 +30,117 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_null() {
   return plc4c_s7_read_write_transport_size_null_const;
 }
 
+plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_of(char* value_string) {
+    if(strcmp(value_string, "LWORD") == 0) {
+        return 0x00;
+    }
+    if(strcmp(value_string, "BOOL") == 0) {
+        return 0x01;
+    }
+    if(strcmp(value_string, "BYTE") == 0) {
+        return 0x02;
+    }
+    if(strcmp(value_string, "CHAR") == 0) {
+        return 0x03;
+    }
+    if(strcmp(value_string, "WORD") == 0) {
+        return 0x04;
+    }
+    if(strcmp(value_string, "INT") == 0) {
+        return 0x05;
+    }
+    if(strcmp(value_string, "DWORD") == 0) {
+        return 0x06;
+    }
+    if(strcmp(value_string, "DINT") == 0) {
+        return 0x07;
+    }
+    if(strcmp(value_string, "REAL") == 0) {
+        return 0x08;
+    }
+    if(strcmp(value_string, "DATE") == 0) {
+        return 0x09;
+    }
+    if(strcmp(value_string, "TIME_OF_DAY") == 0) {
+        return 0x0A;
+    }
+    if(strcmp(value_string, "TIME") == 0) {
+        return 0x0B;
+    }
+    if(strcmp(value_string, "S5TIME") == 0) {
+        return 0x0C;
+    }
+    if(strcmp(value_string, "DATE_AND_TIME") == 0) {
+        return 0x0F;
+    }
+    if(strcmp(value_string, "WCHAR") == 0) {
+        return 0x13;
+    }
+    if(strcmp(value_string, "LREAL") == 0) {
+        return 0x30;
+    }
+    return -1;
+}
+
+int plc4c_s7_read_write_transport_size_num_values() {
+  return 25;
+}
+
+plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_for_index(int index) {
+    switch(index) {
+      case 0: {
+        return 0x00;
+      }
+      case 1: {
+        return 0x01;
+      }
+      case 2: {
+        return 0x02;
+      }
+      case 3: {
+        return 0x03;
+      }
+      case 4: {
+        return 0x04;
+      }
+      case 5: {
+        return 0x05;
+      }
+      case 6: {
+        return 0x06;
+      }
+      case 7: {
+        return 0x07;
+      }
+      case 8: {
+        return 0x08;
+      }
+      case 9: {
+        return 0x09;
+      }
+      case 10: {
+        return 0x0A;
+      }
+      case 11: {
+        return 0x0B;
+      }
+      case 12: {
+        return 0x0C;
+      }
+      case 13: {
+        return 0x0F;
+      }
+      case 14: {
+        return 0x13;
+      }
+      case 15: {
+        return 0x30;
+      }
+      default: {
+        return -1;
+      }
+    }
+}
 
 bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_write_transport_size value) {
   switch(value) {

@@ -81,10 +81,11 @@
 In general all Modbus addresses have this format:
 
 ----
-{Memory-Area}{start-address}[{array-size}]
+{memory-Area}{start-address}:{data-type}[{array-size}]
 ----
 
-If the array-part is omitted, the size-default of `1` is assumed.
+If the array-size part is omitted, the size-default of `1` is assumed.
+If the data-type part is omitted, it defaults to BOOL for Coils and Discrete Inputs and INT for input, holding and extended registers.
 
 ==== Memory Areas
 
@@ -104,13 +105,13 @@ There are a number of memory areas defined in the Modbus specification.
 |Coil             |`coil:` or `0` or `0x`             |Boolean value, usually representing a binary output from the PLC   |1 |Read/Write|1
 |Input Register   |`input-register:` or `3` or `3x`   |Short input value, usually representing an analog input to the PLC  |16 |Read Only|1
 |Holding Register |`holding-register:` or `4` or `4x` |Short value, usually representing an analog output from the PLC    |16 |Read/Write|1
-|Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read Only|0
+|Extended Register |`extended-register:` or `6` or `6x` |Short value,    |16 |Read/Write|0
 
 |===
 
 Initially the Modbus format allowed up to 10000 address to be specified or the discrete inputs, coils, input registers and holding registers.
 Later on, this was expanded to allow up 65536 address within each memory area (except the extended register area).
-When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified. 
+When using the long address format i.e. input-registers:1 the addresses between 1 and 65535 are able to be specified.
 When using the shorter versions there are two formats available  i.e. 30001 and 300001.
 With the shorter format 3XXXX being limited to between 30001 and 39999, while the longer format 3XXXXX being limited to between 300001 and 365535.
 These memory areas all start at address 1.
@@ -119,16 +120,32 @@ For the extended register area the addresses 0-99999 are able to be specified. T
 Address 610000 is then the first address in the second file record and so on. It is noted that there is generally only 10 file records (600000 thru to 699999) however the spec allows for 65536 file records.
 Using the extended-register: format you are able to reference all of these, if the shorter format is used then it is limited to 699999.
 This memory area starts at address 0.
-At the moment this implementation only supports reading the extended memory area.
 
 ==== Data Types
 
-In contrast to most other protocols Modbus only supports two datatypes.
+The following data types are supported
 
-- Bit (Discrete Inputs/Coils)
-- Short (2-bytes) (Registers)
+- BOOL (boolean)
+- SINT (int 8)
+- USINT (uint 8)
+- BYTE (uint 8)
+- INT (int 16)
+- UINT (uint 16)
+- WORD (uint 16)
+- DINT (int 32)
+- UDINT (uint 32)
+- DWORD (uint 32)
+- LINT (int 64)
+- ULINT (uint 64)
+- LWORD (uint 64)
+- REAL (float)
+- LREAL (double)
+- CHAR (char)
+- WCHAR (2 byte char)
 
-A lot of the time different data types are placed within 16 bit registers areas. Such as 32-Bit Floating Points values which could be placed within two adjoining registers, currently PLC4X doesn't have a way to convert these before passing them to the user.
+This may have partial support but more testing is required.
+- STRING (char[]) - When reading returns an unsigned byte array.
+- WSTRING (2 byte char[]) - When reading returns an unsigned word array.
 
 ==== Some useful tips
 
@@ -136,7 +153,7 @@ Most memory areas start at address 1, except for the extended register area whic
 
 The input, holding and extended registers consist of 16-bit registers while the discrete input and coil areas consist of bits.
 
-The Modbus function codes:-
+The following Modbus function codes are supported:-
 
 - 0x01 (Read Coils)
 - 0x02 (Read Discrete Inputs)
@@ -147,17 +164,17 @@ The Modbus function codes:-
 - 0x0F (Write Multiple Coils)
 - 0x10 (Write Multiple Registers)
 - 0x14 (Read File Record)(Extended Register Read)
-- 0x15 (Write File Record)(Extended Register Write is not yet supported)
+- 0x15 (Write File Record)(Extended Register Write)
 
 ==== Examples
 
-To read 10 holding registers starting at address 20 the following examples are all valid.
+To read 10 holding registers starting at address 20 and parse as Unsigned Integers the following examples are all valid.
 
-- holding-register:20[10]
-- 400020[10]
-- 4x00020[10]
-- 40020[10]
-- 4x0020[10]
+- holding-register:20:UINT[10]
+- 400020:UINT[10]
+- 4x00020:UINT[10]
+- 40020:UINT[10]
+- 4x0020:UINT[10]
 
 To read 1 holding register at address 5678 the following examples are valid.
 
@@ -175,7 +192,7 @@ To read 10 extended registers starting at address 50 the following examples are 
 - 60050[10]
 - 6x0050[10]
 
-This corresponds to addresses 50-60 in file record 1.
+This corresponds to addresses 50-59 in file record 1.
 
 To read 10 extended registers starting at address 9995 the following examples are valid.
 
