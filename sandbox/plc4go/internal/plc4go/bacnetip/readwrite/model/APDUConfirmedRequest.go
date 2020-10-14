@@ -27,15 +27,15 @@ import (
 
 // The data-structure of this message
 type APDUConfirmedRequest struct {
-	segmentedMessage          bool
-	moreFollows               bool
-	segmentedResponseAccepted bool
-	maxSegmentsAccepted       uint8
-	maxApduLengthAccepted     uint8
-	invokeId                  uint8
-	sequenceNumber            *uint8
-	proposedWindowSize        *uint8
-	serviceRequest            IBACnetConfirmedServiceRequest
+	SegmentedMessage          bool
+	MoreFollows               bool
+	SegmentedResponseAccepted bool
+	MaxSegmentsAccepted       uint8
+	MaxApduLengthAccepted     uint8
+	InvokeId                  uint8
+	SequenceNumber            *uint8
+	ProposedWindowSize        *uint8
+	ServiceRequest            IBACnetConfirmedServiceRequest
 	APDU
 }
 
@@ -55,7 +55,7 @@ func (m APDUConfirmedRequest) initialize() spi.Message {
 }
 
 func NewAPDUConfirmedRequest(segmentedMessage bool, moreFollows bool, segmentedResponseAccepted bool, maxSegmentsAccepted uint8, maxApduLengthAccepted uint8, invokeId uint8, sequenceNumber *uint8, proposedWindowSize *uint8, serviceRequest IBACnetConfirmedServiceRequest) APDUInitializer {
-	return &APDUConfirmedRequest{segmentedMessage: segmentedMessage, moreFollows: moreFollows, segmentedResponseAccepted: segmentedResponseAccepted, maxSegmentsAccepted: maxSegmentsAccepted, maxApduLengthAccepted: maxApduLengthAccepted, invokeId: invokeId, sequenceNumber: sequenceNumber, proposedWindowSize: proposedWindowSize, serviceRequest: serviceRequest}
+	return &APDUConfirmedRequest{SegmentedMessage: segmentedMessage, MoreFollows: moreFollows, SegmentedResponseAccepted: segmentedResponseAccepted, MaxSegmentsAccepted: maxSegmentsAccepted, MaxApduLengthAccepted: maxApduLengthAccepted, InvokeId: invokeId, SequenceNumber: sequenceNumber, ProposedWindowSize: proposedWindowSize, ServiceRequest: serviceRequest}
 }
 
 func CastIAPDUConfirmedRequest(structType interface{}) IAPDUConfirmedRequest {
@@ -103,17 +103,17 @@ func (m APDUConfirmedRequest) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Optional Field (sequenceNumber)
-	if m.sequenceNumber != nil {
+	if m.SequenceNumber != nil {
 		lengthInBits += 8
 	}
 
 	// Optional Field (proposedWindowSize)
-	if m.proposedWindowSize != nil {
+	if m.ProposedWindowSize != nil {
 		lengthInBits += 8
 	}
 
 	// Simple field (serviceRequest)
-	lengthInBits += m.serviceRequest.LengthInBits()
+	lengthInBits += m.ServiceRequest.LengthInBits()
 
 	return lengthInBits
 }
@@ -215,21 +215,21 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (segmentedMessage)
-		segmentedMessage := bool(m.segmentedMessage)
+		segmentedMessage := bool(m.SegmentedMessage)
 		_segmentedMessageErr := io.WriteBit((bool)(segmentedMessage))
 		if _segmentedMessageErr != nil {
 			return errors.New("Error serializing 'segmentedMessage' field " + _segmentedMessageErr.Error())
 		}
 
 		// Simple Field (moreFollows)
-		moreFollows := bool(m.moreFollows)
+		moreFollows := bool(m.MoreFollows)
 		_moreFollowsErr := io.WriteBit((bool)(moreFollows))
 		if _moreFollowsErr != nil {
 			return errors.New("Error serializing 'moreFollows' field " + _moreFollowsErr.Error())
 		}
 
 		// Simple Field (segmentedResponseAccepted)
-		segmentedResponseAccepted := bool(m.segmentedResponseAccepted)
+		segmentedResponseAccepted := bool(m.SegmentedResponseAccepted)
 		_segmentedResponseAcceptedErr := io.WriteBit((bool)(segmentedResponseAccepted))
 		if _segmentedResponseAcceptedErr != nil {
 			return errors.New("Error serializing 'segmentedResponseAccepted' field " + _segmentedResponseAcceptedErr.Error())
@@ -244,21 +244,21 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (maxSegmentsAccepted)
-		maxSegmentsAccepted := uint8(m.maxSegmentsAccepted)
+		maxSegmentsAccepted := uint8(m.MaxSegmentsAccepted)
 		_maxSegmentsAcceptedErr := io.WriteUint8(3, (maxSegmentsAccepted))
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.New("Error serializing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
 		}
 
 		// Simple Field (maxApduLengthAccepted)
-		maxApduLengthAccepted := uint8(m.maxApduLengthAccepted)
+		maxApduLengthAccepted := uint8(m.MaxApduLengthAccepted)
 		_maxApduLengthAcceptedErr := io.WriteUint8(4, (maxApduLengthAccepted))
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.New("Error serializing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
 		}
 
 		// Simple Field (invokeId)
-		invokeId := uint8(m.invokeId)
+		invokeId := uint8(m.InvokeId)
 		_invokeIdErr := io.WriteUint8(8, (invokeId))
 		if _invokeIdErr != nil {
 			return errors.New("Error serializing 'invokeId' field " + _invokeIdErr.Error())
@@ -266,8 +266,8 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (sequenceNumber) (Can be skipped, if the value is null)
 		var sequenceNumber *uint8 = nil
-		if m.sequenceNumber != nil {
-			sequenceNumber = m.sequenceNumber
+		if m.SequenceNumber != nil {
+			sequenceNumber = m.SequenceNumber
 			_sequenceNumberErr := io.WriteUint8(8, *(sequenceNumber))
 			if _sequenceNumberErr != nil {
 				return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
@@ -276,8 +276,8 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Optional Field (proposedWindowSize) (Can be skipped, if the value is null)
 		var proposedWindowSize *uint8 = nil
-		if m.proposedWindowSize != nil {
-			proposedWindowSize = m.proposedWindowSize
+		if m.ProposedWindowSize != nil {
+			proposedWindowSize = m.ProposedWindowSize
 			_proposedWindowSizeErr := io.WriteUint8(8, *(proposedWindowSize))
 			if _proposedWindowSizeErr != nil {
 				return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
@@ -285,7 +285,7 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (serviceRequest)
-		serviceRequest := CastIBACnetConfirmedServiceRequest(m.serviceRequest)
+		serviceRequest := CastIBACnetConfirmedServiceRequest(m.ServiceRequest)
 		_serviceRequestErr := serviceRequest.Serialize(io)
 		if _serviceRequestErr != nil {
 			return errors.New("Error serializing 'serviceRequest' field " + _serviceRequestErr.Error())

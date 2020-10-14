@@ -453,7 +453,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             sb.append(typeLiteral.getName());
             sb.append("(").append(toVariableExpression(typeReference, (VariableLiteral) vl.getArgs().get(0), parserArguments, serializerArguments, serialize, suppressPointerAccess)).append(")");
-            return sb.toString() + ((vl.getChild() != null) ? "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
+            return sb.toString() + ((vl.getChild() != null) ? "." + StringUtils.capitalize(toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess)) : "");
         } else if ("STATIC_CALL".equals(vl.getName())) {
             StringBuilder sb = new StringBuilder();
             if (!(vl.getArgs().get(0) instanceof StringLiteral)) {
@@ -592,10 +592,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         // If the current term is an optional type, we need to add pointer access
         // (Except if we're doing a nil/not-nil check)
         if((getFieldForNameFromCurrent(vl.getName()) instanceof OptionalField) && !suppressPointerAccess) {
-            return "(*" + (serialize ? "m." : "") + vl.getName() + ")" + ((vl.getChild() != null) ?
+            return "(*" + (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ")" + ((vl.getChild() != null) ?
                 "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
         }
-        return (serialize ? "m." : "") + vl.getName() + ((vl.getChild() != null) ?
+        return (serialize ? "m." + StringUtils.capitalize(vl.getName()) : vl.getName()) + ((vl.getChild() != null) ?
             "." + toVariableExpression(typeReference, vl.getChild(), parserArguments, serializerArguments, false, suppressPointerAccess) : "");
     }
 

@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type BVLCOriginalBroadcastNPDU struct {
-	npdu INPDU
+	Npdu INPDU
 	BVLC
 }
 
@@ -46,7 +46,7 @@ func (m BVLCOriginalBroadcastNPDU) initialize() spi.Message {
 }
 
 func NewBVLCOriginalBroadcastNPDU(npdu INPDU) BVLCInitializer {
-	return &BVLCOriginalBroadcastNPDU{npdu: npdu}
+	return &BVLCOriginalBroadcastNPDU{Npdu: npdu}
 }
 
 func CastIBVLCOriginalBroadcastNPDU(structType interface{}) IBVLCOriginalBroadcastNPDU {
@@ -73,7 +73,7 @@ func (m BVLCOriginalBroadcastNPDU) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BVLC.LengthInBits()
 
 	// Simple field (npdu)
-	lengthInBits += m.npdu.LengthInBits()
+	lengthInBits += m.Npdu.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m BVLCOriginalBroadcastNPDU) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (npdu)
-		npdu := CastINPDU(m.npdu)
+		npdu := CastINPDU(m.Npdu)
 		_npduErr := npdu.Serialize(io)
 		if _npduErr != nil {
 			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())

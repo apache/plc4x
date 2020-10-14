@@ -30,9 +30,9 @@ const ModbusTcpADU_PROTOCOLIDENTIFIER uint16 = 0x0000
 
 // The data-structure of this message
 type ModbusTcpADU struct {
-	transactionIdentifier uint16
-	unitIdentifier        uint8
-	pdu                   IModbusPDU
+	TransactionIdentifier uint16
+	UnitIdentifier        uint8
+	Pdu                   IModbusPDU
 }
 
 // The corresponding interface
@@ -42,7 +42,7 @@ type IModbusTcpADU interface {
 }
 
 func NewModbusTcpADU(transactionIdentifier uint16, unitIdentifier uint8, pdu IModbusPDU) spi.Message {
-	return &ModbusTcpADU{transactionIdentifier: transactionIdentifier, unitIdentifier: unitIdentifier, pdu: pdu}
+	return &ModbusTcpADU{TransactionIdentifier: transactionIdentifier, UnitIdentifier: unitIdentifier, Pdu: pdu}
 }
 
 func CastIModbusTcpADU(structType interface{}) IModbusTcpADU {
@@ -81,7 +81,7 @@ func (m ModbusTcpADU) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.pdu.LengthInBits()
+	lengthInBits += m.Pdu.LengthInBits()
 
 	return lengthInBits
 }
@@ -137,7 +137,7 @@ func ModbusTcpADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
 func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionIdentifier)
-	transactionIdentifier := uint16(m.transactionIdentifier)
+	transactionIdentifier := uint16(m.TransactionIdentifier)
 	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
 	if _transactionIdentifierErr != nil {
 		return errors.New("Error serializing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
@@ -150,21 +150,21 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint16(uint16(m.pdu.LengthInBytes()) + uint16(uint16(1)))
+	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
 	_lengthErr := io.WriteUint16(16, (length))
 	if _lengthErr != nil {
 		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
 	}
 
 	// Simple Field (unitIdentifier)
-	unitIdentifier := uint8(m.unitIdentifier)
+	unitIdentifier := uint8(m.UnitIdentifier)
 	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
 	if _unitIdentifierErr != nil {
 		return errors.New("Error serializing 'unitIdentifier' field " + _unitIdentifierErr.Error())
 	}
 
 	// Simple Field (pdu)
-	pdu := CastIModbusPDU(m.pdu)
+	pdu := CastIModbusPDU(m.Pdu)
 	_pduErr := pdu.Serialize(io)
 	if _pduErr != nil {
 		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())

@@ -30,10 +30,10 @@ const BACnetErrorReadProperty_ERRORCODEHEADER uint8 = 0x12
 
 // The data-structure of this message
 type BACnetErrorReadProperty struct {
-	errorClassLength uint8
-	errorClass       []int8
-	errorCodeLength  uint8
-	errorCode        []int8
+	ErrorClassLength uint8
+	ErrorClass       []int8
+	ErrorCodeLength  uint8
+	ErrorCode        []int8
 	BACnetError
 }
 
@@ -53,7 +53,7 @@ func (m BACnetErrorReadProperty) initialize() spi.Message {
 }
 
 func NewBACnetErrorReadProperty(errorClassLength uint8, errorClass []int8, errorCodeLength uint8, errorCode []int8) BACnetErrorInitializer {
-	return &BACnetErrorReadProperty{errorClassLength: errorClassLength, errorClass: errorClass, errorCodeLength: errorCodeLength, errorCode: errorCode}
+	return &BACnetErrorReadProperty{ErrorClassLength: errorClassLength, ErrorClass: errorClass, ErrorCodeLength: errorCodeLength, ErrorCode: errorCode}
 }
 
 func CastIBACnetErrorReadProperty(structType interface{}) IBACnetErrorReadProperty {
@@ -86,8 +86,8 @@ func (m BACnetErrorReadProperty) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.errorClass) > 0 {
-		lengthInBits += 8 * uint16(len(m.errorClass))
+	if len(m.ErrorClass) > 0 {
+		lengthInBits += 8 * uint16(len(m.ErrorClass))
 	}
 
 	// Const Field (errorCodeHeader)
@@ -97,8 +97,8 @@ func (m BACnetErrorReadProperty) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.errorCode) > 0 {
-		lengthInBits += 8 * uint16(len(m.errorCode))
+	if len(m.ErrorCode) > 0 {
+		lengthInBits += 8 * uint16(len(m.ErrorCode))
 	}
 
 	return lengthInBits
@@ -178,15 +178,15 @@ func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (errorClassLength)
-		errorClassLength := uint8(m.errorClassLength)
+		errorClassLength := uint8(m.ErrorClassLength)
 		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
 		if _errorClassLengthErr != nil {
 			return errors.New("Error serializing 'errorClassLength' field " + _errorClassLengthErr.Error())
 		}
 
 		// Array Field (errorClass)
-		if m.errorClass != nil {
-			for _, _element := range m.errorClass {
+		if m.ErrorClass != nil {
+			for _, _element := range m.ErrorClass {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'errorClass' field " + _elementErr.Error())
@@ -201,15 +201,15 @@ func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (errorCodeLength)
-		errorCodeLength := uint8(m.errorCodeLength)
+		errorCodeLength := uint8(m.ErrorCodeLength)
 		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
 		if _errorCodeLengthErr != nil {
 			return errors.New("Error serializing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
 		}
 
 		// Array Field (errorCode)
-		if m.errorCode != nil {
-			for _, _element := range m.errorCode {
+		if m.ErrorCode != nil {
+			for _, _element := range m.ErrorCode {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'errorCode' field " + _elementErr.Error())

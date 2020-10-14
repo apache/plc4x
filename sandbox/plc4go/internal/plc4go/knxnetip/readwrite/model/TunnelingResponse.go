@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type TunnelingResponse struct {
-	tunnelingResponseDataBlock ITunnelingResponseDataBlock
+	TunnelingResponseDataBlock ITunnelingResponseDataBlock
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m TunnelingResponse) initialize() spi.Message {
 }
 
 func NewTunnelingResponse(tunnelingResponseDataBlock ITunnelingResponseDataBlock) KNXNetIPMessageInitializer {
-	return &TunnelingResponse{tunnelingResponseDataBlock: tunnelingResponseDataBlock}
+	return &TunnelingResponse{TunnelingResponseDataBlock: tunnelingResponseDataBlock}
 }
 
 func CastITunnelingResponse(structType interface{}) ITunnelingResponse {
@@ -73,7 +73,7 @@ func (m TunnelingResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (tunnelingResponseDataBlock)
-	lengthInBits += m.tunnelingResponseDataBlock.LengthInBits()
+	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m TunnelingResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (tunnelingResponseDataBlock)
-		tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.tunnelingResponseDataBlock)
+		tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.TunnelingResponseDataBlock)
 		_tunnelingResponseDataBlockErr := tunnelingResponseDataBlock.Serialize(io)
 		if _tunnelingResponseDataBlockErr != nil {
 			return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())

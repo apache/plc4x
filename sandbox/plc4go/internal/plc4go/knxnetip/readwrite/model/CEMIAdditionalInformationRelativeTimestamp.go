@@ -30,7 +30,7 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = 2
 
 // The data-structure of this message
 type CEMIAdditionalInformationRelativeTimestamp struct {
-	relativeTimestamp IRelativeTimestamp
+	RelativeTimestamp IRelativeTimestamp
 	CEMIAdditionalInformation
 }
 
@@ -50,7 +50,7 @@ func (m CEMIAdditionalInformationRelativeTimestamp) initialize() spi.Message {
 }
 
 func NewCEMIAdditionalInformationRelativeTimestamp(relativeTimestamp IRelativeTimestamp) CEMIAdditionalInformationInitializer {
-	return &CEMIAdditionalInformationRelativeTimestamp{relativeTimestamp: relativeTimestamp}
+	return &CEMIAdditionalInformationRelativeTimestamp{RelativeTimestamp: relativeTimestamp}
 }
 
 func CastICEMIAdditionalInformationRelativeTimestamp(structType interface{}) ICEMIAdditionalInformationRelativeTimestamp {
@@ -80,7 +80,7 @@ func (m CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (relativeTimestamp)
-	lengthInBits += m.relativeTimestamp.LengthInBits()
+	lengthInBits += m.RelativeTimestamp.LengthInBits()
 
 	return lengthInBits
 }
@@ -125,7 +125,7 @@ func (m CEMIAdditionalInformationRelativeTimestamp) Serialize(io spi.WriteBuffer
 		}
 
 		// Simple Field (relativeTimestamp)
-		relativeTimestamp := CastIRelativeTimestamp(m.relativeTimestamp)
+		relativeTimestamp := CastIRelativeTimestamp(m.RelativeTimestamp)
 		_relativeTimestampErr := relativeTimestamp.Serialize(io)
 		if _relativeTimestampErr != nil {
 			return errors.New("Error serializing 'relativeTimestamp' field " + _relativeTimestampErr.Error())

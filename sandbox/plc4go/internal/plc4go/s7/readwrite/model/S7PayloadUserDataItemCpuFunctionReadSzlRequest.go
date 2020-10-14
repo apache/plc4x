@@ -39,10 +39,10 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) CpuFunctionType() uint8 
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message {
-	m.returnCode = returnCode
-	m.transportSize = transportSize
-	m.szlId = szlId
-	m.szlIndex = szlIndex
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
+	m.SzlId = szlId
+	m.SzlIndex = szlIndex
 	return m
 }
 

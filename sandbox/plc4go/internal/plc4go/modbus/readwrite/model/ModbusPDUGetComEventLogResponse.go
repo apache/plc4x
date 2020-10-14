@@ -25,10 +25,10 @@ import (
 
 // The data-structure of this message
 type ModbusPDUGetComEventLogResponse struct {
-	status       uint16
-	eventCount   uint16
-	messageCount uint16
-	events       []int8
+	Status       uint16
+	EventCount   uint16
+	MessageCount uint16
+	Events       []int8
 	ModbusPDU
 }
 
@@ -56,7 +56,7 @@ func (m ModbusPDUGetComEventLogResponse) initialize() spi.Message {
 }
 
 func NewModbusPDUGetComEventLogResponse(status uint16, eventCount uint16, messageCount uint16, events []int8) ModbusPDUInitializer {
-	return &ModbusPDUGetComEventLogResponse{status: status, eventCount: eventCount, messageCount: messageCount, events: events}
+	return &ModbusPDUGetComEventLogResponse{Status: status, EventCount: eventCount, MessageCount: messageCount, Events: events}
 }
 
 func CastIModbusPDUGetComEventLogResponse(structType interface{}) IModbusPDUGetComEventLogResponse {
@@ -95,8 +95,8 @@ func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Array field
-	if len(m.events) > 0 {
-		lengthInBits += 8 * uint16(len(m.events))
+	if len(m.Events) > 0 {
+		lengthInBits += 8 * uint16(len(m.Events))
 	}
 
 	return lengthInBits
@@ -152,36 +152,36 @@ func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(uint8(len(m.events))) + uint8(uint8(6)))
+		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}
 
 		// Simple Field (status)
-		status := uint16(m.status)
+		status := uint16(m.Status)
 		_statusErr := io.WriteUint16(16, (status))
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())
 		}
 
 		// Simple Field (eventCount)
-		eventCount := uint16(m.eventCount)
+		eventCount := uint16(m.EventCount)
 		_eventCountErr := io.WriteUint16(16, (eventCount))
 		if _eventCountErr != nil {
 			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
 		}
 
 		// Simple Field (messageCount)
-		messageCount := uint16(m.messageCount)
+		messageCount := uint16(m.MessageCount)
 		_messageCountErr := io.WriteUint16(16, (messageCount))
 		if _messageCountErr != nil {
 			return errors.New("Error serializing 'messageCount' field " + _messageCountErr.Error())
 		}
 
 		// Array Field (events)
-		if m.events != nil {
-			for _, _element := range m.events {
+		if m.Events != nil {
+			for _, _element := range m.Events {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'events' field " + _elementErr.Error())

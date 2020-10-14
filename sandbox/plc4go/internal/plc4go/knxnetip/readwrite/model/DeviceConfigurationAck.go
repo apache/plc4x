@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationAck struct {
-	deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
+	DeviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m DeviceConfigurationAck) initialize() spi.Message {
 }
 
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock) KNXNetIPMessageInitializer {
-	return &DeviceConfigurationAck{deviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
+	return &DeviceConfigurationAck{DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
 }
 
 func CastIDeviceConfigurationAck(structType interface{}) IDeviceConfigurationAck {
@@ -73,7 +73,7 @@ func (m DeviceConfigurationAck) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (deviceConfigurationAckDataBlock)
-	lengthInBits += m.deviceConfigurationAckDataBlock.LengthInBits()
+	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (deviceConfigurationAckDataBlock)
-		deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.deviceConfigurationAckDataBlock)
+		deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.DeviceConfigurationAckDataBlock)
 		_deviceConfigurationAckDataBlockErr := deviceConfigurationAckDataBlock.Serialize(io)
 		if _deviceConfigurationAckDataBlockErr != nil {
 			return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())

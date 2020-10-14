@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type S7MessageResponseData struct {
-	errorClass uint8
-	errorCode  uint8
+	ErrorClass uint8
+	ErrorCode  uint8
 	S7Message
 }
 
@@ -42,14 +42,14 @@ func (m S7MessageResponseData) MessageType() uint8 {
 }
 
 func (m S7MessageResponseData) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-	m.tpduReference = tpduReference
-	m.parameter = parameter
-	m.payload = payload
+	m.TpduReference = tpduReference
+	m.Parameter = parameter
+	m.Payload = payload
 	return m
 }
 
 func NewS7MessageResponseData(errorClass uint8, errorCode uint8) S7MessageInitializer {
-	return &S7MessageResponseData{errorClass: errorClass, errorCode: errorCode}
+	return &S7MessageResponseData{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 
 func CastIS7MessageResponseData(structType interface{}) IS7MessageResponseData {
@@ -110,14 +110,14 @@ func (m S7MessageResponseData) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (errorClass)
-		errorClass := uint8(m.errorClass)
+		errorClass := uint8(m.ErrorClass)
 		_errorClassErr := io.WriteUint8(8, (errorClass))
 		if _errorClassErr != nil {
 			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
 		}
 
 		// Simple Field (errorCode)
-		errorCode := uint8(m.errorCode)
+		errorCode := uint8(m.ErrorCode)
 		_errorCodeErr := io.WriteUint8(8, (errorCode))
 		if _errorCodeErr != nil {
 			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())

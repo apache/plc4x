@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type COTPPacketData struct {
-	eot     bool
-	tpduRef uint8
+	Eot     bool
+	TpduRef uint8
 	COTPPacket
 }
 
@@ -42,13 +42,13 @@ func (m COTPPacketData) TpduCode() uint8 {
 }
 
 func (m COTPPacketData) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.parameters = parameters
-	m.payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 	return m
 }
 
 func NewCOTPPacketData(eot bool, tpduRef uint8) COTPPacketInitializer {
-	return &COTPPacketData{eot: eot, tpduRef: tpduRef}
+	return &COTPPacketData{Eot: eot, TpduRef: tpduRef}
 }
 
 func CastICOTPPacketData(structType interface{}) ICOTPPacketData {
@@ -109,14 +109,14 @@ func (m COTPPacketData) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (eot)
-		eot := bool(m.eot)
+		eot := bool(m.Eot)
 		_eotErr := io.WriteBit((bool)(eot))
 		if _eotErr != nil {
 			return errors.New("Error serializing 'eot' field " + _eotErr.Error())
 		}
 
 		// Simple Field (tpduRef)
-		tpduRef := uint8(m.tpduRef)
+		tpduRef := uint8(m.TpduRef)
 		_tpduRefErr := io.WriteUint8(7, (tpduRef))
 		if _tpduRefErr != nil {
 			return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())

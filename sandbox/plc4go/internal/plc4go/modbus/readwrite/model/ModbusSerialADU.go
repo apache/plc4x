@@ -27,10 +27,10 @@ import (
 
 // The data-structure of this message
 type ModbusSerialADU struct {
-	transactionId uint16
-	length        uint16
-	address       uint8
-	pdu           IModbusPDU
+	TransactionId uint16
+	Length        uint16
+	Address       uint8
+	Pdu           IModbusPDU
 }
 
 // The corresponding interface
@@ -40,7 +40,7 @@ type IModbusSerialADU interface {
 }
 
 func NewModbusSerialADU(transactionId uint16, length uint16, address uint8, pdu IModbusPDU) spi.Message {
-	return &ModbusSerialADU{transactionId: transactionId, length: length, address: address, pdu: pdu}
+	return &ModbusSerialADU{TransactionId: transactionId, Length: length, Address: address, Pdu: pdu}
 }
 
 func CastIModbusSerialADU(structType interface{}) IModbusSerialADU {
@@ -79,7 +79,7 @@ func (m ModbusSerialADU) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (pdu)
-	lengthInBits += m.pdu.LengthInBits()
+	lengthInBits += m.Pdu.LengthInBits()
 
 	return lengthInBits
 }
@@ -140,7 +140,7 @@ func ModbusSerialADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error
 func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionId)
-	transactionId := uint16(m.transactionId)
+	transactionId := uint16(m.TransactionId)
 	_transactionIdErr := io.WriteUint16(16, (transactionId))
 	if _transactionIdErr != nil {
 		return errors.New("Error serializing 'transactionId' field " + _transactionIdErr.Error())
@@ -155,21 +155,21 @@ func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (length)
-	length := uint16(m.length)
+	length := uint16(m.Length)
 	_lengthErr := io.WriteUint16(16, (length))
 	if _lengthErr != nil {
 		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
 	}
 
 	// Simple Field (address)
-	address := uint8(m.address)
+	address := uint8(m.Address)
 	_addressErr := io.WriteUint8(8, (address))
 	if _addressErr != nil {
 		return errors.New("Error serializing 'address' field " + _addressErr.Error())
 	}
 
 	// Simple Field (pdu)
-	pdu := CastIModbusPDU(m.pdu)
+	pdu := CastIModbusPDU(m.Pdu)
 	_pduErr := pdu.Serialize(io)
 	if _pduErr != nil {
 		return errors.New("Error serializing 'pdu' field " + _pduErr.Error())

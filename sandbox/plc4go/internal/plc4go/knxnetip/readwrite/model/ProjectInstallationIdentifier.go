@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ProjectInstallationIdentifier struct {
-	projectNumber      uint8
-	installationNumber uint8
+	ProjectNumber      uint8
+	InstallationNumber uint8
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type IProjectInstallationIdentifier interface {
 }
 
 func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) spi.Message {
-	return &ProjectInstallationIdentifier{projectNumber: projectNumber, installationNumber: installationNumber}
+	return &ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
 }
 
 func CastIProjectInstallationIdentifier(structType interface{}) IProjectInstallationIdentifier {
@@ -96,14 +96,14 @@ func ProjectInstallationIdentifierParse(io *spi.ReadBuffer) (spi.Message, error)
 func (m ProjectInstallationIdentifier) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (projectNumber)
-	projectNumber := uint8(m.projectNumber)
+	projectNumber := uint8(m.ProjectNumber)
 	_projectNumberErr := io.WriteUint8(8, (projectNumber))
 	if _projectNumberErr != nil {
 		return errors.New("Error serializing 'projectNumber' field " + _projectNumberErr.Error())
 	}
 
 	// Simple Field (installationNumber)
-	installationNumber := uint8(m.installationNumber)
+	installationNumber := uint8(m.InstallationNumber)
 	_installationNumberErr := io.WriteUint8(8, (installationNumber))
 	if _installationNumberErr != nil {
 		return errors.New("Error serializing 'installationNumber' field " + _installationNumberErr.Error())

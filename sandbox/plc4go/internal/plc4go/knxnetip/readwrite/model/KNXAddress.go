@@ -25,9 +25,9 @@ import (
 
 // The data-structure of this message
 type KNXAddress struct {
-	mainGroup   uint8
-	middleGroup uint8
-	subGroup    uint8
+	MainGroup   uint8
+	MiddleGroup uint8
+	SubGroup    uint8
 }
 
 // The corresponding interface
@@ -37,7 +37,7 @@ type IKNXAddress interface {
 }
 
 func NewKNXAddress(mainGroup uint8, middleGroup uint8, subGroup uint8) spi.Message {
-	return &KNXAddress{mainGroup: mainGroup, middleGroup: middleGroup, subGroup: subGroup}
+	return &KNXAddress{MainGroup: mainGroup, MiddleGroup: middleGroup, SubGroup: subGroup}
 }
 
 func CastIKNXAddress(structType interface{}) IKNXAddress {
@@ -106,21 +106,21 @@ func KNXAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 func (m KNXAddress) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (mainGroup)
-	mainGroup := uint8(m.mainGroup)
+	mainGroup := uint8(m.MainGroup)
 	_mainGroupErr := io.WriteUint8(4, (mainGroup))
 	if _mainGroupErr != nil {
 		return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
 	}
 
 	// Simple Field (middleGroup)
-	middleGroup := uint8(m.middleGroup)
+	middleGroup := uint8(m.MiddleGroup)
 	_middleGroupErr := io.WriteUint8(4, (middleGroup))
 	if _middleGroupErr != nil {
 		return errors.New("Error serializing 'middleGroup' field " + _middleGroupErr.Error())
 	}
 
 	// Simple Field (subGroup)
-	subGroup := uint8(m.subGroup)
+	subGroup := uint8(m.SubGroup)
 	_subGroupErr := io.WriteUint8(8, (subGroup))
 	if _subGroupErr != nil {
 		return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())

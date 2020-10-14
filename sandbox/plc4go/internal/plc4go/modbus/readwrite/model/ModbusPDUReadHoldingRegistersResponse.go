@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadHoldingRegistersResponse struct {
-	value []int8
+	Value []int8
 	ModbusPDU
 }
 
@@ -53,7 +53,7 @@ func (m ModbusPDUReadHoldingRegistersResponse) initialize() spi.Message {
 }
 
 func NewModbusPDUReadHoldingRegistersResponse(value []int8) ModbusPDUInitializer {
-	return &ModbusPDUReadHoldingRegistersResponse{value: value}
+	return &ModbusPDUReadHoldingRegistersResponse{Value: value}
 }
 
 func CastIModbusPDUReadHoldingRegistersResponse(structType interface{}) IModbusPDUReadHoldingRegistersResponse {
@@ -83,8 +83,8 @@ func (m ModbusPDUReadHoldingRegistersResponse) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.value) > 0 {
-		lengthInBits += 8 * uint16(len(m.value))
+	if len(m.Value) > 0 {
+		lengthInBits += 8 * uint16(len(m.Value))
 	}
 
 	return lengthInBits
@@ -122,15 +122,15 @@ func (m ModbusPDUReadHoldingRegistersResponse) Serialize(io spi.WriteBuffer) err
 	ser := func() error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.value)))
+		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}
 
 		// Array Field (value)
-		if m.value != nil {
-			for _, _element := range m.value {
+		if m.Value != nil {
+			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'value' field " + _elementErr.Error())

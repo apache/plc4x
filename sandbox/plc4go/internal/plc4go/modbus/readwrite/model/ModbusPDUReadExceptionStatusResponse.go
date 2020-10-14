@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusResponse struct {
-	value uint8
+	Value uint8
 	ModbusPDU
 }
 
@@ -53,7 +53,7 @@ func (m ModbusPDUReadExceptionStatusResponse) initialize() spi.Message {
 }
 
 func NewModbusPDUReadExceptionStatusResponse(value uint8) ModbusPDUInitializer {
-	return &ModbusPDUReadExceptionStatusResponse{value: value}
+	return &ModbusPDUReadExceptionStatusResponse{Value: value}
 }
 
 func CastIModbusPDUReadExceptionStatusResponse(structType interface{}) IModbusPDUReadExceptionStatusResponse {
@@ -105,7 +105,7 @@ func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) erro
 	ser := func() error {
 
 		// Simple Field (value)
-		value := uint8(m.value)
+		value := uint8(m.Value)
 		_valueErr := io.WriteUint8(8, (value))
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())

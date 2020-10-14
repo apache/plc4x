@@ -30,7 +30,7 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = 28
 
 // The data-structure of this message
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
-	items []ISzlDataTreeItem
+	Items []ISzlDataTreeItem
 	S7PayloadUserDataItem
 }
 
@@ -46,15 +46,15 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) CpuFunctionType() uint8
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) initialize(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, szlId ISzlId, szlIndex uint16) spi.Message {
-	m.returnCode = returnCode
-	m.transportSize = transportSize
-	m.szlId = szlId
-	m.szlIndex = szlIndex
+	m.ReturnCode = returnCode
+	m.TransportSize = transportSize
+	m.SzlId = szlId
+	m.SzlIndex = szlIndex
 	return m
 }
 
 func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items []ISzlDataTreeItem) S7PayloadUserDataItemInitializer {
-	return &S7PayloadUserDataItemCpuFunctionReadSzlResponse{items: items}
+	return &S7PayloadUserDataItemCpuFunctionReadSzlResponse{Items: items}
 }
 
 func CastIS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) IS7PayloadUserDataItemCpuFunctionReadSzlResponse {
@@ -87,8 +87,8 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
+	if len(m.Items) > 0 {
+		for _, element := range m.Items {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -148,15 +148,15 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteB
 		}
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		szlItemCount := uint16(uint16(len(m.items)))
+		szlItemCount := uint16(uint16(len(m.Items)))
 		_szlItemCountErr := io.WriteUint16(16, (szlItemCount))
 		if _szlItemCountErr != nil {
 			return errors.New("Error serializing 'szlItemCount' field " + _szlItemCountErr.Error())
 		}
 
 		// Array Field (items)
-		if m.items != nil {
-			for _, _element := range m.items {
+		if m.Items != nil {
+			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'items' field " + _elementErr.Error())

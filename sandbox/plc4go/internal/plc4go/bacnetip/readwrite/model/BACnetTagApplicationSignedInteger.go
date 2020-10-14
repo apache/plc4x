@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type BACnetTagApplicationSignedInteger struct {
-	data []int8
+	Data []int8
 	BACnetTag
 }
 
@@ -41,15 +41,15 @@ func (m BACnetTagApplicationSignedInteger) ContextSpecificTag() uint8 {
 }
 
 func (m BACnetTagApplicationSignedInteger) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.typeOrTagNumber = typeOrTagNumber
-	m.lengthValueType = lengthValueType
-	m.extTagNumber = extTagNumber
-	m.extLength = extLength
+	m.TypeOrTagNumber = typeOrTagNumber
+	m.LengthValueType = lengthValueType
+	m.ExtTagNumber = extTagNumber
+	m.ExtLength = extLength
 	return m
 }
 
 func NewBACnetTagApplicationSignedInteger(data []int8) BACnetTagInitializer {
-	return &BACnetTagApplicationSignedInteger{data: data}
+	return &BACnetTagApplicationSignedInteger{Data: data}
 }
 
 func CastIBACnetTagApplicationSignedInteger(structType interface{}) IBACnetTagApplicationSignedInteger {
@@ -76,8 +76,8 @@ func (m BACnetTagApplicationSignedInteger) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
 	// Array field
-	if len(m.data) > 0 {
-		lengthInBits += 8 * uint16(len(m.data))
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
 	return lengthInBits
@@ -110,8 +110,8 @@ func (m BACnetTagApplicationSignedInteger) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (data)
-		if m.data != nil {
-			for _, _element := range m.data {
+		if m.Data != nil {
+			for _, _element := range m.Data {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'data' field " + _elementErr.Error())

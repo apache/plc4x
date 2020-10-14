@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type ConnectionResponseDataBlockTunnelConnection struct {
-	knxAddress IKNXAddress
+	KnxAddress IKNXAddress
 	ConnectionResponseDataBlock
 }
 
@@ -46,7 +46,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) initialize() spi.Message {
 }
 
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress IKNXAddress) ConnectionResponseDataBlockInitializer {
-	return &ConnectionResponseDataBlockTunnelConnection{knxAddress: knxAddress}
+	return &ConnectionResponseDataBlockTunnelConnection{KnxAddress: knxAddress}
 }
 
 func CastIConnectionResponseDataBlockTunnelConnection(structType interface{}) IConnectionResponseDataBlockTunnelConnection {
@@ -73,7 +73,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
 
 	// Simple field (knxAddress)
-	lengthInBits += m.knxAddress.LengthInBits()
+	lengthInBits += m.KnxAddress.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffe
 	ser := func() error {
 
 		// Simple Field (knxAddress)
-		knxAddress := CastIKNXAddress(m.knxAddress)
+		knxAddress := CastIKNXAddress(m.KnxAddress)
 		_knxAddressErr := knxAddress.Serialize(io)
 		if _knxAddressErr != nil {
 			return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())

@@ -30,10 +30,10 @@ const BACnetUnconfirmedServiceRequestWhoIs_DEVICEINSTANCERANGEHIGHLIMITHEADER ui
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWhoIs struct {
-	deviceInstanceRangeLowLimitLength  uint8
-	deviceInstanceRangeLowLimit        []int8
-	deviceInstanceRangeHighLimitLength uint8
-	deviceInstanceRangeHighLimit       []int8
+	DeviceInstanceRangeLowLimitLength  uint8
+	DeviceInstanceRangeLowLimit        []int8
+	DeviceInstanceRangeHighLimitLength uint8
+	DeviceInstanceRangeHighLimit       []int8
 	BACnetUnconfirmedServiceRequest
 }
 
@@ -53,7 +53,7 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) initialize() spi.Message {
 }
 
 func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength uint8, deviceInstanceRangeLowLimit []int8, deviceInstanceRangeHighLimitLength uint8, deviceInstanceRangeHighLimit []int8) BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestWhoIs{deviceInstanceRangeLowLimitLength: deviceInstanceRangeLowLimitLength, deviceInstanceRangeLowLimit: deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimitLength: deviceInstanceRangeHighLimitLength, deviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit}
+	return &BACnetUnconfirmedServiceRequestWhoIs{DeviceInstanceRangeLowLimitLength: deviceInstanceRangeLowLimitLength, DeviceInstanceRangeLowLimit: deviceInstanceRangeLowLimit, DeviceInstanceRangeHighLimitLength: deviceInstanceRangeHighLimitLength, DeviceInstanceRangeHighLimit: deviceInstanceRangeHighLimit}
 }
 
 func CastIBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) IBACnetUnconfirmedServiceRequestWhoIs {
@@ -86,8 +86,8 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.deviceInstanceRangeLowLimit) > 0 {
-		lengthInBits += 8 * uint16(len(m.deviceInstanceRangeLowLimit))
+	if len(m.DeviceInstanceRangeLowLimit) > 0 {
+		lengthInBits += 8 * uint16(len(m.DeviceInstanceRangeLowLimit))
 	}
 
 	// Const Field (deviceInstanceRangeHighLimitHeader)
@@ -97,8 +97,8 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.deviceInstanceRangeHighLimit) > 0 {
-		lengthInBits += 8 * uint16(len(m.deviceInstanceRangeHighLimit))
+	if len(m.DeviceInstanceRangeHighLimit) > 0 {
+		lengthInBits += 8 * uint16(len(m.DeviceInstanceRangeHighLimit))
 	}
 
 	return lengthInBits
@@ -178,15 +178,15 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io spi.WriteBuffer) erro
 		}
 
 		// Simple Field (deviceInstanceRangeLowLimitLength)
-		deviceInstanceRangeLowLimitLength := uint8(m.deviceInstanceRangeLowLimitLength)
+		deviceInstanceRangeLowLimitLength := uint8(m.DeviceInstanceRangeLowLimitLength)
 		_deviceInstanceRangeLowLimitLengthErr := io.WriteUint8(3, (deviceInstanceRangeLowLimitLength))
 		if _deviceInstanceRangeLowLimitLengthErr != nil {
 			return errors.New("Error serializing 'deviceInstanceRangeLowLimitLength' field " + _deviceInstanceRangeLowLimitLengthErr.Error())
 		}
 
 		// Array Field (deviceInstanceRangeLowLimit)
-		if m.deviceInstanceRangeLowLimit != nil {
-			for _, _element := range m.deviceInstanceRangeLowLimit {
+		if m.DeviceInstanceRangeLowLimit != nil {
+			for _, _element := range m.DeviceInstanceRangeLowLimit {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'deviceInstanceRangeLowLimit' field " + _elementErr.Error())
@@ -201,15 +201,15 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io spi.WriteBuffer) erro
 		}
 
 		// Simple Field (deviceInstanceRangeHighLimitLength)
-		deviceInstanceRangeHighLimitLength := uint8(m.deviceInstanceRangeHighLimitLength)
+		deviceInstanceRangeHighLimitLength := uint8(m.DeviceInstanceRangeHighLimitLength)
 		_deviceInstanceRangeHighLimitLengthErr := io.WriteUint8(3, (deviceInstanceRangeHighLimitLength))
 		if _deviceInstanceRangeHighLimitLengthErr != nil {
 			return errors.New("Error serializing 'deviceInstanceRangeHighLimitLength' field " + _deviceInstanceRangeHighLimitLengthErr.Error())
 		}
 
 		// Array Field (deviceInstanceRangeHighLimit)
-		if m.deviceInstanceRangeHighLimit != nil {
-			for _, _element := range m.deviceInstanceRangeHighLimit {
+		if m.DeviceInstanceRangeHighLimit != nil {
+			for _, _element := range m.DeviceInstanceRangeHighLimit {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'deviceInstanceRangeHighLimit' field " + _elementErr.Error())

@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class EIPDriverTestsuite extends DriverTestsuiteRunner {
 
     public EIPDriverTestsuite() {
-        super("/testsuite/EIPDriverTestsuite.xml");
+        super("/protocols/eip/DriverTestsuite.xml");
     }
 
 }

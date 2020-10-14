@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type ConnectionRequestInformationTunnelConnection struct {
-	knxLayer IKnxLayer
+	KnxLayer IKnxLayer
 	ConnectionRequestInformation
 }
 
@@ -46,7 +46,7 @@ func (m ConnectionRequestInformationTunnelConnection) initialize() spi.Message {
 }
 
 func NewConnectionRequestInformationTunnelConnection(knxLayer IKnxLayer) ConnectionRequestInformationInitializer {
-	return &ConnectionRequestInformationTunnelConnection{knxLayer: knxLayer}
+	return &ConnectionRequestInformationTunnelConnection{KnxLayer: knxLayer}
 }
 
 func CastIConnectionRequestInformationTunnelConnection(structType interface{}) IConnectionRequestInformationTunnelConnection {
@@ -115,7 +115,7 @@ func (m ConnectionRequestInformationTunnelConnection) Serialize(io spi.WriteBuff
 	ser := func() error {
 
 		// Enum field (knxLayer)
-		knxLayer := CastKnxLayer(m.knxLayer)
+		knxLayer := CastKnxLayer(m.KnxLayer)
 		_knxLayerErr := knxLayer.Serialize(io)
 		if _knxLayerErr != nil {
 			return errors.New("Error serializing 'knxLayer' field " + _knxLayerErr.Error())

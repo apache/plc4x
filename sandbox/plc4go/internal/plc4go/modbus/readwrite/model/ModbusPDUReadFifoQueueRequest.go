@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueRequest struct {
-	fifoPointerAddress uint16
+	FifoPointerAddress uint16
 	ModbusPDU
 }
 
@@ -53,7 +53,7 @@ func (m ModbusPDUReadFifoQueueRequest) initialize() spi.Message {
 }
 
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitializer {
-	return &ModbusPDUReadFifoQueueRequest{fifoPointerAddress: fifoPointerAddress}
+	return &ModbusPDUReadFifoQueueRequest{FifoPointerAddress: fifoPointerAddress}
 }
 
 func CastIModbusPDUReadFifoQueueRequest(structType interface{}) IModbusPDUReadFifoQueueRequest {
@@ -105,7 +105,7 @@ func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (fifoPointerAddress)
-		fifoPointerAddress := uint16(m.fifoPointerAddress)
+		fifoPointerAddress := uint16(m.FifoPointerAddress)
 		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
 		if _fifoPointerAddressErr != nil {
 			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())

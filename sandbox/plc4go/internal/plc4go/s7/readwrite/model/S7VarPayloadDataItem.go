@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type S7VarPayloadDataItem struct {
-	returnCode    IDataTransportErrorCode
-	transportSize IDataTransportSize
-	data          []int8
+	ReturnCode    IDataTransportErrorCode
+	TransportSize IDataTransportSize
+	Data          []int8
 }
 
 // The corresponding interface
@@ -38,7 +38,7 @@ type IS7VarPayloadDataItem interface {
 }
 
 func NewS7VarPayloadDataItem(returnCode IDataTransportErrorCode, transportSize IDataTransportSize, data []int8) spi.Message {
-	return &S7VarPayloadDataItem{returnCode: returnCode, transportSize: transportSize, data: data}
+	return &S7VarPayloadDataItem{ReturnCode: returnCode, TransportSize: transportSize, Data: data}
 }
 
 func CastIS7VarPayloadDataItem(structType interface{}) IS7VarPayloadDataItem {
@@ -74,12 +74,12 @@ func (m S7VarPayloadDataItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Array field
-	if len(m.data) > 0 {
-		lengthInBits += 8 * uint16(len(m.data))
+	if len(m.Data) > 0 {
+		lengthInBits += 8 * uint16(len(m.Data))
 	}
 
 	// Padding Field (padding)
-	_timesPadding := uint8(spi.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.data)))%uint8(uint8(2)))))
+	_timesPadding := uint8(spi.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data)))%uint8(uint8(2)))))
 	for ; _timesPadding > 0; _timesPadding-- {
 		lengthInBits += 8
 	}
@@ -142,29 +142,29 @@ func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, 
 func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error {
 
 	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
 	}
 
 	// Enum field (transportSize)
-	transportSize := CastDataTransportSize(m.transportSize)
+	transportSize := CastDataTransportSize(m.TransportSize)
 	_transportSizeErr := transportSize.Serialize(io)
 	if _transportSizeErr != nil {
 		return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	dataLength := uint16(uint16(uint16(len(m.data))) * uint16(uint16(spi.InlineIf(bool(bool((m.transportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
+	dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(spi.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
 	_dataLengthErr := io.WriteUint16(16, (dataLength))
 	if _dataLengthErr != nil {
 		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
 	}
 
 	// Array Field (data)
-	if m.data != nil {
-		for _, _element := range m.data {
+	if m.Data != nil {
+		for _, _element := range m.Data {
 			_elementErr := io.WriteInt8(8, _element)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'data' field " + _elementErr.Error())
@@ -174,7 +174,7 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error
 
 	// Padding Field (padding)
 	{
-		_timesPadding := uint8(spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.data)))%uint8(uint8(2)))))
+		_timesPadding := uint8(spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data)))%uint8(uint8(2)))))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(uint8(0))
 			_paddingErr := io.WriteUint8(8, (_paddingValue))

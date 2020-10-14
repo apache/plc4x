@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type KnxNetRemoteConfigurationAndDiagnosis struct {
-	version uint8
+	Version uint8
 	ServiceId
 }
 
@@ -45,7 +45,7 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) initialize() spi.Message {
 }
 
 func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) ServiceIdInitializer {
-	return &KnxNetRemoteConfigurationAndDiagnosis{version: version}
+	return &KnxNetRemoteConfigurationAndDiagnosis{Version: version}
 }
 
 func CastIKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) IKnxNetRemoteConfigurationAndDiagnosis {
@@ -97,7 +97,7 @@ func (m KnxNetRemoteConfigurationAndDiagnosis) Serialize(io spi.WriteBuffer) err
 	ser := func() error {
 
 		// Simple Field (version)
-		version := uint8(m.version)
+		version := uint8(m.Version)
 		_versionErr := io.WriteUint8(8, (version))
 		if _versionErr != nil {
 			return errors.New("Error serializing 'version' field " + _versionErr.Error())

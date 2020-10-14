@@ -31,9 +31,9 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // The data-structure of this message
 type S7Message struct {
-	tpduReference uint16
-	parameter     *IS7Parameter
-	payload       *IS7Payload
+	TpduReference uint16
+	Parameter     *IS7Parameter
+	Payload       *IS7Payload
 }
 
 // The corresponding interface
@@ -95,13 +95,13 @@ func (m S7Message) LengthInBits() uint16 {
 	// Length of sub-type elements will be added by sub-type...
 
 	// Optional Field (parameter)
-	if m.parameter != nil {
-		lengthInBits += (*m.parameter).LengthInBits()
+	if m.Parameter != nil {
+		lengthInBits += (*m.Parameter).LengthInBits()
 	}
 
 	// Optional Field (payload)
-	if m.payload != nil {
-		lengthInBits += (*m.payload).LengthInBits()
+	if m.Payload != nil {
+		lengthInBits += (*m.Payload).LengthInBits()
 	}
 
 	return lengthInBits
@@ -235,21 +235,21 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
 	}
 
 	// Simple Field (tpduReference)
-	tpduReference := uint16(m.tpduReference)
+	tpduReference := uint16(m.TpduReference)
 	_tpduReferenceErr := io.WriteUint16(16, (tpduReference))
 	if _tpduReferenceErr != nil {
 		return errors.New("Error serializing 'tpduReference' field " + _tpduReferenceErr.Error())
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint16(spi.InlineIf(bool((m.parameter) != (nil)), uint16((*m.parameter).LengthInBytes()), uint16(uint16(0))))
+	parameterLength := uint16(spi.InlineIf(bool((m.Parameter) != (nil)), uint16((*m.Parameter).LengthInBytes()), uint16(uint16(0))))
 	_parameterLengthErr := io.WriteUint16(16, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength := uint16(spi.InlineIf(bool((m.payload) != (nil)), uint16((*m.payload).LengthInBytes()), uint16(uint16(0))))
+	payloadLength := uint16(spi.InlineIf(bool((m.Payload) != (nil)), uint16((*m.Payload).LengthInBytes()), uint16(uint16(0))))
 	_payloadLengthErr := io.WriteUint16(16, (payloadLength))
 	if _payloadLengthErr != nil {
 		return errors.New("Error serializing 'payloadLength' field " + _payloadLengthErr.Error())
@@ -263,8 +263,8 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
 
 	// Optional Field (parameter) (Can be skipped, if the value is null)
 	var parameter *IS7Parameter = nil
-	if m.parameter != nil {
-		parameter = m.parameter
+	if m.Parameter != nil {
+		parameter = m.Parameter
 		_parameterErr := CastIS7Parameter(*parameter).Serialize(io)
 		if _parameterErr != nil {
 			return errors.New("Error serializing 'parameter' field " + _parameterErr.Error())
@@ -273,8 +273,8 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
 
 	// Optional Field (payload) (Can be skipped, if the value is null)
 	var payload *IS7Payload = nil
-	if m.payload != nil {
-		payload = m.payload
+	if m.Payload != nil {
+		payload = m.Payload
 		_payloadErr := CastIS7Payload(*payload).Serialize(io)
 		if _payloadErr != nil {
 			return errors.New("Error serializing 'payload' field " + _payloadErr.Error())

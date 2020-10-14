@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type DescriptionRequest struct {
-	hpaiControlEndpoint IHPAIControlEndpoint
+	HpaiControlEndpoint IHPAIControlEndpoint
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m DescriptionRequest) initialize() spi.Message {
 }
 
 func NewDescriptionRequest(hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
-	return &DescriptionRequest{hpaiControlEndpoint: hpaiControlEndpoint}
+	return &DescriptionRequest{HpaiControlEndpoint: hpaiControlEndpoint}
 }
 
 func CastIDescriptionRequest(structType interface{}) IDescriptionRequest {
@@ -73,7 +73,7 @@ func (m DescriptionRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.hpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m DescriptionRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (hpaiControlEndpoint)
-		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
 		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())

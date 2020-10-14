@@ -26,10 +26,10 @@ import (
 
 // The data-structure of this message
 type S7PayloadUserDataItem struct {
-	returnCode    IDataTransportErrorCode
-	transportSize IDataTransportSize
-	szlId         ISzlId
-	szlIndex      uint16
+	ReturnCode    IDataTransportErrorCode
+	TransportSize IDataTransportSize
+	SzlId         ISzlId
+	SzlIndex      uint16
 }
 
 // The corresponding interface
@@ -80,7 +80,7 @@ func (m S7PayloadUserDataItem) LengthInBits() uint16 {
 	lengthInBits += 16
 
 	// Simple field (szlId)
-	lengthInBits += m.szlId.LengthInBits()
+	lengthInBits += m.SzlId.LengthInBits()
 
 	// Simple field (szlIndex)
 	lengthInBits += 16
@@ -151,14 +151,14 @@ func S7PayloadUserDataItemParse(io *spi.ReadBuffer, cpuFunctionType uint8) (spi.
 func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func() error) error {
 
 	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.returnCode)
+	returnCode := CastDataTransportErrorCode(m.ReturnCode)
 	_returnCodeErr := returnCode.Serialize(io)
 	if _returnCodeErr != nil {
 		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
 	}
 
 	// Enum field (transportSize)
-	transportSize := CastDataTransportSize(m.transportSize)
+	transportSize := CastDataTransportSize(m.TransportSize)
 	_transportSizeErr := transportSize.Serialize(io)
 	if _transportSizeErr != nil {
 		return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
@@ -172,14 +172,14 @@ func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem,
 	}
 
 	// Simple Field (szlId)
-	szlId := CastISzlId(m.szlId)
+	szlId := CastISzlId(m.SzlId)
 	_szlIdErr := szlId.Serialize(io)
 	if _szlIdErr != nil {
 		return errors.New("Error serializing 'szlId' field " + _szlIdErr.Error())
 	}
 
 	// Simple Field (szlIndex)
-	szlIndex := uint16(m.szlIndex)
+	szlIndex := uint16(m.SzlIndex)
 	_szlIndexErr := io.WriteUint16(16, (szlIndex))
 	if _szlIndexErr != nil {
 		return errors.New("Error serializing 'szlIndex' field " + _szlIndexErr.Error())

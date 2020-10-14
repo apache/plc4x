@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7ParameterUserData struct {
-	items []IS7ParameterUserDataItem
+	Items []IS7ParameterUserDataItem
 	S7Parameter
 }
 
@@ -50,7 +50,7 @@ func (m S7ParameterUserData) initialize() spi.Message {
 }
 
 func NewS7ParameterUserData(items []IS7ParameterUserDataItem) S7ParameterInitializer {
-	return &S7ParameterUserData{items: items}
+	return &S7ParameterUserData{Items: items}
 }
 
 func CastIS7ParameterUserData(structType interface{}) IS7ParameterUserData {
@@ -80,8 +80,8 @@ func (m S7ParameterUserData) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
+	if len(m.Items) > 0 {
+		for _, element := range m.Items {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -126,15 +126,15 @@ func (m S7ParameterUserData) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		numItems := uint8(uint8(len(m.items)))
+		numItems := uint8(uint8(len(m.Items)))
 		_numItemsErr := io.WriteUint8(8, (numItems))
 		if _numItemsErr != nil {
 			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
 		}
 
 		// Array Field (items)
-		if m.items != nil {
-			for _, _element := range m.items {
+		if m.Items != nil {
+			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'items' field " + _elementErr.Error())

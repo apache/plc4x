@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type COTPPacketDisconnectResponse struct {
-	destinationReference uint16
-	sourceReference      uint16
+	DestinationReference uint16
+	SourceReference      uint16
 	COTPPacket
 }
 
@@ -42,13 +42,13 @@ func (m COTPPacketDisconnectResponse) TpduCode() uint8 {
 }
 
 func (m COTPPacketDisconnectResponse) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.parameters = parameters
-	m.payload = payload
+	m.Parameters = parameters
+	m.Payload = payload
 	return m
 }
 
 func NewCOTPPacketDisconnectResponse(destinationReference uint16, sourceReference uint16) COTPPacketInitializer {
-	return &COTPPacketDisconnectResponse{destinationReference: destinationReference, sourceReference: sourceReference}
+	return &COTPPacketDisconnectResponse{DestinationReference: destinationReference, SourceReference: sourceReference}
 }
 
 func CastICOTPPacketDisconnectResponse(structType interface{}) ICOTPPacketDisconnectResponse {
@@ -109,14 +109,14 @@ func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (destinationReference)
-		destinationReference := uint16(m.destinationReference)
+		destinationReference := uint16(m.DestinationReference)
 		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
 		if _destinationReferenceErr != nil {
 			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
 		}
 
 		// Simple Field (sourceReference)
-		sourceReference := uint16(m.sourceReference)
+		sourceReference := uint16(m.SourceReference)
 		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
 		if _sourceReferenceErr != nil {
 			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())

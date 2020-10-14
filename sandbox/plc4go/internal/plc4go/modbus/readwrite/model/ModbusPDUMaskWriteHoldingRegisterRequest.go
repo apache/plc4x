@@ -25,9 +25,9 @@ import (
 
 // The data-structure of this message
 type ModbusPDUMaskWriteHoldingRegisterRequest struct {
-	referenceAddress uint16
-	andMask          uint16
-	orMask           uint16
+	ReferenceAddress uint16
+	AndMask          uint16
+	OrMask           uint16
 	ModbusPDU
 }
 
@@ -55,7 +55,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) initialize() spi.Message {
 }
 
 func NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {
-	return &ModbusPDUMaskWriteHoldingRegisterRequest{referenceAddress: referenceAddress, andMask: andMask, orMask: orMask}
+	return &ModbusPDUMaskWriteHoldingRegisterRequest{ReferenceAddress: referenceAddress, AndMask: andMask, OrMask: orMask}
 }
 
 func CastIModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) IModbusPDUMaskWriteHoldingRegisterRequest {
@@ -125,21 +125,21 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io spi.WriteBuffer) 
 	ser := func() error {
 
 		// Simple Field (referenceAddress)
-		referenceAddress := uint16(m.referenceAddress)
+		referenceAddress := uint16(m.ReferenceAddress)
 		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
 		if _referenceAddressErr != nil {
 			return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
 		}
 
 		// Simple Field (andMask)
-		andMask := uint16(m.andMask)
+		andMask := uint16(m.AndMask)
 		_andMaskErr := io.WriteUint16(16, (andMask))
 		if _andMaskErr != nil {
 			return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
 		}
 
 		// Simple Field (orMask)
-		orMask := uint16(m.orMask)
+		orMask := uint16(m.OrMask)
 		_orMaskErr := io.WriteUint16(16, (orMask))
 		if _orMaskErr != nil {
 			return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())

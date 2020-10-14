@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DIBSuppSvcFamilies struct {
-	descriptionType uint8
-	serviceIds      []IServiceId
+	DescriptionType uint8
+	ServiceIds      []IServiceId
 }
 
 // The corresponding interface
@@ -37,7 +37,7 @@ type IDIBSuppSvcFamilies interface {
 }
 
 func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []IServiceId) spi.Message {
-	return &DIBSuppSvcFamilies{descriptionType: descriptionType, serviceIds: serviceIds}
+	return &DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
 }
 
 func CastIDIBSuppSvcFamilies(structType interface{}) IDIBSuppSvcFamilies {
@@ -70,8 +70,8 @@ func (m DIBSuppSvcFamilies) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Array field
-	if len(m.serviceIds) > 0 {
-		for _, element := range m.serviceIds {
+	if len(m.ServiceIds) > 0 {
+		for _, element := range m.ServiceIds {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -128,15 +128,15 @@ func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (descriptionType)
-	descriptionType := uint8(m.descriptionType)
+	descriptionType := uint8(m.DescriptionType)
 	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
 	if _descriptionTypeErr != nil {
 		return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
 	}
 
 	// Array Field (serviceIds)
-	if m.serviceIds != nil {
-		for _, _element := range m.serviceIds {
+	if m.ServiceIds != nil {
+		for _, _element := range m.ServiceIds {
 			_elementErr := _element.Serialize(io)
 			if _elementErr != nil {
 				return errors.New("Error serializing 'serviceIds' field " + _elementErr.Error())

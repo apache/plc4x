@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type APDUReject struct {
-	originalInvokeId uint8
-	rejectReason     uint8
+	OriginalInvokeId uint8
+	RejectReason     uint8
 	APDU
 }
 
@@ -47,7 +47,7 @@ func (m APDUReject) initialize() spi.Message {
 }
 
 func NewAPDUReject(originalInvokeId uint8, rejectReason uint8) APDUInitializer {
-	return &APDUReject{originalInvokeId: originalInvokeId, rejectReason: rejectReason}
+	return &APDUReject{OriginalInvokeId: originalInvokeId, RejectReason: rejectReason}
 }
 
 func CastIAPDUReject(structType interface{}) IAPDUReject {
@@ -133,14 +133,14 @@ func (m APDUReject) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (rejectReason)
-		rejectReason := uint8(m.rejectReason)
+		rejectReason := uint8(m.RejectReason)
 		_rejectReasonErr := io.WriteUint8(8, (rejectReason))
 		if _rejectReasonErr != nil {
 			return errors.New("Error serializing 'rejectReason' field " + _rejectReasonErr.Error())

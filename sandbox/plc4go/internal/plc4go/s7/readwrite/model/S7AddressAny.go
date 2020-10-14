@@ -26,12 +26,12 @@ import (
 
 // The data-structure of this message
 type S7AddressAny struct {
-	transportSize    ITransportSize
-	numberOfElements uint16
-	dbNumber         uint16
-	area             IMemoryArea
-	byteAddress      uint16
-	bitAddress       uint8
+	TransportSize    ITransportSize
+	NumberOfElements uint16
+	DbNumber         uint16
+	Area             IMemoryArea
+	ByteAddress      uint16
+	BitAddress       uint8
 	S7Address
 }
 
@@ -51,7 +51,7 @@ func (m S7AddressAny) initialize() spi.Message {
 }
 
 func NewS7AddressAny(transportSize ITransportSize, numberOfElements uint16, dbNumber uint16, area IMemoryArea, byteAddress uint16, bitAddress uint8) S7AddressInitializer {
-	return &S7AddressAny{transportSize: transportSize, numberOfElements: numberOfElements, dbNumber: dbNumber, area: area, byteAddress: byteAddress, bitAddress: bitAddress}
+	return &S7AddressAny{TransportSize: transportSize, NumberOfElements: numberOfElements, DbNumber: dbNumber, Area: area, ByteAddress: byteAddress, BitAddress: bitAddress}
 }
 
 func CastIS7AddressAny(structType interface{}) IS7AddressAny {
@@ -165,28 +165,28 @@ func (m S7AddressAny) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Enum field (transportSize)
-		transportSize := CastTransportSize(m.transportSize)
+		transportSize := CastTransportSize(m.TransportSize)
 		_transportSizeErr := transportSize.Serialize(io)
 		if _transportSizeErr != nil {
 			return errors.New("Error serializing 'transportSize' field " + _transportSizeErr.Error())
 		}
 
 		// Simple Field (numberOfElements)
-		numberOfElements := uint16(m.numberOfElements)
+		numberOfElements := uint16(m.NumberOfElements)
 		_numberOfElementsErr := io.WriteUint16(16, (numberOfElements))
 		if _numberOfElementsErr != nil {
 			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
 		}
 
 		// Simple Field (dbNumber)
-		dbNumber := uint16(m.dbNumber)
+		dbNumber := uint16(m.DbNumber)
 		_dbNumberErr := io.WriteUint16(16, (dbNumber))
 		if _dbNumberErr != nil {
 			return errors.New("Error serializing 'dbNumber' field " + _dbNumberErr.Error())
 		}
 
 		// Enum field (area)
-		area := CastMemoryArea(m.area)
+		area := CastMemoryArea(m.Area)
 		_areaErr := area.Serialize(io)
 		if _areaErr != nil {
 			return errors.New("Error serializing 'area' field " + _areaErr.Error())
@@ -201,14 +201,14 @@ func (m S7AddressAny) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (byteAddress)
-		byteAddress := uint16(m.byteAddress)
+		byteAddress := uint16(m.ByteAddress)
 		_byteAddressErr := io.WriteUint16(16, (byteAddress))
 		if _byteAddressErr != nil {
 			return errors.New("Error serializing 'byteAddress' field " + _byteAddressErr.Error())
 		}
 
 		// Simple Field (bitAddress)
-		bitAddress := uint8(m.bitAddress)
+		bitAddress := uint8(m.BitAddress)
 		_bitAddressErr := io.WriteUint8(3, (bitAddress))
 		if _bitAddressErr != nil {
 			return errors.New("Error serializing 'bitAddress' field " + _bitAddressErr.Error())

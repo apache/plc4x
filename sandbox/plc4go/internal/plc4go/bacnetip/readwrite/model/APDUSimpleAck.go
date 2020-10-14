@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type APDUSimpleAck struct {
-	originalInvokeId uint8
-	serviceChoice    uint8
+	OriginalInvokeId uint8
+	ServiceChoice    uint8
 	APDU
 }
 
@@ -47,7 +47,7 @@ func (m APDUSimpleAck) initialize() spi.Message {
 }
 
 func NewAPDUSimpleAck(originalInvokeId uint8, serviceChoice uint8) APDUInitializer {
-	return &APDUSimpleAck{originalInvokeId: originalInvokeId, serviceChoice: serviceChoice}
+	return &APDUSimpleAck{OriginalInvokeId: originalInvokeId, ServiceChoice: serviceChoice}
 }
 
 func CastIAPDUSimpleAck(structType interface{}) IAPDUSimpleAck {
@@ -133,14 +133,14 @@ func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (originalInvokeId)
-		originalInvokeId := uint8(m.originalInvokeId)
+		originalInvokeId := uint8(m.OriginalInvokeId)
 		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (serviceChoice)
-		serviceChoice := uint8(m.serviceChoice)
+		serviceChoice := uint8(m.ServiceChoice)
 		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
 		if _serviceChoiceErr != nil {
 			return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())

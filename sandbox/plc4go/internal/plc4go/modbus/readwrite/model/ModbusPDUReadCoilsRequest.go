@@ -25,8 +25,8 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadCoilsRequest struct {
-	startingAddress uint16
-	quantity        uint16
+	StartingAddress uint16
+	Quantity        uint16
 	ModbusPDU
 }
 
@@ -54,7 +54,7 @@ func (m ModbusPDUReadCoilsRequest) initialize() spi.Message {
 }
 
 func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) ModbusPDUInitializer {
-	return &ModbusPDUReadCoilsRequest{startingAddress: startingAddress, quantity: quantity}
+	return &ModbusPDUReadCoilsRequest{StartingAddress: startingAddress, Quantity: quantity}
 }
 
 func CastIModbusPDUReadCoilsRequest(structType interface{}) IModbusPDUReadCoilsRequest {
@@ -115,14 +115,14 @@ func (m ModbusPDUReadCoilsRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (startingAddress)
-		startingAddress := uint16(m.startingAddress)
+		startingAddress := uint16(m.StartingAddress)
 		_startingAddressErr := io.WriteUint16(16, (startingAddress))
 		if _startingAddressErr != nil {
 			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
 		}
 
 		// Simple Field (quantity)
-		quantity := uint16(m.quantity)
+		quantity := uint16(m.Quantity)
 		_quantityErr := io.WriteUint16(16, (quantity))
 		if _quantityErr != nil {
 			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())

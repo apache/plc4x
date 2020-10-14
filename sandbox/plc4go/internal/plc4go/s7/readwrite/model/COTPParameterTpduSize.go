@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type COTPParameterTpduSize struct {
-	tpduSize ICOTPTpduSize
+	TpduSize ICOTPTpduSize
 	COTPParameter
 }
 
@@ -45,7 +45,7 @@ func (m COTPParameterTpduSize) initialize() spi.Message {
 }
 
 func NewCOTPParameterTpduSize(tpduSize ICOTPTpduSize) COTPParameterInitializer {
-	return &COTPParameterTpduSize{tpduSize: tpduSize}
+	return &COTPParameterTpduSize{TpduSize: tpduSize}
 }
 
 func CastICOTPParameterTpduSize(structType interface{}) ICOTPParameterTpduSize {
@@ -97,7 +97,7 @@ func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Enum field (tpduSize)
-		tpduSize := CastCOTPTpduSize(m.tpduSize)
+		tpduSize := CastCOTPTpduSize(m.TpduSize)
 		_tpduSizeErr := tpduSize.Serialize(io)
 		if _tpduSizeErr != nil {
 			return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())

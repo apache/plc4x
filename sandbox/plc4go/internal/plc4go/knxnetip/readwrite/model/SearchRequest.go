@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type SearchRequest struct {
-	hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
+	HpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint
 	KNXNetIPMessage
 }
 
@@ -46,7 +46,7 @@ func (m SearchRequest) initialize() spi.Message {
 }
 
 func NewSearchRequest(hpaiIDiscoveryEndpoint IHPAIDiscoveryEndpoint) KNXNetIPMessageInitializer {
-	return &SearchRequest{hpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint}
+	return &SearchRequest{HpaiIDiscoveryEndpoint: hpaiIDiscoveryEndpoint}
 }
 
 func CastISearchRequest(structType interface{}) ISearchRequest {
@@ -73,7 +73,7 @@ func (m SearchRequest) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (hpaiIDiscoveryEndpoint)
-	lengthInBits += m.hpaiIDiscoveryEndpoint.LengthInBits()
+	lengthInBits += m.HpaiIDiscoveryEndpoint.LengthInBits()
 
 	return lengthInBits
 }
@@ -103,7 +103,7 @@ func (m SearchRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (hpaiIDiscoveryEndpoint)
-		hpaiIDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.hpaiIDiscoveryEndpoint)
+		hpaiIDiscoveryEndpoint := CastIHPAIDiscoveryEndpoint(m.HpaiIDiscoveryEndpoint)
 		_hpaiIDiscoveryEndpointErr := hpaiIDiscoveryEndpoint.Serialize(io)
 		if _hpaiIDiscoveryEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiIDiscoveryEndpoint' field " + _hpaiIDiscoveryEndpointErr.Error())

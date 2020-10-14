@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type DeviceStatus struct {
-	programMode bool
+	ProgramMode bool
 }
 
 // The corresponding interface
@@ -36,7 +36,7 @@ type IDeviceStatus interface {
 }
 
 func NewDeviceStatus(programMode bool) spi.Message {
-	return &DeviceStatus{programMode: programMode}
+	return &DeviceStatus{ProgramMode: programMode}
 }
 
 func CastIDeviceStatus(structType interface{}) IDeviceStatus {
@@ -112,7 +112,7 @@ func (m DeviceStatus) Serialize(io spi.WriteBuffer) error {
 	}
 
 	// Simple Field (programMode)
-	programMode := bool(m.programMode)
+	programMode := bool(m.ProgramMode)
 	_programModeErr := io.WriteBit((bool)(programMode))
 	if _programModeErr != nil {
 		return errors.New("Error serializing 'programMode' field " + _programModeErr.Error())

@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type RelativeTimestamp struct {
-	timestamp uint16
+	Timestamp uint16
 }
 
 // The corresponding interface
@@ -35,7 +35,7 @@ type IRelativeTimestamp interface {
 }
 
 func NewRelativeTimestamp(timestamp uint16) spi.Message {
-	return &RelativeTimestamp{timestamp: timestamp}
+	return &RelativeTimestamp{Timestamp: timestamp}
 }
 
 func CastIRelativeTimestamp(structType interface{}) IRelativeTimestamp {
@@ -86,7 +86,7 @@ func RelativeTimestampParse(io *spi.ReadBuffer) (spi.Message, error) {
 func (m RelativeTimestamp) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (timestamp)
-	timestamp := uint16(m.timestamp)
+	timestamp := uint16(m.Timestamp)
 	_timestampErr := io.WriteUint16(16, (timestamp))
 	if _timestampErr != nil {
 		return errors.New("Error serializing 'timestamp' field " + _timestampErr.Error())

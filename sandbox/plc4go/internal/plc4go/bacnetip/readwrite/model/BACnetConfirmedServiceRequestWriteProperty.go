@@ -33,12 +33,12 @@ const BACnetConfirmedServiceRequestWriteProperty_CLOSINGTAG uint8 = 0x3F
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestWriteProperty struct {
-	objectType               uint16
-	objectInstanceNumber     uint32
-	propertyIdentifierLength uint8
-	propertyIdentifier       []int8
-	value                    IBACnetTag
-	priority                 *IBACnetTag
+	ObjectType               uint16
+	ObjectInstanceNumber     uint32
+	PropertyIdentifierLength uint8
+	PropertyIdentifier       []int8
+	Value                    IBACnetTag
+	Priority                 *IBACnetTag
 	BACnetConfirmedServiceRequest
 }
 
@@ -58,7 +58,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) initialize() spi.Message {
 }
 
 func NewBACnetConfirmedServiceRequestWriteProperty(objectType uint16, objectInstanceNumber uint32, propertyIdentifierLength uint8, propertyIdentifier []int8, value IBACnetTag, priority *IBACnetTag) BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestWriteProperty{objectType: objectType, objectInstanceNumber: objectInstanceNumber, propertyIdentifierLength: propertyIdentifierLength, propertyIdentifier: propertyIdentifier, value: value, priority: priority}
+	return &BACnetConfirmedServiceRequestWriteProperty{ObjectType: objectType, ObjectInstanceNumber: objectInstanceNumber, PropertyIdentifierLength: propertyIdentifierLength, PropertyIdentifier: propertyIdentifier, Value: value, Priority: priority}
 }
 
 func CastIBACnetConfirmedServiceRequestWriteProperty(structType interface{}) IBACnetConfirmedServiceRequestWriteProperty {
@@ -100,22 +100,22 @@ func (m BACnetConfirmedServiceRequestWriteProperty) LengthInBits() uint16 {
 	lengthInBits += 3
 
 	// Array field
-	if len(m.propertyIdentifier) > 0 {
-		lengthInBits += 8 * uint16(len(m.propertyIdentifier))
+	if len(m.PropertyIdentifier) > 0 {
+		lengthInBits += 8 * uint16(len(m.PropertyIdentifier))
 	}
 
 	// Const Field (openingTag)
 	lengthInBits += 8
 
 	// Simple field (value)
-	lengthInBits += m.value.LengthInBits()
+	lengthInBits += m.Value.LengthInBits()
 
 	// Const Field (closingTag)
 	lengthInBits += 8
 
 	// Optional Field (priority)
-	if m.priority != nil {
-		lengthInBits += (*m.priority).LengthInBits()
+	if m.Priority != nil {
+		lengthInBits += (*m.Priority).LengthInBits()
 	}
 
 	return lengthInBits
@@ -236,14 +236,14 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer
 		}
 
 		// Simple Field (objectType)
-		objectType := uint16(m.objectType)
+		objectType := uint16(m.ObjectType)
 		_objectTypeErr := io.WriteUint16(10, (objectType))
 		if _objectTypeErr != nil {
 			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstanceNumber)
-		objectInstanceNumber := uint32(m.objectInstanceNumber)
+		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
 		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
 		if _objectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
@@ -256,15 +256,15 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer
 		}
 
 		// Simple Field (propertyIdentifierLength)
-		propertyIdentifierLength := uint8(m.propertyIdentifierLength)
+		propertyIdentifierLength := uint8(m.PropertyIdentifierLength)
 		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
 		if _propertyIdentifierLengthErr != nil {
 			return errors.New("Error serializing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
 		}
 
 		// Array Field (propertyIdentifier)
-		if m.propertyIdentifier != nil {
-			for _, _element := range m.propertyIdentifier {
+		if m.PropertyIdentifier != nil {
+			for _, _element := range m.PropertyIdentifier {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'propertyIdentifier' field " + _elementErr.Error())
@@ -279,7 +279,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer
 		}
 
 		// Simple Field (value)
-		value := CastIBACnetTag(m.value)
+		value := CastIBACnetTag(m.Value)
 		_valueErr := value.Serialize(io)
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())
@@ -293,8 +293,8 @@ func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer
 
 		// Optional Field (priority) (Can be skipped, if the value is null)
 		var priority *IBACnetTag = nil
-		if m.priority != nil {
-			priority = m.priority
+		if m.Priority != nil {
+			priority = m.Priority
 			_priorityErr := CastIBACnetTag(*priority).Serialize(io)
 			if _priorityErr != nil {
 				return errors.New("Error serializing 'priority' field " + _priorityErr.Error())

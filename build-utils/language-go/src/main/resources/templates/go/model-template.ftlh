@@ -82,7 +82,7 @@ type ${type.name} struct {
 <#-- Prpoerty fields are fields that require a property in the pojo -->
 <#if type.propertyFields?has_content>
 <#list type.propertyFields as field>
-    ${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}
+    ${field.name?cap_first} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}
 </#list>
 </#if>
 <#--
@@ -141,14 +141,14 @@ func ${type.name}${discriminatorName?cap_first}(m I${type.name}) ${helper.getLan
 <#else>
 <#if type.parentType??>func (m ${type.name}) initialize(<#list type.parentType.getAllPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) spi.Message {
     <#list type.parentType.getAllPropertyFields() as field>
-    m.${field.name} = ${field.name}
+    m.${field.name?cap_first} = ${field.name}
     </#list>
     return m
 }
 </#if>
 
 func New${type.name}(<#list type.getPropertyFields() as field>${field.name} <#if field.typeName == "optional">*</#if><#if field.loopType??>[]</#if><#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>) <#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if> {
-    return &${type.name}{<#list type.getPropertyFields() as field>${field.name}: ${field.name}<#sep>, </#sep></#list>}
+    return &${type.name}{<#list type.getPropertyFields() as field>${field.name?cap_first}: ${field.name}<#sep>, </#sep></#list>}
 }
 </#if>
 
@@ -180,12 +180,12 @@ func (m ${type.name}) LengthInBits() uint16 {
                 <#assign arrayField = field>
 
     // Array field
-    if len(m.${arrayField.name}) > 0 {
+    if len(m.${arrayField.name?cap_first}) > 0 {
                 <#if helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type>
-        lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name}))
+        lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
                 <#else>
-        for _, element := range m.${arrayField.name} {
+        for _, element := range m.${arrayField.name?cap_first} {
             lengthInBits += element.LengthInBits()
         }
                 </#if>
@@ -241,12 +241,12 @@ func (m ${type.name}) LengthInBits() uint16 {
                 <#assign optionalField = field>
 
     // Optional Field (${optionalField.name})
-    if m.${optionalField.name} != nil {
+    if m.${optionalField.name?cap_first} != nil {
                 <#if helper.isSimpleTypeReference(optionalField.type)>
                     <#assign simpleTypeReference = optionalField.type>
         lengthInBits += ${simpleTypeReference.sizeInBits}
                 <#else>
-        lengthInBits += (*m.${optionalField.name}).LengthInBits()
+        lengthInBits += (*m.${optionalField.name?cap_first}).LengthInBits()
                 </#if>
     }
                 <#break>
@@ -276,7 +276,7 @@ func (m ${type.name}) LengthInBits() uint16 {
                     <#assign simpleTypeReference = simpleField.type>
     lengthInBits += ${simpleTypeReference.sizeInBits}
                 <#else>
-    lengthInBits += m.${simpleField.name}.LengthInBits()
+    lengthInBits += m.${simpleField.name?cap_first}.LengthInBits()
                 </#if>
                 <#break>
             <#case "switch">
@@ -690,12 +690,12 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign simpleTypeReference = arrayField.type>
 
     // Array Field (${arrayField.name})
-    if m.${arrayField.name} != nil {
+    if m.${arrayField.name?cap_first} != nil {
                 <#if helper.isComplexTypeReference(arrayField.type) && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
-        itemCount := uint16(len(m.${arrayField.name}))
+        itemCount := uint16(len(m.${arrayField.name?cap_first}))
         var curItem uint16 = 0
                 </#if>
-        for _, _element := range m.${arrayField.name} {
+        for _, _element := range m.${arrayField.name?cap_first} {
                 <#if helper.isSimpleTypeReference(arrayField.type)>
                     <#assign simpleTypeReference = arrayField.type>
             _elementErr := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "_element")}
@@ -756,7 +756,7 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign enumField = field>
 
     // Enum field (${enumField.name})
-    ${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name})
+    ${enumField.name} := Cast${helper.getLanguageTypeNameForField(field)}(m.${enumField.name?cap_first})
     _${enumField.name}Err := ${enumField.name}.Serialize(io)
     if _${enumField.name}Err != nil {
         return errors.New("Error serializing '${enumField.name}' field " + _${enumField.name}Err.Error())
@@ -777,8 +777,8 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
                 <#assign manualArrayField = field>
 
     // Manual Array Field (${manualArrayField.name})
-    if m.${manualArrayField.name} != nil {
-        for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name}) {
+    if m.${manualArrayField.name?cap_first} != nil {
+        for(${helper.getLanguageTypeNameForField(field)} element : m.${manualArrayField.name?cap_first}) {
             ${helper.toSerializationExpression(manualArrayField, manualArrayField.serializeExpression, type.parserArguments)}
         }
     }
@@ -794,14 +794,14 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
 
     // Optional Field (${optionalField.name}) (Can be skipped, if the value is null)
     var ${optionalField.name} *<#if helper.isComplexTypeReference(optionalField.type)>I</#if>${helper.getLanguageTypeNameForField(field)} = nil
-    if m.${optionalField.name} != nil {
+    if m.${optionalField.name?cap_first} != nil {
                 <#if helper.isSimpleTypeReference(optionalField.type)>
                     <#assign simpleTypeReference = optionalField.type>
-        ${optionalField.name} = m.${optionalField.name}
+        ${optionalField.name} = m.${optionalField.name?cap_first}
         _${optionalField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "*(" + optionalField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = optionalField.type>
-        ${optionalField.name} = m.${optionalField.name}
+        ${optionalField.name} = m.${optionalField.name?cap_first}
         _${optionalField.name}Err := CastI${helper.getLanguageTypeNameForField(field)}(*${optionalField.name}).Serialize(io)
                 </#if>
         if _${optionalField.name}Err != nil {
@@ -843,11 +843,11 @@ func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArgum
     // Simple Field (${simpleField.name})
                 <#if helper.isSimpleTypeReference(simpleField.type)>
                     <#assign simpleTypeReference = simpleField.type>
-    ${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
+    ${simpleField.name} := ${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name?cap_first})
     _${simpleField.name}Err := ${helper.getWriteBufferWriteMethodCall(simpleTypeReference, "(" + simpleField.name + ")")}
                 <#else>
                     <#assign complexTypeReference = simpleField.type>
-    ${simpleField.name} := CastI${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name})
+    ${simpleField.name} := CastI${helper.getLanguageTypeNameForField(field)}(m.${simpleField.name?cap_first})
     _${simpleField.name}Err := ${simpleField.name}.Serialize(io)
                 </#if>
     if _${simpleField.name}Err != nil {

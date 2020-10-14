@@ -26,8 +26,8 @@ import (
 
 // The data-structure of this message
 type DeviceConfigurationRequestDataBlock struct {
-	communicationChannelId uint8
-	sequenceCounter        uint8
+	CommunicationChannelId uint8
+	SequenceCounter        uint8
 }
 
 // The corresponding interface
@@ -37,7 +37,7 @@ type IDeviceConfigurationRequestDataBlock interface {
 }
 
 func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) spi.Message {
-	return &DeviceConfigurationRequestDataBlock{communicationChannelId: communicationChannelId, sequenceCounter: sequenceCounter}
+	return &DeviceConfigurationRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
 }
 
 func CastIDeviceConfigurationRequestDataBlock(structType interface{}) IDeviceConfigurationRequestDataBlock {
@@ -130,14 +130,14 @@ func (m DeviceConfigurationRequestDataBlock) Serialize(io spi.WriteBuffer) error
 	}
 
 	// Simple Field (communicationChannelId)
-	communicationChannelId := uint8(m.communicationChannelId)
+	communicationChannelId := uint8(m.CommunicationChannelId)
 	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 	if _communicationChannelIdErr != nil {
 		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 	}
 
 	// Simple Field (sequenceCounter)
-	sequenceCounter := uint8(m.sequenceCounter)
+	sequenceCounter := uint8(m.SequenceCounter)
 	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
 	if _sequenceCounterErr != nil {
 		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())

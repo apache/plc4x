@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type NLM struct {
-	vendorId *uint16
+	VendorId *uint16
 }
 
 // The corresponding interface
@@ -70,7 +70,7 @@ func (m NLM) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Optional Field (vendorId)
-	if m.vendorId != nil {
+	if m.VendorId != nil {
 		lengthInBits += 16
 	}
 
@@ -130,8 +130,8 @@ func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func() error
 
 	// Optional Field (vendorId) (Can be skipped, if the value is null)
 	var vendorId *uint16 = nil
-	if m.vendorId != nil {
-		vendorId = m.vendorId
+	if m.VendorId != nil {
+		vendorId = m.VendorId
 		_vendorIdErr := io.WriteUint16(16, *(vendorId))
 		if _vendorIdErr != nil {
 			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())

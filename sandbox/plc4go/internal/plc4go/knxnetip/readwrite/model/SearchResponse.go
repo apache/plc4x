@@ -26,9 +26,9 @@ import (
 
 // The data-structure of this message
 type SearchResponse struct {
-	hpaiControlEndpoint IHPAIControlEndpoint
-	dibDeviceInfo       IDIBDeviceInfo
-	dibSuppSvcFamilies  IDIBSuppSvcFamilies
+	HpaiControlEndpoint IHPAIControlEndpoint
+	DibDeviceInfo       IDIBDeviceInfo
+	DibSuppSvcFamilies  IDIBSuppSvcFamilies
 	KNXNetIPMessage
 }
 
@@ -48,7 +48,7 @@ func (m SearchResponse) initialize() spi.Message {
 }
 
 func NewSearchResponse(hpaiControlEndpoint IHPAIControlEndpoint, dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-	return &SearchResponse{hpaiControlEndpoint: hpaiControlEndpoint, dibDeviceInfo: dibDeviceInfo, dibSuppSvcFamilies: dibSuppSvcFamilies}
+	return &SearchResponse{HpaiControlEndpoint: hpaiControlEndpoint, DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
 func CastISearchResponse(structType interface{}) ISearchResponse {
@@ -75,13 +75,13 @@ func (m SearchResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.hpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
 
 	// Simple field (dibDeviceInfo)
-	lengthInBits += m.dibDeviceInfo.LengthInBits()
+	lengthInBits += m.DibDeviceInfo.LengthInBits()
 
 	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.dibSuppSvcFamilies.LengthInBits()
+	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
 
 	return lengthInBits
 }
@@ -133,21 +133,21 @@ func (m SearchResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (hpaiControlEndpoint)
-		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
 		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
 		}
 
 		// Simple Field (dibDeviceInfo)
-		dibDeviceInfo := CastIDIBDeviceInfo(m.dibDeviceInfo)
+		dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
 		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
 		if _dibDeviceInfoErr != nil {
 			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
 		}
 
 		// Simple Field (dibSuppSvcFamilies)
-		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.dibSuppSvcFamilies)
+		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
 		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
 		if _dibSuppSvcFamiliesErr != nil {
 			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())

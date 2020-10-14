@@ -26,7 +26,7 @@ import (
 
 // The data-structure of this message
 type S7PayloadWriteVarResponse struct {
-	items []IS7VarPayloadStatusItem
+	Items []IS7VarPayloadStatusItem
 	S7Payload
 }
 
@@ -50,7 +50,7 @@ func (m S7PayloadWriteVarResponse) initialize() spi.Message {
 }
 
 func NewS7PayloadWriteVarResponse(items []IS7VarPayloadStatusItem) S7PayloadInitializer {
-	return &S7PayloadWriteVarResponse{items: items}
+	return &S7PayloadWriteVarResponse{Items: items}
 }
 
 func CastIS7PayloadWriteVarResponse(structType interface{}) IS7PayloadWriteVarResponse {
@@ -77,8 +77,8 @@ func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
 	// Array field
-	if len(m.items) > 0 {
-		for _, element := range m.items {
+	if len(m.Items) > 0 {
+		for _, element := range m.Items {
 			lengthInBits += element.LengthInBits()
 		}
 	}
@@ -94,8 +94,8 @@ func S7PayloadWriteVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) 
 
 	// Array field (items)
 	// Count array
-	items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).numItems)
-	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).numItems); curItem++ {
+	items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
+	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
 
 		_message, _err := S7VarPayloadStatusItemParse(io)
 		if _err != nil {
@@ -117,8 +117,8 @@ func (m S7PayloadWriteVarResponse) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (items)
-		if m.items != nil {
-			for _, _element := range m.items {
+		if m.Items != nil {
+			for _, _element := range m.Items {
 				_elementErr := _element.Serialize(io)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'items' field " + _elementErr.Error())

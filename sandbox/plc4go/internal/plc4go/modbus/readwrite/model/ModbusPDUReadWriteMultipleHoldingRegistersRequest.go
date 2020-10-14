@@ -25,11 +25,11 @@ import (
 
 // The data-structure of this message
 type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
-	readStartingAddress  uint16
-	readQuantity         uint16
-	writeStartingAddress uint16
-	writeQuantity        uint16
-	value                []int8
+	ReadStartingAddress  uint16
+	ReadQuantity         uint16
+	WriteStartingAddress uint16
+	WriteQuantity        uint16
+	Value                []int8
 	ModbusPDU
 }
 
@@ -57,7 +57,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) initialize() spi.Mess
 }
 
 func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress uint16, readQuantity uint16, writeStartingAddress uint16, writeQuantity uint16, value []int8) ModbusPDUInitializer {
-	return &ModbusPDUReadWriteMultipleHoldingRegistersRequest{readStartingAddress: readStartingAddress, readQuantity: readQuantity, writeStartingAddress: writeStartingAddress, writeQuantity: writeQuantity, value: value}
+	return &ModbusPDUReadWriteMultipleHoldingRegistersRequest{ReadStartingAddress: readStartingAddress, ReadQuantity: readQuantity, WriteStartingAddress: writeStartingAddress, WriteQuantity: writeQuantity, Value: value}
 }
 
 func CastIModbusPDUReadWriteMultipleHoldingRegistersRequest(structType interface{}) IModbusPDUReadWriteMultipleHoldingRegistersRequest {
@@ -99,8 +99,8 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16
 	lengthInBits += 8
 
 	// Array field
-	if len(m.value) > 0 {
-		lengthInBits += 8 * uint16(len(m.value))
+	if len(m.Value) > 0 {
+		lengthInBits += 8 * uint16(len(m.Value))
 	}
 
 	return lengthInBits
@@ -162,43 +162,43 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.Writ
 	ser := func() error {
 
 		// Simple Field (readStartingAddress)
-		readStartingAddress := uint16(m.readStartingAddress)
+		readStartingAddress := uint16(m.ReadStartingAddress)
 		_readStartingAddressErr := io.WriteUint16(16, (readStartingAddress))
 		if _readStartingAddressErr != nil {
 			return errors.New("Error serializing 'readStartingAddress' field " + _readStartingAddressErr.Error())
 		}
 
 		// Simple Field (readQuantity)
-		readQuantity := uint16(m.readQuantity)
+		readQuantity := uint16(m.ReadQuantity)
 		_readQuantityErr := io.WriteUint16(16, (readQuantity))
 		if _readQuantityErr != nil {
 			return errors.New("Error serializing 'readQuantity' field " + _readQuantityErr.Error())
 		}
 
 		// Simple Field (writeStartingAddress)
-		writeStartingAddress := uint16(m.writeStartingAddress)
+		writeStartingAddress := uint16(m.WriteStartingAddress)
 		_writeStartingAddressErr := io.WriteUint16(16, (writeStartingAddress))
 		if _writeStartingAddressErr != nil {
 			return errors.New("Error serializing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
 		}
 
 		// Simple Field (writeQuantity)
-		writeQuantity := uint16(m.writeQuantity)
+		writeQuantity := uint16(m.WriteQuantity)
 		_writeQuantityErr := io.WriteUint16(16, (writeQuantity))
 		if _writeQuantityErr != nil {
 			return errors.New("Error serializing 'writeQuantity' field " + _writeQuantityErr.Error())
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.value)))
+		byteCount := uint8(uint8(len(m.Value)))
 		_byteCountErr := io.WriteUint8(8, (byteCount))
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}
 
 		// Array Field (value)
-		if m.value != nil {
-			for _, _element := range m.value {
+		if m.Value != nil {
+			for _, _element := range m.Value {
 				_elementErr := io.WriteInt8(8, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'value' field " + _elementErr.Error())

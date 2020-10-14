@@ -25,7 +25,7 @@ import (
 
 // The data-structure of this message
 type NLMWhoIsRouterToNetwork struct {
-	destinationNetworkAddress []uint16
+	DestinationNetworkAddress []uint16
 	NLM
 }
 
@@ -41,12 +41,12 @@ func (m NLMWhoIsRouterToNetwork) MessageType() uint8 {
 }
 
 func (m NLMWhoIsRouterToNetwork) initialize(vendorId *uint16) spi.Message {
-	m.vendorId = vendorId
+	m.VendorId = vendorId
 	return m
 }
 
 func NewNLMWhoIsRouterToNetwork(destinationNetworkAddress []uint16) NLMInitializer {
-	return &NLMWhoIsRouterToNetwork{destinationNetworkAddress: destinationNetworkAddress}
+	return &NLMWhoIsRouterToNetwork{DestinationNetworkAddress: destinationNetworkAddress}
 }
 
 func CastINLMWhoIsRouterToNetwork(structType interface{}) INLMWhoIsRouterToNetwork {
@@ -73,8 +73,8 @@ func (m NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
 	var lengthInBits uint16 = m.NLM.LengthInBits()
 
 	// Array field
-	if len(m.destinationNetworkAddress) > 0 {
-		lengthInBits += 16 * uint16(len(m.destinationNetworkAddress))
+	if len(m.DestinationNetworkAddress) > 0 {
+		lengthInBits += 16 * uint16(len(m.DestinationNetworkAddress))
 	}
 
 	return lengthInBits
@@ -107,8 +107,8 @@ func (m NLMWhoIsRouterToNetwork) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Array Field (destinationNetworkAddress)
-		if m.destinationNetworkAddress != nil {
-			for _, _element := range m.destinationNetworkAddress {
+		if m.DestinationNetworkAddress != nil {
+			for _, _element := range m.DestinationNetworkAddress {
 				_elementErr := io.WriteUint16(16, _element)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'destinationNetworkAddress' field " + _elementErr.Error())

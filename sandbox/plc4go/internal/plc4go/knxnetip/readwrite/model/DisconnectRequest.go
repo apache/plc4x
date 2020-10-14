@@ -27,8 +27,8 @@ import (
 
 // The data-structure of this message
 type DisconnectRequest struct {
-	communicationChannelId uint8
-	hpaiControlEndpoint    IHPAIControlEndpoint
+	CommunicationChannelId uint8
+	HpaiControlEndpoint    IHPAIControlEndpoint
 	KNXNetIPMessage
 }
 
@@ -48,7 +48,7 @@ func (m DisconnectRequest) initialize() spi.Message {
 }
 
 func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
-	return &DisconnectRequest{communicationChannelId: communicationChannelId, hpaiControlEndpoint: hpaiControlEndpoint}
+	return &DisconnectRequest{CommunicationChannelId: communicationChannelId, HpaiControlEndpoint: hpaiControlEndpoint}
 }
 
 func CastIDisconnectRequest(structType interface{}) IDisconnectRequest {
@@ -81,7 +81,7 @@ func (m DisconnectRequest) LengthInBits() uint16 {
 	lengthInBits += 8
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.hpaiControlEndpoint.LengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
 
 	return lengthInBits
 }
@@ -131,7 +131,7 @@ func (m DisconnectRequest) Serialize(io spi.WriteBuffer) error {
 	ser := func() error {
 
 		// Simple Field (communicationChannelId)
-		communicationChannelId := uint8(m.communicationChannelId)
+		communicationChannelId := uint8(m.CommunicationChannelId)
 		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
 		if _communicationChannelIdErr != nil {
 			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
@@ -146,7 +146,7 @@ func (m DisconnectRequest) Serialize(io spi.WriteBuffer) error {
 		}
 
 		// Simple Field (hpaiControlEndpoint)
-		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.hpaiControlEndpoint)
+		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
 		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
 		if _hpaiControlEndpointErr != nil {
 			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())

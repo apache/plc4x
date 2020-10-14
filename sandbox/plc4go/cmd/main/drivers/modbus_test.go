@@ -17,6 +17,9 @@ package drivers
 
 import (
 	"encoding/hex"
+	"fmt"
+	"net"
+	"os"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 	"strings"
@@ -53,4 +56,58 @@ func test(t *testing.T, rawMessage string, response bool) {
 			t.Errorf("The serilized result doesn't match the input")
 		}
 	}
+}
+
+func TestConnection(t *testing.T) {
+
+	pdu := model.ModbusPDUReadInputRegistersRequest{
+		StartingAddress: 1,
+		Quantity:        1,
+	}
+	adu := model.ModbusTcpADU{
+		TransactionIdentifier: 0,
+		UnitIdentifier:        255,
+		Pdu:                   &pdu,
+	}
+
+	wb := spi.WriteBufferNew()
+	adu.Serialize(*wb)
+
+	servAddr := "192.168.23.30:502"
+	tcpAddr, err := net.ResolveTCPAddr("tcp", servAddr)
+	if err != nil {
+		println("ResolveTCPAddr failed:", err.Error())
+		os.Exit(1)
+	}
+
+	conn, err := net.DialTCP("tcp", nil, tcpAddr)
+	if err != nil {
+		println("Dial failed:", err.Error())
+		os.Exit(1)
+	}
+
+	_, err = conn.Write(wb.GetBytes())
+	if err != nil {
+		println("Write to server failed:", err.Error())
+		os.Exit(1)
+	}
+
+	buffer := make([]byte, 1024)
+
+	numBytes, err := conn.Read(buffer)
+	if err != nil {
+		println("Write to server failed:", err.Error())
+		os.Exit(1)
+	}
+
+	rb := spi.ReadBufferNew(buffer[0:numBytes])
+	response, err := model.ModbusTcpADUParse(rb, true)
+	if err != nil {
+		println("Parsing response failed:", err.Error())
+		os.Exit(1)
+	}
+
+	fmt.Println(response)
+
+	conn.Close()
 }
