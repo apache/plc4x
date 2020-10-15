@@ -16,27 +16,21 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package drivers
+package testutils
 
 import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/s7/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"testing"
+	"fmt"
+	"log"
+	"os"
 )
 
-func TestS7(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
+type ParserSerializerTestsuite struct {
+}
+
+func NewParserSerializerTestsuite(testPath string) {
+	dir, err := os.Getwd()
 	if err != nil {
-		// Output an error ...
+		log.Fatal(err)
 	}
-	rb := spi.ReadBufferNew(request)
-	adu, err := model.TPKTPacketParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
+	fmt.Println(dir)
 }

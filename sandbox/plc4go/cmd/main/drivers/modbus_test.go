@@ -1,3 +1,6 @@
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
 // regarding copyright ownership.  The ASF licenses this file
 // to you under the Apache License, Version 2.0 (the
@@ -22,11 +25,15 @@ import (
 	"os"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/testutils"
 	"strings"
 	"testing"
 )
 
 func TestModbus(t *testing.T) {
+
+	testutils.NewParserSerializerTestsuite("")
+
 	test(t, "000000000006ff0408d20002", false)
 	test(t, "7cfe000000c9ff04c600000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000", true)
 	test(t, "000a0000001101140e060003270e000206000400000008", false)
