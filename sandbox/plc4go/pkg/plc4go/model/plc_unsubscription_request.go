@@ -19,8 +19,16 @@
 package model
 
 type PlcUnsubscriptionRequestBuilder interface {
+	// TODO: Implement
+}
+
+type PlcUnsubscriptionRequestResult struct {
+	Request  PlcUnsubscriptionRequest
+	Response PlcUnsubscriptionResponse
+	Err      error
 }
 
 type PlcUnsubscriptionRequest interface {
+	Execute() <-chan PlcUnsubscriptionRequestResult
 	PlcRequest
 }

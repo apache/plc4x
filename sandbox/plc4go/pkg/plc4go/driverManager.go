@@ -35,7 +35,7 @@ type PlcDriverManager interface {
 	GetDriver(driverName string) (PlcDriver, error)
 
 	// Get a connection to a remote PLC for a given plc4x connection-string
-	GetConnectedConnection(connectionString string) (PlcConnection, error)
+	GetConnectedConnection(connectionString string) <-chan PlcConnectionConnectResult
 }
 
 func NewPlcDriverManager() PlcDriverManager {
@@ -68,24 +68,31 @@ func (m plcDriverManger) GetDriver(driverName string) (PlcDriver, error) {
 	return m.drivers[driverName], nil
 }
 
-func (m plcDriverManger) GetConnectedConnection(connectionString string) (PlcConnection, error) {
+func (m plcDriverManger) GetConnectedConnection(connectionString string) <-chan PlcConnectionConnectResult {
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
-		return nil, errors.New("Error parsing connection string: " + err.Error())
+		ch := make(chan PlcConnectionConnectResult)
+		ch <- NewPlcConnectionConnectResult(nil, errors.New("Error parsing connection string: "+err.Error()))
+		return ch
 	}
 	driverName := connectionUrl.Scheme
 	driver, err := m.GetDriver(driverName)
 	if err != nil {
-		return nil, errors.New("Error getting driver for connection string: " + err.Error())
+		ch := make(chan PlcConnectionConnectResult)
+		ch <- NewPlcConnectionConnectResult(nil, errors.New("Error getting driver for connection string: "+err.Error()))
+		return ch
 	}
 	connection, err := driver.GetConnection(connectionString)
 	if err != nil {
-		return nil, errors.New("Error connecting for connection string: " + err.Error())
+		ch := make(chan PlcConnectionConnectResult)
+		ch <- NewPlcConnectionConnectResult(nil, errors.New("Error connecting for connection string: "+err.Error()))
+		return ch
 	}
-	errConsumer := connection.Connect()
-	connectionErr := <-errConsumer
-	if connectionErr != nil {
-		return nil, connectionErr
-	}
-	return connection, nil
+	ch := make(chan PlcConnectionConnectResult)
+	go func() {
+		errConsumer := connection.Connect()
+		connectionErr := <-errConsumer
+		ch <- connectionErr
+	}()
+	return ch
 }

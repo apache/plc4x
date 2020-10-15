@@ -19,6 +19,5 @@
 package model
 
 type PlcRequest interface {
-	Execute() (<-chan PlcResponse, error)
 	PlcMessage
 }

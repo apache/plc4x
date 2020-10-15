@@ -20,6 +20,18 @@ package plc4go
 
 import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
 
+type PlcDriverResult struct {
+	Driver PlcDriver
+	Err    error
+}
+
+func NewPlcDriverResult(driver PlcDriver, err error) PlcDriverResult {
+	return PlcDriverResult{
+		Driver: driver,
+		Err:    err,
+	}
+}
+
 type PlcDriver interface {
 	// Get the short code used to identify this driver (As used in the connection string)
 	GetProtocolCode() string
