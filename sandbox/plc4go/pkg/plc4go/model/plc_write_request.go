@@ -21,11 +21,17 @@ package model
 import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
 
 type PlcWriteRequestBuilder interface {
-	Execute() (<-chan PlcWriteResponse, error)
 	AddField(name string, query string, value values.PlcValue)
-	Build() PlcWriteRequest
+	Build() (PlcWriteRequest, error)
+}
+
+type PlcWriteRequestResult struct {
+	Request  PlcWriteRequest
+	Response PlcWriteResponse
+	Err      error
 }
 
 type PlcWriteRequest interface {
-	Execute() (<-chan PlcWriteResponse, error)
+	Execute() <-chan PlcWriteRequestResult
+	PlcRequest
 }

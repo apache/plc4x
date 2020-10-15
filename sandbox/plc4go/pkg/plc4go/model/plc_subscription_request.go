@@ -24,9 +24,16 @@ type PlcSubscriptionRequestBuilder interface {
 	AddCyclicItem(name string, query string, interval time.Duration)
 	AddChangeOfStateItem(name string, query string)
 	AddEventItem(name string, query string)
-	Build() PlcSubscriptionRequest
+	Build() (PlcSubscriptionRequest, error)
+}
+
+type PlcSubscriptionRequestResult struct {
+	Request  PlcSubscriptionRequest
+	Response PlcSubscriptionResponse
+	Err      error
 }
 
 type PlcSubscriptionRequest interface {
+	Execute() <-chan PlcSubscriptionRequestResult
 	PlcRequest
 }

@@ -20,26 +20,72 @@ package plc4go
 
 import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
 
+type PlcConnectionConnectResult struct {
+	Connection PlcConnection
+	Err        error
+}
+
+func NewPlcConnectionConnectResult(connection PlcConnection, err error) PlcConnectionConnectResult {
+	return PlcConnectionConnectResult{
+		Connection: connection,
+		Err:        err,
+	}
+}
+
+type PlcConnectionCloseResult struct {
+	Connection PlcConnection
+	Err        error
+}
+
+func NewPlcConnectionCloseResult(connection PlcConnection, err error) PlcConnectionCloseResult {
+	return PlcConnectionCloseResult{
+		Connection: connection,
+		Err:        err,
+	}
+}
+
+type PlcConnectionPingResult struct {
+	Err error
+}
+
+func NewPlcConnectionPingResult(err error) PlcConnectionPingResult {
+	return PlcConnectionPingResult{
+		Err: err,
+	}
+}
+
+type PlcConnectionMetadataResult struct {
+	Metadata model.PlcConnectionMetadata
+	Err      error
+}
+
+func NewPlcConnectionMetadataResult(metadata model.PlcConnectionMetadata, err error) PlcConnectionMetadataResult {
+	return PlcConnectionMetadataResult{
+		Metadata: metadata,
+		Err:      err,
+	}
+}
+
 type PlcConnection interface {
 	// Initiate the connection to the PLC
-	Connect() <-chan error
+	Connect() <-chan PlcConnectionConnectResult
 	// Close the connection to the PLC (gracefully)
-	Close() <-chan error
+	Close() <-chan PlcConnectionCloseResult
 	// Checks if the connection is currently still connected
 	IsConnected() bool
 
-	// Get some metadata regarding the current connection
-	GetMetadata() (model.PlcConnectionMetadata, error)
-
 	// Executes a no-op operation to check if the current connection is still able to communicate
-	Ping() error
+	Ping() <-chan PlcConnectionPingResult
+
+	// Get some metadata regarding the current connection
+	GetMetadata() PlcConnectionMetadataResult
 
 	// Create a builder for assembling read-requests
-	ReadRequestBuilder() (model.PlcReadRequestBuilder, error)
+	ReadRequestBuilder() model.PlcReadRequestBuilder
 	// Create a builder for assembling write-requests
-	WriteRequestBuilder() (model.PlcWriteRequestBuilder, error)
+	WriteRequestBuilder() model.PlcWriteRequestBuilder
 	// Create a builder for assembling subscription-requests
-	SubscriptionRequestBuilder() (model.PlcSubscriptionRequestBuilder, error)
+	SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder
 	// Create a builder for assembling unsubscription-requests
-	UnsubscriptionRequestBuilder() (model.PlcUnsubscriptionRequestBuilder, error)
+	UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder
 }

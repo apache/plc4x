@@ -20,9 +20,16 @@ package model
 
 type PlcReadRequestBuilder interface {
 	AddField(name string, query string) *PlcReadRequestBuilder
-	Build() PlcReadRequest
+	Build() (PlcReadRequest, error)
+}
+
+type PlcReadRequestResult struct {
+	Request  PlcReadRequest
+	Response PlcReadResponse
+	Err      error
 }
 
 type PlcReadRequest interface {
-	Execute() (<-chan PlcReadResponse, error)
+	Execute() <-chan PlcReadRequestResult
+	PlcRequest
 }
