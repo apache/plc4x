@@ -16,27 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package drivers
+package plc4go
 
-import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/s7/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"testing"
-)
+import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
 
-func TestS7(t *testing.T) {
-	t.Skip()
-	request, err := hex.DecodeString("000a00000006010300000004")
-	if err != nil {
-		// Output an error ...
-	}
-	rb := spi.ReadBufferNew(request)
-	adu, err := model.TPKTPacketParse(rb)
-	if err != nil {
-		t.Errorf("Error parsing: %s", err)
-	}
-	if adu != nil {
-		// Output success ...
-	}
+type PlcFieldHandler interface {
+
+	// Parser function to parse query strings for a given driver and produce PlcField instances from that
+	ParseQuery(query string) model.PlcField
 }
