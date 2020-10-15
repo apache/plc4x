@@ -27,6 +27,7 @@
 
 - https://youtu.be/SzWu7ab1gCI[Analyzing IIoT data with PLC4X and StreamPipes]
 - https://youtu.be/TEXENlCJHNk[Apache PLC4X or: How I Learned to Stop Worrying and Love the Industrial IoT]
+- https://youtu.be/SNFKqrLMIZI["Hands on" - Reading out Siemens S7 with Apache PLC4X]
 - https://youtu.be/jHoJ8YB_OCQ["Hands On": Siemens S7 auslesen mit PLC4X (GERMAN)]
 - https://youtu.be/fkfc3tAe4AM[Mittelstand meets Open Source - Einführung in das Industrial IoT (IIoT) (GERMAN)]
 - https://www.youtube.com/watch?v=RWKggid25ds[Apache Kafka, KSQL and Apache PLC4X for IIoT Data Integration and Processing]
