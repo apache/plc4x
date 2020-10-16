@@ -94,17 +94,14 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>
-      <version>0.3.7</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-core</artifactId>
-      <version>0.3.7</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>stack-client</artifactId>
-      <version>0.3.7</version>
     </dependency>
 
     <dependency>
@@ -119,7 +116,6 @@
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>server-examples</artifactId>
-      <version>0.3.7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
