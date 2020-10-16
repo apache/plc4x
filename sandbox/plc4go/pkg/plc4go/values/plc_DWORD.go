@@ -19,16 +19,18 @@
 package values
 
 type PlcDWORD struct {
-	PlcUDINT
+	value uint32
+	plcValueAdapter
 }
 
 func NewPlcDWORD(value uint32) PlcDWORD {
-	child := PlcUDINT{
+	return PlcDWORD{
 		value: value,
 	}
-	return PlcDWORD{
-		child,
-	}
+}
+
+func (m PlcDWORD) IsBoolean() bool {
+	return true
 }
 
 func (m PlcDWORD) GetBooleanLength() uint8 {
