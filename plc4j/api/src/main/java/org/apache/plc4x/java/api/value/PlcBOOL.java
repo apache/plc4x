@@ -139,8 +139,13 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     public PlcBOOL(String value) {
         super();
         try {
-             this.value = Boolean.parseBoolean(value);
-             this.isNullable = false;
+            try {
+                this.value = Integer.parseInt(value) > 0;
+            } catch(NumberFormatException e) {
+                //parseBoolean expects a string "true" or "false"
+                this.value = Boolean.parseBoolean(value);
+            }
+            this.isNullable = false;
         }
         catch(Exception e) {
           throw new PlcInvalidFieldException("Value of type " + value +
@@ -165,11 +170,6 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     @Override
     @JsonIgnore
     public boolean getBoolean() {
-        return (value != null) && value;
-    }
-
-    @JsonIgnore
-    public boolean getBOOL() {
         return (value != null) && value;
     }
 

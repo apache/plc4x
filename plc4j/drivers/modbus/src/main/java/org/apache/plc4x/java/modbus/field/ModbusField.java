@@ -90,6 +90,11 @@ public abstract class ModbusField implements PlcField {
         return dataType;
     }
 
+    @Override
+    public String getPlcDataType() {
+        return dataType;
+    }
+
     public int getDataTypeSize() {
         return ModbusDataType.valueOf(dataType).getDataTypeSize();
     }

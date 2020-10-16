@@ -266,11 +266,6 @@ public class PlcDINT extends PlcIECValue<Integer> {
     }
 
     @JsonIgnore
-    public int getDINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[4];
         bytes[0] = (byte)((value >> 24) & 0xff);

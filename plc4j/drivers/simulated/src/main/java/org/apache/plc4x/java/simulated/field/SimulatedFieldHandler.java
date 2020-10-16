@@ -23,7 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-public class SimulatedFieldHandler implements PlcFieldHandler {
+public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -40,123 +40,6 @@ public class SimulatedFieldHandler implements PlcFieldHandler {
             return SimulatedField.of(fieldQuery);
         }
         throw new PlcInvalidFieldException(fieldQuery);
-    }
-
-    @Override
-    public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Boolean.class) {
-            if(values.length == 1) {
-                return new PlcBOOL((Boolean) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeByte(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Byte.class) {
-            if(values.length == 1) {
-                return new PlcSINT((Byte) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeShort(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Short.class) {
-            if(values.length == 1) {
-                return new PlcINT((Short) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeInteger(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Integer.class) {
-            if(values.length == 1) {
-                return new PlcDINT((Integer) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == BigInteger.class) {
-            if(values.length == 1) {
-                return new PlcBigInteger((BigInteger) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeLong(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Long.class) {
-            if(values.length == 1) {
-                return new PlcLINT((Long) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeFloat(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Float.class) {
-            if(values.length == 1) {
-                return new PlcREAL((Float) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == BigDecimal.class) {
-            if(values.length == 1) {
-                return new PlcBigDecimal((BigDecimal) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
-    }
-
-    @Override
-    public PlcValue encodeDouble(PlcField field, Object[] values) {
-        SimulatedField testField = (SimulatedField) field;
-        if (testField.getDataType() == Double.class) {
-            if(values.length == 1) {
-                return new PlcLREAL((Double) values[0]);
-            } else {
-                return new PlcList(Arrays.asList(values));
-            }
-        }
-        throw new PlcRuntimeException("Invalid encoder for type " + testField.getDataType().getName());
     }
 
     @Override

@@ -242,11 +242,6 @@ public class PlcLREAL extends PlcIECValue<Double> {
     }
 
     @JsonIgnore
-    public double getLREAL() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         long longBits =  Double.doubleToRawLongBits(value);
         byte[] bytes = new byte[8];
