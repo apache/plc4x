@@ -16,13 +16,43 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+package values
 
-go 1.15
+type PlcWORD struct {
+	PlcUINT
+}
 
-require github.com/sirupsen/logrus v1.7.0
+func NewPlcWORD(value uint16) PlcWORD {
+	child := PlcUINT{
+		value: value,
+	}
+	return PlcWORD{
+		child,
+	}
+}
 
-require (
-	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
-	github.com/icza/bitio v1.0.0
-)
+func (m PlcWORD) GetBooleanLength() uint8 {
+	return 16
+}
+
+func (m PlcWORD) GetBoolean() bool {
+	return m.value&1 == 1
+}
+
+func (m PlcWORD) GetBooleanAt(index uint8) bool {
+	if index > 15 {
+		return false
+	}
+	return m.value>>index&1 == 1
+}
+
+func (m PlcWORD) GetBooleanArray() []bool {
+	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
+		m.value>>2&1 == 1, m.value>>3&1 == 1,
+		m.value>>4&1 == 1, m.value>>5&1 == 1,
+		m.value>>6&1 == 1, m.value>>7&1 == 1,
+		m.value>>8&1 == 1, m.value>>9&1 == 1,
+		m.value>>10&1 == 1, m.value>>11&1 == 1,
+		m.value>>12&1 == 1, m.value>>13&1 == 1,
+		m.value>>14&1 == 1, m.value>>15&1 == 1}
+}

@@ -29,8 +29,16 @@ func NewPlcBOOL(value bool) PlcBOOL {
 	}
 }
 
+func (m PlcBOOL) GetBooleanLength() uint8 {
+	return 1
+}
+
 func (m PlcBOOL) GetBoolean() bool {
 	return m.value
+}
+
+func (m PlcBOOL) GetBooleanArray() []bool {
+	return []bool{m.value}
 }
 
 func (m PlcBOOL) GetUint8() uint8 {

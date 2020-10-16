@@ -16,13 +16,25 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+package values
 
-go 1.15
+import "unicode/utf16"
 
-require github.com/sirupsen/logrus v1.7.0
+type PlcWSTRING struct {
+	value []rune
+	plcSimpleValueAdapter
+}
 
-require (
-	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
-	github.com/icza/bitio v1.0.0
-)
+func NewPlcWSTRING(value []uint16) PlcWSTRING {
+	return PlcWSTRING{
+		value: utf16.Decode(value),
+	}
+}
+
+func (m PlcWSTRING) IsString() bool {
+	return true
+}
+
+func (m PlcWSTRING) GetString() string {
+	return string(m.value)
+}

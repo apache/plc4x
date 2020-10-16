@@ -16,13 +16,39 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+package values
 
-go 1.15
+type PlcBYTE struct {
+	PlcUSINT
+}
 
-require github.com/sirupsen/logrus v1.7.0
+func NewPlcBYTE(value uint8) PlcBYTE {
+	child := PlcUSINT{
+		value: value,
+	}
+	return PlcBYTE{
+		child,
+	}
+}
 
-require (
-	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
-	github.com/icza/bitio v1.0.0
-)
+func (m PlcBYTE) GetBooleanLength() uint8 {
+	return 8
+}
+
+func (m PlcBYTE) GetBoolean() bool {
+	return m.value&1 == 1
+}
+
+func (m PlcBYTE) GetBooleanAt(index uint8) bool {
+	if index > 7 {
+		return false
+	}
+	return m.value>>index&1 == 1
+}
+
+func (m PlcBYTE) GetBooleanArray() []bool {
+	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
+		m.value>>2&1 == 1, m.value>>3&1 == 1,
+		m.value>>4&1 == 1, m.value>>5&1 == 1,
+		m.value>>6&1 == 1, m.value>>7&1 == 1}
+}
