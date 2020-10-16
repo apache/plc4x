@@ -20,13 +20,17 @@ package values
 
 type PlcBOOL struct {
 	value bool
-	plcSimpleNumericValueAdapter
+	plcValueAdapter
 }
 
 func NewPlcBOOL(value bool) PlcBOOL {
 	return PlcBOOL{
 		value: value,
 	}
+}
+
+func (m PlcBOOL) IsBoolean() bool {
+	return true
 }
 
 func (m PlcBOOL) GetBooleanLength() uint8 {
@@ -39,49 +43,4 @@ func (m PlcBOOL) GetBoolean() bool {
 
 func (m PlcBOOL) GetBooleanArray() []bool {
 	return []bool{m.value}
-}
-
-func (m PlcBOOL) GetUint8() uint8 {
-	if m.value == true {
-		return 1
-	}
-	return 0
-}
-
-func (m PlcBOOL) GetUint16() uint16 {
-	return uint16(m.GetUint8())
-}
-
-func (m PlcBOOL) GetUint32() uint32 {
-	return uint32(m.GetUint8())
-}
-
-func (m PlcBOOL) GetUint64() uint64 {
-	return uint64(m.GetUint8())
-}
-
-func (m PlcBOOL) GetInt8() int8 {
-	return int8(m.GetUint8())
-}
-
-func (m PlcBOOL) GetInt16() int16 {
-	return int16(m.GetUint8())
-}
-
-func (m PlcBOOL) GetInt32() int32 {
-	return int32(m.GetUint8())
-}
-
-func (m PlcBOOL) GetInt64() int64 {
-	return int64(m.GetUint8())
-}
-
-func (m PlcBOOL) GetFloat32() float32 {
-	//TODO: Check if this is ok
-	return float32(m.GetUint8())
-}
-
-func (m PlcBOOL) GetFloat64() float64 {
-	//TODO: Check if this is ok
-	return float64(m.GetUint8())
 }

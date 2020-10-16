@@ -19,16 +19,18 @@
 package values
 
 type PlcBYTE struct {
-	PlcUSINT
+	value uint8
+	plcValueAdapter
 }
 
 func NewPlcBYTE(value uint8) PlcBYTE {
-	child := PlcUSINT{
+	return PlcBYTE{
 		value: value,
 	}
-	return PlcBYTE{
-		child,
-	}
+}
+
+func (m PlcBYTE) IsBoolean() bool {
+	return true
 }
 
 func (m PlcBYTE) GetBooleanLength() uint8 {

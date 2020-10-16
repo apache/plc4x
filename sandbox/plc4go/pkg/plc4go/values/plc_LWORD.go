@@ -19,16 +19,18 @@
 package values
 
 type PlcLWORD struct {
-	PlcULINT
+	value uint64
+	plcValueAdapter
 }
 
 func NewPlcLWORD(value uint64) PlcLWORD {
-	child := PlcULINT{
+	return PlcLWORD{
 		value: value,
 	}
-	return PlcLWORD{
-		child,
-	}
+}
+
+func (m PlcLWORD) IsBoolean() bool {
+	return true
 }
 
 func (m PlcLWORD) GetBooleanLength() uint8 {
