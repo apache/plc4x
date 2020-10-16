@@ -16,13 +16,24 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+package values
 
-go 1.15
+import "time"
 
-require github.com/sirupsen/logrus v1.7.0
+type PlcTIMEOFDAY struct {
+	value time.Time
+}
 
-require (
-	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
-	github.com/icza/bitio v1.0.0
-)
+func NewPlcTIME_OF_DAY(value time.Time) PlcTIMEOFDAY {
+	safeValue := time.Date(0, 0, 0, value.Hour(), value.Minute(), value.Second(), value.Nanosecond(), value.Location())
+	return PlcTIMEOFDAY{
+		safeValue,
+	}
+}
+
+func (m PlcTIMEOFDAY) IsTime() bool {
+	return true
+}
+func (m PlcTIMEOFDAY) GetTime() time.Time {
+	return m.value
+}

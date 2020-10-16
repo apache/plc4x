@@ -29,7 +29,10 @@ type PlcValue interface {
 
 	// Boolean
 	IsBoolean() bool
+	GetBooleanLength() uint8
 	GetBoolean() bool
+	GetBooleanAt(index uint8) bool
+	GetBooleanArray() []bool
 
 	// Integer
 	IsUint8() bool
@@ -103,8 +106,20 @@ func (m plcValueAdapter) IsNull() bool {
 func (m plcValueAdapter) IsBoolean() bool {
 	return false
 }
+func (m plcValueAdapter) GetBooleanLength() uint8 {
+	return 1
+}
 func (m plcValueAdapter) GetBoolean() bool {
 	return false
+}
+func (m plcValueAdapter) GetBooleanAt(index uint8) bool {
+	if index == 0 {
+		return m.GetBoolean()
+	}
+	return false
+}
+func (m plcValueAdapter) GetBooleanArray() []bool {
+	return nil
 }
 
 // Integer

@@ -16,13 +16,26 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+package values
 
-go 1.15
+import "time"
 
-require github.com/sirupsen/logrus v1.7.0
+type PlcLTIME struct {
+	PlcULINT
+}
 
-require (
-	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259
-	github.com/icza/bitio v1.0.0
-)
+func NewPlcLTIME(value uint64) PlcLTIME {
+	child := PlcULINT{
+		value: value,
+	}
+	return PlcLTIME{
+		child,
+	}
+}
+
+func (m PlcLTIME) IsDuration() bool {
+	return true
+}
+func (m PlcLTIME) GetDuration() time.Duration {
+	return time.Duration(m.value)
+}
