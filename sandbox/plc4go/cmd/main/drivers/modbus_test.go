@@ -65,7 +65,10 @@ func test(t *testing.T, rawMessage string, response bool) {
 	}
 }
 
-func TestConnection(t *testing.T) {
+//
+// Test that actually sends a read-request to a remote Modbus Slave
+//
+func Connection(t *testing.T) {
 
 	pdu := model.ModbusPDUReadInputRegistersRequest{
 		StartingAddress: 1,
