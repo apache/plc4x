@@ -84,6 +84,10 @@ public class SimulatedField implements PlcField {
         return type;
     }
 
+    public String getPlcDataType() {
+        return dataType.getSimpleName();
+    }
+
     public String getName() {
         return name;
     }

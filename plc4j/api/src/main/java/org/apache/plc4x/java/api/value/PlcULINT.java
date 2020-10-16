@@ -305,11 +305,6 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     }
 
     @JsonIgnore
-    public BigInteger getULINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] tmp = value.toByteArray();
         byte[] bytes = new byte[8];

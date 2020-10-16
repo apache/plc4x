@@ -251,7 +251,7 @@ public class OpcuaPlcDriverTest {
             opcuaConnection.close();
             assert !opcuaConnection.isConnected();
         } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+            fail("Exception during writeVariables Test EXCEPTION: " + e.getMessage());
         }
     }
 

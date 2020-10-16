@@ -30,9 +30,15 @@ import java.math.BigInteger;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcString extends PlcSimpleValue<String> {
 
+    static int maxLength = 254;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcString(@JsonProperty("value") String value) {
         super(value, true);
+        if (value.length() > maxLength) {
+            throw new IllegalArgumentException(
+                "String length " + value.length() + " exceeds allowed maximum for type String (max " + maxLength + ")");
+        }
     }
 
     @Override

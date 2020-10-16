@@ -270,11 +270,6 @@ public class PlcINT extends PlcIECValue<Short> {
     }
 
     @JsonIgnore
-    public short getINT() {
-        return value;
-    }
-
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] bytes = new byte[2];
         bytes[0] = (byte)((value >> 8) & 0xff);
