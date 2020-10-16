@@ -54,18 +54,6 @@ func NewPlcConnectionPingResult(err error) PlcConnectionPingResult {
 	}
 }
 
-type PlcConnectionMetadataResult struct {
-	Metadata model.PlcConnectionMetadata
-	Err      error
-}
-
-func NewPlcConnectionMetadataResult(metadata model.PlcConnectionMetadata, err error) PlcConnectionMetadataResult {
-	return PlcConnectionMetadataResult{
-		Metadata: metadata,
-		Err:      err,
-	}
-}
-
 type PlcConnection interface {
 	// Initiate the connection to the PLC
 	Connect() <-chan PlcConnectionConnectResult
@@ -78,7 +66,7 @@ type PlcConnection interface {
 	Ping() <-chan PlcConnectionPingResult
 
 	// Get some metadata regarding the current connection
-	GetMetadata() PlcConnectionMetadataResult
+	GetMetadata() model.PlcConnectionMetadata
 
 	// Create a builder for assembling read-requests
 	ReadRequestBuilder() model.PlcReadRequestBuilder
