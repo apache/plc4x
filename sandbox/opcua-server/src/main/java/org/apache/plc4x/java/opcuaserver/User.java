@@ -29,54 +29,55 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Configuration {
-
-    @JsonIgnore
-    private String configFile;
+public class User {
 
     @JsonProperty
-    private String version;
+    private String username;
 
-    @JsonProperty(required=true)
-    private String dir;
+    //TODO: These need to be hashed
+    @JsonProperty
+    private String password;
 
     @JsonProperty
-    private String name;
+    private String security;
 
-    @JsonProperty
-    private List<DeviceConfiguration> devices;
-
-    @JsonProperty
-    private Integer tcpPort = 12686;
-
-    @JsonProperty
-    private Integer httpPort = 8443;
-
-    public Configuration() {
+    public User() {
     }
 
-    public void setConfigFile(String value) {
-        configFile = value;
+    public User(String username, String password, String security) {
+        this.username = username;
+        this.password = password;
+        this.security = security;
     }
 
-    public String getName() {
-        return name;
+    public boolean checkPassword(String username) {
+        if (this.username == username) {
+            return true;
+        }
+        return false;
     }
 
-    public String getDir() {
-        return dir;
+    public String getUsername() {
+        return username;
     }
 
-    public Integer getTcpPort() {
-        return tcpPort;
+    public String getSecurity() {
+        return security;
     }
 
-    public Integer getHttpPort() {
-        return httpPort;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public List<DeviceConfiguration> getDevices() {
-        return devices;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public void setSecurity(String security) {
+        this.security = security;
+    }
+
+
+
 
 }

@@ -61,11 +61,12 @@ class KeyStoreLoader {
     private KeyPair serverKeyPair;
 
     private Configuration config;
+    private PasswordConfiguration passwordConfig;
 
 
-
-    public KeyStoreLoader(Configuration c) {
-        config = c;
+    public KeyStoreLoader(Configuration config, PasswordConfiguration passwordConfig) {
+        this.config = config;
+        this.passwordConfig = passwordConfig;
 
         File securityTempDir = new File(config.getDir(), "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
@@ -91,7 +92,7 @@ class KeyStoreLoader {
 
         if (!serverKeyStore.exists()) {
             logger.info("Creating keystore at {}", serverKeyStore);
-            keyStore.load(null, config.getSecurityPassword().toCharArray());
+            keyStore.load(null, passwordConfig.getSecurityPassword().toCharArray());
 
             logger.info("Creating self signed certiciate {}", serverKeyStore);
             KeyPair keyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
@@ -123,17 +124,17 @@ class KeyStoreLoader {
 
             X509Certificate certificate = builder.build();
 
-            keyStore.setKeyEntry(config.getName(), keyPair.getPrivate(), config.getSecurityPassword().toCharArray(), new X509Certificate[]{certificate});
-            keyStore.store(new FileOutputStream(serverKeyStore), config.getSecurityPassword().toCharArray());
+            keyStore.setKeyEntry(config.getName(), keyPair.getPrivate(), passwordConfig.getSecurityPassword().toCharArray(), new X509Certificate[]{certificate});
+            keyStore.store(new FileOutputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
 
             logger.info("Self signed certificate created. Replace {} and update config file passwords if not using a signed certificate.", serverKeyStore);
 
         } else {
             logger.info("Loading KeyStore at {}", serverKeyStore);
-            keyStore.load(new FileInputStream(serverKeyStore), config.getSecurityPassword().toCharArray());
+            keyStore.load(new FileInputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
         }
 
-        Key serverPrivateKey = keyStore.getKey(config.getName(), config.getSecurityPassword().toCharArray());
+        Key serverPrivateKey = keyStore.getKey(config.getName(), passwordConfig.getSecurityPassword().toCharArray());
         if (serverPrivateKey instanceof PrivateKey) {
             serverCertificate = (X509Certificate) keyStore.getCertificate(config.getName());
 
