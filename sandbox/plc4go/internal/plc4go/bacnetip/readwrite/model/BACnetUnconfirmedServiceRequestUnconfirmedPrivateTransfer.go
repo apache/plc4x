@@ -78,7 +78,7 @@ func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType in
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
 	// Const Field (vendorIdHeader)
 	lengthInBits += 8
@@ -188,7 +188,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
-		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8(8, vendorId)
 		if _vendorIdErr != nil {
 			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
 		}
@@ -201,7 +201,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
 
 		// Simple Field (serviceNumber)
 		serviceNumber := uint16(m.ServiceNumber)
-		_serviceNumberErr := io.WriteUint16(16, (serviceNumber))
+		_serviceNumberErr := io.WriteUint16(16, serviceNumber)
 		if _serviceNumberErr != nil {
 			return errors.New("Error serializing 'serviceNumber' field " + _serviceNumberErr.Error())
 		}

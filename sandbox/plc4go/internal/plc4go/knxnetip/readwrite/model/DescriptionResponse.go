@@ -71,7 +71,7 @@ func CastDescriptionResponse(structType interface{}) DescriptionResponse {
 }
 
 func (m DescriptionResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (dibDeviceInfo)
 	lengthInBits += m.DibDeviceInfo.LengthInBits()

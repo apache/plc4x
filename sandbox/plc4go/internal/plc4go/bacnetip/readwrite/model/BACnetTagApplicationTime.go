@@ -71,7 +71,7 @@ func CastBACnetTagApplicationTime(structType interface{}) BACnetTagApplicationTi
 }
 
 func (m BACnetTagApplicationTime) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+	var lengthInBits = m.BACnetTag.LengthInBits()
 
 	return lengthInBits
 }

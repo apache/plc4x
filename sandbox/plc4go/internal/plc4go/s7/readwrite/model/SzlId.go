@@ -114,7 +114,7 @@ func (m SzlId) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.SublistExtract)
-	_sublistExtractErr := io.WriteUint8(4, (sublistExtract))
+	_sublistExtractErr := io.WriteUint8(4, sublistExtract)
 	if _sublistExtractErr != nil {
 		return errors.New("Error serializing 'sublistExtract' field " + _sublistExtractErr.Error())
 	}

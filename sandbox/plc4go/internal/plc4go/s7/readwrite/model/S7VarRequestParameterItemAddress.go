@@ -70,7 +70,7 @@ func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestPa
 }
 
 func (m S7VarRequestParameterItemAddress) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7VarRequestParameterItem.LengthInBits()
+	var lengthInBits = m.S7VarRequestParameterItem.LengthInBits()
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -113,7 +113,7 @@ func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) error {
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.Address.LengthInBytes())
-		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8(8, itemLength)
 		if _itemLengthErr != nil {
 			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
 		}

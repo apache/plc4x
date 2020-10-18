@@ -29,9 +29,9 @@ type PlcValue interface {
 
 	// Boolean
 	IsBoolean() bool
-	GetBooleanLength() uint8
+	GetBooleanLength() uint32
 	GetBoolean() bool
-	GetBooleanAt(index uint8) bool
+	GetBooleanAt(index uint32) bool
 	GetBooleanArray() []bool
 
 	// Integer
@@ -64,7 +64,7 @@ type PlcValue interface {
 
 	// Time
 	IsTime() bool
-	GetTime()
+	GetTime() time.Time
 	IsDate() bool
 	GetDate()
 	IsDateTime() bool
@@ -85,161 +85,4 @@ type PlcValue interface {
 	HasKey(key string) bool
 	GetValue(key string) PlcValue
 	GetStruct() map[string]PlcValue
-}
-
-// Dummy structure
-type plcValueAdapter struct {
-}
-
-// Simple Types
-func (m plcValueAdapter) IsSimple() bool {
-	return false
-}
-func (m plcValueAdapter) IsNullable() bool {
-	return false
-}
-func (m plcValueAdapter) IsNull() bool {
-	return false
-}
-
-// Boolean
-func (m plcValueAdapter) IsBoolean() bool {
-	return false
-}
-func (m plcValueAdapter) GetBooleanLength() uint8 {
-	return 1
-}
-func (m plcValueAdapter) GetBoolean() bool {
-	return false
-}
-func (m plcValueAdapter) GetBooleanAt(index uint8) bool {
-	if index == 0 {
-		return m.GetBoolean()
-	}
-	return false
-}
-func (m plcValueAdapter) GetBooleanArray() []bool {
-	return nil
-}
-
-// Integer
-func (m plcValueAdapter) IsUint8() bool {
-	return false
-}
-func (m plcValueAdapter) GetUint8() uint8 {
-	return 0
-}
-func (m plcValueAdapter) IsUint16() bool {
-	return false
-}
-func (m plcValueAdapter) GetUint16() uint16 {
-	return 0
-}
-func (m plcValueAdapter) IsUint32() bool {
-	return false
-}
-func (m plcValueAdapter) GetUint32() uint32 {
-	return 0
-}
-func (m plcValueAdapter) IsUint64() bool {
-	return false
-}
-func (m plcValueAdapter) GetUint64() uint64 {
-	return 0
-}
-func (m plcValueAdapter) IsInt8() bool {
-	return false
-}
-func (m plcValueAdapter) GetInt8() uint8 {
-	return 0
-}
-func (m plcValueAdapter) IsInt16() bool {
-	return false
-}
-func (m plcValueAdapter) GetInt16() uint16 {
-	return 0
-}
-func (m plcValueAdapter) IsInt32() bool {
-	return false
-}
-func (m plcValueAdapter) GetInt32() uint32 {
-	return 0
-}
-func (m plcValueAdapter) IsInt64() bool {
-	return false
-}
-func (m plcValueAdapter) GetInt64() uint64 {
-	return 0
-}
-
-// Floating Point
-func (m plcValueAdapter) IsFloat32() bool {
-	return false
-}
-func (m plcValueAdapter) GetFloat32() float32 {
-	return 0.0
-}
-func (m plcValueAdapter) IsFloat64() bool {
-	return false
-}
-func (m plcValueAdapter) GetFloat64() float64 {
-	return 0.0
-}
-
-// String
-func (m plcValueAdapter) IsString() bool {
-	return false
-}
-func (m plcValueAdapter) GetString() string {
-	return ""
-}
-
-// Time
-func (m plcValueAdapter) IsTime() bool {
-	return false
-}
-func (m plcValueAdapter) GetTime() time.Time {
-	return time.Time{}
-}
-func (m plcValueAdapter) IsDuration() bool {
-	return false
-}
-func (m plcValueAdapter) GetDuration() time.Duration {
-	return 0
-}
-
-// Raw Access
-func (m plcValueAdapter) GetRaw() []byte {
-	return nil
-}
-
-// List Methods
-func (m plcValueAdapter) IsList() bool {
-	return false
-}
-func (m plcValueAdapter) GetLength() int {
-	return 0
-}
-func (m plcValueAdapter) GetIndex(i int) PlcValue {
-	return nil
-}
-func (m plcValueAdapter) GetList() []PlcValue {
-	return nil
-}
-
-// Struct Methods
-func (m plcValueAdapter) IsStruct() bool {
-	return false
-}
-func (m plcValueAdapter) GetKeys() []string {
-	return []string{}
-}
-func (m plcValueAdapter) HasKey(key string) bool {
-	return false
-}
-func (m plcValueAdapter) GetValue(key string) PlcValue {
-	return nil
-}
-func (m plcValueAdapter) GetStruct() map[string]PlcValue {
-	return nil
 }

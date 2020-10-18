@@ -77,7 +77,7 @@ func CastModbusPDUReadFifoQueueRequest(structType interface{}) ModbusPDUReadFifo
 }
 
 func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (fifoPointerAddress)
 	lengthInBits += 16
@@ -106,7 +106,7 @@ func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.FifoPointerAddress)
-		_fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
+		_fifoPointerAddressErr := io.WriteUint16(16, fifoPointerAddress)
 		if _fifoPointerAddressErr != nil {
 			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
 		}

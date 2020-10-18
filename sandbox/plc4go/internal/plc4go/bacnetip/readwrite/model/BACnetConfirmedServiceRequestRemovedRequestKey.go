@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestRemovedRequestKey(structType interface{}) 
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

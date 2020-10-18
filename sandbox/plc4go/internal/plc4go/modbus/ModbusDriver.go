@@ -18,8 +18,35 @@
 //
 package modbus
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
+)
+
+type modbusDriver struct {
+	fieldHandler spi.PlcFieldHandler
+	plc4go.PlcDriver
+}
 
 func NewModbusDriver() plc4go.PlcDriver {
-	return nil
+	return modbusDriver{
+		fieldHandler: NewModbusFieldHandler(),
+	}
+}
+
+func (m modbusDriver) GetProtocolCode() string {
+	return "modbus"
+}
+
+func (m modbusDriver) GetProtocolName() string {
+	return "Modbus"
+}
+
+func (m modbusDriver) CheckQuery(query string) error {
+	_, err := m.fieldHandler.ParseQuery(query)
+	return err
+}
+
+func (m modbusDriver) GetConnection(connectionString string) (plc4go.PlcConnection, error) {
+	return NewModbusConnection(m.fieldHandler), nil
 }

@@ -74,7 +74,7 @@ func CastCEMIAdditionalInformationRelativeTimestamp(structType interface{}) CEMI
 }
 
 func (m CEMIAdditionalInformationRelativeTimestamp) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMIAdditionalInformation.LengthInBits()
+	var lengthInBits = m.CEMIAdditionalInformation.LengthInBits()
 
 	// Const Field (len)
 	lengthInBits += 8

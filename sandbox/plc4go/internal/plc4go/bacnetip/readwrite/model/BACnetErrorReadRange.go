@@ -67,7 +67,7 @@ func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
 }
 
 func (m BACnetErrorReadRange) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetError.LengthInBits()
+	var lengthInBits = m.BACnetError.LengthInBits()
 
 	return lengthInBits
 }

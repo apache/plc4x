@@ -77,7 +77,7 @@ func CastModbusPDUError(structType interface{}) ModbusPDUError {
 }
 
 func (m ModbusPDUError) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (exceptionCode)
 	lengthInBits += 8
@@ -106,7 +106,7 @@ func (m ModbusPDUError) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (exceptionCode)
 		exceptionCode := uint8(m.ExceptionCode)
-		_exceptionCodeErr := io.WriteUint8(8, (exceptionCode))
+		_exceptionCodeErr := io.WriteUint8(8, exceptionCode)
 		if _exceptionCodeErr != nil {
 			return errors.New("Error serializing 'exceptionCode' field " + _exceptionCodeErr.Error())
 		}

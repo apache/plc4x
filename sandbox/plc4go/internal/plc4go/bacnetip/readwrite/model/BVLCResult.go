@@ -67,7 +67,7 @@ func CastBVLCResult(structType interface{}) BVLCResult {
 }
 
 func (m BVLCResult) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BVLC.LengthInBits()
+	var lengthInBits = m.BVLC.LengthInBits()
 
 	return lengthInBits
 }

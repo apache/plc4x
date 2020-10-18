@@ -86,7 +86,7 @@ func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interf
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8
@@ -280,7 +280,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.
 
 		// Simple Field (subscriberProcessIdentifier)
 		subscriberProcessIdentifier := uint8(m.SubscriberProcessIdentifier)
-		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
+		_subscriberProcessIdentifierErr := io.WriteUint8(8, subscriberProcessIdentifier)
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.New("Error serializing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
 		}
@@ -293,14 +293,14 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.
 
 		// Simple Field (monitoredObjectType)
 		monitoredObjectType := uint16(m.MonitoredObjectType)
-		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
+		_monitoredObjectTypeErr := io.WriteUint16(10, monitoredObjectType)
 		if _monitoredObjectTypeErr != nil {
 			return errors.New("Error serializing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
 		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
 		monitoredObjectInstanceNumber := uint32(m.MonitoredObjectInstanceNumber)
-		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, monitoredObjectInstanceNumber)
 		if _monitoredObjectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
 		}
@@ -313,14 +313,14 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.
 
 		// Simple Field (issueConfirmedNotificationsType)
 		issueConfirmedNotificationsType := uint16(m.IssueConfirmedNotificationsType)
-		_issueConfirmedNotificationsTypeErr := io.WriteUint16(10, (issueConfirmedNotificationsType))
+		_issueConfirmedNotificationsTypeErr := io.WriteUint16(10, issueConfirmedNotificationsType)
 		if _issueConfirmedNotificationsTypeErr != nil {
 			return errors.New("Error serializing 'issueConfirmedNotificationsType' field " + _issueConfirmedNotificationsTypeErr.Error())
 		}
 
 		// Simple Field (issueConfirmedNotificationsInstanceNumber)
 		issueConfirmedNotificationsInstanceNumber := uint32(m.IssueConfirmedNotificationsInstanceNumber)
-		_issueConfirmedNotificationsInstanceNumberErr := io.WriteUint32(22, (issueConfirmedNotificationsInstanceNumber))
+		_issueConfirmedNotificationsInstanceNumberErr := io.WriteUint32(22, issueConfirmedNotificationsInstanceNumber)
 		if _issueConfirmedNotificationsInstanceNumberErr != nil {
 			return errors.New("Error serializing 'issueConfirmedNotificationsInstanceNumber' field " + _issueConfirmedNotificationsInstanceNumberErr.Error())
 		}
@@ -333,7 +333,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.
 
 		// Simple Field (lifetimeLength)
 		lifetimeLength := uint8(m.LifetimeLength)
-		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
+		_lifetimeLengthErr := io.WriteUint8(3, lifetimeLength)
 		if _lifetimeLengthErr != nil {
 			return errors.New("Error serializing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
 		}

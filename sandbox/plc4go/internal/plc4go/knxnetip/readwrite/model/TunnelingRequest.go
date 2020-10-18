@@ -71,7 +71,7 @@ func CastTunnelingRequest(structType interface{}) TunnelingRequest {
 }
 
 func (m TunnelingRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (tunnelingRequestDataBlock)
 	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()

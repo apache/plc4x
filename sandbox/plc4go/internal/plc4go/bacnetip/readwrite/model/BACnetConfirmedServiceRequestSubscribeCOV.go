@@ -82,7 +82,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) BACne
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	// Const Field (subscriberProcessIdentifierHeader)
 	lengthInBits += 8
@@ -230,7 +230,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 
 		// Simple Field (subscriberProcessIdentifier)
 		subscriberProcessIdentifier := uint8(m.SubscriberProcessIdentifier)
-		_subscriberProcessIdentifierErr := io.WriteUint8(8, (subscriberProcessIdentifier))
+		_subscriberProcessIdentifierErr := io.WriteUint8(8, subscriberProcessIdentifier)
 		if _subscriberProcessIdentifierErr != nil {
 			return errors.New("Error serializing 'subscriberProcessIdentifier' field " + _subscriberProcessIdentifierErr.Error())
 		}
@@ -243,14 +243,14 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 
 		// Simple Field (monitoredObjectType)
 		monitoredObjectType := uint16(m.MonitoredObjectType)
-		_monitoredObjectTypeErr := io.WriteUint16(10, (monitoredObjectType))
+		_monitoredObjectTypeErr := io.WriteUint16(10, monitoredObjectType)
 		if _monitoredObjectTypeErr != nil {
 			return errors.New("Error serializing 'monitoredObjectType' field " + _monitoredObjectTypeErr.Error())
 		}
 
 		// Simple Field (monitoredObjectInstanceNumber)
 		monitoredObjectInstanceNumber := uint32(m.MonitoredObjectInstanceNumber)
-		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, (monitoredObjectInstanceNumber))
+		_monitoredObjectInstanceNumberErr := io.WriteUint32(22, monitoredObjectInstanceNumber)
 		if _monitoredObjectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'monitoredObjectInstanceNumber' field " + _monitoredObjectInstanceNumberErr.Error())
 		}
@@ -282,7 +282,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer)
 
 		// Simple Field (lifetimeLength)
 		lifetimeLength := uint8(m.LifetimeLength)
-		_lifetimeLengthErr := io.WriteUint8(3, (lifetimeLength))
+		_lifetimeLengthErr := io.WriteUint8(3, lifetimeLength)
 		if _lifetimeLengthErr != nil {
 			return errors.New("Error serializing 'lifetimeLength' field " + _lifetimeLengthErr.Error())
 		}

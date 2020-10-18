@@ -67,7 +67,7 @@ func CastCEMIRawInd(structType interface{}) CEMIRawInd {
 }
 
 func (m CEMIRawInd) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMI.LengthInBits()
+	var lengthInBits = m.CEMI.LengthInBits()
 
 	return lengthInBits
 }

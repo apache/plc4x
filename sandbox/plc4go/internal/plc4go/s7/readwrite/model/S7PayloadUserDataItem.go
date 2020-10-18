@@ -166,7 +166,7 @@ func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem,
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint16(uint16(uint16(m.LengthInBytes())) - uint16(uint16(4)))
-	_dataLengthErr := io.WriteUint16(16, (dataLength))
+	_dataLengthErr := io.WriteUint16(16, dataLength)
 	if _dataLengthErr != nil {
 		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
 	}
@@ -180,7 +180,7 @@ func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem,
 
 	// Simple Field (szlIndex)
 	szlIndex := uint16(m.SzlIndex)
-	_szlIndexErr := io.WriteUint16(16, (szlIndex))
+	_szlIndexErr := io.WriteUint16(16, szlIndex)
 	if _szlIndexErr != nil {
 		return errors.New("Error serializing 'szlIndex' field " + _szlIndexErr.Error())
 	}

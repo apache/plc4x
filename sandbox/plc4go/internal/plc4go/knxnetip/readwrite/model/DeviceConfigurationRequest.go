@@ -71,7 +71,7 @@ func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationR
 }
 
 func (m DeviceConfigurationRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (deviceConfigurationRequestDataBlock)
 	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()

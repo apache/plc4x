@@ -78,7 +78,7 @@ func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteS
 }
 
 func (m ModbusPDUWriteSingleCoilRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (address)
 	lengthInBits += 16
@@ -116,14 +116,14 @@ func (m ModbusPDUWriteSingleCoilRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (address)
 		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, (address))
+		_addressErr := io.WriteUint16(16, address)
 		if _addressErr != nil {
 			return errors.New("Error serializing 'address' field " + _addressErr.Error())
 		}
 
 		// Simple Field (value)
 		value := uint16(m.Value)
-		_valueErr := io.WriteUint16(16, (value))
+		_valueErr := io.WriteUint16(16, value)
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())
 		}

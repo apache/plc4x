@@ -150,7 +150,7 @@ func (m TPKTPacket) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.Payload.LengthInBytes()) + uint16(uint16(4)))
-	_lenErr := io.WriteUint16(16, (len))
+	_lenErr := io.WriteUint16(16, len)
 	if _lenErr != nil {
 		return errors.New("Error serializing 'len' field " + _lenErr.Error())
 	}

@@ -67,7 +67,7 @@ func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) BACnetServ
 }
 
 func (m BACnetServiceAckReadPropertyMultiple) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	return lengthInBits
 }

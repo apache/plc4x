@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestReinitializeDevice(structType interface{})
 }
 
 func (m BACnetConfirmedServiceRequestReinitializeDevice) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

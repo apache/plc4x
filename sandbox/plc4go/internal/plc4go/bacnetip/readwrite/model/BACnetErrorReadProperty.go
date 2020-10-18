@@ -77,7 +77,7 @@ func CastBACnetErrorReadProperty(structType interface{}) BACnetErrorReadProperty
 }
 
 func (m BACnetErrorReadProperty) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetError.LengthInBits()
+	var lengthInBits = m.BACnetError.LengthInBits()
 
 	// Const Field (errorClassHeader)
 	lengthInBits += 5
@@ -179,7 +179,7 @@ func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (errorClassLength)
 		errorClassLength := uint8(m.ErrorClassLength)
-		_errorClassLengthErr := io.WriteUint8(3, (errorClassLength))
+		_errorClassLengthErr := io.WriteUint8(3, errorClassLength)
 		if _errorClassLengthErr != nil {
 			return errors.New("Error serializing 'errorClassLength' field " + _errorClassLengthErr.Error())
 		}
@@ -202,7 +202,7 @@ func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (errorCodeLength)
 		errorCodeLength := uint8(m.ErrorCodeLength)
-		_errorCodeLengthErr := io.WriteUint8(3, (errorCodeLength))
+		_errorCodeLengthErr := io.WriteUint8(3, errorCodeLength)
 		if _errorCodeLengthErr != nil {
 			return errors.New("Error serializing 'errorCodeLength' field " + _errorCodeLengthErr.Error())
 		}

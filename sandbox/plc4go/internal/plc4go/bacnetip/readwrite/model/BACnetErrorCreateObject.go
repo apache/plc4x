@@ -67,7 +67,7 @@ func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject
 }
 
 func (m BACnetErrorCreateObject) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetError.LengthInBits()
+	var lengthInBits = m.BACnetError.LengthInBits()
 
 	return lengthInBits
 }

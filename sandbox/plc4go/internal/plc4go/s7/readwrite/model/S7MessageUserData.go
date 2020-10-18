@@ -70,7 +70,7 @@ func CastS7MessageUserData(structType interface{}) S7MessageUserData {
 }
 
 func (m S7MessageUserData) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Message.LengthInBits()
+	var lengthInBits = m.S7Message.LengthInBits()
 
 	return lengthInBits
 }

@@ -74,7 +74,7 @@ func CastS7ParameterWriteVarRequest(structType interface{}) S7ParameterWriteVarR
 }
 
 func (m S7ParameterWriteVarRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
+	var lengthInBits = m.S7Parameter.LengthInBits()
 
 	// Implicit Field (numItems)
 	lengthInBits += 8
@@ -127,7 +127,7 @@ func (m S7ParameterWriteVarRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.Items)))
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8(8, numItems)
 		if _numItemsErr != nil {
 			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
 		}

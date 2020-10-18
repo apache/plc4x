@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestAddListElement(structType interface{}) BAC
 }
 
 func (m BACnetConfirmedServiceRequestAddListElement) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

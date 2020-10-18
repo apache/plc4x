@@ -200,7 +200,7 @@ func ModbusPDUSerialize(io spi.WriteBuffer, m ModbusPDU, i IModbusPDU, childSeri
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(i.FunctionFlag())
-	_functionFlagErr := io.WriteUint8(7, (functionFlag))
+	_functionFlagErr := io.WriteUint8(7, functionFlag)
 	if _functionFlagErr != nil {
 		return errors.New("Error serializing 'functionFlag' field " + _functionFlagErr.Error())
 	}

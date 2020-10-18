@@ -77,7 +77,7 @@ func CastModbusPDUReadFifoQueueResponse(structType interface{}) ModbusPDUReadFif
 }
 
 func (m ModbusPDUReadFifoQueueResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Implicit Field (byteCount)
 	lengthInBits += 16
@@ -132,14 +132,14 @@ func (m ModbusPDUReadFifoQueueResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) + uint16(uint16(2)))
-		_byteCountErr := io.WriteUint16(16, (byteCount))
+		_byteCountErr := io.WriteUint16(16, byteCount)
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16(uint16(uint16(uint16(len(m.FifoValue)))*uint16(uint16(2)))) / uint16(uint16(2)))
-		_fifoCountErr := io.WriteUint16(16, (fifoCount))
+		_fifoCountErr := io.WriteUint16(16, fifoCount)
 		if _fifoCountErr != nil {
 			return errors.New("Error serializing 'fifoCount' field " + _fifoCountErr.Error())
 		}

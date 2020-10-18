@@ -121,14 +121,14 @@ func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParamete
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(i.ParameterType())
-	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+	_parameterTypeErr := io.WriteUint8(8, parameterType)
 	if _parameterTypeErr != nil {
 		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-	_parameterLengthErr := io.WriteUint8(8, (parameterLength))
+	_parameterLengthErr := io.WriteUint8(8, parameterLength)
 	if _parameterLengthErr != nil {
 		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
 	}

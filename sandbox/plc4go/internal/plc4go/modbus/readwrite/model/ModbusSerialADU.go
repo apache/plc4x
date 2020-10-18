@@ -141,7 +141,7 @@ func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionId)
 	transactionId := uint16(m.TransactionId)
-	_transactionIdErr := io.WriteUint16(16, (transactionId))
+	_transactionIdErr := io.WriteUint16(16, transactionId)
 	if _transactionIdErr != nil {
 		return errors.New("Error serializing 'transactionId' field " + _transactionIdErr.Error())
 	}
@@ -156,14 +156,14 @@ func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (length)
 	length := uint16(m.Length)
-	_lengthErr := io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16(16, length)
 	if _lengthErr != nil {
 		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
 	}
 
 	// Simple Field (address)
 	address := uint8(m.Address)
-	_addressErr := io.WriteUint8(8, (address))
+	_addressErr := io.WriteUint8(8, address)
 	if _addressErr != nil {
 		return errors.New("Error serializing 'address' field " + _addressErr.Error())
 	}

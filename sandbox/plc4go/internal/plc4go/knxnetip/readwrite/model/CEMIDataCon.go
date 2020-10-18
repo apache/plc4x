@@ -72,7 +72,7 @@ func CastCEMIDataCon(structType interface{}) CEMIDataCon {
 }
 
 func (m CEMIDataCon) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMI.LengthInBits()
+	var lengthInBits = m.CEMI.LengthInBits()
 
 	// Simple field (additionalInformationLength)
 	lengthInBits += 8
@@ -140,7 +140,7 @@ func (m CEMIDataCon) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.AdditionalInformationLength)
-		_additionalInformationLengthErr := io.WriteUint8(8, (additionalInformationLength))
+		_additionalInformationLengthErr := io.WriteUint8(8, additionalInformationLength)
 		if _additionalInformationLengthErr != nil {
 			return errors.New("Error serializing 'additionalInformationLength' field " + _additionalInformationLengthErr.Error())
 		}

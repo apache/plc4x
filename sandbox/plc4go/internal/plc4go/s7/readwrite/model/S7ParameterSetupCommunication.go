@@ -76,7 +76,7 @@ func CastS7ParameterSetupCommunication(structType interface{}) S7ParameterSetupC
 }
 
 func (m S7ParameterSetupCommunication) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
+	var lengthInBits = m.S7Parameter.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -148,21 +148,21 @@ func (m S7ParameterSetupCommunication) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (maxAmqCaller)
 		maxAmqCaller := uint16(m.MaxAmqCaller)
-		_maxAmqCallerErr := io.WriteUint16(16, (maxAmqCaller))
+		_maxAmqCallerErr := io.WriteUint16(16, maxAmqCaller)
 		if _maxAmqCallerErr != nil {
 			return errors.New("Error serializing 'maxAmqCaller' field " + _maxAmqCallerErr.Error())
 		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.MaxAmqCallee)
-		_maxAmqCalleeErr := io.WriteUint16(16, (maxAmqCallee))
+		_maxAmqCalleeErr := io.WriteUint16(16, maxAmqCallee)
 		if _maxAmqCalleeErr != nil {
 			return errors.New("Error serializing 'maxAmqCallee' field " + _maxAmqCalleeErr.Error())
 		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.PduLength)
-		_pduLengthErr := io.WriteUint16(16, (pduLength))
+		_pduLengthErr := io.WriteUint16(16, pduLength)
 		if _pduLengthErr != nil {
 			return errors.New("Error serializing 'pduLength' field " + _pduLengthErr.Error())
 		}

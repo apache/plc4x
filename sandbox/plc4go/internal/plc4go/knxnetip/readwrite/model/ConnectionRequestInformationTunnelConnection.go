@@ -70,7 +70,7 @@ func CastConnectionRequestInformationTunnelConnection(structType interface{}) Co
 }
 
 func (m ConnectionRequestInformationTunnelConnection) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
+	var lengthInBits = m.ConnectionRequestInformation.LengthInBits()
 
 	// Enum Field (knxLayer)
 	lengthInBits += 8

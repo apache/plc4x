@@ -74,7 +74,7 @@ func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResp
 }
 
 func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Payload.LengthInBits()
+	var lengthInBits = m.S7Payload.LengthInBits()
 
 	// Array field
 	if len(m.Items) > 0 {

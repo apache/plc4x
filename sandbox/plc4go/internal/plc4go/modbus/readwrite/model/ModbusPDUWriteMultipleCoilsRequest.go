@@ -79,7 +79,7 @@ func CastModbusPDUWriteMultipleCoilsRequest(structType interface{}) ModbusPDUWri
 }
 
 func (m ModbusPDUWriteMultipleCoilsRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (startingAddress)
 	lengthInBits += 16
@@ -143,21 +143,21 @@ func (m ModbusPDUWriteMultipleCoilsRequest) Serialize(io spi.WriteBuffer) error 
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.StartingAddress)
-		_startingAddressErr := io.WriteUint16(16, (startingAddress))
+		_startingAddressErr := io.WriteUint16(16, startingAddress)
 		if _startingAddressErr != nil {
 			return errors.New("Error serializing 'startingAddress' field " + _startingAddressErr.Error())
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.Quantity)
-		_quantityErr := io.WriteUint16(16, (quantity))
+		_quantityErr := io.WriteUint16(16, quantity)
 		if _quantityErr != nil {
 			return errors.New("Error serializing 'quantity' field " + _quantityErr.Error())
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, byteCount)
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}

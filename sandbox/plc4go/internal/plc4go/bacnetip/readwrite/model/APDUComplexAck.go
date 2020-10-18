@@ -76,7 +76,7 @@ func CastAPDUComplexAck(structType interface{}) APDUComplexAck {
 }
 
 func (m APDUComplexAck) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -208,7 +208,7 @@ func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, originalInvokeId)
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}

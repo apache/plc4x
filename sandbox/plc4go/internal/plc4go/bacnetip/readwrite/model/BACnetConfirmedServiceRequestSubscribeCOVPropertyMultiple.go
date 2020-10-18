@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(structType in
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

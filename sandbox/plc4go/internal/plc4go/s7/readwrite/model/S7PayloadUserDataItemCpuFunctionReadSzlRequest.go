@@ -71,7 +71,7 @@ func CastS7PayloadUserDataItemCpuFunctionReadSzlRequest(structType interface{}) 
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7PayloadUserDataItem.LengthInBits()
+	var lengthInBits = m.S7PayloadUserDataItem.LengthInBits()
 
 	return lengthInBits
 }

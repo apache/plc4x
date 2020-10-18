@@ -81,7 +81,7 @@ func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconf
 }
 
 func (m BACnetUnconfirmedServiceRequestIAm) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -217,14 +217,14 @@ func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error 
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
-		_objectTypeErr := io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16(10, objectType)
 		if _objectTypeErr != nil {
 			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
-		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32(22, objectInstanceNumber)
 		if _objectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
 		}
@@ -237,7 +237,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error 
 
 		// Simple Field (maximumApduLengthAcceptedLength)
 		maximumApduLengthAcceptedLength := uint8(m.MaximumApduLengthAcceptedLength)
-		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, (maximumApduLengthAcceptedLength))
+		_maximumApduLengthAcceptedLengthErr := io.WriteUint8(3, maximumApduLengthAcceptedLength)
 		if _maximumApduLengthAcceptedLengthErr != nil {
 			return errors.New("Error serializing 'maximumApduLengthAcceptedLength' field " + _maximumApduLengthAcceptedLengthErr.Error())
 		}
@@ -260,7 +260,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error 
 
 		// Simple Field (segmentationSupported)
 		segmentationSupported := uint8(m.SegmentationSupported)
-		_segmentationSupportedErr := io.WriteUint8(8, (segmentationSupported))
+		_segmentationSupportedErr := io.WriteUint8(8, segmentationSupported)
 		if _segmentationSupportedErr != nil {
 			return errors.New("Error serializing 'segmentationSupported' field " + _segmentationSupportedErr.Error())
 		}
@@ -273,7 +273,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error 
 
 		// Simple Field (vendorId)
 		vendorId := uint8(m.VendorId)
-		_vendorIdErr := io.WriteUint8(8, (vendorId))
+		_vendorIdErr := io.WriteUint8(8, vendorId)
 		if _vendorIdErr != nil {
 			return errors.New("Error serializing 'vendorId' field " + _vendorIdErr.Error())
 		}

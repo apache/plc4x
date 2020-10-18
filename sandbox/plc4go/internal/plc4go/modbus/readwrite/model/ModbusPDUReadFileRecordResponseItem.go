@@ -115,14 +115,14 @@ func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) error
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))
-	_dataLengthErr := io.WriteUint8(8, (dataLength))
+	_dataLengthErr := io.WriteUint8(8, dataLength)
 	if _dataLengthErr != nil {
 		return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
 	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
-	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8(8, referenceType)
 	if _referenceTypeErr != nil {
 		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
 	}

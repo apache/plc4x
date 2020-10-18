@@ -76,7 +76,7 @@ func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7Parameter
 }
 
 func (m S7ParameterUserDataItemCPUFunctions) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7ParameterUserDataItem.LengthInBits()
+	var lengthInBits = m.S7ParameterUserDataItem.LengthInBits()
 
 	// Implicit Field (itemLength)
 	lengthInBits += 8
@@ -198,42 +198,42 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-		_itemLengthErr := io.WriteUint8(8, (itemLength))
+		_itemLengthErr := io.WriteUint8(8, itemLength)
 		if _itemLengthErr != nil {
 			return errors.New("Error serializing 'itemLength' field " + _itemLengthErr.Error())
 		}
 
 		// Simple Field (method)
 		method := uint8(m.Method)
-		_methodErr := io.WriteUint8(8, (method))
+		_methodErr := io.WriteUint8(8, method)
 		if _methodErr != nil {
 			return errors.New("Error serializing 'method' field " + _methodErr.Error())
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.CpuFunctionType)
-		_cpuFunctionTypeErr := io.WriteUint8(4, (cpuFunctionType))
+		_cpuFunctionTypeErr := io.WriteUint8(4, cpuFunctionType)
 		if _cpuFunctionTypeErr != nil {
 			return errors.New("Error serializing 'cpuFunctionType' field " + _cpuFunctionTypeErr.Error())
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.CpuFunctionGroup)
-		_cpuFunctionGroupErr := io.WriteUint8(4, (cpuFunctionGroup))
+		_cpuFunctionGroupErr := io.WriteUint8(4, cpuFunctionGroup)
 		if _cpuFunctionGroupErr != nil {
 			return errors.New("Error serializing 'cpuFunctionGroup' field " + _cpuFunctionGroupErr.Error())
 		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.CpuSubfunction)
-		_cpuSubfunctionErr := io.WriteUint8(8, (cpuSubfunction))
+		_cpuSubfunctionErr := io.WriteUint8(8, cpuSubfunction)
 		if _cpuSubfunctionErr != nil {
 			return errors.New("Error serializing 'cpuSubfunction' field " + _cpuSubfunctionErr.Error())
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(8, sequenceNumber)
 		if _sequenceNumberErr != nil {
 			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
 		}

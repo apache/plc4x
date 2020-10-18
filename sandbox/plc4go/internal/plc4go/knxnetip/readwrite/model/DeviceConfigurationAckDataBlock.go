@@ -116,21 +116,21 @@ func (m DeviceConfigurationAckDataBlock) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, structureLength)
 	if _structureLengthErr != nil {
 		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
 	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.CommunicationChannelId)
-	_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+	_communicationChannelIdErr := io.WriteUint8(8, communicationChannelId)
 	if _communicationChannelIdErr != nil {
 		return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.SequenceCounter)
-	_sequenceCounterErr := io.WriteUint8(8, (sequenceCounter))
+	_sequenceCounterErr := io.WriteUint8(8, sequenceCounter)
 	if _sequenceCounterErr != nil {
 		return errors.New("Error serializing 'sequenceCounter' field " + _sequenceCounterErr.Error())
 	}

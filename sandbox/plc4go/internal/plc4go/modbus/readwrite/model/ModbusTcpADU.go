@@ -138,7 +138,7 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (transactionIdentifier)
 	transactionIdentifier := uint16(m.TransactionIdentifier)
-	_transactionIdentifierErr := io.WriteUint16(16, (transactionIdentifier))
+	_transactionIdentifierErr := io.WriteUint16(16, transactionIdentifier)
 	if _transactionIdentifierErr != nil {
 		return errors.New("Error serializing 'transactionIdentifier' field " + _transactionIdentifierErr.Error())
 	}
@@ -151,14 +151,14 @@ func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint16(uint16(m.Pdu.LengthInBytes()) + uint16(uint16(1)))
-	_lengthErr := io.WriteUint16(16, (length))
+	_lengthErr := io.WriteUint16(16, length)
 	if _lengthErr != nil {
 		return errors.New("Error serializing 'length' field " + _lengthErr.Error())
 	}
 
 	// Simple Field (unitIdentifier)
 	unitIdentifier := uint8(m.UnitIdentifier)
-	_unitIdentifierErr := io.WriteUint8(8, (unitIdentifier))
+	_unitIdentifierErr := io.WriteUint8(8, unitIdentifier)
 	if _unitIdentifierErr != nil {
 		return errors.New("Error serializing 'unitIdentifier' field " + _unitIdentifierErr.Error())
 	}

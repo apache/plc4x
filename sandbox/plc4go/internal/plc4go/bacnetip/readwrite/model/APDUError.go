@@ -72,7 +72,7 @@ func CastAPDUError(structType interface{}) APDUError {
 }
 
 func (m APDUError) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -140,7 +140,7 @@ func (m APDUError) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, originalInvokeId)
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}

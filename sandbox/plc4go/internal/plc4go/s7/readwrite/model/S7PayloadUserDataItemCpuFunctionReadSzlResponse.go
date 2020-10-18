@@ -78,7 +78,7 @@ func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{})
 }
 
 func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7PayloadUserDataItem.LengthInBits()
+	var lengthInBits = m.S7PayloadUserDataItem.LengthInBits()
 
 	// Const Field (szlItemLength)
 	lengthInBits += 16
@@ -149,7 +149,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteB
 
 		// Implicit Field (szlItemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		szlItemCount := uint16(uint16(len(m.Items)))
-		_szlItemCountErr := io.WriteUint16(16, (szlItemCount))
+		_szlItemCountErr := io.WriteUint16(16, szlItemCount)
 		if _szlItemCountErr != nil {
 			return errors.New("Error serializing 'szlItemCount' field " + _szlItemCountErr.Error())
 		}

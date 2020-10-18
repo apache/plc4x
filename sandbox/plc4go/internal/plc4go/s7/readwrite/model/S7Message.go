@@ -195,7 +195,7 @@ func S7MessageParse(io *spi.ReadBuffer) (spi.Message, error) {
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
 	var payload *IS7Payload = nil
 	if bool((payloadLength) > (0)) {
-		_message, _err := S7PayloadParse(io, messageType, (*parameter))
+		_message, _err := S7PayloadParse(io, messageType, *parameter)
 		if _err != nil {
 			return nil, errors.New("Error parsing 'payload' field " + _err.Error())
 		}
@@ -221,7 +221,7 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(i.MessageType())
-	_messageTypeErr := io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8(8, messageType)
 	if _messageTypeErr != nil {
 		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
 	}
@@ -236,21 +236,21 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
 
 	// Simple Field (tpduReference)
 	tpduReference := uint16(m.TpduReference)
-	_tpduReferenceErr := io.WriteUint16(16, (tpduReference))
+	_tpduReferenceErr := io.WriteUint16(16, tpduReference)
 	if _tpduReferenceErr != nil {
 		return errors.New("Error serializing 'tpduReference' field " + _tpduReferenceErr.Error())
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint16(spi.InlineIf(bool((m.Parameter) != (nil)), uint16((*m.Parameter).LengthInBytes()), uint16(uint16(0))))
-	_parameterLengthErr := io.WriteUint16(16, (parameterLength))
+	_parameterLengthErr := io.WriteUint16(16, parameterLength)
 	if _parameterLengthErr != nil {
 		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength := uint16(spi.InlineIf(bool((m.Payload) != (nil)), uint16((*m.Payload).LengthInBytes()), uint16(uint16(0))))
-	_payloadLengthErr := io.WriteUint16(16, (payloadLength))
+	_payloadLengthErr := io.WriteUint16(16, payloadLength)
 	if _payloadLengthErr != nil {
 		return errors.New("Error serializing 'payloadLength' field " + _payloadLengthErr.Error())
 	}

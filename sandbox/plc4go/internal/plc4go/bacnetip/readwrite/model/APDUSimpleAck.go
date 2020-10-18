@@ -71,7 +71,7 @@ func CastAPDUSimpleAck(structType interface{}) APDUSimpleAck {
 }
 
 func (m APDUSimpleAck) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 4
@@ -134,14 +134,14 @@ func (m APDUSimpleAck) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, originalInvokeId)
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (serviceChoice)
 		serviceChoice := uint8(m.ServiceChoice)
-		_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+		_serviceChoiceErr := io.WriteUint8(8, serviceChoice)
 		if _serviceChoiceErr != nil {
 			return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
 		}

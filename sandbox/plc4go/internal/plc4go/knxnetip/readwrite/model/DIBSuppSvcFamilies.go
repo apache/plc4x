@@ -122,14 +122,14 @@ func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, structureLength)
 	if _structureLengthErr != nil {
 		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.DescriptionType)
-	_descriptionTypeErr := io.WriteUint8(8, (descriptionType))
+	_descriptionTypeErr := io.WriteUint8(8, descriptionType)
 	if _descriptionTypeErr != nil {
 		return errors.New("Error serializing 'descriptionType' field " + _descriptionTypeErr.Error())
 	}

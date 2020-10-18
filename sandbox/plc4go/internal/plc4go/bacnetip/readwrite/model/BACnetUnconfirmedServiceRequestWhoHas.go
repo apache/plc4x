@@ -78,7 +78,7 @@ func CastBACnetUnconfirmedServiceRequestWhoHas(structType interface{}) BACnetUnc
 }
 
 func (m BACnetUnconfirmedServiceRequestWhoHas) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
 	// Const Field (deviceInstanceLowLimitHeader)
 	lengthInBits += 8
@@ -194,7 +194,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 
 		// Simple Field (deviceInstanceLowLimit)
 		deviceInstanceLowLimit := uint32(m.DeviceInstanceLowLimit)
-		_deviceInstanceLowLimitErr := io.WriteUint32(24, (deviceInstanceLowLimit))
+		_deviceInstanceLowLimitErr := io.WriteUint32(24, deviceInstanceLowLimit)
 		if _deviceInstanceLowLimitErr != nil {
 			return errors.New("Error serializing 'deviceInstanceLowLimit' field " + _deviceInstanceLowLimitErr.Error())
 		}
@@ -207,7 +207,7 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 
 		// Simple Field (deviceInstanceHighLimit)
 		deviceInstanceHighLimit := uint32(m.DeviceInstanceHighLimit)
-		_deviceInstanceHighLimitErr := io.WriteUint32(24, (deviceInstanceHighLimit))
+		_deviceInstanceHighLimitErr := io.WriteUint32(24, deviceInstanceHighLimit)
 		if _deviceInstanceHighLimitErr != nil {
 			return errors.New("Error serializing 'deviceInstanceHighLimit' field " + _deviceInstanceHighLimitErr.Error())
 		}
@@ -220,14 +220,14 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io spi.WriteBuffer) err
 
 		// Implicit Field (objectNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		objectNameLength := uint8(uint8(uint8(len(m.ObjectName))) + uint8(uint8(1)))
-		_objectNameLengthErr := io.WriteUint8(8, (objectNameLength))
+		_objectNameLengthErr := io.WriteUint8(8, objectNameLength)
 		if _objectNameLengthErr != nil {
 			return errors.New("Error serializing 'objectNameLength' field " + _objectNameLengthErr.Error())
 		}
 
 		// Simple Field (objectNameCharacterSet)
 		objectNameCharacterSet := uint8(m.ObjectNameCharacterSet)
-		_objectNameCharacterSetErr := io.WriteUint8(8, (objectNameCharacterSet))
+		_objectNameCharacterSetErr := io.WriteUint8(8, objectNameCharacterSet)
 		if _objectNameCharacterSetErr != nil {
 			return errors.New("Error serializing 'objectNameCharacterSet' field " + _objectNameCharacterSetErr.Error())
 		}

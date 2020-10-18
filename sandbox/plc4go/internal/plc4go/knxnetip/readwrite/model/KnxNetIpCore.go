@@ -69,7 +69,7 @@ func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
 }
 
 func (m KnxNetIpCore) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ServiceId.LengthInBits()
+	var lengthInBits = m.ServiceId.LengthInBits()
 
 	// Simple field (version)
 	lengthInBits += 8
@@ -98,7 +98,7 @@ func (m KnxNetIpCore) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (version)
 		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, (version))
+		_versionErr := io.WriteUint8(8, version)
 		if _versionErr != nil {
 			return errors.New("Error serializing 'version' field " + _versionErr.Error())
 		}

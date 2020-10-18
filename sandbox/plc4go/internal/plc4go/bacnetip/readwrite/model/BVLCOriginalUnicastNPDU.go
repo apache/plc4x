@@ -70,7 +70,7 @@ func CastBVLCOriginalUnicastNPDU(structType interface{}) BVLCOriginalUnicastNPDU
 }
 
 func (m BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BVLC.LengthInBits()
+	var lengthInBits = m.BVLC.LengthInBits()
 
 	// Simple field (npdu)
 	lengthInBits += m.Npdu.LengthInBits()

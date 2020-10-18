@@ -123,7 +123,7 @@ func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func() error
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(i.MessageType())
-	_messageTypeErr := io.WriteUint8(8, (messageType))
+	_messageTypeErr := io.WriteUint8(8, messageType)
 	if _messageTypeErr != nil {
 		return errors.New("Error serializing 'messageType' field " + _messageTypeErr.Error())
 	}

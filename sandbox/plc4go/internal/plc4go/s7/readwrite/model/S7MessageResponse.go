@@ -73,7 +73,7 @@ func CastS7MessageResponse(structType interface{}) S7MessageResponse {
 }
 
 func (m S7MessageResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Message.LengthInBits()
+	var lengthInBits = m.S7Message.LengthInBits()
 
 	// Simple field (errorClass)
 	lengthInBits += 8
@@ -111,14 +111,14 @@ func (m S7MessageResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.ErrorClass)
-		_errorClassErr := io.WriteUint8(8, (errorClass))
+		_errorClassErr := io.WriteUint8(8, errorClass)
 		if _errorClassErr != nil {
 			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.ErrorCode)
-		_errorCodeErr := io.WriteUint8(8, (errorCode))
+		_errorCodeErr := io.WriteUint8(8, errorCode)
 		if _errorCodeErr != nil {
 			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
 		}

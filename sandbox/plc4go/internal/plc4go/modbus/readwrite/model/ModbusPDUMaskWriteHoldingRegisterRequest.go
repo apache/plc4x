@@ -79,7 +79,7 @@ func CastModbusPDUMaskWriteHoldingRegisterRequest(structType interface{}) Modbus
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (referenceAddress)
 	lengthInBits += 16
@@ -126,21 +126,21 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io spi.WriteBuffer) 
 
 		// Simple Field (referenceAddress)
 		referenceAddress := uint16(m.ReferenceAddress)
-		_referenceAddressErr := io.WriteUint16(16, (referenceAddress))
+		_referenceAddressErr := io.WriteUint16(16, referenceAddress)
 		if _referenceAddressErr != nil {
 			return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
 		}
 
 		// Simple Field (andMask)
 		andMask := uint16(m.AndMask)
-		_andMaskErr := io.WriteUint16(16, (andMask))
+		_andMaskErr := io.WriteUint16(16, andMask)
 		if _andMaskErr != nil {
 			return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
 		}
 
 		// Simple Field (orMask)
 		orMask := uint16(m.OrMask)
-		_orMaskErr := io.WriteUint16(16, (orMask))
+		_orMaskErr := io.WriteUint16(16, orMask)
 		if _orMaskErr != nil {
 			return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())
 		}

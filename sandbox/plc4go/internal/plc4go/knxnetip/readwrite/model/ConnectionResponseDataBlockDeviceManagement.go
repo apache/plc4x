@@ -67,7 +67,7 @@ func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) Con
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
+	var lengthInBits = m.ConnectionResponseDataBlock.LengthInBits()
 
 	return lengthInBits
 }

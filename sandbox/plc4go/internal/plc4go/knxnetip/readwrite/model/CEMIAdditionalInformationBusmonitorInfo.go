@@ -78,7 +78,7 @@ func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdd
 }
 
 func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMIAdditionalInformation.LengthInBits()
+	var lengthInBits = m.CEMIAdditionalInformation.LengthInBits()
 
 	// Const Field (len)
 	lengthInBits += 8
@@ -205,7 +205,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) e
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(3, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(3, sequenceNumber)
 		if _sequenceNumberErr != nil {
 			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
 		}

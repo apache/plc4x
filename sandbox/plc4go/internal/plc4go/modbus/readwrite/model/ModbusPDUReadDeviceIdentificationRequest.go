@@ -75,7 +75,7 @@ func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) Modbus
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	return lengthInBits
 }

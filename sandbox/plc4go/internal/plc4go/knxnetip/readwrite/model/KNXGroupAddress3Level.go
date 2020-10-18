@@ -71,7 +71,7 @@ func CastKNXGroupAddress3Level(structType interface{}) KNXGroupAddress3Level {
 }
 
 func (m KNXGroupAddress3Level) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
+	var lengthInBits = m.KNXGroupAddress.LengthInBits()
 
 	// Simple field (mainGroup)
 	lengthInBits += 5
@@ -118,21 +118,21 @@ func (m KNXGroupAddress3Level) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.MainGroup)
-		_mainGroupErr := io.WriteUint8(5, (mainGroup))
+		_mainGroupErr := io.WriteUint8(5, mainGroup)
 		if _mainGroupErr != nil {
 			return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
 		}
 
 		// Simple Field (middleGroup)
 		middleGroup := uint8(m.MiddleGroup)
-		_middleGroupErr := io.WriteUint8(3, (middleGroup))
+		_middleGroupErr := io.WriteUint8(3, middleGroup)
 		if _middleGroupErr != nil {
 			return errors.New("Error serializing 'middleGroup' field " + _middleGroupErr.Error())
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint8(m.SubGroup)
-		_subGroupErr := io.WriteUint8(8, (subGroup))
+		_subGroupErr := io.WriteUint8(8, subGroup)
 		if _subGroupErr != nil {
 			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
 		}

@@ -70,7 +70,7 @@ func CastTunnelingResponse(structType interface{}) TunnelingResponse {
 }
 
 func (m TunnelingResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (tunnelingResponseDataBlock)
 	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()

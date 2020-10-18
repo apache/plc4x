@@ -69,7 +69,7 @@ func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
 }
 
 func (m COTPParameterChecksum) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+	var lengthInBits = m.COTPParameter.LengthInBits()
 
 	// Simple field (crc)
 	lengthInBits += 8
@@ -98,7 +98,7 @@ func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
-		_crcErr := io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8(8, crc)
 		if _crcErr != nil {
 			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
 		}

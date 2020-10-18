@@ -73,7 +73,7 @@ func CastBACnetTagApplicationDouble(structType interface{}) BACnetTagApplication
 }
 
 func (m BACnetTagApplicationDouble) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+	var lengthInBits = m.BACnetTag.LengthInBits()
 
 	// Simple field (value)
 	lengthInBits += 64
@@ -102,7 +102,7 @@ func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (value)
 		value := float64(m.Value)
-		_valueErr := io.WriteFloat64(64, (value))
+		_valueErr := io.WriteFloat64(64, value)
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())
 		}

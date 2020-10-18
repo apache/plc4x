@@ -73,7 +73,7 @@ func CastCEMIMPropReadReq(structType interface{}) CEMIMPropReadReq {
 }
 
 func (m CEMIMPropReadReq) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMI.LengthInBits()
+	var lengthInBits = m.CEMI.LengthInBits()
 
 	// Simple field (interfaceObjectType)
 	lengthInBits += 16
@@ -138,35 +138,35 @@ func (m CEMIMPropReadReq) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.InterfaceObjectType)
-		_interfaceObjectTypeErr := io.WriteUint16(16, (interfaceObjectType))
+		_interfaceObjectTypeErr := io.WriteUint16(16, interfaceObjectType)
 		if _interfaceObjectTypeErr != nil {
 			return errors.New("Error serializing 'interfaceObjectType' field " + _interfaceObjectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.ObjectInstance)
-		_objectInstanceErr := io.WriteUint8(8, (objectInstance))
+		_objectInstanceErr := io.WriteUint8(8, objectInstance)
 		if _objectInstanceErr != nil {
 			return errors.New("Error serializing 'objectInstance' field " + _objectInstanceErr.Error())
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.PropertyId)
-		_propertyIdErr := io.WriteUint8(8, (propertyId))
+		_propertyIdErr := io.WriteUint8(8, propertyId)
 		if _propertyIdErr != nil {
 			return errors.New("Error serializing 'propertyId' field " + _propertyIdErr.Error())
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.NumberOfElements)
-		_numberOfElementsErr := io.WriteUint8(4, (numberOfElements))
+		_numberOfElementsErr := io.WriteUint8(4, numberOfElements)
 		if _numberOfElementsErr != nil {
 			return errors.New("Error serializing 'numberOfElements' field " + _numberOfElementsErr.Error())
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.StartIndex)
-		_startIndexErr := io.WriteUint16(12, (startIndex))
+		_startIndexErr := io.WriteUint16(12, startIndex)
 		if _startIndexErr != nil {
 			return errors.New("Error serializing 'startIndex' field " + _startIndexErr.Error())
 		}

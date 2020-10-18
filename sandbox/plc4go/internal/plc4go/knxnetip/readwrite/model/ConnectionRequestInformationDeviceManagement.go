@@ -67,7 +67,7 @@ func CastConnectionRequestInformationDeviceManagement(structType interface{}) Co
 }
 
 func (m ConnectionRequestInformationDeviceManagement) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ConnectionRequestInformation.LengthInBits()
+	var lengthInBits = m.ConnectionRequestInformation.LengthInBits()
 
 	return lengthInBits
 }

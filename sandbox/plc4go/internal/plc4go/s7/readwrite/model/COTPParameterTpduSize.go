@@ -69,7 +69,7 @@ func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
 }
 
 func (m COTPParameterTpduSize) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+	var lengthInBits = m.COTPParameter.LengthInBits()
 
 	// Enum Field (tpduSize)
 	lengthInBits += 8

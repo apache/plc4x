@@ -106,7 +106,7 @@ func CEMIAdditionalInformationSerialize(io spi.WriteBuffer, m CEMIAdditionalInfo
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(i.AdditionalInformationType())
-	_additionalInformationTypeErr := io.WriteUint8(8, (additionalInformationType))
+	_additionalInformationTypeErr := io.WriteUint8(8, additionalInformationType)
 	if _additionalInformationTypeErr != nil {
 		return errors.New("Error serializing 'additionalInformationType' field " + _additionalInformationTypeErr.Error())
 	}

@@ -77,7 +77,7 @@ func CastModbusPDUReadWriteMultipleHoldingRegistersResponse(structType interface
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -123,7 +123,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io spi.Wri
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, byteCount)
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}

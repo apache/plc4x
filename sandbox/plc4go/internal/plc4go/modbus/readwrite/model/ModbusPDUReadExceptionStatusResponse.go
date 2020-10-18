@@ -77,7 +77,7 @@ func CastModbusPDUReadExceptionStatusResponse(structType interface{}) ModbusPDUR
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (value)
 	lengthInBits += 8
@@ -106,7 +106,7 @@ func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) erro
 
 		// Simple Field (value)
 		value := uint8(m.Value)
-		_valueErr := io.WriteUint8(8, (value))
+		_valueErr := io.WriteUint8(8, value)
 		if _valueErr != nil {
 			return errors.New("Error serializing 'value' field " + _valueErr.Error())
 		}

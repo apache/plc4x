@@ -80,7 +80,7 @@ func CastModbusPDUGetComEventLogResponse(structType interface{}) ModbusPDUGetCom
 }
 
 func (m ModbusPDUGetComEventLogResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Implicit Field (byteCount)
 	lengthInBits += 8
@@ -153,28 +153,28 @@ func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.Events))) + uint8(uint8(6)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, byteCount)
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}
 
 		// Simple Field (status)
 		status := uint16(m.Status)
-		_statusErr := io.WriteUint16(16, (status))
+		_statusErr := io.WriteUint16(16, status)
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.EventCount)
-		_eventCountErr := io.WriteUint16(16, (eventCount))
+		_eventCountErr := io.WriteUint16(16, eventCount)
 		if _eventCountErr != nil {
 			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
 		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.MessageCount)
-		_messageCountErr := io.WriteUint16(16, (messageCount))
+		_messageCountErr := io.WriteUint16(16, messageCount)
 		if _messageCountErr != nil {
 			return errors.New("Error serializing 'messageCount' field " + _messageCountErr.Error())
 		}

@@ -158,7 +158,7 @@ func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
 	// Array field (propertyIdentifier)
 	// Length array
 	propertyIdentifier := make([]uint8, 0)
-	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16((*extLength)), uint16(lengthValueType))
+	_propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == (5))), uint16(*extLength), uint16(lengthValueType))
 	_propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
 	for io.GetPos() < _propertyIdentifierEndPos {
 		_item, _err := io.ReadUint8(8)
@@ -205,21 +205,21 @@ func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8(4, typeOrTagNumber)
 	if _typeOrTagNumberErr != nil {
 		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
 	}
 
 	// Simple Field (contextSpecificTag)
 	contextSpecificTag := uint8(m.ContextSpecificTag)
-	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8(1, contextSpecificTag)
 	if _contextSpecificTagErr != nil {
 		return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8(3, lengthValueType)
 	if _lengthValueTypeErr != nil {
 		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
 	}

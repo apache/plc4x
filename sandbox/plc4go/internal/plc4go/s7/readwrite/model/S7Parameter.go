@@ -119,7 +119,7 @@ func S7ParameterSerialize(io spi.WriteBuffer, m S7Parameter, i IS7Parameter, chi
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(i.ParameterType())
-	_parameterTypeErr := io.WriteUint8(8, (parameterType))
+	_parameterTypeErr := io.WriteUint8(8, parameterType)
 	if _parameterTypeErr != nil {
 		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
 	}

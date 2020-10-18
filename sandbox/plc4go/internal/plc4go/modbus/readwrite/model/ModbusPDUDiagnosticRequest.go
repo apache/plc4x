@@ -78,7 +78,7 @@ func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticR
 }
 
 func (m ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (status)
 	lengthInBits += 16
@@ -116,14 +116,14 @@ func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (status)
 		status := uint16(m.Status)
-		_statusErr := io.WriteUint16(16, (status))
+		_statusErr := io.WriteUint16(16, status)
 		if _statusErr != nil {
 			return errors.New("Error serializing 'status' field " + _statusErr.Error())
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.EventCount)
-		_eventCountErr := io.WriteUint16(16, (eventCount))
+		_eventCountErr := io.WriteUint16(16, eventCount)
 		if _eventCountErr != nil {
 			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
 		}

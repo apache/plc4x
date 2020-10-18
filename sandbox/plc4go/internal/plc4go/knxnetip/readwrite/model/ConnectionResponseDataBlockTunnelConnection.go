@@ -70,7 +70,7 @@ func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) Con
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
+	var lengthInBits = m.ConnectionResponseDataBlock.LengthInBits()
 
 	// Simple field (knxAddress)
 	lengthInBits += m.KnxAddress.LengthInBits()

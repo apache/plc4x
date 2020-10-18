@@ -73,7 +73,7 @@ func CastConnectionResponse(structType interface{}) ConnectionResponse {
 }
 
 func (m ConnectionResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -151,7 +151,7 @@ func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.CommunicationChannelId)
-		_communicationChannelIdErr := io.WriteUint8(8, (communicationChannelId))
+		_communicationChannelIdErr := io.WriteUint8(8, communicationChannelId)
 		if _communicationChannelIdErr != nil {
 			return errors.New("Error serializing 'communicationChannelId' field " + _communicationChannelIdErr.Error())
 		}

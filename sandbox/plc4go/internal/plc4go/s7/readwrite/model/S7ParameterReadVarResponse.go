@@ -73,7 +73,7 @@ func CastS7ParameterReadVarResponse(structType interface{}) S7ParameterReadVarRe
 }
 
 func (m S7ParameterReadVarResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Parameter.LengthInBits()
+	var lengthInBits = m.S7Parameter.LengthInBits()
 
 	// Simple field (numItems)
 	lengthInBits += 8
@@ -102,7 +102,7 @@ func (m S7ParameterReadVarResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (numItems)
 		numItems := uint8(m.NumItems)
-		_numItemsErr := io.WriteUint8(8, (numItems))
+		_numItemsErr := io.WriteUint8(8, numItems)
 		if _numItemsErr != nil {
 			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
 		}
