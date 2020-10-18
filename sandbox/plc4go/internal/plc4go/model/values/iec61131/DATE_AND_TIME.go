@@ -16,20 +16,27 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package iec61131
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+	"time"
+)
+
+type PlcDATEANDTIME struct {
+	value time.Time
+	values.PlcValueAdapter
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func NewPlcDATEANDTIME(value time.Time) PlcDATEANDTIME {
+	return PlcDATEANDTIME{
+		value: value,
+	}
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func (m PlcDATEANDTIME) IsTime() bool {
+	return true
+}
+func (m PlcDATEANDTIME) GetTime() time.Time {
+	return m.value
 }

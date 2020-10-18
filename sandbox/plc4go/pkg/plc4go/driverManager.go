@@ -21,14 +21,12 @@ package plc4go
 import (
 	"errors"
 	"net/url"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/bacnetip"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/knxnetip"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/s7"
 )
 
 // This is the main entry point for PLC4Go applications
 type PlcDriverManager interface {
+	// Manually register a new driver
+	RegisterDriver(driver PlcDriver)
 	// List the names of all drivers registered in the system
 	ListDriverNames() []string
 	// Get access to a driver instance for a given driver-name
@@ -40,17 +38,16 @@ type PlcDriverManager interface {
 
 func NewPlcDriverManager() PlcDriverManager {
 	return plcDriverManger{
-		drivers: map[string]PlcDriver{
-			"bacnetip": bacnetip.NewBacnetIpDriver(),
-			"knxnetip": knxnetip.NewKnxNetIpDriver(),
-			"modbus":   modbus.NewModbusDriver(),
-			"s7":       s7.NewS7Driver(),
-		},
+		drivers: map[string]PlcDriver{},
 	}
 }
 
 type plcDriverManger struct {
 	drivers map[string]PlcDriver
+}
+
+func (m plcDriverManger) RegisterDriver(driver PlcDriver) {
+	m.drivers[driver.GetProtocolCode()] = driver
 }
 
 func (m plcDriverManger) ListDriverNames() []string {

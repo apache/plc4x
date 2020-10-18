@@ -8,7 +8,7 @@ import (
 
 func main() int {
 	// Get a connection to a remote PLC
-	crc := plc4go.NewPlcDriverManager().GetConnectedConnection("s7://192.168.23.30")
+	crc := plc4go.NewPlcDriverManager().GetConnectedConnection("modbus:tcp://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc
@@ -23,8 +23,7 @@ func main() int {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddField("output-field", "%Q0.0:BOOL")
-	rrb.AddField("input-field", "%I0.0:BOOL")
+	rrb.AddField("field", "holding-register:1:REAL[2]")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		_ = fmt.Errorf("error preparing read-request: %s", connectionResult.Err.Error())

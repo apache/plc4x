@@ -16,20 +16,43 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package iec61131
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+
+type PlcBYTE struct {
+	value uint8
+	values.PlcSimpleValueAdapter
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func NewPlcBYTE(value uint8) PlcBYTE {
+	return PlcBYTE{
+		value: value,
+	}
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func (m PlcBYTE) IsBoolean() bool {
+	return true
+}
+
+func (m PlcBYTE) GetBooleanLength() uint32 {
+	return 8
+}
+
+func (m PlcBYTE) GetBoolean() bool {
+	return m.value&1 == 1
+}
+
+func (m PlcBYTE) GetBooleanAt(index uint32) bool {
+	if index > 7 {
+		return false
+	}
+	return m.value>>index&1 == 1
+}
+
+func (m PlcBYTE) GetBooleanArray() []bool {
+	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
+		m.value>>2&1 == 1, m.value>>3&1 == 1,
+		m.value>>4&1 == 1, m.value>>5&1 == 1,
+		m.value>>6&1 == 1, m.value>>7&1 == 1}
 }

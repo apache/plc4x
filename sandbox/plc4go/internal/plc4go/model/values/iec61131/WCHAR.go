@@ -16,20 +16,28 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package iec61131
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+	"unicode/utf16"
+)
+
+type PlcWCHAR struct {
+	value []rune
+	values.PlcSimpleValueAdapter
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func NewPlcWCHAR(value uint16) PlcWCHAR {
+	return PlcWCHAR{
+		value: utf16.Decode([]uint16{value}),
+	}
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func (m PlcWCHAR) IsString() bool {
+	return true
+}
+
+func (m PlcWCHAR) GetString() string {
+	return string(m.value)
 }

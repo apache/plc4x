@@ -25,66 +25,77 @@ import (
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
 )
 
-type ModbusConnectionMetadata struct {
+type ConnectionMetadata struct {
 	model.PlcConnectionMetadata
 }
 
-func (m ModbusConnectionMetadata) CanRead() bool {
+func (m ConnectionMetadata) CanRead() bool {
 	return true
 }
 
-func (m ModbusConnectionMetadata) CanWrite() bool {
+func (m ConnectionMetadata) CanWrite() bool {
 	return true
 }
 
-func (m ModbusConnectionMetadata) CanSubscribe() bool {
+func (m ConnectionMetadata) CanSubscribe() bool {
 	return false
 }
 
-type ModbusConnection struct {
+type Connection struct {
 	fieldHandler spi.PlcFieldHandler
+	valueHandler spi.PlcValueHandler
 	plc4go.PlcConnection
 }
 
-func NewModbusConnection(fieldHandler spi.PlcFieldHandler) ModbusConnection {
-	return ModbusConnection{
+func NewConnection(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler) Connection {
+	return Connection{
 		fieldHandler: fieldHandler,
+		valueHandler: valueHandler,
 	}
 }
 
-func (m ModbusConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (m Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	// TODO: Implement ...
+	ch := make(chan plc4go.PlcConnectionConnectResult)
+	go func() {
+		ch <- plc4go.NewPlcConnectionConnectResult(m, nil)
+	}()
+	return ch
+}
+
+func (m Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
+	// TODO: Implement ...
+	ch := make(chan plc4go.PlcConnectionCloseResult)
+	go func() {
+		ch <- plc4go.NewPlcConnectionCloseResult(m, nil)
+	}()
+	return ch
+}
+
+func (m Connection) IsConnected() bool {
 	panic("implement me")
 }
 
-func (m ModbusConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
+func (m Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 	panic("implement me")
 }
 
-func (m ModbusConnection) IsConnected() bool {
+func (m Connection) GetMetadata() model.PlcConnectionMetadata {
+	return ConnectionMetadata{}
+}
+
+func (m Connection) ReadRequestBuilder() model.PlcReadRequestBuilder {
+	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, NewModbusReader())
+}
+
+func (m Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
+	return internalModel.NewDefaultPlcWriteRequestBuilder(m.fieldHandler, m.valueHandler, NewModbusWriter())
+}
+
+func (m Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
 	panic("implement me")
 }
 
-func (m ModbusConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	panic("implement me")
-}
-
-func (m ModbusConnection) GetMetadata() model.PlcConnectionMetadata {
-	return ModbusConnectionMetadata{}
-}
-
-func (m ModbusConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	// TODO: Pass a real reader in here ...
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler, nil)
-}
-
-func (m ModbusConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	panic("implement me")
-}
-
-func (m ModbusConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("implement me")
-}
-
-func (m ModbusConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
+func (m Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
 	panic("implement me")
 }

@@ -16,20 +16,21 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package modbus
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
+)
+
+type ModbusWriter struct {
+	spi.PlcWriter
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func NewModbusWriter() ModbusWriter {
+	return ModbusWriter{}
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
+	return make(chan model.PlcWriteRequestResult)
 }

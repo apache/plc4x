@@ -26,14 +26,14 @@ import (
 )
 
 type DefaultPlcWriteRequestBuilder struct {
-	writer       PlcWriter
+	writer       spi.PlcWriter
 	fieldHandler spi.PlcFieldHandler
 	valueHandler spi.PlcValueHandler
 	queries      map[string]string
 	values       map[string]interface{}
 }
 
-func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer PlcWriter) *DefaultPlcWriteRequestBuilder {
+func NewDefaultPlcWriteRequestBuilder(fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler, writer spi.PlcWriter) *DefaultPlcWriteRequestBuilder {
 	return &DefaultPlcWriteRequestBuilder{
 		writer:       writer,
 		fieldHandler: fieldHandler,
@@ -74,10 +74,10 @@ func (m *DefaultPlcWriteRequestBuilder) Build() (model.PlcWriteRequest, error) {
 type DefaultPlcWriteRequest struct {
 	fields map[string]model.PlcField
 	values map[string]values.PlcValue
-	writer PlcWriter
+	writer spi.PlcWriter
 	model.PlcWriteRequest
 }
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
-	return m.writer.Write()
+	return m.writer.Write(m)
 }

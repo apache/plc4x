@@ -16,20 +16,23 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package modbus
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import (
+	"fmt"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
+)
+
+type ModbusReader struct {
+	spi.PlcReader
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
+func NewModbusReader() ModbusReader {
+	return ModbusReader{}
 }
 
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+	fmt.Printf("Read Request %s", readRequest)
+	return make(chan model.PlcReadRequestResult)
 }

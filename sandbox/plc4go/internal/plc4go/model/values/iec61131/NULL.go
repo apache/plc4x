@@ -16,20 +16,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package model
+package iec61131
 
-type PlcReadRequestBuilder interface {
-	AddItem(name string, query string)
-	Build() (PlcReadRequest, error)
+import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+
+type PlcNULL struct {
+	values.PlcValueAdapter
 }
 
-type PlcReadRequestResult struct {
-	Request  PlcReadRequest
-	Response PlcReadResponse
-	Err      error
-}
-
-type PlcReadRequest interface {
-	Execute() <-chan PlcReadRequestResult
-	PlcRequest
+func NewPlcNULL() PlcNULL {
+	return PlcNULL{}
 }
