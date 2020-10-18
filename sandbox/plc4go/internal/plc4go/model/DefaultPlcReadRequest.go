@@ -25,13 +25,13 @@ import (
 )
 
 type DefaultPlcReadRequestBuilder struct {
-	reader       PlcReader
+	reader       spi.PlcReader
 	fieldHandler spi.PlcFieldHandler
 	queries      map[string]string
 	model.PlcReadRequestBuilder
 }
 
-func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader PlcReader) *DefaultPlcReadRequestBuilder {
+func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {
 	return &DefaultPlcReadRequestBuilder{
 		reader:       reader,
 		fieldHandler: fieldHandler,
@@ -45,7 +45,7 @@ func (m *DefaultPlcReadRequestBuilder) AddItem(name string, query string) {
 
 func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 	fields := make(map[string]model.PlcField)
-	for _, name := range m.queries {
+	for name := range m.queries {
 		query := m.queries[name]
 		field, err := m.fieldHandler.ParseQuery(query)
 		if err != nil {
@@ -61,10 +61,10 @@ func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 
 type DefaultPlcReadRequest struct {
 	fields map[string]model.PlcField
-	reader PlcReader
+	reader spi.PlcReader
 	model.PlcReadRequest
 }
 
 func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
-	return m.reader.Read()
+	return m.reader.Read(m)
 }

@@ -19,7 +19,7 @@
 package model
 
 type PlcWriteRequestBuilder interface {
-	AddField(name string, query string, value interface{})
+	AddItem(name string, query string, value interface{})
 	Build() (PlcWriteRequest, error)
 }
 

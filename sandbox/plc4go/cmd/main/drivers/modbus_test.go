@@ -20,12 +20,15 @@ package drivers
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/testutils"
+	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
 	"strings"
 	"testing"
 )
@@ -69,7 +72,6 @@ func test(t *testing.T, rawMessage string, response bool) {
 // Test that actually sends a read-request to a remote Modbus Slave
 //
 func Connection(t *testing.T) {
-
 	pdu := model.ModbusPDUReadInputRegistersRequest{
 		StartingAddress: 1,
 		Quantity:        1,
@@ -120,4 +122,50 @@ func Connection(t *testing.T) {
 	fmt.Println(response)
 
 	conn.Close()
+}
+
+func TestPlc4goDriver(t *testing.T) {
+	driverManager := plc4go.NewPlcDriverManager()
+	driverManager.RegisterDriver(modbus.NewModbusDriver())
+
+	// Get a connection to a remote PLC
+	crc := driverManager.GetConnectedConnection("modbus:tcp://192.168.23.30")
+
+	// Wait for the driver to connect (or not)
+	connectionResult := <-crc
+	if connectionResult.Err != nil {
+		t.Errorf("error connecting to PLC: %s", connectionResult.Err.Error())
+		return
+	}
+	connection := connectionResult.Connection
+
+	// Make sure the connection is closed at the end
+	defer connection.Close()
+
+	// Prepare a read-request
+	rrb := connection.ReadRequestBuilder()
+	rrb.AddItem("field", "holding-register:1:REAL[2]")
+	readRequest, err := rrb.Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		return
+	}
+
+	// Execute a read-request
+	rrc := readRequest.Execute()
+
+	// Wait for the response to finish
+	rrr := <-rrc
+	if rrr.Err != nil {
+		t.Errorf("error executing read-request: %s", rrr.Err.Error())
+		return
+	}
+
+	// Do something with the response
+	readResponseJson, err := json.Marshal(rrr.Response)
+	if err != nil {
+		t.Errorf("error serializing read-response: %s", err.Error())
+		return
+	}
+	fmt.Printf("Result: %s\n", string(readResponseJson))
 }

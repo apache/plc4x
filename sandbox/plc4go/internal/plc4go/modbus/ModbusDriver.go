@@ -23,30 +23,32 @@ import (
 	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
 )
 
-type modbusDriver struct {
+type Driver struct {
 	fieldHandler spi.PlcFieldHandler
+	valueHandler spi.PlcValueHandler
 	plc4go.PlcDriver
 }
 
 func NewModbusDriver() plc4go.PlcDriver {
-	return modbusDriver{
-		fieldHandler: NewModbusFieldHandler(),
+	return Driver{
+		fieldHandler: NewFieldHandler(),
+		valueHandler: NewValueHandler(),
 	}
 }
 
-func (m modbusDriver) GetProtocolCode() string {
+func (m Driver) GetProtocolCode() string {
 	return "modbus"
 }
 
-func (m modbusDriver) GetProtocolName() string {
+func (m Driver) GetProtocolName() string {
 	return "Modbus"
 }
 
-func (m modbusDriver) CheckQuery(query string) error {
+func (m Driver) CheckQuery(query string) error {
 	_, err := m.fieldHandler.ParseQuery(query)
 	return err
 }
 
-func (m modbusDriver) GetConnection(connectionString string) (plc4go.PlcConnection, error) {
-	return NewModbusConnection(m.fieldHandler), nil
+func (m Driver) GetConnection(connectionString string) (plc4go.PlcConnection, error) {
+	return NewConnection(m.fieldHandler, m.valueHandler), nil
 }
