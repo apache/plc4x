@@ -92,7 +92,7 @@ func CastCEMIFrameData(structType interface{}) CEMIFrameData {
 }
 
 func (m CEMIFrameData) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
+	var lengthInBits = m.CEMIFrame.LengthInBits()
 
 	// Simple field (sourceAddress)
 	lengthInBits += m.SourceAddress.LengthInBits()
@@ -256,14 +256,14 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.HopCount)
-		_hopCountErr := io.WriteUint8(3, (hopCount))
+		_hopCountErr := io.WriteUint8(3, hopCount)
 		if _hopCountErr != nil {
 			return errors.New("Error serializing 'hopCount' field " + _hopCountErr.Error())
 		}
 
 		// Simple Field (dataLength)
 		dataLength := uint8(m.DataLength)
-		_dataLengthErr := io.WriteUint8(4, (dataLength))
+		_dataLengthErr := io.WriteUint8(4, dataLength)
 		if _dataLengthErr != nil {
 			return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
 		}
@@ -277,7 +277,7 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (counter)
 		counter := uint8(m.Counter)
-		_counterErr := io.WriteUint8(4, (counter))
+		_counterErr := io.WriteUint8(4, counter)
 		if _counterErr != nil {
 			return errors.New("Error serializing 'counter' field " + _counterErr.Error())
 		}
@@ -291,7 +291,7 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.DataFirstByte)
-		_dataFirstByteErr := io.WriteInt8(6, (dataFirstByte))
+		_dataFirstByteErr := io.WriteInt8(6, dataFirstByte)
 		if _dataFirstByteErr != nil {
 			return errors.New("Error serializing 'dataFirstByte' field " + _dataFirstByteErr.Error())
 		}
@@ -308,7 +308,7 @@ func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (crc)
 		crc := uint8(m.Crc)
-		_crcErr := io.WriteUint8(8, (crc))
+		_crcErr := io.WriteUint8(8, crc)
 		if _crcErr != nil {
 			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
 		}

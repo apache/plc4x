@@ -67,7 +67,7 @@ func CastBVLCRegisterForeignDevice(structType interface{}) BVLCRegisterForeignDe
 }
 
 func (m BVLCRegisterForeignDevice) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BVLC.LengthInBits()
+	var lengthInBits = m.BVLC.LengthInBits()
 
 	return lengthInBits
 }

@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceACKReadRange(structType interface{}) BACnetConfir
 }
 
 func (m BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
 
 	return lengthInBits
 }

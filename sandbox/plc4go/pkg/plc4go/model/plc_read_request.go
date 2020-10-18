@@ -19,7 +19,7 @@
 package model
 
 type PlcReadRequestBuilder interface {
-	AddField(name string, query string) *PlcReadRequestBuilder
+	AddField(name string, query string) error
 	Build() (PlcReadRequest, error)
 }
 

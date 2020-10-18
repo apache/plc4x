@@ -135,28 +135,28 @@ func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io spi.WriteBuffer) error
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.ReferenceType)
-	_referenceTypeErr := io.WriteUint8(8, (referenceType))
+	_referenceTypeErr := io.WriteUint8(8, referenceType)
 	if _referenceTypeErr != nil {
 		return errors.New("Error serializing 'referenceType' field " + _referenceTypeErr.Error())
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.FileNumber)
-	_fileNumberErr := io.WriteUint16(16, (fileNumber))
+	_fileNumberErr := io.WriteUint16(16, fileNumber)
 	if _fileNumberErr != nil {
 		return errors.New("Error serializing 'fileNumber' field " + _fileNumberErr.Error())
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.RecordNumber)
-	_recordNumberErr := io.WriteUint16(16, (recordNumber))
+	_recordNumberErr := io.WriteUint16(16, recordNumber)
 	if _recordNumberErr != nil {
 		return errors.New("Error serializing 'recordNumber' field " + _recordNumberErr.Error())
 	}
 
 	// Implicit Field (recordLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	recordLength := uint16(uint16(uint16(len(m.RecordData))) / uint16(uint16(2)))
-	_recordLengthErr := io.WriteUint16(16, (recordLength))
+	_recordLengthErr := io.WriteUint16(16, recordLength)
 	if _recordLengthErr != nil {
 		return errors.New("Error serializing 'recordLength' field " + _recordLengthErr.Error())
 	}

@@ -104,7 +104,7 @@ func S7AddressSerialize(io spi.WriteBuffer, m S7Address, i IS7Address, childSeri
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(i.AddressType())
-	_addressTypeErr := io.WriteUint8(8, (addressType))
+	_addressTypeErr := io.WriteUint8(8, addressType)
 	if _addressTypeErr != nil {
 		return errors.New("Error serializing 'addressType' field " + _addressTypeErr.Error())
 	}

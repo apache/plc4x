@@ -71,7 +71,7 @@ func CastAPDUUnconfirmedRequest(structType interface{}) APDUUnconfirmedRequest {
 }
 
 func (m APDUUnconfirmedRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 4

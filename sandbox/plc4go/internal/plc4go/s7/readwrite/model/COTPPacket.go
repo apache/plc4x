@@ -176,14 +176,14 @@ func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childS
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.Payload) != (nil))), uint16((*m.Payload).LengthInBytes()), uint16(uint8(0)))))+uint8(uint8(1)))))
-	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	_headerLengthErr := io.WriteUint8(8, headerLength)
 	if _headerLengthErr != nil {
 		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(i.TpduCode())
-	_tpduCodeErr := io.WriteUint8(8, (tpduCode))
+	_tpduCodeErr := io.WriteUint8(8, tpduCode)
 	if _tpduCodeErr != nil {
 		return errors.New("Error serializing 'tpduCode' field " + _tpduCodeErr.Error())
 	}

@@ -74,7 +74,7 @@ func CastS7PayloadWriteVarRequest(structType interface{}) S7PayloadWriteVarReque
 }
 
 func (m S7PayloadWriteVarRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Payload.LengthInBits()
+	var lengthInBits = m.S7Payload.LengthInBits()
 
 	// Array field
 	if len(m.Items) > 0 {
@@ -121,7 +121,7 @@ func (m S7PayloadWriteVarRequest) Serialize(io spi.WriteBuffer) error {
 			itemCount := uint16(len(m.Items))
 			var curItem uint16 = 0
 			for _, _element := range m.Items {
-				var lastItem bool = curItem == (itemCount - 1)
+				var lastItem = curItem == (itemCount - 1)
 				_elementErr := _element.Serialize(io, lastItem)
 				if _elementErr != nil {
 					return errors.New("Error serializing 'items' field " + _elementErr.Error())

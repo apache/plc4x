@@ -72,7 +72,7 @@ func CastConnectionRequest(structType interface{}) ConnectionRequest {
 }
 
 func (m ConnectionRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (hpaiDiscoveryEndpoint)
 	lengthInBits += m.HpaiDiscoveryEndpoint.LengthInBits()

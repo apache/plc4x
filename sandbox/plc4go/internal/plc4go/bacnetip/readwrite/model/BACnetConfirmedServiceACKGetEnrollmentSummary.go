@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceACKGetEnrollmentSummary(structType interface{}) B
 }
 
 func (m BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
 
 	return lengthInBits
 }

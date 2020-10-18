@@ -159,14 +159,14 @@ func BVLCSerialize(io spi.WriteBuffer, m BVLC, i IBVLC, childSerialize func() er
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction := uint8(i.BvlcFunction())
-	_bvlcFunctionErr := io.WriteUint8(8, (bvlcFunction))
+	_bvlcFunctionErr := io.WriteUint8(8, bvlcFunction)
 	if _bvlcFunctionErr != nil {
 		return errors.New("Error serializing 'bvlcFunction' field " + _bvlcFunctionErr.Error())
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.LengthInBytes()))
-	_bvlcLengthErr := io.WriteUint16(16, (bvlcLength))
+	_bvlcLengthErr := io.WriteUint16(16, bvlcLength)
 	if _bvlcLengthErr != nil {
 		return errors.New("Error serializing 'bvlcLength' field " + _bvlcLengthErr.Error())
 	}

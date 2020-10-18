@@ -122,7 +122,7 @@ func (m HPAIDiscoveryEndpoint) Serialize(io spi.WriteBuffer) error {
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, structureLength)
 	if _structureLengthErr != nil {
 		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
 	}
@@ -143,7 +143,7 @@ func (m HPAIDiscoveryEndpoint) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (ipPort)
 	ipPort := uint16(m.IpPort)
-	_ipPortErr := io.WriteUint16(16, (ipPort))
+	_ipPortErr := io.WriteUint16(16, ipPort)
 	if _ipPortErr != nil {
 		return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())
 	}

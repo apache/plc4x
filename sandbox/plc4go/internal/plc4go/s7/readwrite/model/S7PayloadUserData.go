@@ -74,7 +74,7 @@ func CastS7PayloadUserData(structType interface{}) S7PayloadUserData {
 }
 
 func (m S7PayloadUserData) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.S7Payload.LengthInBits()
+	var lengthInBits = m.S7Payload.LengthInBits()
 
 	// Array field
 	if len(m.Items) > 0 {

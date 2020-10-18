@@ -72,7 +72,7 @@ func CastCOTPPacketData(structType interface{}) COTPPacketData {
 }
 
 func (m COTPPacketData) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+	var lengthInBits = m.COTPPacket.LengthInBits()
 
 	// Simple field (eot)
 	lengthInBits += 1
@@ -117,7 +117,7 @@ func (m COTPPacketData) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.TpduRef)
-		_tpduRefErr := io.WriteUint8(7, (tpduRef))
+		_tpduRefErr := io.WriteUint8(7, tpduRef)
 		if _tpduRefErr != nil {
 			return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())
 		}

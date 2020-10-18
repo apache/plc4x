@@ -81,7 +81,7 @@ func CastBACnetServiceAckReadProperty(structType interface{}) BACnetServiceAckRe
 }
 
 func (m BACnetServiceAckReadProperty) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	// Const Field (objectIdentifierHeader)
 	lengthInBits += 8
@@ -213,14 +213,14 @@ func (m BACnetServiceAckReadProperty) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (objectType)
 		objectType := uint16(m.ObjectType)
-		_objectTypeErr := io.WriteUint16(10, (objectType))
+		_objectTypeErr := io.WriteUint16(10, objectType)
 		if _objectTypeErr != nil {
 			return errors.New("Error serializing 'objectType' field " + _objectTypeErr.Error())
 		}
 
 		// Simple Field (objectInstanceNumber)
 		objectInstanceNumber := uint32(m.ObjectInstanceNumber)
-		_objectInstanceNumberErr := io.WriteUint32(22, (objectInstanceNumber))
+		_objectInstanceNumberErr := io.WriteUint32(22, objectInstanceNumber)
 		if _objectInstanceNumberErr != nil {
 			return errors.New("Error serializing 'objectInstanceNumber' field " + _objectInstanceNumberErr.Error())
 		}
@@ -233,7 +233,7 @@ func (m BACnetServiceAckReadProperty) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (propertyIdentifierLength)
 		propertyIdentifierLength := uint8(m.PropertyIdentifierLength)
-		_propertyIdentifierLengthErr := io.WriteUint8(3, (propertyIdentifierLength))
+		_propertyIdentifierLengthErr := io.WriteUint8(3, propertyIdentifierLength)
 		if _propertyIdentifierLengthErr != nil {
 			return errors.New("Error serializing 'propertyIdentifierLength' field " + _propertyIdentifierLengthErr.Error())
 		}

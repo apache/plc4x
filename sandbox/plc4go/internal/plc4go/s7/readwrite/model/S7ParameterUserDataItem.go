@@ -104,7 +104,7 @@ func S7ParameterUserDataItemSerialize(io spi.WriteBuffer, m S7ParameterUserDataI
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(i.ItemType())
-	_itemTypeErr := io.WriteUint8(8, (itemType))
+	_itemTypeErr := io.WriteUint8(8, itemType)
 	if _itemTypeErr != nil {
 		return errors.New("Error serializing 'itemType' field " + _itemTypeErr.Error())
 	}

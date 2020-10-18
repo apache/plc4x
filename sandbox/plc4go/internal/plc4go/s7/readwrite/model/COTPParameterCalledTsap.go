@@ -69,7 +69,7 @@ func CastCOTPParameterCalledTsap(structType interface{}) COTPParameterCalledTsap
 }
 
 func (m COTPParameterCalledTsap) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+	var lengthInBits = m.COTPParameter.LengthInBits()
 
 	// Simple field (tsapId)
 	lengthInBits += 16
@@ -98,7 +98,7 @@ func (m COTPParameterCalledTsap) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.TsapId)
-		_tsapIdErr := io.WriteUint16(16, (tsapId))
+		_tsapIdErr := io.WriteUint16(16, tsapId)
 		if _tsapIdErr != nil {
 			return errors.New("Error serializing 'tsapId' field " + _tsapIdErr.Error())
 		}

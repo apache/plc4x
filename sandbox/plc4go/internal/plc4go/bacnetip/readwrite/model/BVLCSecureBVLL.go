@@ -67,7 +67,7 @@ func CastBVLCSecureBVLL(structType interface{}) BVLCSecureBVLL {
 }
 
 func (m BVLCSecureBVLL) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BVLC.LengthInBits()
+	var lengthInBits = m.BVLC.LengthInBits()
 
 	return lengthInBits
 }

@@ -130,7 +130,7 @@ func BACnetConfirmedServiceACKSerialize(io spi.WriteBuffer, m BACnetConfirmedSer
 
 	// Discriminator Field (serviceChoice) (Used as input to a switch field)
 	serviceChoice := uint8(i.ServiceChoice())
-	_serviceChoiceErr := io.WriteUint8(8, (serviceChoice))
+	_serviceChoiceErr := io.WriteUint8(8, serviceChoice)
 	if _serviceChoiceErr != nil {
 		return errors.New("Error serializing 'serviceChoice' field " + _serviceChoiceErr.Error())
 	}

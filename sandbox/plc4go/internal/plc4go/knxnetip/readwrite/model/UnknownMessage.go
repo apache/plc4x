@@ -69,7 +69,7 @@ func CastUnknownMessage(structType interface{}) UnknownMessage {
 }
 
 func (m UnknownMessage) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Array field
 	if len(m.UnknownData) > 0 {

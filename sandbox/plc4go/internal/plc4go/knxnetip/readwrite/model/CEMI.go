@@ -124,7 +124,7 @@ func CEMISerialize(io spi.WriteBuffer, m CEMI, i ICEMI, childSerialize func() er
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(i.MessageCode())
-	_messageCodeErr := io.WriteUint8(8, (messageCode))
+	_messageCodeErr := io.WriteUint8(8, messageCode)
 	if _messageCodeErr != nil {
 		return errors.New("Error serializing 'messageCode' field " + _messageCodeErr.Error())
 	}

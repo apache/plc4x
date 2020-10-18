@@ -67,7 +67,7 @@ func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemov
 }
 
 func (m BACnetErrorRemovedAuthenticate) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetError.LengthInBits()
+	var lengthInBits = m.BACnetError.LengthInBits()
 
 	return lengthInBits
 }

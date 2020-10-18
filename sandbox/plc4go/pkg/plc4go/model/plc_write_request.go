@@ -18,10 +18,8 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
-
 type PlcWriteRequestBuilder interface {
-	AddField(name string, query string, value values.PlcValue)
+	AddField(name string, query string, value interface{})
 	Build() (PlcWriteRequest, error)
 }
 

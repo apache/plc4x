@@ -79,7 +79,7 @@ func CastCEMIFramePollingData(structType interface{}) CEMIFramePollingData {
 }
 
 func (m CEMIFramePollingData) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
+	var lengthInBits = m.CEMIFrame.LengthInBits()
 
 	return lengthInBits
 }

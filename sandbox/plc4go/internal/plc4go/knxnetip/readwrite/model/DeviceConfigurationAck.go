@@ -70,7 +70,7 @@ func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
 }
 
 func (m DeviceConfigurationAck) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	// Simple field (deviceConfigurationAckDataBlock)
 	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()

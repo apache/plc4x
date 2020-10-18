@@ -74,7 +74,7 @@ func CastBACnetTagApplicationBitString(structType interface{}) BACnetTagApplicat
 }
 
 func (m BACnetTagApplicationBitString) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+	var lengthInBits = m.BACnetTag.LengthInBits()
 
 	// Simple field (unusedBits)
 	lengthInBits += 8
@@ -121,7 +121,7 @@ func (m BACnetTagApplicationBitString) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (unusedBits)
 		unusedBits := uint8(m.UnusedBits)
-		_unusedBitsErr := io.WriteUint8(8, (unusedBits))
+		_unusedBitsErr := io.WriteUint8(8, unusedBits)
 		if _unusedBitsErr != nil {
 			return errors.New("Error serializing 'unusedBits' field " + _unusedBitsErr.Error())
 		}

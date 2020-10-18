@@ -72,7 +72,7 @@ func CastCOTPPacketDisconnectResponse(structType interface{}) COTPPacketDisconne
 }
 
 func (m COTPPacketDisconnectResponse) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPPacket.LengthInBits()
+	var lengthInBits = m.COTPPacket.LengthInBits()
 
 	// Simple field (destinationReference)
 	lengthInBits += 16
@@ -110,14 +110,14 @@ func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.DestinationReference)
-		_destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+		_destinationReferenceErr := io.WriteUint16(16, destinationReference)
 		if _destinationReferenceErr != nil {
 			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.SourceReference)
-		_sourceReferenceErr := io.WriteUint16(16, (sourceReference))
+		_sourceReferenceErr := io.WriteUint16(16, sourceReference)
 		if _sourceReferenceErr != nil {
 			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
 		}

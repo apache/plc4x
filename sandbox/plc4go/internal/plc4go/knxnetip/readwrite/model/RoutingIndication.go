@@ -67,7 +67,7 @@ func CastRoutingIndication(structType interface{}) RoutingIndication {
 }
 
 func (m RoutingIndication) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
+	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
 
 	return lengthInBits
 }

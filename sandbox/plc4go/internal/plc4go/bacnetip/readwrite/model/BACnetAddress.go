@@ -115,7 +115,7 @@ func (m BACnetAddress) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (port)
 	port := uint16(m.Port)
-	_portErr := io.WriteUint16(16, (port))
+	_portErr := io.WriteUint16(16, port)
 	if _portErr != nil {
 		return errors.New("Error serializing 'port' field " + _portErr.Error())
 	}

@@ -69,7 +69,7 @@ func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) CO
 }
 
 func (m COTPParameterDisconnectAdditionalInformation) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.COTPParameter.LengthInBits()
+	var lengthInBits = m.COTPParameter.LengthInBits()
 
 	// Array field
 	if len(m.Data) > 0 {

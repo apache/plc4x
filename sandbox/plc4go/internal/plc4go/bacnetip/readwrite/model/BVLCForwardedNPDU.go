@@ -72,7 +72,7 @@ func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
 }
 
 func (m BVLCForwardedNPDU) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BVLC.LengthInBits()
+	var lengthInBits = m.BVLC.LengthInBits()
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -142,7 +142,7 @@ func (m BVLCForwardedNPDU) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (port)
 		port := uint16(m.Port)
-		_portErr := io.WriteUint16(16, (port))
+		_portErr := io.WriteUint16(16, port)
 		if _portErr != nil {
 			return errors.New("Error serializing 'port' field " + _portErr.Error())
 		}

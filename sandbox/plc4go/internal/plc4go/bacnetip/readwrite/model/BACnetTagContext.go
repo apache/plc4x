@@ -73,7 +73,7 @@ func CastBACnetTagContext(structType interface{}) BACnetTagContext {
 }
 
 func (m BACnetTagContext) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetTag.LengthInBits()
+	var lengthInBits = m.BACnetTag.LengthInBits()
 
 	// Array field
 	if len(m.Data) > 0 {

@@ -72,7 +72,7 @@ func CastAPDUAbort(structType interface{}) APDUAbort {
 }
 
 func (m APDUAbort) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 3
@@ -151,14 +151,14 @@ func (m APDUAbort) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, originalInvokeId)
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (abortReason)
 		abortReason := uint8(m.AbortReason)
-		_abortReasonErr := io.WriteUint8(8, (abortReason))
+		_abortReasonErr := io.WriteUint8(8, abortReason)
 		if _abortReasonErr != nil {
 			return errors.New("Error serializing 'abortReason' field " + _abortReasonErr.Error())
 		}

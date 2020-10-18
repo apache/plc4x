@@ -70,7 +70,7 @@ func CastNLMWhoIsRouterToNetwork(structType interface{}) NLMWhoIsRouterToNetwork
 }
 
 func (m NLMWhoIsRouterToNetwork) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.NLM.LengthInBits()
+	var lengthInBits = m.NLM.LengthInBits()
 
 	// Array field
 	if len(m.DestinationNetworkAddress) > 0 {

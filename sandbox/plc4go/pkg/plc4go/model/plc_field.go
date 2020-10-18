@@ -19,4 +19,5 @@
 package model
 
 type PlcField interface {
+	GetTypeName() string
 }

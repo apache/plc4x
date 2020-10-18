@@ -67,7 +67,7 @@ func CastCEMIPollDataReq(structType interface{}) CEMIPollDataReq {
 }
 
 func (m CEMIPollDataReq) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.CEMI.LengthInBits()
+	var lengthInBits = m.CEMI.LengthInBits()
 
 	return lengthInBits
 }

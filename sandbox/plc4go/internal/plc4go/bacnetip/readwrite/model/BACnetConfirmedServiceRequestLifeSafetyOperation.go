@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestLifeSafetyOperation(structType interface{}
 }
 
 func (m BACnetConfirmedServiceRequestLifeSafetyOperation) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

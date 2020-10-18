@@ -97,14 +97,14 @@ func (m ProjectInstallationIdentifier) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.ProjectNumber)
-	_projectNumberErr := io.WriteUint8(8, (projectNumber))
+	_projectNumberErr := io.WriteUint8(8, projectNumber)
 	if _projectNumberErr != nil {
 		return errors.New("Error serializing 'projectNumber' field " + _projectNumberErr.Error())
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.InstallationNumber)
-	_installationNumberErr := io.WriteUint8(8, (installationNumber))
+	_installationNumberErr := io.WriteUint8(8, installationNumber)
 	if _installationNumberErr != nil {
 		return errors.New("Error serializing 'installationNumber' field " + _installationNumberErr.Error())
 	}

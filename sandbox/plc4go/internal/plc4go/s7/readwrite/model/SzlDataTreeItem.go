@@ -135,7 +135,7 @@ func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.ItemIndex)
-	_itemIndexErr := io.WriteUint16(16, (itemIndex))
+	_itemIndexErr := io.WriteUint16(16, itemIndex)
 	if _itemIndexErr != nil {
 		return errors.New("Error serializing 'itemIndex' field " + _itemIndexErr.Error())
 	}
@@ -152,21 +152,21 @@ func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId := uint16(m.ModuleTypeId)
-	_moduleTypeIdErr := io.WriteUint16(16, (moduleTypeId))
+	_moduleTypeIdErr := io.WriteUint16(16, moduleTypeId)
 	if _moduleTypeIdErr != nil {
 		return errors.New("Error serializing 'moduleTypeId' field " + _moduleTypeIdErr.Error())
 	}
 
 	// Simple Field (ausbg)
 	ausbg := uint16(m.Ausbg)
-	_ausbgErr := io.WriteUint16(16, (ausbg))
+	_ausbgErr := io.WriteUint16(16, ausbg)
 	if _ausbgErr != nil {
 		return errors.New("Error serializing 'ausbg' field " + _ausbgErr.Error())
 	}
 
 	// Simple Field (ausbe)
 	ausbe := uint16(m.Ausbe)
-	_ausbeErr := io.WriteUint16(16, (ausbe))
+	_ausbeErr := io.WriteUint16(16, ausbe)
 	if _ausbeErr != nil {
 		return errors.New("Error serializing 'ausbe' field " + _ausbeErr.Error())
 	}

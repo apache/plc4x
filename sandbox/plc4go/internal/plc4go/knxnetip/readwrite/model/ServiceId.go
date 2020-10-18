@@ -114,7 +114,7 @@ func ServiceIdSerialize(io spi.WriteBuffer, m ServiceId, i IServiceId, childSeri
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(i.ServiceType())
-	_serviceTypeErr := io.WriteUint8(8, (serviceType))
+	_serviceTypeErr := io.WriteUint8(8, serviceType)
 	if _serviceTypeErr != nil {
 		return errors.New("Error serializing 'serviceType' field " + _serviceTypeErr.Error())
 	}

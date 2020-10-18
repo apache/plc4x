@@ -67,7 +67,7 @@ func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType interface{}) B
 }
 
 func (m BACnetConfirmedServiceRequestAcknowledgeAlarm) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

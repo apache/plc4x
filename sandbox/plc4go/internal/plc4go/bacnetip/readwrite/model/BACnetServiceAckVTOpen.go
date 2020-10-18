@@ -67,7 +67,7 @@ func CastBACnetServiceAckVTOpen(structType interface{}) BACnetServiceAckVTOpen {
 }
 
 func (m BACnetServiceAckVTOpen) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	return lengthInBits
 }

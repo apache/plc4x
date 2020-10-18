@@ -74,7 +74,7 @@ func CastAPDUSegmentAck(structType interface{}) APDUSegmentAck {
 }
 
 func (m APDUSegmentAck) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Reserved Field (reserved)
 	lengthInBits += 2
@@ -178,21 +178,21 @@ func (m APDUSegmentAck) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.OriginalInvokeId)
-		_originalInvokeIdErr := io.WriteUint8(8, (originalInvokeId))
+		_originalInvokeIdErr := io.WriteUint8(8, originalInvokeId)
 		if _originalInvokeIdErr != nil {
 			return errors.New("Error serializing 'originalInvokeId' field " + _originalInvokeIdErr.Error())
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.SequenceNumber)
-		_sequenceNumberErr := io.WriteUint8(8, (sequenceNumber))
+		_sequenceNumberErr := io.WriteUint8(8, sequenceNumber)
 		if _sequenceNumberErr != nil {
 			return errors.New("Error serializing 'sequenceNumber' field " + _sequenceNumberErr.Error())
 		}
 
 		// Simple Field (proposedWindowSize)
 		proposedWindowSize := uint8(m.ProposedWindowSize)
-		_proposedWindowSizeErr := io.WriteUint8(8, (proposedWindowSize))
+		_proposedWindowSizeErr := io.WriteUint8(8, proposedWindowSize)
 		if _proposedWindowSizeErr != nil {
 			return errors.New("Error serializing 'proposedWindowSize' field " + _proposedWindowSizeErr.Error())
 		}

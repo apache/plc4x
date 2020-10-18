@@ -115,14 +115,14 @@ func ConnectionResponseDataBlockSerialize(io spi.WriteBuffer, m ConnectionRespon
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, (structureLength))
+	_structureLengthErr := io.WriteUint8(8, structureLength)
 	if _structureLengthErr != nil {
 		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(i.ConnectionType())
-	_connectionTypeErr := io.WriteUint8(8, (connectionType))
+	_connectionTypeErr := io.WriteUint8(8, connectionType)
 	if _connectionTypeErr != nil {
 		return errors.New("Error serializing 'connectionType' field " + _connectionTypeErr.Error())
 	}

@@ -81,7 +81,7 @@ func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType interface{
 }
 
 func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
+	var lengthInBits = m.ModbusPDU.LengthInBits()
 
 	// Simple field (readStartingAddress)
 	lengthInBits += 16
@@ -163,35 +163,35 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.Writ
 
 		// Simple Field (readStartingAddress)
 		readStartingAddress := uint16(m.ReadStartingAddress)
-		_readStartingAddressErr := io.WriteUint16(16, (readStartingAddress))
+		_readStartingAddressErr := io.WriteUint16(16, readStartingAddress)
 		if _readStartingAddressErr != nil {
 			return errors.New("Error serializing 'readStartingAddress' field " + _readStartingAddressErr.Error())
 		}
 
 		// Simple Field (readQuantity)
 		readQuantity := uint16(m.ReadQuantity)
-		_readQuantityErr := io.WriteUint16(16, (readQuantity))
+		_readQuantityErr := io.WriteUint16(16, readQuantity)
 		if _readQuantityErr != nil {
 			return errors.New("Error serializing 'readQuantity' field " + _readQuantityErr.Error())
 		}
 
 		// Simple Field (writeStartingAddress)
 		writeStartingAddress := uint16(m.WriteStartingAddress)
-		_writeStartingAddressErr := io.WriteUint16(16, (writeStartingAddress))
+		_writeStartingAddressErr := io.WriteUint16(16, writeStartingAddress)
 		if _writeStartingAddressErr != nil {
 			return errors.New("Error serializing 'writeStartingAddress' field " + _writeStartingAddressErr.Error())
 		}
 
 		// Simple Field (writeQuantity)
 		writeQuantity := uint16(m.WriteQuantity)
-		_writeQuantityErr := io.WriteUint16(16, (writeQuantity))
+		_writeQuantityErr := io.WriteUint16(16, writeQuantity)
 		if _writeQuantityErr != nil {
 			return errors.New("Error serializing 'writeQuantity' field " + _writeQuantityErr.Error())
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, (byteCount))
+		_byteCountErr := io.WriteUint8(8, byteCount)
 		if _byteCountErr != nil {
 			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
 		}

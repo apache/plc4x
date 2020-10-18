@@ -69,7 +69,7 @@ func CastKNXGroupAddressFreeLevel(structType interface{}) KNXGroupAddressFreeLev
 }
 
 func (m KNXGroupAddressFreeLevel) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
+	var lengthInBits = m.KNXGroupAddress.LengthInBits()
 
 	// Simple field (subGroup)
 	lengthInBits += 16
@@ -98,7 +98,7 @@ func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(16, (subGroup))
+		_subGroupErr := io.WriteUint16(16, subGroup)
 		if _subGroupErr != nil {
 			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
 		}

@@ -79,7 +79,7 @@ func CastAPDUConfirmedRequest(structType interface{}) APDUConfirmedRequest {
 }
 
 func (m APDUConfirmedRequest) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.APDU.LengthInBits()
+	var lengthInBits = m.APDU.LengthInBits()
 
 	// Simple field (segmentedMessage)
 	lengthInBits += 1
@@ -245,21 +245,21 @@ func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
 
 		// Simple Field (maxSegmentsAccepted)
 		maxSegmentsAccepted := uint8(m.MaxSegmentsAccepted)
-		_maxSegmentsAcceptedErr := io.WriteUint8(3, (maxSegmentsAccepted))
+		_maxSegmentsAcceptedErr := io.WriteUint8(3, maxSegmentsAccepted)
 		if _maxSegmentsAcceptedErr != nil {
 			return errors.New("Error serializing 'maxSegmentsAccepted' field " + _maxSegmentsAcceptedErr.Error())
 		}
 
 		// Simple Field (maxApduLengthAccepted)
 		maxApduLengthAccepted := uint8(m.MaxApduLengthAccepted)
-		_maxApduLengthAcceptedErr := io.WriteUint8(4, (maxApduLengthAccepted))
+		_maxApduLengthAcceptedErr := io.WriteUint8(4, maxApduLengthAccepted)
 		if _maxApduLengthAcceptedErr != nil {
 			return errors.New("Error serializing 'maxApduLengthAccepted' field " + _maxApduLengthAcceptedErr.Error())
 		}
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.InvokeId)
-		_invokeIdErr := io.WriteUint8(8, (invokeId))
+		_invokeIdErr := io.WriteUint8(8, invokeId)
 		if _invokeIdErr != nil {
 			return errors.New("Error serializing 'invokeId' field " + _invokeIdErr.Error())
 		}

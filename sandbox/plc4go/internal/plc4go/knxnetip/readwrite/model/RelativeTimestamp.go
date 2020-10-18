@@ -87,7 +87,7 @@ func (m RelativeTimestamp) Serialize(io spi.WriteBuffer) error {
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.Timestamp)
-	_timestampErr := io.WriteUint16(16, (timestamp))
+	_timestampErr := io.WriteUint16(16, timestamp)
 	if _timestampErr != nil {
 		return errors.New("Error serializing 'timestamp' field " + _timestampErr.Error())
 	}

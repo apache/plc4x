@@ -67,7 +67,7 @@ func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface
 }
 
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
 	return lengthInBits
 }

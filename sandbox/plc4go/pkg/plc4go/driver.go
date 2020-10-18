@@ -18,8 +18,6 @@
 //
 package plc4go
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
-
 type PlcDriverResult struct {
 	Driver PlcDriver
 	Err    error
@@ -38,9 +36,8 @@ type PlcDriver interface {
 	// Get a human readable name for this driver
 	GetProtocolName() string
 
+	CheckQuery(query string) error
+
 	// Establishes a connection to a given PLC using the information in the connectionString
 	GetConnection(connectionString string) (PlcConnection, error)
-
-	// Parses a given query string and produces PlcField instances for this driver implementation
-	PrepareField(query string) (model.PlcField, error)
 }

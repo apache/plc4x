@@ -168,7 +168,7 @@ func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIP
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
-	_headerLengthErr := io.WriteUint8(8, (headerLength))
+	_headerLengthErr := io.WriteUint8(8, headerLength)
 	if _headerLengthErr != nil {
 		return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())
 	}
@@ -181,14 +181,14 @@ func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIP
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType := uint16(i.MsgType())
-	_msgTypeErr := io.WriteUint16(16, (msgType))
+	_msgTypeErr := io.WriteUint16(16, msgType)
 	if _msgTypeErr != nil {
 		return errors.New("Error serializing 'msgType' field " + _msgTypeErr.Error())
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.LengthInBytes()))
-	_totalLengthErr := io.WriteUint16(16, (totalLength))
+	_totalLengthErr := io.WriteUint16(16, totalLength)
 	if _totalLengthErr != nil {
 		return errors.New("Error serializing 'totalLength' field " + _totalLengthErr.Error())
 	}

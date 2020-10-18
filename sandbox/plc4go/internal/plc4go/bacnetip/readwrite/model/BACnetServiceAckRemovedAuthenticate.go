@@ -67,7 +67,7 @@ func CastBACnetServiceAckRemovedAuthenticate(structType interface{}) BACnetServi
 }
 
 func (m BACnetServiceAckRemovedAuthenticate) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	return lengthInBits
 }

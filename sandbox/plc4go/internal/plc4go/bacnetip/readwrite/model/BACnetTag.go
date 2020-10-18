@@ -184,21 +184,21 @@ func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSeri
 
 	// Simple Field (typeOrTagNumber)
 	typeOrTagNumber := uint8(m.TypeOrTagNumber)
-	_typeOrTagNumberErr := io.WriteUint8(4, (typeOrTagNumber))
+	_typeOrTagNumberErr := io.WriteUint8(4, typeOrTagNumber)
 	if _typeOrTagNumberErr != nil {
 		return errors.New("Error serializing 'typeOrTagNumber' field " + _typeOrTagNumberErr.Error())
 	}
 
 	// Discriminator Field (contextSpecificTag) (Used as input to a switch field)
 	contextSpecificTag := uint8(i.ContextSpecificTag())
-	_contextSpecificTagErr := io.WriteUint8(1, (contextSpecificTag))
+	_contextSpecificTagErr := io.WriteUint8(1, contextSpecificTag)
 	if _contextSpecificTagErr != nil {
 		return errors.New("Error serializing 'contextSpecificTag' field " + _contextSpecificTagErr.Error())
 	}
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.LengthValueType)
-	_lengthValueTypeErr := io.WriteUint8(3, (lengthValueType))
+	_lengthValueTypeErr := io.WriteUint8(3, lengthValueType)
 	if _lengthValueTypeErr != nil {
 		return errors.New("Error serializing 'lengthValueType' field " + _lengthValueTypeErr.Error())
 	}

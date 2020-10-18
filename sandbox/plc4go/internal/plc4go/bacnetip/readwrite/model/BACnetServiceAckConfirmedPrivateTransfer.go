@@ -67,7 +67,7 @@ func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) BACnet
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	return lengthInBits
 }

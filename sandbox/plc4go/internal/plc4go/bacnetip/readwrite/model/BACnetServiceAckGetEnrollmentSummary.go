@@ -67,7 +67,7 @@ func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) BACnetServ
 }
 
 func (m BACnetServiceAckGetEnrollmentSummary) LengthInBits() uint16 {
-	var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
+	var lengthInBits = m.BACnetServiceAck.LengthInBits()
 
 	return lengthInBits
 }
