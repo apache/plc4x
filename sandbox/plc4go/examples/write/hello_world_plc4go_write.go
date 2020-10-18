@@ -1,4 +1,4 @@
-package read
+package write
 
 import (
 	"encoding/json"
@@ -22,32 +22,32 @@ func main() int {
 	defer connection.Close()
 
 	// Prepare a write-request
-	rrb := connection.WriteRequestBuilder()
-	rrb.AddField("output-field", "%Q0.0:BOOL", true)
-	rrb.AddField("input-field", "%I0.0:USINT", 42)
-	readRequest, err := rrb.Build()
+	wrb := connection.WriteRequestBuilder()
+	wrb.AddField("output-field", "%Q0.0:BOOL", true)
+	wrb.AddField("input-field", "%I0.0:USINT", 42)
+	writeRequest, err := wrb.Build()
 	if err != nil {
 		_ = fmt.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
 		return 2
 	}
 
 	// Execute a read-request
-	rrc := readRequest.Execute()
+	wrc := writeRequest.Execute()
 
 	// Wait for the response to finish
-	rrr := <-rrc
-	if rrr.Err != nil {
-		_ = fmt.Errorf("error executing read-request: %s", rrr.Err.Error())
+	wrr := <-wrc
+	if wrr.Err != nil {
+		_ = fmt.Errorf("error executing write-request: %s", wrr.Err.Error())
 		return 3
 	}
 
 	// Do something with the response
-	readResponseJson, err := json.Marshal(rrr.Response)
+	writeResponseJson, err := json.Marshal(wrr.Response)
 	if err != nil {
-		_ = fmt.Errorf("error serializing read-response: %s", err.Error())
+		_ = fmt.Errorf("error serializing write-response: %s", err.Error())
 		return 4
 	}
-	fmt.Printf("Result: %s\n", string(readResponseJson))
+	fmt.Printf("Result: %s\n", string(writeResponseJson))
 
 	return 0
 }
