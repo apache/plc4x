@@ -22,12 +22,17 @@ package org.apache.plc4x.java.opcuaserver;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.eclipse.jetty.util.security.Password;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.slf4j.LoggerFactory;
 
 public class User {
 
@@ -41,17 +46,29 @@ public class User {
     @JsonProperty
     private String security;
 
+    @JsonProperty
+    private byte[] salt = generateSalt();
+
+    @JsonProperty
+    private static final SecureRandom randomGen = new SecureRandom();
+
     public User() {
+    }
+
+    private byte[] generateSalt() {
+        byte[] salt = new byte[16];
+        randomGen.nextBytes(salt);
+        return salt;
     }
 
     public User(String username, String password, String security) {
         this.username = username;
-        this.password = password;
+        this.password = DigestUtils.sha256Hex(this.salt + ":" + password);
         this.security = security;
     }
 
-    public boolean checkPassword(String username) {
-        if (this.username == username) {
+    public boolean checkPassword(String password) {        
+        if (this.password.equals((DigestUtils.sha256Hex(this.salt + ":" + password)))) {
             return true;
         }
         return false;
@@ -69,8 +86,9 @@ public class User {
         this.username = username;
     }
 
+    @JsonIgnore
     public void setPassword(String password) {
-        this.password = password;
+        this.password = this.salt + ":" + DigestUtils.sha256Hex(password);
     }
 
     public void setSecurity(String security) {

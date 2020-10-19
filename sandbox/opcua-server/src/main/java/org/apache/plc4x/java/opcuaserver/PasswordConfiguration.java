@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.java.opcuaserver;
 
+import org.eclipse.jetty.util.security.Password;
+
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.slf4j.LoggerFactory;
 
 public class PasswordConfiguration {
 
@@ -51,8 +55,8 @@ public class PasswordConfiguration {
     public PasswordConfiguration() {
     }
 
-    public boolean checkPassword(String username, String password) {
-        if (users.containsValue(username)) {
+    public boolean checkPassword(String username, String password) {        
+        if (users.containsKey(username)) {
             return users.get(username).checkPassword(password);
         }
         return false;
@@ -65,14 +69,14 @@ public class PasswordConfiguration {
         om.writeValue(new File(passwordConfigFile), this);
     }
 
+    @JsonIgnore
     public String getSecurityPassword() {
-        return securityPassword;
+        return Password.deobfuscate("OBF:" + securityPassword);
     }
 
     @JsonIgnore
     public void setSecurityPassword(String value) throws IOException {
-        //TODO: This need to be encrypted
-        securityPassword = value;
+        securityPassword = Password.obfuscate(value).substring(4);
         ObjectMapper om = new ObjectMapper(new YAMLFactory());
         om.writeValue(new File(passwordConfigFile), this);
     }

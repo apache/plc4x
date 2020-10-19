@@ -63,8 +63,7 @@ class KeyStoreLoader {
     private Configuration config;
     private PasswordConfiguration passwordConfig;
 
-
-    public KeyStoreLoader(Configuration config, PasswordConfiguration passwordConfig) {
+    public KeyStoreLoader(Configuration config, PasswordConfiguration passwordConfig, Boolean interactive) {
         this.config = config;
         this.passwordConfig = passwordConfig;
 
@@ -76,7 +75,7 @@ class KeyStoreLoader {
         LoggerFactory.getLogger(getClass()).info("security dir: {}", securityTempDir.getAbsolutePath());
 
         try {
-            load(securityTempDir);
+            load(securityTempDir, interactive);
         } catch (Exception e) {
             System.out.println("Error loading the key store " + e);
             System.exit(1);
@@ -85,22 +84,27 @@ class KeyStoreLoader {
 
 
 
-    public KeyStoreLoader load(File baseDir) throws Exception {
+    public KeyStoreLoader load(File baseDir, boolean interactive) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
         File serverKeyStore = baseDir.toPath().resolve(certificateFileName).toFile();
 
         if (!serverKeyStore.exists()) {
+            if (!interactive) {
+                logger.info("Please re-run with the -i switch to setup the security certificate key store");
+                System.exit(1);
+            }
+
             logger.info("Creating keystore at {}", serverKeyStore);
             keyStore.load(null, passwordConfig.getSecurityPassword().toCharArray());
 
             logger.info("Creating self signed certiciate {}", serverKeyStore);
             KeyPair keyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
 
-            String applicationUri = "org:apache:plc4x:java:opcuaserver" + UUID.randomUUID();
+            String applicationUri = "urn:eclipse:milo:plc4x:server" + UUID.randomUUID();
 
             SelfSignedCertificateBuilder builder = new SelfSignedCertificateBuilder(keyPair)
-                .setCommonName(config.getName())
+                .setCommonName(applicationUri)
                 .setOrganization("org.apache")
                 .setOrganizationalUnit("plc4x")
                 .setLocalityName("Wakefield")
@@ -113,6 +117,8 @@ class KeyStoreLoader {
                 Sets.newHashSet(HostnameUtil.getHostname()),
                 HostnameUtil.getHostnames("0.0.0.0", false)
             );
+
+            logger.info("using IP address/hostnames {}", hostnames.toString());
 
             for (String hostname : hostnames) {
                 if (IP_ADDR_PATTERN.matcher(hostname).matches()) {

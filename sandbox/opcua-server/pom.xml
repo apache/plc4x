@@ -74,6 +74,22 @@
         <artifactId>commons-cli</artifactId>
     </dependency>
 
+    <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>9.4.32.v20200930</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
 <!-- PLC4X Dependencies -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
