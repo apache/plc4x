@@ -47,12 +47,15 @@ public class User {
     private String security;
 
     @JsonProperty
-    private byte[] salt = generateSalt();
+    private byte[] salt;
 
     @JsonProperty
     private static final SecureRandom randomGen = new SecureRandom();
 
     public User() {
+        if (this.salt == null) {
+            this.salt = generateSalt();
+        }
     }
 
     private byte[] generateSalt() {
@@ -67,7 +70,7 @@ public class User {
         this.security = security;
     }
 
-    public boolean checkPassword(String password) {        
+    public boolean checkPassword(String password) {
         if (this.password.equals((DigestUtils.sha256Hex(this.salt + ":" + password)))) {
             return true;
         }
