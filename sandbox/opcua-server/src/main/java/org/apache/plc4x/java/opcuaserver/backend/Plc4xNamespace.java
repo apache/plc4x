@@ -76,6 +76,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
@@ -83,7 +86,7 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
-    public static final String NAMESPACE_URI = "org:apache:plc4x:java:opcuaserver";
+    public static final String NAMESPACE_URI = "urn:eclipse:milo:plc4x:server";
 
     private Configuration config;
 
@@ -150,21 +153,52 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
         final String connectionString = c.getConnectionString();
         for (int i = 0; i < tags.size(); i++) {
             logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
-            logger.info("Connection String " + connectionString);
             String name = tags.get(i).getAlias();
-            final String tag = tags.get(i).getAddress();            
+            final String tag = tags.get(i).getAddress();
             NodeId typeId = Identifiers.BaseDataType;
-            Variant variant = new Variant(0);
+            Class datatype = null;
+            int length = 1;
+            try {
+                datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
+                length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
+            } catch (PlcConnectionException e) {
+                logger.info("Couldn't find data type");
+                System.exit(1);
+            }
 
+            UaVariableNode node = null;
+            Variant variant = null;
+            if (length > 1) {
+                boolean test = false;
+                node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                    .setNodeId(newNodeId(name))
+                    .setAccessLevel(AccessLevel.READ_WRITE)
+                    .setUserAccessLevel(AccessLevel.READ_WRITE)
+                    .setBrowseName(newQualifiedName(name))
+                    .setDisplayName(LocalizedText.english(name))
+                    .setDataType(typeId)
+                    .setTypeDefinition(Identifiers.BaseDataVariableType)
+                    .setValueRank(ValueRank.OneDimension.getValue())
+                    .setArrayDimensions(new UInteger[]{uint(length)})
+                    .build();
 
-            UaVariableNode node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                .setNodeId(newNodeId(name))
-                .setAccessLevel(AccessLevel.READ_WRITE)
-                .setBrowseName(newQualifiedName(name))
-                .setDisplayName(LocalizedText.english(name))
-                .setDataType(typeId)
-                .setTypeDefinition(Identifiers.BaseDataVariableType)
-                .build();
+                Object array = Array.newInstance(datatype, length);
+                for (int j = 0; j < length; j++) {
+                    Array.set(array, j, test);
+                }
+                variant = new Variant(array);
+            } else {
+                node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                    .setNodeId(newNodeId(name))
+                    .setAccessLevel(AccessLevel.READ_WRITE)
+                    .setUserAccessLevel(AccessLevel.READ_WRITE)
+                    .setBrowseName(newQualifiedName(name))
+                    .setDisplayName(LocalizedText.english(name))
+                    .setDataType(typeId)
+                    .setTypeDefinition(Identifiers.BaseDataVariableType)
+                    .build();
+                variant = new Variant(0);
+            }
 
             node.setValue(new DataValue(variant));
 
@@ -174,7 +208,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                 filter,
                 AttributeFilters.getValue(
                     ctx ->
-                        new DataValue(new Variant(plc4xServer.getValue(tag, connectionString)))
+                        new DataValue(plc4xServer.getValue(tag, connectionString))
                 )
             );
 

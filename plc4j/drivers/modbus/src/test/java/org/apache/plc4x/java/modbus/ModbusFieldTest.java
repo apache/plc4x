@@ -32,7 +32,7 @@ public class ModbusFieldTest {
     public void testHolding_INT_ARRAY_RANGE() {
         for (int i = 1; i < 125; i++) {
           final ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("400001:INT[" + i + "]");
-          Assertions.assertEquals(i, holdingregister.getQuantity());
+          Assertions.assertEquals(i, holdingregister.getNumberOfElements());
         }
     }
 
@@ -40,7 +40,7 @@ public class ModbusFieldTest {
     public void testInput_INT_ARRAY_RANGE() {
         for (int i = 1; i < 125; i++) {
           final ModbusFieldInputRegister inputregister = ModbusFieldInputRegister.of("300001:INT[" + i + "]");
-          Assertions.assertEquals(i, inputregister.getQuantity());
+          Assertions.assertEquals(i, inputregister.getNumberOfElements());
         }
     }
 
@@ -48,7 +48,7 @@ public class ModbusFieldTest {
     public void testExtended_INT_ARRAY_RANGE() {
         for (int i = 1; i < 125; i++) {
           final ModbusExtendedRegister extendedRegister = ModbusExtendedRegister.of("600001:INT[" + i + "]");
-          Assertions.assertEquals(i, extendedRegister.getQuantity());
+          Assertions.assertEquals(i, extendedRegister.getNumberOfElements());
         }
     }
 
@@ -56,7 +56,7 @@ public class ModbusFieldTest {
     public void testCoil_INT_ARRAY_RANGE() {
         for (int i = 1; i < 2000; i++) {
           final ModbusFieldCoil coil = ModbusFieldCoil.of("000001:BOOL[" + i + "]");
-          Assertions.assertEquals(i, coil.getQuantity());
+          Assertions.assertEquals(i, coil.getNumberOfElements());
         }
     }
 
@@ -64,7 +64,7 @@ public class ModbusFieldTest {
     public void testDiscreteInput_INT_ARRAY_RANGE() {
         for (int i = 1; i < 2000; i++) {
           final ModbusFieldDiscreteInput discreteInput = ModbusFieldDiscreteInput.of("100001:BOOL[" + i + "]");
-          Assertions.assertEquals(i, discreteInput.getQuantity());
+          Assertions.assertEquals(i, discreteInput.getNumberOfElements());
         }
     }
 

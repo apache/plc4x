@@ -65,7 +65,7 @@ public class S7Optimizer extends BaseOptimizer {
             S7Field field = (S7Field) readRequest.getField(fieldName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
-            int readResponseItemSize = 4 + (field.getNumElements() * field.getDataType().getSizeInBytes());
+            int readResponseItemSize = 4 + (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
             // If it's an odd number of bytes, add one to make it even
             if (readResponseItemSize % 2 == 1) {
                 readResponseItemSize++;
@@ -126,7 +126,7 @@ public class S7Optimizer extends BaseOptimizer {
             S7Field field = (S7Field) writeRequest.getField(fieldName);
             PlcValue value = ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName);
 
-            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + (field.getNumElements() * field.getDataType().getSizeInBytes());
+            int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + (field.getNumberOfElements() * field.getDataType().getSizeInBytes());
             // If it's an odd number of bytes, add one to make it even
             if (writeRequestItemSize % 2 == 1) {
                 writeRequestItemSize++;

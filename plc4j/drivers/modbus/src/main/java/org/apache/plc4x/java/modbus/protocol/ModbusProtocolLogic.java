@@ -233,10 +233,10 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private ModbusPDU getReadRequestPdu(PlcField field) {
         if(field instanceof ModbusFieldDiscreteInput) {
             ModbusFieldDiscreteInput discreteInput = (ModbusFieldDiscreteInput) field;
-            return new ModbusPDUReadDiscreteInputsRequest(discreteInput.getAddress(), discreteInput.getQuantity());
+            return new ModbusPDUReadDiscreteInputsRequest(discreteInput.getAddress(), discreteInput.getNumberOfElements());
         } else if(field instanceof ModbusFieldCoil) {
             ModbusFieldCoil coil = (ModbusFieldCoil) field;
-            return new ModbusPDUReadCoilsRequest(coil.getAddress(), coil.getQuantity());
+            return new ModbusPDUReadCoilsRequest(coil.getAddress(), coil.getNumberOfElements());
         } else if(field instanceof ModbusFieldInputRegister) {
             ModbusFieldInputRegister inputRegister = (ModbusFieldInputRegister) field;
             return new ModbusPDUReadInputRegistersRequest(inputRegister.getAddress(), inputRegister.getLengthWords());
@@ -274,13 +274,13 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private ModbusPDU getWriteRequestPdu(PlcField field, PlcValue plcValue) {
         if(field instanceof ModbusFieldCoil) {
             ModbusFieldCoil coil = (ModbusFieldCoil) field;
-            ModbusPDUWriteMultipleCoilsRequest request = new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getQuantity(),
+            ModbusPDUWriteMultipleCoilsRequest request = new ModbusPDUWriteMultipleCoilsRequest(coil.getAddress(), coil.getNumberOfElements(),
                 fromPlcValue(field, plcValue));
-            if (request.getQuantity() == coil.getQuantity()) {
+            if (request.getQuantity() == coil.getNumberOfElements()) {
                 return request;
             } else {
                 throw new PlcRuntimeException("Number of requested bytes (" + request.getQuantity() +
-                    ") doesn't match number of requested addresses (" + coil.getQuantity() + ")");
+                    ") doesn't match number of requested addresses (" + coil.getNumberOfElements() + ")");
             }
         } else if(field instanceof ModbusFieldHoldingRegister) {
             ModbusFieldHoldingRegister holdingRegister = (ModbusFieldHoldingRegister) field;

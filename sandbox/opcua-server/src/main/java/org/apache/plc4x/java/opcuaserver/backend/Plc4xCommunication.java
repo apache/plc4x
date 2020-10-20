@@ -86,6 +86,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
@@ -95,12 +97,17 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 public class Plc4xCommunication {
 
     private PlcDriverManager driverManager;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public Plc4xCommunication () {
         driverManager = new PooledPlcDriverManager();
     }
 
-    public Object getValue(String tag, String connectionString) {
+    public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
+        return driverManager.getDriver(connectionString).prepareField(tag);
+    }
+
+    public Variant getValue(String tag, String connectionString) {
         PlcConnection connection = null;
         try {
           connection = driverManager.getConnection(connectionString);
@@ -121,21 +128,19 @@ public class Plc4xCommunication {
           System.out.println("Failed" + e);
         }
 
-        Object resp = null;
+        Variant resp = null;
 
         for (String fieldName : response.getFieldNames()) {
           if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
               int numValues = response.getNumberOfValues(fieldName);
-              // If it's just one element, output just one single line.
               if(numValues == 1) {
-                  resp = response.getObject(fieldName);
+                  resp = new Variant(response.getObject(fieldName));
               } else {
-                //TODO: Possibly create a new node for each item in the array. We would then need to pass the connection string with the Fields in each protocol which I'm not keen on doing.
-                resp = "[" + response.getObject(fieldName, 0).toString();
-                for (int i = 1; i < numValues; i++) {
-                    resp = resp + "," + response.getObject(fieldName, i).toString();
+                Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                for (int i = 0; i < numValues; i++) {
+                    Array.set(array, i, response.getObject(fieldName, i));
                 }
-                resp = resp + "]";
+                resp = new Variant(array);
               }
           }
         }

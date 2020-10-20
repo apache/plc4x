@@ -25,6 +25,4 @@ public interface AdsField extends PlcField {
 
     AdsDataType getAdsDataType();
 
-    int getNumberOfElements();
-
 }

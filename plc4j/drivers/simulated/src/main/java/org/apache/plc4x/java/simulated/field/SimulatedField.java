@@ -96,7 +96,7 @@ public class SimulatedField implements PlcField {
         return dataType;
     }
 
-    public int getNumElements() {
+    public int getNumberOfElements() {
         return numElements;
     }
 
