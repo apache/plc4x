@@ -86,7 +86,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@Override
     public void onScheduled(final ProcessContext context) {
         super.onScheduled(context);
-        //TODO: Change this to use NiFi service instead of direct connection, service has a close phase, processor only hace init, scheduled and trigger phases 
+        //TODO: Change this to use NiFi service instead of direct connection and add @OnStopped Phase to close connection
         try {        	
 			this.connection = new PooledPlcDriverManager().getConnection(getConnectionString());
 			
