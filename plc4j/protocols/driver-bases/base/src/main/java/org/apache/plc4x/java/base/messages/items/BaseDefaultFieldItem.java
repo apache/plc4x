@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcIncompatibleDatatypeException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -137,6 +138,14 @@ public abstract class BaseDefaultFieldItem<T> {
 
     public LocalDate getDate(int index) {
         throw new PlcIncompatibleDatatypeException(LocalDate.class, index);
+    }
+
+    public boolean isValidDuration(int index) {
+        return false;
+    }
+
+    public Duration getDuration(int index) {
+        throw new PlcIncompatibleDatatypeException(Duration.class, index);
     }
 
     public boolean isValidDateTime(int index) {

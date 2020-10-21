@@ -31,7 +31,8 @@ public enum DataTransportSize {
     INTEGER((byte) 0x05, true),
     DINTEGER((byte) 0x06, false),
     REAL((byte) 0x07, false),
-    OCTET_STRING((byte) 0x09, false);
+    OCTET_STRING((byte) 0x09, false),
+    TIME((byte) 0x32, false);
 
     private static final Map<Byte, DataTransportSize> map;
     static {

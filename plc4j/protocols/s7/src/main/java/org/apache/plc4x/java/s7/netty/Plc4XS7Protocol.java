@@ -53,6 +53,7 @@ import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -526,11 +527,15 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                             fieldItem = decodeReadResponseFixedLengthStringField(1, true, data);
                             break;
                         case STRING:
-                            fieldItem = decodeReadResponseVarLengthStringField(false, data);
+                            fieldItem = decodeReadResponseVarLengthStringField(false, false, data);
                             break;
                         case WSTRING:
-                            fieldItem = decodeReadResponseVarLengthStringField(true, data);
+                            fieldItem = decodeReadResponseVarLengthStringField(true, false, data);
                             break;
+                        case SIMOTIONSTRING:
+                            fieldItem = decodeReadResponseVarLengthStringField(false, true, data);
+                            break;
+
                         // -----------------------------------------
                         // TIA Date-Formats
                         // -----------------------------------------
@@ -542,6 +547,9 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
                             break;
                         case DATE:
                             fieldItem = decodeReadResponseDate(field, data);
+                            break;
+                        case TIME:
+                            fieldItem = decodeReadResponseTime(field, data);
                             break;
                         default:
                             throw new PlcProtocolException("Unsupported type " + field.getDataType());
@@ -659,9 +667,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         return new DefaultStringFieldItem(stringValue);
     }
 
-    BaseDefaultFieldItem decodeReadResponseVarLengthStringField(boolean isUtf16, ByteBuf data) {
-        // Max length ... ignored.
-        data.skipBytes(1);
+    BaseDefaultFieldItem decodeReadResponseVarLengthStringField(boolean isUtf16, boolean isSimotion, ByteBuf data) {
+        // In standard S7 the first byte contains the max length, Simotion string doesn't
+        if (!isSimotion) {
+            data.skipBytes(1);
+        }
 
         //reading out byte and transforming that to an unsigned byte within an integer, otherwise longer strings are failing
         byte currentLengthByte = data.readByte();
@@ -682,6 +692,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
     BaseDefaultFieldItem decodeReadResponseDate(S7Field field,ByteBuf data) {
         LocalDate[] localTimes = readAllValues(LocalDate.class,field, i -> readDate(data));
         return new DefaultLocalDateFieldItem(localTimes);
+    }
+
+    BaseDefaultFieldItem decodeReadResponseTime(S7Field field, ByteBuf data) {
+        Duration[] duration = readAllValues(Duration.class,field, i -> readDuration(data));;
+        return new DefaultDurationFieldItem(duration);
     }
 
     // Returns a 32 bit unsigned value : from 0 to 4294967295 (2^32-1)
@@ -829,6 +844,11 @@ public class Plc4XS7Protocol extends PlcMessageToMessageCodec<S7Message, PlcRequ
         System.out.println(daysSince1990);
         return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
 
+    }
+
+    Duration readDuration(ByteBuf data) {
+        // 4 bytes, duration in milliseconds
+        return Duration.ofMillis(data.readInt());
     }
 
     /**

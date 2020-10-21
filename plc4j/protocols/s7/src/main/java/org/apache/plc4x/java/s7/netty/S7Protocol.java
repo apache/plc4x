@@ -647,7 +647,8 @@ public class S7Protocol extends ChannelDuplexHandler {
             }
             // This is a response to a READ_VAR request.
             else if ((readWriteVarParameter.getType() == ParameterType.READ_VAR) && isResponse) {
-                DataTransportSize dataTransportSize = DataTransportSize.valueOf(userData.readByte());
+                byte bbb = userData.readByte();
+                DataTransportSize dataTransportSize = DataTransportSize.valueOf(bbb);
                 short length = dataTransportSize.isSizeInBits() ?
                     (short) Math.ceil(userData.readShort() / 8.0) : userData.readShort();
                 byte[] data = new byte[length];
