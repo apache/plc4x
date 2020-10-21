@@ -127,7 +127,7 @@ public class PlcINT extends PlcIECValue<Short> {
     public PlcINT(String value) {
         super();
         try {
-            this.value = Short.valueOf(value);
+            this.value = Short.valueOf(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {

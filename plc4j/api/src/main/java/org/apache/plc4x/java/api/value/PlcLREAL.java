@@ -98,7 +98,7 @@ public class PlcLREAL extends PlcIECValue<Double> {
     public PlcLREAL(String value) {
         super();
         try {
-            this.value = Double.parseDouble(value);
+            this.value = Double.parseDouble(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {

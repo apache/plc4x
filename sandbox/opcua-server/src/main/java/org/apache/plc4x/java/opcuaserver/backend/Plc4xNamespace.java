@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opcuaserver.backend;
 import org.apache.plc4x.java.opcuaserver.*;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -155,70 +156,78 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
             logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
             String name = tags.get(i).getAlias();
             final String tag = tags.get(i).getAddress();
-            NodeId typeId = Identifiers.BaseDataType;
+
             Class datatype = null;
-            int length = 1;
+            NodeId typeId = Identifiers.String;
+            UaVariableNode node = null;
+            Variant variant = null;
             try {
                 datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
-                length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
+                final int length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
+                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcDataType());
+
+
+                if (length > 1) {
+                    node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                        .setNodeId(newNodeId(name))
+                        .setAccessLevel(AccessLevel.READ_WRITE)
+                        .setUserAccessLevel(AccessLevel.READ_WRITE)
+                        .setBrowseName(newQualifiedName(name))
+                        .setDisplayName(LocalizedText.english(name))
+                        .setDataType(typeId)
+                        .setTypeDefinition(Identifiers.BaseDataVariableType)
+                        .setValueRank(ValueRank.OneDimension.getValue())
+                        .setArrayDimensions(new UInteger[]{uint(length)})
+                        .build();
+
+                    Object array = Array.newInstance(datatype, length);
+                    for (int j = 0; j < length; j++) {
+                        Array.set(array, j, false);
+                    }
+                    variant = new Variant(array);
+                } else {
+                    node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                        .setNodeId(newNodeId(name))
+                        .setAccessLevel(AccessLevel.READ_WRITE)
+                        .setUserAccessLevel(AccessLevel.READ_WRITE)
+                        .setBrowseName(newQualifiedName(name))
+                        .setDisplayName(LocalizedText.english(name))
+                        .setDataType(typeId)
+                        .setTypeDefinition(Identifiers.BaseDataVariableType)
+                        .build();
+                    variant = new Variant(0);
+                }
+
+                node.setValue(new DataValue(variant));
+
+                AttributeLoggingFilter filter = new AttributeLoggingFilter();
+
+                node.getFilterChain().addLast(
+                    filter,
+                    AttributeFilters.getValue(
+                        ctx ->
+                            new DataValue(plc4xServer.getValue(tag, connectionString))
+                    )
+                );
+
+                node.getFilterChain().addLast(
+                    filter,
+                    AttributeFilters.setValue(
+                        (ctx, value) -> {
+                            if (length > 1) {
+                                plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
+                            } else {
+                                plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
+                            }
+
+                        }
+                    )
+                );
+
             } catch (PlcConnectionException e) {
                 logger.info("Couldn't find data type");
                 System.exit(1);
             }
-
-            UaVariableNode node = null;
-            Variant variant = null;
-            if (length > 1) {
-                boolean test = false;
-                node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                    .setNodeId(newNodeId(name))
-                    .setAccessLevel(AccessLevel.READ_WRITE)
-                    .setUserAccessLevel(AccessLevel.READ_WRITE)
-                    .setBrowseName(newQualifiedName(name))
-                    .setDisplayName(LocalizedText.english(name))
-                    .setDataType(typeId)
-                    .setTypeDefinition(Identifiers.BaseDataVariableType)
-                    .setValueRank(ValueRank.OneDimension.getValue())
-                    .setArrayDimensions(new UInteger[]{uint(length)})
-                    .build();
-
-                Object array = Array.newInstance(datatype, length);
-                for (int j = 0; j < length; j++) {
-                    Array.set(array, j, test);
-                }
-                variant = new Variant(array);
-            } else {
-                node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                    .setNodeId(newNodeId(name))
-                    .setAccessLevel(AccessLevel.READ_WRITE)
-                    .setUserAccessLevel(AccessLevel.READ_WRITE)
-                    .setBrowseName(newQualifiedName(name))
-                    .setDisplayName(LocalizedText.english(name))
-                    .setDataType(typeId)
-                    .setTypeDefinition(Identifiers.BaseDataVariableType)
-                    .build();
-                variant = new Variant(0);
-            }
-
-            node.setValue(new DataValue(variant));
-
-            AttributeLoggingFilter filter = new AttributeLoggingFilter();
-
-            node.getFilterChain().addLast(
-                filter,
-                AttributeFilters.getValue(
-                    ctx ->
-                        new DataValue(plc4xServer.getValue(tag, connectionString))
-                )
-            );
-
-            node.getFilterChain().addLast(
-                filter,
-                AttributeFilters.setValue(
-                    (ctx, value) ->
-                        plc4xServer.setValue(tag, value.toString(), connectionString)
-                )
-            );
 
             getNodeManager().addNode(node);
             rootNode.addOrganizes(node);

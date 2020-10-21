@@ -162,7 +162,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public PlcULINT(String value) {
         super();
         try {
-            BigInteger val = new BigInteger(value);
+            BigInteger val = new BigInteger(value.trim());
             if ((val.compareTo(minValue) >= 0) && (val.compareTo(maxValue) <= 0)) {
                 this.value = val;
                 this.isNullable = false;
