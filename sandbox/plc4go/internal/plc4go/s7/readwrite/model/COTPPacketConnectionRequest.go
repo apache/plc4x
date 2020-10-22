@@ -19,127 +19,130 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type COTPPacketConnectionRequest struct {
-	DestinationReference uint16
-	SourceReference      uint16
-	ProtocolClass        ICOTPProtocolClass
-	COTPPacket
+    DestinationReference uint16
+    SourceReference uint16
+    ProtocolClass ICOTPProtocolClass
+    COTPPacket
 }
 
 // The corresponding interface
 type ICOTPPacketConnectionRequest interface {
-	ICOTPPacket
-	Serialize(io spi.WriteBuffer) error
+    ICOTPPacket
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m COTPPacketConnectionRequest) TpduCode() uint8 {
-	return 0xE0
+    return 0xE0
 }
 
 func (m COTPPacketConnectionRequest) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.Parameters = parameters
-	m.Payload = payload
-	return m
+    m.Parameters = parameters
+    m.Payload = payload
+    return m
 }
 
 func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference uint16, protocolClass ICOTPProtocolClass) COTPPacketInitializer {
-	return &COTPPacketConnectionRequest{DestinationReference: destinationReference, SourceReference: sourceReference, ProtocolClass: protocolClass}
+    return &COTPPacketConnectionRequest{DestinationReference: destinationReference, SourceReference: sourceReference, ProtocolClass: protocolClass}
 }
 
 func CastICOTPPacketConnectionRequest(structType interface{}) ICOTPPacketConnectionRequest {
-	castFunc := func(typ interface{}) ICOTPPacketConnectionRequest {
-		if iCOTPPacketConnectionRequest, ok := typ.(ICOTPPacketConnectionRequest); ok {
-			return iCOTPPacketConnectionRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICOTPPacketConnectionRequest {
+        if iCOTPPacketConnectionRequest, ok := typ.(ICOTPPacketConnectionRequest); ok {
+            return iCOTPPacketConnectionRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCOTPPacketConnectionRequest(structType interface{}) COTPPacketConnectionRequest {
-	castFunc := func(typ interface{}) COTPPacketConnectionRequest {
-		if sCOTPPacketConnectionRequest, ok := typ.(COTPPacketConnectionRequest); ok {
-			return sCOTPPacketConnectionRequest
-		}
-		return COTPPacketConnectionRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPPacketConnectionRequest {
+        if sCOTPPacketConnectionRequest, ok := typ.(COTPPacketConnectionRequest); ok {
+            return sCOTPPacketConnectionRequest
+        }
+        if sCOTPPacketConnectionRequest, ok := typ.(*COTPPacketConnectionRequest); ok {
+            return *sCOTPPacketConnectionRequest
+        }
+        return COTPPacketConnectionRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m COTPPacketConnectionRequest) LengthInBits() uint16 {
-	var lengthInBits = m.COTPPacket.LengthInBits()
+    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
-	// Simple field (destinationReference)
-	lengthInBits += 16
+    // Simple field (destinationReference)
+    lengthInBits += 16
 
-	// Simple field (sourceReference)
-	lengthInBits += 16
+    // Simple field (sourceReference)
+    lengthInBits += 16
 
-	// Enum Field (protocolClass)
-	lengthInBits += 8
+    // Enum Field (protocolClass)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m COTPPacketConnectionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPPacketConnectionRequestParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
 
-	// Simple Field (destinationReference)
-	destinationReference, _destinationReferenceErr := io.ReadUint16(16)
-	if _destinationReferenceErr != nil {
-		return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
-	}
+    // Simple Field (destinationReference)
+    destinationReference, _destinationReferenceErr := io.ReadUint16(16)
+    if _destinationReferenceErr != nil {
+        return nil, errors.New("Error parsing 'destinationReference' field " + _destinationReferenceErr.Error())
+    }
 
-	// Simple Field (sourceReference)
-	sourceReference, _sourceReferenceErr := io.ReadUint16(16)
-	if _sourceReferenceErr != nil {
-		return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
-	}
+    // Simple Field (sourceReference)
+    sourceReference, _sourceReferenceErr := io.ReadUint16(16)
+    if _sourceReferenceErr != nil {
+        return nil, errors.New("Error parsing 'sourceReference' field " + _sourceReferenceErr.Error())
+    }
 
-	// Enum field (protocolClass)
-	protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
-	if _protocolClassErr != nil {
-		return nil, errors.New("Error parsing 'protocolClass' field " + _protocolClassErr.Error())
-	}
+    // Enum field (protocolClass)
+    protocolClass, _protocolClassErr := COTPProtocolClassParse(io)
+    if _protocolClassErr != nil {
+        return nil, errors.New("Error parsing 'protocolClass' field " + _protocolClassErr.Error())
+    }
 
-	// Create the instance
-	return NewCOTPPacketConnectionRequest(destinationReference, sourceReference, protocolClass), nil
+    // Create the instance
+    return NewCOTPPacketConnectionRequest(destinationReference, sourceReference, protocolClass), nil
 }
 
 func (m COTPPacketConnectionRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (destinationReference)
-		destinationReference := uint16(m.DestinationReference)
-		_destinationReferenceErr := io.WriteUint16(16, destinationReference)
-		if _destinationReferenceErr != nil {
-			return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
-		}
+    // Simple Field (destinationReference)
+    destinationReference := uint16(m.DestinationReference)
+    _destinationReferenceErr := io.WriteUint16(16, (destinationReference))
+    if _destinationReferenceErr != nil {
+        return errors.New("Error serializing 'destinationReference' field " + _destinationReferenceErr.Error())
+    }
 
-		// Simple Field (sourceReference)
-		sourceReference := uint16(m.SourceReference)
-		_sourceReferenceErr := io.WriteUint16(16, sourceReference)
-		if _sourceReferenceErr != nil {
-			return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
-		}
+    // Simple Field (sourceReference)
+    sourceReference := uint16(m.SourceReference)
+    _sourceReferenceErr := io.WriteUint16(16, (sourceReference))
+    if _sourceReferenceErr != nil {
+        return errors.New("Error serializing 'sourceReference' field " + _sourceReferenceErr.Error())
+    }
 
-		// Enum field (protocolClass)
-		protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
-		_protocolClassErr := protocolClass.Serialize(io)
-		if _protocolClassErr != nil {
-			return errors.New("Error serializing 'protocolClass' field " + _protocolClassErr.Error())
-		}
+    // Enum field (protocolClass)
+    protocolClass := CastCOTPProtocolClass(m.ProtocolClass)
+    _protocolClassErr := protocolClass.Serialize(io)
+    if _protocolClassErr != nil {
+        return errors.New("Error serializing 'protocolClass' field " + _protocolClassErr.Error())
+    }
 
-		return nil
-	}
-	return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+        return nil
+    }
+    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

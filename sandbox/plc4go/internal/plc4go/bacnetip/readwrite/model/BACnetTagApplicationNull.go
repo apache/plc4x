@@ -19,77 +19,80 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationNull struct {
-	BACnetTag
+    BACnetTag
 }
 
 // The corresponding interface
 type IBACnetTagApplicationNull interface {
-	IBACnetTag
-	Serialize(io spi.WriteBuffer) error
+    IBACnetTag
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetTagApplicationNull) ContextSpecificTag() uint8 {
-	return 0
+    return 0
 }
 
 func (m BACnetTagApplicationNull) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.TypeOrTagNumber = typeOrTagNumber
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	return m
+    m.TypeOrTagNumber = typeOrTagNumber
+    m.LengthValueType = lengthValueType
+    m.ExtTagNumber = extTagNumber
+    m.ExtLength = extLength
+    return m
 }
 
 func NewBACnetTagApplicationNull() BACnetTagInitializer {
-	return &BACnetTagApplicationNull{}
+    return &BACnetTagApplicationNull{}
 }
 
 func CastIBACnetTagApplicationNull(structType interface{}) IBACnetTagApplicationNull {
-	castFunc := func(typ interface{}) IBACnetTagApplicationNull {
-		if iBACnetTagApplicationNull, ok := typ.(IBACnetTagApplicationNull); ok {
-			return iBACnetTagApplicationNull
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetTagApplicationNull {
+        if iBACnetTagApplicationNull, ok := typ.(IBACnetTagApplicationNull); ok {
+            return iBACnetTagApplicationNull
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetTagApplicationNull(structType interface{}) BACnetTagApplicationNull {
-	castFunc := func(typ interface{}) BACnetTagApplicationNull {
-		if sBACnetTagApplicationNull, ok := typ.(BACnetTagApplicationNull); ok {
-			return sBACnetTagApplicationNull
-		}
-		return BACnetTagApplicationNull{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetTagApplicationNull {
+        if sBACnetTagApplicationNull, ok := typ.(BACnetTagApplicationNull); ok {
+            return sBACnetTagApplicationNull
+        }
+        if sBACnetTagApplicationNull, ok := typ.(*BACnetTagApplicationNull); ok {
+            return *sBACnetTagApplicationNull
+        }
+        return BACnetTagApplicationNull{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetTagApplicationNull) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetTag.LengthInBits()
+    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetTagApplicationNull) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetTagApplicationNullParse(io *spi.ReadBuffer) (BACnetTagInitializer, error) {
 
-	// Create the instance
-	return NewBACnetTagApplicationNull(), nil
+    // Create the instance
+    return NewBACnetTagApplicationNull(), nil
 }
 
 func (m BACnetTagApplicationNull) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+        return nil
+    }
+    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

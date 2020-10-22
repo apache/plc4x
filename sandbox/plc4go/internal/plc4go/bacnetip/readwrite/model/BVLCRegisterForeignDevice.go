@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCRegisterForeignDevice struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCRegisterForeignDevice) BvlcFunction() uint8 {
-	return 0x05
+    return 0x05
 }
 
 func (m BVLCRegisterForeignDevice) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCRegisterForeignDevice() BVLCInitializer {
-	return &BVLCRegisterForeignDevice{}
+    return &BVLCRegisterForeignDevice{}
 }
 
 func CastIBVLCRegisterForeignDevice(structType interface{}) IBVLCRegisterForeignDevice {
-	castFunc := func(typ interface{}) IBVLCRegisterForeignDevice {
-		if iBVLCRegisterForeignDevice, ok := typ.(IBVLCRegisterForeignDevice); ok {
-			return iBVLCRegisterForeignDevice
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCRegisterForeignDevice {
+        if iBVLCRegisterForeignDevice, ok := typ.(IBVLCRegisterForeignDevice); ok {
+            return iBVLCRegisterForeignDevice
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCRegisterForeignDevice(structType interface{}) BVLCRegisterForeignDevice {
-	castFunc := func(typ interface{}) BVLCRegisterForeignDevice {
-		if sBVLCRegisterForeignDevice, ok := typ.(BVLCRegisterForeignDevice); ok {
-			return sBVLCRegisterForeignDevice
-		}
-		return BVLCRegisterForeignDevice{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCRegisterForeignDevice {
+        if sBVLCRegisterForeignDevice, ok := typ.(BVLCRegisterForeignDevice); ok {
+            return sBVLCRegisterForeignDevice
+        }
+        if sBVLCRegisterForeignDevice, ok := typ.(*BVLCRegisterForeignDevice); ok {
+            return *sBVLCRegisterForeignDevice
+        }
+        return BVLCRegisterForeignDevice{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCRegisterForeignDevice) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCRegisterForeignDevice) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCRegisterForeignDeviceParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCRegisterForeignDevice(), nil
+    // Create the instance
+    return NewBVLCRegisterForeignDevice(), nil
 }
 
 func (m BVLCRegisterForeignDevice) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

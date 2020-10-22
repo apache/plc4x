@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) ServiceChoice() uint8 {
-	return 0x1F
+    return 0x1F
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}
+    return &BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}
 }
 
 func CastIBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structType interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-		if iBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, ok := typ.(IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
-			return iBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+        if iBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, ok := typ.(IBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
+            return iBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
-		if sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
-			return sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
-		}
-		return BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple {
+        if sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, ok := typ.(BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
+            return sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+        }
+        if sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple, ok := typ.(*BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple); ok {
+            return *sBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+        }
+        return BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple(), nil
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

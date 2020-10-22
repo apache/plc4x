@@ -19,116 +19,119 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUWriteSingleRegisterRequest struct {
-	Address uint16
-	Value   uint16
-	ModbusPDU
+    Address uint16
+    Value uint16
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUWriteSingleRegisterRequest interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUWriteSingleRegisterRequest) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) FunctionFlag() uint8 {
-	return 0x06
+    return 0x06
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) Response() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) ModbusPDUInitializer {
-	return &ModbusPDUWriteSingleRegisterRequest{Address: address, Value: value}
+    return &ModbusPDUWriteSingleRegisterRequest{Address: address, Value: value}
 }
 
 func CastIModbusPDUWriteSingleRegisterRequest(structType interface{}) IModbusPDUWriteSingleRegisterRequest {
-	castFunc := func(typ interface{}) IModbusPDUWriteSingleRegisterRequest {
-		if iModbusPDUWriteSingleRegisterRequest, ok := typ.(IModbusPDUWriteSingleRegisterRequest); ok {
-			return iModbusPDUWriteSingleRegisterRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUWriteSingleRegisterRequest {
+        if iModbusPDUWriteSingleRegisterRequest, ok := typ.(IModbusPDUWriteSingleRegisterRequest); ok {
+            return iModbusPDUWriteSingleRegisterRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUWriteSingleRegisterRequest(structType interface{}) ModbusPDUWriteSingleRegisterRequest {
-	castFunc := func(typ interface{}) ModbusPDUWriteSingleRegisterRequest {
-		if sModbusPDUWriteSingleRegisterRequest, ok := typ.(ModbusPDUWriteSingleRegisterRequest); ok {
-			return sModbusPDUWriteSingleRegisterRequest
-		}
-		return ModbusPDUWriteSingleRegisterRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUWriteSingleRegisterRequest {
+        if sModbusPDUWriteSingleRegisterRequest, ok := typ.(ModbusPDUWriteSingleRegisterRequest); ok {
+            return sModbusPDUWriteSingleRegisterRequest
+        }
+        if sModbusPDUWriteSingleRegisterRequest, ok := typ.(*ModbusPDUWriteSingleRegisterRequest); ok {
+            return *sModbusPDUWriteSingleRegisterRequest
+        }
+        return ModbusPDUWriteSingleRegisterRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (address)
-	lengthInBits += 16
+    // Simple field (address)
+    lengthInBits += 16
 
-	// Simple field (value)
-	lengthInBits += 16
+    // Simple field (value)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUWriteSingleRegisterRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Simple Field (address)
-	address, _addressErr := io.ReadUint16(16)
-	if _addressErr != nil {
-		return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
-	}
+    // Simple Field (address)
+    address, _addressErr := io.ReadUint16(16)
+    if _addressErr != nil {
+        return nil, errors.New("Error parsing 'address' field " + _addressErr.Error())
+    }
 
-	// Simple Field (value)
-	value, _valueErr := io.ReadUint16(16)
-	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-	}
+    // Simple Field (value)
+    value, _valueErr := io.ReadUint16(16)
+    if _valueErr != nil {
+        return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+    }
 
-	// Create the instance
-	return NewModbusPDUWriteSingleRegisterRequest(address, value), nil
+    // Create the instance
+    return NewModbusPDUWriteSingleRegisterRequest(address, value), nil
 }
 
 func (m ModbusPDUWriteSingleRegisterRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (address)
-		address := uint16(m.Address)
-		_addressErr := io.WriteUint16(16, address)
-		if _addressErr != nil {
-			return errors.New("Error serializing 'address' field " + _addressErr.Error())
-		}
+    // Simple Field (address)
+    address := uint16(m.Address)
+    _addressErr := io.WriteUint16(16, (address))
+    if _addressErr != nil {
+        return errors.New("Error serializing 'address' field " + _addressErr.Error())
+    }
 
-		// Simple Field (value)
-		value := uint16(m.Value)
-		_valueErr := io.WriteUint16(16, value)
-		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
-		}
+    // Simple Field (value)
+    value := uint16(m.Value)
+    _valueErr := io.WriteUint16(16, (value))
+    if _valueErr != nil {
+        return errors.New("Error serializing 'value' field " + _valueErr.Error())
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type COTPParameterTpduSize struct {
-	TpduSize ICOTPTpduSize
-	COTPParameter
+    TpduSize ICOTPTpduSize
+    COTPParameter
 }
 
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
-	ICOTPParameter
-	Serialize(io spi.WriteBuffer) error
+    ICOTPParameter
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m COTPParameterTpduSize) ParameterType() uint8 {
-	return 0xC0
+    return 0xC0
 }
 
 func (m COTPParameterTpduSize) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewCOTPParameterTpduSize(tpduSize ICOTPTpduSize) COTPParameterInitializer {
-	return &COTPParameterTpduSize{TpduSize: tpduSize}
+    return &COTPParameterTpduSize{TpduSize: tpduSize}
 }
 
 func CastICOTPParameterTpduSize(structType interface{}) ICOTPParameterTpduSize {
-	castFunc := func(typ interface{}) ICOTPParameterTpduSize {
-		if iCOTPParameterTpduSize, ok := typ.(ICOTPParameterTpduSize); ok {
-			return iCOTPParameterTpduSize
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICOTPParameterTpduSize {
+        if iCOTPParameterTpduSize, ok := typ.(ICOTPParameterTpduSize); ok {
+            return iCOTPParameterTpduSize
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
-	castFunc := func(typ interface{}) COTPParameterTpduSize {
-		if sCOTPParameterTpduSize, ok := typ.(COTPParameterTpduSize); ok {
-			return sCOTPParameterTpduSize
-		}
-		return COTPParameterTpduSize{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPParameterTpduSize {
+        if sCOTPParameterTpduSize, ok := typ.(COTPParameterTpduSize); ok {
+            return sCOTPParameterTpduSize
+        }
+        if sCOTPParameterTpduSize, ok := typ.(*COTPParameterTpduSize); ok {
+            return *sCOTPParameterTpduSize
+        }
+        return COTPParameterTpduSize{}
+    }
+    return castFunc(structType)
 }
 
 func (m COTPParameterTpduSize) LengthInBits() uint16 {
-	var lengthInBits = m.COTPParameter.LengthInBits()
+    var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
-	// Enum Field (tpduSize)
-	lengthInBits += 8
+    // Enum Field (tpduSize)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m COTPParameterTpduSize) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPParameterTpduSizeParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
 
-	// Enum field (tpduSize)
-	tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
-	if _tpduSizeErr != nil {
-		return nil, errors.New("Error parsing 'tpduSize' field " + _tpduSizeErr.Error())
-	}
+    // Enum field (tpduSize)
+    tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
+    if _tpduSizeErr != nil {
+        return nil, errors.New("Error parsing 'tpduSize' field " + _tpduSizeErr.Error())
+    }
 
-	// Create the instance
-	return NewCOTPParameterTpduSize(tpduSize), nil
+    // Create the instance
+    return NewCOTPParameterTpduSize(tpduSize), nil
 }
 
 func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Enum field (tpduSize)
-		tpduSize := CastCOTPTpduSize(m.TpduSize)
-		_tpduSizeErr := tpduSize.Serialize(io)
-		if _tpduSizeErr != nil {
-			return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())
-		}
+    // Enum field (tpduSize)
+    tpduSize := CastCOTPTpduSize(m.TpduSize)
+    _tpduSizeErr := tpduSize.Serialize(io)
+    if _tpduSizeErr != nil {
+        return errors.New("Error serializing 'tpduSize' field " + _tpduSizeErr.Error())
+    }
 
-		return nil
-	}
-	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+        return nil
+    }
+    return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

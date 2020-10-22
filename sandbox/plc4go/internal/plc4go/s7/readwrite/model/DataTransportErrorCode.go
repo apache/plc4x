@@ -18,48 +18,49 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	DataTransportErrorCode_RESERVED                DataTransportErrorCode = 0x00
-	DataTransportErrorCode_OK                      DataTransportErrorCode = 0xFF
-	DataTransportErrorCode_ACCESS_DENIED           DataTransportErrorCode = 0x03
-	DataTransportErrorCode_INVALID_ADDRESS         DataTransportErrorCode = 0x05
-	DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED DataTransportErrorCode = 0x06
-	DataTransportErrorCode_NOT_FOUND               DataTransportErrorCode = 0x0A
+const(
+    DataTransportErrorCode_RESERVED DataTransportErrorCode = 0x00
+    DataTransportErrorCode_OK DataTransportErrorCode = 0xFF
+    DataTransportErrorCode_ACCESS_DENIED DataTransportErrorCode = 0x03
+    DataTransportErrorCode_INVALID_ADDRESS DataTransportErrorCode = 0x05
+    DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED DataTransportErrorCode = 0x06
+    DataTransportErrorCode_NOT_FOUND DataTransportErrorCode = 0x0A
 )
 
+
 func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
-	castFunc := func(typ interface{}) DataTransportErrorCode {
-		if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
-			return sDataTransportErrorCode
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DataTransportErrorCode {
+        if sDataTransportErrorCode, ok := typ.(DataTransportErrorCode); ok {
+            return sDataTransportErrorCode
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m DataTransportErrorCode) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m DataTransportErrorCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DataTransportErrorCodeParse(io *spi.ReadBuffer) (DataTransportErrorCode, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e DataTransportErrorCode) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

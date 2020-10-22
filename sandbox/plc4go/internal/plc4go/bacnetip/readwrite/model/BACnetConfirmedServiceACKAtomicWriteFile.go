@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKAtomicWriteFile struct {
-	BACnetConfirmedServiceACK
+    BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKAtomicWriteFile interface {
-	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceACK
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceACKAtomicWriteFile) ServiceChoice() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m BACnetConfirmedServiceACKAtomicWriteFile) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceACKAtomicWriteFile() BACnetConfirmedServiceACKInitializer {
-	return &BACnetConfirmedServiceACKAtomicWriteFile{}
+    return &BACnetConfirmedServiceACKAtomicWriteFile{}
 }
 
 func CastIBACnetConfirmedServiceACKAtomicWriteFile(structType interface{}) IBACnetConfirmedServiceACKAtomicWriteFile {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKAtomicWriteFile {
-		if iBACnetConfirmedServiceACKAtomicWriteFile, ok := typ.(IBACnetConfirmedServiceACKAtomicWriteFile); ok {
-			return iBACnetConfirmedServiceACKAtomicWriteFile
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKAtomicWriteFile {
+        if iBACnetConfirmedServiceACKAtomicWriteFile, ok := typ.(IBACnetConfirmedServiceACKAtomicWriteFile); ok {
+            return iBACnetConfirmedServiceACKAtomicWriteFile
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceACKAtomicWriteFile(structType interface{}) BACnetConfirmedServiceACKAtomicWriteFile {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceACKAtomicWriteFile {
-		if sBACnetConfirmedServiceACKAtomicWriteFile, ok := typ.(BACnetConfirmedServiceACKAtomicWriteFile); ok {
-			return sBACnetConfirmedServiceACKAtomicWriteFile
-		}
-		return BACnetConfirmedServiceACKAtomicWriteFile{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceACKAtomicWriteFile {
+        if sBACnetConfirmedServiceACKAtomicWriteFile, ok := typ.(BACnetConfirmedServiceACKAtomicWriteFile); ok {
+            return sBACnetConfirmedServiceACKAtomicWriteFile
+        }
+        if sBACnetConfirmedServiceACKAtomicWriteFile, ok := typ.(*BACnetConfirmedServiceACKAtomicWriteFile); ok {
+            return *sBACnetConfirmedServiceACKAtomicWriteFile
+        }
+        return BACnetConfirmedServiceACKAtomicWriteFile{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceACKAtomicWriteFile) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceACKAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceACKAtomicWriteFile(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceACKAtomicWriteFile(), nil
 }
 
 func (m BACnetConfirmedServiceACKAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

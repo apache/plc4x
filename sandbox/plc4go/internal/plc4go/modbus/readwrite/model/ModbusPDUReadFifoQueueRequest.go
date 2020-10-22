@@ -19,99 +19,102 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUReadFifoQueueRequest struct {
-	FifoPointerAddress uint16
-	ModbusPDU
+    FifoPointerAddress uint16
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUReadFifoQueueRequest interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUReadFifoQueueRequest) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadFifoQueueRequest) FunctionFlag() uint8 {
-	return 0x18
+    return 0x18
 }
 
 func (m ModbusPDUReadFifoQueueRequest) Response() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadFifoQueueRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) ModbusPDUInitializer {
-	return &ModbusPDUReadFifoQueueRequest{FifoPointerAddress: fifoPointerAddress}
+    return &ModbusPDUReadFifoQueueRequest{FifoPointerAddress: fifoPointerAddress}
 }
 
 func CastIModbusPDUReadFifoQueueRequest(structType interface{}) IModbusPDUReadFifoQueueRequest {
-	castFunc := func(typ interface{}) IModbusPDUReadFifoQueueRequest {
-		if iModbusPDUReadFifoQueueRequest, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
-			return iModbusPDUReadFifoQueueRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUReadFifoQueueRequest {
+        if iModbusPDUReadFifoQueueRequest, ok := typ.(IModbusPDUReadFifoQueueRequest); ok {
+            return iModbusPDUReadFifoQueueRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUReadFifoQueueRequest(structType interface{}) ModbusPDUReadFifoQueueRequest {
-	castFunc := func(typ interface{}) ModbusPDUReadFifoQueueRequest {
-		if sModbusPDUReadFifoQueueRequest, ok := typ.(ModbusPDUReadFifoQueueRequest); ok {
-			return sModbusPDUReadFifoQueueRequest
-		}
-		return ModbusPDUReadFifoQueueRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUReadFifoQueueRequest {
+        if sModbusPDUReadFifoQueueRequest, ok := typ.(ModbusPDUReadFifoQueueRequest); ok {
+            return sModbusPDUReadFifoQueueRequest
+        }
+        if sModbusPDUReadFifoQueueRequest, ok := typ.(*ModbusPDUReadFifoQueueRequest); ok {
+            return *sModbusPDUReadFifoQueueRequest
+        }
+        return ModbusPDUReadFifoQueueRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUReadFifoQueueRequest) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (fifoPointerAddress)
-	lengthInBits += 16
+    // Simple field (fifoPointerAddress)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadFifoQueueRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadFifoQueueRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Simple Field (fifoPointerAddress)
-	fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
-	if _fifoPointerAddressErr != nil {
-		return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
-	}
+    // Simple Field (fifoPointerAddress)
+    fifoPointerAddress, _fifoPointerAddressErr := io.ReadUint16(16)
+    if _fifoPointerAddressErr != nil {
+        return nil, errors.New("Error parsing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+    }
 
-	// Create the instance
-	return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil
+    // Create the instance
+    return NewModbusPDUReadFifoQueueRequest(fifoPointerAddress), nil
 }
 
 func (m ModbusPDUReadFifoQueueRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (fifoPointerAddress)
-		fifoPointerAddress := uint16(m.FifoPointerAddress)
-		_fifoPointerAddressErr := io.WriteUint16(16, fifoPointerAddress)
-		if _fifoPointerAddressErr != nil {
-			return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
-		}
+    // Simple Field (fifoPointerAddress)
+    fifoPointerAddress := uint16(m.FifoPointerAddress)
+    _fifoPointerAddressErr := io.WriteUint16(16, (fifoPointerAddress))
+    if _fifoPointerAddressErr != nil {
+        return errors.New("Error serializing 'fifoPointerAddress' field " + _fifoPointerAddressErr.Error())
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

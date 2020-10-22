@@ -142,7 +142,7 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                             enrichedPlcValue.put("deviceIdentifier", new PlcUDINT(deviceIdentifier));
                             enrichedPlcValue.put("objectType", new PlcDINT(objectType));
                             enrichedPlcValue.put("objectInstance", new PlcUDINT(objectInstance));
-                            enrichedPlcValue.put("address", new PlcString(toString(curField)));
+                            enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                             // From the original BACNet tag
                             enrichedPlcValue.put("typeOrTagNumber", PlcValues.of(baCnetTag.getTypeOrTagNumber()));

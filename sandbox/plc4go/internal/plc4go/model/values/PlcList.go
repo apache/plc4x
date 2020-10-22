@@ -18,16 +18,16 @@
 //
 package values
 
-import api "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
+import api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 
 type PlcList struct {
 	values []api.PlcValue
 	PlcValueAdapter
 }
 
-func NewPlcList() PlcList {
+func NewPlcList(values []api.PlcValue) PlcList {
 	return PlcList{
-		values: []api.PlcValue{},
+		values: values,
 	}
 }
 
@@ -35,11 +35,11 @@ func (m PlcList) IsList() bool {
 	return true
 }
 
-func (m PlcList) GetLength() int {
-	return len(m.values)
+func (m PlcList) GetLength() uint32 {
+	return uint32(len(m.values))
 }
 
-func (m PlcList) GetIndex(i int) api.PlcValue {
+func (m PlcList) GetIndex(i uint32) api.PlcValue {
 	return m.values[i]
 }
 

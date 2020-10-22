@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorGetEnrollmentSummary struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorGetEnrollmentSummary interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorGetEnrollmentSummary) ServiceChoice() uint8 {
-	return 0x04
+    return 0x04
 }
 
 func (m BACnetErrorGetEnrollmentSummary) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorGetEnrollmentSummary() BACnetErrorInitializer {
-	return &BACnetErrorGetEnrollmentSummary{}
+    return &BACnetErrorGetEnrollmentSummary{}
 }
 
 func CastIBACnetErrorGetEnrollmentSummary(structType interface{}) IBACnetErrorGetEnrollmentSummary {
-	castFunc := func(typ interface{}) IBACnetErrorGetEnrollmentSummary {
-		if iBACnetErrorGetEnrollmentSummary, ok := typ.(IBACnetErrorGetEnrollmentSummary); ok {
-			return iBACnetErrorGetEnrollmentSummary
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorGetEnrollmentSummary {
+        if iBACnetErrorGetEnrollmentSummary, ok := typ.(IBACnetErrorGetEnrollmentSummary); ok {
+            return iBACnetErrorGetEnrollmentSummary
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorGetEnrollmentSummary(structType interface{}) BACnetErrorGetEnrollmentSummary {
-	castFunc := func(typ interface{}) BACnetErrorGetEnrollmentSummary {
-		if sBACnetErrorGetEnrollmentSummary, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
-			return sBACnetErrorGetEnrollmentSummary
-		}
-		return BACnetErrorGetEnrollmentSummary{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorGetEnrollmentSummary {
+        if sBACnetErrorGetEnrollmentSummary, ok := typ.(BACnetErrorGetEnrollmentSummary); ok {
+            return sBACnetErrorGetEnrollmentSummary
+        }
+        if sBACnetErrorGetEnrollmentSummary, ok := typ.(*BACnetErrorGetEnrollmentSummary); ok {
+            return *sBACnetErrorGetEnrollmentSummary
+        }
+        return BACnetErrorGetEnrollmentSummary{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorGetEnrollmentSummary) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorGetEnrollmentSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorGetEnrollmentSummaryParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorGetEnrollmentSummary(), nil
+    // Create the instance
+    return NewBACnetErrorGetEnrollmentSummary(), nil
 }
 
 func (m BACnetErrorGetEnrollmentSummary) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

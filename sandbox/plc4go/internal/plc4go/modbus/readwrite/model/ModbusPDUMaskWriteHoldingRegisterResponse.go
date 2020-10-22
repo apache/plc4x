@@ -19,133 +19,136 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUMaskWriteHoldingRegisterResponse struct {
-	ReferenceAddress uint16
-	AndMask          uint16
-	OrMask           uint16
-	ModbusPDU
+    ReferenceAddress uint16
+    AndMask uint16
+    OrMask uint16
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterResponse interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) FunctionFlag() uint8 {
-	return 0x16
+    return 0x16
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) Response() bool {
-	return true
+    return true
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress uint16, andMask uint16, orMask uint16) ModbusPDUInitializer {
-	return &ModbusPDUMaskWriteHoldingRegisterResponse{ReferenceAddress: referenceAddress, AndMask: andMask, OrMask: orMask}
+    return &ModbusPDUMaskWriteHoldingRegisterResponse{ReferenceAddress: referenceAddress, AndMask: andMask, OrMask: orMask}
 }
 
 func CastIModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) IModbusPDUMaskWriteHoldingRegisterResponse {
-	castFunc := func(typ interface{}) IModbusPDUMaskWriteHoldingRegisterResponse {
-		if iModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(IModbusPDUMaskWriteHoldingRegisterResponse); ok {
-			return iModbusPDUMaskWriteHoldingRegisterResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUMaskWriteHoldingRegisterResponse {
+        if iModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(IModbusPDUMaskWriteHoldingRegisterResponse); ok {
+            return iModbusPDUMaskWriteHoldingRegisterResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUMaskWriteHoldingRegisterResponse(structType interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
-	castFunc := func(typ interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
-		if sModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(ModbusPDUMaskWriteHoldingRegisterResponse); ok {
-			return sModbusPDUMaskWriteHoldingRegisterResponse
-		}
-		return ModbusPDUMaskWriteHoldingRegisterResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUMaskWriteHoldingRegisterResponse {
+        if sModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(ModbusPDUMaskWriteHoldingRegisterResponse); ok {
+            return sModbusPDUMaskWriteHoldingRegisterResponse
+        }
+        if sModbusPDUMaskWriteHoldingRegisterResponse, ok := typ.(*ModbusPDUMaskWriteHoldingRegisterResponse); ok {
+            return *sModbusPDUMaskWriteHoldingRegisterResponse
+        }
+        return ModbusPDUMaskWriteHoldingRegisterResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (referenceAddress)
-	lengthInBits += 16
+    // Simple field (referenceAddress)
+    lengthInBits += 16
 
-	// Simple field (andMask)
-	lengthInBits += 16
+    // Simple field (andMask)
+    lengthInBits += 16
 
-	// Simple field (orMask)
-	lengthInBits += 16
+    // Simple field (orMask)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUMaskWriteHoldingRegisterResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Simple Field (referenceAddress)
-	referenceAddress, _referenceAddressErr := io.ReadUint16(16)
-	if _referenceAddressErr != nil {
-		return nil, errors.New("Error parsing 'referenceAddress' field " + _referenceAddressErr.Error())
-	}
+    // Simple Field (referenceAddress)
+    referenceAddress, _referenceAddressErr := io.ReadUint16(16)
+    if _referenceAddressErr != nil {
+        return nil, errors.New("Error parsing 'referenceAddress' field " + _referenceAddressErr.Error())
+    }
 
-	// Simple Field (andMask)
-	andMask, _andMaskErr := io.ReadUint16(16)
-	if _andMaskErr != nil {
-		return nil, errors.New("Error parsing 'andMask' field " + _andMaskErr.Error())
-	}
+    // Simple Field (andMask)
+    andMask, _andMaskErr := io.ReadUint16(16)
+    if _andMaskErr != nil {
+        return nil, errors.New("Error parsing 'andMask' field " + _andMaskErr.Error())
+    }
 
-	// Simple Field (orMask)
-	orMask, _orMaskErr := io.ReadUint16(16)
-	if _orMaskErr != nil {
-		return nil, errors.New("Error parsing 'orMask' field " + _orMaskErr.Error())
-	}
+    // Simple Field (orMask)
+    orMask, _orMaskErr := io.ReadUint16(16)
+    if _orMaskErr != nil {
+        return nil, errors.New("Error parsing 'orMask' field " + _orMaskErr.Error())
+    }
 
-	// Create the instance
-	return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask), nil
+    // Create the instance
+    return NewModbusPDUMaskWriteHoldingRegisterResponse(referenceAddress, andMask, orMask), nil
 }
 
 func (m ModbusPDUMaskWriteHoldingRegisterResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (referenceAddress)
-		referenceAddress := uint16(m.ReferenceAddress)
-		_referenceAddressErr := io.WriteUint16(16, referenceAddress)
-		if _referenceAddressErr != nil {
-			return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
-		}
+    // Simple Field (referenceAddress)
+    referenceAddress := uint16(m.ReferenceAddress)
+    _referenceAddressErr := io.WriteUint16(16, (referenceAddress))
+    if _referenceAddressErr != nil {
+        return errors.New("Error serializing 'referenceAddress' field " + _referenceAddressErr.Error())
+    }
 
-		// Simple Field (andMask)
-		andMask := uint16(m.AndMask)
-		_andMaskErr := io.WriteUint16(16, andMask)
-		if _andMaskErr != nil {
-			return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
-		}
+    // Simple Field (andMask)
+    andMask := uint16(m.AndMask)
+    _andMaskErr := io.WriteUint16(16, (andMask))
+    if _andMaskErr != nil {
+        return errors.New("Error serializing 'andMask' field " + _andMaskErr.Error())
+    }
 
-		// Simple Field (orMask)
-		orMask := uint16(m.OrMask)
-		_orMaskErr := io.WriteUint16(16, orMask)
-		if _orMaskErr != nil {
-			return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())
-		}
+    // Simple Field (orMask)
+    orMask := uint16(m.OrMask)
+    _orMaskErr := io.WriteUint16(16, (orMask))
+    if _orMaskErr != nil {
+        return errors.New("Error serializing 'orMask' field " + _orMaskErr.Error())
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

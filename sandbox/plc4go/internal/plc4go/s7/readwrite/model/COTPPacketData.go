@@ -19,110 +19,113 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type COTPPacketData struct {
-	Eot     bool
-	TpduRef uint8
-	COTPPacket
+    Eot bool
+    TpduRef uint8
+    COTPPacket
 }
 
 // The corresponding interface
 type ICOTPPacketData interface {
-	ICOTPPacket
-	Serialize(io spi.WriteBuffer) error
+    ICOTPPacket
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m COTPPacketData) TpduCode() uint8 {
-	return 0xF0
+    return 0xF0
 }
 
 func (m COTPPacketData) initialize(parameters []ICOTPParameter, payload *IS7Message) spi.Message {
-	m.Parameters = parameters
-	m.Payload = payload
-	return m
+    m.Parameters = parameters
+    m.Payload = payload
+    return m
 }
 
 func NewCOTPPacketData(eot bool, tpduRef uint8) COTPPacketInitializer {
-	return &COTPPacketData{Eot: eot, TpduRef: tpduRef}
+    return &COTPPacketData{Eot: eot, TpduRef: tpduRef}
 }
 
 func CastICOTPPacketData(structType interface{}) ICOTPPacketData {
-	castFunc := func(typ interface{}) ICOTPPacketData {
-		if iCOTPPacketData, ok := typ.(ICOTPPacketData); ok {
-			return iCOTPPacketData
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICOTPPacketData {
+        if iCOTPPacketData, ok := typ.(ICOTPPacketData); ok {
+            return iCOTPPacketData
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCOTPPacketData(structType interface{}) COTPPacketData {
-	castFunc := func(typ interface{}) COTPPacketData {
-		if sCOTPPacketData, ok := typ.(COTPPacketData); ok {
-			return sCOTPPacketData
-		}
-		return COTPPacketData{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPPacketData {
+        if sCOTPPacketData, ok := typ.(COTPPacketData); ok {
+            return sCOTPPacketData
+        }
+        if sCOTPPacketData, ok := typ.(*COTPPacketData); ok {
+            return *sCOTPPacketData
+        }
+        return COTPPacketData{}
+    }
+    return castFunc(structType)
 }
 
 func (m COTPPacketData) LengthInBits() uint16 {
-	var lengthInBits = m.COTPPacket.LengthInBits()
+    var lengthInBits uint16 = m.COTPPacket.LengthInBits()
 
-	// Simple field (eot)
-	lengthInBits += 1
+    // Simple field (eot)
+    lengthInBits += 1
 
-	// Simple field (tpduRef)
-	lengthInBits += 7
+    // Simple field (tpduRef)
+    lengthInBits += 7
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m COTPPacketData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPPacketDataParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
 
-	// Simple Field (eot)
-	eot, _eotErr := io.ReadBit()
-	if _eotErr != nil {
-		return nil, errors.New("Error parsing 'eot' field " + _eotErr.Error())
-	}
+    // Simple Field (eot)
+    eot, _eotErr := io.ReadBit()
+    if _eotErr != nil {
+        return nil, errors.New("Error parsing 'eot' field " + _eotErr.Error())
+    }
 
-	// Simple Field (tpduRef)
-	tpduRef, _tpduRefErr := io.ReadUint8(7)
-	if _tpduRefErr != nil {
-		return nil, errors.New("Error parsing 'tpduRef' field " + _tpduRefErr.Error())
-	}
+    // Simple Field (tpduRef)
+    tpduRef, _tpduRefErr := io.ReadUint8(7)
+    if _tpduRefErr != nil {
+        return nil, errors.New("Error parsing 'tpduRef' field " + _tpduRefErr.Error())
+    }
 
-	// Create the instance
-	return NewCOTPPacketData(eot, tpduRef), nil
+    // Create the instance
+    return NewCOTPPacketData(eot, tpduRef), nil
 }
 
 func (m COTPPacketData) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (eot)
-		eot := bool(m.Eot)
-		_eotErr := io.WriteBit((bool)(eot))
-		if _eotErr != nil {
-			return errors.New("Error serializing 'eot' field " + _eotErr.Error())
-		}
+    // Simple Field (eot)
+    eot := bool(m.Eot)
+    _eotErr := io.WriteBit((bool) (eot))
+    if _eotErr != nil {
+        return errors.New("Error serializing 'eot' field " + _eotErr.Error())
+    }
 
-		// Simple Field (tpduRef)
-		tpduRef := uint8(m.TpduRef)
-		_tpduRefErr := io.WriteUint8(7, tpduRef)
-		if _tpduRefErr != nil {
-			return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())
-		}
+    // Simple Field (tpduRef)
+    tpduRef := uint8(m.TpduRef)
+    _tpduRefErr := io.WriteUint8(7, (tpduRef))
+    if _tpduRefErr != nil {
+        return errors.New("Error serializing 'tpduRef' field " + _tpduRefErr.Error())
+    }
 
-		return nil
-	}
-	return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
+        return nil
+    }
+    return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }

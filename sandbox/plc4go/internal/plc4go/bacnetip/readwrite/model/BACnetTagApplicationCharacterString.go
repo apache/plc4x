@@ -19,77 +19,80 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationCharacterString struct {
-	BACnetTag
+    BACnetTag
 }
 
 // The corresponding interface
 type IBACnetTagApplicationCharacterString interface {
-	IBACnetTag
-	Serialize(io spi.WriteBuffer) error
+    IBACnetTag
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetTagApplicationCharacterString) ContextSpecificTag() uint8 {
-	return 0
+    return 0
 }
 
 func (m BACnetTagApplicationCharacterString) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.TypeOrTagNumber = typeOrTagNumber
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	return m
+    m.TypeOrTagNumber = typeOrTagNumber
+    m.LengthValueType = lengthValueType
+    m.ExtTagNumber = extTagNumber
+    m.ExtLength = extLength
+    return m
 }
 
 func NewBACnetTagApplicationCharacterString() BACnetTagInitializer {
-	return &BACnetTagApplicationCharacterString{}
+    return &BACnetTagApplicationCharacterString{}
 }
 
 func CastIBACnetTagApplicationCharacterString(structType interface{}) IBACnetTagApplicationCharacterString {
-	castFunc := func(typ interface{}) IBACnetTagApplicationCharacterString {
-		if iBACnetTagApplicationCharacterString, ok := typ.(IBACnetTagApplicationCharacterString); ok {
-			return iBACnetTagApplicationCharacterString
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetTagApplicationCharacterString {
+        if iBACnetTagApplicationCharacterString, ok := typ.(IBACnetTagApplicationCharacterString); ok {
+            return iBACnetTagApplicationCharacterString
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetTagApplicationCharacterString(structType interface{}) BACnetTagApplicationCharacterString {
-	castFunc := func(typ interface{}) BACnetTagApplicationCharacterString {
-		if sBACnetTagApplicationCharacterString, ok := typ.(BACnetTagApplicationCharacterString); ok {
-			return sBACnetTagApplicationCharacterString
-		}
-		return BACnetTagApplicationCharacterString{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetTagApplicationCharacterString {
+        if sBACnetTagApplicationCharacterString, ok := typ.(BACnetTagApplicationCharacterString); ok {
+            return sBACnetTagApplicationCharacterString
+        }
+        if sBACnetTagApplicationCharacterString, ok := typ.(*BACnetTagApplicationCharacterString); ok {
+            return *sBACnetTagApplicationCharacterString
+        }
+        return BACnetTagApplicationCharacterString{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetTagApplicationCharacterString) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetTag.LengthInBits()
+    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetTagApplicationCharacterString) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetTagApplicationCharacterStringParse(io *spi.ReadBuffer) (BACnetTagInitializer, error) {
 
-	// Create the instance
-	return NewBACnetTagApplicationCharacterString(), nil
+    // Create the instance
+    return NewBACnetTagApplicationCharacterString(), nil
 }
 
 func (m BACnetTagApplicationCharacterString) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+        return nil
+    }
+    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ConnectionResponseDataBlockDeviceManagement struct {
-	ConnectionResponseDataBlock
+    ConnectionResponseDataBlock
 }
 
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
-	IConnectionResponseDataBlock
-	Serialize(io spi.WriteBuffer) error
+    IConnectionResponseDataBlock
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ConnectionResponseDataBlockDeviceManagement) ConnectionType() uint8 {
-	return 0x03
+    return 0x03
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewConnectionResponseDataBlockDeviceManagement() ConnectionResponseDataBlockInitializer {
-	return &ConnectionResponseDataBlockDeviceManagement{}
+    return &ConnectionResponseDataBlockDeviceManagement{}
 }
 
 func CastIConnectionResponseDataBlockDeviceManagement(structType interface{}) IConnectionResponseDataBlockDeviceManagement {
-	castFunc := func(typ interface{}) IConnectionResponseDataBlockDeviceManagement {
-		if iConnectionResponseDataBlockDeviceManagement, ok := typ.(IConnectionResponseDataBlockDeviceManagement); ok {
-			return iConnectionResponseDataBlockDeviceManagement
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IConnectionResponseDataBlockDeviceManagement {
+        if iConnectionResponseDataBlockDeviceManagement, ok := typ.(IConnectionResponseDataBlockDeviceManagement); ok {
+            return iConnectionResponseDataBlockDeviceManagement
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) ConnectionResponseDataBlockDeviceManagement {
-	castFunc := func(typ interface{}) ConnectionResponseDataBlockDeviceManagement {
-		if sConnectionResponseDataBlockDeviceManagement, ok := typ.(ConnectionResponseDataBlockDeviceManagement); ok {
-			return sConnectionResponseDataBlockDeviceManagement
-		}
-		return ConnectionResponseDataBlockDeviceManagement{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ConnectionResponseDataBlockDeviceManagement {
+        if sConnectionResponseDataBlockDeviceManagement, ok := typ.(ConnectionResponseDataBlockDeviceManagement); ok {
+            return sConnectionResponseDataBlockDeviceManagement
+        }
+        if sConnectionResponseDataBlockDeviceManagement, ok := typ.(*ConnectionResponseDataBlockDeviceManagement); ok {
+            return *sConnectionResponseDataBlockDeviceManagement
+        }
+        return ConnectionResponseDataBlockDeviceManagement{}
+    }
+    return castFunc(structType)
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) LengthInBits() uint16 {
-	var lengthInBits = m.ConnectionResponseDataBlock.LengthInBits()
+    var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ConnectionResponseDataBlockDeviceManagementParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
-	// Create the instance
-	return NewConnectionResponseDataBlockDeviceManagement(), nil
+    // Create the instance
+    return NewConnectionResponseDataBlockDeviceManagement(), nil
 }
 
 func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
+        return nil
+    }
+    return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

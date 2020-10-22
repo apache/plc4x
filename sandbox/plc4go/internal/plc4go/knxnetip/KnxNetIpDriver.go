@@ -18,7 +18,7 @@
 //
 package knxnetip
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
 
 func NewKnxNetIpDriver() plc4go.PlcDriver {
 	return nil

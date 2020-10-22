@@ -75,12 +75,15 @@ enum plc4c_modbus_read_write_modbus_pdu_type {
   plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_exception_status_request = 27,
   plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_exception_status_response = 28,
   plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_request = 29,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request = 30,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response = 31,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_request = 32,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_response = 33,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_request = 34,
-  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_response = 35};
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_response = 30,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request = 31,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response = 32,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request = 33,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response = 34,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_request = 35,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_report_server_id_response = 36,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_request = 37,
+  plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_read_device_identification_response = 38};
 typedef enum plc4c_modbus_read_write_modbus_pdu_type plc4c_modbus_read_write_modbus_pdu_type;
 
 // Function to get the discriminator values for a given type.
@@ -200,8 +203,18 @@ struct plc4c_modbus_read_write_modbus_pdu {
       uint8_t modbus_pdu_read_exception_status_response_value;
     };
     struct { /* ModbusPDUDiagnosticRequest */
-      uint16_t modbus_pdu_diagnostic_request_status;
-      uint16_t modbus_pdu_diagnostic_request_event_count;
+      uint16_t modbus_pdu_diagnostic_request_sub_function;
+      uint16_t modbus_pdu_diagnostic_request_data;
+    };
+    struct { /* ModbusPDUDiagnosticResponse */
+      uint16_t modbus_pdu_diagnostic_response_sub_function;
+      uint16_t modbus_pdu_diagnostic_response_data;
+    };
+    struct { /* ModbusPDUGetComEventCounterRequest */
+    };
+    struct { /* ModbusPDUGetComEventCounterResponse */
+      uint16_t modbus_pdu_get_com_event_counter_response_status;
+      uint16_t modbus_pdu_get_com_event_counter_response_event_count;
     };
     struct { /* ModbusPDUGetComEventLogRequest */
     };

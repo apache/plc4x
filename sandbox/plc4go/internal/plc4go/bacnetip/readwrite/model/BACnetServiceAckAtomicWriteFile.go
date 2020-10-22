@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetServiceAckAtomicWriteFile struct {
-	BACnetServiceAck
+    BACnetServiceAck
 }
 
 // The corresponding interface
 type IBACnetServiceAckAtomicWriteFile interface {
-	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer) error
+    IBACnetServiceAck
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetServiceAckAtomicWriteFile) ServiceChoice() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m BACnetServiceAckAtomicWriteFile) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetServiceAckAtomicWriteFile() BACnetServiceAckInitializer {
-	return &BACnetServiceAckAtomicWriteFile{}
+    return &BACnetServiceAckAtomicWriteFile{}
 }
 
 func CastIBACnetServiceAckAtomicWriteFile(structType interface{}) IBACnetServiceAckAtomicWriteFile {
-	castFunc := func(typ interface{}) IBACnetServiceAckAtomicWriteFile {
-		if iBACnetServiceAckAtomicWriteFile, ok := typ.(IBACnetServiceAckAtomicWriteFile); ok {
-			return iBACnetServiceAckAtomicWriteFile
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetServiceAckAtomicWriteFile {
+        if iBACnetServiceAckAtomicWriteFile, ok := typ.(IBACnetServiceAckAtomicWriteFile); ok {
+            return iBACnetServiceAckAtomicWriteFile
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetServiceAckAtomicWriteFile(structType interface{}) BACnetServiceAckAtomicWriteFile {
-	castFunc := func(typ interface{}) BACnetServiceAckAtomicWriteFile {
-		if sBACnetServiceAckAtomicWriteFile, ok := typ.(BACnetServiceAckAtomicWriteFile); ok {
-			return sBACnetServiceAckAtomicWriteFile
-		}
-		return BACnetServiceAckAtomicWriteFile{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetServiceAckAtomicWriteFile {
+        if sBACnetServiceAckAtomicWriteFile, ok := typ.(BACnetServiceAckAtomicWriteFile); ok {
+            return sBACnetServiceAckAtomicWriteFile
+        }
+        if sBACnetServiceAckAtomicWriteFile, ok := typ.(*BACnetServiceAckAtomicWriteFile); ok {
+            return *sBACnetServiceAckAtomicWriteFile
+        }
+        return BACnetServiceAckAtomicWriteFile{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetServiceAckAtomicWriteFile) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetServiceAck.LengthInBits()
+    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetServiceAckAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
-	// Create the instance
-	return NewBACnetServiceAckAtomicWriteFile(), nil
+    // Create the instance
+    return NewBACnetServiceAckAtomicWriteFile(), nil
 }
 
 func (m BACnetServiceAckAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+        return nil
+    }
+    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

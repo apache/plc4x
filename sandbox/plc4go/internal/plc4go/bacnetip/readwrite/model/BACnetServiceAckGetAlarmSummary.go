@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetServiceAckGetAlarmSummary struct {
-	BACnetServiceAck
+    BACnetServiceAck
 }
 
 // The corresponding interface
 type IBACnetServiceAckGetAlarmSummary interface {
-	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer) error
+    IBACnetServiceAck
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetServiceAckGetAlarmSummary) ServiceChoice() uint8 {
-	return 0x03
+    return 0x03
 }
 
 func (m BACnetServiceAckGetAlarmSummary) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetServiceAckGetAlarmSummary() BACnetServiceAckInitializer {
-	return &BACnetServiceAckGetAlarmSummary{}
+    return &BACnetServiceAckGetAlarmSummary{}
 }
 
 func CastIBACnetServiceAckGetAlarmSummary(structType interface{}) IBACnetServiceAckGetAlarmSummary {
-	castFunc := func(typ interface{}) IBACnetServiceAckGetAlarmSummary {
-		if iBACnetServiceAckGetAlarmSummary, ok := typ.(IBACnetServiceAckGetAlarmSummary); ok {
-			return iBACnetServiceAckGetAlarmSummary
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetServiceAckGetAlarmSummary {
+        if iBACnetServiceAckGetAlarmSummary, ok := typ.(IBACnetServiceAckGetAlarmSummary); ok {
+            return iBACnetServiceAckGetAlarmSummary
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetServiceAckGetAlarmSummary(structType interface{}) BACnetServiceAckGetAlarmSummary {
-	castFunc := func(typ interface{}) BACnetServiceAckGetAlarmSummary {
-		if sBACnetServiceAckGetAlarmSummary, ok := typ.(BACnetServiceAckGetAlarmSummary); ok {
-			return sBACnetServiceAckGetAlarmSummary
-		}
-		return BACnetServiceAckGetAlarmSummary{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetServiceAckGetAlarmSummary {
+        if sBACnetServiceAckGetAlarmSummary, ok := typ.(BACnetServiceAckGetAlarmSummary); ok {
+            return sBACnetServiceAckGetAlarmSummary
+        }
+        if sBACnetServiceAckGetAlarmSummary, ok := typ.(*BACnetServiceAckGetAlarmSummary); ok {
+            return *sBACnetServiceAckGetAlarmSummary
+        }
+        return BACnetServiceAckGetAlarmSummary{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetServiceAckGetAlarmSummary) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetServiceAck.LengthInBits()
+    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetServiceAckGetAlarmSummary) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckGetAlarmSummaryParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
-	// Create the instance
-	return NewBACnetServiceAckGetAlarmSummary(), nil
+    // Create the instance
+    return NewBACnetServiceAckGetAlarmSummary(), nil
 }
 
 func (m BACnetServiceAckGetAlarmSummary) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+        return nil
+    }
+    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KnxNetIpCore struct {
-	Version uint8
-	ServiceId
+    Version uint8
+    ServiceId
 }
 
 // The corresponding interface
 type IKnxNetIpCore interface {
-	IServiceId
-	Serialize(io spi.WriteBuffer) error
+    IServiceId
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m KnxNetIpCore) ServiceType() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m KnxNetIpCore) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewKnxNetIpCore(version uint8) ServiceIdInitializer {
-	return &KnxNetIpCore{Version: version}
+    return &KnxNetIpCore{Version: version}
 }
 
 func CastIKnxNetIpCore(structType interface{}) IKnxNetIpCore {
-	castFunc := func(typ interface{}) IKnxNetIpCore {
-		if iKnxNetIpCore, ok := typ.(IKnxNetIpCore); ok {
-			return iKnxNetIpCore
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKnxNetIpCore {
+        if iKnxNetIpCore, ok := typ.(IKnxNetIpCore); ok {
+            return iKnxNetIpCore
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKnxNetIpCore(structType interface{}) KnxNetIpCore {
-	castFunc := func(typ interface{}) KnxNetIpCore {
-		if sKnxNetIpCore, ok := typ.(KnxNetIpCore); ok {
-			return sKnxNetIpCore
-		}
-		return KnxNetIpCore{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KnxNetIpCore {
+        if sKnxNetIpCore, ok := typ.(KnxNetIpCore); ok {
+            return sKnxNetIpCore
+        }
+        if sKnxNetIpCore, ok := typ.(*KnxNetIpCore); ok {
+            return *sKnxNetIpCore
+        }
+        return KnxNetIpCore{}
+    }
+    return castFunc(structType)
 }
 
 func (m KnxNetIpCore) LengthInBits() uint16 {
-	var lengthInBits = m.ServiceId.LengthInBits()
+    var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
-	// Simple field (version)
-	lengthInBits += 8
+    // Simple field (version)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KnxNetIpCore) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KnxNetIpCoreParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
-	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
-	if _versionErr != nil {
-		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
-	}
+    // Simple Field (version)
+    version, _versionErr := io.ReadUint8(8)
+    if _versionErr != nil {
+        return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+    }
 
-	// Create the instance
-	return NewKnxNetIpCore(version), nil
+    // Create the instance
+    return NewKnxNetIpCore(version), nil
 }
 
 func (m KnxNetIpCore) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (version)
-		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, version)
-		if _versionErr != nil {
-			return errors.New("Error serializing 'version' field " + _versionErr.Error())
-		}
+    // Simple Field (version)
+    version := uint8(m.Version)
+    _versionErr := io.WriteUint8(8, (version))
+    if _versionErr != nil {
+        return errors.New("Error serializing 'version' field " + _versionErr.Error())
+    }
 
-		return nil
-	}
-	return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+        return nil
+    }
+    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

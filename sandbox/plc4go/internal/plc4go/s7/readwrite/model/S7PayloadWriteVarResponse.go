@@ -19,114 +19,117 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type S7PayloadWriteVarResponse struct {
-	Items []IS7VarPayloadStatusItem
-	S7Payload
+    Items []IS7VarPayloadStatusItem
+    S7Payload
 }
 
 // The corresponding interface
 type IS7PayloadWriteVarResponse interface {
-	IS7Payload
-	Serialize(io spi.WriteBuffer) error
+    IS7Payload
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m S7PayloadWriteVarResponse) ParameterParameterType() uint8 {
-	return 0x05
+    return 0x05
 }
 
 func (m S7PayloadWriteVarResponse) MessageType() uint8 {
-	return 0x03
+    return 0x03
 }
 
 func (m S7PayloadWriteVarResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewS7PayloadWriteVarResponse(items []IS7VarPayloadStatusItem) S7PayloadInitializer {
-	return &S7PayloadWriteVarResponse{Items: items}
+    return &S7PayloadWriteVarResponse{Items: items}
 }
 
 func CastIS7PayloadWriteVarResponse(structType interface{}) IS7PayloadWriteVarResponse {
-	castFunc := func(typ interface{}) IS7PayloadWriteVarResponse {
-		if iS7PayloadWriteVarResponse, ok := typ.(IS7PayloadWriteVarResponse); ok {
-			return iS7PayloadWriteVarResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IS7PayloadWriteVarResponse {
+        if iS7PayloadWriteVarResponse, ok := typ.(IS7PayloadWriteVarResponse); ok {
+            return iS7PayloadWriteVarResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastS7PayloadWriteVarResponse(structType interface{}) S7PayloadWriteVarResponse {
-	castFunc := func(typ interface{}) S7PayloadWriteVarResponse {
-		if sS7PayloadWriteVarResponse, ok := typ.(S7PayloadWriteVarResponse); ok {
-			return sS7PayloadWriteVarResponse
-		}
-		return S7PayloadWriteVarResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) S7PayloadWriteVarResponse {
+        if sS7PayloadWriteVarResponse, ok := typ.(S7PayloadWriteVarResponse); ok {
+            return sS7PayloadWriteVarResponse
+        }
+        if sS7PayloadWriteVarResponse, ok := typ.(*S7PayloadWriteVarResponse); ok {
+            return *sS7PayloadWriteVarResponse
+        }
+        return S7PayloadWriteVarResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m S7PayloadWriteVarResponse) LengthInBits() uint16 {
-	var lengthInBits = m.S7Payload.LengthInBits()
+    var lengthInBits uint16 = m.S7Payload.LengthInBits()
 
-	// Array field
-	if len(m.Items) > 0 {
-		for _, element := range m.Items {
-			lengthInBits += element.LengthInBits()
-		}
-	}
+    // Array field
+    if len(m.Items) > 0 {
+        for _, element := range m.Items {
+            lengthInBits += element.LengthInBits()
+        }
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m S7PayloadWriteVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func S7PayloadWriteVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
-	// Array field (items)
-	// Count array
-	items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
-	for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
+    // Array field (items)
+    // Count array
+    items := make([]IS7VarPayloadStatusItem, CastS7ParameterWriteVarResponse(parameter).NumItems)
+    for curItem := uint16(0); curItem < uint16(CastS7ParameterWriteVarResponse(parameter).NumItems); curItem++ {
 
-		_message, _err := S7VarPayloadStatusItemParse(io)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'items' field " + _err.Error())
-		}
-		var _item IS7VarPayloadStatusItem
-		_item, _ok := _message.(IS7VarPayloadStatusItem)
-		if !_ok {
-			return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadStatusItem")
-		}
-		items[curItem] = _item
-	}
+        _message, _err := S7VarPayloadStatusItemParse(io)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'items' field " + _err.Error())
+        }
+        var _item IS7VarPayloadStatusItem
+        _item, _ok := _message.(IS7VarPayloadStatusItem)
+        if !_ok {
+            return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_item).Name() + " to S7VarPayloadStatusItem")
+        }
+        items[curItem] = _item
+    }
 
-	// Create the instance
-	return NewS7PayloadWriteVarResponse(items), nil
+    // Create the instance
+    return NewS7PayloadWriteVarResponse(items), nil
 }
 
 func (m S7PayloadWriteVarResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Array Field (items)
-		if m.Items != nil {
-			for _, _element := range m.Items {
-				_elementErr := _element.Serialize(io)
-				if _elementErr != nil {
-					return errors.New("Error serializing 'items' field " + _elementErr.Error())
-				}
-			}
-		}
+    // Array Field (items)
+    if m.Items != nil {
+        for _, _element := range m.Items {
+            _elementErr := _element.Serialize(io)
+            if _elementErr != nil {
+                return errors.New("Error serializing 'items' field " + _elementErr.Error())
+            }
+        }
+    }
 
-		return nil
-	}
-	return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
+        return nil
+    }
+    return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
 }

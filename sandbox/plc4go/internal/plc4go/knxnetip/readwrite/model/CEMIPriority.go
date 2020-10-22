@@ -18,46 +18,47 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type CEMIPriority uint8
 
 type ICEMIPriority interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	CEMIPriority_SYSTEM CEMIPriority = 0x0
-	CEMIPriority_NORMAL CEMIPriority = 0x1
-	CEMIPriority_URGENT CEMIPriority = 0x2
-	CEMIPriority_LOW    CEMIPriority = 0x3
+const(
+    CEMIPriority_SYSTEM CEMIPriority = 0x0
+    CEMIPriority_NORMAL CEMIPriority = 0x1
+    CEMIPriority_URGENT CEMIPriority = 0x2
+    CEMIPriority_LOW CEMIPriority = 0x3
 )
 
+
 func CastCEMIPriority(structType interface{}) CEMIPriority {
-	castFunc := func(typ interface{}) CEMIPriority {
-		if sCEMIPriority, ok := typ.(CEMIPriority); ok {
-			return sCEMIPriority
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) CEMIPriority {
+        if sCEMIPriority, ok := typ.(CEMIPriority); ok {
+            return sCEMIPriority
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m CEMIPriority) LengthInBits() uint16 {
-	return 2
+    return 2
 }
 
 func (m CEMIPriority) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func CEMIPriorityParse(io *spi.ReadBuffer) (CEMIPriority, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e CEMIPriority) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

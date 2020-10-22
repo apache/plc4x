@@ -16,7 +16,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/0.8.0
+module plc4x.apache.org/plc4go-modbus-driver/v0
 
 go 1.15
 

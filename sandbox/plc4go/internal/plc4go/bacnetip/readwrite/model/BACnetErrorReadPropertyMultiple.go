@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorReadPropertyMultiple struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorReadPropertyMultiple interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorReadPropertyMultiple) ServiceChoice() uint8 {
-	return 0x0E
+    return 0x0E
 }
 
 func (m BACnetErrorReadPropertyMultiple) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorReadPropertyMultiple() BACnetErrorInitializer {
-	return &BACnetErrorReadPropertyMultiple{}
+    return &BACnetErrorReadPropertyMultiple{}
 }
 
 func CastIBACnetErrorReadPropertyMultiple(structType interface{}) IBACnetErrorReadPropertyMultiple {
-	castFunc := func(typ interface{}) IBACnetErrorReadPropertyMultiple {
-		if iBACnetErrorReadPropertyMultiple, ok := typ.(IBACnetErrorReadPropertyMultiple); ok {
-			return iBACnetErrorReadPropertyMultiple
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorReadPropertyMultiple {
+        if iBACnetErrorReadPropertyMultiple, ok := typ.(IBACnetErrorReadPropertyMultiple); ok {
+            return iBACnetErrorReadPropertyMultiple
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorReadPropertyMultiple(structType interface{}) BACnetErrorReadPropertyMultiple {
-	castFunc := func(typ interface{}) BACnetErrorReadPropertyMultiple {
-		if sBACnetErrorReadPropertyMultiple, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
-			return sBACnetErrorReadPropertyMultiple
-		}
-		return BACnetErrorReadPropertyMultiple{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorReadPropertyMultiple {
+        if sBACnetErrorReadPropertyMultiple, ok := typ.(BACnetErrorReadPropertyMultiple); ok {
+            return sBACnetErrorReadPropertyMultiple
+        }
+        if sBACnetErrorReadPropertyMultiple, ok := typ.(*BACnetErrorReadPropertyMultiple); ok {
+            return *sBACnetErrorReadPropertyMultiple
+        }
+        return BACnetErrorReadPropertyMultiple{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorReadPropertyMultiple) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorReadPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorReadPropertyMultiple(), nil
+    // Create the instance
+    return NewBACnetErrorReadPropertyMultiple(), nil
 }
 
 func (m BACnetErrorReadPropertyMultiple) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

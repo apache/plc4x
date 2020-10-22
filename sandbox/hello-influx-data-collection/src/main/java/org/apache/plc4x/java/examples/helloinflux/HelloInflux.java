@@ -121,7 +121,7 @@ public class HelloInflux {
                 point.addField(contextName, plcValue.getFloat());
             } else if (plcValue instanceof PlcLREAL) {
                 point.addField(contextName, plcValue.getDouble());
-            } else if (plcValue instanceof PlcString) {
+            } else if (plcValue instanceof PlcSTRING) {
                 point.addField(contextName, plcValue.getString());
             } else if (plcValue instanceof PlcStruct) {
                 PlcStruct structValue = (PlcStruct) plcValue;

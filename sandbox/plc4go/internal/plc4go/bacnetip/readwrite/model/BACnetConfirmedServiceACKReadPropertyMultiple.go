@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKReadPropertyMultiple struct {
-	BACnetConfirmedServiceACK
+    BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadPropertyMultiple interface {
-	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceACK
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) ServiceChoice() uint8 {
-	return 0x0E
+    return 0x0E
 }
 
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceACKReadPropertyMultiple() BACnetConfirmedServiceACKInitializer {
-	return &BACnetConfirmedServiceACKReadPropertyMultiple{}
+    return &BACnetConfirmedServiceACKReadPropertyMultiple{}
 }
 
 func CastIBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) IBACnetConfirmedServiceACKReadPropertyMultiple {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadPropertyMultiple {
-		if iBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(IBACnetConfirmedServiceACKReadPropertyMultiple); ok {
-			return iBACnetConfirmedServiceACKReadPropertyMultiple
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadPropertyMultiple {
+        if iBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(IBACnetConfirmedServiceACKReadPropertyMultiple); ok {
+            return iBACnetConfirmedServiceACKReadPropertyMultiple
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceACKReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
-		if sBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
-			return sBACnetConfirmedServiceACKReadPropertyMultiple
-		}
-		return BACnetConfirmedServiceACKReadPropertyMultiple{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadPropertyMultiple {
+        if sBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+            return sBACnetConfirmedServiceACKReadPropertyMultiple
+        }
+        if sBACnetConfirmedServiceACKReadPropertyMultiple, ok := typ.(*BACnetConfirmedServiceACKReadPropertyMultiple); ok {
+            return *sBACnetConfirmedServiceACKReadPropertyMultiple
+        }
+        return BACnetConfirmedServiceACKReadPropertyMultiple{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceACKReadPropertyMultiple(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceACKReadPropertyMultiple(), nil
 }
 
 func (m BACnetConfirmedServiceACKReadPropertyMultiple) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

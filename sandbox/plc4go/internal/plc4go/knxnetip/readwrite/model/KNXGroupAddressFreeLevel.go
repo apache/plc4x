@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KNXGroupAddressFreeLevel struct {
-	SubGroup uint16
-	KNXGroupAddress
+    SubGroup uint16
+    KNXGroupAddress
 }
 
 // The corresponding interface
 type IKNXGroupAddressFreeLevel interface {
-	IKNXGroupAddress
-	Serialize(io spi.WriteBuffer) error
+    IKNXGroupAddress
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m KNXGroupAddressFreeLevel) NumLevels() uint8 {
-	return 1
+    return 1
 }
 
 func (m KNXGroupAddressFreeLevel) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewKNXGroupAddressFreeLevel(subGroup uint16) KNXGroupAddressInitializer {
-	return &KNXGroupAddressFreeLevel{SubGroup: subGroup}
+    return &KNXGroupAddressFreeLevel{SubGroup: subGroup}
 }
 
 func CastIKNXGroupAddressFreeLevel(structType interface{}) IKNXGroupAddressFreeLevel {
-	castFunc := func(typ interface{}) IKNXGroupAddressFreeLevel {
-		if iKNXGroupAddressFreeLevel, ok := typ.(IKNXGroupAddressFreeLevel); ok {
-			return iKNXGroupAddressFreeLevel
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKNXGroupAddressFreeLevel {
+        if iKNXGroupAddressFreeLevel, ok := typ.(IKNXGroupAddressFreeLevel); ok {
+            return iKNXGroupAddressFreeLevel
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKNXGroupAddressFreeLevel(structType interface{}) KNXGroupAddressFreeLevel {
-	castFunc := func(typ interface{}) KNXGroupAddressFreeLevel {
-		if sKNXGroupAddressFreeLevel, ok := typ.(KNXGroupAddressFreeLevel); ok {
-			return sKNXGroupAddressFreeLevel
-		}
-		return KNXGroupAddressFreeLevel{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KNXGroupAddressFreeLevel {
+        if sKNXGroupAddressFreeLevel, ok := typ.(KNXGroupAddressFreeLevel); ok {
+            return sKNXGroupAddressFreeLevel
+        }
+        if sKNXGroupAddressFreeLevel, ok := typ.(*KNXGroupAddressFreeLevel); ok {
+            return *sKNXGroupAddressFreeLevel
+        }
+        return KNXGroupAddressFreeLevel{}
+    }
+    return castFunc(structType)
 }
 
 func (m KNXGroupAddressFreeLevel) LengthInBits() uint16 {
-	var lengthInBits = m.KNXGroupAddress.LengthInBits()
+    var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
 
-	// Simple field (subGroup)
-	lengthInBits += 16
+    // Simple field (subGroup)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KNXGroupAddressFreeLevel) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KNXGroupAddressFreeLevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
-	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(16)
-	if _subGroupErr != nil {
-		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
-	}
+    // Simple Field (subGroup)
+    subGroup, _subGroupErr := io.ReadUint16(16)
+    if _subGroupErr != nil {
+        return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+    }
 
-	// Create the instance
-	return NewKNXGroupAddressFreeLevel(subGroup), nil
+    // Create the instance
+    return NewKNXGroupAddressFreeLevel(subGroup), nil
 }
 
 func (m KNXGroupAddressFreeLevel) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (subGroup)
-		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(16, subGroup)
-		if _subGroupErr != nil {
-			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
-		}
+    // Simple Field (subGroup)
+    subGroup := uint16(m.SubGroup)
+    _subGroupErr := io.WriteUint16(16, (subGroup))
+    if _subGroupErr != nil {
+        return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+    }
 
-		return nil
-	}
-	return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
+        return nil
+    }
+    return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

@@ -237,7 +237,7 @@ public class ${type.name}IO {
             return new PlcList(value);
                     <#break>
             <#-- Disable this for now as Strings will only be parsed as manual fields -->
-                    <#case "String">
+                    <#case "STRING">
             //return new PlcString(_map);
                     <#break>
                     <#default>

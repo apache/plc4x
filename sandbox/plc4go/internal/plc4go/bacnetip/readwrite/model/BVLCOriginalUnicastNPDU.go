@@ -19,97 +19,100 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type BVLCOriginalUnicastNPDU struct {
-	Npdu INPDU
-	BVLC
+    Npdu INPDU
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCOriginalUnicastNPDU interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCOriginalUnicastNPDU) BvlcFunction() uint8 {
-	return 0x0A
+    return 0x0A
 }
 
 func (m BVLCOriginalUnicastNPDU) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCOriginalUnicastNPDU(npdu INPDU) BVLCInitializer {
-	return &BVLCOriginalUnicastNPDU{Npdu: npdu}
+    return &BVLCOriginalUnicastNPDU{Npdu: npdu}
 }
 
 func CastIBVLCOriginalUnicastNPDU(structType interface{}) IBVLCOriginalUnicastNPDU {
-	castFunc := func(typ interface{}) IBVLCOriginalUnicastNPDU {
-		if iBVLCOriginalUnicastNPDU, ok := typ.(IBVLCOriginalUnicastNPDU); ok {
-			return iBVLCOriginalUnicastNPDU
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCOriginalUnicastNPDU {
+        if iBVLCOriginalUnicastNPDU, ok := typ.(IBVLCOriginalUnicastNPDU); ok {
+            return iBVLCOriginalUnicastNPDU
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCOriginalUnicastNPDU(structType interface{}) BVLCOriginalUnicastNPDU {
-	castFunc := func(typ interface{}) BVLCOriginalUnicastNPDU {
-		if sBVLCOriginalUnicastNPDU, ok := typ.(BVLCOriginalUnicastNPDU); ok {
-			return sBVLCOriginalUnicastNPDU
-		}
-		return BVLCOriginalUnicastNPDU{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCOriginalUnicastNPDU {
+        if sBVLCOriginalUnicastNPDU, ok := typ.(BVLCOriginalUnicastNPDU); ok {
+            return sBVLCOriginalUnicastNPDU
+        }
+        if sBVLCOriginalUnicastNPDU, ok := typ.(*BVLCOriginalUnicastNPDU); ok {
+            return *sBVLCOriginalUnicastNPDU
+        }
+        return BVLCOriginalUnicastNPDU{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCOriginalUnicastNPDU) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	// Simple field (npdu)
-	lengthInBits += m.Npdu.LengthInBits()
+    // Simple field (npdu)
+    lengthInBits += m.Npdu.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCOriginalUnicastNPDU) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCOriginalUnicastNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
 
-	// Simple Field (npdu)
-	_npduMessage, _err := NPDUParse(io, uint16(bvlcLength)-uint16(uint16(4)))
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
-	}
-	var npdu INPDU
-	npdu, _npduOk := _npduMessage.(INPDU)
-	if !_npduOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to INPDU")
-	}
+    // Simple Field (npdu)
+    _npduMessage, _err := NPDUParse(io, uint16(bvlcLength) - uint16(uint16(4)))
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'npdu'. " + _err.Error())
+    }
+    var npdu INPDU
+    npdu, _npduOk := _npduMessage.(INPDU)
+    if !_npduOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_npduMessage).Name() + " to INPDU")
+    }
 
-	// Create the instance
-	return NewBVLCOriginalUnicastNPDU(npdu), nil
+    // Create the instance
+    return NewBVLCOriginalUnicastNPDU(npdu), nil
 }
 
 func (m BVLCOriginalUnicastNPDU) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (npdu)
-		npdu := CastINPDU(m.Npdu)
-		_npduErr := npdu.Serialize(io)
-		if _npduErr != nil {
-			return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
-		}
+    // Simple Field (npdu)
+    npdu := CastINPDU(m.Npdu)
+    _npduErr := npdu.Serialize(io)
+    if _npduErr != nil {
+        return errors.New("Error serializing 'npdu' field " + _npduErr.Error())
+    }
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

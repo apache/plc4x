@@ -190,16 +190,16 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_double_data(value);
 
         } else 
-        if(dataProtocolId == 41) { /* String */
+        if(dataProtocolId == 41) { /* STRING */
         } else 
-        if(dataProtocolId == 42) { /* String */
+        if(dataProtocolId == 42) { /* STRING */
         } else 
-        if(dataProtocolId == 43) { /* String */
+        if(dataProtocolId == 43) { /* STRING */
 
                     // Manual Field (value)
                     char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-8"));
         } else 
-        if(dataProtocolId == 44) { /* String */
+        if(dataProtocolId == 44) { /* STRING */
 
                     // Manual Field (value)
                     char* value = (char*) (plc4c_s7_read_write_parse_s7_string(io, stringLength, "UTF-16"));

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestRemovedRequestKey struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestRemovedRequestKey interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) ServiceChoice() uint8 {
-	return 0x19
+    return 0x19
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestRemovedRequestKey() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestRemovedRequestKey{}
+    return &BACnetConfirmedServiceRequestRemovedRequestKey{}
 }
 
 func CastIBACnetConfirmedServiceRequestRemovedRequestKey(structType interface{}) IBACnetConfirmedServiceRequestRemovedRequestKey {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestRemovedRequestKey {
-		if iBACnetConfirmedServiceRequestRemovedRequestKey, ok := typ.(IBACnetConfirmedServiceRequestRemovedRequestKey); ok {
-			return iBACnetConfirmedServiceRequestRemovedRequestKey
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestRemovedRequestKey {
+        if iBACnetConfirmedServiceRequestRemovedRequestKey, ok := typ.(IBACnetConfirmedServiceRequestRemovedRequestKey); ok {
+            return iBACnetConfirmedServiceRequestRemovedRequestKey
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestRemovedRequestKey(structType interface{}) BACnetConfirmedServiceRequestRemovedRequestKey {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestRemovedRequestKey {
-		if sBACnetConfirmedServiceRequestRemovedRequestKey, ok := typ.(BACnetConfirmedServiceRequestRemovedRequestKey); ok {
-			return sBACnetConfirmedServiceRequestRemovedRequestKey
-		}
-		return BACnetConfirmedServiceRequestRemovedRequestKey{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestRemovedRequestKey {
+        if sBACnetConfirmedServiceRequestRemovedRequestKey, ok := typ.(BACnetConfirmedServiceRequestRemovedRequestKey); ok {
+            return sBACnetConfirmedServiceRequestRemovedRequestKey
+        }
+        if sBACnetConfirmedServiceRequestRemovedRequestKey, ok := typ.(*BACnetConfirmedServiceRequestRemovedRequestKey); ok {
+            return *sBACnetConfirmedServiceRequestRemovedRequestKey
+        }
+        return BACnetConfirmedServiceRequestRemovedRequestKey{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestRemovedRequestKeyParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestRemovedRequestKey(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestRemovedRequestKey(), nil
 }
 
 func (m BACnetConfirmedServiceRequestRemovedRequestKey) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

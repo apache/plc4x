@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestDeleteObject struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestDeleteObject interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestDeleteObject) ServiceChoice() uint8 {
-	return 0x0B
+    return 0x0B
 }
 
 func (m BACnetConfirmedServiceRequestDeleteObject) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestDeleteObject() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestDeleteObject{}
+    return &BACnetConfirmedServiceRequestDeleteObject{}
 }
 
 func CastIBACnetConfirmedServiceRequestDeleteObject(structType interface{}) IBACnetConfirmedServiceRequestDeleteObject {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestDeleteObject {
-		if iBACnetConfirmedServiceRequestDeleteObject, ok := typ.(IBACnetConfirmedServiceRequestDeleteObject); ok {
-			return iBACnetConfirmedServiceRequestDeleteObject
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestDeleteObject {
+        if iBACnetConfirmedServiceRequestDeleteObject, ok := typ.(IBACnetConfirmedServiceRequestDeleteObject); ok {
+            return iBACnetConfirmedServiceRequestDeleteObject
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestDeleteObject(structType interface{}) BACnetConfirmedServiceRequestDeleteObject {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeleteObject {
-		if sBACnetConfirmedServiceRequestDeleteObject, ok := typ.(BACnetConfirmedServiceRequestDeleteObject); ok {
-			return sBACnetConfirmedServiceRequestDeleteObject
-		}
-		return BACnetConfirmedServiceRequestDeleteObject{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeleteObject {
+        if sBACnetConfirmedServiceRequestDeleteObject, ok := typ.(BACnetConfirmedServiceRequestDeleteObject); ok {
+            return sBACnetConfirmedServiceRequestDeleteObject
+        }
+        if sBACnetConfirmedServiceRequestDeleteObject, ok := typ.(*BACnetConfirmedServiceRequestDeleteObject); ok {
+            return *sBACnetConfirmedServiceRequestDeleteObject
+        }
+        return BACnetConfirmedServiceRequestDeleteObject{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestDeleteObject) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestDeleteObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestDeleteObjectParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestDeleteObject(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestDeleteObject(), nil
 }
 
 func (m BACnetConfirmedServiceRequestDeleteObject) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

@@ -19,7 +19,7 @@
 package iec61131
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
 )
 
 type PlcBOOL struct {

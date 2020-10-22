@@ -19,89 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type IPAddress struct {
-	Addr []int8
+    Addr []int8
+
 }
 
 // The corresponding interface
 type IIPAddress interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
+
 func NewIPAddress(addr []int8) spi.Message {
-	return &IPAddress{Addr: addr}
+    return &IPAddress{Addr: addr}
 }
 
 func CastIIPAddress(structType interface{}) IIPAddress {
-	castFunc := func(typ interface{}) IIPAddress {
-		if iIPAddress, ok := typ.(IIPAddress); ok {
-			return iIPAddress
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IIPAddress {
+        if iIPAddress, ok := typ.(IIPAddress); ok {
+            return iIPAddress
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastIPAddress(structType interface{}) IPAddress {
-	castFunc := func(typ interface{}) IPAddress {
-		if sIPAddress, ok := typ.(IPAddress); ok {
-			return sIPAddress
-		}
-		return IPAddress{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IPAddress {
+        if sIPAddress, ok := typ.(IPAddress); ok {
+            return sIPAddress
+        }
+        if sIPAddress, ok := typ.(*IPAddress); ok {
+            return *sIPAddress
+        }
+        return IPAddress{}
+    }
+    return castFunc(structType)
 }
 
 func (m IPAddress) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Array field
-	if len(m.Addr) > 0 {
-		lengthInBits += 8 * uint16(len(m.Addr))
-	}
+    // Array field
+    if len(m.Addr) > 0 {
+        lengthInBits += 8 * uint16(len(m.Addr))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m IPAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func IPAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
 
-	// Array field (addr)
-	// Count array
-	addr := make([]int8, uint16(4))
-	for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+    // Array field (addr)
+    // Count array
+    addr := make([]int8, uint16(4))
+    for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
 
-		_item, _err := io.ReadInt8(8)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'addr' field " + _err.Error())
-		}
-		addr[curItem] = _item
-	}
+        _item, _err := io.ReadInt8(8)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'addr' field " + _err.Error())
+        }
+        addr[curItem] = _item
+    }
 
-	// Create the instance
-	return NewIPAddress(addr), nil
+    // Create the instance
+    return NewIPAddress(addr), nil
 }
 
 func (m IPAddress) Serialize(io spi.WriteBuffer) error {
 
-	// Array Field (addr)
-	if m.Addr != nil {
-		for _, _element := range m.Addr {
-			_elementErr := io.WriteInt8(8, _element)
-			if _elementErr != nil {
-				return errors.New("Error serializing 'addr' field " + _elementErr.Error())
-			}
-		}
-	}
+    // Array Field (addr)
+    if m.Addr != nil {
+        for _, _element := range m.Addr {
+            _elementErr := io.WriteInt8(8, _element)
+            if _elementErr != nil {
+                return errors.New("Error serializing 'addr' field " + _elementErr.Error())
+            }
+        }
+    }
 
-	return nil
+    return nil
 }

@@ -21,7 +21,6 @@ package org.apache.plc4x.java.examples.helloplc4x.write;
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.value.PlcString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

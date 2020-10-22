@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type COTPParameterChecksum struct {
-	Crc uint8
-	COTPParameter
+    Crc uint8
+    COTPParameter
 }
 
 // The corresponding interface
 type ICOTPParameterChecksum interface {
-	ICOTPParameter
-	Serialize(io spi.WriteBuffer) error
+    ICOTPParameter
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m COTPParameterChecksum) ParameterType() uint8 {
-	return 0xC3
+    return 0xC3
 }
 
 func (m COTPParameterChecksum) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewCOTPParameterChecksum(crc uint8) COTPParameterInitializer {
-	return &COTPParameterChecksum{Crc: crc}
+    return &COTPParameterChecksum{Crc: crc}
 }
 
 func CastICOTPParameterChecksum(structType interface{}) ICOTPParameterChecksum {
-	castFunc := func(typ interface{}) ICOTPParameterChecksum {
-		if iCOTPParameterChecksum, ok := typ.(ICOTPParameterChecksum); ok {
-			return iCOTPParameterChecksum
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICOTPParameterChecksum {
+        if iCOTPParameterChecksum, ok := typ.(ICOTPParameterChecksum); ok {
+            return iCOTPParameterChecksum
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCOTPParameterChecksum(structType interface{}) COTPParameterChecksum {
-	castFunc := func(typ interface{}) COTPParameterChecksum {
-		if sCOTPParameterChecksum, ok := typ.(COTPParameterChecksum); ok {
-			return sCOTPParameterChecksum
-		}
-		return COTPParameterChecksum{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPParameterChecksum {
+        if sCOTPParameterChecksum, ok := typ.(COTPParameterChecksum); ok {
+            return sCOTPParameterChecksum
+        }
+        if sCOTPParameterChecksum, ok := typ.(*COTPParameterChecksum); ok {
+            return *sCOTPParameterChecksum
+        }
+        return COTPParameterChecksum{}
+    }
+    return castFunc(structType)
 }
 
 func (m COTPParameterChecksum) LengthInBits() uint16 {
-	var lengthInBits = m.COTPParameter.LengthInBits()
+    var lengthInBits uint16 = m.COTPParameter.LengthInBits()
 
-	// Simple field (crc)
-	lengthInBits += 8
+    // Simple field (crc)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m COTPParameterChecksum) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPParameterChecksumParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
 
-	// Simple Field (crc)
-	crc, _crcErr := io.ReadUint8(8)
-	if _crcErr != nil {
-		return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
-	}
+    // Simple Field (crc)
+    crc, _crcErr := io.ReadUint8(8)
+    if _crcErr != nil {
+        return nil, errors.New("Error parsing 'crc' field " + _crcErr.Error())
+    }
 
-	// Create the instance
-	return NewCOTPParameterChecksum(crc), nil
+    // Create the instance
+    return NewCOTPParameterChecksum(crc), nil
 }
 
 func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (crc)
-		crc := uint8(m.Crc)
-		_crcErr := io.WriteUint8(8, crc)
-		if _crcErr != nil {
-			return errors.New("Error serializing 'crc' field " + _crcErr.Error())
-		}
+    // Simple Field (crc)
+    crc := uint8(m.Crc)
+    _crcErr := io.WriteUint8(8, (crc))
+    if _crcErr != nil {
+        return errors.New("Error serializing 'crc' field " + _crcErr.Error())
+    }
 
-		return nil
-	}
-	return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
+        return nil
+    }
+    return COTPParameterSerialize(io, m.COTPParameter, CastICOTPParameter(m), ser)
 }

@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.value.*;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -278,7 +277,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     Byte byteValue = (Byte) values[i];
                     stringBytes[(2*i)+0] = (byte) (byteValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_8));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_8));
             case "WSTRING":
             case "STRING16":
                 stringBytes = new byte[values.length];
@@ -287,7 +286,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     Byte byteValue = (Byte) values[i];
                     stringBytes[(2*i)+0] = (byte) (byteValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_8));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_8));
             default:
                 if(values.length == 1) {
                     return new PlcSINT((Byte) values[0]);
@@ -499,7 +498,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     stringBytes[(2*i)+0] = (byte) (shortValue >> 8);
                     stringBytes[(2*i)+1] = (byte) (shortValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_8));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_8));
             case "WSTRING":
             case "STRING16":
                 stringBytes = new byte[2 * values.length];
@@ -509,7 +508,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     stringBytes[(2*i)+0] = (byte) (shortValue >> 8);
                     stringBytes[(2*i)+1] = (byte) (shortValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_16));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_16));
             default:
                 if(values.length == 1) {
                     return new PlcINT((Short) values[0]);
@@ -724,7 +723,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     stringBytes[(4*i)+2] = (byte) ((integerValue >> 8) & 0xFF);
                     stringBytes[(4*i)+3] = (byte) (integerValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_8));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_8));
             case "WSTRING":
             case "STRING16":
                     stringBytes = new byte[4 * values.length];
@@ -736,7 +735,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                         stringBytes[(4*i)+2] = (byte) ((integerValue >> 8) & 0xFF);
                         stringBytes[(4*i)+3] = (byte) (integerValue & 0xFF);
                     }
-                    return new PlcString(new String(stringBytes, StandardCharsets.UTF_16));
+                    return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_16));
             default:
                 if(values.length == 1) {
                     return new PlcDINT((Integer) values[0]);
@@ -954,7 +953,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     stringBytes[(4*i)+6] = (byte) ((longValue >> 8) & 0xFF);
                     stringBytes[(4*i)+7] = (byte) (longValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_8));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_8));
             case "WSTRING":
             case "STRING16":
                 stringBytes = new byte[8 * values.length];
@@ -970,7 +969,7 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                     stringBytes[(4*i)+6] = (byte) ((longValue >> 8) & 0xFF);
                     stringBytes[(4*i)+7] = (byte) (longValue & 0xFF);
                 }
-                return new PlcString(new String(stringBytes, StandardCharsets.UTF_16));
+                return new PlcSTRING(new String(stringBytes, StandardCharsets.UTF_16));
             default:
                 if(values.length == 1) {
                     return new PlcLINT((Long) values[0]);
@@ -2008,32 +2007,32 @@ public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
                 }
             case "STRING":
                 if(values.length == 1) {
-                    return new PlcString((String) values[0]);
+                    return new PlcSTRING((String) values[0]);
                 } else {
-                    List<PlcString> plcStringValues = new LinkedList<>();
+                    List<PlcSTRING> plcStringValues = new LinkedList<>();
                     for (int i = 0; i < values.length; i++) {
-                        plcStringValues.add(new PlcString((String) values[i]));
+                        plcStringValues.add(new PlcSTRING((String) values[i]));
                     }
                     return new PlcList(plcStringValues);
                 }
             case "WSTRING":
             case "STRING16":
                 if(values.length == 1) {
-                    return new PlcString((String) values[0]);
+                    return new PlcSTRING((String) values[0]);
                 } else {
-                    List<PlcString> plcStringValues = new LinkedList<>();
+                    List<PlcSTRING> plcStringValues = new LinkedList<>();
                     for (int i = 0; i < values.length; i++) {
-                        plcStringValues.add(new PlcString((String) values[i]));
+                        plcStringValues.add(new PlcSTRING((String) values[i]));
                     }
                     return new PlcList(plcStringValues);
                 }
             default:
                 if(values.length == 1) {
-                    return new PlcString((String) values[0]);
+                    return new PlcSTRING((String) values[0]);
                 } else {
-                    List<PlcString> plcStringValues = new LinkedList<>();
+                    List<PlcSTRING> plcStringValues = new LinkedList<>();
                     for (int i = 0; i < values.length; i++) {
-                        plcStringValues.add(new PlcString((String) values[i]));
+                        plcStringValues.add(new PlcSTRING((String) values[i]));
                     }
                     return new PlcList(plcStringValues);
                 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestReadRange struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestReadRange interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestReadRange) ServiceChoice() uint8 {
-	return 0x1A
+    return 0x1A
 }
 
 func (m BACnetConfirmedServiceRequestReadRange) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestReadRange() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestReadRange{}
+    return &BACnetConfirmedServiceRequestReadRange{}
 }
 
 func CastIBACnetConfirmedServiceRequestReadRange(structType interface{}) IBACnetConfirmedServiceRequestReadRange {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadRange {
-		if iBACnetConfirmedServiceRequestReadRange, ok := typ.(IBACnetConfirmedServiceRequestReadRange); ok {
-			return iBACnetConfirmedServiceRequestReadRange
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestReadRange {
+        if iBACnetConfirmedServiceRequestReadRange, ok := typ.(IBACnetConfirmedServiceRequestReadRange); ok {
+            return iBACnetConfirmedServiceRequestReadRange
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestReadRange(structType interface{}) BACnetConfirmedServiceRequestReadRange {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadRange {
-		if sBACnetConfirmedServiceRequestReadRange, ok := typ.(BACnetConfirmedServiceRequestReadRange); ok {
-			return sBACnetConfirmedServiceRequestReadRange
-		}
-		return BACnetConfirmedServiceRequestReadRange{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReadRange {
+        if sBACnetConfirmedServiceRequestReadRange, ok := typ.(BACnetConfirmedServiceRequestReadRange); ok {
+            return sBACnetConfirmedServiceRequestReadRange
+        }
+        if sBACnetConfirmedServiceRequestReadRange, ok := typ.(*BACnetConfirmedServiceRequestReadRange); ok {
+            return *sBACnetConfirmedServiceRequestReadRange
+        }
+        return BACnetConfirmedServiceRequestReadRange{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestReadRange) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestReadRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestReadRange(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestReadRange(), nil
 }
 
 func (m BACnetConfirmedServiceRequestReadRange) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

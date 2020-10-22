@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestAtomicWriteFile struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicWriteFile interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) ServiceChoice() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestAtomicWriteFile() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestAtomicWriteFile{}
+    return &BACnetConfirmedServiceRequestAtomicWriteFile{}
 }
 
 func CastIBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) IBACnetConfirmedServiceRequestAtomicWriteFile {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestAtomicWriteFile {
-		if iBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(IBACnetConfirmedServiceRequestAtomicWriteFile); ok {
-			return iBACnetConfirmedServiceRequestAtomicWriteFile
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestAtomicWriteFile {
+        if iBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(IBACnetConfirmedServiceRequestAtomicWriteFile); ok {
+            return iBACnetConfirmedServiceRequestAtomicWriteFile
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestAtomicWriteFile(structType interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
-		if sBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
-			return sBACnetConfirmedServiceRequestAtomicWriteFile
-		}
-		return BACnetConfirmedServiceRequestAtomicWriteFile{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestAtomicWriteFile {
+        if sBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(BACnetConfirmedServiceRequestAtomicWriteFile); ok {
+            return sBACnetConfirmedServiceRequestAtomicWriteFile
+        }
+        if sBACnetConfirmedServiceRequestAtomicWriteFile, ok := typ.(*BACnetConfirmedServiceRequestAtomicWriteFile); ok {
+            return *sBACnetConfirmedServiceRequestAtomicWriteFile
+        }
+        return BACnetConfirmedServiceRequestAtomicWriteFile{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestAtomicWriteFile(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestAtomicWriteFile(), nil
 }
 
 func (m BACnetConfirmedServiceRequestAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

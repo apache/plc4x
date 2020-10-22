@@ -19,97 +19,100 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type DeviceConfigurationAck struct {
-	DeviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
-	KNXNetIPMessage
+    DeviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IDeviceConfigurationAck interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m DeviceConfigurationAck) MsgType() uint16 {
-	return 0x0311
+    return 0x0311
 }
 
 func (m DeviceConfigurationAck) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock) KNXNetIPMessageInitializer {
-	return &DeviceConfigurationAck{DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
+    return &DeviceConfigurationAck{DeviceConfigurationAckDataBlock: deviceConfigurationAckDataBlock}
 }
 
 func CastIDeviceConfigurationAck(structType interface{}) IDeviceConfigurationAck {
-	castFunc := func(typ interface{}) IDeviceConfigurationAck {
-		if iDeviceConfigurationAck, ok := typ.(IDeviceConfigurationAck); ok {
-			return iDeviceConfigurationAck
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IDeviceConfigurationAck {
+        if iDeviceConfigurationAck, ok := typ.(IDeviceConfigurationAck); ok {
+            return iDeviceConfigurationAck
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
-	castFunc := func(typ interface{}) DeviceConfigurationAck {
-		if sDeviceConfigurationAck, ok := typ.(DeviceConfigurationAck); ok {
-			return sDeviceConfigurationAck
-		}
-		return DeviceConfigurationAck{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DeviceConfigurationAck {
+        if sDeviceConfigurationAck, ok := typ.(DeviceConfigurationAck); ok {
+            return sDeviceConfigurationAck
+        }
+        if sDeviceConfigurationAck, ok := typ.(*DeviceConfigurationAck); ok {
+            return *sDeviceConfigurationAck
+        }
+        return DeviceConfigurationAck{}
+    }
+    return castFunc(structType)
 }
 
 func (m DeviceConfigurationAck) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (deviceConfigurationAckDataBlock)
-	lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
+    // Simple field (deviceConfigurationAckDataBlock)
+    lengthInBits += m.DeviceConfigurationAckDataBlock.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m DeviceConfigurationAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DeviceConfigurationAckParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (deviceConfigurationAckDataBlock)
-	_deviceConfigurationAckDataBlockMessage, _err := DeviceConfigurationAckDataBlockParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'deviceConfigurationAckDataBlock'. " + _err.Error())
-	}
-	var deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
-	deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockOk := _deviceConfigurationAckDataBlockMessage.(IDeviceConfigurationAckDataBlock)
-	if !_deviceConfigurationAckDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationAckDataBlockMessage).Name() + " to IDeviceConfigurationAckDataBlock")
-	}
+    // Simple Field (deviceConfigurationAckDataBlock)
+    _deviceConfigurationAckDataBlockMessage, _err := DeviceConfigurationAckDataBlockParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'deviceConfigurationAckDataBlock'. " + _err.Error())
+    }
+    var deviceConfigurationAckDataBlock IDeviceConfigurationAckDataBlock
+    deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockOk := _deviceConfigurationAckDataBlockMessage.(IDeviceConfigurationAckDataBlock)
+    if !_deviceConfigurationAckDataBlockOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationAckDataBlockMessage).Name() + " to IDeviceConfigurationAckDataBlock")
+    }
 
-	// Create the instance
-	return NewDeviceConfigurationAck(deviceConfigurationAckDataBlock), nil
+    // Create the instance
+    return NewDeviceConfigurationAck(deviceConfigurationAckDataBlock), nil
 }
 
 func (m DeviceConfigurationAck) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (deviceConfigurationAckDataBlock)
-		deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.DeviceConfigurationAckDataBlock)
-		_deviceConfigurationAckDataBlockErr := deviceConfigurationAckDataBlock.Serialize(io)
-		if _deviceConfigurationAckDataBlockErr != nil {
-			return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
-		}
+    // Simple Field (deviceConfigurationAckDataBlock)
+    deviceConfigurationAckDataBlock := CastIDeviceConfigurationAckDataBlock(m.DeviceConfigurationAckDataBlock)
+    _deviceConfigurationAckDataBlockErr := deviceConfigurationAckDataBlock.Serialize(io)
+    if _deviceConfigurationAckDataBlockErr != nil {
+        return errors.New("Error serializing 'deviceConfigurationAckDataBlock' field " + _deviceConfigurationAckDataBlockErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -19,111 +19,114 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type S7MessageResponse struct {
-	ErrorClass uint8
-	ErrorCode  uint8
-	S7Message
+    ErrorClass uint8
+    ErrorCode uint8
+    S7Message
 }
 
 // The corresponding interface
 type IS7MessageResponse interface {
-	IS7Message
-	Serialize(io spi.WriteBuffer) error
+    IS7Message
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m S7MessageResponse) MessageType() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m S7MessageResponse) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-	m.TpduReference = tpduReference
-	m.Parameter = parameter
-	m.Payload = payload
-	return m
+    m.TpduReference = tpduReference
+    m.Parameter = parameter
+    m.Payload = payload
+    return m
 }
 
 func NewS7MessageResponse(errorClass uint8, errorCode uint8) S7MessageInitializer {
-	return &S7MessageResponse{ErrorClass: errorClass, ErrorCode: errorCode}
+    return &S7MessageResponse{ErrorClass: errorClass, ErrorCode: errorCode}
 }
 
 func CastIS7MessageResponse(structType interface{}) IS7MessageResponse {
-	castFunc := func(typ interface{}) IS7MessageResponse {
-		if iS7MessageResponse, ok := typ.(IS7MessageResponse); ok {
-			return iS7MessageResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IS7MessageResponse {
+        if iS7MessageResponse, ok := typ.(IS7MessageResponse); ok {
+            return iS7MessageResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastS7MessageResponse(structType interface{}) S7MessageResponse {
-	castFunc := func(typ interface{}) S7MessageResponse {
-		if sS7MessageResponse, ok := typ.(S7MessageResponse); ok {
-			return sS7MessageResponse
-		}
-		return S7MessageResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) S7MessageResponse {
+        if sS7MessageResponse, ok := typ.(S7MessageResponse); ok {
+            return sS7MessageResponse
+        }
+        if sS7MessageResponse, ok := typ.(*S7MessageResponse); ok {
+            return *sS7MessageResponse
+        }
+        return S7MessageResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m S7MessageResponse) LengthInBits() uint16 {
-	var lengthInBits = m.S7Message.LengthInBits()
+    var lengthInBits uint16 = m.S7Message.LengthInBits()
 
-	// Simple field (errorClass)
-	lengthInBits += 8
+    // Simple field (errorClass)
+    lengthInBits += 8
 
-	// Simple field (errorCode)
-	lengthInBits += 8
+    // Simple field (errorCode)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m S7MessageResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func S7MessageResponseParse(io *spi.ReadBuffer) (S7MessageInitializer, error) {
 
-	// Simple Field (errorClass)
-	errorClass, _errorClassErr := io.ReadUint8(8)
-	if _errorClassErr != nil {
-		return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
-	}
+    // Simple Field (errorClass)
+    errorClass, _errorClassErr := io.ReadUint8(8)
+    if _errorClassErr != nil {
+        return nil, errors.New("Error parsing 'errorClass' field " + _errorClassErr.Error())
+    }
 
-	// Simple Field (errorCode)
-	errorCode, _errorCodeErr := io.ReadUint8(8)
-	if _errorCodeErr != nil {
-		return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
-	}
+    // Simple Field (errorCode)
+    errorCode, _errorCodeErr := io.ReadUint8(8)
+    if _errorCodeErr != nil {
+        return nil, errors.New("Error parsing 'errorCode' field " + _errorCodeErr.Error())
+    }
 
-	// Create the instance
-	return NewS7MessageResponse(errorClass, errorCode), nil
+    // Create the instance
+    return NewS7MessageResponse(errorClass, errorCode), nil
 }
 
 func (m S7MessageResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (errorClass)
-		errorClass := uint8(m.ErrorClass)
-		_errorClassErr := io.WriteUint8(8, errorClass)
-		if _errorClassErr != nil {
-			return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
-		}
+    // Simple Field (errorClass)
+    errorClass := uint8(m.ErrorClass)
+    _errorClassErr := io.WriteUint8(8, (errorClass))
+    if _errorClassErr != nil {
+        return errors.New("Error serializing 'errorClass' field " + _errorClassErr.Error())
+    }
 
-		// Simple Field (errorCode)
-		errorCode := uint8(m.ErrorCode)
-		_errorCodeErr := io.WriteUint8(8, errorCode)
-		if _errorCodeErr != nil {
-			return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
-		}
+    // Simple Field (errorCode)
+    errorCode := uint8(m.ErrorCode)
+    _errorCodeErr := io.WriteUint8(8, (errorCode))
+    if _errorCodeErr != nil {
+        return errors.New("Error serializing 'errorCode' field " + _errorCodeErr.Error())
+    }
 
-		return nil
-	}
-	return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+        return nil
+    }
+    return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

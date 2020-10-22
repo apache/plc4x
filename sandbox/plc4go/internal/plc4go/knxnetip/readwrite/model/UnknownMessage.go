@@ -19,102 +19,105 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type UnknownMessage struct {
-	UnknownData []int8
-	KNXNetIPMessage
+    UnknownData []int8
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IUnknownMessage interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m UnknownMessage) MsgType() uint16 {
-	return 0x020B
+    return 0x020B
 }
 
 func (m UnknownMessage) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewUnknownMessage(unknownData []int8) KNXNetIPMessageInitializer {
-	return &UnknownMessage{UnknownData: unknownData}
+    return &UnknownMessage{UnknownData: unknownData}
 }
 
 func CastIUnknownMessage(structType interface{}) IUnknownMessage {
-	castFunc := func(typ interface{}) IUnknownMessage {
-		if iUnknownMessage, ok := typ.(IUnknownMessage); ok {
-			return iUnknownMessage
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IUnknownMessage {
+        if iUnknownMessage, ok := typ.(IUnknownMessage); ok {
+            return iUnknownMessage
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastUnknownMessage(structType interface{}) UnknownMessage {
-	castFunc := func(typ interface{}) UnknownMessage {
-		if sUnknownMessage, ok := typ.(UnknownMessage); ok {
-			return sUnknownMessage
-		}
-		return UnknownMessage{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) UnknownMessage {
+        if sUnknownMessage, ok := typ.(UnknownMessage); ok {
+            return sUnknownMessage
+        }
+        if sUnknownMessage, ok := typ.(*UnknownMessage); ok {
+            return *sUnknownMessage
+        }
+        return UnknownMessage{}
+    }
+    return castFunc(structType)
 }
 
 func (m UnknownMessage) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Array field
-	if len(m.UnknownData) > 0 {
-		lengthInBits += 8 * uint16(len(m.UnknownData))
-	}
+    // Array field
+    if len(m.UnknownData) > 0 {
+        lengthInBits += 8 * uint16(len(m.UnknownData))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m UnknownMessage) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func UnknownMessageParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
-	// Array field (unknownData)
-	// Count array
-	unknownData := make([]int8, uint16(totalLength)-uint16(uint16(6)))
-	for curItem := uint16(0); curItem < uint16(uint16(totalLength)-uint16(uint16(6))); curItem++ {
+    // Array field (unknownData)
+    // Count array
+    unknownData := make([]int8, uint16(totalLength) - uint16(uint16(6)))
+    for curItem := uint16(0); curItem < uint16(uint16(totalLength) - uint16(uint16(6))); curItem++ {
 
-		_item, _err := io.ReadInt8(8)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
-		}
-		unknownData[curItem] = _item
-	}
+        _item, _err := io.ReadInt8(8)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'unknownData' field " + _err.Error())
+        }
+        unknownData[curItem] = _item
+    }
 
-	// Create the instance
-	return NewUnknownMessage(unknownData), nil
+    // Create the instance
+    return NewUnknownMessage(unknownData), nil
 }
 
 func (m UnknownMessage) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Array Field (unknownData)
-		if m.UnknownData != nil {
-			for _, _element := range m.UnknownData {
-				_elementErr := io.WriteInt8(8, _element)
-				if _elementErr != nil {
-					return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())
-				}
-			}
-		}
+    // Array Field (unknownData)
+    if m.UnknownData != nil {
+        for _, _element := range m.UnknownData {
+            _elementErr := io.WriteInt8(8, _element)
+            if _elementErr != nil {
+                return errors.New("Error serializing 'unknownData' field " + _elementErr.Error())
+            }
+        }
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -19,18 +19,19 @@
 package drivers
 
 import (
-	"encoding/hex"
-	"encoding/json"
-	"fmt"
-	"net"
-	"os"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/modbus/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/testutils"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go"
-	"strings"
-	"testing"
+    "encoding/hex"
+    "encoding/json"
+    "fmt"
+    "net"
+    "os"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/testutils"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/tcp"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+    "strings"
+    "testing"
 )
 
 func TestModbus(t *testing.T) {
@@ -127,9 +128,10 @@ func Connection(t *testing.T) {
 func TestPlc4goDriver(t *testing.T) {
 	driverManager := plc4go.NewPlcDriverManager()
 	driverManager.RegisterDriver(modbus.NewModbusDriver())
+	driverManager.RegisterTransport(tcp.NewTcpTransport())
 
 	// Get a connection to a remote PLC
-	crc := driverManager.GetConnectedConnection("modbus:tcp://192.168.23.30")
+	crc := driverManager.GetConnection("modbus://192.168.23.30")
 
 	// Wait for the driver to connect (or not)
 	connectionResult := <-crc

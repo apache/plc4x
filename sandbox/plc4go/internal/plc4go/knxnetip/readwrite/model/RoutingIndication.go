@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type RoutingIndication struct {
-	KNXNetIPMessage
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IRoutingIndication interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m RoutingIndication) MsgType() uint16 {
-	return 0x0530
+    return 0x0530
 }
 
 func (m RoutingIndication) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewRoutingIndication() KNXNetIPMessageInitializer {
-	return &RoutingIndication{}
+    return &RoutingIndication{}
 }
 
 func CastIRoutingIndication(structType interface{}) IRoutingIndication {
-	castFunc := func(typ interface{}) IRoutingIndication {
-		if iRoutingIndication, ok := typ.(IRoutingIndication); ok {
-			return iRoutingIndication
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IRoutingIndication {
+        if iRoutingIndication, ok := typ.(IRoutingIndication); ok {
+            return iRoutingIndication
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastRoutingIndication(structType interface{}) RoutingIndication {
-	castFunc := func(typ interface{}) RoutingIndication {
-		if sRoutingIndication, ok := typ.(RoutingIndication); ok {
-			return sRoutingIndication
-		}
-		return RoutingIndication{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) RoutingIndication {
+        if sRoutingIndication, ok := typ.(RoutingIndication); ok {
+            return sRoutingIndication
+        }
+        if sRoutingIndication, ok := typ.(*RoutingIndication); ok {
+            return *sRoutingIndication
+        }
+        return RoutingIndication{}
+    }
+    return castFunc(structType)
 }
 
 func (m RoutingIndication) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m RoutingIndication) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func RoutingIndicationParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Create the instance
-	return NewRoutingIndication(), nil
+    // Create the instance
+    return NewRoutingIndication(), nil
 }
 
 func (m RoutingIndication) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

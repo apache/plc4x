@@ -19,134 +19,139 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type HPAIDiscoveryEndpoint struct {
-	HostProtocolCode IHostProtocolCode
-	IpAddress        IIPAddress
-	IpPort           uint16
+    HostProtocolCode IHostProtocolCode
+    IpAddress IIPAddress
+    IpPort uint16
+
 }
 
 // The corresponding interface
 type IHPAIDiscoveryEndpoint interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
+
 func NewHPAIDiscoveryEndpoint(hostProtocolCode IHostProtocolCode, ipAddress IIPAddress, ipPort uint16) spi.Message {
-	return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+    return &HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
 }
 
 func CastIHPAIDiscoveryEndpoint(structType interface{}) IHPAIDiscoveryEndpoint {
-	castFunc := func(typ interface{}) IHPAIDiscoveryEndpoint {
-		if iHPAIDiscoveryEndpoint, ok := typ.(IHPAIDiscoveryEndpoint); ok {
-			return iHPAIDiscoveryEndpoint
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IHPAIDiscoveryEndpoint {
+        if iHPAIDiscoveryEndpoint, ok := typ.(IHPAIDiscoveryEndpoint); ok {
+            return iHPAIDiscoveryEndpoint
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastHPAIDiscoveryEndpoint(structType interface{}) HPAIDiscoveryEndpoint {
-	castFunc := func(typ interface{}) HPAIDiscoveryEndpoint {
-		if sHPAIDiscoveryEndpoint, ok := typ.(HPAIDiscoveryEndpoint); ok {
-			return sHPAIDiscoveryEndpoint
-		}
-		return HPAIDiscoveryEndpoint{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) HPAIDiscoveryEndpoint {
+        if sHPAIDiscoveryEndpoint, ok := typ.(HPAIDiscoveryEndpoint); ok {
+            return sHPAIDiscoveryEndpoint
+        }
+        if sHPAIDiscoveryEndpoint, ok := typ.(*HPAIDiscoveryEndpoint); ok {
+            return *sHPAIDiscoveryEndpoint
+        }
+        return HPAIDiscoveryEndpoint{}
+    }
+    return castFunc(structType)
 }
 
 func (m HPAIDiscoveryEndpoint) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Implicit Field (structureLength)
-	lengthInBits += 8
+    // Implicit Field (structureLength)
+    lengthInBits += 8
 
-	// Enum Field (hostProtocolCode)
-	lengthInBits += 8
+    // Enum Field (hostProtocolCode)
+    lengthInBits += 8
 
-	// Simple field (ipAddress)
-	lengthInBits += m.IpAddress.LengthInBits()
+    // Simple field (ipAddress)
+    lengthInBits += m.IpAddress.LengthInBits()
 
-	// Simple field (ipPort)
-	lengthInBits += 16
+    // Simple field (ipPort)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m HPAIDiscoveryEndpoint) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func HPAIDiscoveryEndpointParse(io *spi.ReadBuffer) (spi.Message, error) {
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _structureLengthErr := io.ReadUint8(8)
-	if _structureLengthErr != nil {
-		return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
-	}
+    // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    _, _structureLengthErr := io.ReadUint8(8)
+    if _structureLengthErr != nil {
+        return nil, errors.New("Error parsing 'structureLength' field " + _structureLengthErr.Error())
+    }
 
-	// Enum field (hostProtocolCode)
-	hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
-	if _hostProtocolCodeErr != nil {
-		return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
-	}
+    // Enum field (hostProtocolCode)
+    hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParse(io)
+    if _hostProtocolCodeErr != nil {
+        return nil, errors.New("Error parsing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
+    }
 
-	// Simple Field (ipAddress)
-	_ipAddressMessage, _err := IPAddressParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'ipAddress'. " + _err.Error())
-	}
-	var ipAddress IIPAddress
-	ipAddress, _ipAddressOk := _ipAddressMessage.(IIPAddress)
-	if !_ipAddressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_ipAddressMessage).Name() + " to IIPAddress")
-	}
+    // Simple Field (ipAddress)
+    _ipAddressMessage, _err := IPAddressParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'ipAddress'. " + _err.Error())
+    }
+    var ipAddress IIPAddress
+    ipAddress, _ipAddressOk := _ipAddressMessage.(IIPAddress)
+    if !_ipAddressOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_ipAddressMessage).Name() + " to IIPAddress")
+    }
 
-	// Simple Field (ipPort)
-	ipPort, _ipPortErr := io.ReadUint16(16)
-	if _ipPortErr != nil {
-		return nil, errors.New("Error parsing 'ipPort' field " + _ipPortErr.Error())
-	}
+    // Simple Field (ipPort)
+    ipPort, _ipPortErr := io.ReadUint16(16)
+    if _ipPortErr != nil {
+        return nil, errors.New("Error parsing 'ipPort' field " + _ipPortErr.Error())
+    }
 
-	// Create the instance
-	return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
+    // Create the instance
+    return NewHPAIDiscoveryEndpoint(hostProtocolCode, ipAddress, ipPort), nil
 }
 
 func (m HPAIDiscoveryEndpoint) Serialize(io spi.WriteBuffer) error {
 
-	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	structureLength := uint8(uint8(m.LengthInBytes()))
-	_structureLengthErr := io.WriteUint8(8, structureLength)
-	if _structureLengthErr != nil {
-		return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
-	}
+    // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    structureLength := uint8(uint8(m.LengthInBytes()))
+    _structureLengthErr := io.WriteUint8(8, (structureLength))
+    if _structureLengthErr != nil {
+        return errors.New("Error serializing 'structureLength' field " + _structureLengthErr.Error())
+    }
 
-	// Enum field (hostProtocolCode)
-	hostProtocolCode := CastHostProtocolCode(m.HostProtocolCode)
-	_hostProtocolCodeErr := hostProtocolCode.Serialize(io)
-	if _hostProtocolCodeErr != nil {
-		return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
-	}
+    // Enum field (hostProtocolCode)
+    hostProtocolCode := CastHostProtocolCode(m.HostProtocolCode)
+    _hostProtocolCodeErr := hostProtocolCode.Serialize(io)
+    if _hostProtocolCodeErr != nil {
+        return errors.New("Error serializing 'hostProtocolCode' field " + _hostProtocolCodeErr.Error())
+    }
 
-	// Simple Field (ipAddress)
-	ipAddress := CastIIPAddress(m.IpAddress)
-	_ipAddressErr := ipAddress.Serialize(io)
-	if _ipAddressErr != nil {
-		return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
-	}
+    // Simple Field (ipAddress)
+    ipAddress := CastIIPAddress(m.IpAddress)
+    _ipAddressErr := ipAddress.Serialize(io)
+    if _ipAddressErr != nil {
+        return errors.New("Error serializing 'ipAddress' field " + _ipAddressErr.Error())
+    }
 
-	// Simple Field (ipPort)
-	ipPort := uint16(m.IpPort)
-	_ipPortErr := io.WriteUint16(16, ipPort)
-	if _ipPortErr != nil {
-		return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())
-	}
+    // Simple Field (ipPort)
+    ipPort := uint16(m.IpPort)
+    _ipPortErr := io.WriteUint16(16, (ipPort))
+    if _ipPortErr != nil {
+        return errors.New("Error serializing 'ipPort' field " + _ipPortErr.Error())
+    }
 
-	return nil
+    return nil
 }

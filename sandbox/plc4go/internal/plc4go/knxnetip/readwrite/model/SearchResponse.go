@@ -19,141 +19,144 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type SearchResponse struct {
-	HpaiControlEndpoint IHPAIControlEndpoint
-	DibDeviceInfo       IDIBDeviceInfo
-	DibSuppSvcFamilies  IDIBSuppSvcFamilies
-	KNXNetIPMessage
+    HpaiControlEndpoint IHPAIControlEndpoint
+    DibDeviceInfo IDIBDeviceInfo
+    DibSuppSvcFamilies IDIBSuppSvcFamilies
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type ISearchResponse interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m SearchResponse) MsgType() uint16 {
-	return 0x0202
+    return 0x0202
 }
 
 func (m SearchResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewSearchResponse(hpaiControlEndpoint IHPAIControlEndpoint, dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-	return &SearchResponse{HpaiControlEndpoint: hpaiControlEndpoint, DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
+    return &SearchResponse{HpaiControlEndpoint: hpaiControlEndpoint, DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
 func CastISearchResponse(structType interface{}) ISearchResponse {
-	castFunc := func(typ interface{}) ISearchResponse {
-		if iSearchResponse, ok := typ.(ISearchResponse); ok {
-			return iSearchResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ISearchResponse {
+        if iSearchResponse, ok := typ.(ISearchResponse); ok {
+            return iSearchResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastSearchResponse(structType interface{}) SearchResponse {
-	castFunc := func(typ interface{}) SearchResponse {
-		if sSearchResponse, ok := typ.(SearchResponse); ok {
-			return sSearchResponse
-		}
-		return SearchResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) SearchResponse {
+        if sSearchResponse, ok := typ.(SearchResponse); ok {
+            return sSearchResponse
+        }
+        if sSearchResponse, ok := typ.(*SearchResponse); ok {
+            return *sSearchResponse
+        }
+        return SearchResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m SearchResponse) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+    // Simple field (hpaiControlEndpoint)
+    lengthInBits += m.HpaiControlEndpoint.LengthInBits()
 
-	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+    // Simple field (dibDeviceInfo)
+    lengthInBits += m.DibDeviceInfo.LengthInBits()
 
-	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+    // Simple field (dibSuppSvcFamilies)
+    lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m SearchResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func SearchResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (hpaiControlEndpoint)
-	_hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
-	}
-	var hpaiControlEndpoint IHPAIControlEndpoint
-	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
-	if !_hpaiControlEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
-	}
+    // Simple Field (hpaiControlEndpoint)
+    _hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
+    }
+    var hpaiControlEndpoint IHPAIControlEndpoint
+    hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
+    if !_hpaiControlEndpointOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
+    }
 
-	// Simple Field (dibDeviceInfo)
-	_dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
-	}
-	var dibDeviceInfo IDIBDeviceInfo
-	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
-	if !_dibDeviceInfoOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
-	}
+    // Simple Field (dibDeviceInfo)
+    _dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
+    }
+    var dibDeviceInfo IDIBDeviceInfo
+    dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
+    if !_dibDeviceInfoOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
+    }
 
-	// Simple Field (dibSuppSvcFamilies)
-	_dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
-	}
-	var dibSuppSvcFamilies IDIBSuppSvcFamilies
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
-	if !_dibSuppSvcFamiliesOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
-	}
+    // Simple Field (dibSuppSvcFamilies)
+    _dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
+    }
+    var dibSuppSvcFamilies IDIBSuppSvcFamilies
+    dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
+    if !_dibSuppSvcFamiliesOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
+    }
 
-	// Create the instance
-	return NewSearchResponse(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies), nil
+    // Create the instance
+    return NewSearchResponse(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies), nil
 }
 
 func (m SearchResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (hpaiControlEndpoint)
-		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
-		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
-		if _hpaiControlEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
-		}
+    // Simple Field (hpaiControlEndpoint)
+    hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
+    _hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+    if _hpaiControlEndpointErr != nil {
+        return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+    }
 
-		// Simple Field (dibDeviceInfo)
-		dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
-		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
-		if _dibDeviceInfoErr != nil {
-			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
-		}
+    // Simple Field (dibDeviceInfo)
+    dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
+    _dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+    if _dibDeviceInfoErr != nil {
+        return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+    }
 
-		// Simple Field (dibSuppSvcFamilies)
-		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
-		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
-		if _dibSuppSvcFamiliesErr != nil {
-			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
-		}
+    // Simple Field (dibSuppSvcFamilies)
+    dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
+    _dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+    if _dibSuppSvcFamiliesErr != nil {
+        return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

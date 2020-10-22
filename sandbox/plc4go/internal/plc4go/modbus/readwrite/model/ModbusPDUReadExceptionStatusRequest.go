@@ -19,81 +19,84 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusRequest struct {
-	ModbusPDU
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUReadExceptionStatusRequest interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUReadExceptionStatusRequest) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) FunctionFlag() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) Response() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUReadExceptionStatusRequest() ModbusPDUInitializer {
-	return &ModbusPDUReadExceptionStatusRequest{}
+    return &ModbusPDUReadExceptionStatusRequest{}
 }
 
 func CastIModbusPDUReadExceptionStatusRequest(structType interface{}) IModbusPDUReadExceptionStatusRequest {
-	castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusRequest {
-		if iModbusPDUReadExceptionStatusRequest, ok := typ.(IModbusPDUReadExceptionStatusRequest); ok {
-			return iModbusPDUReadExceptionStatusRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusRequest {
+        if iModbusPDUReadExceptionStatusRequest, ok := typ.(IModbusPDUReadExceptionStatusRequest); ok {
+            return iModbusPDUReadExceptionStatusRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUReadExceptionStatusRequest(structType interface{}) ModbusPDUReadExceptionStatusRequest {
-	castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusRequest {
-		if sModbusPDUReadExceptionStatusRequest, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
-			return sModbusPDUReadExceptionStatusRequest
-		}
-		return ModbusPDUReadExceptionStatusRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusRequest {
+        if sModbusPDUReadExceptionStatusRequest, ok := typ.(ModbusPDUReadExceptionStatusRequest); ok {
+            return sModbusPDUReadExceptionStatusRequest
+        }
+        if sModbusPDUReadExceptionStatusRequest, ok := typ.(*ModbusPDUReadExceptionStatusRequest); ok {
+            return *sModbusPDUReadExceptionStatusRequest
+        }
+        return ModbusPDUReadExceptionStatusRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadExceptionStatusRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Create the instance
-	return NewModbusPDUReadExceptionStatusRequest(), nil
+    // Create the instance
+    return NewModbusPDUReadExceptionStatusRequest(), nil
 }
 
 func (m ModbusPDUReadExceptionStatusRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

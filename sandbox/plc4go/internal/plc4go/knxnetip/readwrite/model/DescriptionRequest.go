@@ -19,97 +19,100 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type DescriptionRequest struct {
-	HpaiControlEndpoint IHPAIControlEndpoint
-	KNXNetIPMessage
+    HpaiControlEndpoint IHPAIControlEndpoint
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IDescriptionRequest interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m DescriptionRequest) MsgType() uint16 {
-	return 0x0203
+    return 0x0203
 }
 
 func (m DescriptionRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewDescriptionRequest(hpaiControlEndpoint IHPAIControlEndpoint) KNXNetIPMessageInitializer {
-	return &DescriptionRequest{HpaiControlEndpoint: hpaiControlEndpoint}
+    return &DescriptionRequest{HpaiControlEndpoint: hpaiControlEndpoint}
 }
 
 func CastIDescriptionRequest(structType interface{}) IDescriptionRequest {
-	castFunc := func(typ interface{}) IDescriptionRequest {
-		if iDescriptionRequest, ok := typ.(IDescriptionRequest); ok {
-			return iDescriptionRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IDescriptionRequest {
+        if iDescriptionRequest, ok := typ.(IDescriptionRequest); ok {
+            return iDescriptionRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastDescriptionRequest(structType interface{}) DescriptionRequest {
-	castFunc := func(typ interface{}) DescriptionRequest {
-		if sDescriptionRequest, ok := typ.(DescriptionRequest); ok {
-			return sDescriptionRequest
-		}
-		return DescriptionRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DescriptionRequest {
+        if sDescriptionRequest, ok := typ.(DescriptionRequest); ok {
+            return sDescriptionRequest
+        }
+        if sDescriptionRequest, ok := typ.(*DescriptionRequest); ok {
+            return *sDescriptionRequest
+        }
+        return DescriptionRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m DescriptionRequest) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.LengthInBits()
+    // Simple field (hpaiControlEndpoint)
+    lengthInBits += m.HpaiControlEndpoint.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m DescriptionRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DescriptionRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (hpaiControlEndpoint)
-	_hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
-	}
-	var hpaiControlEndpoint IHPAIControlEndpoint
-	hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
-	if !_hpaiControlEndpointOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
-	}
+    // Simple Field (hpaiControlEndpoint)
+    _hpaiControlEndpointMessage, _err := HPAIControlEndpointParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'hpaiControlEndpoint'. " + _err.Error())
+    }
+    var hpaiControlEndpoint IHPAIControlEndpoint
+    hpaiControlEndpoint, _hpaiControlEndpointOk := _hpaiControlEndpointMessage.(IHPAIControlEndpoint)
+    if !_hpaiControlEndpointOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_hpaiControlEndpointMessage).Name() + " to IHPAIControlEndpoint")
+    }
 
-	// Create the instance
-	return NewDescriptionRequest(hpaiControlEndpoint), nil
+    // Create the instance
+    return NewDescriptionRequest(hpaiControlEndpoint), nil
 }
 
 func (m DescriptionRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (hpaiControlEndpoint)
-		hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
-		_hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
-		if _hpaiControlEndpointErr != nil {
-			return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
-		}
+    // Simple Field (hpaiControlEndpoint)
+    hpaiControlEndpoint := CastIHPAIControlEndpoint(m.HpaiControlEndpoint)
+    _hpaiControlEndpointErr := hpaiControlEndpoint.Serialize(io)
+    if _hpaiControlEndpointErr != nil {
+        return errors.New("Error serializing 'hpaiControlEndpoint' field " + _hpaiControlEndpointErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -19,97 +19,100 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type ConnectionResponseDataBlockTunnelConnection struct {
-	KnxAddress IKNXAddress
-	ConnectionResponseDataBlock
+    KnxAddress IKNXAddress
+    ConnectionResponseDataBlock
 }
 
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
-	IConnectionResponseDataBlock
-	Serialize(io spi.WriteBuffer) error
+    IConnectionResponseDataBlock
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ConnectionResponseDataBlockTunnelConnection) ConnectionType() uint8 {
-	return 0x04
+    return 0x04
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewConnectionResponseDataBlockTunnelConnection(knxAddress IKNXAddress) ConnectionResponseDataBlockInitializer {
-	return &ConnectionResponseDataBlockTunnelConnection{KnxAddress: knxAddress}
+    return &ConnectionResponseDataBlockTunnelConnection{KnxAddress: knxAddress}
 }
 
 func CastIConnectionResponseDataBlockTunnelConnection(structType interface{}) IConnectionResponseDataBlockTunnelConnection {
-	castFunc := func(typ interface{}) IConnectionResponseDataBlockTunnelConnection {
-		if iConnectionResponseDataBlockTunnelConnection, ok := typ.(IConnectionResponseDataBlockTunnelConnection); ok {
-			return iConnectionResponseDataBlockTunnelConnection
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IConnectionResponseDataBlockTunnelConnection {
+        if iConnectionResponseDataBlockTunnelConnection, ok := typ.(IConnectionResponseDataBlockTunnelConnection); ok {
+            return iConnectionResponseDataBlockTunnelConnection
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastConnectionResponseDataBlockTunnelConnection(structType interface{}) ConnectionResponseDataBlockTunnelConnection {
-	castFunc := func(typ interface{}) ConnectionResponseDataBlockTunnelConnection {
-		if sConnectionResponseDataBlockTunnelConnection, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
-			return sConnectionResponseDataBlockTunnelConnection
-		}
-		return ConnectionResponseDataBlockTunnelConnection{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ConnectionResponseDataBlockTunnelConnection {
+        if sConnectionResponseDataBlockTunnelConnection, ok := typ.(ConnectionResponseDataBlockTunnelConnection); ok {
+            return sConnectionResponseDataBlockTunnelConnection
+        }
+        if sConnectionResponseDataBlockTunnelConnection, ok := typ.(*ConnectionResponseDataBlockTunnelConnection); ok {
+            return *sConnectionResponseDataBlockTunnelConnection
+        }
+        return ConnectionResponseDataBlockTunnelConnection{}
+    }
+    return castFunc(structType)
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) LengthInBits() uint16 {
-	var lengthInBits = m.ConnectionResponseDataBlock.LengthInBits()
+    var lengthInBits uint16 = m.ConnectionResponseDataBlock.LengthInBits()
 
-	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.LengthInBits()
+    // Simple field (knxAddress)
+    lengthInBits += m.KnxAddress.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
-	// Simple Field (knxAddress)
-	_knxAddressMessage, _err := KNXAddressParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'knxAddress'. " + _err.Error())
-	}
-	var knxAddress IKNXAddress
-	knxAddress, _knxAddressOk := _knxAddressMessage.(IKNXAddress)
-	if !_knxAddressOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxAddressMessage).Name() + " to IKNXAddress")
-	}
+    // Simple Field (knxAddress)
+    _knxAddressMessage, _err := KNXAddressParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'knxAddress'. " + _err.Error())
+    }
+    var knxAddress IKNXAddress
+    knxAddress, _knxAddressOk := _knxAddressMessage.(IKNXAddress)
+    if !_knxAddressOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_knxAddressMessage).Name() + " to IKNXAddress")
+    }
 
-	// Create the instance
-	return NewConnectionResponseDataBlockTunnelConnection(knxAddress), nil
+    // Create the instance
+    return NewConnectionResponseDataBlockTunnelConnection(knxAddress), nil
 }
 
 func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (knxAddress)
-		knxAddress := CastIKNXAddress(m.KnxAddress)
-		_knxAddressErr := knxAddress.Serialize(io)
-		if _knxAddressErr != nil {
-			return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
-		}
+    // Simple Field (knxAddress)
+    knxAddress := CastIKNXAddress(m.KnxAddress)
+    _knxAddressErr := knxAddress.Serialize(io)
+    if _knxAddressErr != nil {
+        return errors.New("Error serializing 'knxAddress' field " + _knxAddressErr.Error())
+    }
 
-		return nil
-	}
-	return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
+        return nil
+    }
+    return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }

@@ -19,78 +19,83 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type S7VarPayloadStatusItem struct {
-	ReturnCode IDataTransportErrorCode
+    ReturnCode IDataTransportErrorCode
+
 }
 
 // The corresponding interface
 type IS7VarPayloadStatusItem interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
+
 func NewS7VarPayloadStatusItem(returnCode IDataTransportErrorCode) spi.Message {
-	return &S7VarPayloadStatusItem{ReturnCode: returnCode}
+    return &S7VarPayloadStatusItem{ReturnCode: returnCode}
 }
 
 func CastIS7VarPayloadStatusItem(structType interface{}) IS7VarPayloadStatusItem {
-	castFunc := func(typ interface{}) IS7VarPayloadStatusItem {
-		if iS7VarPayloadStatusItem, ok := typ.(IS7VarPayloadStatusItem); ok {
-			return iS7VarPayloadStatusItem
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IS7VarPayloadStatusItem {
+        if iS7VarPayloadStatusItem, ok := typ.(IS7VarPayloadStatusItem); ok {
+            return iS7VarPayloadStatusItem
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
-	castFunc := func(typ interface{}) S7VarPayloadStatusItem {
-		if sS7VarPayloadStatusItem, ok := typ.(S7VarPayloadStatusItem); ok {
-			return sS7VarPayloadStatusItem
-		}
-		return S7VarPayloadStatusItem{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) S7VarPayloadStatusItem {
+        if sS7VarPayloadStatusItem, ok := typ.(S7VarPayloadStatusItem); ok {
+            return sS7VarPayloadStatusItem
+        }
+        if sS7VarPayloadStatusItem, ok := typ.(*S7VarPayloadStatusItem); ok {
+            return *sS7VarPayloadStatusItem
+        }
+        return S7VarPayloadStatusItem{}
+    }
+    return castFunc(structType)
 }
 
 func (m S7VarPayloadStatusItem) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Enum Field (returnCode)
-	lengthInBits += 8
+    // Enum Field (returnCode)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m S7VarPayloadStatusItem) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func S7VarPayloadStatusItemParse(io *spi.ReadBuffer) (spi.Message, error) {
 
-	// Enum field (returnCode)
-	returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
-	if _returnCodeErr != nil {
-		return nil, errors.New("Error parsing 'returnCode' field " + _returnCodeErr.Error())
-	}
+    // Enum field (returnCode)
+    returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
+    if _returnCodeErr != nil {
+        return nil, errors.New("Error parsing 'returnCode' field " + _returnCodeErr.Error())
+    }
 
-	// Create the instance
-	return NewS7VarPayloadStatusItem(returnCode), nil
+    // Create the instance
+    return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
 func (m S7VarPayloadStatusItem) Serialize(io spi.WriteBuffer) error {
 
-	// Enum field (returnCode)
-	returnCode := CastDataTransportErrorCode(m.ReturnCode)
-	_returnCodeErr := returnCode.Serialize(io)
-	if _returnCodeErr != nil {
-		return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
-	}
+    // Enum field (returnCode)
+    returnCode := CastDataTransportErrorCode(m.ReturnCode)
+    _returnCodeErr := returnCode.Serialize(io)
+    if _returnCodeErr != nil {
+        return errors.New("Error serializing 'returnCode' field " + _returnCodeErr.Error())
+    }
 
-	return nil
+    return nil
 }

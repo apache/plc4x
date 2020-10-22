@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestSubscribeCOVProperty struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOVProperty interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) ServiceChoice() uint8 {
-	return 0x1C
+    return 0x1C
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestSubscribeCOVProperty() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestSubscribeCOVProperty{}
+    return &BACnetConfirmedServiceRequestSubscribeCOVProperty{}
 }
 
 func CastIBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) IBACnetConfirmedServiceRequestSubscribeCOVProperty {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestSubscribeCOVProperty {
-		if iBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(IBACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-			return iBACnetConfirmedServiceRequestSubscribeCOVProperty
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestSubscribeCOVProperty {
+        if iBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(IBACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
+            return iBACnetConfirmedServiceRequestSubscribeCOVProperty
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
-		if sBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
-			return sBACnetConfirmedServiceRequestSubscribeCOVProperty
-		}
-		return BACnetConfirmedServiceRequestSubscribeCOVProperty{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
+        if sBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
+            return sBACnetConfirmedServiceRequestSubscribeCOVProperty
+        }
+        if sBACnetConfirmedServiceRequestSubscribeCOVProperty, ok := typ.(*BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
+            return *sBACnetConfirmedServiceRequestSubscribeCOVProperty
+        }
+        return BACnetConfirmedServiceRequestSubscribeCOVProperty{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestSubscribeCOVProperty(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestSubscribeCOVProperty(), nil
 }
 
 func (m BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

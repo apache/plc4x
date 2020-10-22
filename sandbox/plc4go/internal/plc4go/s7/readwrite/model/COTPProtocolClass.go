@@ -18,47 +18,48 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	COTPProtocolClass_CLASS_0 COTPProtocolClass = 0x00
-	COTPProtocolClass_CLASS_1 COTPProtocolClass = 0x10
-	COTPProtocolClass_CLASS_2 COTPProtocolClass = 0x20
-	COTPProtocolClass_CLASS_3 COTPProtocolClass = 0x30
-	COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
+const(
+    COTPProtocolClass_CLASS_0 COTPProtocolClass = 0x00
+    COTPProtocolClass_CLASS_1 COTPProtocolClass = 0x10
+    COTPProtocolClass_CLASS_2 COTPProtocolClass = 0x20
+    COTPProtocolClass_CLASS_3 COTPProtocolClass = 0x30
+    COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
 
+
 func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
-	castFunc := func(typ interface{}) COTPProtocolClass {
-		if sCOTPProtocolClass, ok := typ.(COTPProtocolClass); ok {
-			return sCOTPProtocolClass
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPProtocolClass {
+        if sCOTPProtocolClass, ok := typ.(COTPProtocolClass); ok {
+            return sCOTPProtocolClass
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m COTPProtocolClass) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m COTPProtocolClass) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPProtocolClassParse(io *spi.ReadBuffer) (COTPProtocolClass, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e COTPProtocolClass) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

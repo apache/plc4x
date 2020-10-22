@@ -19,119 +19,122 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type TunnelingRequest struct {
-	TunnelingRequestDataBlock ITunnelingRequestDataBlock
-	Cemi                      ICEMI
-	KNXNetIPMessage
+    TunnelingRequestDataBlock ITunnelingRequestDataBlock
+    Cemi ICEMI
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type ITunnelingRequest interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m TunnelingRequest) MsgType() uint16 {
-	return 0x0420
+    return 0x0420
 }
 
 func (m TunnelingRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewTunnelingRequest(tunnelingRequestDataBlock ITunnelingRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-	return &TunnelingRequest{TunnelingRequestDataBlock: tunnelingRequestDataBlock, Cemi: cemi}
+    return &TunnelingRequest{TunnelingRequestDataBlock: tunnelingRequestDataBlock, Cemi: cemi}
 }
 
 func CastITunnelingRequest(structType interface{}) ITunnelingRequest {
-	castFunc := func(typ interface{}) ITunnelingRequest {
-		if iTunnelingRequest, ok := typ.(ITunnelingRequest); ok {
-			return iTunnelingRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ITunnelingRequest {
+        if iTunnelingRequest, ok := typ.(ITunnelingRequest); ok {
+            return iTunnelingRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastTunnelingRequest(structType interface{}) TunnelingRequest {
-	castFunc := func(typ interface{}) TunnelingRequest {
-		if sTunnelingRequest, ok := typ.(TunnelingRequest); ok {
-			return sTunnelingRequest
-		}
-		return TunnelingRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) TunnelingRequest {
+        if sTunnelingRequest, ok := typ.(TunnelingRequest); ok {
+            return sTunnelingRequest
+        }
+        if sTunnelingRequest, ok := typ.(*TunnelingRequest); ok {
+            return *sTunnelingRequest
+        }
+        return TunnelingRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m TunnelingRequest) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (tunnelingRequestDataBlock)
-	lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
+    // Simple field (tunnelingRequestDataBlock)
+    lengthInBits += m.TunnelingRequestDataBlock.LengthInBits()
 
-	// Simple field (cemi)
-	lengthInBits += m.Cemi.LengthInBits()
+    // Simple field (cemi)
+    lengthInBits += m.Cemi.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m TunnelingRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func TunnelingRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (tunnelingRequestDataBlock)
-	_tunnelingRequestDataBlockMessage, _err := TunnelingRequestDataBlockParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'tunnelingRequestDataBlock'. " + _err.Error())
-	}
-	var tunnelingRequestDataBlock ITunnelingRequestDataBlock
-	tunnelingRequestDataBlock, _tunnelingRequestDataBlockOk := _tunnelingRequestDataBlockMessage.(ITunnelingRequestDataBlock)
-	if !_tunnelingRequestDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingRequestDataBlockMessage).Name() + " to ITunnelingRequestDataBlock")
-	}
+    // Simple Field (tunnelingRequestDataBlock)
+    _tunnelingRequestDataBlockMessage, _err := TunnelingRequestDataBlockParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'tunnelingRequestDataBlock'. " + _err.Error())
+    }
+    var tunnelingRequestDataBlock ITunnelingRequestDataBlock
+    tunnelingRequestDataBlock, _tunnelingRequestDataBlockOk := _tunnelingRequestDataBlockMessage.(ITunnelingRequestDataBlock)
+    if !_tunnelingRequestDataBlockOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingRequestDataBlockMessage).Name() + " to ITunnelingRequestDataBlock")
+    }
 
-	// Simple Field (cemi)
-	_cemiMessage, _err := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(tunnelingRequestDataBlock.LengthInBytes()))))
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
-	}
-	var cemi ICEMI
-	cemi, _cemiOk := _cemiMessage.(ICEMI)
-	if !_cemiOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
-	}
+    // Simple Field (cemi)
+    _cemiMessage, _err := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(tunnelingRequestDataBlock.LengthInBytes()))))
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
+    }
+    var cemi ICEMI
+    cemi, _cemiOk := _cemiMessage.(ICEMI)
+    if !_cemiOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
+    }
 
-	// Create the instance
-	return NewTunnelingRequest(tunnelingRequestDataBlock, cemi), nil
+    // Create the instance
+    return NewTunnelingRequest(tunnelingRequestDataBlock, cemi), nil
 }
 
 func (m TunnelingRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (tunnelingRequestDataBlock)
-		tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.TunnelingRequestDataBlock)
-		_tunnelingRequestDataBlockErr := tunnelingRequestDataBlock.Serialize(io)
-		if _tunnelingRequestDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
-		}
+    // Simple Field (tunnelingRequestDataBlock)
+    tunnelingRequestDataBlock := CastITunnelingRequestDataBlock(m.TunnelingRequestDataBlock)
+    _tunnelingRequestDataBlockErr := tunnelingRequestDataBlock.Serialize(io)
+    if _tunnelingRequestDataBlockErr != nil {
+        return errors.New("Error serializing 'tunnelingRequestDataBlock' field " + _tunnelingRequestDataBlockErr.Error())
+    }
 
-		// Simple Field (cemi)
-		cemi := CastICEMI(m.Cemi)
-		_cemiErr := cemi.Serialize(io)
-		if _cemiErr != nil {
-			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
-		}
+    // Simple Field (cemi)
+    cemi := CastICEMI(m.Cemi)
+    _cemiErr := cemi.Serialize(io)
+    if _cemiErr != nil {
+        return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetServiceAckConfirmedPrivateTransfer struct {
-	BACnetServiceAck
+    BACnetServiceAck
 }
 
 // The corresponding interface
 type IBACnetServiceAckConfirmedPrivateTransfer interface {
-	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer) error
+    IBACnetServiceAck
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetServiceAckConfirmedPrivateTransfer) ServiceChoice() uint8 {
-	return 0x12
+    return 0x12
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetServiceAckConfirmedPrivateTransfer() BACnetServiceAckInitializer {
-	return &BACnetServiceAckConfirmedPrivateTransfer{}
+    return &BACnetServiceAckConfirmedPrivateTransfer{}
 }
 
 func CastIBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
-		if iBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(IBACnetServiceAckConfirmedPrivateTransfer); ok {
-			return iBACnetServiceAckConfirmedPrivateTransfer
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetServiceAckConfirmedPrivateTransfer {
+        if iBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(IBACnetServiceAckConfirmedPrivateTransfer); ok {
+            return iBACnetServiceAckConfirmedPrivateTransfer
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) BACnetServiceAckConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) BACnetServiceAckConfirmedPrivateTransfer {
-		if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
-			return sBACnetServiceAckConfirmedPrivateTransfer
-		}
-		return BACnetServiceAckConfirmedPrivateTransfer{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetServiceAckConfirmedPrivateTransfer {
+        if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(BACnetServiceAckConfirmedPrivateTransfer); ok {
+            return sBACnetServiceAckConfirmedPrivateTransfer
+        }
+        if sBACnetServiceAckConfirmedPrivateTransfer, ok := typ.(*BACnetServiceAckConfirmedPrivateTransfer); ok {
+            return *sBACnetServiceAckConfirmedPrivateTransfer
+        }
+        return BACnetServiceAckConfirmedPrivateTransfer{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetServiceAck.LengthInBits()
+    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckConfirmedPrivateTransferParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
-	// Create the instance
-	return NewBACnetServiceAckConfirmedPrivateTransfer(), nil
+    // Create the instance
+    return NewBACnetServiceAckConfirmedPrivateTransfer(), nil
 }
 
 func (m BACnetServiceAckConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+        return nil
+    }
+    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

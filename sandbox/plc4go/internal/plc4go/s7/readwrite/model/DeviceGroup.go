@@ -18,45 +18,46 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type DeviceGroup int8
 
 type IDeviceGroup interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	DeviceGroup_PG_OR_PC DeviceGroup = 0x01
-	DeviceGroup_OS       DeviceGroup = 0x02
-	DeviceGroup_OTHERS   DeviceGroup = 0x03
+const(
+    DeviceGroup_PG_OR_PC DeviceGroup = 0x01
+    DeviceGroup_OS DeviceGroup = 0x02
+    DeviceGroup_OTHERS DeviceGroup = 0x03
 )
 
+
 func CastDeviceGroup(structType interface{}) DeviceGroup {
-	castFunc := func(typ interface{}) DeviceGroup {
-		if sDeviceGroup, ok := typ.(DeviceGroup); ok {
-			return sDeviceGroup
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DeviceGroup {
+        if sDeviceGroup, ok := typ.(DeviceGroup); ok {
+            return sDeviceGroup
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m DeviceGroup) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m DeviceGroup) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DeviceGroupParse(io *spi.ReadBuffer) (DeviceGroup, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e DeviceGroup) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

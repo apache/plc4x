@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorConfirmedPrivateTransfer struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorConfirmedPrivateTransfer interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorConfirmedPrivateTransfer) ServiceChoice() uint8 {
-	return 0x12
+    return 0x12
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorConfirmedPrivateTransfer() BACnetErrorInitializer {
-	return &BACnetErrorConfirmedPrivateTransfer{}
+    return &BACnetErrorConfirmedPrivateTransfer{}
 }
 
 func CastIBACnetErrorConfirmedPrivateTransfer(structType interface{}) IBACnetErrorConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) IBACnetErrorConfirmedPrivateTransfer {
-		if iBACnetErrorConfirmedPrivateTransfer, ok := typ.(IBACnetErrorConfirmedPrivateTransfer); ok {
-			return iBACnetErrorConfirmedPrivateTransfer
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorConfirmedPrivateTransfer {
+        if iBACnetErrorConfirmedPrivateTransfer, ok := typ.(IBACnetErrorConfirmedPrivateTransfer); ok {
+            return iBACnetErrorConfirmedPrivateTransfer
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorConfirmedPrivateTransfer(structType interface{}) BACnetErrorConfirmedPrivateTransfer {
-	castFunc := func(typ interface{}) BACnetErrorConfirmedPrivateTransfer {
-		if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
-			return sBACnetErrorConfirmedPrivateTransfer
-		}
-		return BACnetErrorConfirmedPrivateTransfer{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorConfirmedPrivateTransfer {
+        if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(BACnetErrorConfirmedPrivateTransfer); ok {
+            return sBACnetErrorConfirmedPrivateTransfer
+        }
+        if sBACnetErrorConfirmedPrivateTransfer, ok := typ.(*BACnetErrorConfirmedPrivateTransfer); ok {
+            return *sBACnetErrorConfirmedPrivateTransfer
+        }
+        return BACnetErrorConfirmedPrivateTransfer{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorConfirmedPrivateTransferParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorConfirmedPrivateTransfer(), nil
+    // Create the instance
+    return NewBACnetErrorConfirmedPrivateTransfer(), nil
 }
 
 func (m BACnetErrorConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

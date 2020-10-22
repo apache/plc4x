@@ -19,81 +19,84 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUReadDeviceIdentificationRequest struct {
-	ModbusPDU
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUReadDeviceIdentificationRequest interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUReadDeviceIdentificationRequest) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) FunctionFlag() uint8 {
-	return 0x2B
+    return 0x2B
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) Response() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUReadDeviceIdentificationRequest() ModbusPDUInitializer {
-	return &ModbusPDUReadDeviceIdentificationRequest{}
+    return &ModbusPDUReadDeviceIdentificationRequest{}
 }
 
 func CastIModbusPDUReadDeviceIdentificationRequest(structType interface{}) IModbusPDUReadDeviceIdentificationRequest {
-	castFunc := func(typ interface{}) IModbusPDUReadDeviceIdentificationRequest {
-		if iModbusPDUReadDeviceIdentificationRequest, ok := typ.(IModbusPDUReadDeviceIdentificationRequest); ok {
-			return iModbusPDUReadDeviceIdentificationRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUReadDeviceIdentificationRequest {
+        if iModbusPDUReadDeviceIdentificationRequest, ok := typ.(IModbusPDUReadDeviceIdentificationRequest); ok {
+            return iModbusPDUReadDeviceIdentificationRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) ModbusPDUReadDeviceIdentificationRequest {
-	castFunc := func(typ interface{}) ModbusPDUReadDeviceIdentificationRequest {
-		if sModbusPDUReadDeviceIdentificationRequest, ok := typ.(ModbusPDUReadDeviceIdentificationRequest); ok {
-			return sModbusPDUReadDeviceIdentificationRequest
-		}
-		return ModbusPDUReadDeviceIdentificationRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUReadDeviceIdentificationRequest {
+        if sModbusPDUReadDeviceIdentificationRequest, ok := typ.(ModbusPDUReadDeviceIdentificationRequest); ok {
+            return sModbusPDUReadDeviceIdentificationRequest
+        }
+        if sModbusPDUReadDeviceIdentificationRequest, ok := typ.(*ModbusPDUReadDeviceIdentificationRequest); ok {
+            return *sModbusPDUReadDeviceIdentificationRequest
+        }
+        return ModbusPDUReadDeviceIdentificationRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadDeviceIdentificationRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Create the instance
-	return NewModbusPDUReadDeviceIdentificationRequest(), nil
+    // Create the instance
+    return NewModbusPDUReadDeviceIdentificationRequest(), nil
 }
 
 func (m ModbusPDUReadDeviceIdentificationRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

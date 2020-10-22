@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorVTOpen struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorVTOpen interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorVTOpen) ServiceChoice() uint8 {
-	return 0x15
+    return 0x15
 }
 
 func (m BACnetErrorVTOpen) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorVTOpen() BACnetErrorInitializer {
-	return &BACnetErrorVTOpen{}
+    return &BACnetErrorVTOpen{}
 }
 
 func CastIBACnetErrorVTOpen(structType interface{}) IBACnetErrorVTOpen {
-	castFunc := func(typ interface{}) IBACnetErrorVTOpen {
-		if iBACnetErrorVTOpen, ok := typ.(IBACnetErrorVTOpen); ok {
-			return iBACnetErrorVTOpen
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorVTOpen {
+        if iBACnetErrorVTOpen, ok := typ.(IBACnetErrorVTOpen); ok {
+            return iBACnetErrorVTOpen
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorVTOpen(structType interface{}) BACnetErrorVTOpen {
-	castFunc := func(typ interface{}) BACnetErrorVTOpen {
-		if sBACnetErrorVTOpen, ok := typ.(BACnetErrorVTOpen); ok {
-			return sBACnetErrorVTOpen
-		}
-		return BACnetErrorVTOpen{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorVTOpen {
+        if sBACnetErrorVTOpen, ok := typ.(BACnetErrorVTOpen); ok {
+            return sBACnetErrorVTOpen
+        }
+        if sBACnetErrorVTOpen, ok := typ.(*BACnetErrorVTOpen); ok {
+            return *sBACnetErrorVTOpen
+        }
+        return BACnetErrorVTOpen{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorVTOpen) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorVTOpenParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorVTOpen(), nil
+    // Create the instance
+    return NewBACnetErrorVTOpen(), nil
 }
 
 func (m BACnetErrorVTOpen) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

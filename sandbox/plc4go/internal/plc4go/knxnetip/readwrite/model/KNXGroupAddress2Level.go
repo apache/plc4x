@@ -19,108 +19,111 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KNXGroupAddress2Level struct {
-	MainGroup uint8
-	SubGroup  uint16
-	KNXGroupAddress
+    MainGroup uint8
+    SubGroup uint16
+    KNXGroupAddress
 }
 
 // The corresponding interface
 type IKNXGroupAddress2Level interface {
-	IKNXGroupAddress
-	Serialize(io spi.WriteBuffer) error
+    IKNXGroupAddress
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m KNXGroupAddress2Level) NumLevels() uint8 {
-	return 2
+    return 2
 }
 
 func (m KNXGroupAddress2Level) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewKNXGroupAddress2Level(mainGroup uint8, subGroup uint16) KNXGroupAddressInitializer {
-	return &KNXGroupAddress2Level{MainGroup: mainGroup, SubGroup: subGroup}
+    return &KNXGroupAddress2Level{MainGroup: mainGroup, SubGroup: subGroup}
 }
 
 func CastIKNXGroupAddress2Level(structType interface{}) IKNXGroupAddress2Level {
-	castFunc := func(typ interface{}) IKNXGroupAddress2Level {
-		if iKNXGroupAddress2Level, ok := typ.(IKNXGroupAddress2Level); ok {
-			return iKNXGroupAddress2Level
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKNXGroupAddress2Level {
+        if iKNXGroupAddress2Level, ok := typ.(IKNXGroupAddress2Level); ok {
+            return iKNXGroupAddress2Level
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKNXGroupAddress2Level(structType interface{}) KNXGroupAddress2Level {
-	castFunc := func(typ interface{}) KNXGroupAddress2Level {
-		if sKNXGroupAddress2Level, ok := typ.(KNXGroupAddress2Level); ok {
-			return sKNXGroupAddress2Level
-		}
-		return KNXGroupAddress2Level{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KNXGroupAddress2Level {
+        if sKNXGroupAddress2Level, ok := typ.(KNXGroupAddress2Level); ok {
+            return sKNXGroupAddress2Level
+        }
+        if sKNXGroupAddress2Level, ok := typ.(*KNXGroupAddress2Level); ok {
+            return *sKNXGroupAddress2Level
+        }
+        return KNXGroupAddress2Level{}
+    }
+    return castFunc(structType)
 }
 
 func (m KNXGroupAddress2Level) LengthInBits() uint16 {
-	var lengthInBits = m.KNXGroupAddress.LengthInBits()
+    var lengthInBits uint16 = m.KNXGroupAddress.LengthInBits()
 
-	// Simple field (mainGroup)
-	lengthInBits += 5
+    // Simple field (mainGroup)
+    lengthInBits += 5
 
-	// Simple field (subGroup)
-	lengthInBits += 11
+    // Simple field (subGroup)
+    lengthInBits += 11
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KNXGroupAddress2Level) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KNXGroupAddress2LevelParse(io *spi.ReadBuffer) (KNXGroupAddressInitializer, error) {
 
-	// Simple Field (mainGroup)
-	mainGroup, _mainGroupErr := io.ReadUint8(5)
-	if _mainGroupErr != nil {
-		return nil, errors.New("Error parsing 'mainGroup' field " + _mainGroupErr.Error())
-	}
+    // Simple Field (mainGroup)
+    mainGroup, _mainGroupErr := io.ReadUint8(5)
+    if _mainGroupErr != nil {
+        return nil, errors.New("Error parsing 'mainGroup' field " + _mainGroupErr.Error())
+    }
 
-	// Simple Field (subGroup)
-	subGroup, _subGroupErr := io.ReadUint16(11)
-	if _subGroupErr != nil {
-		return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
-	}
+    // Simple Field (subGroup)
+    subGroup, _subGroupErr := io.ReadUint16(11)
+    if _subGroupErr != nil {
+        return nil, errors.New("Error parsing 'subGroup' field " + _subGroupErr.Error())
+    }
 
-	// Create the instance
-	return NewKNXGroupAddress2Level(mainGroup, subGroup), nil
+    // Create the instance
+    return NewKNXGroupAddress2Level(mainGroup, subGroup), nil
 }
 
 func (m KNXGroupAddress2Level) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (mainGroup)
-		mainGroup := uint8(m.MainGroup)
-		_mainGroupErr := io.WriteUint8(5, mainGroup)
-		if _mainGroupErr != nil {
-			return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
-		}
+    // Simple Field (mainGroup)
+    mainGroup := uint8(m.MainGroup)
+    _mainGroupErr := io.WriteUint8(5, (mainGroup))
+    if _mainGroupErr != nil {
+        return errors.New("Error serializing 'mainGroup' field " + _mainGroupErr.Error())
+    }
 
-		// Simple Field (subGroup)
-		subGroup := uint16(m.SubGroup)
-		_subGroupErr := io.WriteUint16(11, subGroup)
-		if _subGroupErr != nil {
-			return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
-		}
+    // Simple Field (subGroup)
+    subGroup := uint16(m.SubGroup)
+    _subGroupErr := io.WriteUint16(11, (subGroup))
+    if _subGroupErr != nil {
+        return errors.New("Error serializing 'subGroup' field " + _subGroupErr.Error())
+    }
 
-		return nil
-	}
-	return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
+        return nil
+    }
+    return KNXGroupAddressSerialize(io, m.KNXGroupAddress, CastIKNXGroupAddress(m), ser)
 }

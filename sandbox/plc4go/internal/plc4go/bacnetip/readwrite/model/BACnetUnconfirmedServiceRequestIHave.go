@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestIHave struct {
-	BACnetUnconfirmedServiceRequest
+    BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIHave interface {
-	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetUnconfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetUnconfirmedServiceRequestIHave) ServiceChoice() uint8 {
-	return 0x01
+    return 0x01
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetUnconfirmedServiceRequestIHave() BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestIHave{}
+    return &BACnetUnconfirmedServiceRequestIHave{}
 }
 
 func CastIBACnetUnconfirmedServiceRequestIHave(structType interface{}) IBACnetUnconfirmedServiceRequestIHave {
-	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIHave {
-		if iBACnetUnconfirmedServiceRequestIHave, ok := typ.(IBACnetUnconfirmedServiceRequestIHave); ok {
-			return iBACnetUnconfirmedServiceRequestIHave
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestIHave {
+        if iBACnetUnconfirmedServiceRequestIHave, ok := typ.(IBACnetUnconfirmedServiceRequestIHave); ok {
+            return iBACnetUnconfirmedServiceRequestIHave
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetUnconfirmedServiceRequestIHave(structType interface{}) BACnetUnconfirmedServiceRequestIHave {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIHave {
-		if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
-			return sBACnetUnconfirmedServiceRequestIHave
-		}
-		return BACnetUnconfirmedServiceRequestIHave{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestIHave {
+        if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(BACnetUnconfirmedServiceRequestIHave); ok {
+            return sBACnetUnconfirmedServiceRequestIHave
+        }
+        if sBACnetUnconfirmedServiceRequestIHave, ok := typ.(*BACnetUnconfirmedServiceRequestIHave); ok {
+            return *sBACnetUnconfirmedServiceRequestIHave
+        }
+        return BACnetUnconfirmedServiceRequestIHave{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestIHaveParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetUnconfirmedServiceRequestIHave(), nil
+    // Create the instance
+    return NewBACnetUnconfirmedServiceRequestIHave(), nil
 }
 
 func (m BACnetUnconfirmedServiceRequestIHave) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

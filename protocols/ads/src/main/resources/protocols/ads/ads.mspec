@@ -504,7 +504,7 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['AdsDataType.STRING' String
+        ['AdsDataType.STRING' STRING
 //            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.parseAmsString", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.ads.utils.StaticHelper.serializeAmsString", io, _value, _type.encoding)' '_value.length + 2']
         ]
     ]

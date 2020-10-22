@@ -18,54 +18,55 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type Status uint8
 
 type IStatus interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	Status_NO_ERROR                        Status = 0x00
-	Status_PROTOCOL_TYPE_NOT_SUPPORTED     Status = 0x01
-	Status_UNSUPPORTED_PROTOCOL_VERSION    Status = 0x02
-	Status_OUT_OF_ORDER_SEQUENCE_NUMBER    Status = 0x04
-	Status_INVALID_CONNECTION_ID           Status = 0x21
-	Status_CONNECTION_TYPE_NOT_SUPPORTED   Status = 0x22
-	Status_CONNECTION_OPTION_NOT_SUPPORTED Status = 0x23
-	Status_NO_MORE_CONNECTIONS             Status = 0x24
-	Status_NO_MORE_UNIQUE_CONNECTIONS      Status = 0x25
-	Status_DATA_CONNECTION                 Status = 0x26
-	Status_KNX_CONNECTION                  Status = 0x27
-	Status_TUNNELLING_LAYER_NOT_SUPPORTED  Status = 0x29
+const(
+    Status_NO_ERROR Status = 0x00
+    Status_PROTOCOL_TYPE_NOT_SUPPORTED Status = 0x01
+    Status_UNSUPPORTED_PROTOCOL_VERSION Status = 0x02
+    Status_OUT_OF_ORDER_SEQUENCE_NUMBER Status = 0x04
+    Status_INVALID_CONNECTION_ID Status = 0x21
+    Status_CONNECTION_TYPE_NOT_SUPPORTED Status = 0x22
+    Status_CONNECTION_OPTION_NOT_SUPPORTED Status = 0x23
+    Status_NO_MORE_CONNECTIONS Status = 0x24
+    Status_NO_MORE_UNIQUE_CONNECTIONS Status = 0x25
+    Status_DATA_CONNECTION Status = 0x26
+    Status_KNX_CONNECTION Status = 0x27
+    Status_TUNNELLING_LAYER_NOT_SUPPORTED Status = 0x29
 )
 
+
 func CastStatus(structType interface{}) Status {
-	castFunc := func(typ interface{}) Status {
-		if sStatus, ok := typ.(Status); ok {
-			return sStatus
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) Status {
+        if sStatus, ok := typ.(Status); ok {
+            return sStatus
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m Status) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m Status) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func StatusParse(io *spi.ReadBuffer) (Status, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e Status) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

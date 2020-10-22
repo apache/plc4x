@@ -19,119 +19,122 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type DeviceConfigurationRequest struct {
-	DeviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
-	Cemi                                ICEMI
-	KNXNetIPMessage
+    DeviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
+    Cemi ICEMI
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m DeviceConfigurationRequest) MsgType() uint16 {
-	return 0x0310
+    return 0x0310
 }
 
 func (m DeviceConfigurationRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock, cemi ICEMI) KNXNetIPMessageInitializer {
-	return &DeviceConfigurationRequest{DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, Cemi: cemi}
+    return &DeviceConfigurationRequest{DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock, Cemi: cemi}
 }
 
 func CastIDeviceConfigurationRequest(structType interface{}) IDeviceConfigurationRequest {
-	castFunc := func(typ interface{}) IDeviceConfigurationRequest {
-		if iDeviceConfigurationRequest, ok := typ.(IDeviceConfigurationRequest); ok {
-			return iDeviceConfigurationRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IDeviceConfigurationRequest {
+        if iDeviceConfigurationRequest, ok := typ.(IDeviceConfigurationRequest); ok {
+            return iDeviceConfigurationRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastDeviceConfigurationRequest(structType interface{}) DeviceConfigurationRequest {
-	castFunc := func(typ interface{}) DeviceConfigurationRequest {
-		if sDeviceConfigurationRequest, ok := typ.(DeviceConfigurationRequest); ok {
-			return sDeviceConfigurationRequest
-		}
-		return DeviceConfigurationRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DeviceConfigurationRequest {
+        if sDeviceConfigurationRequest, ok := typ.(DeviceConfigurationRequest); ok {
+            return sDeviceConfigurationRequest
+        }
+        if sDeviceConfigurationRequest, ok := typ.(*DeviceConfigurationRequest); ok {
+            return *sDeviceConfigurationRequest
+        }
+        return DeviceConfigurationRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m DeviceConfigurationRequest) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (deviceConfigurationRequestDataBlock)
-	lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
+    // Simple field (deviceConfigurationRequestDataBlock)
+    lengthInBits += m.DeviceConfigurationRequestDataBlock.LengthInBits()
 
-	// Simple field (cemi)
-	lengthInBits += m.Cemi.LengthInBits()
+    // Simple field (cemi)
+    lengthInBits += m.Cemi.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m DeviceConfigurationRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DeviceConfigurationRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (deviceConfigurationRequestDataBlock)
-	_deviceConfigurationRequestDataBlockMessage, _err := DeviceConfigurationRequestDataBlockParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'deviceConfigurationRequestDataBlock'. " + _err.Error())
-	}
-	var deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
-	deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockOk := _deviceConfigurationRequestDataBlockMessage.(IDeviceConfigurationRequestDataBlock)
-	if !_deviceConfigurationRequestDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationRequestDataBlockMessage).Name() + " to IDeviceConfigurationRequestDataBlock")
-	}
+    // Simple Field (deviceConfigurationRequestDataBlock)
+    _deviceConfigurationRequestDataBlockMessage, _err := DeviceConfigurationRequestDataBlockParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'deviceConfigurationRequestDataBlock'. " + _err.Error())
+    }
+    var deviceConfigurationRequestDataBlock IDeviceConfigurationRequestDataBlock
+    deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockOk := _deviceConfigurationRequestDataBlockMessage.(IDeviceConfigurationRequestDataBlock)
+    if !_deviceConfigurationRequestDataBlockOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_deviceConfigurationRequestDataBlockMessage).Name() + " to IDeviceConfigurationRequestDataBlock")
+    }
 
-	// Simple Field (cemi)
-	_cemiMessage, _err := CEMIParse(io, uint8(totalLength)-uint8(uint8(uint8(uint8(6))+uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
-	}
-	var cemi ICEMI
-	cemi, _cemiOk := _cemiMessage.(ICEMI)
-	if !_cemiOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
-	}
+    // Simple Field (cemi)
+    _cemiMessage, _err := CEMIParse(io, uint8(totalLength) - uint8(uint8(uint8(uint8(6)) + uint8(deviceConfigurationRequestDataBlock.LengthInBytes()))))
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'cemi'. " + _err.Error())
+    }
+    var cemi ICEMI
+    cemi, _cemiOk := _cemiMessage.(ICEMI)
+    if !_cemiOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_cemiMessage).Name() + " to ICEMI")
+    }
 
-	// Create the instance
-	return NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi), nil
+    // Create the instance
+    return NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi), nil
 }
 
 func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (deviceConfigurationRequestDataBlock)
-		deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.DeviceConfigurationRequestDataBlock)
-		_deviceConfigurationRequestDataBlockErr := deviceConfigurationRequestDataBlock.Serialize(io)
-		if _deviceConfigurationRequestDataBlockErr != nil {
-			return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
-		}
+    // Simple Field (deviceConfigurationRequestDataBlock)
+    deviceConfigurationRequestDataBlock := CastIDeviceConfigurationRequestDataBlock(m.DeviceConfigurationRequestDataBlock)
+    _deviceConfigurationRequestDataBlockErr := deviceConfigurationRequestDataBlock.Serialize(io)
+    if _deviceConfigurationRequestDataBlockErr != nil {
+        return errors.New("Error serializing 'deviceConfigurationRequestDataBlock' field " + _deviceConfigurationRequestDataBlockErr.Error())
+    }
 
-		// Simple Field (cemi)
-		cemi := CastICEMI(m.Cemi)
-		_cemiErr := cemi.Serialize(io)
-		if _cemiErr != nil {
-			return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
-		}
+    // Simple Field (cemi)
+    cemi := CastICEMI(m.Cemi)
+    _cemiErr := cemi.Serialize(io)
+    if _cemiErr != nil {
+        return errors.New("Error serializing 'cemi' field " + _cemiErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

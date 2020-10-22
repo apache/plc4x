@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetServiceAckRemovedReadPropertyConditional struct {
-	BACnetServiceAck
+    BACnetServiceAck
 }
 
 // The corresponding interface
 type IBACnetServiceAckRemovedReadPropertyConditional interface {
-	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer) error
+    IBACnetServiceAck
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetServiceAckRemovedReadPropertyConditional) ServiceChoice() uint8 {
-	return 0x0D
+    return 0x0D
 }
 
 func (m BACnetServiceAckRemovedReadPropertyConditional) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetServiceAckRemovedReadPropertyConditional() BACnetServiceAckInitializer {
-	return &BACnetServiceAckRemovedReadPropertyConditional{}
+    return &BACnetServiceAckRemovedReadPropertyConditional{}
 }
 
 func CastIBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) IBACnetServiceAckRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) IBACnetServiceAckRemovedReadPropertyConditional {
-		if iBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(IBACnetServiceAckRemovedReadPropertyConditional); ok {
-			return iBACnetServiceAckRemovedReadPropertyConditional
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetServiceAckRemovedReadPropertyConditional {
+        if iBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(IBACnetServiceAckRemovedReadPropertyConditional); ok {
+            return iBACnetServiceAckRemovedReadPropertyConditional
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetServiceAckRemovedReadPropertyConditional(structType interface{}) BACnetServiceAckRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) BACnetServiceAckRemovedReadPropertyConditional {
-		if sBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(BACnetServiceAckRemovedReadPropertyConditional); ok {
-			return sBACnetServiceAckRemovedReadPropertyConditional
-		}
-		return BACnetServiceAckRemovedReadPropertyConditional{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetServiceAckRemovedReadPropertyConditional {
+        if sBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(BACnetServiceAckRemovedReadPropertyConditional); ok {
+            return sBACnetServiceAckRemovedReadPropertyConditional
+        }
+        if sBACnetServiceAckRemovedReadPropertyConditional, ok := typ.(*BACnetServiceAckRemovedReadPropertyConditional); ok {
+            return *sBACnetServiceAckRemovedReadPropertyConditional
+        }
+        return BACnetServiceAckRemovedReadPropertyConditional{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetServiceAckRemovedReadPropertyConditional) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetServiceAck.LengthInBits()
+    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetServiceAckRemovedReadPropertyConditional) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckRemovedReadPropertyConditionalParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
-	// Create the instance
-	return NewBACnetServiceAckRemovedReadPropertyConditional(), nil
+    // Create the instance
+    return NewBACnetServiceAckRemovedReadPropertyConditional(), nil
 }
 
 func (m BACnetServiceAckRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+        return nil
+    }
+    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

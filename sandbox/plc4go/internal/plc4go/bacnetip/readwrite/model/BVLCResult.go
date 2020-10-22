@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCResult struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCResult interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCResult) BvlcFunction() uint8 {
-	return 0x00
+    return 0x00
 }
 
 func (m BVLCResult) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCResult() BVLCInitializer {
-	return &BVLCResult{}
+    return &BVLCResult{}
 }
 
 func CastIBVLCResult(structType interface{}) IBVLCResult {
-	castFunc := func(typ interface{}) IBVLCResult {
-		if iBVLCResult, ok := typ.(IBVLCResult); ok {
-			return iBVLCResult
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCResult {
+        if iBVLCResult, ok := typ.(IBVLCResult); ok {
+            return iBVLCResult
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCResult(structType interface{}) BVLCResult {
-	castFunc := func(typ interface{}) BVLCResult {
-		if sBVLCResult, ok := typ.(BVLCResult); ok {
-			return sBVLCResult
-		}
-		return BVLCResult{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCResult {
+        if sBVLCResult, ok := typ.(BVLCResult); ok {
+            return sBVLCResult
+        }
+        if sBVLCResult, ok := typ.(*BVLCResult); ok {
+            return *sBVLCResult
+        }
+        return BVLCResult{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCResult) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCResult) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCResultParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCResult(), nil
+    // Create the instance
+    return NewBVLCResult(), nil
 }
 
 func (m BVLCResult) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCDeleteForeignDeviceTableEntry struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCDeleteForeignDeviceTableEntry interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCDeleteForeignDeviceTableEntry) BvlcFunction() uint8 {
-	return 0x08
+    return 0x08
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCDeleteForeignDeviceTableEntry() BVLCInitializer {
-	return &BVLCDeleteForeignDeviceTableEntry{}
+    return &BVLCDeleteForeignDeviceTableEntry{}
 }
 
 func CastIBVLCDeleteForeignDeviceTableEntry(structType interface{}) IBVLCDeleteForeignDeviceTableEntry {
-	castFunc := func(typ interface{}) IBVLCDeleteForeignDeviceTableEntry {
-		if iBVLCDeleteForeignDeviceTableEntry, ok := typ.(IBVLCDeleteForeignDeviceTableEntry); ok {
-			return iBVLCDeleteForeignDeviceTableEntry
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCDeleteForeignDeviceTableEntry {
+        if iBVLCDeleteForeignDeviceTableEntry, ok := typ.(IBVLCDeleteForeignDeviceTableEntry); ok {
+            return iBVLCDeleteForeignDeviceTableEntry
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteForeignDeviceTableEntry {
-	castFunc := func(typ interface{}) BVLCDeleteForeignDeviceTableEntry {
-		if sBVLCDeleteForeignDeviceTableEntry, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
-			return sBVLCDeleteForeignDeviceTableEntry
-		}
-		return BVLCDeleteForeignDeviceTableEntry{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCDeleteForeignDeviceTableEntry {
+        if sBVLCDeleteForeignDeviceTableEntry, ok := typ.(BVLCDeleteForeignDeviceTableEntry); ok {
+            return sBVLCDeleteForeignDeviceTableEntry
+        }
+        if sBVLCDeleteForeignDeviceTableEntry, ok := typ.(*BVLCDeleteForeignDeviceTableEntry); ok {
+            return *sBVLCDeleteForeignDeviceTableEntry
+        }
+        return BVLCDeleteForeignDeviceTableEntry{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCDeleteForeignDeviceTableEntry(), nil
+    // Create the instance
+    return NewBVLCDeleteForeignDeviceTableEntry(), nil
 }
 
 func (m BVLCDeleteForeignDeviceTableEntry) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

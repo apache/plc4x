@@ -167,6 +167,9 @@ func Cast${type.name}(structType interface{}) ${type.name} {
         if s${type.name}, ok := typ.(${type.name}); ok {
             return s${type.name}
         }
+        if s${type.name}, ok := typ.(*${type.name}); ok {
+            return *s${type.name}
+        }
         return ${type.name}{}
     }
     return castFunc(structType)

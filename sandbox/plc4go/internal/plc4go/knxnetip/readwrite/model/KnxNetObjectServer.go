@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KnxNetObjectServer struct {
-	Version uint8
-	ServiceId
+    Version uint8
+    ServiceId
 }
 
 // The corresponding interface
 type IKnxNetObjectServer interface {
-	IServiceId
-	Serialize(io spi.WriteBuffer) error
+    IServiceId
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m KnxNetObjectServer) ServiceType() uint8 {
-	return 0x08
+    return 0x08
 }
 
 func (m KnxNetObjectServer) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewKnxNetObjectServer(version uint8) ServiceIdInitializer {
-	return &KnxNetObjectServer{Version: version}
+    return &KnxNetObjectServer{Version: version}
 }
 
 func CastIKnxNetObjectServer(structType interface{}) IKnxNetObjectServer {
-	castFunc := func(typ interface{}) IKnxNetObjectServer {
-		if iKnxNetObjectServer, ok := typ.(IKnxNetObjectServer); ok {
-			return iKnxNetObjectServer
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKnxNetObjectServer {
+        if iKnxNetObjectServer, ok := typ.(IKnxNetObjectServer); ok {
+            return iKnxNetObjectServer
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
-	castFunc := func(typ interface{}) KnxNetObjectServer {
-		if sKnxNetObjectServer, ok := typ.(KnxNetObjectServer); ok {
-			return sKnxNetObjectServer
-		}
-		return KnxNetObjectServer{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KnxNetObjectServer {
+        if sKnxNetObjectServer, ok := typ.(KnxNetObjectServer); ok {
+            return sKnxNetObjectServer
+        }
+        if sKnxNetObjectServer, ok := typ.(*KnxNetObjectServer); ok {
+            return *sKnxNetObjectServer
+        }
+        return KnxNetObjectServer{}
+    }
+    return castFunc(structType)
 }
 
 func (m KnxNetObjectServer) LengthInBits() uint16 {
-	var lengthInBits = m.ServiceId.LengthInBits()
+    var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
-	// Simple field (version)
-	lengthInBits += 8
+    // Simple field (version)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KnxNetObjectServer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KnxNetObjectServerParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
-	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
-	if _versionErr != nil {
-		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
-	}
+    // Simple Field (version)
+    version, _versionErr := io.ReadUint8(8)
+    if _versionErr != nil {
+        return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+    }
 
-	// Create the instance
-	return NewKnxNetObjectServer(version), nil
+    // Create the instance
+    return NewKnxNetObjectServer(version), nil
 }
 
 func (m KnxNetObjectServer) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (version)
-		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, version)
-		if _versionErr != nil {
-			return errors.New("Error serializing 'version' field " + _versionErr.Error())
-		}
+    // Simple Field (version)
+    version := uint8(m.Version)
+    _versionErr := io.WriteUint8(8, (version))
+    if _versionErr != nil {
+        return errors.New("Error serializing 'version' field " + _versionErr.Error())
+    }
 
-		return nil
-	}
-	return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+        return nil
+    }
+    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorCreateObject struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorCreateObject interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorCreateObject) ServiceChoice() uint8 {
-	return 0x0A
+    return 0x0A
 }
 
 func (m BACnetErrorCreateObject) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorCreateObject() BACnetErrorInitializer {
-	return &BACnetErrorCreateObject{}
+    return &BACnetErrorCreateObject{}
 }
 
 func CastIBACnetErrorCreateObject(structType interface{}) IBACnetErrorCreateObject {
-	castFunc := func(typ interface{}) IBACnetErrorCreateObject {
-		if iBACnetErrorCreateObject, ok := typ.(IBACnetErrorCreateObject); ok {
-			return iBACnetErrorCreateObject
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorCreateObject {
+        if iBACnetErrorCreateObject, ok := typ.(IBACnetErrorCreateObject); ok {
+            return iBACnetErrorCreateObject
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorCreateObject(structType interface{}) BACnetErrorCreateObject {
-	castFunc := func(typ interface{}) BACnetErrorCreateObject {
-		if sBACnetErrorCreateObject, ok := typ.(BACnetErrorCreateObject); ok {
-			return sBACnetErrorCreateObject
-		}
-		return BACnetErrorCreateObject{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorCreateObject {
+        if sBACnetErrorCreateObject, ok := typ.(BACnetErrorCreateObject); ok {
+            return sBACnetErrorCreateObject
+        }
+        if sBACnetErrorCreateObject, ok := typ.(*BACnetErrorCreateObject); ok {
+            return *sBACnetErrorCreateObject
+        }
+        return BACnetErrorCreateObject{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorCreateObject) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorCreateObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorCreateObjectParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorCreateObject(), nil
+    // Create the instance
+    return NewBACnetErrorCreateObject(), nil
 }
 
 func (m BACnetErrorCreateObject) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

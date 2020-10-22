@@ -333,14 +333,14 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['41' String
+        ['41' STRING
         ]
-        ['42' String
+        ['42' STRING
         ]
-        ['43' String
+        ['43' STRING
             [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
         ]
-        ['44' String
+        ['44' STRING
             [manual string 'UTF-16' 'value''STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '(_value.length * 2) + 2']
         ]
 

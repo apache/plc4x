@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestWritePropertyMultiple struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWritePropertyMultiple interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) ServiceChoice() uint8 {
-	return 0x10
+    return 0x10
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestWritePropertyMultiple() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestWritePropertyMultiple{}
+    return &BACnetConfirmedServiceRequestWritePropertyMultiple{}
 }
 
 func CastIBACnetConfirmedServiceRequestWritePropertyMultiple(structType interface{}) IBACnetConfirmedServiceRequestWritePropertyMultiple {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestWritePropertyMultiple {
-		if iBACnetConfirmedServiceRequestWritePropertyMultiple, ok := typ.(IBACnetConfirmedServiceRequestWritePropertyMultiple); ok {
-			return iBACnetConfirmedServiceRequestWritePropertyMultiple
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestWritePropertyMultiple {
+        if iBACnetConfirmedServiceRequestWritePropertyMultiple, ok := typ.(IBACnetConfirmedServiceRequestWritePropertyMultiple); ok {
+            return iBACnetConfirmedServiceRequestWritePropertyMultiple
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestWritePropertyMultiple {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestWritePropertyMultiple {
-		if sBACnetConfirmedServiceRequestWritePropertyMultiple, ok := typ.(BACnetConfirmedServiceRequestWritePropertyMultiple); ok {
-			return sBACnetConfirmedServiceRequestWritePropertyMultiple
-		}
-		return BACnetConfirmedServiceRequestWritePropertyMultiple{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestWritePropertyMultiple {
+        if sBACnetConfirmedServiceRequestWritePropertyMultiple, ok := typ.(BACnetConfirmedServiceRequestWritePropertyMultiple); ok {
+            return sBACnetConfirmedServiceRequestWritePropertyMultiple
+        }
+        if sBACnetConfirmedServiceRequestWritePropertyMultiple, ok := typ.(*BACnetConfirmedServiceRequestWritePropertyMultiple); ok {
+            return *sBACnetConfirmedServiceRequestWritePropertyMultiple
+        }
+        return BACnetConfirmedServiceRequestWritePropertyMultiple{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestWritePropertyMultipleParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestWritePropertyMultiple(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestWritePropertyMultiple(), nil
 }
 
 func (m BACnetConfirmedServiceRequestWritePropertyMultiple) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

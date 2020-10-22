@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestTimeSynchronization struct {
-	BACnetUnconfirmedServiceRequest
+    BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestTimeSynchronization interface {
-	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetUnconfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) ServiceChoice() uint8 {
-	return 0x06
+    return 0x06
 }
 
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetUnconfirmedServiceRequestTimeSynchronization() BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestTimeSynchronization{}
+    return &BACnetUnconfirmedServiceRequestTimeSynchronization{}
 }
 
 func CastIBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface{}) IBACnetUnconfirmedServiceRequestTimeSynchronization {
-	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestTimeSynchronization {
-		if iBACnetUnconfirmedServiceRequestTimeSynchronization, ok := typ.(IBACnetUnconfirmedServiceRequestTimeSynchronization); ok {
-			return iBACnetUnconfirmedServiceRequestTimeSynchronization
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestTimeSynchronization {
+        if iBACnetUnconfirmedServiceRequestTimeSynchronization, ok := typ.(IBACnetUnconfirmedServiceRequestTimeSynchronization); ok {
+            return iBACnetUnconfirmedServiceRequestTimeSynchronization
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetUnconfirmedServiceRequestTimeSynchronization(structType interface{}) BACnetUnconfirmedServiceRequestTimeSynchronization {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestTimeSynchronization {
-		if sBACnetUnconfirmedServiceRequestTimeSynchronization, ok := typ.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
-			return sBACnetUnconfirmedServiceRequestTimeSynchronization
-		}
-		return BACnetUnconfirmedServiceRequestTimeSynchronization{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestTimeSynchronization {
+        if sBACnetUnconfirmedServiceRequestTimeSynchronization, ok := typ.(BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
+            return sBACnetUnconfirmedServiceRequestTimeSynchronization
+        }
+        if sBACnetUnconfirmedServiceRequestTimeSynchronization, ok := typ.(*BACnetUnconfirmedServiceRequestTimeSynchronization); ok {
+            return *sBACnetUnconfirmedServiceRequestTimeSynchronization
+        }
+        return BACnetUnconfirmedServiceRequestTimeSynchronization{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestTimeSynchronizationParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetUnconfirmedServiceRequestTimeSynchronization(), nil
+    // Create the instance
+    return NewBACnetUnconfirmedServiceRequestTimeSynchronization(), nil
 }
 
 func (m BACnetUnconfirmedServiceRequestTimeSynchronization) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

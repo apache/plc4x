@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 /**
@@ -47,7 +46,7 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
             resultSet.add(item.toString());
         }
         if(resultSet.size() == 1) {
-            return new PlcString(resultSet.get(0));
+            return new PlcSTRING(resultSet.get(0));
         } else {
             return new PlcList(resultSet);
         }

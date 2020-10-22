@@ -19,85 +19,88 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type CEMIFramePollingDataExt struct {
-	CEMIFrame
+    CEMIFrame
 }
 
 // The corresponding interface
 type ICEMIFramePollingDataExt interface {
-	ICEMIFrame
-	Serialize(io spi.WriteBuffer) error
+    ICEMIFrame
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m CEMIFramePollingDataExt) NotAckFrame() bool {
-	return true
+    return true
 }
 
 func (m CEMIFramePollingDataExt) StandardFrame() bool {
-	return false
+    return false
 }
 
 func (m CEMIFramePollingDataExt) Polling() bool {
-	return true
+    return true
 }
 
 func (m CEMIFramePollingDataExt) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
-	m.Repeated = repeated
-	m.Priority = priority
-	m.AcknowledgeRequested = acknowledgeRequested
-	m.ErrorFlag = errorFlag
-	return m
+    m.Repeated = repeated
+    m.Priority = priority
+    m.AcknowledgeRequested = acknowledgeRequested
+    m.ErrorFlag = errorFlag
+    return m
 }
 
 func NewCEMIFramePollingDataExt() CEMIFrameInitializer {
-	return &CEMIFramePollingDataExt{}
+    return &CEMIFramePollingDataExt{}
 }
 
 func CastICEMIFramePollingDataExt(structType interface{}) ICEMIFramePollingDataExt {
-	castFunc := func(typ interface{}) ICEMIFramePollingDataExt {
-		if iCEMIFramePollingDataExt, ok := typ.(ICEMIFramePollingDataExt); ok {
-			return iCEMIFramePollingDataExt
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICEMIFramePollingDataExt {
+        if iCEMIFramePollingDataExt, ok := typ.(ICEMIFramePollingDataExt); ok {
+            return iCEMIFramePollingDataExt
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCEMIFramePollingDataExt(structType interface{}) CEMIFramePollingDataExt {
-	castFunc := func(typ interface{}) CEMIFramePollingDataExt {
-		if sCEMIFramePollingDataExt, ok := typ.(CEMIFramePollingDataExt); ok {
-			return sCEMIFramePollingDataExt
-		}
-		return CEMIFramePollingDataExt{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) CEMIFramePollingDataExt {
+        if sCEMIFramePollingDataExt, ok := typ.(CEMIFramePollingDataExt); ok {
+            return sCEMIFramePollingDataExt
+        }
+        if sCEMIFramePollingDataExt, ok := typ.(*CEMIFramePollingDataExt); ok {
+            return *sCEMIFramePollingDataExt
+        }
+        return CEMIFramePollingDataExt{}
+    }
+    return castFunc(structType)
 }
 
 func (m CEMIFramePollingDataExt) LengthInBits() uint16 {
-	var lengthInBits = m.CEMIFrame.LengthInBits()
+    var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m CEMIFramePollingDataExt) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func CEMIFramePollingDataExtParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 
-	// Create the instance
-	return NewCEMIFramePollingDataExt(), nil
+    // Create the instance
+    return NewCEMIFramePollingDataExt(), nil
 }
 
 func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+        return nil
+    }
+    return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }
