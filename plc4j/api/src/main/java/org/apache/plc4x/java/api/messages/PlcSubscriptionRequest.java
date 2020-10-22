@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcField;
+
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
@@ -42,6 +44,11 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionFieldRequest {
         PlcSubscriptionRequest.Builder addCyclicField(String name, String fieldQuery, Duration pollingInterval);
 
         /**
+         * @see #addCyclicField(String, String, Duration)
+         */
+        PlcSubscriptionRequest.Builder addCyclicField(String name, PlcField fieldQuery, Duration pollingInterval);
+
+        /**
          * Adds a new field to the to be constructed request which should be updated as soon as
          * a value changes in the PLC.
          *
@@ -50,6 +57,11 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionFieldRequest {
          * @return builder.
          */
         PlcSubscriptionRequest.Builder addChangeOfStateField(String name, String fieldQuery);
+
+        /**
+         * @see #addChangeOfStateField(String, String)
+         */
+        PlcSubscriptionRequest.Builder addChangeOfStateField(String name, PlcField fieldQuery);
 
         /**
          * Adds a new subscription to the to be constructed request which should be updated
@@ -63,6 +75,10 @@ public interface PlcSubscriptionRequest extends PlcSubscriptionFieldRequest {
          */
         PlcSubscriptionRequest.Builder addEventField(String name, String fieldQuery);
 
+        /**
+         * @see #addEventField(String, String)
+         */
+        PlcSubscriptionRequest.Builder addEventField(String name, PlcField fieldQuery);
     }
 
 }
