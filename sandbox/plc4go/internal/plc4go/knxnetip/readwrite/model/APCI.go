@@ -46,6 +46,43 @@ const(
     APCI_OTHER_PDU APCI = 0xF
 )
 
+func APCIValueOf(value uint8) APCI {
+    switch value {
+        case 0x0:
+            return APCI_GROUP_VALUE_READ_PDU
+        case 0x1:
+            return APCI_GROUP_VALUE_RESPONSE_PDU
+        case 0x2:
+            return APCI_GROUP_VALUE_WRITE_PDU
+        case 0x3:
+            return APCI_INDIVIDUAL_ADDRESS_WRITE_PDU
+        case 0x4:
+            return APCI_INDIVIDUAL_ADDRESS_READ_PDU
+        case 0x5:
+            return APCI_INDIVIDUAL_ADDRESS_RESPONSE_PDU
+        case 0x6:
+            return APCI_ADC_READ_PDU
+        case 0x7:
+            return APCI_ADC_RESPONSE_PDU
+        case 0x8:
+            return APCI_MEMORY_READ_PDU
+        case 0x9:
+            return APCI_MEMORY_RESPONSE_PDU
+        case 0xA:
+            return APCI_MEMORY_WRITE_PDU
+        case 0xB:
+            return APCI_USER_MESSAGE_PDU
+        case 0xC:
+            return APCI_DEVICE_DESCRIPTOR_READ_PDU
+        case 0xD:
+            return APCI_DEVICE_DESCRIPTOR_RESPONSE_PDU
+        case 0xE:
+            return APCI_RESTART_PDU
+        case 0xF:
+            return APCI_OTHER_PDU
+    }
+    return 0
+}
 
 func CastAPCI(structType interface{}) APCI {
     castFunc := func(typ interface{}) APCI {

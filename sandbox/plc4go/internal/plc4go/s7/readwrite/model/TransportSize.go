@@ -625,6 +625,43 @@ func (e TransportSize) DataProtocolId() uint8 {
         }
     }
 }
+func TransportSizeValueOf(value int8) TransportSize {
+    switch value {
+        case 0x00:
+            return TransportSize_LWORD
+        case 0x01:
+            return TransportSize_BOOL
+        case 0x02:
+            return TransportSize_BYTE
+        case 0x03:
+            return TransportSize_CHAR
+        case 0x04:
+            return TransportSize_WORD
+        case 0x05:
+            return TransportSize_INT
+        case 0x06:
+            return TransportSize_DWORD
+        case 0x07:
+            return TransportSize_DINT
+        case 0x08:
+            return TransportSize_REAL
+        case 0x09:
+            return TransportSize_DATE
+        case 0x0A:
+            return TransportSize_TIME_OF_DAY
+        case 0x0B:
+            return TransportSize_TIME
+        case 0x0C:
+            return TransportSize_S5TIME
+        case 0x0F:
+            return TransportSize_DATE_AND_TIME
+        case 0x13:
+            return TransportSize_WCHAR
+        case 0x30:
+            return TransportSize_LREAL
+    }
+    return 0
+}
 
 func CastTransportSize(structType interface{}) TransportSize {
     castFunc := func(typ interface{}) TransportSize {

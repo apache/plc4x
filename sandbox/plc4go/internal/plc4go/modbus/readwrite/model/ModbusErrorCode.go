@@ -40,6 +40,31 @@ const(
     ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND ModbusErrorCode = 11
 )
 
+func ModbusErrorCodeValueOf(value uint8) ModbusErrorCode {
+    switch value {
+        case 1:
+            return ModbusErrorCode_ILLEGAL_FUNCTION
+        case 10:
+            return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE
+        case 11:
+            return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND
+        case 2:
+            return ModbusErrorCode_ILLEGAL_DATA_ADDRESS
+        case 3:
+            return ModbusErrorCode_ILLEGAL_DATA_VALUE
+        case 4:
+            return ModbusErrorCode_SLAVE_DEVICE_FAILURE
+        case 5:
+            return ModbusErrorCode_ACKNOWLEDGE
+        case 6:
+            return ModbusErrorCode_SLAVE_DEVICE_BUSY
+        case 7:
+            return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE
+        case 8:
+            return ModbusErrorCode_MEMORY_PARITY_ERROR
+    }
+    return 0
+}
 
 func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
     castFunc := func(typ interface{}) ModbusErrorCode {

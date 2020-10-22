@@ -18,6 +18,7 @@ under the License.
 */
 package org.apache.plc4x.plugins.codegenerator.protocol.freemarker;
 
+import jdk.nashorn.internal.runtime.regexp.joni.constants.StringType;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.apache.plc4x.plugins.codegenerator.types.definitions.*;
@@ -142,6 +143,10 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
      */
     public boolean isComplexTypeReference(TypeReference typeReference) {
         return typeReference instanceof ComplexTypeReference;
+    }
+
+    public boolean isStringTypeReference(TypeReference typeReference) {
+        return typeReference instanceof StringTypeReference;
     }
 
     /**

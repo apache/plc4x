@@ -34,6 +34,19 @@ const(
     TPCI_NUMBERED_CONTROL_DATA TPCI = 0x3
 )
 
+func TPCIValueOf(value uint8) TPCI {
+    switch value {
+        case 0x0:
+            return TPCI_UNNUMBERED_DATA_PACKET
+        case 0x1:
+            return TPCI_UNNUMBERED
+        case 0x2:
+            return TPCI_NUMBERED_DATA_PACKET
+        case 0x3:
+            return TPCI_NUMBERED_CONTROL_DATA
+    }
+    return 0
+}
 
 func CastTPCI(structType interface{}) TPCI {
     castFunc := func(typ interface{}) TPCI {

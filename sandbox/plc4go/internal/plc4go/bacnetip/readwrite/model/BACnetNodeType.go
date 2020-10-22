@@ -52,6 +52,55 @@ const(
     BACnetNodeType_ZONE BACnetNodeType = 0x15
 )
 
+func BACnetNodeTypeValueOf(value uint8) BACnetNodeType {
+    switch value {
+        case 0x00:
+            return BACnetNodeType_UNKNOWN
+        case 0x01:
+            return BACnetNodeType_SYSTEM
+        case 0x02:
+            return BACnetNodeType_NETWORK
+        case 0x03:
+            return BACnetNodeType_DEVICE
+        case 0x04:
+            return BACnetNodeType_ORGANIZATIONAL
+        case 0x05:
+            return BACnetNodeType_AREA
+        case 0x06:
+            return BACnetNodeType_EQUIPMENT
+        case 0x07:
+            return BACnetNodeType_POINT
+        case 0x08:
+            return BACnetNodeType_COLLECTION
+        case 0x09:
+            return BACnetNodeType_PROPERTY
+        case 0x0A:
+            return BACnetNodeType_FUNCTIONAL
+        case 0x0B:
+            return BACnetNodeType_OTHER
+        case 0x0C:
+            return BACnetNodeType_SUBSYSTEM
+        case 0x0D:
+            return BACnetNodeType_BUILDING
+        case 0x0E:
+            return BACnetNodeType_FLOOR
+        case 0x0F:
+            return BACnetNodeType_SECTION
+        case 0x10:
+            return BACnetNodeType_MODULE
+        case 0x11:
+            return BACnetNodeType_TREE
+        case 0x12:
+            return BACnetNodeType_MEMBER
+        case 0x13:
+            return BACnetNodeType_PROTOCOL
+        case 0x14:
+            return BACnetNodeType_ROOM
+        case 0x15:
+            return BACnetNodeType_ZONE
+    }
+    return 0
+}
 
 func CastBACnetNodeType(structType interface{}) BACnetNodeType {
     castFunc := func(typ interface{}) BACnetNodeType {

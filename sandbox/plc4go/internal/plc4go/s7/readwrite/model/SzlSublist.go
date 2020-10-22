@@ -49,6 +49,49 @@ const(
     SzlSublist_MODULE_DIAGNOSTIC_DATA SzlSublist = 0xB1
 )
 
+func SzlSublistValueOf(value uint8) SzlSublist {
+    switch value {
+        case 0x11:
+            return SzlSublist_MODULE_IDENTIFICATION
+        case 0x12:
+            return SzlSublist_CPU_FEATURES
+        case 0x13:
+            return SzlSublist_USER_MEMORY_AREA
+        case 0x14:
+            return SzlSublist_SYSTEM_AREAS
+        case 0x15:
+            return SzlSublist_BLOCK_TYPES
+        case 0x19:
+            return SzlSublist_STATUS_MODULE_LEDS
+        case 0x1C:
+            return SzlSublist_COMPONENT_IDENTIFICATION
+        case 0x22:
+            return SzlSublist_INTERRUPT_STATUS
+        case 0x25:
+            return SzlSublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS
+        case 0x32:
+            return SzlSublist_COMMUNICATION_STATUS_DATA
+        case 0x74:
+            return SzlSublist_STATUS_SINGLE_MODULE_LED
+        case 0x90:
+            return SzlSublist_DP_MASTER_SYSTEM_INFORMATION
+        case 0x91:
+            return SzlSublist_MODULE_STATUS_INFORMATION
+        case 0x92:
+            return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION
+        case 0x94:
+            return SzlSublist_RACK_OR_STATION_STATUS_INFORMATION_2
+        case 0x95:
+            return SzlSublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION
+        case 0x96:
+            return SzlSublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP
+        case 0xA0:
+            return SzlSublist_DIAGNOSTIC_BUFFER
+        case 0xB1:
+            return SzlSublist_MODULE_DIAGNOSTIC_DATA
+    }
+    return 0
+}
 
 func CastSzlSublist(structType interface{}) SzlSublist {
     castFunc := func(typ interface{}) SzlSublist {

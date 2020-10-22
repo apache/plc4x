@@ -67,6 +67,25 @@ func (e DataTransportSize) SizeInBits() bool {
         }
     }
 }
+func DataTransportSizeValueOf(value uint8) DataTransportSize {
+    switch value {
+        case 0x00:
+            return DataTransportSize_NULL
+        case 0x03:
+            return DataTransportSize_BIT
+        case 0x04:
+            return DataTransportSize_BYTE_WORD_DWORD
+        case 0x05:
+            return DataTransportSize_INTEGER
+        case 0x06:
+            return DataTransportSize_DINTEGER
+        case 0x07:
+            return DataTransportSize_REAL
+        case 0x09:
+            return DataTransportSize_OCTET_STRING
+    }
+    return 0
+}
 
 func CastDataTransportSize(structType interface{}) DataTransportSize {
     castFunc := func(typ interface{}) DataTransportSize {

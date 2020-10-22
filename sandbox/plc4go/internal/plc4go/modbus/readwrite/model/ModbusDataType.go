@@ -151,6 +151,67 @@ func (e ModbusDataType) DataTypeSize() uint8 {
         }
     }
 }
+func ModbusDataTypeValueOf(value uint8) ModbusDataType {
+    switch value {
+        case 00:
+            return ModbusDataType_NULL
+        case 01:
+            return ModbusDataType_BOOL
+        case 10:
+            return ModbusDataType_BYTE
+        case 11:
+            return ModbusDataType_WORD
+        case 12:
+            return ModbusDataType_DWORD
+        case 13:
+            return ModbusDataType_LWORD
+        case 20:
+            return ModbusDataType_SINT
+        case 21:
+            return ModbusDataType_INT
+        case 22:
+            return ModbusDataType_DINT
+        case 23:
+            return ModbusDataType_LINT
+        case 24:
+            return ModbusDataType_USINT
+        case 25:
+            return ModbusDataType_UINT
+        case 26:
+            return ModbusDataType_UDINT
+        case 27:
+            return ModbusDataType_ULINT
+        case 30:
+            return ModbusDataType_REAL
+        case 31:
+            return ModbusDataType_LREAL
+        case 40:
+            return ModbusDataType_TIME
+        case 41:
+            return ModbusDataType_LTIME
+        case 50:
+            return ModbusDataType_DATE
+        case 51:
+            return ModbusDataType_LDATE
+        case 60:
+            return ModbusDataType_TIME_OF_DAY
+        case 61:
+            return ModbusDataType_LTIME_OF_DAY
+        case 70:
+            return ModbusDataType_DATE_AND_TIME
+        case 71:
+            return ModbusDataType_LDATE_AND_TIME
+        case 80:
+            return ModbusDataType_CHAR
+        case 81:
+            return ModbusDataType_WCHAR
+        case 82:
+            return ModbusDataType_STRING
+        case 83:
+            return ModbusDataType_WSTRING
+    }
+    return 0
+}
 
 func CastModbusDataType(structType interface{}) ModbusDataType {
     castFunc := func(typ interface{}) ModbusDataType {

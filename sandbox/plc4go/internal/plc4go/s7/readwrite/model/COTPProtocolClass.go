@@ -35,6 +35,21 @@ const(
     COTPProtocolClass_CLASS_4 COTPProtocolClass = 0x40
 )
 
+func COTPProtocolClassValueOf(value int8) COTPProtocolClass {
+    switch value {
+        case 0x00:
+            return COTPProtocolClass_CLASS_0
+        case 0x10:
+            return COTPProtocolClass_CLASS_1
+        case 0x20:
+            return COTPProtocolClass_CLASS_2
+        case 0x30:
+            return COTPProtocolClass_CLASS_3
+        case 0x40:
+            return COTPProtocolClass_CLASS_4
+    }
+    return 0
+}
 
 func CastCOTPProtocolClass(structType interface{}) COTPProtocolClass {
     castFunc := func(typ interface{}) COTPProtocolClass {

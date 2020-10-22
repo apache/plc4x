@@ -33,6 +33,17 @@ const(
     DeviceGroup_OTHERS DeviceGroup = 0x03
 )
 
+func DeviceGroupValueOf(value int8) DeviceGroup {
+    switch value {
+        case 0x01:
+            return DeviceGroup_PG_OR_PC
+        case 0x02:
+            return DeviceGroup_OS
+        case 0x03:
+            return DeviceGroup_OTHERS
+    }
+    return 0
+}
 
 func CastDeviceGroup(structType interface{}) DeviceGroup {
     castFunc := func(typ interface{}) DeviceGroup {

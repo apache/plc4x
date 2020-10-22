@@ -42,6 +42,35 @@ const(
     Status_TUNNELLING_LAYER_NOT_SUPPORTED Status = 0x29
 )
 
+func StatusValueOf(value uint8) Status {
+    switch value {
+        case 0x00:
+            return Status_NO_ERROR
+        case 0x01:
+            return Status_PROTOCOL_TYPE_NOT_SUPPORTED
+        case 0x02:
+            return Status_UNSUPPORTED_PROTOCOL_VERSION
+        case 0x04:
+            return Status_OUT_OF_ORDER_SEQUENCE_NUMBER
+        case 0x21:
+            return Status_INVALID_CONNECTION_ID
+        case 0x22:
+            return Status_CONNECTION_TYPE_NOT_SUPPORTED
+        case 0x23:
+            return Status_CONNECTION_OPTION_NOT_SUPPORTED
+        case 0x24:
+            return Status_NO_MORE_CONNECTIONS
+        case 0x25:
+            return Status_NO_MORE_UNIQUE_CONNECTIONS
+        case 0x26:
+            return Status_DATA_CONNECTION
+        case 0x27:
+            return Status_KNX_CONNECTION
+        case 0x29:
+            return Status_TUNNELLING_LAYER_NOT_SUPPORTED
+    }
+    return 0
+}
 
 func CastStatus(structType interface{}) Status {
     castFunc := func(typ interface{}) Status {
