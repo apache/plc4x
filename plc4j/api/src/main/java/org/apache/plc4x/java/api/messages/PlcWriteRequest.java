@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcField;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -38,32 +40,46 @@ public interface PlcWriteRequest extends PlcFieldRequest {
         PlcWriteRequest build();
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Boolean... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Boolean... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Byte... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Byte... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Short... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Short... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Integer... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Integer... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigInteger... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, BigInteger... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Long... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Long... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Float... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Float... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, Double... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Double... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, BigDecimal... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, BigDecimal... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, String... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, String... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalTime... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, LocalTime... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDate... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, LocalDate... values);
 
         PlcWriteRequest.Builder addItem(String name, String fieldQuery, LocalDateTime... values);
+        PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, LocalDateTime... values);
 
         <T> PlcWriteRequest.Builder addItem(String name, String fieldQuery, T... values);
+        <T> PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, T... values);
     }
 
 }

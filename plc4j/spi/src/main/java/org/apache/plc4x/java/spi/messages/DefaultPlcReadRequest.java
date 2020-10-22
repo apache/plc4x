@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -107,7 +108,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
 
         private final PlcReader reader;
         private final PlcFieldHandler fieldHandler;
-        private final Map<String, String> fields;
+        private final Map<String, Supplier<PlcField>> fields;
 
         public Builder(PlcReader reader, PlcFieldHandler fieldHandler) {
             this.reader = reader;
@@ -120,7 +121,16 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
             if (fields.containsKey(name)) {
                 throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
             }
-            fields.put(name, fieldQuery);
+            fields.put(name, () -> fieldHandler.createField(fieldQuery));
+            return this;
+        }
+
+        @Override
+        public PlcReadRequest.Builder addItem(String name, PlcField fieldQuery) {
+            if (fields.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate field definition '" + name + "'");
+            }
+            fields.put(name, () -> fieldQuery);
             return this;
         }
 
@@ -128,8 +138,7 @@ public class DefaultPlcReadRequest implements InternalPlcReadRequest, InternalPl
         public PlcReadRequest build() {
             LinkedHashMap<String, PlcField> parsedFields = new LinkedHashMap<>();
             fields.forEach((name, fieldQuery) -> {
-                PlcField parsedField = fieldHandler.createField(fieldQuery);
-                parsedFields.put(name, parsedField);
+                parsedFields.put(name, fieldQuery.get());
             });
             return new DefaultPlcReadRequest(reader, parsedFields);
         }
