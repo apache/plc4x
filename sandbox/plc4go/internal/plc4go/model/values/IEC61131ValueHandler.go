@@ -16,10 +16,10 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
 import (
-	"errors"
+    "errors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 	"reflect"

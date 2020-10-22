@@ -334,8 +334,10 @@
         // Characters & Strings
         // -----------------------------------------
         ['41' STRING
+            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, '1', _type.encoding)' '1']
         ]
         ['42' STRING
+            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, '1', _type.encoding)' '2']
         ]
         ['43' STRING
             [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
@@ -442,7 +444,7 @@
     ['0x0F' DATE_AND_TIME    ['X'              , '12'                , 'null'                  , 'null'                               , '56'                   , 'true'                , 'true'                , 'false'                , 'true'                 , 'false'             ]]
 ]
 
-[enum uint 8 'MemoryArea'             [string 24 'utf8' 'shortName']
+[enum uint 8 'MemoryArea'             [string 24 'shortName']
     ['0x1C' COUNTERS                 ['C']]
     ['0x1D' TIMERS                   ['T']]
     ['0x80' DIRECT_PERIPHERAL_ACCESS ['D']]

@@ -20,7 +20,6 @@ package drivers
 
 import (
     "encoding/hex"
-    "encoding/json"
     "fmt"
     "net"
     "os"
@@ -146,7 +145,7 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:1:REAL[2]")
+	rrb.AddItem("field", "holding-register:0:UINT[2]")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -164,10 +163,7 @@ func TestPlc4goDriver(t *testing.T) {
 	}
 
 	// Do something with the response
-	readResponseJson, err := json.Marshal(rrr.Response)
-	if err != nil {
-		t.Errorf("error serializing read-response: %s", err.Error())
-		return
-	}
-	fmt.Printf("Result: %s\n", string(readResponseJson))
+    value := rrr.Response.GetValue("field")
+
+	fmt.Printf("\n\nResult: %d\n", value.GetInt32())
 }

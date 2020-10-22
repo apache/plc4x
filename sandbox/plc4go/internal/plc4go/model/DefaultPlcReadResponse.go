@@ -28,6 +28,12 @@ type DefaultPlcReadResponse struct {
 	model.PlcReadResponse
 }
 
+func NewDefaultPlcReadResponse(values map[string]values.PlcValue) DefaultPlcReadResponse {
+    return DefaultPlcReadResponse {
+        values: values,
+    }
+}
+
 func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
     return m.values[name]
 }

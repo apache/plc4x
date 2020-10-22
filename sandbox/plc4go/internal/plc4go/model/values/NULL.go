@@ -16,28 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
-import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-	"time"
-)
-
-type PlcDATE struct {
-	value time.Time
-	values.PlcValueAdapter
+type PlcNULL struct {
+    PlcValueAdapter
 }
 
-func NewPlcDATE(value time.Time) PlcDATE {
-	safeValue := time.Date(value.Year(), value.Month(), value.Day(), 0, 0, 0, 0, value.Location())
-	return PlcDATE{
-		value: safeValue,
-	}
-}
-
-func (m PlcDATE) IsTime() bool {
-	return true
-}
-func (m PlcDATE) GetTime() time.Time {
-	return m.value
+func NewPlcNULL() PlcNULL {
+	return PlcNULL{}
 }

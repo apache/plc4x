@@ -16,12 +16,27 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/v0
+package values
 
-go 1.15
-
-require github.com/sirupsen/logrus v1.7.0
-
-require (
-	github.com/icza/bitio v1.0.0
+import (
+    "unicode/utf16"
 )
+
+type PlcWCHAR struct {
+	value []rune
+    PlcSimpleValueAdapter
+}
+
+func NewPlcWCHAR(value uint16) PlcWCHAR {
+	return PlcWCHAR{
+		value: utf16.Decode([]uint16{value}),
+	}
+}
+
+func (m PlcWCHAR) IsString() bool {
+	return true
+}
+
+func (m PlcWCHAR) GetString() string {
+	return string(m.value)
+}

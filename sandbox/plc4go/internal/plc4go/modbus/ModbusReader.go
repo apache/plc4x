@@ -26,6 +26,7 @@ import (
     plc4goModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
     "sync/atomic"
 )
 
@@ -134,11 +135,18 @@ func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRea
             // Convert the response into an ADU
             responseAdu := modbusModel.CastModbusTcpADU(response)
             // Convert the modbus response into a PLC4X response
-            readResponse := toPlc4xResponse(requestAdu, responseAdu, readRequest)
+            readResponse, err := toPlc4xResponse(requestAdu, responseAdu, readRequest)
 
-            result <- model.PlcReadRequestResult{
-                Request: readRequest,
-                Response: readResponse,
+            if err != nil {
+                result <- model.PlcReadRequestResult{
+                    Request: readRequest,
+                    Err: errors.New("Error decoding response: " + err.Error()),
+                }
+            } else {
+                result <- model.PlcReadRequestResult{
+                    Request:  readRequest,
+                    Response: readResponse,
+                }
             }
         }()
     } else {
@@ -152,7 +160,7 @@ func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRea
 	return result
 }
 
-func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) model.PlcReadResponse {
+func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse,error) {
     switch responseAdu.Pdu.(type) {
     case modbusModel.ModbusPDUReadDiscreteInputsResponse:
         pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
@@ -176,10 +184,14 @@ func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusMode
         fieldName := readRequest.GetFieldNames()[0]
         field := readRequest.GetField(fieldName)
 
-        modbusModel.DataItemParse(rb, )
-        fmt.Printf("ModbusPDUReadHoldingRegistersResponse %d", pdu)
-        // DataIo ...
+        value, err := modbusModel.DataItemParse(rb, field.GetTypeName(), 1)
+        if err != nil {
+            return nil, err
+        }
+        values := map[string]values.PlcValue{}
+        values[fieldName] = value
+        return plc4goModel.NewDefaultPlcReadResponse(values), nil
     }
-    return plc4goModel.DefaultPlcReadResponse{}
+    return nil, errors.New("unsupported response type")
 }
 

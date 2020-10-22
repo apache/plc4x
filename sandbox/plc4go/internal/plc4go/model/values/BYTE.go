@@ -16,55 +16,41 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-
-type PlcDWORD struct {
-	value uint32
-	values.PlcSimpleValueAdapter
+type PlcBYTE struct {
+	value uint8
+    PlcSimpleValueAdapter
 }
 
-func NewPlcDWORD(value uint32) PlcDWORD {
-	return PlcDWORD{
+func NewPlcBYTE(value uint8) PlcBYTE {
+	return PlcBYTE{
 		value: value,
 	}
 }
 
-func (m PlcDWORD) IsBoolean() bool {
+func (m PlcBYTE) IsBoolean() bool {
 	return true
 }
 
-func (m PlcDWORD) GetBooleanLength() uint32 {
-	return 32
+func (m PlcBYTE) GetBooleanLength() uint32 {
+	return 8
 }
 
-func (m PlcDWORD) GetBoolean() bool {
+func (m PlcBYTE) GetBoolean() bool {
 	return m.value&1 == 1
 }
 
-func (m PlcDWORD) GetBooleanAt(index uint32) bool {
-	if index > 31 {
+func (m PlcBYTE) GetBooleanAt(index uint32) bool {
+	if index > 7 {
 		return false
 	}
 	return m.value>>index&1 == 1
 }
 
-func (m PlcDWORD) GetBooleanArray() []bool {
+func (m PlcBYTE) GetBooleanArray() []bool {
 	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
-		m.value>>6&1 == 1, m.value>>7&1 == 1,
-		m.value>>8&1 == 1, m.value>>9&1 == 1,
-		m.value>>10&1 == 1, m.value>>11&1 == 1,
-		m.value>>12&1 == 1, m.value>>13&1 == 1,
-		m.value>>14&1 == 1, m.value>>15&1 == 1,
-		m.value>>16&1 == 1, m.value>>17&1 == 1,
-		m.value>>18&1 == 1, m.value>>19&1 == 1,
-		m.value>>20&1 == 1, m.value>>21&1 == 1,
-		m.value>>22&1 == 1, m.value>>23&1 == 1,
-		m.value>>24&1 == 1, m.value>>25&1 == 1,
-		m.value>>26&1 == 1, m.value>>27&1 == 1,
-		m.value>>28&1 == 1, m.value>>29&1 == 1,
-		m.value>>30&1 == 1, m.value>>31&1 == 1}
+		m.value>>6&1 == 1, m.value>>7&1 == 1}
 }

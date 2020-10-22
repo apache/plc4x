@@ -16,41 +16,39 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-
-type PlcLWORD struct {
-	value uint64
-	values.PlcSimpleValueAdapter
+type PlcDWORD struct {
+	value uint32
+    PlcSimpleValueAdapter
 }
 
-func NewPlcLWORD(value uint64) PlcLWORD {
-	return PlcLWORD{
+func NewPlcDWORD(value uint32) PlcDWORD {
+	return PlcDWORD{
 		value: value,
 	}
 }
 
-func (m PlcLWORD) IsBoolean() bool {
+func (m PlcDWORD) IsBoolean() bool {
 	return true
 }
 
-func (m PlcLWORD) GetBooleanLength() uint32 {
-	return 64
+func (m PlcDWORD) GetBooleanLength() uint32 {
+	return 32
 }
 
-func (m PlcLWORD) GetBoolean() bool {
+func (m PlcDWORD) GetBoolean() bool {
 	return m.value&1 == 1
 }
 
-func (m PlcLWORD) GetBooleanAt(index uint32) bool {
-	if index > 63 {
+func (m PlcDWORD) GetBooleanAt(index uint32) bool {
+	if index > 31 {
 		return false
 	}
 	return m.value>>index&1 == 1
 }
 
-func (m PlcLWORD) GetBooleanArray() []bool {
+func (m PlcDWORD) GetBooleanArray() []bool {
 	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
@@ -66,21 +64,5 @@ func (m PlcLWORD) GetBooleanArray() []bool {
 		m.value>>24&1 == 1, m.value>>25&1 == 1,
 		m.value>>26&1 == 1, m.value>>27&1 == 1,
 		m.value>>28&1 == 1, m.value>>29&1 == 1,
-		m.value>>30&1 == 1, m.value>>31&1 == 1,
-		m.value>>32&1 == 1, m.value>>33&1 == 1,
-		m.value>>34&1 == 1, m.value>>35&1 == 1,
-		m.value>>36&1 == 1, m.value>>37&1 == 1,
-		m.value>>38&1 == 1, m.value>>39&1 == 1,
-		m.value>>40&1 == 1, m.value>>41&1 == 1,
-		m.value>>42&1 == 1, m.value>>43&1 == 1,
-		m.value>>44&1 == 1, m.value>>45&1 == 1,
-		m.value>>46&1 == 1, m.value>>47&1 == 1,
-		m.value>>48&1 == 1, m.value>>49&1 == 1,
-		m.value>>50&1 == 1, m.value>>51&1 == 1,
-		m.value>>52&1 == 1, m.value>>53&1 == 1,
-		m.value>>54&1 == 1, m.value>>55&1 == 1,
-		m.value>>56&1 == 1, m.value>>57&1 == 1,
-		m.value>>58&1 == 1, m.value>>59&1 == 1,
-		m.value>>60&1 == 1, m.value>>61&1 == 1,
-		m.value>>62&1 == 1, m.value>>63&1 == 1}
+		m.value>>30&1 == 1, m.value>>31&1 == 1}
 }

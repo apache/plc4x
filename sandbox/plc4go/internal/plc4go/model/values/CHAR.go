@@ -16,42 +16,23 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
-import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-)
-
-type PlcBOOL struct {
-	value bool
-	values.PlcSimpleValueAdapter
+type PlcCHAR struct {
+	value []byte
+    PlcSimpleValueAdapter
 }
 
-func NewPlcBOOL(value bool) PlcBOOL {
-	return PlcBOOL{
-		value: value,
+func NewPlcCHAR(value uint8) PlcCHAR {
+	return PlcCHAR{
+		value: []byte{value},
 	}
 }
 
-func (m PlcBOOL) IsBoolean() bool {
+func (m PlcCHAR) IsString() bool {
 	return true
 }
 
-func (m PlcBOOL) GetBooleanLength() uint32 {
-	return 1
-}
-
-func (m PlcBOOL) GetBoolean() bool {
-	return m.value
-}
-
-func (m PlcBOOL) GetBooleanAt(index uint32) bool {
-	if index == 0 {
-		return m.value
-	}
-	return false
-}
-
-func (m PlcBOOL) GetBooleanArray() []bool {
-	return []bool{m.value}
+func (m PlcCHAR) GetString() string {
+	return string(m.value)
 }
