@@ -265,7 +265,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             // in sequence and then come the values.
             for (String fieldName : readRequest.getFieldNames()) {
                 try {
-                    final ReturnCode result = ReturnCode.valueOf(readBuffer.readUnsignedLong(32));
+                    final ReturnCode result = ReturnCode.enumForValue(readBuffer.readUnsignedLong(32));
                     responseCodes.put(fieldName, parsePlcResponseCode(result));
                 } catch (ParseException e) {
                     responseCodes.put(fieldName, PlcResponseCode.INTERNAL_ERROR);
@@ -494,7 +494,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             // in sequence and then come the values.
             for (String fieldName : writeRequest.getFieldNames()) {
                 try {
-                    final ReturnCode result = ReturnCode.valueOf(readBuffer.readUnsignedLong(32));
+                    final ReturnCode result = ReturnCode.enumForValue(readBuffer.readUnsignedLong(32));
                     responseCodes.put(fieldName, parsePlcResponseCode(result));
                 } catch (ParseException e) {
                     responseCodes.put(fieldName, PlcResponseCode.INTERNAL_ERROR);

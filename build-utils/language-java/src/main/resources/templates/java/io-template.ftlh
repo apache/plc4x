@@ -246,7 +246,7 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
         <#assign enumField = field>
 
         // Enum field (${enumField.name})
-        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.valueOf(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
+        ${helper.getLanguageTypeNameForField(field)} ${enumField.name} = ${helper.getLanguageTypeNameForField(field)}.enumForValue(${helper.getReadBufferReadMethodCall(helper.getEnumBaseTypeReference(enumField.type))});
         <#break>
     <#case "implicit">
         <#assign implicitField = field>
