@@ -18,6 +18,11 @@
 //
 package plc4go
 
+import (
+    "net/url"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+)
+
 type PlcDriverResult struct {
 	Driver PlcDriver
 	Err    error
@@ -36,8 +41,13 @@ type PlcDriver interface {
 	// Get a human readable name for this driver
 	GetProtocolName() string
 
+	// If the driver has a default form of transport, provide this and make
+	// providing the transport code optional in the connection string
+	GetDefaultTransport() string
+
+	// Have the driver parse the query string and provide feedback if it's not a valid one
 	CheckQuery(query string) error
 
 	// Establishes a connection to a given PLC using the information in the connectionString
-	GetConnection(connectionString string) (PlcConnection, error)
+	GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan PlcConnectionConnectResult
 }

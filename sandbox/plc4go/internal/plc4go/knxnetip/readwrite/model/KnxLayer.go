@@ -18,45 +18,46 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type KnxLayer uint8
 
 type IKnxLayer interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	KnxLayer_TUNNEL_LINK_LAYER KnxLayer = 0x02
-	KnxLayer_TUNNEL_RAW        KnxLayer = 0x04
-	KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
+const(
+    KnxLayer_TUNNEL_LINK_LAYER KnxLayer = 0x02
+    KnxLayer_TUNNEL_RAW KnxLayer = 0x04
+    KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
+
 func CastKnxLayer(structType interface{}) KnxLayer {
-	castFunc := func(typ interface{}) KnxLayer {
-		if sKnxLayer, ok := typ.(KnxLayer); ok {
-			return sKnxLayer
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KnxLayer {
+        if sKnxLayer, ok := typ.(KnxLayer); ok {
+            return sKnxLayer
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m KnxLayer) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m KnxLayer) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KnxLayerParse(io *spi.ReadBuffer) (KnxLayer, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e KnxLayer) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

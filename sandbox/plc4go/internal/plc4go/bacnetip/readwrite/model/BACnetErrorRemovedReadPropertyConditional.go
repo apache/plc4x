@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorRemovedReadPropertyConditional struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorRemovedReadPropertyConditional interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorRemovedReadPropertyConditional) ServiceChoice() uint8 {
-	return 0x0D
+    return 0x0D
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorRemovedReadPropertyConditional() BACnetErrorInitializer {
-	return &BACnetErrorRemovedReadPropertyConditional{}
+    return &BACnetErrorRemovedReadPropertyConditional{}
 }
 
 func CastIBACnetErrorRemovedReadPropertyConditional(structType interface{}) IBACnetErrorRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) IBACnetErrorRemovedReadPropertyConditional {
-		if iBACnetErrorRemovedReadPropertyConditional, ok := typ.(IBACnetErrorRemovedReadPropertyConditional); ok {
-			return iBACnetErrorRemovedReadPropertyConditional
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorRemovedReadPropertyConditional {
+        if iBACnetErrorRemovedReadPropertyConditional, ok := typ.(IBACnetErrorRemovedReadPropertyConditional); ok {
+            return iBACnetErrorRemovedReadPropertyConditional
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorRemovedReadPropertyConditional(structType interface{}) BACnetErrorRemovedReadPropertyConditional {
-	castFunc := func(typ interface{}) BACnetErrorRemovedReadPropertyConditional {
-		if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
-			return sBACnetErrorRemovedReadPropertyConditional
-		}
-		return BACnetErrorRemovedReadPropertyConditional{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorRemovedReadPropertyConditional {
+        if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(BACnetErrorRemovedReadPropertyConditional); ok {
+            return sBACnetErrorRemovedReadPropertyConditional
+        }
+        if sBACnetErrorRemovedReadPropertyConditional, ok := typ.(*BACnetErrorRemovedReadPropertyConditional); ok {
+            return *sBACnetErrorRemovedReadPropertyConditional
+        }
+        return BACnetErrorRemovedReadPropertyConditional{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorRemovedReadPropertyConditionalParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorRemovedReadPropertyConditional(), nil
+    // Create the instance
+    return NewBACnetErrorRemovedReadPropertyConditional(), nil
 }
 
 func (m BACnetErrorRemovedReadPropertyConditional) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

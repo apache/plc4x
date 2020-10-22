@@ -19,89 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KNXGroupAddress struct {
+
 }
 
 // The corresponding interface
 type IKNXGroupAddress interface {
-	spi.Message
-	NumLevels() uint8
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    NumLevels() uint8
+    Serialize(io spi.WriteBuffer) error
 }
 
 type KNXGroupAddressInitializer interface {
-	initialize() spi.Message
+    initialize() spi.Message
 }
 
 func KNXGroupAddressNumLevels(m IKNXGroupAddress) uint8 {
-	return m.NumLevels()
+    return m.NumLevels()
 }
 
+
 func CastIKNXGroupAddress(structType interface{}) IKNXGroupAddress {
-	castFunc := func(typ interface{}) IKNXGroupAddress {
-		if iKNXGroupAddress, ok := typ.(IKNXGroupAddress); ok {
-			return iKNXGroupAddress
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKNXGroupAddress {
+        if iKNXGroupAddress, ok := typ.(IKNXGroupAddress); ok {
+            return iKNXGroupAddress
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKNXGroupAddress(structType interface{}) KNXGroupAddress {
-	castFunc := func(typ interface{}) KNXGroupAddress {
-		if sKNXGroupAddress, ok := typ.(KNXGroupAddress); ok {
-			return sKNXGroupAddress
-		}
-		return KNXGroupAddress{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KNXGroupAddress {
+        if sKNXGroupAddress, ok := typ.(KNXGroupAddress); ok {
+            return sKNXGroupAddress
+        }
+        if sKNXGroupAddress, ok := typ.(*KNXGroupAddress); ok {
+            return *sKNXGroupAddress
+        }
+        return KNXGroupAddress{}
+    }
+    return castFunc(structType)
 }
 
 func (m KNXGroupAddress) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Length of sub-type elements will be added by sub-type...
+    // Length of sub-type elements will be added by sub-type...
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KNXGroupAddress) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KNXGroupAddressParse(io *spi.ReadBuffer, numLevels uint8) (spi.Message, error) {
 
-	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var initializer KNXGroupAddressInitializer
-	var typeSwitchError error
-	switch {
-	case numLevels == 1:
-		initializer, typeSwitchError = KNXGroupAddressFreeLevelParse(io)
-	case numLevels == 2:
-		initializer, typeSwitchError = KNXGroupAddress2LevelParse(io)
-	case numLevels == 3:
-		initializer, typeSwitchError = KNXGroupAddress3LevelParse(io)
-	}
-	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
-	}
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    var initializer KNXGroupAddressInitializer
+    var typeSwitchError error
+    switch {
+    case numLevels == 1:
+        initializer, typeSwitchError = KNXGroupAddressFreeLevelParse(io)
+    case numLevels == 2:
+        initializer, typeSwitchError = KNXGroupAddress2LevelParse(io)
+    case numLevels == 3:
+        initializer, typeSwitchError = KNXGroupAddress3LevelParse(io)
+    }
+    if typeSwitchError != nil {
+        return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+    }
 
-	// Create the instance
-	return initializer.initialize(), nil
+    // Create the instance
+    return initializer.initialize(), nil
 }
 
 func KNXGroupAddressSerialize(io spi.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func() error) error {
 
-	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := childSerialize()
-	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
-	}
+    // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+    _typeSwitchErr := childSerialize()
+    if _typeSwitchErr != nil {
+        return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+    }
 
-	return nil
+    return nil
 }

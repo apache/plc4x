@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorGetEventInformation struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorGetEventInformation interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorGetEventInformation) ServiceChoice() uint8 {
-	return 0x1D
+    return 0x1D
 }
 
 func (m BACnetErrorGetEventInformation) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorGetEventInformation() BACnetErrorInitializer {
-	return &BACnetErrorGetEventInformation{}
+    return &BACnetErrorGetEventInformation{}
 }
 
 func CastIBACnetErrorGetEventInformation(structType interface{}) IBACnetErrorGetEventInformation {
-	castFunc := func(typ interface{}) IBACnetErrorGetEventInformation {
-		if iBACnetErrorGetEventInformation, ok := typ.(IBACnetErrorGetEventInformation); ok {
-			return iBACnetErrorGetEventInformation
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorGetEventInformation {
+        if iBACnetErrorGetEventInformation, ok := typ.(IBACnetErrorGetEventInformation); ok {
+            return iBACnetErrorGetEventInformation
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorGetEventInformation(structType interface{}) BACnetErrorGetEventInformation {
-	castFunc := func(typ interface{}) BACnetErrorGetEventInformation {
-		if sBACnetErrorGetEventInformation, ok := typ.(BACnetErrorGetEventInformation); ok {
-			return sBACnetErrorGetEventInformation
-		}
-		return BACnetErrorGetEventInformation{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorGetEventInformation {
+        if sBACnetErrorGetEventInformation, ok := typ.(BACnetErrorGetEventInformation); ok {
+            return sBACnetErrorGetEventInformation
+        }
+        if sBACnetErrorGetEventInformation, ok := typ.(*BACnetErrorGetEventInformation); ok {
+            return *sBACnetErrorGetEventInformation
+        }
+        return BACnetErrorGetEventInformation{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorGetEventInformation) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorGetEventInformation) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorGetEventInformationParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorGetEventInformation(), nil
+    // Create the instance
+    return NewBACnetErrorGetEventInformation(), nil
 }
 
 func (m BACnetErrorGetEventInformation) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

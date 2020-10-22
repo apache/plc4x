@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple struct {
-	BACnetUnconfirmedServiceRequest
+    BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple interface {
-	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetUnconfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) ServiceChoice() uint8 {
-	return 0x0B
+    return 0x0B
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{}
+    return &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{}
 }
 
 func CastIBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
-	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
-		if iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
-			return iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+        if iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
+            return iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
-		if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
-			return sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		}
-		return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple {
+        if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
+            return sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+        }
+        if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple); ok {
+            return *sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
+        }
+        return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(), nil
+    // Create the instance
+    return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple(), nil
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

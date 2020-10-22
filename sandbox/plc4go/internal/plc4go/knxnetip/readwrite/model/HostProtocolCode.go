@@ -18,44 +18,45 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	HostProtocolCode_IPV4_UDP HostProtocolCode = 0x01
-	HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
+const(
+    HostProtocolCode_IPV4_UDP HostProtocolCode = 0x01
+    HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
 
+
 func CastHostProtocolCode(structType interface{}) HostProtocolCode {
-	castFunc := func(typ interface{}) HostProtocolCode {
-		if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {
-			return sHostProtocolCode
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) HostProtocolCode {
+        if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {
+            return sHostProtocolCode
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m HostProtocolCode) LengthInBits() uint16 {
-	return 8
+    return 8
 }
 
 func (m HostProtocolCode) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func HostProtocolCodeParse(io *spi.ReadBuffer) (HostProtocolCode, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e HostProtocolCode) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

@@ -461,23 +461,23 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
 
                 // Assemble the plc4x return data-structure.
                 Map<String, PlcValue> dataPointMap = new HashMap<>();
-                dataPointMap.put("sourceAddress", new PlcString(toString(sourceAddress)));
-                dataPointMap.put("targetAddress", new PlcString(groupAddress.getGroupAddress()));
+                dataPointMap.put("sourceAddress", new PlcSTRING(toString(sourceAddress)));
+                dataPointMap.put("targetAddress", new PlcSTRING(groupAddress.getGroupAddress()));
                 if (groupAddress.getFunction() != null) {
-                    dataPointMap.put("location", new PlcString(groupAddress.getFunction().getSpaceName()));
-                    dataPointMap.put("function", new PlcString(groupAddress.getFunction().getName()));
+                    dataPointMap.put("location", new PlcSTRING(groupAddress.getFunction().getSpaceName()));
+                    dataPointMap.put("function", new PlcSTRING(groupAddress.getFunction().getName()));
                 } else {
                     dataPointMap.put("location", null);
                     dataPointMap.put("function", null);
                 }
                 if(areaName != null) {
-                    dataPointMap.put("area", new PlcString(areaName));
+                    dataPointMap.put("area", new PlcSTRING(areaName));
                 }
                 if(lineName != null) {
-                    dataPointMap.put("line", new PlcString(lineName));
+                    dataPointMap.put("line", new PlcSTRING(lineName));
                 }
-                dataPointMap.put("description", new PlcString(groupAddress.getName()));
-                dataPointMap.put("unitOfMeasurement", new PlcString(groupAddress.getType().getName()));
+                dataPointMap.put("description", new PlcSTRING(groupAddress.getName()));
+                dataPointMap.put("unitOfMeasurement", new PlcSTRING(groupAddress.getType().getName()));
                 dataPointMap.put("value", value);
                 final PlcStruct dataPoint = new PlcStruct(dataPointMap);
 

@@ -19,95 +19,98 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetTagApplicationDouble struct {
-	Value float64
-	BACnetTag
+    Value float64
+    BACnetTag
 }
 
 // The corresponding interface
 type IBACnetTagApplicationDouble interface {
-	IBACnetTag
-	Serialize(io spi.WriteBuffer) error
+    IBACnetTag
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetTagApplicationDouble) ContextSpecificTag() uint8 {
-	return 0
+    return 0
 }
 
 func (m BACnetTagApplicationDouble) initialize(typeOrTagNumber uint8, lengthValueType uint8, extTagNumber *uint8, extLength *uint8) spi.Message {
-	m.TypeOrTagNumber = typeOrTagNumber
-	m.LengthValueType = lengthValueType
-	m.ExtTagNumber = extTagNumber
-	m.ExtLength = extLength
-	return m
+    m.TypeOrTagNumber = typeOrTagNumber
+    m.LengthValueType = lengthValueType
+    m.ExtTagNumber = extTagNumber
+    m.ExtLength = extLength
+    return m
 }
 
 func NewBACnetTagApplicationDouble(value float64) BACnetTagInitializer {
-	return &BACnetTagApplicationDouble{Value: value}
+    return &BACnetTagApplicationDouble{Value: value}
 }
 
 func CastIBACnetTagApplicationDouble(structType interface{}) IBACnetTagApplicationDouble {
-	castFunc := func(typ interface{}) IBACnetTagApplicationDouble {
-		if iBACnetTagApplicationDouble, ok := typ.(IBACnetTagApplicationDouble); ok {
-			return iBACnetTagApplicationDouble
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetTagApplicationDouble {
+        if iBACnetTagApplicationDouble, ok := typ.(IBACnetTagApplicationDouble); ok {
+            return iBACnetTagApplicationDouble
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetTagApplicationDouble(structType interface{}) BACnetTagApplicationDouble {
-	castFunc := func(typ interface{}) BACnetTagApplicationDouble {
-		if sBACnetTagApplicationDouble, ok := typ.(BACnetTagApplicationDouble); ok {
-			return sBACnetTagApplicationDouble
-		}
-		return BACnetTagApplicationDouble{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetTagApplicationDouble {
+        if sBACnetTagApplicationDouble, ok := typ.(BACnetTagApplicationDouble); ok {
+            return sBACnetTagApplicationDouble
+        }
+        if sBACnetTagApplicationDouble, ok := typ.(*BACnetTagApplicationDouble); ok {
+            return *sBACnetTagApplicationDouble
+        }
+        return BACnetTagApplicationDouble{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetTagApplicationDouble) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetTag.LengthInBits()
+    var lengthInBits uint16 = m.BACnetTag.LengthInBits()
 
-	// Simple field (value)
-	lengthInBits += 64
+    // Simple field (value)
+    lengthInBits += 64
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetTagApplicationDouble) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetTagApplicationDoubleParse(io *spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
-	// Simple Field (value)
-	value, _valueErr := io.ReadFloat64(64)
-	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-	}
+    // Simple Field (value)
+    value, _valueErr := io.ReadFloat64(64)
+    if _valueErr != nil {
+        return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+    }
 
-	// Create the instance
-	return NewBACnetTagApplicationDouble(value), nil
+    // Create the instance
+    return NewBACnetTagApplicationDouble(value), nil
 }
 
 func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (value)
-		value := float64(m.Value)
-		_valueErr := io.WriteFloat64(64, value)
-		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
-		}
+    // Simple Field (value)
+    value := float64(m.Value)
+    _valueErr := io.WriteFloat64(64, (value))
+    if _valueErr != nil {
+        return errors.New("Error serializing 'value' field " + _valueErr.Error())
+    }
 
-		return nil
-	}
-	return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
+        return nil
+    }
+    return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }

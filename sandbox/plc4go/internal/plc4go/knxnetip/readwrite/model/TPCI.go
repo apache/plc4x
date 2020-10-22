@@ -18,46 +18,47 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type TPCI uint8
 
 type ITPCI interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	TPCI_UNNUMBERED_DATA_PACKET TPCI = 0x0
-	TPCI_UNNUMBERED             TPCI = 0x1
-	TPCI_NUMBERED_DATA_PACKET   TPCI = 0x2
-	TPCI_NUMBERED_CONTROL_DATA  TPCI = 0x3
+const(
+    TPCI_UNNUMBERED_DATA_PACKET TPCI = 0x0
+    TPCI_UNNUMBERED TPCI = 0x1
+    TPCI_NUMBERED_DATA_PACKET TPCI = 0x2
+    TPCI_NUMBERED_CONTROL_DATA TPCI = 0x3
 )
 
+
 func CastTPCI(structType interface{}) TPCI {
-	castFunc := func(typ interface{}) TPCI {
-		if sTPCI, ok := typ.(TPCI); ok {
-			return sTPCI
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) TPCI {
+        if sTPCI, ok := typ.(TPCI); ok {
+            return sTPCI
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m TPCI) LengthInBits() uint16 {
-	return 2
+    return 2
 }
 
 func (m TPCI) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func TPCIParse(io *spi.ReadBuffer) (TPCI, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e TPCI) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

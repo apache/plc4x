@@ -19,126 +19,129 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUReadDiscreteInputsResponse struct {
-	Value []int8
-	ModbusPDU
+    Value []int8
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUReadDiscreteInputsResponse interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUReadDiscreteInputsResponse) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) FunctionFlag() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) Response() bool {
-	return true
+    return true
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUReadDiscreteInputsResponse(value []int8) ModbusPDUInitializer {
-	return &ModbusPDUReadDiscreteInputsResponse{Value: value}
+    return &ModbusPDUReadDiscreteInputsResponse{Value: value}
 }
 
 func CastIModbusPDUReadDiscreteInputsResponse(structType interface{}) IModbusPDUReadDiscreteInputsResponse {
-	castFunc := func(typ interface{}) IModbusPDUReadDiscreteInputsResponse {
-		if iModbusPDUReadDiscreteInputsResponse, ok := typ.(IModbusPDUReadDiscreteInputsResponse); ok {
-			return iModbusPDUReadDiscreteInputsResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUReadDiscreteInputsResponse {
+        if iModbusPDUReadDiscreteInputsResponse, ok := typ.(IModbusPDUReadDiscreteInputsResponse); ok {
+            return iModbusPDUReadDiscreteInputsResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUReadDiscreteInputsResponse(structType interface{}) ModbusPDUReadDiscreteInputsResponse {
-	castFunc := func(typ interface{}) ModbusPDUReadDiscreteInputsResponse {
-		if sModbusPDUReadDiscreteInputsResponse, ok := typ.(ModbusPDUReadDiscreteInputsResponse); ok {
-			return sModbusPDUReadDiscreteInputsResponse
-		}
-		return ModbusPDUReadDiscreteInputsResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUReadDiscreteInputsResponse {
+        if sModbusPDUReadDiscreteInputsResponse, ok := typ.(ModbusPDUReadDiscreteInputsResponse); ok {
+            return sModbusPDUReadDiscreteInputsResponse
+        }
+        if sModbusPDUReadDiscreteInputsResponse, ok := typ.(*ModbusPDUReadDiscreteInputsResponse); ok {
+            return *sModbusPDUReadDiscreteInputsResponse
+        }
+        return ModbusPDUReadDiscreteInputsResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Implicit Field (byteCount)
-	lengthInBits += 8
+    // Implicit Field (byteCount)
+    lengthInBits += 8
 
-	// Array field
-	if len(m.Value) > 0 {
-		lengthInBits += 8 * uint16(len(m.Value))
-	}
+    // Array field
+    if len(m.Value) > 0 {
+        lengthInBits += 8 * uint16(len(m.Value))
+    }
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadDiscreteInputsResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := io.ReadUint8(8)
-	if _byteCountErr != nil {
-		return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
-	}
+    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    byteCount, _byteCountErr := io.ReadUint8(8)
+    if _byteCountErr != nil {
+        return nil, errors.New("Error parsing 'byteCount' field " + _byteCountErr.Error())
+    }
 
-	// Array field (value)
-	// Count array
-	value := make([]int8, byteCount)
-	for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
+    // Array field (value)
+    // Count array
+    value := make([]int8, byteCount)
+    for curItem := uint16(0); curItem < uint16(byteCount); curItem++ {
 
-		_item, _err := io.ReadInt8(8)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'value' field " + _err.Error())
-		}
-		value[curItem] = _item
-	}
+        _item, _err := io.ReadInt8(8)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'value' field " + _err.Error())
+        }
+        value[curItem] = _item
+    }
 
-	// Create the instance
-	return NewModbusPDUReadDiscreteInputsResponse(value), nil
+    // Create the instance
+    return NewModbusPDUReadDiscreteInputsResponse(value), nil
 }
 
 func (m ModbusPDUReadDiscreteInputsResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		byteCount := uint8(uint8(len(m.Value)))
-		_byteCountErr := io.WriteUint8(8, byteCount)
-		if _byteCountErr != nil {
-			return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
-		}
+    // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    byteCount := uint8(uint8(len(m.Value)))
+    _byteCountErr := io.WriteUint8(8, (byteCount))
+    if _byteCountErr != nil {
+        return errors.New("Error serializing 'byteCount' field " + _byteCountErr.Error())
+    }
 
-		// Array Field (value)
-		if m.Value != nil {
-			for _, _element := range m.Value {
-				_elementErr := io.WriteInt8(8, _element)
-				if _elementErr != nil {
-					return errors.New("Error serializing 'value' field " + _elementErr.Error())
-				}
-			}
-		}
+    // Array Field (value)
+    if m.Value != nil {
+        for _, _element := range m.Value {
+            _elementErr := io.WriteInt8(8, _element)
+            if _elementErr != nil {
+                return errors.New("Error serializing 'value' field " + _elementErr.Error())
+            }
+        }
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

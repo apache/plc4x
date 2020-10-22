@@ -469,11 +469,11 @@
             [reserved uint  8    '0x0']
             [simple   float 8.23 'value']
         ]
-        ['4' String
+        ['4' STRING
             [reserved uint   8 '0x0']
             [simple   string 8 'UTF-8' 'value']
         ]
-        ['16' String
+        ['16' STRING
             [reserved uint   8   '0x0']
             [simple   string 112 'UTF-8' 'value']
         ]

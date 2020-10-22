@@ -20,8 +20,8 @@ package iec61131
 
 import (
 	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 	"reflect"
 	"time"
 )
@@ -207,11 +207,11 @@ func (m IEC61131ValueHandler) NewPlcValue(typeName string, value interface{}) (v
 		}
 		return NewPlcWCHAR(casted), nil
 	case IEC61131_STRING:
-		casted, ok := value.([]uint8)
+		/*casted, ok := value.([]uint8)
 		if !ok {
 			return nil, errors.New("couldn't cast value of type " + reflect.TypeOf(value).Name() + " to []uint8")
 		}
-		return NewPlcSTRING(casted), nil
+		return NewPlcSTRING(casted), nil*/
 	case IEC61131_WSTRING:
 		casted, ok := value.([]uint16)
 		if !ok {

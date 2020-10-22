@@ -19,99 +19,102 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUReadExceptionStatusResponse struct {
-	Value uint8
-	ModbusPDU
+    Value uint8
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUReadExceptionStatusResponse) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) FunctionFlag() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) Response() bool {
-	return true
+    return true
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewModbusPDUReadExceptionStatusResponse(value uint8) ModbusPDUInitializer {
-	return &ModbusPDUReadExceptionStatusResponse{Value: value}
+    return &ModbusPDUReadExceptionStatusResponse{Value: value}
 }
 
 func CastIModbusPDUReadExceptionStatusResponse(structType interface{}) IModbusPDUReadExceptionStatusResponse {
-	castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusResponse {
-		if iModbusPDUReadExceptionStatusResponse, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
-			return iModbusPDUReadExceptionStatusResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUReadExceptionStatusResponse {
+        if iModbusPDUReadExceptionStatusResponse, ok := typ.(IModbusPDUReadExceptionStatusResponse); ok {
+            return iModbusPDUReadExceptionStatusResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUReadExceptionStatusResponse(structType interface{}) ModbusPDUReadExceptionStatusResponse {
-	castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusResponse {
-		if sModbusPDUReadExceptionStatusResponse, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
-			return sModbusPDUReadExceptionStatusResponse
-		}
-		return ModbusPDUReadExceptionStatusResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUReadExceptionStatusResponse {
+        if sModbusPDUReadExceptionStatusResponse, ok := typ.(ModbusPDUReadExceptionStatusResponse); ok {
+            return sModbusPDUReadExceptionStatusResponse
+        }
+        if sModbusPDUReadExceptionStatusResponse, ok := typ.(*ModbusPDUReadExceptionStatusResponse); ok {
+            return *sModbusPDUReadExceptionStatusResponse
+        }
+        return ModbusPDUReadExceptionStatusResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (value)
-	lengthInBits += 8
+    // Simple field (value)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUReadExceptionStatusResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Simple Field (value)
-	value, _valueErr := io.ReadUint8(8)
-	if _valueErr != nil {
-		return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
-	}
+    // Simple Field (value)
+    value, _valueErr := io.ReadUint8(8)
+    if _valueErr != nil {
+        return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+    }
 
-	// Create the instance
-	return NewModbusPDUReadExceptionStatusResponse(value), nil
+    // Create the instance
+    return NewModbusPDUReadExceptionStatusResponse(value), nil
 }
 
 func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (value)
-		value := uint8(m.Value)
-		_valueErr := io.WriteUint8(8, value)
-		if _valueErr != nil {
-			return errors.New("Error serializing 'value' field " + _valueErr.Error())
-		}
+    // Simple Field (value)
+    value := uint8(m.Value)
+    _valueErr := io.WriteUint8(8, (value))
+    if _valueErr != nil {
+        return errors.New("Error serializing 'value' field " + _valueErr.Error())
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

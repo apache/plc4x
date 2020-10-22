@@ -19,97 +19,100 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type TunnelingResponse struct {
-	TunnelingResponseDataBlock ITunnelingResponseDataBlock
-	KNXNetIPMessage
+    TunnelingResponseDataBlock ITunnelingResponseDataBlock
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type ITunnelingResponse interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m TunnelingResponse) MsgType() uint16 {
-	return 0x0421
+    return 0x0421
 }
 
 func (m TunnelingResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewTunnelingResponse(tunnelingResponseDataBlock ITunnelingResponseDataBlock) KNXNetIPMessageInitializer {
-	return &TunnelingResponse{TunnelingResponseDataBlock: tunnelingResponseDataBlock}
+    return &TunnelingResponse{TunnelingResponseDataBlock: tunnelingResponseDataBlock}
 }
 
 func CastITunnelingResponse(structType interface{}) ITunnelingResponse {
-	castFunc := func(typ interface{}) ITunnelingResponse {
-		if iTunnelingResponse, ok := typ.(ITunnelingResponse); ok {
-			return iTunnelingResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ITunnelingResponse {
+        if iTunnelingResponse, ok := typ.(ITunnelingResponse); ok {
+            return iTunnelingResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastTunnelingResponse(structType interface{}) TunnelingResponse {
-	castFunc := func(typ interface{}) TunnelingResponse {
-		if sTunnelingResponse, ok := typ.(TunnelingResponse); ok {
-			return sTunnelingResponse
-		}
-		return TunnelingResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) TunnelingResponse {
+        if sTunnelingResponse, ok := typ.(TunnelingResponse); ok {
+            return sTunnelingResponse
+        }
+        if sTunnelingResponse, ok := typ.(*TunnelingResponse); ok {
+            return *sTunnelingResponse
+        }
+        return TunnelingResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m TunnelingResponse) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (tunnelingResponseDataBlock)
-	lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
+    // Simple field (tunnelingResponseDataBlock)
+    lengthInBits += m.TunnelingResponseDataBlock.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m TunnelingResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func TunnelingResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (tunnelingResponseDataBlock)
-	_tunnelingResponseDataBlockMessage, _err := TunnelingResponseDataBlockParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'tunnelingResponseDataBlock'. " + _err.Error())
-	}
-	var tunnelingResponseDataBlock ITunnelingResponseDataBlock
-	tunnelingResponseDataBlock, _tunnelingResponseDataBlockOk := _tunnelingResponseDataBlockMessage.(ITunnelingResponseDataBlock)
-	if !_tunnelingResponseDataBlockOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingResponseDataBlockMessage).Name() + " to ITunnelingResponseDataBlock")
-	}
+    // Simple Field (tunnelingResponseDataBlock)
+    _tunnelingResponseDataBlockMessage, _err := TunnelingResponseDataBlockParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'tunnelingResponseDataBlock'. " + _err.Error())
+    }
+    var tunnelingResponseDataBlock ITunnelingResponseDataBlock
+    tunnelingResponseDataBlock, _tunnelingResponseDataBlockOk := _tunnelingResponseDataBlockMessage.(ITunnelingResponseDataBlock)
+    if !_tunnelingResponseDataBlockOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_tunnelingResponseDataBlockMessage).Name() + " to ITunnelingResponseDataBlock")
+    }
 
-	// Create the instance
-	return NewTunnelingResponse(tunnelingResponseDataBlock), nil
+    // Create the instance
+    return NewTunnelingResponse(tunnelingResponseDataBlock), nil
 }
 
 func (m TunnelingResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (tunnelingResponseDataBlock)
-		tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.TunnelingResponseDataBlock)
-		_tunnelingResponseDataBlockErr := tunnelingResponseDataBlock.Serialize(io)
-		if _tunnelingResponseDataBlockErr != nil {
-			return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
-		}
+    // Simple Field (tunnelingResponseDataBlock)
+    tunnelingResponseDataBlock := CastITunnelingResponseDataBlock(m.TunnelingResponseDataBlock)
+    _tunnelingResponseDataBlockErr := tunnelingResponseDataBlock.Serialize(io)
+    if _tunnelingResponseDataBlockErr != nil {
+        return errors.New("Error serializing 'tunnelingResponseDataBlock' field " + _tunnelingResponseDataBlockErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type CEMIRawReq struct {
-	CEMI
+    CEMI
 }
 
 // The corresponding interface
 type ICEMIRawReq interface {
-	ICEMI
-	Serialize(io spi.WriteBuffer) error
+    ICEMI
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m CEMIRawReq) MessageCode() uint8 {
-	return 0x10
+    return 0x10
 }
 
 func (m CEMIRawReq) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewCEMIRawReq() CEMIInitializer {
-	return &CEMIRawReq{}
+    return &CEMIRawReq{}
 }
 
 func CastICEMIRawReq(structType interface{}) ICEMIRawReq {
-	castFunc := func(typ interface{}) ICEMIRawReq {
-		if iCEMIRawReq, ok := typ.(ICEMIRawReq); ok {
-			return iCEMIRawReq
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICEMIRawReq {
+        if iCEMIRawReq, ok := typ.(ICEMIRawReq); ok {
+            return iCEMIRawReq
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCEMIRawReq(structType interface{}) CEMIRawReq {
-	castFunc := func(typ interface{}) CEMIRawReq {
-		if sCEMIRawReq, ok := typ.(CEMIRawReq); ok {
-			return sCEMIRawReq
-		}
-		return CEMIRawReq{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) CEMIRawReq {
+        if sCEMIRawReq, ok := typ.(CEMIRawReq); ok {
+            return sCEMIRawReq
+        }
+        if sCEMIRawReq, ok := typ.(*CEMIRawReq); ok {
+            return *sCEMIRawReq
+        }
+        return CEMIRawReq{}
+    }
+    return castFunc(structType)
 }
 
 func (m CEMIRawReq) LengthInBits() uint16 {
-	var lengthInBits = m.CEMI.LengthInBits()
+    var lengthInBits uint16 = m.CEMI.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m CEMIRawReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func CEMIRawReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
-	// Create the instance
-	return NewCEMIRawReq(), nil
+    // Create the instance
+    return NewCEMIRawReq(), nil
 }
 
 func (m CEMIRawReq) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+        return nil
+    }
+    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

@@ -152,7 +152,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
         } else if (typeNode.equals(Identifiers.SByte)) {
             return new PlcSINT((Byte) objValue);
         } else {
-            return new PlcString(objValue.toString());
+            return new PlcSTRING(objValue.toString());
         }
 
     }

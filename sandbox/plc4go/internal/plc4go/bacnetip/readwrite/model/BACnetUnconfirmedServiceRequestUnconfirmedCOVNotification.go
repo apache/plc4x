@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification struct {
-	BACnetUnconfirmedServiceRequest
+    BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification interface {
-	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetUnconfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) ServiceChoice() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
+    return &BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
 }
 
 func CastIBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
-	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
-		if iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
-			return iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+        if iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(IBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
+            return iBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
-		if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
-			return sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		}
-		return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification {
+        if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
+            return sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+        }
+        if sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification, ok := typ.(*BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification); ok {
+            return *sBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
+        }
+        return BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(), nil
+    // Create the instance
+    return NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification(), nil
 }
 
 func (m BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

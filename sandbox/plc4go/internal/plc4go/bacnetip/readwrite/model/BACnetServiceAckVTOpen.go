@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetServiceAckVTOpen struct {
-	BACnetServiceAck
+    BACnetServiceAck
 }
 
 // The corresponding interface
 type IBACnetServiceAckVTOpen interface {
-	IBACnetServiceAck
-	Serialize(io spi.WriteBuffer) error
+    IBACnetServiceAck
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetServiceAckVTOpen) ServiceChoice() uint8 {
-	return 0x15
+    return 0x15
 }
 
 func (m BACnetServiceAckVTOpen) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetServiceAckVTOpen() BACnetServiceAckInitializer {
-	return &BACnetServiceAckVTOpen{}
+    return &BACnetServiceAckVTOpen{}
 }
 
 func CastIBACnetServiceAckVTOpen(structType interface{}) IBACnetServiceAckVTOpen {
-	castFunc := func(typ interface{}) IBACnetServiceAckVTOpen {
-		if iBACnetServiceAckVTOpen, ok := typ.(IBACnetServiceAckVTOpen); ok {
-			return iBACnetServiceAckVTOpen
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetServiceAckVTOpen {
+        if iBACnetServiceAckVTOpen, ok := typ.(IBACnetServiceAckVTOpen); ok {
+            return iBACnetServiceAckVTOpen
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetServiceAckVTOpen(structType interface{}) BACnetServiceAckVTOpen {
-	castFunc := func(typ interface{}) BACnetServiceAckVTOpen {
-		if sBACnetServiceAckVTOpen, ok := typ.(BACnetServiceAckVTOpen); ok {
-			return sBACnetServiceAckVTOpen
-		}
-		return BACnetServiceAckVTOpen{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetServiceAckVTOpen {
+        if sBACnetServiceAckVTOpen, ok := typ.(BACnetServiceAckVTOpen); ok {
+            return sBACnetServiceAckVTOpen
+        }
+        if sBACnetServiceAckVTOpen, ok := typ.(*BACnetServiceAckVTOpen); ok {
+            return *sBACnetServiceAckVTOpen
+        }
+        return BACnetServiceAckVTOpen{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetServiceAckVTOpen) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetServiceAck.LengthInBits()
+    var lengthInBits uint16 = m.BACnetServiceAck.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetServiceAckVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetServiceAckVTOpenParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
-	// Create the instance
-	return NewBACnetServiceAckVTOpen(), nil
+    // Create the instance
+    return NewBACnetServiceAckVTOpen(), nil
 }
 
 func (m BACnetServiceAckVTOpen) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
+        return nil
+    }
+    return BACnetServiceAckSerialize(io, m.BACnetServiceAck, CastIBACnetServiceAck(m), ser)
 }

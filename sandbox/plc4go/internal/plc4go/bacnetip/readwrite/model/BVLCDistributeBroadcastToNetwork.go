@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCDistributeBroadcastToNetwork struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCDistributeBroadcastToNetwork interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCDistributeBroadcastToNetwork) BvlcFunction() uint8 {
-	return 0x09
+    return 0x09
 }
 
 func (m BVLCDistributeBroadcastToNetwork) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCDistributeBroadcastToNetwork() BVLCInitializer {
-	return &BVLCDistributeBroadcastToNetwork{}
+    return &BVLCDistributeBroadcastToNetwork{}
 }
 
 func CastIBVLCDistributeBroadcastToNetwork(structType interface{}) IBVLCDistributeBroadcastToNetwork {
-	castFunc := func(typ interface{}) IBVLCDistributeBroadcastToNetwork {
-		if iBVLCDistributeBroadcastToNetwork, ok := typ.(IBVLCDistributeBroadcastToNetwork); ok {
-			return iBVLCDistributeBroadcastToNetwork
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCDistributeBroadcastToNetwork {
+        if iBVLCDistributeBroadcastToNetwork, ok := typ.(IBVLCDistributeBroadcastToNetwork); ok {
+            return iBVLCDistributeBroadcastToNetwork
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistributeBroadcastToNetwork {
-	castFunc := func(typ interface{}) BVLCDistributeBroadcastToNetwork {
-		if sBVLCDistributeBroadcastToNetwork, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
-			return sBVLCDistributeBroadcastToNetwork
-		}
-		return BVLCDistributeBroadcastToNetwork{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCDistributeBroadcastToNetwork {
+        if sBVLCDistributeBroadcastToNetwork, ok := typ.(BVLCDistributeBroadcastToNetwork); ok {
+            return sBVLCDistributeBroadcastToNetwork
+        }
+        if sBVLCDistributeBroadcastToNetwork, ok := typ.(*BVLCDistributeBroadcastToNetwork); ok {
+            return *sBVLCDistributeBroadcastToNetwork
+        }
+        return BVLCDistributeBroadcastToNetwork{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCDistributeBroadcastToNetwork) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCDistributeBroadcastToNetwork) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCDistributeBroadcastToNetworkParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCDistributeBroadcastToNetwork(), nil
+    // Create the instance
+    return NewBVLCDistributeBroadcastToNetwork(), nil
 }
 
 func (m BVLCDistributeBroadcastToNetwork) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

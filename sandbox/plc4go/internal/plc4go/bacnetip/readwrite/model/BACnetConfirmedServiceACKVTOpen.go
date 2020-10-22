@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKVTOpen struct {
-	BACnetConfirmedServiceACK
+    BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKVTOpen interface {
-	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceACK
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceACKVTOpen) ServiceChoice() uint8 {
-	return 0x15
+    return 0x15
 }
 
 func (m BACnetConfirmedServiceACKVTOpen) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceACKVTOpen() BACnetConfirmedServiceACKInitializer {
-	return &BACnetConfirmedServiceACKVTOpen{}
+    return &BACnetConfirmedServiceACKVTOpen{}
 }
 
 func CastIBACnetConfirmedServiceACKVTOpen(structType interface{}) IBACnetConfirmedServiceACKVTOpen {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKVTOpen {
-		if iBACnetConfirmedServiceACKVTOpen, ok := typ.(IBACnetConfirmedServiceACKVTOpen); ok {
-			return iBACnetConfirmedServiceACKVTOpen
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKVTOpen {
+        if iBACnetConfirmedServiceACKVTOpen, ok := typ.(IBACnetConfirmedServiceACKVTOpen); ok {
+            return iBACnetConfirmedServiceACKVTOpen
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceACKVTOpen(structType interface{}) BACnetConfirmedServiceACKVTOpen {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceACKVTOpen {
-		if sBACnetConfirmedServiceACKVTOpen, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
-			return sBACnetConfirmedServiceACKVTOpen
-		}
-		return BACnetConfirmedServiceACKVTOpen{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceACKVTOpen {
+        if sBACnetConfirmedServiceACKVTOpen, ok := typ.(BACnetConfirmedServiceACKVTOpen); ok {
+            return sBACnetConfirmedServiceACKVTOpen
+        }
+        if sBACnetConfirmedServiceACKVTOpen, ok := typ.(*BACnetConfirmedServiceACKVTOpen); ok {
+            return *sBACnetConfirmedServiceACKVTOpen
+        }
+        return BACnetConfirmedServiceACKVTOpen{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceACKVTOpen) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceACKVTOpen) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKVTOpenParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceACKVTOpen(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceACKVTOpen(), nil
 }
 
 func (m BACnetConfirmedServiceACKVTOpen) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceACKReadRange struct {
-	BACnetConfirmedServiceACK
+    BACnetConfirmedServiceACK
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceACKReadRange interface {
-	IBACnetConfirmedServiceACK
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceACK
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceACKReadRange) ServiceChoice() uint8 {
-	return 0x1A
+    return 0x1A
 }
 
 func (m BACnetConfirmedServiceACKReadRange) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceACKReadRange() BACnetConfirmedServiceACKInitializer {
-	return &BACnetConfirmedServiceACKReadRange{}
+    return &BACnetConfirmedServiceACKReadRange{}
 }
 
 func CastIBACnetConfirmedServiceACKReadRange(structType interface{}) IBACnetConfirmedServiceACKReadRange {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadRange {
-		if iBACnetConfirmedServiceACKReadRange, ok := typ.(IBACnetConfirmedServiceACKReadRange); ok {
-			return iBACnetConfirmedServiceACKReadRange
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceACKReadRange {
+        if iBACnetConfirmedServiceACKReadRange, ok := typ.(IBACnetConfirmedServiceACKReadRange); ok {
+            return iBACnetConfirmedServiceACKReadRange
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceACKReadRange(structType interface{}) BACnetConfirmedServiceACKReadRange {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadRange {
-		if sBACnetConfirmedServiceACKReadRange, ok := typ.(BACnetConfirmedServiceACKReadRange); ok {
-			return sBACnetConfirmedServiceACKReadRange
-		}
-		return BACnetConfirmedServiceACKReadRange{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceACKReadRange {
+        if sBACnetConfirmedServiceACKReadRange, ok := typ.(BACnetConfirmedServiceACKReadRange); ok {
+            return sBACnetConfirmedServiceACKReadRange
+        }
+        if sBACnetConfirmedServiceACKReadRange, ok := typ.(*BACnetConfirmedServiceACKReadRange); ok {
+            return *sBACnetConfirmedServiceACKReadRange
+        }
+        return BACnetConfirmedServiceACKReadRange{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceACKReadRange) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceACK.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceACK.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceACKReadRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceACKReadRangeParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceACKReadRange(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceACKReadRange(), nil
 }
 
 func (m BACnetConfirmedServiceACKReadRange) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceACKSerialize(io, m.BACnetConfirmedServiceACK, CastIBACnetConfirmedServiceACK(m), ser)
 }

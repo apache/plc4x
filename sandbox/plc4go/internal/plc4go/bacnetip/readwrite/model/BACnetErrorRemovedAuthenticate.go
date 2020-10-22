@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorRemovedAuthenticate struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorRemovedAuthenticate interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorRemovedAuthenticate) ServiceChoice() uint8 {
-	return 0x18
+    return 0x18
 }
 
 func (m BACnetErrorRemovedAuthenticate) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorRemovedAuthenticate() BACnetErrorInitializer {
-	return &BACnetErrorRemovedAuthenticate{}
+    return &BACnetErrorRemovedAuthenticate{}
 }
 
 func CastIBACnetErrorRemovedAuthenticate(structType interface{}) IBACnetErrorRemovedAuthenticate {
-	castFunc := func(typ interface{}) IBACnetErrorRemovedAuthenticate {
-		if iBACnetErrorRemovedAuthenticate, ok := typ.(IBACnetErrorRemovedAuthenticate); ok {
-			return iBACnetErrorRemovedAuthenticate
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorRemovedAuthenticate {
+        if iBACnetErrorRemovedAuthenticate, ok := typ.(IBACnetErrorRemovedAuthenticate); ok {
+            return iBACnetErrorRemovedAuthenticate
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorRemovedAuthenticate(structType interface{}) BACnetErrorRemovedAuthenticate {
-	castFunc := func(typ interface{}) BACnetErrorRemovedAuthenticate {
-		if sBACnetErrorRemovedAuthenticate, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
-			return sBACnetErrorRemovedAuthenticate
-		}
-		return BACnetErrorRemovedAuthenticate{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorRemovedAuthenticate {
+        if sBACnetErrorRemovedAuthenticate, ok := typ.(BACnetErrorRemovedAuthenticate); ok {
+            return sBACnetErrorRemovedAuthenticate
+        }
+        if sBACnetErrorRemovedAuthenticate, ok := typ.(*BACnetErrorRemovedAuthenticate); ok {
+            return *sBACnetErrorRemovedAuthenticate
+        }
+        return BACnetErrorRemovedAuthenticate{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorRemovedAuthenticate) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorRemovedAuthenticate) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorRemovedAuthenticateParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorRemovedAuthenticate(), nil
+    // Create the instance
+    return NewBACnetErrorRemovedAuthenticate(), nil
 }
 
 func (m BACnetErrorRemovedAuthenticate) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

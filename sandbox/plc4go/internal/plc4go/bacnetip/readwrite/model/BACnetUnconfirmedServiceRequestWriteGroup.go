@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetUnconfirmedServiceRequestWriteGroup struct {
-	BACnetUnconfirmedServiceRequest
+    BACnetUnconfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWriteGroup interface {
-	IBACnetUnconfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetUnconfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetUnconfirmedServiceRequestWriteGroup) ServiceChoice() uint8 {
-	return 0x0A
+    return 0x0A
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetUnconfirmedServiceRequestWriteGroup() BACnetUnconfirmedServiceRequestInitializer {
-	return &BACnetUnconfirmedServiceRequestWriteGroup{}
+    return &BACnetUnconfirmedServiceRequestWriteGroup{}
 }
 
 func CastIBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
-	castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
-		if iBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(IBACnetUnconfirmedServiceRequestWriteGroup); ok {
-			return iBACnetUnconfirmedServiceRequestWriteGroup
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetUnconfirmedServiceRequestWriteGroup {
+        if iBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(IBACnetUnconfirmedServiceRequestWriteGroup); ok {
+            return iBACnetUnconfirmedServiceRequestWriteGroup
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
-		if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
-			return sBACnetUnconfirmedServiceRequestWriteGroup
-		}
-		return BACnetUnconfirmedServiceRequestWriteGroup{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+        if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
+            return sBACnetUnconfirmedServiceRequestWriteGroup
+        }
+        if sBACnetUnconfirmedServiceRequestWriteGroup, ok := typ.(*BACnetUnconfirmedServiceRequestWriteGroup); ok {
+            return *sBACnetUnconfirmedServiceRequestWriteGroup
+        }
+        return BACnetUnconfirmedServiceRequestWriteGroup{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetUnconfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetUnconfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetUnconfirmedServiceRequestWriteGroupParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil
+    // Create the instance
+    return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil
 }
 
 func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }

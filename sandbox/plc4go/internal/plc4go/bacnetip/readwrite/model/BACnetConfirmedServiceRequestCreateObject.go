@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestCreateObject struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestCreateObject interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestCreateObject) ServiceChoice() uint8 {
-	return 0x0A
+    return 0x0A
 }
 
 func (m BACnetConfirmedServiceRequestCreateObject) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestCreateObject() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestCreateObject{}
+    return &BACnetConfirmedServiceRequestCreateObject{}
 }
 
 func CastIBACnetConfirmedServiceRequestCreateObject(structType interface{}) IBACnetConfirmedServiceRequestCreateObject {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestCreateObject {
-		if iBACnetConfirmedServiceRequestCreateObject, ok := typ.(IBACnetConfirmedServiceRequestCreateObject); ok {
-			return iBACnetConfirmedServiceRequestCreateObject
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestCreateObject {
+        if iBACnetConfirmedServiceRequestCreateObject, ok := typ.(IBACnetConfirmedServiceRequestCreateObject); ok {
+            return iBACnetConfirmedServiceRequestCreateObject
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) BACnetConfirmedServiceRequestCreateObject {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestCreateObject {
-		if sBACnetConfirmedServiceRequestCreateObject, ok := typ.(BACnetConfirmedServiceRequestCreateObject); ok {
-			return sBACnetConfirmedServiceRequestCreateObject
-		}
-		return BACnetConfirmedServiceRequestCreateObject{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestCreateObject {
+        if sBACnetConfirmedServiceRequestCreateObject, ok := typ.(BACnetConfirmedServiceRequestCreateObject); ok {
+            return sBACnetConfirmedServiceRequestCreateObject
+        }
+        if sBACnetConfirmedServiceRequestCreateObject, ok := typ.(*BACnetConfirmedServiceRequestCreateObject); ok {
+            return *sBACnetConfirmedServiceRequestCreateObject
+        }
+        return BACnetConfirmedServiceRequestCreateObject{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestCreateObject) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestCreateObject) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestCreateObjectParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestCreateObject(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestCreateObject(), nil
 }
 
 func (m BACnetConfirmedServiceRequestCreateObject) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

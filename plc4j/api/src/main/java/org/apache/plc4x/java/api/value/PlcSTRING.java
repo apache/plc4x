@@ -28,12 +28,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class PlcString extends PlcSimpleValue<String> {
+public class PlcSTRING extends PlcSimpleValue<String> {
 
     static int maxLength = 254;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcString(@JsonProperty("value") String value) {
+    public PlcSTRING(@JsonProperty("value") String value) {
         super(value, true);
         if (value.length() > maxLength) {
             throw new IllegalArgumentException(

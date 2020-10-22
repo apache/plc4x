@@ -201,10 +201,12 @@
         ]
 
         ['false','0x08','false'     ModbusPDUDiagnosticRequest
-            // TODO: Implement the sub-request discriminated type
+            [simple     uint 16     'subFunction']
+            [simple     uint 16     'data']
         ]
         ['false','0x08','true'      ModbusPDUDiagnosticResponse
-            // TODO: Implement the sub-request discriminated type
+            [simple     uint 16     'subFunction']
+            [simple     uint 16     'data']
         ]
 
         ['false','0x0B','false'     ModbusPDUGetComEventCounterRequest
@@ -405,4 +407,17 @@
     ['81' WCHAR ['2']]
     ['82' STRING ['1']]
     ['83' WSTRING ['2']]
+]
+
+[enum uint 8 'ModbusErrorCode'
+    ['1'    ILLEGAL_FUNCTION]
+    ['2'    ILLEGAL_DATA_ADDRESS]
+    ['3'    ILLEGAL_DATA_VALUE]
+    ['4'    SLAVE_DEVICE_FAILURE]
+    ['5'    ACKNOWLEDGE]
+    ['6'    SLAVE_DEVICE_BUSY]
+    ['7'    NEGATIVE_ACKNOWLEDGE]
+    ['8'    MEMORY_PARITY_ERROR]
+    ['10'   GATEWAY_PATH_UNAVAILABLE]
+    ['11'   GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND]
 ]

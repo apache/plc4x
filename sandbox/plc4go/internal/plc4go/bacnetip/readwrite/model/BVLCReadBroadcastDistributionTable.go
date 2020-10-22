@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCReadBroadcastDistributionTable struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCReadBroadcastDistributionTable interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCReadBroadcastDistributionTable) BvlcFunction() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m BVLCReadBroadcastDistributionTable) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCReadBroadcastDistributionTable() BVLCInitializer {
-	return &BVLCReadBroadcastDistributionTable{}
+    return &BVLCReadBroadcastDistributionTable{}
 }
 
 func CastIBVLCReadBroadcastDistributionTable(structType interface{}) IBVLCReadBroadcastDistributionTable {
-	castFunc := func(typ interface{}) IBVLCReadBroadcastDistributionTable {
-		if iBVLCReadBroadcastDistributionTable, ok := typ.(IBVLCReadBroadcastDistributionTable); ok {
-			return iBVLCReadBroadcastDistributionTable
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCReadBroadcastDistributionTable {
+        if iBVLCReadBroadcastDistributionTable, ok := typ.(IBVLCReadBroadcastDistributionTable); ok {
+            return iBVLCReadBroadcastDistributionTable
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCReadBroadcastDistributionTable(structType interface{}) BVLCReadBroadcastDistributionTable {
-	castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTable {
-		if sBVLCReadBroadcastDistributionTable, ok := typ.(BVLCReadBroadcastDistributionTable); ok {
-			return sBVLCReadBroadcastDistributionTable
-		}
-		return BVLCReadBroadcastDistributionTable{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCReadBroadcastDistributionTable {
+        if sBVLCReadBroadcastDistributionTable, ok := typ.(BVLCReadBroadcastDistributionTable); ok {
+            return sBVLCReadBroadcastDistributionTable
+        }
+        if sBVLCReadBroadcastDistributionTable, ok := typ.(*BVLCReadBroadcastDistributionTable); ok {
+            return *sBVLCReadBroadcastDistributionTable
+        }
+        return BVLCReadBroadcastDistributionTable{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCReadBroadcastDistributionTable) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCReadBroadcastDistributionTable) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCReadBroadcastDistributionTableParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCReadBroadcastDistributionTable(), nil
+    // Create the instance
+    return NewBVLCReadBroadcastDistributionTable(), nil
 }
 
 func (m BVLCReadBroadcastDistributionTable) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

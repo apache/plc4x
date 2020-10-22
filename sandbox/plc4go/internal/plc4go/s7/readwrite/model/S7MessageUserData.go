@@ -19,76 +19,79 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type S7MessageUserData struct {
-	S7Message
+    S7Message
 }
 
 // The corresponding interface
 type IS7MessageUserData interface {
-	IS7Message
-	Serialize(io spi.WriteBuffer) error
+    IS7Message
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m S7MessageUserData) MessageType() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m S7MessageUserData) initialize(tpduReference uint16, parameter *IS7Parameter, payload *IS7Payload) spi.Message {
-	m.TpduReference = tpduReference
-	m.Parameter = parameter
-	m.Payload = payload
-	return m
+    m.TpduReference = tpduReference
+    m.Parameter = parameter
+    m.Payload = payload
+    return m
 }
 
 func NewS7MessageUserData() S7MessageInitializer {
-	return &S7MessageUserData{}
+    return &S7MessageUserData{}
 }
 
 func CastIS7MessageUserData(structType interface{}) IS7MessageUserData {
-	castFunc := func(typ interface{}) IS7MessageUserData {
-		if iS7MessageUserData, ok := typ.(IS7MessageUserData); ok {
-			return iS7MessageUserData
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IS7MessageUserData {
+        if iS7MessageUserData, ok := typ.(IS7MessageUserData); ok {
+            return iS7MessageUserData
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastS7MessageUserData(structType interface{}) S7MessageUserData {
-	castFunc := func(typ interface{}) S7MessageUserData {
-		if sS7MessageUserData, ok := typ.(S7MessageUserData); ok {
-			return sS7MessageUserData
-		}
-		return S7MessageUserData{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) S7MessageUserData {
+        if sS7MessageUserData, ok := typ.(S7MessageUserData); ok {
+            return sS7MessageUserData
+        }
+        if sS7MessageUserData, ok := typ.(*S7MessageUserData); ok {
+            return *sS7MessageUserData
+        }
+        return S7MessageUserData{}
+    }
+    return castFunc(structType)
 }
 
 func (m S7MessageUserData) LengthInBits() uint16 {
-	var lengthInBits = m.S7Message.LengthInBits()
+    var lengthInBits uint16 = m.S7Message.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m S7MessageUserData) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func S7MessageUserDataParse(io *spi.ReadBuffer) (S7MessageInitializer, error) {
 
-	// Create the instance
-	return NewS7MessageUserData(), nil
+    // Create the instance
+    return NewS7MessageUserData(), nil
 }
 
 func (m S7MessageUserData) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
+        return nil
+    }
+    return S7MessageSerialize(io, m.S7Message, CastIS7Message(m), ser)
 }

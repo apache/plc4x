@@ -25,8 +25,6 @@ import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,7 +45,7 @@ public class SimulatedFieldHandler extends DefaultPlcFieldHandler {
         SimulatedField testField = (SimulatedField) field;
         if (testField.getDataType() == String.class) {
             if(values.length == 1) {
-                return new PlcString((String) values[0]);
+                return new PlcSTRING((String) values[0]);
             } else {
                 return new PlcList(Arrays.asList(values));
             }

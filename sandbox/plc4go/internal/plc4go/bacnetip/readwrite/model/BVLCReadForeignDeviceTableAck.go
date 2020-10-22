@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BVLCReadForeignDeviceTableAck struct {
-	BVLC
+    BVLC
 }
 
 // The corresponding interface
 type IBVLCReadForeignDeviceTableAck interface {
-	IBVLC
-	Serialize(io spi.WriteBuffer) error
+    IBVLC
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BVLCReadForeignDeviceTableAck) BvlcFunction() uint8 {
-	return 0x07
+    return 0x07
 }
 
 func (m BVLCReadForeignDeviceTableAck) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBVLCReadForeignDeviceTableAck() BVLCInitializer {
-	return &BVLCReadForeignDeviceTableAck{}
+    return &BVLCReadForeignDeviceTableAck{}
 }
 
 func CastIBVLCReadForeignDeviceTableAck(structType interface{}) IBVLCReadForeignDeviceTableAck {
-	castFunc := func(typ interface{}) IBVLCReadForeignDeviceTableAck {
-		if iBVLCReadForeignDeviceTableAck, ok := typ.(IBVLCReadForeignDeviceTableAck); ok {
-			return iBVLCReadForeignDeviceTableAck
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBVLCReadForeignDeviceTableAck {
+        if iBVLCReadForeignDeviceTableAck, ok := typ.(IBVLCReadForeignDeviceTableAck); ok {
+            return iBVLCReadForeignDeviceTableAck
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
-	castFunc := func(typ interface{}) BVLCReadForeignDeviceTableAck {
-		if sBVLCReadForeignDeviceTableAck, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
-			return sBVLCReadForeignDeviceTableAck
-		}
-		return BVLCReadForeignDeviceTableAck{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BVLCReadForeignDeviceTableAck {
+        if sBVLCReadForeignDeviceTableAck, ok := typ.(BVLCReadForeignDeviceTableAck); ok {
+            return sBVLCReadForeignDeviceTableAck
+        }
+        if sBVLCReadForeignDeviceTableAck, ok := typ.(*BVLCReadForeignDeviceTableAck); ok {
+            return *sBVLCReadForeignDeviceTableAck
+        }
+        return BVLCReadForeignDeviceTableAck{}
+    }
+    return castFunc(structType)
 }
 
 func (m BVLCReadForeignDeviceTableAck) LengthInBits() uint16 {
-	var lengthInBits = m.BVLC.LengthInBits()
+    var lengthInBits uint16 = m.BVLC.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BVLCReadForeignDeviceTableAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BVLCReadForeignDeviceTableAckParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
 
-	// Create the instance
-	return NewBVLCReadForeignDeviceTableAck(), nil
+    // Create the instance
+    return NewBVLCReadForeignDeviceTableAck(), nil
 }
 
 func (m BVLCReadForeignDeviceTableAck) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
+        return nil
+    }
+    return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }

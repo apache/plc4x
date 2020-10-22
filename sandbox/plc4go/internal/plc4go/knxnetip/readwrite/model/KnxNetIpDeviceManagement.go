@@ -19,91 +19,94 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type KnxNetIpDeviceManagement struct {
-	Version uint8
-	ServiceId
+    Version uint8
+    ServiceId
 }
 
 // The corresponding interface
 type IKnxNetIpDeviceManagement interface {
-	IServiceId
-	Serialize(io spi.WriteBuffer) error
+    IServiceId
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m KnxNetIpDeviceManagement) ServiceType() uint8 {
-	return 0x03
+    return 0x03
 }
 
 func (m KnxNetIpDeviceManagement) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewKnxNetIpDeviceManagement(version uint8) ServiceIdInitializer {
-	return &KnxNetIpDeviceManagement{Version: version}
+    return &KnxNetIpDeviceManagement{Version: version}
 }
 
 func CastIKnxNetIpDeviceManagement(structType interface{}) IKnxNetIpDeviceManagement {
-	castFunc := func(typ interface{}) IKnxNetIpDeviceManagement {
-		if iKnxNetIpDeviceManagement, ok := typ.(IKnxNetIpDeviceManagement); ok {
-			return iKnxNetIpDeviceManagement
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IKnxNetIpDeviceManagement {
+        if iKnxNetIpDeviceManagement, ok := typ.(IKnxNetIpDeviceManagement); ok {
+            return iKnxNetIpDeviceManagement
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastKnxNetIpDeviceManagement(structType interface{}) KnxNetIpDeviceManagement {
-	castFunc := func(typ interface{}) KnxNetIpDeviceManagement {
-		if sKnxNetIpDeviceManagement, ok := typ.(KnxNetIpDeviceManagement); ok {
-			return sKnxNetIpDeviceManagement
-		}
-		return KnxNetIpDeviceManagement{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) KnxNetIpDeviceManagement {
+        if sKnxNetIpDeviceManagement, ok := typ.(KnxNetIpDeviceManagement); ok {
+            return sKnxNetIpDeviceManagement
+        }
+        if sKnxNetIpDeviceManagement, ok := typ.(*KnxNetIpDeviceManagement); ok {
+            return *sKnxNetIpDeviceManagement
+        }
+        return KnxNetIpDeviceManagement{}
+    }
+    return castFunc(structType)
 }
 
 func (m KnxNetIpDeviceManagement) LengthInBits() uint16 {
-	var lengthInBits = m.ServiceId.LengthInBits()
+    var lengthInBits uint16 = m.ServiceId.LengthInBits()
 
-	// Simple field (version)
-	lengthInBits += 8
+    // Simple field (version)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m KnxNetIpDeviceManagement) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func KnxNetIpDeviceManagementParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
 
-	// Simple Field (version)
-	version, _versionErr := io.ReadUint8(8)
-	if _versionErr != nil {
-		return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
-	}
+    // Simple Field (version)
+    version, _versionErr := io.ReadUint8(8)
+    if _versionErr != nil {
+        return nil, errors.New("Error parsing 'version' field " + _versionErr.Error())
+    }
 
-	// Create the instance
-	return NewKnxNetIpDeviceManagement(version), nil
+    // Create the instance
+    return NewKnxNetIpDeviceManagement(version), nil
 }
 
 func (m KnxNetIpDeviceManagement) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (version)
-		version := uint8(m.Version)
-		_versionErr := io.WriteUint8(8, version)
-		if _versionErr != nil {
-			return errors.New("Error serializing 'version' field " + _versionErr.Error())
-		}
+    // Simple Field (version)
+    version := uint8(m.Version)
+    _versionErr := io.WriteUint8(8, (version))
+    if _versionErr != nil {
+        return errors.New("Error serializing 'version' field " + _versionErr.Error())
+    }
 
-		return nil
-	}
-	return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
+        return nil
+    }
+    return ServiceIdSerialize(io, m.ServiceId, CastIServiceId(m), ser)
 }

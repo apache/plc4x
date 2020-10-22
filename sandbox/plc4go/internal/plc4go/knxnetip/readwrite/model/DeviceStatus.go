@@ -19,104 +19,109 @@
 package model
 
 import (
-	"errors"
-	log "github.com/sirupsen/logrus"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    log "github.com/sirupsen/logrus"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type DeviceStatus struct {
-	ProgramMode bool
+    ProgramMode bool
+
 }
 
 // The corresponding interface
 type IDeviceStatus interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
+
 func NewDeviceStatus(programMode bool) spi.Message {
-	return &DeviceStatus{ProgramMode: programMode}
+    return &DeviceStatus{ProgramMode: programMode}
 }
 
 func CastIDeviceStatus(structType interface{}) IDeviceStatus {
-	castFunc := func(typ interface{}) IDeviceStatus {
-		if iDeviceStatus, ok := typ.(IDeviceStatus); ok {
-			return iDeviceStatus
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IDeviceStatus {
+        if iDeviceStatus, ok := typ.(IDeviceStatus); ok {
+            return iDeviceStatus
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastDeviceStatus(structType interface{}) DeviceStatus {
-	castFunc := func(typ interface{}) DeviceStatus {
-		if sDeviceStatus, ok := typ.(DeviceStatus); ok {
-			return sDeviceStatus
-		}
-		return DeviceStatus{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DeviceStatus {
+        if sDeviceStatus, ok := typ.(DeviceStatus); ok {
+            return sDeviceStatus
+        }
+        if sDeviceStatus, ok := typ.(*DeviceStatus); ok {
+            return *sDeviceStatus
+        }
+        return DeviceStatus{}
+    }
+    return castFunc(structType)
 }
 
 func (m DeviceStatus) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Reserved Field (reserved)
-	lengthInBits += 7
+    // Reserved Field (reserved)
+    lengthInBits += 7
 
-	// Simple field (programMode)
-	lengthInBits += 1
+    // Simple field (programMode)
+    lengthInBits += 1
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m DeviceStatus) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DeviceStatusParse(io *spi.ReadBuffer) (spi.Message, error) {
 
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := io.ReadUint8(7)
-		if _err != nil {
-			return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
-		}
-		if reserved != uint8(0x00) {
-			log.WithFields(log.Fields{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Info("Got unexpected response.")
-		}
-	}
+    // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+    {
+        reserved, _err := io.ReadUint8(7)
+        if _err != nil {
+            return nil, errors.New("Error parsing 'reserved' field " + _err.Error())
+        }
+        if reserved != uint8(0x00) {
+            log.WithFields(log.Fields{
+                "expected value": uint8(0x00),
+                "got value": reserved,
+            }).Info("Got unexpected response.")
+        }
+    }
 
-	// Simple Field (programMode)
-	programMode, _programModeErr := io.ReadBit()
-	if _programModeErr != nil {
-		return nil, errors.New("Error parsing 'programMode' field " + _programModeErr.Error())
-	}
+    // Simple Field (programMode)
+    programMode, _programModeErr := io.ReadBit()
+    if _programModeErr != nil {
+        return nil, errors.New("Error parsing 'programMode' field " + _programModeErr.Error())
+    }
 
-	// Create the instance
-	return NewDeviceStatus(programMode), nil
+    // Create the instance
+    return NewDeviceStatus(programMode), nil
 }
 
 func (m DeviceStatus) Serialize(io spi.WriteBuffer) error {
 
-	// Reserved Field (reserved)
-	{
-		_err := io.WriteUint8(7, uint8(0x00))
-		if _err != nil {
-			return errors.New("Error serializing 'reserved' field " + _err.Error())
-		}
-	}
+    // Reserved Field (reserved)
+    {
+        _err := io.WriteUint8(7, uint8(0x00))
+        if _err != nil {
+            return errors.New("Error serializing 'reserved' field " + _err.Error())
+        }
+    }
 
-	// Simple Field (programMode)
-	programMode := bool(m.ProgramMode)
-	_programModeErr := io.WriteBit((bool)(programMode))
-	if _programModeErr != nil {
-		return errors.New("Error serializing 'programMode' field " + _programModeErr.Error())
-	}
+    // Simple Field (programMode)
+    programMode := bool(m.ProgramMode)
+    _programModeErr := io.WriteBit((bool) (programMode))
+    if _programModeErr != nil {
+        return errors.New("Error serializing 'programMode' field " + _programModeErr.Error())
+    }
 
-	return nil
+    return nil
 }

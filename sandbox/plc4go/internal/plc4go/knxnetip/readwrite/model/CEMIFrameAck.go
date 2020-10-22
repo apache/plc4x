@@ -19,85 +19,88 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type CEMIFrameAck struct {
-	CEMIFrame
+    CEMIFrame
 }
 
 // The corresponding interface
 type ICEMIFrameAck interface {
-	ICEMIFrame
-	Serialize(io spi.WriteBuffer) error
+    ICEMIFrame
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m CEMIFrameAck) NotAckFrame() bool {
-	return false
+    return false
 }
 
 func (m CEMIFrameAck) StandardFrame() bool {
-	return false
+    return false
 }
 
 func (m CEMIFrameAck) Polling() bool {
-	return false
+    return false
 }
 
 func (m CEMIFrameAck) initialize(repeated bool, priority ICEMIPriority, acknowledgeRequested bool, errorFlag bool) spi.Message {
-	m.Repeated = repeated
-	m.Priority = priority
-	m.AcknowledgeRequested = acknowledgeRequested
-	m.ErrorFlag = errorFlag
-	return m
+    m.Repeated = repeated
+    m.Priority = priority
+    m.AcknowledgeRequested = acknowledgeRequested
+    m.ErrorFlag = errorFlag
+    return m
 }
 
 func NewCEMIFrameAck() CEMIFrameInitializer {
-	return &CEMIFrameAck{}
+    return &CEMIFrameAck{}
 }
 
 func CastICEMIFrameAck(structType interface{}) ICEMIFrameAck {
-	castFunc := func(typ interface{}) ICEMIFrameAck {
-		if iCEMIFrameAck, ok := typ.(ICEMIFrameAck); ok {
-			return iCEMIFrameAck
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICEMIFrameAck {
+        if iCEMIFrameAck, ok := typ.(ICEMIFrameAck); ok {
+            return iCEMIFrameAck
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCEMIFrameAck(structType interface{}) CEMIFrameAck {
-	castFunc := func(typ interface{}) CEMIFrameAck {
-		if sCEMIFrameAck, ok := typ.(CEMIFrameAck); ok {
-			return sCEMIFrameAck
-		}
-		return CEMIFrameAck{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) CEMIFrameAck {
+        if sCEMIFrameAck, ok := typ.(CEMIFrameAck); ok {
+            return sCEMIFrameAck
+        }
+        if sCEMIFrameAck, ok := typ.(*CEMIFrameAck); ok {
+            return *sCEMIFrameAck
+        }
+        return CEMIFrameAck{}
+    }
+    return castFunc(structType)
 }
 
 func (m CEMIFrameAck) LengthInBits() uint16 {
-	var lengthInBits = m.CEMIFrame.LengthInBits()
+    var lengthInBits uint16 = m.CEMIFrame.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m CEMIFrameAck) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func CEMIFrameAckParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
 
-	// Create the instance
-	return NewCEMIFrameAck(), nil
+    // Create the instance
+    return NewCEMIFrameAck(), nil
 }
 
 func (m CEMIFrameAck) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
+        return nil
+    }
+    return CEMIFrameSerialize(io, m.CEMIFrame, CastICEMIFrame(m), ser)
 }

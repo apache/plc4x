@@ -19,119 +19,122 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"reflect"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "reflect"
 )
 
 // The data-structure of this message
 type DescriptionResponse struct {
-	DibDeviceInfo      IDIBDeviceInfo
-	DibSuppSvcFamilies IDIBSuppSvcFamilies
-	KNXNetIPMessage
+    DibDeviceInfo IDIBDeviceInfo
+    DibSuppSvcFamilies IDIBSuppSvcFamilies
+    KNXNetIPMessage
 }
 
 // The corresponding interface
 type IDescriptionResponse interface {
-	IKNXNetIPMessage
-	Serialize(io spi.WriteBuffer) error
+    IKNXNetIPMessage
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m DescriptionResponse) MsgType() uint16 {
-	return 0x0204
+    return 0x0204
 }
 
 func (m DescriptionResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewDescriptionResponse(dibDeviceInfo IDIBDeviceInfo, dibSuppSvcFamilies IDIBSuppSvcFamilies) KNXNetIPMessageInitializer {
-	return &DescriptionResponse{DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
+    return &DescriptionResponse{DibDeviceInfo: dibDeviceInfo, DibSuppSvcFamilies: dibSuppSvcFamilies}
 }
 
 func CastIDescriptionResponse(structType interface{}) IDescriptionResponse {
-	castFunc := func(typ interface{}) IDescriptionResponse {
-		if iDescriptionResponse, ok := typ.(IDescriptionResponse); ok {
-			return iDescriptionResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IDescriptionResponse {
+        if iDescriptionResponse, ok := typ.(IDescriptionResponse); ok {
+            return iDescriptionResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastDescriptionResponse(structType interface{}) DescriptionResponse {
-	castFunc := func(typ interface{}) DescriptionResponse {
-		if sDescriptionResponse, ok := typ.(DescriptionResponse); ok {
-			return sDescriptionResponse
-		}
-		return DescriptionResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) DescriptionResponse {
+        if sDescriptionResponse, ok := typ.(DescriptionResponse); ok {
+            return sDescriptionResponse
+        }
+        if sDescriptionResponse, ok := typ.(*DescriptionResponse); ok {
+            return *sDescriptionResponse
+        }
+        return DescriptionResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m DescriptionResponse) LengthInBits() uint16 {
-	var lengthInBits = m.KNXNetIPMessage.LengthInBits()
+    var lengthInBits uint16 = m.KNXNetIPMessage.LengthInBits()
 
-	// Simple field (dibDeviceInfo)
-	lengthInBits += m.DibDeviceInfo.LengthInBits()
+    // Simple field (dibDeviceInfo)
+    lengthInBits += m.DibDeviceInfo.LengthInBits()
 
-	// Simple field (dibSuppSvcFamilies)
-	lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
+    // Simple field (dibSuppSvcFamilies)
+    lengthInBits += m.DibSuppSvcFamilies.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m DescriptionResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func DescriptionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
-	// Simple Field (dibDeviceInfo)
-	_dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
-	}
-	var dibDeviceInfo IDIBDeviceInfo
-	dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
-	if !_dibDeviceInfoOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
-	}
+    // Simple Field (dibDeviceInfo)
+    _dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'dibDeviceInfo'. " + _err.Error())
+    }
+    var dibDeviceInfo IDIBDeviceInfo
+    dibDeviceInfo, _dibDeviceInfoOk := _dibDeviceInfoMessage.(IDIBDeviceInfo)
+    if !_dibDeviceInfoOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibDeviceInfoMessage).Name() + " to IDIBDeviceInfo")
+    }
 
-	// Simple Field (dibSuppSvcFamilies)
-	_dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
-	if _err != nil {
-		return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
-	}
-	var dibSuppSvcFamilies IDIBSuppSvcFamilies
-	dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
-	if !_dibSuppSvcFamiliesOk {
-		return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
-	}
+    // Simple Field (dibSuppSvcFamilies)
+    _dibSuppSvcFamiliesMessage, _err := DIBSuppSvcFamiliesParse(io)
+    if _err != nil {
+        return nil, errors.New("Error parsing simple field 'dibSuppSvcFamilies'. " + _err.Error())
+    }
+    var dibSuppSvcFamilies IDIBSuppSvcFamilies
+    dibSuppSvcFamilies, _dibSuppSvcFamiliesOk := _dibSuppSvcFamiliesMessage.(IDIBSuppSvcFamilies)
+    if !_dibSuppSvcFamiliesOk {
+        return nil, errors.New("Couldn't cast message of type " + reflect.TypeOf(_dibSuppSvcFamiliesMessage).Name() + " to IDIBSuppSvcFamilies")
+    }
 
-	// Create the instance
-	return NewDescriptionResponse(dibDeviceInfo, dibSuppSvcFamilies), nil
+    // Create the instance
+    return NewDescriptionResponse(dibDeviceInfo, dibSuppSvcFamilies), nil
 }
 
 func (m DescriptionResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (dibDeviceInfo)
-		dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
-		_dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
-		if _dibDeviceInfoErr != nil {
-			return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
-		}
+    // Simple Field (dibDeviceInfo)
+    dibDeviceInfo := CastIDIBDeviceInfo(m.DibDeviceInfo)
+    _dibDeviceInfoErr := dibDeviceInfo.Serialize(io)
+    if _dibDeviceInfoErr != nil {
+        return errors.New("Error serializing 'dibDeviceInfo' field " + _dibDeviceInfoErr.Error())
+    }
 
-		// Simple Field (dibSuppSvcFamilies)
-		dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
-		_dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
-		if _dibSuppSvcFamiliesErr != nil {
-			return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
-		}
+    // Simple Field (dibSuppSvcFamilies)
+    dibSuppSvcFamilies := CastIDIBSuppSvcFamilies(m.DibSuppSvcFamilies)
+    _dibSuppSvcFamiliesErr := dibSuppSvcFamilies.Serialize(io)
+    if _dibSuppSvcFamiliesErr != nil {
+        return errors.New("Error serializing 'dibSuppSvcFamilies' field " + _dibSuppSvcFamiliesErr.Error())
+    }
 
-		return nil
-	}
-	return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
+        return nil
+    }
+    return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }

@@ -18,14 +18,14 @@
 //
 package values
 
-import api "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
+import api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 
 type PlcStruct struct {
 	values map[string]api.PlcValue
 	PlcValueAdapter
 }
 
-func NewPlcStruct() PlcStruct {
+func NewPlcStruct(value map[string]interface{}) PlcStruct {
 	return PlcStruct{
 		values: map[string]api.PlcValue{},
 	}

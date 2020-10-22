@@ -85,6 +85,12 @@ const plc4c_modbus_read_write_modbus_pdu_discriminator plc4c_modbus_read_write_m
    .errorFlag = false, .functionFlag = 0x07, .response = true},
   {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_request */
    .errorFlag = false, .functionFlag = 0x08, .response = false},
+  {/* plc4c_modbus_read_write_modbus_pdu_diagnostic_response */
+   .errorFlag = false, .functionFlag = 0x08, .response = true},
+  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request */
+   .errorFlag = false, .functionFlag = 0x0B, .response = false},
+  {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response */
+   .errorFlag = false, .functionFlag = 0x0B, .response = true},
   {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_request */
    .errorFlag = false, .functionFlag = 0x0C, .response = false},
   {/* plc4c_modbus_read_write_modbus_pdu_get_com_event_log_response */
@@ -996,13 +1002,60 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
   if((errorFlag == false) && (functionFlag == 0x08) && (response == false)) { /* ModbusPDUDiagnosticRequest */
     (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_request;
                     
+    // Simple Field (subFunction)
+    uint16_t subFunction = 0;
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &subFunction);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_diagnostic_request_sub_function = subFunction;
+
+
+                    
+    // Simple Field (data)
+    uint16_t data = 0;
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &data);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_diagnostic_request_data = data;
+
+  } else 
+  if((errorFlag == false) && (functionFlag == 0x08) && (response == true)) { /* ModbusPDUDiagnosticResponse */
+    (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_response;
+                    
+    // Simple Field (subFunction)
+    uint16_t subFunction = 0;
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &subFunction);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_diagnostic_response_sub_function = subFunction;
+
+
+                    
+    // Simple Field (data)
+    uint16_t data = 0;
+    _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &data);
+    if(_res != OK) {
+      return _res;
+    }
+    (*_message)->modbus_pdu_diagnostic_response_data = data;
+
+  } else 
+  if((errorFlag == false) && (functionFlag == 0x0B) && (response == false)) { /* ModbusPDUGetComEventCounterRequest */
+    (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request;
+  } else 
+  if((errorFlag == false) && (functionFlag == 0x0B) && (response == true)) { /* ModbusPDUGetComEventCounterResponse */
+    (*_message)->_type = plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response;
+                    
     // Simple Field (status)
     uint16_t status = 0;
     _res = plc4c_spi_read_unsigned_short(io, 16, (uint16_t*) &status);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->modbus_pdu_diagnostic_request_status = status;
+    (*_message)->modbus_pdu_get_com_event_counter_response_status = status;
 
 
                     
@@ -1012,7 +1065,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_parse(plc4c_spi_read_buffer
     if(_res != OK) {
       return _res;
     }
-    (*_message)->modbus_pdu_diagnostic_request_event_count = eventCount;
+    (*_message)->modbus_pdu_get_com_event_counter_response_event_count = eventCount;
 
   } else 
   if((errorFlag == false) && (functionFlag == 0x0C) && (response == false)) { /* ModbusPDUGetComEventLogRequest */
@@ -1706,14 +1759,50 @@ plc4c_return_code plc4c_modbus_read_write_modbus_pdu_serialize(plc4c_spi_write_b
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_request: {
 
+      // Simple Field (subFunction)
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_request_sub_function);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (data)
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_request_data);
+      if(_res != OK) {
+        return _res;
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_response: {
+
+      // Simple Field (subFunction)
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_response_sub_function);
+      if(_res != OK) {
+        return _res;
+      }
+
+      // Simple Field (data)
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_response_data);
+      if(_res != OK) {
+        return _res;
+      }
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response: {
+
       // Simple Field (status)
-      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_request_status);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_get_com_event_counter_response_status);
       if(_res != OK) {
         return _res;
       }
 
       // Simple Field (eventCount)
-      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_diagnostic_request_event_count);
+      _res = plc4c_spi_write_unsigned_short(io, 16, _message->modbus_pdu_get_com_event_counter_response_event_count);
       if(_res != OK) {
         return _res;
       }
@@ -2183,6 +2272,32 @@ uint16_t plc4c_modbus_read_write_modbus_pdu_length_in_bits(plc4c_modbus_read_wri
       break;
     }
     case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_request: {
+
+      // Simple field (subFunction)
+      lengthInBits += 16;
+
+
+      // Simple field (data)
+      lengthInBits += 16;
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_diagnostic_response: {
+
+      // Simple field (subFunction)
+      lengthInBits += 16;
+
+
+      // Simple field (data)
+      lengthInBits += 16;
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_request: {
+
+      break;
+    }
+    case plc4c_modbus_read_write_modbus_pdu_type_plc4c_modbus_read_write_modbus_pdu_get_com_event_counter_response: {
 
       // Simple field (status)
       lengthInBits += 16;

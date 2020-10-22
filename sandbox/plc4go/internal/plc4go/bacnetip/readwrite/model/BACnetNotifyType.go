@@ -18,45 +18,46 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
 type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
-const (
-	BACnetNotifyType_ALARM            BACnetNotifyType = 0x0
-	BACnetNotifyType_EVENT            BACnetNotifyType = 0x1
-	BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
+const(
+    BACnetNotifyType_ALARM BACnetNotifyType = 0x0
+    BACnetNotifyType_EVENT BACnetNotifyType = 0x1
+    BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
+
 func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
-	castFunc := func(typ interface{}) BACnetNotifyType {
-		if sBACnetNotifyType, ok := typ.(BACnetNotifyType); ok {
-			return sBACnetNotifyType
-		}
-		return 0
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetNotifyType {
+        if sBACnetNotifyType, ok := typ.(BACnetNotifyType); ok {
+            return sBACnetNotifyType
+        }
+        return 0
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetNotifyType) LengthInBits() uint16 {
-	return 4
+    return 4
 }
 
 func (m BACnetNotifyType) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetNotifyTypeParse(io *spi.ReadBuffer) (BACnetNotifyType, error) {
-	// TODO: Implement ...
-	return 0, nil
+    // TODO: Implement ...
+    return 0, nil
 }
 
 func (e BACnetNotifyType) Serialize(io spi.WriteBuffer) error {
-	// TODO: Implement ...
-	return nil
+    // TODO: Implement ...
+    return nil
 }

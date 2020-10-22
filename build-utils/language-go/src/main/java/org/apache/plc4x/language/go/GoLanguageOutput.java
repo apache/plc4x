@@ -60,9 +60,8 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getDataIoTemplates(Configuration freemarkerConfiguration) throws IOException {
-        /*return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/data-io-template.ftlh"));*/
-        return Collections.emptyList();
+        return Collections.singletonList(
+            freemarkerConfiguration.getTemplate("templates/go/data-io-template.ftlh"));
     }
 
     @Override

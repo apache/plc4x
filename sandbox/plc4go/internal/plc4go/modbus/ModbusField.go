@@ -20,24 +20,23 @@ package modbus
 
 import (
 	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 	"strconv"
 )
 
-type PlcField struct {
-	fieldType uint8
-	address   uint32
-	quantity  uint32
-	datatype  string
-	model.PlcField
+type ModbusPlcField struct {
+	FieldType uint8
+	Address   uint16
+	Quantity  uint16
+	Datatype  string
 }
 
-func NewModbusPlcField(fieldType uint8, address uint32, quantity uint32, datatype string) PlcField {
-	return PlcField{
-		fieldType: fieldType,
-		address:   address,
-		quantity:  quantity,
-		datatype:  datatype,
+func NewModbusPlcField(fieldType uint8, address uint16, quantity uint16, datatype string) ModbusPlcField {
+	return ModbusPlcField{
+		FieldType: fieldType,
+		Address:   address,
+		Quantity:  quantity,
+		Datatype:  datatype,
 	}
 }
 
@@ -50,5 +49,16 @@ func NewModbusPlcFieldFromStrings(fieldType uint8, addressString string, quantit
 	if err != nil {
 		quantity = 1
 	}
-	return NewModbusPlcField(fieldType, uint32(address), uint32(quantity), datatype), nil
+	return NewModbusPlcField(fieldType, uint16(address), uint16(quantity), datatype), nil
+}
+
+func (m ModbusPlcField) GetTypeName() string {
+    return m.Datatype
+}
+
+func CastFromPlcField(plcField model.PlcField) (ModbusPlcField, error) {
+    if modbusField, ok := plcField.(ModbusPlcField); ok {
+        return modbusField, nil
+    }
+    return ModbusPlcField{}, errors.New("coudln't cast to ModbusPlcField")
 }

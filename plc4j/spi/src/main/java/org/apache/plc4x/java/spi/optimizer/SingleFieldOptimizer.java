@@ -33,6 +33,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * Optimizer variant which automatically splits a multi-item request up into multiple single item requests.
+ */
 public class SingleFieldOptimizer extends BaseOptimizer {
 
     @Override

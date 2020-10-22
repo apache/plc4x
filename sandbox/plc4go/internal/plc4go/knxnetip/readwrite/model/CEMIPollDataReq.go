@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type CEMIPollDataReq struct {
-	CEMI
+    CEMI
 }
 
 // The corresponding interface
 type ICEMIPollDataReq interface {
-	ICEMI
-	Serialize(io spi.WriteBuffer) error
+    ICEMI
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m CEMIPollDataReq) MessageCode() uint8 {
-	return 0x13
+    return 0x13
 }
 
 func (m CEMIPollDataReq) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewCEMIPollDataReq() CEMIInitializer {
-	return &CEMIPollDataReq{}
+    return &CEMIPollDataReq{}
 }
 
 func CastICEMIPollDataReq(structType interface{}) ICEMIPollDataReq {
-	castFunc := func(typ interface{}) ICEMIPollDataReq {
-		if iCEMIPollDataReq, ok := typ.(ICEMIPollDataReq); ok {
-			return iCEMIPollDataReq
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICEMIPollDataReq {
+        if iCEMIPollDataReq, ok := typ.(ICEMIPollDataReq); ok {
+            return iCEMIPollDataReq
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCEMIPollDataReq(structType interface{}) CEMIPollDataReq {
-	castFunc := func(typ interface{}) CEMIPollDataReq {
-		if sCEMIPollDataReq, ok := typ.(CEMIPollDataReq); ok {
-			return sCEMIPollDataReq
-		}
-		return CEMIPollDataReq{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) CEMIPollDataReq {
+        if sCEMIPollDataReq, ok := typ.(CEMIPollDataReq); ok {
+            return sCEMIPollDataReq
+        }
+        if sCEMIPollDataReq, ok := typ.(*CEMIPollDataReq); ok {
+            return *sCEMIPollDataReq
+        }
+        return CEMIPollDataReq{}
+    }
+    return castFunc(structType)
 }
 
 func (m CEMIPollDataReq) LengthInBits() uint16 {
-	var lengthInBits = m.CEMI.LengthInBits()
+    var lengthInBits uint16 = m.CEMI.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m CEMIPollDataReq) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func CEMIPollDataReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
 
-	// Create the instance
-	return NewCEMIPollDataReq(), nil
+    // Create the instance
+    return NewCEMIPollDataReq(), nil
 }
 
 func (m CEMIPollDataReq) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
+        return nil
+    }
+    return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }

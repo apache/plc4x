@@ -19,116 +19,119 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type ModbusPDUDiagnosticRequest struct {
-	Status     uint16
-	EventCount uint16
-	ModbusPDU
+    SubFunction uint16
+    Data uint16
+    ModbusPDU
 }
 
 // The corresponding interface
 type IModbusPDUDiagnosticRequest interface {
-	IModbusPDU
-	Serialize(io spi.WriteBuffer) error
+    IModbusPDU
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m ModbusPDUDiagnosticRequest) ErrorFlag() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUDiagnosticRequest) FunctionFlag() uint8 {
-	return 0x08
+    return 0x08
 }
 
 func (m ModbusPDUDiagnosticRequest) Response() bool {
-	return false
+    return false
 }
 
 func (m ModbusPDUDiagnosticRequest) initialize() spi.Message {
-	return m
+    return m
 }
 
-func NewModbusPDUDiagnosticRequest(status uint16, eventCount uint16) ModbusPDUInitializer {
-	return &ModbusPDUDiagnosticRequest{Status: status, EventCount: eventCount}
+func NewModbusPDUDiagnosticRequest(subFunction uint16, data uint16) ModbusPDUInitializer {
+    return &ModbusPDUDiagnosticRequest{SubFunction: subFunction, Data: data}
 }
 
 func CastIModbusPDUDiagnosticRequest(structType interface{}) IModbusPDUDiagnosticRequest {
-	castFunc := func(typ interface{}) IModbusPDUDiagnosticRequest {
-		if iModbusPDUDiagnosticRequest, ok := typ.(IModbusPDUDiagnosticRequest); ok {
-			return iModbusPDUDiagnosticRequest
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusPDUDiagnosticRequest {
+        if iModbusPDUDiagnosticRequest, ok := typ.(IModbusPDUDiagnosticRequest); ok {
+            return iModbusPDUDiagnosticRequest
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusPDUDiagnosticRequest(structType interface{}) ModbusPDUDiagnosticRequest {
-	castFunc := func(typ interface{}) ModbusPDUDiagnosticRequest {
-		if sModbusPDUDiagnosticRequest, ok := typ.(ModbusPDUDiagnosticRequest); ok {
-			return sModbusPDUDiagnosticRequest
-		}
-		return ModbusPDUDiagnosticRequest{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusPDUDiagnosticRequest {
+        if sModbusPDUDiagnosticRequest, ok := typ.(ModbusPDUDiagnosticRequest); ok {
+            return sModbusPDUDiagnosticRequest
+        }
+        if sModbusPDUDiagnosticRequest, ok := typ.(*ModbusPDUDiagnosticRequest); ok {
+            return *sModbusPDUDiagnosticRequest
+        }
+        return ModbusPDUDiagnosticRequest{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusPDUDiagnosticRequest) LengthInBits() uint16 {
-	var lengthInBits = m.ModbusPDU.LengthInBits()
+    var lengthInBits uint16 = m.ModbusPDU.LengthInBits()
 
-	// Simple field (status)
-	lengthInBits += 16
+    // Simple field (subFunction)
+    lengthInBits += 16
 
-	// Simple field (eventCount)
-	lengthInBits += 16
+    // Simple field (data)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusPDUDiagnosticRequest) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusPDUDiagnosticRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
 
-	// Simple Field (status)
-	status, _statusErr := io.ReadUint16(16)
-	if _statusErr != nil {
-		return nil, errors.New("Error parsing 'status' field " + _statusErr.Error())
-	}
+    // Simple Field (subFunction)
+    subFunction, _subFunctionErr := io.ReadUint16(16)
+    if _subFunctionErr != nil {
+        return nil, errors.New("Error parsing 'subFunction' field " + _subFunctionErr.Error())
+    }
 
-	// Simple Field (eventCount)
-	eventCount, _eventCountErr := io.ReadUint16(16)
-	if _eventCountErr != nil {
-		return nil, errors.New("Error parsing 'eventCount' field " + _eventCountErr.Error())
-	}
+    // Simple Field (data)
+    data, _dataErr := io.ReadUint16(16)
+    if _dataErr != nil {
+        return nil, errors.New("Error parsing 'data' field " + _dataErr.Error())
+    }
 
-	// Create the instance
-	return NewModbusPDUDiagnosticRequest(status, eventCount), nil
+    // Create the instance
+    return NewModbusPDUDiagnosticRequest(subFunction, data), nil
 }
 
 func (m ModbusPDUDiagnosticRequest) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (status)
-		status := uint16(m.Status)
-		_statusErr := io.WriteUint16(16, status)
-		if _statusErr != nil {
-			return errors.New("Error serializing 'status' field " + _statusErr.Error())
-		}
+    // Simple Field (subFunction)
+    subFunction := uint16(m.SubFunction)
+    _subFunctionErr := io.WriteUint16(16, (subFunction))
+    if _subFunctionErr != nil {
+        return errors.New("Error serializing 'subFunction' field " + _subFunctionErr.Error())
+    }
 
-		// Simple Field (eventCount)
-		eventCount := uint16(m.EventCount)
-		_eventCountErr := io.WriteUint16(16, eventCount)
-		if _eventCountErr != nil {
-			return errors.New("Error serializing 'eventCount' field " + _eventCountErr.Error())
-		}
+    // Simple Field (data)
+    data := uint16(m.Data)
+    _dataErr := io.WriteUint16(16, (data))
+    if _dataErr != nil {
+        return errors.New("Error serializing 'data' field " + _dataErr.Error())
+    }
 
-		return nil
-	}
-	return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
+        return nil
+    }
+    return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }

@@ -19,20 +19,167 @@
 package modbus
 
 import (
-	"fmt"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
+    "errors"
+    "fmt"
+    "math"
+    modbusModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+    plc4goModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+    "sync/atomic"
 )
 
 type ModbusReader struct {
+    transactionIdentifier uint16
+    unitIdentifier int32
+    messageCodec spi.MessageCodec
 	spi.PlcReader
 }
 
-func NewModbusReader() ModbusReader {
-	return ModbusReader{}
+func NewModbusReader(transactionIdentifier uint16, messageCodec spi.MessageCodec) ModbusReader {
+	return ModbusReader{
+        transactionIdentifier: transactionIdentifier,
+        unitIdentifier: 0,
+        messageCodec: messageCodec,
+    }
 }
 
 func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-	fmt.Printf("Read Request %s", readRequest)
-	return make(chan model.PlcReadRequestResult)
+    result := make(chan model.PlcReadRequestResult)
+    // If we are requesting only one field, use a
+    if len(readRequest.GetFieldNames()) == 1 {
+        fieldName := readRequest.GetFieldNames()[0]
+        field := readRequest.GetField(fieldName)
+        modbusField, err := CastFromPlcField(field)
+        if err != nil {
+            result <- model.PlcReadRequestResult{
+                Request: readRequest,
+                Response: nil,
+                Err: errors.New("invalid field item type"),
+            }
+            return result
+        }
+        var pdu modbusModel.IModbusPDU = nil
+        switch modbusField.FieldType {
+        case MODBUS_FIELD_COIL:
+            pdu = modbusModel.ModbusPDUReadInputRegistersRequest{
+                StartingAddress: modbusField.Address,
+                Quantity:        modbusField.Quantity,
+            }
+        case MODBUS_FIELD_DISCRETE_INPUT:
+            pdu = modbusModel.ModbusPDUReadDiscreteInputsRequest{
+                StartingAddress: modbusField.Address,
+                Quantity:        modbusField.Quantity,
+            }
+        case MODBUS_FIELD_INPUT_REGISTER:
+            pdu = modbusModel.ModbusPDUReadInputRegistersRequest{
+                StartingAddress: modbusField.Address,
+                Quantity:        modbusField.Quantity,
+            }
+        case MODBUS_FIELD_HOLDING_REGISTER:
+            pdu = modbusModel.ModbusPDUReadHoldingRegistersRequest{
+                StartingAddress: modbusField.Address,
+                Quantity:        modbusField.Quantity,
+            }
+        case MODBUS_FIELD_EXTENDED_REGISTER:
+            result <- model.PlcReadRequestResult{
+                Request: readRequest,
+                Response: nil,
+                Err: errors.New("modbus currently doesn't support extended register requests"),
+            }
+            return result
+        default:
+            result <- model.PlcReadRequestResult{
+                Request: readRequest,
+                Response: nil,
+                Err: errors.New("unsupported field type"),
+            }
+            return result
+        }
+
+        // Calculate a new unit identifier
+        unitIdentifier := atomic.AddInt32(&m.unitIdentifier, 1)
+        if unitIdentifier > math.MaxUint8 {
+            unitIdentifier = 0
+            atomic.StoreInt32(&m.unitIdentifier, 0)
+        }
+
+        // Assemble the finished ADU
+        requestAdu := modbusModel.ModbusTcpADU{
+            TransactionIdentifier: m.transactionIdentifier,
+            UnitIdentifier:        uint8(unitIdentifier),
+            Pdu:                   pdu,
+        }
+
+        // Send the ADU over the wire
+        err = m.messageCodec.Send(requestAdu)
+        if err != nil {
+            result <- model.PlcReadRequestResult{
+                Request: readRequest,
+                Response: nil,
+                Err: errors.New("error sending message: " + err.Error()),
+            }
+        }
+
+        // Register an expected response
+        check := func(response interface{})bool {
+            responseAdu := modbusModel.CastModbusTcpADU(response)
+            return responseAdu.TransactionIdentifier == m.transactionIdentifier &&
+                responseAdu.UnitIdentifier == requestAdu.UnitIdentifier
+        }
+        // Register a callback to handle the response
+        responseChan := m.messageCodec.Expect(check)
+        go func() {
+            response := <-responseChan
+            // Convert the response into an ADU
+            responseAdu := modbusModel.CastModbusTcpADU(response)
+            // Convert the modbus response into a PLC4X response
+            readResponse := toPlc4xResponse(requestAdu, responseAdu, readRequest)
+
+            result <- model.PlcReadRequestResult{
+                Request: readRequest,
+                Response: readResponse,
+            }
+        }()
+    } else {
+        result <- model.PlcReadRequestResult{
+            Request: readRequest,
+            Response: nil,
+            Err: errors.New("modbus only supports single-item requests"),
+        }
+    }
+    fmt.Printf("Read Request %s", readRequest)
+	return result
 }
+
+func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) model.PlcReadResponse {
+    switch responseAdu.Pdu.(type) {
+    case modbusModel.ModbusPDUReadDiscreteInputsResponse:
+        pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
+        fmt.Printf("ModbusPDUReadDiscreteInputsResponse %d", pdu)
+        // Pure Boolean ...
+    case modbusModel.ModbusPDUReadCoilsResponse:
+        pdu := modbusModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
+        fmt.Printf("ModbusPDUReadCoilsResponse %d", pdu)
+        // Pure Boolean ...
+    case modbusModel.ModbusPDUReadInputRegistersResponse:
+        pdu := modbusModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
+        fmt.Printf("ModbusPDUReadInputRegistersResponse %d", pdu)
+        // DataIo ...
+    case modbusModel.ModbusPDUReadHoldingRegistersResponse:
+        pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
+        _casted := make([]uint8, len(pdu.Value))
+        for i,_val := range pdu.Value {
+            _casted[i] = uint8(_val)
+        }
+        rb := spi.ReadBufferNew(_casted)
+        fieldName := readRequest.GetFieldNames()[0]
+        field := readRequest.GetField(fieldName)
+
+        modbusModel.DataItemParse(rb, )
+        fmt.Printf("ModbusPDUReadHoldingRegistersResponse %d", pdu)
+        // DataIo ...
+    }
+    return plc4goModel.DefaultPlcReadResponse{}
+}
+

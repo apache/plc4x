@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorReadRange struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorReadRange interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorReadRange) ServiceChoice() uint8 {
-	return 0x1A
+    return 0x1A
 }
 
 func (m BACnetErrorReadRange) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorReadRange() BACnetErrorInitializer {
-	return &BACnetErrorReadRange{}
+    return &BACnetErrorReadRange{}
 }
 
 func CastIBACnetErrorReadRange(structType interface{}) IBACnetErrorReadRange {
-	castFunc := func(typ interface{}) IBACnetErrorReadRange {
-		if iBACnetErrorReadRange, ok := typ.(IBACnetErrorReadRange); ok {
-			return iBACnetErrorReadRange
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorReadRange {
+        if iBACnetErrorReadRange, ok := typ.(IBACnetErrorReadRange); ok {
+            return iBACnetErrorReadRange
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorReadRange(structType interface{}) BACnetErrorReadRange {
-	castFunc := func(typ interface{}) BACnetErrorReadRange {
-		if sBACnetErrorReadRange, ok := typ.(BACnetErrorReadRange); ok {
-			return sBACnetErrorReadRange
-		}
-		return BACnetErrorReadRange{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorReadRange {
+        if sBACnetErrorReadRange, ok := typ.(BACnetErrorReadRange); ok {
+            return sBACnetErrorReadRange
+        }
+        if sBACnetErrorReadRange, ok := typ.(*BACnetErrorReadRange); ok {
+            return *sBACnetErrorReadRange
+        }
+        return BACnetErrorReadRange{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorReadRange) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorReadRange) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorReadRangeParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorReadRange(), nil
+    // Create the instance
+    return NewBACnetErrorReadRange(), nil
 }
 
 func (m BACnetErrorReadRange) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

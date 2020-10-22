@@ -19,95 +19,98 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type S7ParameterWriteVarResponse struct {
-	NumItems uint8
-	S7Parameter
+    NumItems uint8
+    S7Parameter
 }
 
 // The corresponding interface
 type IS7ParameterWriteVarResponse interface {
-	IS7Parameter
-	Serialize(io spi.WriteBuffer) error
+    IS7Parameter
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m S7ParameterWriteVarResponse) ParameterType() uint8 {
-	return 0x05
+    return 0x05
 }
 
 func (m S7ParameterWriteVarResponse) MessageType() uint8 {
-	return 0x03
+    return 0x03
 }
 
 func (m S7ParameterWriteVarResponse) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewS7ParameterWriteVarResponse(numItems uint8) S7ParameterInitializer {
-	return &S7ParameterWriteVarResponse{NumItems: numItems}
+    return &S7ParameterWriteVarResponse{NumItems: numItems}
 }
 
 func CastIS7ParameterWriteVarResponse(structType interface{}) IS7ParameterWriteVarResponse {
-	castFunc := func(typ interface{}) IS7ParameterWriteVarResponse {
-		if iS7ParameterWriteVarResponse, ok := typ.(IS7ParameterWriteVarResponse); ok {
-			return iS7ParameterWriteVarResponse
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IS7ParameterWriteVarResponse {
+        if iS7ParameterWriteVarResponse, ok := typ.(IS7ParameterWriteVarResponse); ok {
+            return iS7ParameterWriteVarResponse
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastS7ParameterWriteVarResponse(structType interface{}) S7ParameterWriteVarResponse {
-	castFunc := func(typ interface{}) S7ParameterWriteVarResponse {
-		if sS7ParameterWriteVarResponse, ok := typ.(S7ParameterWriteVarResponse); ok {
-			return sS7ParameterWriteVarResponse
-		}
-		return S7ParameterWriteVarResponse{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) S7ParameterWriteVarResponse {
+        if sS7ParameterWriteVarResponse, ok := typ.(S7ParameterWriteVarResponse); ok {
+            return sS7ParameterWriteVarResponse
+        }
+        if sS7ParameterWriteVarResponse, ok := typ.(*S7ParameterWriteVarResponse); ok {
+            return *sS7ParameterWriteVarResponse
+        }
+        return S7ParameterWriteVarResponse{}
+    }
+    return castFunc(structType)
 }
 
 func (m S7ParameterWriteVarResponse) LengthInBits() uint16 {
-	var lengthInBits = m.S7Parameter.LengthInBits()
+    var lengthInBits uint16 = m.S7Parameter.LengthInBits()
 
-	// Simple field (numItems)
-	lengthInBits += 8
+    // Simple field (numItems)
+    lengthInBits += 8
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m S7ParameterWriteVarResponse) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func S7ParameterWriteVarResponseParse(io *spi.ReadBuffer) (S7ParameterInitializer, error) {
 
-	// Simple Field (numItems)
-	numItems, _numItemsErr := io.ReadUint8(8)
-	if _numItemsErr != nil {
-		return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
-	}
+    // Simple Field (numItems)
+    numItems, _numItemsErr := io.ReadUint8(8)
+    if _numItemsErr != nil {
+        return nil, errors.New("Error parsing 'numItems' field " + _numItemsErr.Error())
+    }
 
-	// Create the instance
-	return NewS7ParameterWriteVarResponse(numItems), nil
+    // Create the instance
+    return NewS7ParameterWriteVarResponse(numItems), nil
 }
 
 func (m S7ParameterWriteVarResponse) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		// Simple Field (numItems)
-		numItems := uint8(m.NumItems)
-		_numItemsErr := io.WriteUint8(8, numItems)
-		if _numItemsErr != nil {
-			return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
-		}
+    // Simple Field (numItems)
+    numItems := uint8(m.NumItems)
+    _numItemsErr := io.WriteUint8(8, (numItems))
+    if _numItemsErr != nil {
+        return errors.New("Error serializing 'numItems' field " + _numItemsErr.Error())
+    }
 
-		return nil
-	}
-	return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
+        return nil
+    }
+    return S7ParameterSerialize(io, m.S7Parameter, CastIS7Parameter(m), ser)
 }

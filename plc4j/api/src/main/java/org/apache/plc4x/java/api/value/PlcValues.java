@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -346,17 +345,17 @@ public class PlcValues {
     }
 
     public static PlcValue of(String s) {
-        return new PlcString(s);
+        return new PlcSTRING(s);
     }
 
     public static PlcValue of(String[] s) {
         if(s != null) {
             if(s.length == 1) {
-                return new PlcString(s[0]);
+                return new PlcSTRING(s[0]);
             } else if(s.length > 1) {
-                List<PlcString> plcValues = new LinkedList<>();
+                List<PlcSTRING> plcValues = new LinkedList<>();
                 for (int j = 0; j < s.length; j++) {
-                    plcValues.add(new PlcString(s[j]));
+                    plcValues.add(new PlcSTRING(s[j]));
                 }
                 return new PlcList(plcValues);
             }

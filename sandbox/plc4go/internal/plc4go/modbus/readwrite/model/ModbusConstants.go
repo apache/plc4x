@@ -19,9 +19,9 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"strconv"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "strconv"
 )
 
 // Constant values.
@@ -29,73 +29,78 @@ const ModbusConstants_MODBUSTCPDEFAULTPORT uint16 = 502
 
 // The data-structure of this message
 type ModbusConstants struct {
+
 }
 
 // The corresponding interface
 type IModbusConstants interface {
-	spi.Message
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    Serialize(io spi.WriteBuffer) error
 }
 
+
 func NewModbusConstants() spi.Message {
-	return &ModbusConstants{}
+    return &ModbusConstants{}
 }
 
 func CastIModbusConstants(structType interface{}) IModbusConstants {
-	castFunc := func(typ interface{}) IModbusConstants {
-		if iModbusConstants, ok := typ.(IModbusConstants); ok {
-			return iModbusConstants
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IModbusConstants {
+        if iModbusConstants, ok := typ.(IModbusConstants); ok {
+            return iModbusConstants
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastModbusConstants(structType interface{}) ModbusConstants {
-	castFunc := func(typ interface{}) ModbusConstants {
-		if sModbusConstants, ok := typ.(ModbusConstants); ok {
-			return sModbusConstants
-		}
-		return ModbusConstants{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ModbusConstants {
+        if sModbusConstants, ok := typ.(ModbusConstants); ok {
+            return sModbusConstants
+        }
+        if sModbusConstants, ok := typ.(*ModbusConstants); ok {
+            return *sModbusConstants
+        }
+        return ModbusConstants{}
+    }
+    return castFunc(structType)
 }
 
 func (m ModbusConstants) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Const Field (modbusTcpDefaultPort)
-	lengthInBits += 16
+    // Const Field (modbusTcpDefaultPort)
+    lengthInBits += 16
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m ModbusConstants) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func ModbusConstantsParse(io *spi.ReadBuffer) (spi.Message, error) {
 
-	// Const Field (modbusTcpDefaultPort)
-	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
-	if _modbusTcpDefaultPortErr != nil {
-		return nil, errors.New("Error parsing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
-	}
-	if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
-		return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusConstants_MODBUSTCPDEFAULTPORT)) + " but got " + strconv.Itoa(int(modbusTcpDefaultPort)))
-	}
+    // Const Field (modbusTcpDefaultPort)
+    modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
+    if _modbusTcpDefaultPortErr != nil {
+        return nil, errors.New("Error parsing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
+    }
+    if modbusTcpDefaultPort != ModbusConstants_MODBUSTCPDEFAULTPORT {
+        return nil, errors.New("Expected constant value " + strconv.Itoa(int(ModbusConstants_MODBUSTCPDEFAULTPORT)) + " but got " + strconv.Itoa(int(modbusTcpDefaultPort)))
+    }
 
-	// Create the instance
-	return NewModbusConstants(), nil
+    // Create the instance
+    return NewModbusConstants(), nil
 }
 
 func (m ModbusConstants) Serialize(io spi.WriteBuffer) error {
 
-	// Const Field (modbusTcpDefaultPort)
-	_modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
-	if _modbusTcpDefaultPortErr != nil {
-		return errors.New("Error serializing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
-	}
+    // Const Field (modbusTcpDefaultPort)
+    _modbusTcpDefaultPortErr := io.WriteUint16(16, 502)
+    if _modbusTcpDefaultPortErr != nil {
+        return errors.New("Error serializing 'modbusTcpDefaultPort' field " + _modbusTcpDefaultPortErr.Error())
+    }
 
-	return nil
+    return nil
 }

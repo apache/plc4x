@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetErrorAtomicReadFile struct {
-	BACnetError
+    BACnetError
 }
 
 // The corresponding interface
 type IBACnetErrorAtomicReadFile interface {
-	IBACnetError
-	Serialize(io spi.WriteBuffer) error
+    IBACnetError
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetErrorAtomicReadFile) ServiceChoice() uint8 {
-	return 0x06
+    return 0x06
 }
 
 func (m BACnetErrorAtomicReadFile) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetErrorAtomicReadFile() BACnetErrorInitializer {
-	return &BACnetErrorAtomicReadFile{}
+    return &BACnetErrorAtomicReadFile{}
 }
 
 func CastIBACnetErrorAtomicReadFile(structType interface{}) IBACnetErrorAtomicReadFile {
-	castFunc := func(typ interface{}) IBACnetErrorAtomicReadFile {
-		if iBACnetErrorAtomicReadFile, ok := typ.(IBACnetErrorAtomicReadFile); ok {
-			return iBACnetErrorAtomicReadFile
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetErrorAtomicReadFile {
+        if iBACnetErrorAtomicReadFile, ok := typ.(IBACnetErrorAtomicReadFile); ok {
+            return iBACnetErrorAtomicReadFile
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetErrorAtomicReadFile(structType interface{}) BACnetErrorAtomicReadFile {
-	castFunc := func(typ interface{}) BACnetErrorAtomicReadFile {
-		if sBACnetErrorAtomicReadFile, ok := typ.(BACnetErrorAtomicReadFile); ok {
-			return sBACnetErrorAtomicReadFile
-		}
-		return BACnetErrorAtomicReadFile{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetErrorAtomicReadFile {
+        if sBACnetErrorAtomicReadFile, ok := typ.(BACnetErrorAtomicReadFile); ok {
+            return sBACnetErrorAtomicReadFile
+        }
+        if sBACnetErrorAtomicReadFile, ok := typ.(*BACnetErrorAtomicReadFile); ok {
+            return *sBACnetErrorAtomicReadFile
+        }
+        return BACnetErrorAtomicReadFile{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetErrorAtomicReadFile) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetError.LengthInBits()
+    var lengthInBits uint16 = m.BACnetError.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetErrorAtomicReadFile) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetErrorAtomicReadFileParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
 
-	// Create the instance
-	return NewBACnetErrorAtomicReadFile(), nil
+    // Create the instance
+    return NewBACnetErrorAtomicReadFile(), nil
 }
 
 func (m BACnetErrorAtomicReadFile) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
+        return nil
+    }
+    return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }

@@ -20,8 +20,8 @@ package model
 
 import (
 	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 )
 
 type DefaultPlcReadRequestBuilder struct {
@@ -67,4 +67,19 @@ type DefaultPlcReadRequest struct {
 
 func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 	return m.reader.Read(m)
+}
+
+func (m DefaultPlcReadRequest) GetFieldNames() []string {
+    fieldNames := []string{}
+    for name := range m.fields {
+        fieldNames = append(fieldNames, name)
+    }
+    return fieldNames
+}
+
+func (m DefaultPlcReadRequest) GetField(name string) model.PlcField {
+    if field, ok := m.fields[name]; ok {
+        return field
+    }
+    return nil
 }

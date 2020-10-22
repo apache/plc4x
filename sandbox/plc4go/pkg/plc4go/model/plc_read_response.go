@@ -18,5 +18,11 @@
 //
 package model
 
+import "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+
 type PlcReadResponse interface {
+
+    GetValue(name string) values.PlcValue
+    PlcResponse
+
 }

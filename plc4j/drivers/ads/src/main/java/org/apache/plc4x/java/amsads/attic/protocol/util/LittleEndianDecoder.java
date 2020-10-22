@@ -21,19 +21,13 @@ package org.apache.plc4x.java.amsads.attic.protocol.util;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.value.*;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 // TODO: we might user ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).putInt(port).asArray() etc
 public class LittleEndianDecoder {
@@ -411,7 +405,7 @@ public class LittleEndianDecoder {
                     values.offer(new String(os.toByteArray()));
                 }
                 if(values.size() == 1) {
-                    return new PlcString(values.get(0));
+                    return new PlcSTRING(values.get(0));
                 } else {
                     return new PlcList(values);
                 }

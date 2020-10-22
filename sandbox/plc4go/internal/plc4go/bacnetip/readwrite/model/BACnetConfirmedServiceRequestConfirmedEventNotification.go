@@ -19,73 +19,76 @@
 package model
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type BACnetConfirmedServiceRequestConfirmedEventNotification struct {
-	BACnetConfirmedServiceRequest
+    BACnetConfirmedServiceRequest
 }
 
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedEventNotification interface {
-	IBACnetConfirmedServiceRequest
-	Serialize(io spi.WriteBuffer) error
+    IBACnetConfirmedServiceRequest
+    Serialize(io spi.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) ServiceChoice() uint8 {
-	return 0x02
+    return 0x02
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) initialize() spi.Message {
-	return m
+    return m
 }
 
 func NewBACnetConfirmedServiceRequestConfirmedEventNotification() BACnetConfirmedServiceRequestInitializer {
-	return &BACnetConfirmedServiceRequestConfirmedEventNotification{}
+    return &BACnetConfirmedServiceRequestConfirmedEventNotification{}
 }
 
 func CastIBACnetConfirmedServiceRequestConfirmedEventNotification(structType interface{}) IBACnetConfirmedServiceRequestConfirmedEventNotification {
-	castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedEventNotification {
-		if iBACnetConfirmedServiceRequestConfirmedEventNotification, ok := typ.(IBACnetConfirmedServiceRequestConfirmedEventNotification); ok {
-			return iBACnetConfirmedServiceRequestConfirmedEventNotification
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) IBACnetConfirmedServiceRequestConfirmedEventNotification {
+        if iBACnetConfirmedServiceRequestConfirmedEventNotification, ok := typ.(IBACnetConfirmedServiceRequestConfirmedEventNotification); ok {
+            return iBACnetConfirmedServiceRequestConfirmedEventNotification
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastBACnetConfirmedServiceRequestConfirmedEventNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedEventNotification {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedEventNotification {
-		if sBACnetConfirmedServiceRequestConfirmedEventNotification, ok := typ.(BACnetConfirmedServiceRequestConfirmedEventNotification); ok {
-			return sBACnetConfirmedServiceRequestConfirmedEventNotification
-		}
-		return BACnetConfirmedServiceRequestConfirmedEventNotification{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) BACnetConfirmedServiceRequestConfirmedEventNotification {
+        if sBACnetConfirmedServiceRequestConfirmedEventNotification, ok := typ.(BACnetConfirmedServiceRequestConfirmedEventNotification); ok {
+            return sBACnetConfirmedServiceRequestConfirmedEventNotification
+        }
+        if sBACnetConfirmedServiceRequestConfirmedEventNotification, ok := typ.(*BACnetConfirmedServiceRequestConfirmedEventNotification); ok {
+            return *sBACnetConfirmedServiceRequestConfirmedEventNotification
+        }
+        return BACnetConfirmedServiceRequestConfirmedEventNotification{}
+    }
+    return castFunc(structType)
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBits() uint16 {
-	var lengthInBits = m.BACnetConfirmedServiceRequest.LengthInBits()
+    var lengthInBits uint16 = m.BACnetConfirmedServiceRequest.LengthInBits()
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
-	// Create the instance
-	return NewBACnetConfirmedServiceRequestConfirmedEventNotification(), nil
+    // Create the instance
+    return NewBACnetConfirmedServiceRequestConfirmedEventNotification(), nil
 }
 
 func (m BACnetConfirmedServiceRequestConfirmedEventNotification) Serialize(io spi.WriteBuffer) error {
-	ser := func() error {
+    ser := func() error {
 
-		return nil
-	}
-	return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
+        return nil
+    }
+    return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }

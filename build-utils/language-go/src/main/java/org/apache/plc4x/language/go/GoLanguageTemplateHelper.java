@@ -234,8 +234,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ", \"" +
-                    stringTypeReference.getEncoding() + "\")";
+                return "io.ReadString(" + stringTypeReference.getSizeInBits() + ")";
             }
         }
         return "Hurz";
@@ -859,9 +858,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public boolean requiresStartPosAndCurPos() {
-        for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
-            if(requiresVariable(curField, "curPos")) {
-                return true;
+        if(getThisTypeDefinition() instanceof ComplexTypeDefinition) {
+            for (Field curField : ((ComplexTypeDefinition) getThisTypeDefinition()).getFields()) {
+                if (requiresVariable(curField, "curPos")) {
+                    return true;
+                }
             }
         }
         return false;

@@ -18,14 +18,14 @@
 //
 package iec61131
 
-import "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
 
 type PlcSTRING struct {
-	value []byte
+	value string
 	values.PlcSimpleValueAdapter
 }
 
-func NewPlcSTRING(value []uint8) PlcSTRING {
+func NewPlcSTRING(value string) PlcSTRING {
 	return PlcSTRING{
 		value: value,
 	}
@@ -36,5 +36,5 @@ func (m PlcSTRING) IsString() bool {
 }
 
 func (m PlcSTRING) GetString() string {
-	return string(m.value)
+	return m.value
 }

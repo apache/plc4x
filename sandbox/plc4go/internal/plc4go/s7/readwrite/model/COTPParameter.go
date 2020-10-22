@@ -19,125 +19,130 @@
 package model
 
 import (
-	"errors"
-	"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
+    "errors"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 )
 
 // The data-structure of this message
 type COTPParameter struct {
+
 }
 
 // The corresponding interface
 type ICOTPParameter interface {
-	spi.Message
-	ParameterType() uint8
-	Serialize(io spi.WriteBuffer) error
+    spi.Message
+    ParameterType() uint8
+    Serialize(io spi.WriteBuffer) error
 }
 
 type COTPParameterInitializer interface {
-	initialize() spi.Message
+    initialize() spi.Message
 }
 
 func COTPParameterParameterType(m ICOTPParameter) uint8 {
-	return m.ParameterType()
+    return m.ParameterType()
 }
 
+
 func CastICOTPParameter(structType interface{}) ICOTPParameter {
-	castFunc := func(typ interface{}) ICOTPParameter {
-		if iCOTPParameter, ok := typ.(ICOTPParameter); ok {
-			return iCOTPParameter
-		}
-		return nil
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) ICOTPParameter {
+        if iCOTPParameter, ok := typ.(ICOTPParameter); ok {
+            return iCOTPParameter
+        }
+        return nil
+    }
+    return castFunc(structType)
 }
 
 func CastCOTPParameter(structType interface{}) COTPParameter {
-	castFunc := func(typ interface{}) COTPParameter {
-		if sCOTPParameter, ok := typ.(COTPParameter); ok {
-			return sCOTPParameter
-		}
-		return COTPParameter{}
-	}
-	return castFunc(structType)
+    castFunc := func(typ interface{}) COTPParameter {
+        if sCOTPParameter, ok := typ.(COTPParameter); ok {
+            return sCOTPParameter
+        }
+        if sCOTPParameter, ok := typ.(*COTPParameter); ok {
+            return *sCOTPParameter
+        }
+        return COTPParameter{}
+    }
+    return castFunc(structType)
 }
 
 func (m COTPParameter) LengthInBits() uint16 {
-	var lengthInBits uint16 = 0
+    var lengthInBits uint16 = 0
 
-	// Discriminator Field (parameterType)
-	lengthInBits += 8
+    // Discriminator Field (parameterType)
+    lengthInBits += 8
 
-	// Implicit Field (parameterLength)
-	lengthInBits += 8
+    // Implicit Field (parameterLength)
+    lengthInBits += 8
 
-	// Length of sub-type elements will be added by sub-type...
+    // Length of sub-type elements will be added by sub-type...
 
-	return lengthInBits
+    return lengthInBits
 }
 
 func (m COTPParameter) LengthInBytes() uint16 {
-	return m.LengthInBits() / 8
+    return m.LengthInBits() / 8
 }
 
 func COTPParameterParse(io *spi.ReadBuffer, rest uint8) (spi.Message, error) {
 
-	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := io.ReadUint8(8)
-	if _parameterTypeErr != nil {
-		return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
-	}
+    // Discriminator Field (parameterType) (Used as input to a switch field)
+    parameterType, _parameterTypeErr := io.ReadUint8(8)
+    if _parameterTypeErr != nil {
+        return nil, errors.New("Error parsing 'parameterType' field " + _parameterTypeErr.Error())
+    }
 
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	_, _parameterLengthErr := io.ReadUint8(8)
-	if _parameterLengthErr != nil {
-		return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
-	}
+    // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    _, _parameterLengthErr := io.ReadUint8(8)
+    if _parameterLengthErr != nil {
+        return nil, errors.New("Error parsing 'parameterLength' field " + _parameterLengthErr.Error())
+    }
 
-	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-	var initializer COTPParameterInitializer
-	var typeSwitchError error
-	switch {
-	case parameterType == 0xC0:
-		initializer, typeSwitchError = COTPParameterTpduSizeParse(io)
-	case parameterType == 0xC1:
-		initializer, typeSwitchError = COTPParameterCallingTsapParse(io)
-	case parameterType == 0xC2:
-		initializer, typeSwitchError = COTPParameterCalledTsapParse(io)
-	case parameterType == 0xC3:
-		initializer, typeSwitchError = COTPParameterChecksumParse(io)
-	case parameterType == 0xE0:
-		initializer, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
-	}
-	if typeSwitchError != nil {
-		return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
-	}
+    // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
+    var initializer COTPParameterInitializer
+    var typeSwitchError error
+    switch {
+    case parameterType == 0xC0:
+        initializer, typeSwitchError = COTPParameterTpduSizeParse(io)
+    case parameterType == 0xC1:
+        initializer, typeSwitchError = COTPParameterCallingTsapParse(io)
+    case parameterType == 0xC2:
+        initializer, typeSwitchError = COTPParameterCalledTsapParse(io)
+    case parameterType == 0xC3:
+        initializer, typeSwitchError = COTPParameterChecksumParse(io)
+    case parameterType == 0xE0:
+        initializer, typeSwitchError = COTPParameterDisconnectAdditionalInformationParse(io, rest)
+    }
+    if typeSwitchError != nil {
+        return nil, errors.New("Error parsing sub-type for type-switch. " + typeSwitchError.Error())
+    }
 
-	// Create the instance
-	return initializer.initialize(), nil
+    // Create the instance
+    return initializer.initialize(), nil
 }
 
 func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func() error) error {
 
-	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType := uint8(i.ParameterType())
-	_parameterTypeErr := io.WriteUint8(8, parameterType)
-	if _parameterTypeErr != nil {
-		return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
-	}
+    // Discriminator Field (parameterType) (Used as input to a switch field)
+    parameterType := uint8(i.ParameterType())
+    _parameterTypeErr := io.WriteUint8(8, (parameterType))
+    if _parameterTypeErr != nil {
+        return errors.New("Error serializing 'parameterType' field " + _parameterTypeErr.Error())
+    }
 
-	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
-	_parameterLengthErr := io.WriteUint8(8, parameterLength)
-	if _parameterLengthErr != nil {
-		return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
-	}
+    // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+    parameterLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(2)))
+    _parameterLengthErr := io.WriteUint8(8, (parameterLength))
+    if _parameterLengthErr != nil {
+        return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
+    }
 
-	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
-	_typeSwitchErr := childSerialize()
-	if _typeSwitchErr != nil {
-		return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
-	}
+    // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
+    _typeSwitchErr := childSerialize()
+    if _typeSwitchErr != nil {
+        return errors.New("Error serializing sub-type field " + _typeSwitchErr.Error())
+    }
 
-	return nil
+    return nil
 }
