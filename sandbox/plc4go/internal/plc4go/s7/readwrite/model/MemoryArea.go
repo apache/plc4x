@@ -75,6 +75,29 @@ func (e MemoryArea) ShortName() string {
         }
     }
 }
+func MemoryAreaValueOf(value uint8) MemoryArea {
+    switch value {
+        case 0x1C:
+            return MemoryArea_COUNTERS
+        case 0x1D:
+            return MemoryArea_TIMERS
+        case 0x80:
+            return MemoryArea_DIRECT_PERIPHERAL_ACCESS
+        case 0x81:
+            return MemoryArea_INPUTS
+        case 0x82:
+            return MemoryArea_OUTPUTS
+        case 0x83:
+            return MemoryArea_FLAGS_MARKERS
+        case 0x84:
+            return MemoryArea_DATA_BLOCKS
+        case 0x85:
+            return MemoryArea_INSTANCE_DATA_BLOCKS
+        case 0x86:
+            return MemoryArea_LOCAL_DATA
+    }
+    return 0
+}
 
 func CastMemoryArea(structType interface{}) MemoryArea {
     castFunc := func(typ interface{}) MemoryArea {

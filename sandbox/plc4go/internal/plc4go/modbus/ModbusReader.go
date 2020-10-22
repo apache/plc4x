@@ -61,10 +61,11 @@ func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRea
             }
             return result
         }
+        numWords := uint16(math.Ceil(float64(modbusField.Quantity * uint16(modbusModel.ModbusDataTypeSizesValueOf(modbusField.Datatype).DataTypeSize())) / float64(2)))
         var pdu modbusModel.IModbusPDU = nil
         switch modbusField.FieldType {
         case MODBUS_FIELD_COIL:
-            pdu = modbusModel.ModbusPDUReadInputRegistersRequest{
+            pdu = modbusModel.ModbusPDUReadCoilsRequest{
                 StartingAddress: modbusField.Address,
                 Quantity:        modbusField.Quantity,
             }
@@ -76,12 +77,12 @@ func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRea
         case MODBUS_FIELD_INPUT_REGISTER:
             pdu = modbusModel.ModbusPDUReadInputRegistersRequest{
                 StartingAddress: modbusField.Address,
-                Quantity:        modbusField.Quantity,
+                Quantity:        numWords,
             }
         case MODBUS_FIELD_HOLDING_REGISTER:
             pdu = modbusModel.ModbusPDUReadHoldingRegistersRequest{
                 StartingAddress: modbusField.Address,
-                Quantity:        modbusField.Quantity,
+                Quantity:        numWords,
             }
         case MODBUS_FIELD_EXTENDED_REGISTER:
             result <- model.PlcReadRequestResult{

@@ -36,6 +36,23 @@ const(
     DataTransportErrorCode_NOT_FOUND DataTransportErrorCode = 0x0A
 )
 
+func DataTransportErrorCodeValueOf(value uint8) DataTransportErrorCode {
+    switch value {
+        case 0x00:
+            return DataTransportErrorCode_RESERVED
+        case 0x03:
+            return DataTransportErrorCode_ACCESS_DENIED
+        case 0x05:
+            return DataTransportErrorCode_INVALID_ADDRESS
+        case 0x06:
+            return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED
+        case 0x0A:
+            return DataTransportErrorCode_NOT_FOUND
+        case 0xFF:
+            return DataTransportErrorCode_OK
+    }
+    return 0
+}
 
 func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
     castFunc := func(typ interface{}) DataTransportErrorCode {

@@ -63,7 +63,7 @@ type I${type.name} interface {
 
 const(
 <#list type.enumValues as enumValue>
-    ${type.name}_${enumValue.name} ${type.name} = ${enumValue.value}
+    ${type.name}_${enumValue.name} ${type.name} = <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>
 </#list>
 )
 
@@ -89,20 +89,29 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 }
     </#list>
 </#if>
+func ${type.name}ValueOf(value <#if type.type?has_content>${helper.getLanguageTypeNameForTypeReference(type.type)}<#else>string</#if>) ${type.name} {
+    switch value {
+<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
+        case <#if helper.isStringTypeReference(type.type)>"${enumValue.value}"<#else>${enumValue.value}</#if>:
+            return ${type.name}_${enumValue.name}
+</#list>
+    }
+    return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>
+}
 
 func Cast${type.name}(structType interface{}) ${type.name} {
     castFunc := func(typ interface{}) ${type.name} {
         if s${type.name}, ok := typ.(${type.name}); ok {
             return s${type.name}
         }
-        return 0
+        return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>
     }
     return castFunc(structType)
 }
 
 func (m ${type.name}) LengthInBits() uint16 {
     <#assign simpleTypeReference = type.type>
-    return ${simpleTypeReference.sizeInBits}
+    return <#if helper.isStringTypeReference(type.type)>0<#else>${simpleTypeReference.sizeInBits}</#if>
 }
 
 func (m ${type.name}) LengthInBytes() uint16 {
@@ -112,7 +121,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
 <#if type.type?has_content>
 func ${type.name}Parse(io *spi.ReadBuffer) (${type.name}, error) {
     // TODO: Implement ...
-    return 0, nil
+    return <#if helper.isStringTypeReference(type.type)>""<#else>0</#if>, nil
 }
 
 func (e ${type.name}) Serialize(io spi.WriteBuffer) error {

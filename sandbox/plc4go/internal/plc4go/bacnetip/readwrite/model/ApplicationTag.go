@@ -43,6 +43,37 @@ const(
     ApplicationTag_BACNET_OBJECT_IDENTIFIER ApplicationTag = 0xC
 )
 
+func ApplicationTagValueOf(value int8) ApplicationTag {
+    switch value {
+        case 0x0:
+            return ApplicationTag_NULL
+        case 0x1:
+            return ApplicationTag_BOOLEAN
+        case 0x2:
+            return ApplicationTag_UNSIGNED_INTEGER
+        case 0x3:
+            return ApplicationTag_SIGNED_INTEGER
+        case 0x4:
+            return ApplicationTag_REAL
+        case 0x5:
+            return ApplicationTag_DOUBLE
+        case 0x6:
+            return ApplicationTag_OCTET_STRING
+        case 0x7:
+            return ApplicationTag_CHARACTER_STRING
+        case 0x8:
+            return ApplicationTag_BIT_STRING
+        case 0x9:
+            return ApplicationTag_ENUMERATED
+        case 0xA:
+            return ApplicationTag_DATE
+        case 0xB:
+            return ApplicationTag_TIME
+        case 0xC:
+            return ApplicationTag_BACNET_OBJECT_IDENTIFIER
+    }
+    return 0
+}
 
 func CastApplicationTag(structType interface{}) ApplicationTag {
     castFunc := func(typ interface{}) ApplicationTag {

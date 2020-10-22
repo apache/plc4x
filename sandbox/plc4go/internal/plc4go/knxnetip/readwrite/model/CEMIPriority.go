@@ -34,6 +34,19 @@ const(
     CEMIPriority_LOW CEMIPriority = 0x3
 )
 
+func CEMIPriorityValueOf(value uint8) CEMIPriority {
+    switch value {
+        case 0x0:
+            return CEMIPriority_SYSTEM
+        case 0x1:
+            return CEMIPriority_NORMAL
+        case 0x2:
+            return CEMIPriority_URGENT
+        case 0x3:
+            return CEMIPriority_LOW
+    }
+    return 0
+}
 
 func CastCEMIPriority(structType interface{}) CEMIPriority {
     castFunc := func(typ interface{}) CEMIPriority {

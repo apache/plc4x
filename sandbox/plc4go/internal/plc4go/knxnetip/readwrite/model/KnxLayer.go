@@ -33,6 +33,17 @@ const(
     KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
+func KnxLayerValueOf(value uint8) KnxLayer {
+    switch value {
+        case 0x02:
+            return KnxLayer_TUNNEL_LINK_LAYER
+        case 0x04:
+            return KnxLayer_TUNNEL_RAW
+        case 0x80:
+            return KnxLayer_TUNNEL_BUSMONITOR
+    }
+    return 0
+}
 
 func CastKnxLayer(structType interface{}) KnxLayer {
     castFunc := func(typ interface{}) KnxLayer {

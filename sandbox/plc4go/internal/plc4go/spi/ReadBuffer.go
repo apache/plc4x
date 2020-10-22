@@ -21,6 +21,7 @@ package spi
 import (
 	"bytes"
 	"github.com/icza/bitio"
+    "math"
 )
 
 type ReadBuffer struct {
@@ -138,7 +139,8 @@ func (rb *ReadBuffer) ReadInt64(bitLength uint8) (int64, error) {
 
 func (rb *ReadBuffer) ReadFloat32(bitLength uint8) (float32, error) {
 	rb.pos += uint64(bitLength)
-	res := float32(rb.reader.TryReadBits(bitLength))
+    uintValue := uint32(rb.reader.TryReadBits(bitLength))
+	res := math.Float32frombits(uintValue)
 	if rb.reader.TryError != nil {
 		return 0, rb.reader.TryError
 	}
@@ -147,7 +149,8 @@ func (rb *ReadBuffer) ReadFloat32(bitLength uint8) (float32, error) {
 
 func (rb *ReadBuffer) ReadFloat64(bitLength uint8) (float64, error) {
 	rb.pos += uint64(bitLength)
-	res := float64(rb.reader.TryReadBits(bitLength))
+	uintValue := rb.reader.TryReadBits(bitLength)
+	res := math.Float64frombits(uintValue)
 	if rb.reader.TryError != nil {
 		return 0, rb.reader.TryError
 	}

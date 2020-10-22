@@ -33,6 +33,17 @@ const(
     BACnetNotifyType_ACK_NOTIFICATION BACnetNotifyType = 0x2
 )
 
+func BACnetNotifyTypeValueOf(value uint8) BACnetNotifyType {
+    switch value {
+        case 0x0:
+            return BACnetNotifyType_ALARM
+        case 0x1:
+            return BACnetNotifyType_EVENT
+        case 0x2:
+            return BACnetNotifyType_ACK_NOTIFICATION
+    }
+    return 0
+}
 
 func CastBACnetNotifyType(structType interface{}) BACnetNotifyType {
     castFunc := func(typ interface{}) BACnetNotifyType {

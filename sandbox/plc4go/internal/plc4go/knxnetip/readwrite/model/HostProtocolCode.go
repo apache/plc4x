@@ -32,6 +32,15 @@ const(
     HostProtocolCode_IPV4_TCP HostProtocolCode = 0x02
 )
 
+func HostProtocolCodeValueOf(value uint8) HostProtocolCode {
+    switch value {
+        case 0x01:
+            return HostProtocolCode_IPV4_UDP
+        case 0x02:
+            return HostProtocolCode_IPV4_TCP
+    }
+    return 0
+}
 
 func CastHostProtocolCode(structType interface{}) HostProtocolCode {
     castFunc := func(typ interface{}) HostProtocolCode {

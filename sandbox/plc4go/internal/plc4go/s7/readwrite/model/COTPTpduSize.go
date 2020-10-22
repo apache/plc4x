@@ -67,6 +67,25 @@ func (e COTPTpduSize) SizeInBytes() uint16 {
         }
     }
 }
+func COTPTpduSizeValueOf(value int8) COTPTpduSize {
+    switch value {
+        case 0x07:
+            return COTPTpduSize_SIZE_128
+        case 0x08:
+            return COTPTpduSize_SIZE_256
+        case 0x09:
+            return COTPTpduSize_SIZE_512
+        case 0x0a:
+            return COTPTpduSize_SIZE_1024
+        case 0x0b:
+            return COTPTpduSize_SIZE_2048
+        case 0x0c:
+            return COTPTpduSize_SIZE_4096
+        case 0x0d:
+            return COTPTpduSize_SIZE_8192
+    }
+    return 0
+}
 
 func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
     castFunc := func(typ interface{}) COTPTpduSize {

@@ -41,6 +41,33 @@ const(
     BACnetNetworkType_SERIAL BACnetNetworkType = 0xA
 )
 
+func BACnetNetworkTypeValueOf(value uint8) BACnetNetworkType {
+    switch value {
+        case 0x0:
+            return BACnetNetworkType_ETHERNET
+        case 0x1:
+            return BACnetNetworkType_ARCNET
+        case 0x2:
+            return BACnetNetworkType_MSTP
+        case 0x3:
+            return BACnetNetworkType_PTP
+        case 0x4:
+            return BACnetNetworkType_LONTALK
+        case 0x5:
+            return BACnetNetworkType_IPV4
+        case 0x6:
+            return BACnetNetworkType_ZIGBEE
+        case 0x7:
+            return BACnetNetworkType_VIRTUAL
+        case 0x8:
+            return BACnetNetworkType_REMOVED_NON_BACNET
+        case 0x9:
+            return BACnetNetworkType_IPV6
+        case 0xA:
+            return BACnetNetworkType_SERIAL
+    }
+    return 0
+}
 
 func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
     castFunc := func(typ interface{}) BACnetNetworkType {

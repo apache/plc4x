@@ -34,6 +34,19 @@ const(
     SzlModuleTypeClass_CP SzlModuleTypeClass = 0xC
 )
 
+func SzlModuleTypeClassValueOf(value uint8) SzlModuleTypeClass {
+    switch value {
+        case 0x0:
+            return SzlModuleTypeClass_CPU
+        case 0x4:
+            return SzlModuleTypeClass_IM
+        case 0x8:
+            return SzlModuleTypeClass_FM
+        case 0xC:
+            return SzlModuleTypeClass_CP
+    }
+    return 0
+}
 
 func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
     castFunc := func(typ interface{}) SzlModuleTypeClass {
