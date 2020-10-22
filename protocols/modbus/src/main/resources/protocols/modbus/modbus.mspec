@@ -270,7 +270,7 @@
     [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [string 'dataType', uint 8 'numberOfValues']
+[dataIo 'DataItem' [string 'dataType', uint 16 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
         ['IEC61131_BOOL','1' BOOL
             [reserved uint 7 '0x00']

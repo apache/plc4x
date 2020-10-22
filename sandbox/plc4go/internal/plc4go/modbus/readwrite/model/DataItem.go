@@ -25,7 +25,7 @@ import (
     api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
-func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (api.PlcValue, error) {
+func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint16) (api.PlcValue, error) {
     switch {
         case dataType == "IEC61131_BOOL" && numberOfValues == 1: // BOOL
 
@@ -42,6 +42,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_BYTE" && numberOfValues == 1: // BYTE
 
@@ -55,6 +62,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_WORD" && numberOfValues == 1: // WORD
 
@@ -68,6 +82,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_DWORD" && numberOfValues == 1: // DWORD
 
@@ -81,6 +102,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_LWORD" && numberOfValues == 1: // LWORD
 
@@ -94,6 +122,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_SINT" && numberOfValues == 1: // SINT
 
@@ -107,6 +142,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_INT" && numberOfValues == 1: // INT
 
@@ -120,6 +162,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_DINT" && numberOfValues == 1: // DINT
 
@@ -133,6 +182,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_LINT" && numberOfValues == 1: // LINT
 
@@ -146,6 +202,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_USINT" && numberOfValues == 1: // USINT
 
@@ -159,6 +222,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_UINT" && numberOfValues == 1: // UINT
 
@@ -172,6 +242,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_UDINT" && numberOfValues == 1: // UDINT
 
@@ -185,6 +262,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_ULINT" && numberOfValues == 1: // ULINT
 
@@ -198,6 +282,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_REAL" && numberOfValues == 1: // REAL
 
@@ -211,6 +302,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_LREAL" && numberOfValues == 1: // LREAL
 
@@ -224,6 +322,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_CHAR" && numberOfValues == 1: // CHAR
 
@@ -237,6 +342,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataType == "IEC61131_WCHAR" && numberOfValues == 1: // WCHAR
 
@@ -250,6 +362,13 @@ func DataItemParse(io *spi.ReadBuffer, dataType string, numberOfValues uint8) (a
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int(numberOfValues); i++ {
+                _item, _itemErr := DataItemParse(io, dataType, uint16(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
     }
     return nil, errors.New("unsupported type")
