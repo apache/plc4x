@@ -42,21 +42,49 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int((8)); i++ {
+                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataProtocolId == 12: // BOOL
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int((16)); i++ {
+                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataProtocolId == 13: // BOOL
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int((32)); i++ {
+                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataProtocolId == 14: // BOOL
 
             // Array Field (value)
             var value []api.PlcValue
+            for i := 0; i < int((64)); i++ {
+                _item, _itemErr := DataItemParse(io, dataProtocolId, int32(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                value = append(value, _item)
+            }
             return values.NewPlcList(value), nil
         case dataProtocolId == 21: // SINT
 

@@ -84,6 +84,13 @@ func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>,
 
             // Array Field (${field.name})
             var ${field.name} []api.PlcValue
+            for i := 0; i < int(${helper.toParseExpression(null, field.loopExpression, type.parserArguments)}); i++ {
+                _item, _itemErr := DataItemParse(io, ${type.parserArguments[0].name}, ${helper.getLanguageTypeNameForTypeReference(type.parserArguments[1].type)}(1))
+                if _itemErr != nil {
+                    return nil, errors.New("Error parsing 'value' field " + _itemErr.Error())
+                }
+                ${field.name} = append(${field.name}, _item)
+            }
                     <#if field.name == "value">
                         <#assign valueDefined=true>
                     </#if>

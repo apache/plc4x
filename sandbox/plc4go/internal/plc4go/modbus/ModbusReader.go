@@ -25,6 +25,7 @@ import (
     modbusModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
     plc4goModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
     "sync/atomic"
@@ -161,37 +162,44 @@ func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcRea
 }
 
 func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusModel.ModbusTcpADU, readRequest model.PlcReadRequest) (model.PlcReadResponse,error) {
+    var data []uint8
     switch responseAdu.Pdu.(type) {
     case modbusModel.ModbusPDUReadDiscreteInputsResponse:
         pdu := modbusModel.CastModbusPDUReadDiscreteInputsResponse(responseAdu.Pdu)
-        fmt.Printf("ModbusPDUReadDiscreteInputsResponse %d", pdu)
+        data = utils.Int8ToUint8(pdu.Value)
         // Pure Boolean ...
     case modbusModel.ModbusPDUReadCoilsResponse:
         pdu := modbusModel.CastModbusPDUReadCoilsResponse(&responseAdu.Pdu)
-        fmt.Printf("ModbusPDUReadCoilsResponse %d", pdu)
+        data = utils.Int8ToUint8(pdu.Value)
         // Pure Boolean ...
     case modbusModel.ModbusPDUReadInputRegistersResponse:
         pdu := modbusModel.CastModbusPDUReadInputRegistersResponse(responseAdu.Pdu)
-        fmt.Printf("ModbusPDUReadInputRegistersResponse %d", pdu)
+        data = utils.Int8ToUint8(pdu.Value)
         // DataIo ...
     case modbusModel.ModbusPDUReadHoldingRegistersResponse:
         pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
-        _casted := make([]uint8, len(pdu.Value))
-        for i,_val := range pdu.Value {
-            _casted[i] = uint8(_val)
-        }
-        rb := spi.ReadBufferNew(_casted)
-        fieldName := readRequest.GetFieldNames()[0]
-        field := readRequest.GetField(fieldName)
-
-        value, err := modbusModel.DataItemParse(rb, field.GetTypeName(), 1)
-        if err != nil {
-            return nil, err
-        }
-        values := map[string]values.PlcValue{}
-        values[fieldName] = value
-        return plc4goModel.NewDefaultPlcReadResponse(values), nil
+        data = utils.Int8ToUint8(pdu.Value)
+    default:
+        return nil, errors.New("unsupported response type")
     }
-    return nil, errors.New("unsupported response type")
+
+    // Get the field from the request
+    fieldName := readRequest.GetFieldNames()[0]
+    field, err := CastFromPlcField(readRequest.GetField(fieldName))
+    if err != nil {
+        return nil, errors.New("error casting to modbus-field")
+    }
+
+    // Decode the data according to the information from the request
+    rb := spi.ReadBufferNew(data)
+    value, err := modbusModel.DataItemParse(rb, field.Datatype, field.Quantity)
+    if err != nil {
+        return nil, err
+    }
+    values := map[string]values.PlcValue{}
+    values[fieldName] = value
+
+    // Return the response
+    return plc4goModel.NewDefaultPlcReadResponse(values), nil
 }
 
