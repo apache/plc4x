@@ -351,7 +351,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadInputRegistersRequest req = (ModbusPDUReadInputRegistersRequest) request;
             ModbusPDUReadInputRegistersResponse resp = (ModbusPDUReadInputRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
-            return DataItemIO.staticParse(io, dataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
+            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
         } else if (request instanceof ModbusPDUReadHoldingRegistersRequest) {
             if (!(response instanceof ModbusPDUReadHoldingRegistersResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -360,7 +360,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
             ModbusPDUReadHoldingRegistersRequest req = (ModbusPDUReadHoldingRegistersRequest) request;
             ModbusPDUReadHoldingRegistersResponse resp = (ModbusPDUReadHoldingRegistersResponse) response;
             ReadBuffer io = new ReadBuffer(resp.getValue());
-            return DataItemIO.staticParse(io, dataType, (short) Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
+            return DataItemIO.staticParse(io, dataType, Math.round(req.getQuantity()/(fieldDataTypeSize/2.0f)));
         } else if (request instanceof ModbusPDUReadFileRecordRequest) {
             if (!(response instanceof ModbusPDUReadFileRecordResponse)) {
                 throw new PlcRuntimeException("Unexpected response type. " +
@@ -384,7 +384,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                   "Expected " + req.getItems().length + ", but got " + resp.getItems().length);
             }
 
-            return DataItemIO.staticParse(io, dataType, (short) Math.round((dataLength/2.0f)/(fieldDataTypeSize/2.0f)));
+            return DataItemIO.staticParse(io, dataType, Math.round((dataLength/2.0f)/(fieldDataTypeSize/2.0f)));
         }
         return null;
     }
@@ -394,7 +394,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         try {
             WriteBuffer buffer;
             if(plcValue instanceof PlcList) {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) ((PlcList) plcValue).getLength(), false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, plcValue.getLength(), false);
                 byte[] data = buffer.getData();
                 switch (((ModbusField) field).getDataType()) {
                     case "BOOL":
@@ -409,7 +409,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
                         return data;
                 }
             } else {
-                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, (short) 1, false);
+                buffer = DataItemIO.staticSerialize(plcValue, fieldDataType, 1, false);
                 if (buffer != null) {
                     return buffer.getData();
                 } else {
@@ -435,7 +435,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private PlcValue readBooleanList(int count, byte[] data) throws ParseException {
         ReadBuffer io = new ReadBuffer(data);
         if(count == 1) {
-            return DataItemIO.staticParse(io, "IEC61131_BOOL", (short) 1);
+            return DataItemIO.staticParse(io, "IEC61131_BOOL", 1);
         }
         // Make sure we read in all the bytes. Unfortunately when requesting 9 bytes
         // they are ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9

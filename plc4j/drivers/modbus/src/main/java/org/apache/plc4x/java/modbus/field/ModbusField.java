@@ -67,7 +67,7 @@ public abstract class ModbusField implements PlcField {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : "INT";
-        ModbusDataType.valueOf(this.dataType);
+        ModbusDataTypeSizes.valueOf(this.dataType);
     }
 
     public int getAddress() {
