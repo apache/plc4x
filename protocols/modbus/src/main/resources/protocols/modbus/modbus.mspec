@@ -270,109 +270,109 @@
     [array      int 8      'recordData'     length  'recordLength']
 ]
 
-[dataIo 'DataItem' [uint 8 'dataType', uint 8 'numberOfValues']
+[dataIo 'DataItem' [string 'dataType', uint 8 'numberOfValues']
     [typeSwitch 'dataType','numberOfValues'
-        ['1','1' BOOL
+        ['IEC61131_BOOL','1' BOOL
             [reserved uint 7 '0x00']
             [simple   bit    'value']
         ]
-        ['1' BOOL
+        ['IEC61131_BOOL' BOOL
             [array bit 'value' count 'numberOfValues']
         ]
-        ['10','1' BYTE
+        ['IEC61131_BYTE','1' BYTE
             [simple uint 8 'value']
         ]
-        ['10' BYTE
+        ['IEC61131_BYTE' BYTE
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['11','1' WORD
+        ['IEC61131_WORD','1' WORD
             [simple uint 16 'value']
         ]
-        ['11' WORD
+        ['IEC61131_WORD' WORD
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['12','1' DWORD
+        ['IEC61131_DWORD','1' DWORD
             [simple uint 32 'value']
         ]
-        ['12' DWORD
+        ['IEC61131_DWORD' DWORD
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['13','1' LWORD
+        ['IEC61131_LWORD','1' LWORD
             [simple uint 64 'value']
         ]
-        ['13' LWORD
+        ['IEC61131_LWORD' LWORD
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['20','1' SINT
+        ['IEC61131_SINT','1' SINT
             [simple int 8 'value']
         ]
-        ['20' SINT
+        ['IEC61131_SINT' SINT
             [array int 8 'value' count 'numberOfValues']
         ]
-        ['21','1' INT
+        ['IEC61131_INT','1' INT
             [simple int 16 'value']
         ]
-        ['21' INT
+        ['IEC61131_INT' INT
             [array int 16 'value' count 'numberOfValues']
         ]
-        ['22','1' DINT
+        ['IEC61131_DINT','1' DINT
             [simple int 32 'value']
         ]
-        ['22' DINT
+        ['IEC61131_DINT' DINT
             [array int 32 'value' count 'numberOfValues']
         ]
-        ['23','1' LINT
+        ['IEC61131_LINT','1' LINT
             [simple int 64 'value']
         ]
-        ['23' LINT
+        ['IEC61131_LINT' LINT
             [array int 64 'value' count 'numberOfValues']
         ]
-        ['24','1' USINT
+        ['IEC61131_USINT','1' USINT
             [simple uint 8 'value']
         ]
-        ['24' USINT
+        ['IEC61131_USINT' USINT
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['25','1' UINT
+        ['IEC61131_UINT','1' UINT
             [simple uint 16 'value']
         ]
-        ['25' UINT
+        ['IEC61131_UINT' UINT
             [array uint 16 'value' count 'numberOfValues']
         ]
-        ['26','1' UDINT
+        ['IEC61131_UDINT','1' UDINT
             [simple uint 32 'value']
         ]
-        ['26' UDINT
+        ['IEC61131_UDINT' UDINT
             [array uint 32 'value' count 'numberOfValues']
         ]
-        ['27','1' ULINT
+        ['IEC61131_ULINT','1' ULINT
             [simple uint 64 'value']
         ]
-        ['27' ULINT
+        ['IEC61131_ULINT' ULINT
             [array uint 64 'value' count 'numberOfValues']
         ]
-        ['30','1' REAL
+        ['IEC61131_REAL','1' REAL
             [simple float 8.23  'value']
         ]
-        ['30' REAL
+        ['IEC61131_REAL' REAL
             [array float 8.23 'value' count 'numberOfValues']
         ]
-        ['31','1' LREAL
+        ['IEC61131_LREAL','1' LREAL
             [simple float 11.52  'value']
         ]
-        ['31' LREAL
+        ['IEC61131_LREAL' LREAL
             [array float 11.52 'value' count 'numberOfValues']
         ]
-        ['80','1' CHAR
+        ['IEC61131_CHAR','1' CHAR
             [simple uint 8 'value']
         ]
-        ['80' CHAR
+        ['IEC61131_CHAR' CHAR
             [array uint 8 'value' count 'numberOfValues']
         ]
-        ['81','1' WCHAR
+        ['IEC61131_WCHAR','1' WCHAR
             [simple uint 16 'value']
         ]
-        ['81' WCHAR
+        ['IEC61131_WCHAR' WCHAR
             [array uint 16 'value' count 'numberOfValues']
         ]
     ]

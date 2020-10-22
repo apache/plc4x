@@ -16,13 +16,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
-
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+package values
 
 type PlcSINT struct {
 	value int8
-	values.PlcSimpleNumericValueAdapter
+    PlcSimpleNumericValueAdapter
 }
 
 func NewPlcSINT(value int8) PlcSINT {

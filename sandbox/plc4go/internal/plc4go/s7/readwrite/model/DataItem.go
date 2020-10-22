@@ -21,7 +21,6 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values/iec61131"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
@@ -30,13 +29,15 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
     switch {
         case dataProtocolId == 01: // BOOL
 
+            // Reserved Field (Just skip the bytes)
+            io.ReadUint8(7)
 
             // Simple Field (value)
             value, _valueErr := io.ReadBit()
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcBOOL(value), nil
+            return values.NewPlcBOOL(value), nil
         case dataProtocolId == 11: // BOOL
 
             // Array Field (value)
@@ -64,7 +65,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcSINT(value), nil
+            return values.NewPlcSINT(value), nil
         case dataProtocolId == 22: // USINT
 
             // Simple Field (value)
@@ -72,7 +73,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcUSINT(value), nil
+            return values.NewPlcUSINT(value), nil
         case dataProtocolId == 23: // INT
 
             // Simple Field (value)
@@ -80,7 +81,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcINT(value), nil
+            return values.NewPlcINT(value), nil
         case dataProtocolId == 24: // UINT
 
             // Simple Field (value)
@@ -88,7 +89,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcUINT(value), nil
+            return values.NewPlcUINT(value), nil
         case dataProtocolId == 25: // DINT
 
             // Simple Field (value)
@@ -96,7 +97,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcDINT(value), nil
+            return values.NewPlcDINT(value), nil
         case dataProtocolId == 26: // UDINT
 
             // Simple Field (value)
@@ -104,7 +105,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcUDINT(value), nil
+            return values.NewPlcUDINT(value), nil
         case dataProtocolId == 27: // LINT
 
             // Simple Field (value)
@@ -112,7 +113,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcLINT(value), nil
+            return values.NewPlcLINT(value), nil
         case dataProtocolId == 28: // ULINT
 
             // Simple Field (value)
@@ -120,7 +121,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcULINT(value), nil
+            return values.NewPlcULINT(value), nil
         case dataProtocolId == 31: // REAL
 
             // Simple Field (value)
@@ -128,7 +129,7 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcREAL(value), nil
+            return values.NewPlcREAL(value), nil
         case dataProtocolId == 32: // LREAL
 
             // Simple Field (value)
@@ -136,27 +137,71 @@ func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32)
             if _valueErr != nil {
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
-            return iec61131.NewPlcLREAL(value), nil
-        case dataProtocolId == 41: // STRING
-            //return iec61131.NewPlcSTRING(value), nil
-        case dataProtocolId == 42: // STRING
-            //return iec61131.NewPlcSTRING(value), nil
+            return values.NewPlcLREAL(value), nil
         case dataProtocolId == 43: // STRING
-            //return iec61131.NewPlcSTRING(value), nil
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseS7String(io, stringLength, "UTF-8")
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcSTRING(value), nil
         case dataProtocolId == 44: // STRING
-            //return iec61131.NewPlcSTRING(value), nil
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseS7String(io, stringLength, "UTF-16")
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcSTRING(value), nil
         case dataProtocolId == 51: // Time
-            //return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseTiaTime(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
         case dataProtocolId == 52: // Time
-            //return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseS5Time(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
         case dataProtocolId == 53: // Time
-            //return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseTiaLTime(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
         case dataProtocolId == 54: // Date
-            //return new PlcDate(LocalDate.of((int) year, (int) month, (int) day))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseTiaDate(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
         case dataProtocolId == 55: // Time
-            //return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseTiaTimeOfDay(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
         case dataProtocolId == 56: // DateTime
-            //return new PlcDateTime(LocalDateTime.of((int) year, (int) month, (int) day, (int) hours, (int) minutes, (int) seconds))
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseTiaDateTime(io)
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcTIME(value), nil
     }
     return nil, errors.New("unsupported type")
 }

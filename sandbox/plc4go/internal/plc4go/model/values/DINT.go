@@ -16,118 +16,110 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
 import (
-	"math"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+    "math"
 )
 
-type PlcLINT struct {
-	value int64
-	values.PlcSimpleNumericValueAdapter
+type PlcDINT struct {
+	value int32
+    PlcSimpleNumericValueAdapter
 }
 
-func NewPlcLINT(value int64) PlcLINT {
-	return PlcLINT{
+func NewPlcDINT(value int32) PlcDINT {
+	return PlcDINT{
 		value: value,
 	}
 }
 
-func (m PlcLINT) GetBoolean() bool {
+func (m PlcDINT) GetBoolean() bool {
 	if m.value == 0 {
 		return false
 	}
 	return true
 }
 
-func (m PlcLINT) IsUint8() bool {
+func (m PlcDINT) IsUint8() bool {
 	return m.value >= 0 && m.value <= math.MaxUint8
 }
 
-func (m PlcLINT) GetUint8() uint8 {
+func (m PlcDINT) GetUint8() uint8 {
 	if m.IsUint8() {
-		return uint8(m.GetInt64())
+		return uint8(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcLINT) IsUint16() bool {
+func (m PlcDINT) IsUint16() bool {
 	return m.value >= 0 && m.value <= math.MaxUint16
 }
 
-func (m PlcLINT) GetUint16() uint16 {
+func (m PlcDINT) GetUint16() uint16 {
 	if m.IsUint16() {
-		return uint16(m.GetInt64())
+		return uint16(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcLINT) IsUint32() bool {
-	return m.value >= 0 && m.value <= math.MaxUint32
-}
-
-func (m PlcLINT) GetUint32() uint32 {
-	if m.IsUint32() {
-		return uint32(m.GetInt64())
-	}
-	return 0
-}
-
-func (m PlcLINT) IsUint64() bool {
+func (m PlcDINT) IsUint32() bool {
 	return m.value >= 0
 }
 
-func (m PlcLINT) GetUint64() uint64 {
-	if m.IsUint64() {
-		return uint64(m.GetInt64())
+func (m PlcDINT) GetUint32() uint32 {
+	if m.IsUint32() {
+		return uint32(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcLINT) IsInt8() bool {
+func (m PlcDINT) IsUint64() bool {
+	return m.value >= 0
+}
+
+func (m PlcDINT) GetUint64() uint64 {
+	if m.IsUint64() {
+		return uint64(m.GetInt32())
+	}
+	return 0
+}
+
+func (m PlcDINT) IsInt8() bool {
 	return m.value >= math.MinInt8 && m.value <= math.MaxInt8
 }
 
-func (m PlcLINT) GetInt8() int8 {
+func (m PlcDINT) GetInt8() int8 {
 	if m.IsInt8() {
-		return int8(m.GetInt64())
+		return int8(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcLINT) IsInt16() bool {
+func (m PlcDINT) IsInt16() bool {
 	return m.value >= math.MinInt16 && m.value <= math.MaxInt16
 }
 
-func (m PlcLINT) GetInt16() int16 {
+func (m PlcDINT) GetInt16() int16 {
 	if m.IsInt16() {
-		return int16(m.GetInt64())
+		return int16(m.GetInt32())
 	}
 	return 0
 }
 
-func (m PlcLINT) IsInt32() bool {
-	return m.value >= math.MinInt32 && m.value <= math.MaxInt32
-}
-
-func (m PlcLINT) GetInt32() int32 {
-	if m.IsInt32() {
-		return int32(m.GetInt64())
-	}
-	return 0
-}
-
-func (m PlcLINT) GetInt64() int64 {
+func (m PlcDINT) GetInt32() int32 {
 	return m.value
 }
 
-func (m PlcLINT) GetFloat32() float32 {
-	//TODO: Check if this is ok
-	return float32(m.GetInt64())
+func (m PlcDINT) GetInt64() int64 {
+	return int64(m.GetInt32())
 }
 
-func (m PlcLINT) GetFloat64() float64 {
+func (m PlcDINT) GetFloat32() float32 {
 	//TODO: Check if this is ok
-	return float64(m.GetInt64())
+	return float32(m.GetInt32())
+}
+
+func (m PlcDINT) GetFloat64() float64 {
+	//TODO: Check if this is ok
+	return float64(m.GetInt32())
 }

@@ -459,10 +459,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 throw new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral");
             }
             // Get the class and method name
-            String methodName = ((StringLiteral) vl.getArgs().get(0)).getValue();
-            // Cut off the double-quptes
-            methodName = methodName.substring(1, methodName.length() - 1);
-            sb.append(methodName).append("(");
+            String staticCall = ((StringLiteral) vl.getArgs().get(0)).getValue();
+            // Cut off the double-quotes
+            staticCall = staticCall.substring(1, staticCall.length() - 1);
+            // Remove all the previous parts prior to the Class name (Which starts with an uppercase letter)
+            while(staticCall.contains(".") && !StringUtils.isAllUpperCase(staticCall.substring(0,1))) {
+                staticCall = staticCall.substring(staticCall.indexOf(".") + 1);
+            }
+            String className = staticCall.substring(0, staticCall.indexOf("."));
+            String methodName = staticCall.substring(staticCall.indexOf(".") + 1);
+            sb.append(className).append(StringUtils.capitalize(methodName)).append("(");
             for (int i = 1; i < vl.getArgs().size(); i++) {
                 Term arg = vl.getArgs().get(i);
                 if (i > 1) {
@@ -700,7 +706,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             imports.add("\"math\"");
         }
 
-        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi\"");
+        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi\"");
 
         // "Fields with complex type": "reflect"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->

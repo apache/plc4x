@@ -64,16 +64,16 @@ package model
 
 import (
     "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/model/values/iec61131"
-    "plc4x.apache.org/plc4go-modbus-driver/0.8.0/internal/plc4go/spi"
-    api "plc4x.apache.org/plc4go-modbus-driver/0.8.0/pkg/plc4go/values"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
 func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (api.PlcValue, error) {
     switch {
     <#list type.switchField.cases as case>
-        case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == ${discriminatorValue}<#sep> && </#sep></#list></#if>: // ${case.name}
+        case <#if case.discriminatorValues?has_content><#list case.discriminatorValues as discriminatorValue>${helper.toParseExpression(null, type.switchField.discriminatorExpressions[discriminatorValue?index], type.parserArguments)} == <#if helper.discriminatorValueNeedsStringEqualityCheck(type.switchField.discriminatorExpressions[discriminatorValue?index])>"${discriminatorValue}"<#else>${discriminatorValue}</#if><#sep> && </#sep></#list></#if>: // ${case.name}
+        <#assign valueDefined=false>
         <#if case.name == "Struct">
             _map := map[string]interface{}{}
         </#if>
@@ -84,10 +84,27 @@ func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>,
 
             // Array Field (${field.name})
             var ${field.name} []api.PlcValue
+                    <#if field.name == "value">
+                        <#assign valueDefined=true>
+                    </#if>
+                    <#break>
+                <#case "manual">
+                    <#assign arrayField = field>
+
+            // Manual Field (${field.name})
+            ${field.name}, _${field.name}Err := ${helper.toParseExpression(field, field.parseExpression, type.parserArguments)}
+            if _${field.name}Err != nil {
+                return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
+            }
+                    <#if field.name == "value">
+                        <#assign valueDefined=true>
+                    </#if>
                     <#break>
                 <#case "reserved">
                     <#assign reservedField = field>
 
+            // Reserved Field (Just skip the bytes)
+            ${helper.getReadBufferReadMethodCall(field.type)}
                     <#break>
                 <#case "simple">
                     <#assign simpleField = field>
@@ -97,39 +114,44 @@ func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>,
             if _${field.name}Err != nil {
                 return nil, errors.New("Error parsing '${field.name}' field " + _${field.name}Err.Error())
             }
-            <#if case.name == "Struct">
+                    <#if case.name == "Struct">
             _map["${case.name}"] = ${field.name}
-            </#if>
-                <#break>
+                    </#if>
+                    <#if field.name == "value">
+                        <#assign valueDefined=true>
+                    </#if>
+                    <#break>
             </#switch>
         </#list>
-        <#switch case.name>
-            <#case "Time">
-            //return new PlcTime(LocalTime.of((int) hours, (int) minutes, (int) seconds))
-                <#break>
-            <#case "Date">
-            //return new PlcDate(LocalDate.of((int) year, (int) month, (int) day))
-                <#break>
-            <#case "DateTime">
-            //return new PlcDateTime(LocalDateTime.of((int) year, (int) month, (int) day, (int) hours, (int) minutes, (int) seconds))
-                <#break>
-            <#case "Struct">
+        <#if valueDefined>
+            <#switch case.name>
+                <#case "Time">
+            return values.NewPlcTIME(value), nil
+                    <#break>
+                <#case "Date">
+            return values.NewPlcTIME(value), nil
+                    <#break>
+                <#case "DateTime">
+            return values.NewPlcTIME(value), nil
+                    <#break>
+                <#case "Struct">
             return values.NewPlcStruct(_map), nil
-                <#break>
-            <#case "List">
+                    <#break>
+                <#case "List">
             return values.NewPlcList(value), nil
-                <#break>
-            <#-- Disable this for now as Strings will only be parsed as manual fields -
-            <#case "STRING">
-            return values.NewPlcSTRING(value), nil
-                <#break-->
-            <#default>
-                <#if helper.isCountArrayField(case.fields[0])>
+                    <#break>
+            <#-- Disable this for now as Strings will only be parsed as manual fields
+                <#case "STRING">
+            //return values.NewPlcSTRING(value), nil
+                    <#break-->
+                <#default>
+                    <#if helper.isCountArrayField(case.fields[0])>
             return values.NewPlcList(value), nil
-                <#else>
-            return iec61131.NewPlc${case.name}(value), nil
-                </#if>
-        </#switch>
+                    <#else>
+            return values.NewPlc${case.name}(value), nil
+                    </#if>
+            </#switch>
+        </#if>
     </#list>
     }
     return nil, errors.New("unsupported type")

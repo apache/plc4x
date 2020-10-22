@@ -16,43 +16,27 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+import (
+    "time"
+)
 
-type PlcBYTE struct {
-	value uint8
-	values.PlcSimpleValueAdapter
+type PlcTIMEOFDAY struct {
+	value time.Time
+    PlcSimpleValueAdapter
 }
 
-func NewPlcBYTE(value uint8) PlcBYTE {
-	return PlcBYTE{
-		value: value,
+func NewPlcTIMEOFDAY(value time.Time) PlcTIMEOFDAY {
+	safeValue := time.Date(0, 0, 0, value.Hour(), value.Minute(), value.Second(), value.Nanosecond(), value.Location())
+	return PlcTIMEOFDAY{
+		value: safeValue,
 	}
 }
 
-func (m PlcBYTE) IsBoolean() bool {
+func (m PlcTIMEOFDAY) IsTime() bool {
 	return true
 }
-
-func (m PlcBYTE) GetBooleanLength() uint32 {
-	return 8
-}
-
-func (m PlcBYTE) GetBoolean() bool {
-	return m.value&1 == 1
-}
-
-func (m PlcBYTE) GetBooleanAt(index uint32) bool {
-	if index > 7 {
-		return false
-	}
-	return m.value>>index&1 == 1
-}
-
-func (m PlcBYTE) GetBooleanArray() []bool {
-	return []bool{m.value&1 == 1, m.value>>1&1 == 1,
-		m.value>>2&1 == 1, m.value>>3&1 == 1,
-		m.value>>4&1 == 1, m.value>>5&1 == 1,
-		m.value>>6&1 == 1, m.value>>7&1 == 1}
+func (m PlcTIMEOFDAY) GetTime() time.Time {
+	return m.value
 }

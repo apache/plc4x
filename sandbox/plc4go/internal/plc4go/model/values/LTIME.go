@@ -16,28 +16,26 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package values
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-	"unicode/utf16"
+    "time"
 )
 
-type PlcWSTRING struct {
-	value []rune
-	values.PlcSimpleValueAdapter
+type PlcLTIME struct {
+	value uint64
+    PlcSimpleValueAdapter
 }
 
-func NewPlcWSTRING(value []uint16) PlcWSTRING {
-	return PlcWSTRING{
-		value: utf16.Decode(value),
+func NewPlcLTIME(value uint64) PlcLTIME {
+	return PlcLTIME{
+		value: value,
 	}
 }
 
-func (m PlcWSTRING) IsString() bool {
+func (m PlcLTIME) IsDuration() bool {
 	return true
 }
-
-func (m PlcWSTRING) GetString() string {
-	return string(m.value)
+func (m PlcLTIME) GetDuration() time.Duration {
+	return time.Duration(m.value)
 }

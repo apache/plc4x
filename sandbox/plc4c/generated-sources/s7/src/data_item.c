@@ -18,6 +18,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include <plc4c/data.h>
 #include <plc4c/spi/evaluation_helper.h>
@@ -189,10 +190,6 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
 
                 *data_item = plc4c_data_create_double_data(value);
 
-        } else 
-        if(dataProtocolId == 41) { /* STRING */
-        } else 
-        if(dataProtocolId == 42) { /* STRING */
         } else 
         if(dataProtocolId == 43) { /* STRING */
 

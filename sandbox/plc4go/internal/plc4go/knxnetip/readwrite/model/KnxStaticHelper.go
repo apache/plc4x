@@ -16,14 +16,31 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package iec61131
+package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+import (
+    "math"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+)
 
-type PlcNULL struct {
-	values.PlcValueAdapter
-}
-
-func NewPlcNULL() PlcNULL {
-	return PlcNULL{}
+func KnxHelperBytesToF16(io *spi.ReadBuffer) (float32, error) {
+    negative, err := io.ReadBit()
+    if err != nil {
+        return 0.0, err
+    }
+    exponent, err := io.ReadUint64(4)
+    if err != nil {
+        return 0.0, err
+    }
+    mantissa, err := io.ReadUint64(11)
+    if err != nil {
+        return 0.0, err
+    }
+    mantissaPart := 0.01 * float32(mantissa)
+    powPart := math.Pow(float64(2), float64(exponent))
+    if negative {
+        return -1 * mantissaPart * float32(powPart), nil
+    } else {
+        return mantissaPart * float32(powPart), nil
+    }
 }

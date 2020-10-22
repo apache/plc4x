@@ -19,11 +19,11 @@
 package modbus
 
 import (
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values/iec61131"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
 )
 
 type ValueHandler struct {
-	iec61131.IEC61131ValueHandler
+    values.IEC61131ValueHandler
 }
 
 func NewValueHandler() ValueHandler {

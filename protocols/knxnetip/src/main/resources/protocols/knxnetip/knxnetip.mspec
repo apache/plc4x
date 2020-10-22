@@ -471,11 +471,11 @@
         ]
         ['4' STRING
             [reserved uint   8 '0x0']
-            [simple   string 8 'UTF-8' 'value']
+            [simple   string 8 'value']
         ]
         ['16' STRING
             [reserved uint   8   '0x0']
-            [simple   string 112 'UTF-8' 'value']
+            [simple   string 112 'value']
         ]
         ['10' Time
             [simple   uint 3 'day']
