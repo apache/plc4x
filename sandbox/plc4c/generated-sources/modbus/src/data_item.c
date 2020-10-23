@@ -26,7 +26,7 @@
 #include "data_item.h"
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer* io, char* dataType, uint8_t numberOfValues, plc4c_data** data_item) {
+plc4c_return_code plc4c_modbus_read_write_data_item_parse(plc4c_spi_read_buffer* io, char* dataType, uint16_t numberOfValues, plc4c_data** data_item) {
     uint16_t startPos = plc4c_spi_read_get_pos(io);
     uint16_t curPos;
     plc4c_return_code _res = OK;
