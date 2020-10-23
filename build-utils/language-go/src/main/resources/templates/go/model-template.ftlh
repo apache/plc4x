@@ -107,7 +107,7 @@ type I${type.name} interface {
         </#if>
     </#list>
 </#if>
-    Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
+    Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error
 }
 
 <#if helper.isDiscriminatedChildTypeDefinition()>
@@ -302,7 +302,7 @@ func (m ${type.name}) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (<#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if>, error) {
+func ${type.name}Parse(io *utils.ReadBuffer<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name} <#if helper.isComplexTypeReference(parserArgument.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) (<#if type.parentType??>${type.parentType.name}Initializer<#else>spi.Message</#if>, error) {
     <#if helper.requiresStartPosAndCurPos()>
     var startPos = io.GetPos()
     var curPos uint16
@@ -666,9 +666,9 @@ func ${type.name}Parse(io *spi.ReadBuffer<#if type.parserArguments?has_content>,
 }
 
 <#if helper.isDiscriminatedParentTypeDefinition()>
-func ${type.name}Serialize(io spi.WriteBuffer, m ${type.name}, i I${type.name}, childSerialize func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func ${type.name}Serialize(io utils.WriteBuffer, m ${type.name}, i I${type.name}, childSerialize func() error<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 <#else>
-func (m ${type.name}) Serialize(io spi.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
+func (m ${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerArguments(type.parserArguments)?has_content>, <#list helper.getSerializerArguments(type.parserArguments) as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if>) error {
 </#if>
     <#assign arraySizeInBytesHelpers=helper.requiresHelperFunctions("ARRAY_SIZE_IN_BYTES")>
     <#if arraySizeInBytesHelpers?has_content>
