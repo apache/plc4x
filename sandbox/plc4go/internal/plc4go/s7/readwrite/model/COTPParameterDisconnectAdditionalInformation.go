@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type COTPParameterDisconnectAdditionalInformation struct {
 // The corresponding interface
 type ICOTPParameterDisconnectAdditionalInformation interface {
     ICOTPParameter
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,7 +87,7 @@ func (m COTPParameterDisconnectAdditionalInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterDisconnectAdditionalInformationParse(io *spi.ReadBuffer, rest uint8) (COTPParameterInitializer, error) {
+func COTPParameterDisconnectAdditionalInformationParse(io *utils.ReadBuffer, rest uint8) (COTPParameterInitializer, error) {
 
     // Array field (data)
     // Count array
@@ -104,7 +105,7 @@ func COTPParameterDisconnectAdditionalInformationParse(io *spi.ReadBuffer, rest 
     return NewCOTPParameterDisconnectAdditionalInformation(data), nil
 }
 
-func (m COTPParameterDisconnectAdditionalInformation) Serialize(io spi.WriteBuffer) error {
+func (m COTPParameterDisconnectAdditionalInformation) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (data)

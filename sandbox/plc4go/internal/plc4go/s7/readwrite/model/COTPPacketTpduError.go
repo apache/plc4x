@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type COTPPacketTpduError struct {
 // The corresponding interface
 type ICOTPPacketTpduError interface {
     ICOTPPacket
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -90,7 +91,7 @@ func (m COTPPacketTpduError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketTpduErrorParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketTpduErrorParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
 
     // Simple Field (destinationReference)
     destinationReference, _destinationReferenceErr := io.ReadUint16(16)
@@ -108,7 +109,7 @@ func COTPPacketTpduErrorParse(io *spi.ReadBuffer) (COTPPacketInitializer, error)
     return NewCOTPPacketTpduError(destinationReference, rejectCause), nil
 }
 
-func (m COTPPacketTpduError) Serialize(io spi.WriteBuffer) error {
+func (m COTPPacketTpduError) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (destinationReference)

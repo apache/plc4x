@@ -16,10 +16,10 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package spi
+package utils
 
 import (
-	"bytes"
+    "bytes"
 	"github.com/icza/bitio"
     "math"
 )

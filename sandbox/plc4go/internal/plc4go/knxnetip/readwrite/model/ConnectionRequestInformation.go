@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type ConnectionRequestInformation struct {
 type IConnectionRequestInformation interface {
     spi.Message
     ConnectionType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type ConnectionRequestInformationInitializer interface {
@@ -85,7 +86,7 @@ func (m ConnectionRequestInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationParse(io *spi.ReadBuffer) (spi.Message, error) {
+func ConnectionRequestInformationParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -116,7 +117,7 @@ func ConnectionRequestInformationParse(io *spi.ReadBuffer) (spi.Message, error) 
     return initializer.initialize(), nil
 }
 
-func ConnectionRequestInformationSerialize(io spi.WriteBuffer, m ConnectionRequestInformation, i IConnectionRequestInformation, childSerialize func() error) error {
+func ConnectionRequestInformationSerialize(io utils.WriteBuffer, m ConnectionRequestInformation, i IConnectionRequestInformation, childSerialize func() error) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))

@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -43,7 +44,7 @@ type CEMIFrameData struct {
 // The corresponding interface
 type ICEMIFrameData interface {
     ICEMIFrame
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -141,7 +142,7 @@ func (m CEMIFrameData) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameDataParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFrameDataParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
 
     // Simple Field (sourceAddress)
     _sourceAddressMessage, _err := KNXAddressParse(io)
@@ -230,7 +231,7 @@ func CEMIFrameDataParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
     return NewCEMIFrameData(sourceAddress, destinationAddress, groupAddress, hopCount, dataLength, tcpi, counter, apci, dataFirstByte, data, crc), nil
 }
 
-func (m CEMIFrameData) Serialize(io spi.WriteBuffer) error {
+func (m CEMIFrameData) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (sourceAddress)

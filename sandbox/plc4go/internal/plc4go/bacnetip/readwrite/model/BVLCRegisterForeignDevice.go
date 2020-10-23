@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BVLCRegisterForeignDevice struct {
 // The corresponding interface
 type IBVLCRegisterForeignDevice interface {
     IBVLC
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BVLCRegisterForeignDevice) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCRegisterForeignDeviceParse(io *spi.ReadBuffer) (BVLCInitializer, error) {
+func BVLCRegisterForeignDeviceParse(io *utils.ReadBuffer) (BVLCInitializer, error) {
 
     // Create the instance
     return NewBVLCRegisterForeignDevice(), nil
 }
 
-func (m BVLCRegisterForeignDevice) Serialize(io spi.WriteBuffer) error {
+func (m BVLCRegisterForeignDevice) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

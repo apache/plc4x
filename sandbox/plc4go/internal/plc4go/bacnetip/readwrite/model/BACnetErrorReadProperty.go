@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "strconv"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"strconv"
 )
 
 // Constant values.
@@ -40,7 +41,7 @@ type BACnetErrorReadProperty struct {
 // The corresponding interface
 type IBACnetErrorReadProperty interface {
     IBACnetError
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,7 +112,7 @@ func (m BACnetErrorReadProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorReadPropertyParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorReadPropertyParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
 
     // Const Field (errorClassHeader)
     errorClassHeader, _errorClassHeaderErr := io.ReadUint8(5)
@@ -171,7 +172,7 @@ func BACnetErrorReadPropertyParse(io *spi.ReadBuffer) (BACnetErrorInitializer, e
     return NewBACnetErrorReadProperty(errorClassLength, errorClass, errorCodeLength, errorCode), nil
 }
 
-func (m BACnetErrorReadProperty) Serialize(io spi.WriteBuffer) error {
+func (m BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (errorClassHeader)

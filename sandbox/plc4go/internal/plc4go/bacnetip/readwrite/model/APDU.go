@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type APDU struct {
 type IAPDU interface {
     spi.Message
     ApduType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type APDUInitializer interface {
@@ -82,7 +83,7 @@ func (m APDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
+func APDUParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
     // Discriminator Field (apduType) (Used as input to a switch field)
     apduType, _apduTypeErr := io.ReadUint8(4)
@@ -119,7 +120,7 @@ func APDUParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func APDUSerialize(io spi.WriteBuffer, m APDU, i IAPDU, childSerialize func() error) error {
+func APDUSerialize(io utils.WriteBuffer, m APDU, i IAPDU, childSerialize func() error) error {
 
     // Discriminator Field (apduType) (Used as input to a switch field)
     apduType := uint8(i.ApduType())

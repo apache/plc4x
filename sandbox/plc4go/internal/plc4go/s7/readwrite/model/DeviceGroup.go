@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type DeviceGroup int8
 
 type IDeviceGroup interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -63,12 +66,12 @@ func (m DeviceGroup) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceGroupParse(io *spi.ReadBuffer) (DeviceGroup, error) {
+func DeviceGroupParse(io *utils.ReadBuffer) (DeviceGroup, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e DeviceGroup) Serialize(io spi.WriteBuffer) error {
+func (e DeviceGroup) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

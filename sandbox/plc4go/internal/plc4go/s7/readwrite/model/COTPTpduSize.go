@@ -18,14 +18,17 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type COTPTpduSize int8
 
 type ICOTPTpduSize interface {
     spi.Message
     SizeInBytes() uint16
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -105,12 +108,12 @@ func (m COTPTpduSize) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPTpduSizeParse(io *spi.ReadBuffer) (COTPTpduSize, error) {
+func COTPTpduSizeParse(io *utils.ReadBuffer) (COTPTpduSize, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e COTPTpduSize) Serialize(io spi.WriteBuffer) error {
+func (e COTPTpduSize) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

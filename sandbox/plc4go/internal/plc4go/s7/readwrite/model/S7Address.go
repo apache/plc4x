@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type S7Address struct {
 type IS7Address interface {
     spi.Message
     AddressType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type S7AddressInitializer interface {
@@ -82,7 +83,7 @@ func (m S7Address) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7AddressParse(io *spi.ReadBuffer) (spi.Message, error) {
+func S7AddressParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Discriminator Field (addressType) (Used as input to a switch field)
     addressType, _addressTypeErr := io.ReadUint8(8)
@@ -105,7 +106,7 @@ func S7AddressParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func S7AddressSerialize(io spi.WriteBuffer, m S7Address, i IS7Address, childSerialize func() error) error {
+func S7AddressSerialize(io utils.WriteBuffer, m S7Address, i IS7Address, childSerialize func() error) error {
 
     // Discriminator Field (addressType) (Used as input to a switch field)
     addressType := uint8(i.AddressType())

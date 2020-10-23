@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type KnxNetIpTunneling struct {
 // The corresponding interface
 type IKnxNetIpTunneling interface {
     IServiceId
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m KnxNetIpTunneling) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetIpTunnelingParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetIpTunnelingParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -96,7 +97,7 @@ func KnxNetIpTunnelingParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
     return NewKnxNetIpTunneling(version), nil
 }
 
-func (m KnxNetIpTunneling) Serialize(io spi.WriteBuffer) error {
+func (m KnxNetIpTunneling) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)

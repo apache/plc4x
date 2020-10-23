@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type ModbusPDUWriteFileRecordResponse struct {
 // The corresponding interface
 type IModbusPDUWriteFileRecordResponse interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -100,7 +101,7 @@ func (m ModbusPDUWriteFileRecordResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUWriteFileRecordResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -130,7 +131,7 @@ func ModbusPDUWriteFileRecordResponseParse(io *spi.ReadBuffer) (ModbusPDUInitial
     return NewModbusPDUWriteFileRecordResponse(items), nil
 }
 
-func (m ModbusPDUWriteFileRecordResponse) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUWriteFileRecordResponse) Serialize(io utils.WriteBuffer) error {
     itemsArraySizeInBytes := func(items []IModbusPDUWriteFileRecordResponseItem) uint32 {
         var sizeInBytes uint32 = 0
         for _, v := range items {

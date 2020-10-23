@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
     "strconv"
 )
@@ -37,7 +38,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlResponse struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
     IS7PayloadUserDataItem
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -103,7 +104,7 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) LengthInBytes() uint16 
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *utils.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
 
     // Const Field (szlItemLength)
     szlItemLength, _szlItemLengthErr := io.ReadUint16(16)
@@ -141,7 +142,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParse(io *spi.ReadBuffer) (S
     return NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(items), nil
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io spi.WriteBuffer) error {
+func (m S7PayloadUserDataItemCpuFunctionReadSzlResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (szlItemLength)

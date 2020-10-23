@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -37,7 +38,7 @@ type S7PayloadUserDataItem struct {
 type IS7PayloadUserDataItem interface {
     spi.Message
     CpuFunctionType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type S7PayloadUserDataItemInitializer interface {
@@ -99,7 +100,7 @@ func (m S7PayloadUserDataItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemParse(io *spi.ReadBuffer, cpuFunctionType uint8) (spi.Message, error) {
+func S7PayloadUserDataItemParse(io *utils.ReadBuffer, cpuFunctionType uint8) (spi.Message, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -153,7 +154,7 @@ func S7PayloadUserDataItemParse(io *spi.ReadBuffer, cpuFunctionType uint8) (spi.
     return initializer.initialize(returnCode, transportSize, szlId, szlIndex), nil
 }
 
-func S7PayloadUserDataItemSerialize(io spi.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func() error) error {
+func S7PayloadUserDataItemSerialize(io utils.WriteBuffer, m S7PayloadUserDataItem, i IS7PayloadUserDataItem, childSerialize func() error) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)

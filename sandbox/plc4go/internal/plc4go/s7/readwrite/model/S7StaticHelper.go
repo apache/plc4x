@@ -19,11 +19,11 @@
 package model
 
 import (
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
-func StaticHelperParseTiaTime(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaTime(io *utils.ReadBuffer) (uint32, error) {
     /*try {
         int millisSinceMidnight = io.readInt(32);
         return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -34,12 +34,12 @@ func StaticHelperParseTiaTime(io *spi.ReadBuffer) (uint32, error) {
     return 0, nil
 }
 
-func StaticHelperSerializeTiaTime(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaTime(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing TIME not implemented");
     return nil
 }
 
-func StaticHelperParseS5Time(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseS5Time(io *utils.ReadBuffer) (uint32, error) {
     /*try {
         int stuff = io.readInt(16);
         // TODO: Implement this correctly.
@@ -50,22 +50,22 @@ func StaticHelperParseS5Time(io *spi.ReadBuffer) (uint32, error) {
     return 0, nil
 }
 
-func StaticHelperSerializeS5Time(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeS5Time(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing S5TIME not implemented");
     return nil
 }
 
-func StaticHelperParseTiaLTime(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaLTime(io *utils.ReadBuffer) (uint32, error) {
     //throw new NotImplementedException("LTIME not implemented");
     return 0, nil
 }
 
-func StaticHelperSerializeTiaLTime(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaLTime(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing LTIME not implemented");
     return nil
 }
 
-func StaticHelperParseTiaTimeOfDay(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaTimeOfDay(io *utils.ReadBuffer) (uint32, error) {
     /*try {
         long millisSinceMidnight = io.readUnsignedLong(32);
         return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
@@ -76,12 +76,12 @@ func StaticHelperParseTiaTimeOfDay(io *spi.ReadBuffer) (uint32, error) {
     return 0, nil
 }
 
-func StaticHelperSerializeTiaTimeOfDay(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaTimeOfDay(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     return nil
 }
 
-func StaticHelperParseTiaDate(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaDate(io *utils.ReadBuffer) (uint32, error) {
     /*try {
         int daysSince1990 = io.readUnsignedInt(16);
         return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
@@ -91,12 +91,12 @@ func StaticHelperParseTiaDate(io *spi.ReadBuffer) (uint32, error) {
     return 0, nil
 }
 
-func StaticHelperSerializeTiaDate(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaDate(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing DATE not implemented");
     return nil
 }
 
-func StaticHelperParseTiaDateTime(io *spi.ReadBuffer) (uint32, error) {
+func StaticHelperParseTiaDateTime(io *utils.ReadBuffer) (uint32, error) {
     /*try {
         int year = io.readUnsignedInt(16);
         int month = io.readUnsignedInt(8);
@@ -115,12 +115,12 @@ func StaticHelperParseTiaDateTime(io *spi.ReadBuffer) (uint32, error) {
     return 0, nil
 }
 
-func StaticHelperSerializeTiaDateTime(io *spi.WriteBuffer, value values.PlcValue) error {
+func StaticHelperSerializeTiaDateTime(io *utils.WriteBuffer, value values.PlcValue) error {
     //throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
     return nil
 }
 
-func StaticHelperParseS7String(io *spi.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func StaticHelperParseS7String(io *utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
     /*try {
         // This is the maximum number of bytes a string can be long.
         short maxLength = io.readUnsignedShort(8);

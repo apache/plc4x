@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type ServiceId struct {
 type IServiceId interface {
     spi.Message
     ServiceType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type ServiceIdInitializer interface {
@@ -82,7 +83,7 @@ func (m ServiceId) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ServiceIdParse(io *spi.ReadBuffer) (spi.Message, error) {
+func ServiceIdParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Discriminator Field (serviceType) (Used as input to a switch field)
     serviceType, _serviceTypeErr := io.ReadUint8(8)
@@ -115,7 +116,7 @@ func ServiceIdParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func ServiceIdSerialize(io spi.WriteBuffer, m ServiceId, i IServiceId, childSerialize func() error) error {
+func ServiceIdSerialize(io utils.WriteBuffer, m ServiceId, i IServiceId, childSerialize func() error) error {
 
     // Discriminator Field (serviceType) (Used as input to a switch field)
     serviceType := uint8(i.ServiceType())

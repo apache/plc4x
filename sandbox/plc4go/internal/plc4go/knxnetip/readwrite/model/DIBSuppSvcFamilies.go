@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type DIBSuppSvcFamilies struct {
 // The corresponding interface
 type IDIBSuppSvcFamilies interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -88,7 +89,7 @@ func (m DIBSuppSvcFamilies) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DIBSuppSvcFamiliesParse(io *spi.ReadBuffer) (spi.Message, error) {
+func DIBSuppSvcFamiliesParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -123,7 +124,7 @@ func DIBSuppSvcFamiliesParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewDIBSuppSvcFamilies(descriptionType, serviceIds), nil
 }
 
-func (m DIBSuppSvcFamilies) Serialize(io spi.WriteBuffer) error {
+func (m DIBSuppSvcFamilies) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))

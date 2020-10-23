@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetConfirmedServiceRequestConfirmedPrivateTransfer struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) LengthInBytes() u
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
     // Create the instance
     return NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(), nil
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

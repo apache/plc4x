@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetErrorAtomicWriteFile struct {
 // The corresponding interface
 type IBACnetErrorAtomicWriteFile interface {
     IBACnetError
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetErrorAtomicWriteFile) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorAtomicWriteFileParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorAtomicWriteFileParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
 
     // Create the instance
     return NewBACnetErrorAtomicWriteFile(), nil
 }
 
-func (m BACnetErrorAtomicWriteFile) Serialize(io spi.WriteBuffer) error {
+func (m BACnetErrorAtomicWriteFile) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type IModbusPDU interface {
     ErrorFlag() bool
     FunctionFlag() uint8
     Response() bool
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type ModbusPDUInitializer interface {
@@ -95,7 +96,7 @@ func (m ModbusPDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusPDUParse(io *utils.ReadBuffer, response bool) (spi.Message, error) {
 
     // Discriminator Field (errorFlag) (Used as input to a switch field)
     errorFlag, _errorFlagErr := io.ReadBit()
@@ -200,7 +201,7 @@ func ModbusPDUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func ModbusPDUSerialize(io spi.WriteBuffer, m ModbusPDU, i IModbusPDU, childSerialize func() error) error {
+func ModbusPDUSerialize(io utils.WriteBuffer, m ModbusPDU, i IModbusPDU, childSerialize func() error) error {
 
     // Discriminator Field (errorFlag) (Used as input to a switch field)
     errorFlag := bool(i.ErrorFlag())

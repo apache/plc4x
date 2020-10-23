@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "strconv"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"strconv"
 )
 
 // Constant values.
@@ -45,7 +46,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOV interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -129,7 +130,7 @@ func (m BACnetConfirmedServiceRequestSubscribeCOV) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
     // Const Field (subscriberProcessIdentifierHeader)
     subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
@@ -222,7 +223,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(io *spi.ReadBuffer) (BACnetC
     return NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier, monitoredObjectType, monitoredObjectInstanceNumber, issueConfirmedNotifications, lifetimeLength, lifetimeSeconds), nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestSubscribeCOV) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (subscriberProcessIdentifierHeader)

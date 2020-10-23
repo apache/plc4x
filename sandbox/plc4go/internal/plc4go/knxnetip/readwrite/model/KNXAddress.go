@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type KNXAddress struct {
 // The corresponding interface
 type IKNXAddress interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -84,7 +85,7 @@ func (m KNXAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
+func KNXAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (mainGroup)
     mainGroup, _mainGroupErr := io.ReadUint8(4)
@@ -108,7 +109,7 @@ func KNXAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewKNXAddress(mainGroup, middleGroup, subGroup), nil
 }
 
-func (m KNXAddress) Serialize(io spi.WriteBuffer) error {
+func (m KNXAddress) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (mainGroup)
     mainGroup := uint8(m.MainGroup)

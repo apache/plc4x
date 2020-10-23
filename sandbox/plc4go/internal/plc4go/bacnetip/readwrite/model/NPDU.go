@@ -22,7 +22,8 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -48,7 +49,7 @@ type NPDU struct {
 // The corresponding interface
 type INPDU interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -158,7 +159,7 @@ func (m NPDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
+func NPDUParse(io *utils.ReadBuffer, npduLength uint16) (spi.Message, error) {
 
     // Simple Field (protocolVersionNumber)
     protocolVersionNumber, _protocolVersionNumberErr := io.ReadUint8(8)
@@ -248,8 +249,8 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 
     // Array field (destinationAddress)
     // Count array
-    destinationAddress := make([]uint8, spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
-    for curItem := uint16(0); curItem < uint16(spi.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
+    destinationAddress := make([]uint8, utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0))))
+    for curItem := uint16(0); curItem < uint16(utils.InlineIf(destinationSpecified, uint16((*destinationLength)), uint16(uint16(0)))); curItem++ {
 
         _item, _err := io.ReadUint8(8)
         if _err != nil {
@@ -282,8 +283,8 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
 
     // Array field (sourceAddress)
     // Count array
-    sourceAddress := make([]uint8, spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
-    for curItem := uint16(0); curItem < uint16(spi.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
+    sourceAddress := make([]uint8, utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0))))
+    for curItem := uint16(0); curItem < uint16(utils.InlineIf(sourceSpecified, uint16((*sourceLength)), uint16(uint16(0)))); curItem++ {
 
         _item, _err := io.ReadUint8(8)
         if _err != nil {
@@ -306,7 +307,7 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
     // Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
     var nlm *INLM = nil
     if messageTypeFieldPresent {
-        _message, _err := NLMParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+        _message, _err := NLMParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'nlm' field " + _err.Error())
         }
@@ -321,7 +322,7 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
     // Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
     var apdu *IAPDU = nil
     if !(messageTypeFieldPresent) {
-        _message, _err := APDUParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(spi.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(spi.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(spi.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
+        _message, _err := APDUParse(io, uint16(npduLength) - uint16(uint16(uint16(uint16(uint16(uint16(2)) + uint16(uint16(utils.InlineIf(sourceSpecified, uint16(uint16(uint16(3)) + uint16((*sourceLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(destinationSpecified, uint16(uint16(uint16(3)) + uint16((*destinationLength))), uint16(uint16(0)))))) + uint16(uint16(utils.InlineIf(bool(bool(destinationSpecified) || bool(sourceSpecified)), uint16(uint16(1)), uint16(uint16(0))))))))
         if _err != nil {
             return nil, errors.New("Error parsing 'apdu' field " + _err.Error())
         }
@@ -337,7 +338,7 @@ func NPDUParse(io *spi.ReadBuffer, npduLength uint16) (spi.Message, error) {
     return NewNPDU(protocolVersionNumber, messageTypeFieldPresent, destinationSpecified, sourceSpecified, expectingReply, networkPriority, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, hopCount, nlm, apdu), nil
 }
 
-func (m NPDU) Serialize(io spi.WriteBuffer) error {
+func (m NPDU) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (protocolVersionNumber)
     protocolVersionNumber := uint8(m.ProtocolVersionNumber)

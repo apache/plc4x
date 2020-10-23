@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type TunnelingRequest struct {
 // The corresponding interface
 type ITunnelingRequest interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -89,7 +90,7 @@ func (m TunnelingRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TunnelingRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func TunnelingRequestParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (tunnelingRequestDataBlock)
     _tunnelingRequestDataBlockMessage, _err := TunnelingRequestDataBlockParse(io)
@@ -117,7 +118,7 @@ func TunnelingRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMess
     return NewTunnelingRequest(tunnelingRequestDataBlock, cemi), nil
 }
 
-func (m TunnelingRequest) Serialize(io spi.WriteBuffer) error {
+func (m TunnelingRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (tunnelingRequestDataBlock)

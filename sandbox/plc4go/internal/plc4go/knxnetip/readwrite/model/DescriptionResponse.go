@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -34,7 +35,7 @@ type DescriptionResponse struct {
 // The corresponding interface
 type IDescriptionResponse interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -89,7 +90,7 @@ func (m DescriptionResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DescriptionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DescriptionResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (dibDeviceInfo)
     _dibDeviceInfoMessage, _err := DIBDeviceInfoParse(io)
@@ -117,7 +118,7 @@ func DescriptionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, e
     return NewDescriptionResponse(dibDeviceInfo, dibSuppSvcFamilies), nil
 }
 
-func (m DescriptionResponse) Serialize(io spi.WriteBuffer) error {
+func (m DescriptionResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (dibDeviceInfo)

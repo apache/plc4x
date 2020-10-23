@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type SearchRequest struct {
 // The corresponding interface
 type ISearchRequest interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -85,7 +86,7 @@ func (m SearchRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SearchRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func SearchRequestParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (hpaiIDiscoveryEndpoint)
     _hpaiIDiscoveryEndpointMessage, _err := HPAIDiscoveryEndpointParse(io)
@@ -102,7 +103,7 @@ func SearchRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) 
     return NewSearchRequest(hpaiIDiscoveryEndpoint), nil
 }
 
-func (m SearchRequest) Serialize(io spi.WriteBuffer) error {
+func (m SearchRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiIDiscoveryEndpoint)

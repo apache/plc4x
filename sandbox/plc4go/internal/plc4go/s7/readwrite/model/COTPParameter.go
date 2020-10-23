@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type COTPParameter struct {
 type ICOTPParameter interface {
     spi.Message
     ParameterType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type COTPParameterInitializer interface {
@@ -85,7 +86,7 @@ func (m COTPParameter) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterParse(io *spi.ReadBuffer, rest uint8) (spi.Message, error) {
+func COTPParameterParse(io *utils.ReadBuffer, rest uint8) (spi.Message, error) {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
     parameterType, _parameterTypeErr := io.ReadUint8(8)
@@ -122,7 +123,7 @@ func COTPParameterParse(io *spi.ReadBuffer, rest uint8) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func COTPParameterSerialize(io spi.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func() error) error {
+func COTPParameterSerialize(io utils.WriteBuffer, m COTPParameter, i ICOTPParameter, childSerialize func() error) error {
 
     // Discriminator Field (parameterType) (Used as input to a switch field)
     parameterType := uint8(i.ParameterType())

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type COTPParameterTpduSize struct {
 // The corresponding interface
 type ICOTPParameterTpduSize interface {
     ICOTPParameter
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m COTPParameterTpduSize) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterTpduSizeParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterTpduSizeParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
 
     // Enum field (tpduSize)
     tpduSize, _tpduSizeErr := COTPTpduSizeParse(io)
@@ -96,7 +97,7 @@ func COTPParameterTpduSizeParse(io *spi.ReadBuffer) (COTPParameterInitializer, e
     return NewCOTPParameterTpduSize(tpduSize), nil
 }
 
-func (m COTPParameterTpduSize) Serialize(io spi.WriteBuffer) error {
+func (m COTPParameterTpduSize) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (tpduSize)

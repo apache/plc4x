@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type TunnelingResponseDataBlock struct {
 // The corresponding interface
 type ITunnelingResponseDataBlock interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -87,7 +88,7 @@ func (m TunnelingResponseDataBlock) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TunnelingResponseDataBlockParse(io *spi.ReadBuffer) (spi.Message, error) {
+func TunnelingResponseDataBlockParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _structureLengthErr := io.ReadUint8(8)
@@ -117,7 +118,7 @@ func TunnelingResponseDataBlockParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewTunnelingResponseDataBlock(communicationChannelId, sequenceCounter, status), nil
 }
 
-func (m TunnelingResponseDataBlock) Serialize(io spi.WriteBuffer) error {
+func (m TunnelingResponseDataBlock) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     structureLength := uint8(uint8(m.LengthInBytes()))

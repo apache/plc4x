@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type COTPParameterCalledTsap struct {
 // The corresponding interface
 type ICOTPParameterCalledTsap interface {
     ICOTPParameter
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m COTPParameterCalledTsap) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterCalledTsapParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterCalledTsapParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
 
     // Simple Field (tsapId)
     tsapId, _tsapIdErr := io.ReadUint16(16)
@@ -96,7 +97,7 @@ func COTPParameterCalledTsapParse(io *spi.ReadBuffer) (COTPParameterInitializer,
     return NewCOTPParameterCalledTsap(tsapId), nil
 }
 
-func (m COTPParameterCalledTsap) Serialize(io spi.WriteBuffer) error {
+func (m COTPParameterCalledTsap) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (tsapId)

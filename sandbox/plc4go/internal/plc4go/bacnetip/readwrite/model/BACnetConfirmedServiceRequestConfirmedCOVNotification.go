@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
     "strconv"
 )
 
@@ -49,7 +50,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestConfirmedCOVNotification interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -146,7 +147,7 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) LengthInBytes() u
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *spi.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *utils.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
 
     // Const Field (subscriberProcessIdentifierHeader)
     subscriberProcessIdentifierHeader, _subscriberProcessIdentifierHeaderErr := io.ReadUint8(8)
@@ -272,7 +273,7 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io *spi.ReadBuff
     return NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier, monitoredObjectType, monitoredObjectInstanceNumber, issueConfirmedNotificationsType, issueConfirmedNotificationsInstanceNumber, lifetimeLength, lifetimeSeconds, notifications), nil
 }
 
-func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (subscriberProcessIdentifierHeader)

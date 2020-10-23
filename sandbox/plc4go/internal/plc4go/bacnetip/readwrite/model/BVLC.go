@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "strconv"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"strconv"
 )
 
 // Constant values.
@@ -36,7 +37,7 @@ type BVLC struct {
 type IBVLC interface {
     spi.Message
     BvlcFunction() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type BVLCInitializer interface {
@@ -92,7 +93,7 @@ func (m BVLC) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCParse(io *spi.ReadBuffer) (spi.Message, error) {
+func BVLCParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Const Field (bacnetType)
     bacnetType, _bacnetTypeErr := io.ReadUint8(8)
@@ -154,7 +155,7 @@ func BVLCParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func BVLCSerialize(io spi.WriteBuffer, m BVLC, i IBVLC, childSerialize func() error) error {
+func BVLCSerialize(io utils.WriteBuffer, m BVLC, i IBVLC, childSerialize func() error) error {
 
     // Const Field (bacnetType)
     _bacnetTypeErr := io.WriteUint8(8, 0x81)

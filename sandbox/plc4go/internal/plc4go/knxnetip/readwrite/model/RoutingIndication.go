@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type RoutingIndication struct {
 // The corresponding interface
 type IRoutingIndication interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m RoutingIndication) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func RoutingIndicationParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func RoutingIndicationParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Create the instance
     return NewRoutingIndication(), nil
 }
 
-func (m RoutingIndication) Serialize(io spi.WriteBuffer) error {
+func (m RoutingIndication) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

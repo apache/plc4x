@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -37,7 +38,7 @@ type CEMIMPropReadCon struct {
 // The corresponding interface
 type ICEMIMPropReadCon interface {
     ICEMI
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -104,7 +105,7 @@ func (m CEMIMPropReadCon) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIMPropReadConParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIMPropReadConParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
 
     // Simple Field (interfaceObjectType)
     interfaceObjectType, _interfaceObjectTypeErr := io.ReadUint16(16)
@@ -146,7 +147,7 @@ func CEMIMPropReadConParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
     return NewCEMIMPropReadCon(interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, unknown), nil
 }
 
-func (m CEMIMPropReadCon) Serialize(io spi.WriteBuffer) error {
+func (m CEMIMPropReadCon) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (interfaceObjectType)

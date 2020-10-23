@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetTagApplicationBoolean struct {
 // The corresponding interface
 type IBACnetTagApplicationBoolean interface {
     IBACnetTag
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -83,13 +84,13 @@ func (m BACnetTagApplicationBoolean) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationBooleanParse(io *spi.ReadBuffer) (BACnetTagInitializer, error) {
+func BACnetTagApplicationBooleanParse(io *utils.ReadBuffer) (BACnetTagInitializer, error) {
 
     // Create the instance
     return NewBACnetTagApplicationBoolean(), nil
 }
 
-func (m BACnetTagApplicationBoolean) Serialize(io spi.WriteBuffer) error {
+func (m BACnetTagApplicationBoolean) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

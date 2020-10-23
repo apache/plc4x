@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type ModbusPDUReadExceptionStatusResponse struct {
 // The corresponding interface
 type IModbusPDUReadExceptionStatusResponse interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -92,7 +93,7 @@ func (m ModbusPDUReadExceptionStatusResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadExceptionStatusResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadExceptionStatusResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Simple Field (value)
     value, _valueErr := io.ReadUint8(8)
@@ -104,7 +105,7 @@ func ModbusPDUReadExceptionStatusResponseParse(io *spi.ReadBuffer) (ModbusPDUIni
     return NewModbusPDUReadExceptionStatusResponse(value), nil
 }
 
-func (m ModbusPDUReadExceptionStatusResponse) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUReadExceptionStatusResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (value)

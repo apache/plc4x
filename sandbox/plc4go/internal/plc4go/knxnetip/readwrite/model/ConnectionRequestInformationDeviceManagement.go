@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type ConnectionRequestInformationDeviceManagement struct {
 // The corresponding interface
 type IConnectionRequestInformationDeviceManagement interface {
     IConnectionRequestInformation
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m ConnectionRequestInformationDeviceManagement) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestInformationDeviceManagementParse(io *spi.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
+func ConnectionRequestInformationDeviceManagementParse(io *utils.ReadBuffer) (ConnectionRequestInformationInitializer, error) {
 
     // Create the instance
     return NewConnectionRequestInformationDeviceManagement(), nil
 }
 
-func (m ConnectionRequestInformationDeviceManagement) Serialize(io spi.WriteBuffer) error {
+func (m ConnectionRequestInformationDeviceManagement) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

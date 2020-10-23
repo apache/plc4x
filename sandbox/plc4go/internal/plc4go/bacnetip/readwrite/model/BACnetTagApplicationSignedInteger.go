@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type BACnetTagApplicationSignedInteger struct {
 // The corresponding interface
 type IBACnetTagApplicationSignedInteger interface {
     IBACnetTag
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -90,12 +91,12 @@ func (m BACnetTagApplicationSignedInteger) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationSignedIntegerParse(io *spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationSignedIntegerParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
     // Array field (data)
     // Length array
     data := make([]int8, 0)
-    _dataLength := spi.InlineIf(bool(bool((lengthValueType) == ((5)))), uint16(extLength), uint16(lengthValueType))
+    _dataLength := utils.InlineIf(bool(bool((lengthValueType) == ((5)))), uint16(extLength), uint16(lengthValueType))
     _dataEndPos := io.GetPos() + uint16(_dataLength)
     for ;io.GetPos() < _dataEndPos; {
         _item, _err := io.ReadInt8(8)
@@ -109,7 +110,7 @@ func BACnetTagApplicationSignedIntegerParse(io *spi.ReadBuffer, lengthValueType 
     return NewBACnetTagApplicationSignedInteger(data), nil
 }
 
-func (m BACnetTagApplicationSignedInteger) Serialize(io spi.WriteBuffer) error {
+func (m BACnetTagApplicationSignedInteger) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (data)

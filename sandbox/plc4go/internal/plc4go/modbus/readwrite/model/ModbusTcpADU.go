@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
     "strconv"
 )
@@ -39,7 +40,7 @@ type ModbusTcpADU struct {
 // The corresponding interface
 type IModbusTcpADU interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -95,7 +96,7 @@ func (m ModbusTcpADU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusTcpADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusTcpADUParse(io *utils.ReadBuffer, response bool) (spi.Message, error) {
 
     // Simple Field (transactionIdentifier)
     transactionIdentifier, _transactionIdentifierErr := io.ReadUint16(16)
@@ -139,7 +140,7 @@ func ModbusTcpADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
     return NewModbusTcpADU(transactionIdentifier, unitIdentifier, pdu), nil
 }
 
-func (m ModbusTcpADU) Serialize(io spi.WriteBuffer) error {
+func (m ModbusTcpADU) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (transactionIdentifier)
     transactionIdentifier := uint16(m.TransactionIdentifier)

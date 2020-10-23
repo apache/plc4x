@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -33,7 +34,7 @@ type S7PayloadReadVarResponse struct {
 // The corresponding interface
 type IS7PayloadReadVarResponse interface {
     IS7Payload
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,7 +94,7 @@ func (m S7PayloadReadVarResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadReadVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
+func S7PayloadReadVarResponseParse(io *utils.ReadBuffer, parameter IS7Parameter) (S7PayloadInitializer, error) {
 
     // Array field (items)
     // Count array
@@ -116,7 +117,7 @@ func S7PayloadReadVarResponseParse(io *spi.ReadBuffer, parameter IS7Parameter) (
     return NewS7PayloadReadVarResponse(items), nil
 }
 
-func (m S7PayloadReadVarResponse) Serialize(io spi.WriteBuffer) error {
+func (m S7PayloadReadVarResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (items)

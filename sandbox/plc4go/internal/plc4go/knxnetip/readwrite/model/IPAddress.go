@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type IPAddress struct {
 // The corresponding interface
 type IIPAddress interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -78,7 +79,7 @@ func (m IPAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func IPAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
+func IPAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Array field (addr)
     // Count array
@@ -96,7 +97,7 @@ func IPAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewIPAddress(addr), nil
 }
 
-func (m IPAddress) Serialize(io spi.WriteBuffer) error {
+func (m IPAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (addr)
     if m.Addr != nil {

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type UnknownMessage struct {
 // The corresponding interface
 type IUnknownMessage interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -86,7 +87,7 @@ func (m UnknownMessage) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func UnknownMessageParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func UnknownMessageParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
     // Array field (unknownData)
     // Count array
@@ -104,7 +105,7 @@ func UnknownMessageParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessag
     return NewUnknownMessage(unknownData), nil
 }
 
-func (m UnknownMessage) Serialize(io spi.WriteBuffer) error {
+func (m UnknownMessage) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (unknownData)

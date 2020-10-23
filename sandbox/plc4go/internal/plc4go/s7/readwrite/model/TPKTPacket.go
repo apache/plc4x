@@ -22,6 +22,7 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
     "strconv"
 )
@@ -38,7 +39,7 @@ type TPKTPacket struct {
 // The corresponding interface
 type ITPKTPacket interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -91,7 +92,7 @@ func (m TPKTPacket) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TPKTPacketParse(io *spi.ReadBuffer) (spi.Message, error) {
+func TPKTPacketParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Const Field (protocolId)
     protocolId, _protocolIdErr := io.ReadUint8(8)
@@ -137,7 +138,7 @@ func TPKTPacketParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewTPKTPacket(payload), nil
 }
 
-func (m TPKTPacket) Serialize(io spi.WriteBuffer) error {
+func (m TPKTPacket) Serialize(io utils.WriteBuffer) error {
 
     // Const Field (protocolId)
     _protocolIdErr := io.WriteUint8(8, 0x03)

@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type COTPProtocolClass int8
 
 type ICOTPProtocolClass interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -69,12 +72,12 @@ func (m COTPProtocolClass) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPProtocolClassParse(io *spi.ReadBuffer) (COTPProtocolClass, error) {
+func COTPProtocolClassParse(io *utils.ReadBuffer) (COTPProtocolClass, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e COTPProtocolClass) Serialize(io spi.WriteBuffer) error {
+func (e COTPProtocolClass) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

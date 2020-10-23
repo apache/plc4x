@@ -20,10 +20,10 @@ package model
 
 import (
     "math"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
-func KnxHelperBytesToF16(io *spi.ReadBuffer) (float32, error) {
+func KnxHelperBytesToF16(io *utils.ReadBuffer) (float32, error) {
     negative, err := io.ReadBit()
     if err != nil {
         return 0.0, err

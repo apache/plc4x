@@ -19,10 +19,10 @@
 package drivers
 
 import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/s7/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-	"testing"
+    "encoding/hex"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/s7/readwrite/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "testing"
 )
 
 func TestS7(t *testing.T) {
@@ -31,7 +31,7 @@ func TestS7(t *testing.T) {
 	if err != nil {
 		// Output an error ...
 	}
-	rb := spi.ReadBufferNew(request)
+	rb := utils.ReadBufferNew(request)
 	adu, err := model.TPKTPacketParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)

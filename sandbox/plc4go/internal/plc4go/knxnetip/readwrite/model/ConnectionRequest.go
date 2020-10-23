@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -35,7 +36,7 @@ type ConnectionRequest struct {
 // The corresponding interface
 type IConnectionRequest interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,7 +94,7 @@ func (m ConnectionRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionRequestParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (hpaiDiscoveryEndpoint)
     _hpaiDiscoveryEndpointMessage, _err := HPAIDiscoveryEndpointParse(io)
@@ -132,7 +133,7 @@ func ConnectionRequestParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, err
     return NewConnectionRequest(hpaiDiscoveryEndpoint, hpaiDataEndpoint, connectionRequestInformation), nil
 }
 
-func (m ConnectionRequest) Serialize(io spi.WriteBuffer) error {
+func (m ConnectionRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (hpaiDiscoveryEndpoint)

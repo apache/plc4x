@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type S7PayloadUserDataItemCpuFunctionReadSzlRequest struct {
 // The corresponding interface
 type IS7PayloadUserDataItemCpuFunctionReadSzlRequest interface {
     IS7PayloadUserDataItem
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -83,13 +84,13 @@ func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *spi.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(io *utils.ReadBuffer) (S7PayloadUserDataItemInitializer, error) {
 
     // Create the instance
     return NewS7PayloadUserDataItemCpuFunctionReadSzlRequest(), nil
 }
 
-func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io spi.WriteBuffer) error {
+func (m S7PayloadUserDataItemCpuFunctionReadSzlRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

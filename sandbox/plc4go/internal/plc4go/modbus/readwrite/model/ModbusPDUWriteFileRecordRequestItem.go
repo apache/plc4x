@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -35,7 +36,7 @@ type ModbusPDUWriteFileRecordRequestItem struct {
 // The corresponding interface
 type IModbusPDUWriteFileRecordRequestItem interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -93,7 +94,7 @@ func (m ModbusPDUWriteFileRecordRequestItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUWriteFileRecordRequestItemParse(io *spi.ReadBuffer) (spi.Message, error) {
+func ModbusPDUWriteFileRecordRequestItemParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (referenceType)
     referenceType, _referenceTypeErr := io.ReadUint8(8)
@@ -136,7 +137,7 @@ func ModbusPDUWriteFileRecordRequestItemParse(io *spi.ReadBuffer) (spi.Message, 
     return NewModbusPDUWriteFileRecordRequestItem(referenceType, fileNumber, recordNumber, recordData), nil
 }
 
-func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (referenceType)
     referenceType := uint8(m.ReferenceType)

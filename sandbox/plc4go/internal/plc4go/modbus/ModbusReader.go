@@ -192,7 +192,7 @@ func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusMode
     }
 
     // Decode the data according to the information from the request
-    rb := spi.ReadBufferNew(data)
+    rb := utils.ReadBufferNew(data)
     value, err := modbusModel.DataItemParse(rb, field.Datatype, field.Quantity)
     if err != nil {
         return nil, err

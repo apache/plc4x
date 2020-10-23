@@ -21,11 +21,11 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
-func DataItemParse(io *spi.ReadBuffer, dataProtocolId uint8, stringLength int32) (api.PlcValue, error) {
+func DataItemParse(io *utils.ReadBuffer, dataProtocolId uint8, stringLength int32) (api.PlcValue, error) {
     switch {
         case dataProtocolId == 01: // BOOL
 

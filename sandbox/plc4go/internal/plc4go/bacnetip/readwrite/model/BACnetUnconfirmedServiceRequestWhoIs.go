@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
 
@@ -40,7 +41,7 @@ type BACnetUnconfirmedServiceRequestWhoIs struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWhoIs interface {
     IBACnetUnconfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,7 +112,7 @@ func (m BACnetUnconfirmedServiceRequestWhoIs) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWhoIsParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWhoIsParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
     // Const Field (deviceInstanceRangeLowLimitHeader)
     deviceInstanceRangeLowLimitHeader, _deviceInstanceRangeLowLimitHeaderErr := io.ReadUint8(5)
@@ -171,7 +172,7 @@ func BACnetUnconfirmedServiceRequestWhoIsParse(io *spi.ReadBuffer) (BACnetUnconf
     return NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimitLength, deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimitLength, deviceInstanceRangeHighLimit), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io spi.WriteBuffer) error {
+func (m BACnetUnconfirmedServiceRequestWhoIs) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (deviceInstanceRangeLowLimitHeader)

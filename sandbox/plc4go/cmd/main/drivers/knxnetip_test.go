@@ -19,10 +19,10 @@
 package drivers
 
 import (
-	"encoding/hex"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-	"testing"
+    "encoding/hex"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/knxnetip/readwrite/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "testing"
 )
 
 func TestKnxNetIp(t *testing.T) {
@@ -31,7 +31,7 @@ func TestKnxNetIp(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
-	rb := spi.ReadBufferNew(request)
+	rb := utils.ReadBufferNew(request)
 	adu, err := model.KNXNetIPMessageParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)

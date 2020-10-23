@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type CEMIAdditionalInformation struct {
 type ICEMIAdditionalInformation interface {
     spi.Message
     AdditionalInformationType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type CEMIAdditionalInformationInitializer interface {
@@ -82,7 +83,7 @@ func (m CEMIAdditionalInformation) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationParse(io *spi.ReadBuffer) (spi.Message, error) {
+func CEMIAdditionalInformationParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Discriminator Field (additionalInformationType) (Used as input to a switch field)
     additionalInformationType, _additionalInformationTypeErr := io.ReadUint8(8)
@@ -107,7 +108,7 @@ func CEMIAdditionalInformationParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func CEMIAdditionalInformationSerialize(io spi.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func() error) error {
+func CEMIAdditionalInformationSerialize(io utils.WriteBuffer, m CEMIAdditionalInformation, i ICEMIAdditionalInformation, childSerialize func() error) error {
 
     // Discriminator Field (additionalInformationType) (Used as input to a switch field)
     additionalInformationType := uint8(i.AdditionalInformationType())

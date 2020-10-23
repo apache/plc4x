@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type COTPParameterChecksum struct {
 // The corresponding interface
 type ICOTPParameterChecksum interface {
     ICOTPParameter
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m COTPParameterChecksum) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPParameterChecksumParse(io *spi.ReadBuffer) (COTPParameterInitializer, error) {
+func COTPParameterChecksumParse(io *utils.ReadBuffer) (COTPParameterInitializer, error) {
 
     // Simple Field (crc)
     crc, _crcErr := io.ReadUint8(8)
@@ -96,7 +97,7 @@ func COTPParameterChecksumParse(io *spi.ReadBuffer) (COTPParameterInitializer, e
     return NewCOTPParameterChecksum(crc), nil
 }
 
-func (m COTPParameterChecksum) Serialize(io spi.WriteBuffer) error {
+func (m COTPParameterChecksum) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (crc)

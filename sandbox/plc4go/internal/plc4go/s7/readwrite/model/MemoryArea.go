@@ -18,14 +18,17 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type MemoryArea uint8
 
 type IMemoryArea interface {
     spi.Message
     ShortName() string
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -117,12 +120,12 @@ func (m MemoryArea) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func MemoryAreaParse(io *spi.ReadBuffer) (MemoryArea, error) {
+func MemoryAreaParse(io *utils.ReadBuffer) (MemoryArea, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e MemoryArea) Serialize(io spi.WriteBuffer) error {
+func (e MemoryArea) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

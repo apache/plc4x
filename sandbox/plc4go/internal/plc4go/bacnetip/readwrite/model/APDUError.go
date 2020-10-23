@@ -22,7 +22,8 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -35,7 +36,7 @@ type APDUError struct {
 // The corresponding interface
 type IAPDUError interface {
     IAPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -93,7 +94,7 @@ func (m APDUError) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUErrorParse(io *spi.ReadBuffer) (APDUInitializer, error) {
+func APDUErrorParse(io *utils.ReadBuffer) (APDUInitializer, error) {
 
     // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
     {
@@ -130,7 +131,7 @@ func APDUErrorParse(io *spi.ReadBuffer) (APDUInitializer, error) {
     return NewAPDUError(originalInvokeId, error), nil
 }
 
-func (m APDUError) Serialize(io spi.WriteBuffer) error {
+func (m APDUError) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Reserved Field (reserved)

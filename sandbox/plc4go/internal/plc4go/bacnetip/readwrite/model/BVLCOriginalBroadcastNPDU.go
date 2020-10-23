@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type BVLCOriginalBroadcastNPDU struct {
 // The corresponding interface
 type IBVLCOriginalBroadcastNPDU interface {
     IBVLC
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -85,7 +86,7 @@ func (m BVLCOriginalBroadcastNPDU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BVLCOriginalBroadcastNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
+func BVLCOriginalBroadcastNPDUParse(io *utils.ReadBuffer, bvlcLength uint16) (BVLCInitializer, error) {
 
     // Simple Field (npdu)
     _npduMessage, _err := NPDUParse(io, uint16(bvlcLength) - uint16(uint16(4)))
@@ -102,7 +103,7 @@ func BVLCOriginalBroadcastNPDUParse(io *spi.ReadBuffer, bvlcLength uint16) (BVLC
     return NewBVLCOriginalBroadcastNPDU(npdu), nil
 }
 
-func (m BVLCOriginalBroadcastNPDU) Serialize(io spi.WriteBuffer) error {
+func (m BVLCOriginalBroadcastNPDU) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (npdu)

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -35,7 +36,7 @@ type CEMIDataReq struct {
 // The corresponding interface
 type ICEMIDataReq interface {
     ICEMI
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -97,7 +98,7 @@ func (m CEMIDataReq) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIDataReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
+func CEMIDataReqParse(io *utils.ReadBuffer) (CEMIInitializer, error) {
 
     // Simple Field (additionalInformationLength)
     additionalInformationLength, _additionalInformationLengthErr := io.ReadUint8(8)
@@ -138,7 +139,7 @@ func CEMIDataReqParse(io *spi.ReadBuffer) (CEMIInitializer, error) {
     return NewCEMIDataReq(additionalInformationLength, additionalInformation, cemiDataFrame), nil
 }
 
-func (m CEMIDataReq) Serialize(io spi.WriteBuffer) error {
+func (m CEMIDataReq) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (additionalInformationLength)

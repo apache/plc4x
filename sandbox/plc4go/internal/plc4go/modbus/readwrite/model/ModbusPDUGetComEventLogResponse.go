@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -35,7 +36,7 @@ type ModbusPDUGetComEventLogResponse struct {
 // The corresponding interface
 type IModbusPDUGetComEventLogResponse interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -109,7 +110,7 @@ func (m ModbusPDUGetComEventLogResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUGetComEventLogResponseParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUGetComEventLogResponseParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     byteCount, _byteCountErr := io.ReadUint8(8)
@@ -151,7 +152,7 @@ func ModbusPDUGetComEventLogResponseParse(io *spi.ReadBuffer) (ModbusPDUInitiali
     return NewModbusPDUGetComEventLogResponse(status, eventCount, messageCount, events), nil
 }
 
-func (m ModbusPDUGetComEventLogResponse) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
