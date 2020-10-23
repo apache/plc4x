@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
 
@@ -35,7 +36,7 @@ type ModbusConstants struct {
 // The corresponding interface
 type IModbusConstants interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -79,7 +80,7 @@ func (m ModbusConstants) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusConstantsParse(io *spi.ReadBuffer) (spi.Message, error) {
+func ModbusConstantsParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Const Field (modbusTcpDefaultPort)
     modbusTcpDefaultPort, _modbusTcpDefaultPortErr := io.ReadUint16(16)
@@ -94,7 +95,7 @@ func ModbusConstantsParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewModbusConstants(), nil
 }
 
-func (m ModbusConstants) Serialize(io spi.WriteBuffer) error {
+func (m ModbusConstants) Serialize(io utils.WriteBuffer) error {
 
     // Const Field (modbusTcpDefaultPort)
     _modbusTcpDefaultPortErr := io.WriteUint16(16, 502)

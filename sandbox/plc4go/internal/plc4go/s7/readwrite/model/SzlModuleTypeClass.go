@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -66,12 +69,12 @@ func (m SzlModuleTypeClass) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SzlModuleTypeClassParse(io *spi.ReadBuffer) (SzlModuleTypeClass, error) {
+func SzlModuleTypeClassParse(io *utils.ReadBuffer) (SzlModuleTypeClass, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e SzlModuleTypeClass) Serialize(io spi.WriteBuffer) error {
+func (e SzlModuleTypeClass) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

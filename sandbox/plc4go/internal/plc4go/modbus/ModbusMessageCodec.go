@@ -22,8 +22,8 @@ import (
     "errors"
     "fmt"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "time"
 )
 
@@ -62,7 +62,7 @@ func (m *ModbusMessageCodec) Send(message interface{}) error {
     // Cast the message to the correct type of struct
     adu := model.CastModbusTcpADU(message)
     // Serialize the request
-    wb := spi.WriteBufferNew()
+    wb := utils.WriteBufferNew()
     err := adu.Serialize(*wb)
     if err != nil {
         return errors.New("error serializing request " + err.Error())
@@ -92,7 +92,7 @@ func (m *ModbusMessageCodec) Receive() (interface{}, error) {
                 // TODO: Possibly clean up ...
                 return nil, nil
             }
-            rb := spi.ReadBufferNew(data)
+            rb := utils.ReadBufferNew(data)
             adu, err := model.ModbusTcpADUParse(rb, true)
             if err != nil {
                 // TODO: Possibly clean up ...

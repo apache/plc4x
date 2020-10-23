@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetUnconfirmedServiceRequestWriteGroup struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestWriteGroup interface {
     IBACnetUnconfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetUnconfirmedServiceRequestWriteGroup) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestWriteGroupParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestWriteGroupParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
     // Create the instance
     return NewBACnetUnconfirmedServiceRequestWriteGroup(), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io spi.WriteBuffer) error {
+func (m BACnetUnconfirmedServiceRequestWriteGroup) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

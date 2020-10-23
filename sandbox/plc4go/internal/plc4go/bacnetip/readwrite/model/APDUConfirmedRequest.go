@@ -22,7 +22,8 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -42,7 +43,7 @@ type APDUConfirmedRequest struct {
 // The corresponding interface
 type IAPDUConfirmedRequest interface {
     IAPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -125,7 +126,7 @@ func (m APDUConfirmedRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUConfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
+func APDUConfirmedRequestParse(io *utils.ReadBuffer, apduLength uint16) (APDUInitializer, error) {
 
     // Simple Field (segmentedMessage)
     segmentedMessage, _segmentedMessageErr := io.ReadBit()
@@ -200,7 +201,7 @@ func APDUConfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUIniti
     }
 
     // Simple Field (serviceRequest)
-    _serviceRequestMessage, _err := BACnetConfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(uint16(uint16(3)) + uint16(uint16(spi.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
+    _serviceRequestMessage, _err := BACnetConfirmedServiceRequestParse(io, uint16(apduLength) - uint16(uint16(uint16(uint16(3)) + uint16(uint16(utils.InlineIf(segmentedMessage, uint16(uint16(2)), uint16(uint16(0))))))))
     if _err != nil {
         return nil, errors.New("Error parsing simple field 'serviceRequest'. " + _err.Error())
     }
@@ -214,7 +215,7 @@ func APDUConfirmedRequestParse(io *spi.ReadBuffer, apduLength uint16) (APDUIniti
     return NewAPDUConfirmedRequest(segmentedMessage, moreFollows, segmentedResponseAccepted, maxSegmentsAccepted, maxApduLengthAccepted, invokeId, sequenceNumber, proposedWindowSize, serviceRequest), nil
 }
 
-func (m APDUConfirmedRequest) Serialize(io spi.WriteBuffer) error {
+func (m APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (segmentedMessage)

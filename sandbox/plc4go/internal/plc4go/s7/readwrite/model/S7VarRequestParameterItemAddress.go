@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -33,7 +34,7 @@ type S7VarRequestParameterItemAddress struct {
 // The corresponding interface
 type IS7VarRequestParameterItemAddress interface {
     IS7VarRequestParameterItem
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -88,7 +89,7 @@ func (m S7VarRequestParameterItemAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarRequestParameterItemAddressParse(io *spi.ReadBuffer) (S7VarRequestParameterItemInitializer, error) {
+func S7VarRequestParameterItemAddressParse(io *utils.ReadBuffer) (S7VarRequestParameterItemInitializer, error) {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _itemLengthErr := io.ReadUint8(8)
@@ -111,7 +112,7 @@ func S7VarRequestParameterItemAddressParse(io *spi.ReadBuffer) (S7VarRequestPara
     return NewS7VarRequestParameterItemAddress(address), nil
 }
 
-func (m S7VarRequestParameterItemAddress) Serialize(io spi.WriteBuffer) error {
+func (m S7VarRequestParameterItemAddress) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

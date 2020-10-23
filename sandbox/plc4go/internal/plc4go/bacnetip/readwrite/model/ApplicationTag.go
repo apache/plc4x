@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type ApplicationTag int8
 
 type IApplicationTag interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -93,12 +96,12 @@ func (m ApplicationTag) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ApplicationTagParse(io *spi.ReadBuffer) (ApplicationTag, error) {
+func ApplicationTagParse(io *utils.ReadBuffer) (ApplicationTag, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e ApplicationTag) Serialize(io spi.WriteBuffer) error {
+func (e ApplicationTag) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

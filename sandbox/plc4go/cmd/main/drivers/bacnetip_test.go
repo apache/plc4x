@@ -21,7 +21,7 @@ package drivers
 import (
 	"encoding/hex"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/bacnetip/readwrite/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 	"testing"
 )
 
@@ -31,7 +31,7 @@ func TestBacnetIp(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
-	rb := spi.ReadBufferNew(request)
+	rb := utils.ReadBufferNew(request)
 	adu, err := model.BVLCParse(rb)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)

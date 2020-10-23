@@ -22,6 +22,7 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -38,7 +39,7 @@ type S7AddressAny struct {
 // The corresponding interface
 type IS7AddressAny interface {
     IS7Address
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -108,7 +109,7 @@ func (m S7AddressAny) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7AddressAnyParse(io *spi.ReadBuffer) (S7AddressInitializer, error) {
+func S7AddressAnyParse(io *utils.ReadBuffer) (S7AddressInitializer, error) {
 
     // Enum field (transportSize)
     transportSize, _transportSizeErr := TransportSizeParse(io)
@@ -164,7 +165,7 @@ func S7AddressAnyParse(io *spi.ReadBuffer) (S7AddressInitializer, error) {
     return NewS7AddressAny(transportSize, numberOfElements, dbNumber, area, byteAddress, bitAddress), nil
 }
 
-func (m S7AddressAny) Serialize(io spi.WriteBuffer) error {
+func (m S7AddressAny) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Enum field (transportSize)

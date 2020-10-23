@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type DisconnectResponse struct {
 // The corresponding interface
 type IDisconnectResponse interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -88,7 +89,7 @@ func (m DisconnectResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DisconnectResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func DisconnectResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (communicationChannelId)
     communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
@@ -106,7 +107,7 @@ func DisconnectResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, er
     return NewDisconnectResponse(communicationChannelId, status), nil
 }
 
-func (m DisconnectResponse) Serialize(io spi.WriteBuffer) error {
+func (m DisconnectResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (communicationChannelId)

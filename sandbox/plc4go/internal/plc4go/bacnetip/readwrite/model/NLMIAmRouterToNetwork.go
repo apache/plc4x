@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type NLMIAmRouterToNetwork struct {
 // The corresponding interface
 type INLMIAmRouterToNetwork interface {
     INLM
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -87,12 +88,12 @@ func (m NLMIAmRouterToNetwork) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NLMIAmRouterToNetworkParse(io *spi.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitializer, error) {
+func NLMIAmRouterToNetworkParse(io *utils.ReadBuffer, apduLength uint16, messageType uint8) (NLMInitializer, error) {
 
     // Array field (destinationNetworkAddress)
     // Length array
     destinationNetworkAddress := make([]uint16, 0)
-    _destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(spi.InlineIf(bool(bool(bool(bool((messageType) >= ((128))))) && bool(bool(bool((messageType) <= ((255)))))), uint16(uint16(3)), uint16(uint16(1)))))
+    _destinationNetworkAddressLength := uint16(apduLength) - uint16(uint16(utils.InlineIf(bool(bool(bool(bool((messageType) >= ((128))))) && bool(bool(bool((messageType) <= ((255)))))), uint16(uint16(3)), uint16(uint16(1)))))
     _destinationNetworkAddressEndPos := io.GetPos() + uint16(_destinationNetworkAddressLength)
     for ;io.GetPos() < _destinationNetworkAddressEndPos; {
         _item, _err := io.ReadUint16(16)
@@ -106,7 +107,7 @@ func NLMIAmRouterToNetworkParse(io *spi.ReadBuffer, apduLength uint16, messageTy
     return NewNLMIAmRouterToNetwork(destinationNetworkAddress), nil
 }
 
-func (m NLMIAmRouterToNetwork) Serialize(io spi.WriteBuffer) error {
+func (m NLMIAmRouterToNetwork) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Array Field (destinationNetworkAddress)

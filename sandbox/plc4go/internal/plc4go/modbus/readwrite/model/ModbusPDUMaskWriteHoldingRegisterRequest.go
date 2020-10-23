@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type ModbusPDUMaskWriteHoldingRegisterRequest struct {
 // The corresponding interface
 type IModbusPDUMaskWriteHoldingRegisterRequest interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -100,7 +101,7 @@ func (m ModbusPDUMaskWriteHoldingRegisterRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Simple Field (referenceAddress)
     referenceAddress, _referenceAddressErr := io.ReadUint16(16)
@@ -124,7 +125,7 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(io *spi.ReadBuffer) (ModbusPD
     return NewModbusPDUMaskWriteHoldingRegisterRequest(referenceAddress, andMask, orMask), nil
 }
 
-func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUMaskWriteHoldingRegisterRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (referenceAddress)

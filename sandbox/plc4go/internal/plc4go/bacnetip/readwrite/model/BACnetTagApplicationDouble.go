@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type BACnetTagApplicationDouble struct {
 // The corresponding interface
 type IBACnetTagApplicationDouble interface {
     IBACnetTag
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -88,7 +89,7 @@ func (m BACnetTagApplicationDouble) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagApplicationDoubleParse(io *spi.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
+func BACnetTagApplicationDoubleParse(io *utils.ReadBuffer, lengthValueType uint8, extLength uint8) (BACnetTagInitializer, error) {
 
     // Simple Field (value)
     value, _valueErr := io.ReadFloat64(64)
@@ -100,7 +101,7 @@ func BACnetTagApplicationDoubleParse(io *spi.ReadBuffer, lengthValueType uint8, 
     return NewBACnetTagApplicationDouble(value), nil
 }
 
-func (m BACnetTagApplicationDouble) Serialize(io spi.WriteBuffer) error {
+func (m BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (value)

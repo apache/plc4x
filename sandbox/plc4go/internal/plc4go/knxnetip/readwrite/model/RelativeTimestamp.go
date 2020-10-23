@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type RelativeTimestamp struct {
 // The corresponding interface
 type IRelativeTimestamp interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -76,7 +77,7 @@ func (m RelativeTimestamp) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func RelativeTimestampParse(io *spi.ReadBuffer) (spi.Message, error) {
+func RelativeTimestampParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (timestamp)
     timestamp, _timestampErr := io.ReadUint16(16)
@@ -88,7 +89,7 @@ func RelativeTimestampParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewRelativeTimestamp(timestamp), nil
 }
 
-func (m RelativeTimestamp) Serialize(io spi.WriteBuffer) error {
+func (m RelativeTimestamp) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (timestamp)
     timestamp := uint16(m.Timestamp)

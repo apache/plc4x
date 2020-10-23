@@ -18,14 +18,17 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type ModbusDataTypeSizes string
 
 type IModbusDataTypeSizes interface {
     spi.Message
     DataTypeSize() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -225,12 +228,12 @@ func (m ModbusDataTypeSizes) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusDataTypeSizesParse(io *spi.ReadBuffer) (ModbusDataTypeSizes, error) {
+func ModbusDataTypeSizesParse(io *utils.ReadBuffer) (ModbusDataTypeSizes, error) {
     // TODO: Implement ...
     return "", nil
 }
 
-func (e ModbusDataTypeSizes) Serialize(io spi.WriteBuffer) error {
+func (e ModbusDataTypeSizes) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

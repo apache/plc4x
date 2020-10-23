@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type KnxNetObjectServer struct {
 // The corresponding interface
 type IKnxNetObjectServer interface {
     IServiceId
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m KnxNetObjectServer) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetObjectServerParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetObjectServerParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -96,7 +97,7 @@ func KnxNetObjectServerParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
     return NewKnxNetObjectServer(version), nil
 }
 
-func (m KnxNetObjectServer) Serialize(io spi.WriteBuffer) error {
+func (m KnxNetObjectServer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type KNXGroupAddress struct {
 type IKNXGroupAddress interface {
     spi.Message
     NumLevels() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type KNXGroupAddressInitializer interface {
@@ -79,7 +80,7 @@ func (m KNXGroupAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXGroupAddressParse(io *spi.ReadBuffer, numLevels uint8) (spi.Message, error) {
+func KNXGroupAddressParse(io *utils.ReadBuffer, numLevels uint8) (spi.Message, error) {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     var initializer KNXGroupAddressInitializer
@@ -100,7 +101,7 @@ func KNXGroupAddressParse(io *spi.ReadBuffer, numLevels uint8) (spi.Message, err
     return initializer.initialize(), nil
 }
 
-func KNXGroupAddressSerialize(io spi.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func() error) error {
+func KNXGroupAddressSerialize(io utils.WriteBuffer, m KNXGroupAddress, i IKNXGroupAddress, childSerialize func() error) error {
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
     _typeSwitchErr := childSerialize()

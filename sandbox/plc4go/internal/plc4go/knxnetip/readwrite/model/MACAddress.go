@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type MACAddress struct {
 // The corresponding interface
 type IMACAddress interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -78,7 +79,7 @@ func (m MACAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func MACAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
+func MACAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Array field (addr)
     // Count array
@@ -96,7 +97,7 @@ func MACAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewMACAddress(addr), nil
 }
 
-func (m MACAddress) Serialize(io spi.WriteBuffer) error {
+func (m MACAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (addr)
     if m.Addr != nil {

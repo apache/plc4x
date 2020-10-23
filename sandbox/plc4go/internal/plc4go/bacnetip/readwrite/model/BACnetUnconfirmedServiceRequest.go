@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type BACnetUnconfirmedServiceRequest struct {
 type IBACnetUnconfirmedServiceRequest interface {
     spi.Message
     ServiceChoice() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type BACnetUnconfirmedServiceRequestInitializer interface {
@@ -82,7 +83,7 @@ func (m BACnetUnconfirmedServiceRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestParse(io *spi.ReadBuffer, len uint16) (spi.Message, error) {
+func BACnetUnconfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (spi.Message, error) {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
@@ -127,7 +128,7 @@ func BACnetUnconfirmedServiceRequestParse(io *spi.ReadBuffer, len uint16) (spi.M
     return initializer.initialize(), nil
 }
 
-func BACnetUnconfirmedServiceRequestSerialize(io spi.WriteBuffer, m BACnetUnconfirmedServiceRequest, i IBACnetUnconfirmedServiceRequest, childSerialize func() error) error {
+func BACnetUnconfirmedServiceRequestSerialize(io utils.WriteBuffer, m BACnetUnconfirmedServiceRequest, i IBACnetUnconfirmedServiceRequest, childSerialize func() error) error {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice := uint8(i.ServiceChoice())

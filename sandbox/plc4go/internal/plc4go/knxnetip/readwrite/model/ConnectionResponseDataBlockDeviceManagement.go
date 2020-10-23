@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type ConnectionResponseDataBlockDeviceManagement struct {
 // The corresponding interface
 type IConnectionResponseDataBlockDeviceManagement interface {
     IConnectionResponseDataBlock
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m ConnectionResponseDataBlockDeviceManagement) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockDeviceManagementParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
+func ConnectionResponseDataBlockDeviceManagementParse(io *utils.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
     // Create the instance
     return NewConnectionResponseDataBlockDeviceManagement(), nil
 }
 
-func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io spi.WriteBuffer) error {
+func (m ConnectionResponseDataBlockDeviceManagement) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

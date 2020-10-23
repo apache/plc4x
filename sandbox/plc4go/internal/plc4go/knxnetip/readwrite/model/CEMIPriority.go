@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type CEMIPriority uint8
 
 type ICEMIPriority interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -66,12 +69,12 @@ func (m CEMIPriority) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIPriorityParse(io *spi.ReadBuffer) (CEMIPriority, error) {
+func CEMIPriorityParse(io *utils.ReadBuffer) (CEMIPriority, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e CEMIPriority) Serialize(io spi.WriteBuffer) error {
+func (e CEMIPriority) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

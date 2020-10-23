@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
     "strconv"
 )
 
@@ -44,7 +45,7 @@ type BACnetServiceAckReadProperty struct {
 // The corresponding interface
 type IBACnetServiceAckReadProperty interface {
     IBACnetServiceAck
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -122,7 +123,7 @@ func (m BACnetServiceAckReadProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadPropertyParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
     // Const Field (objectIdentifierHeader)
     objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -205,7 +206,7 @@ func BACnetServiceAckReadPropertyParse(io *spi.ReadBuffer) (BACnetServiceAckInit
     return NewBACnetServiceAckReadProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier, value), nil
 }
 
-func (m BACnetServiceAckReadProperty) Serialize(io spi.WriteBuffer) error {
+func (m BACnetServiceAckReadProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)

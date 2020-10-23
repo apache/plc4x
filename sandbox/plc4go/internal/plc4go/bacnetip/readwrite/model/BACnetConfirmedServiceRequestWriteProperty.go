@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
     "strconv"
 )
 
@@ -45,7 +46,7 @@ type BACnetConfirmedServiceRequestWriteProperty struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestWriteProperty interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -128,7 +129,7 @@ func (m BACnetConfirmedServiceRequestWriteProperty) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestWritePropertyParse(io *spi.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestWritePropertyParse(io *utils.ReadBuffer, len uint16) (BACnetConfirmedServiceRequestInitializer, error) {
     var startPos = io.GetPos()
     var curPos uint16
 
@@ -229,7 +230,7 @@ func BACnetConfirmedServiceRequestWritePropertyParse(io *spi.ReadBuffer, len uin
     return NewBACnetConfirmedServiceRequestWriteProperty(objectType, objectInstanceNumber, propertyIdentifierLength, propertyIdentifier, value, priority), nil
 }
 
-func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestWriteProperty) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)

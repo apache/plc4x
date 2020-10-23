@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -231,12 +234,12 @@ func (m BACnetObjectType) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetObjectTypeParse(io *spi.ReadBuffer) (BACnetObjectType, error) {
+func BACnetObjectTypeParse(io *utils.ReadBuffer) (BACnetObjectType, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e BACnetObjectType) Serialize(io spi.WriteBuffer) error {
+func (e BACnetObjectType) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

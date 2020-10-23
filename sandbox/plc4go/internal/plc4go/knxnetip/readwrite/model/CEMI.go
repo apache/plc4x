@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type CEMI struct {
 type ICEMI interface {
     spi.Message
     MessageCode() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type CEMIInitializer interface {
@@ -82,7 +83,7 @@ func (m CEMI) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIParse(io *spi.ReadBuffer, size uint8) (spi.Message, error) {
+func CEMIParse(io *utils.ReadBuffer, size uint8) (spi.Message, error) {
 
     // Discriminator Field (messageCode) (Used as input to a switch field)
     messageCode, _messageCodeErr := io.ReadUint8(8)
@@ -125,7 +126,7 @@ func CEMIParse(io *spi.ReadBuffer, size uint8) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func CEMISerialize(io spi.WriteBuffer, m CEMI, i ICEMI, childSerialize func() error) error {
+func CEMISerialize(io utils.WriteBuffer, m CEMI, i ICEMI, childSerialize func() error) error {
 
     // Discriminator Field (messageCode) (Used as input to a switch field)
     messageCode := uint8(i.MessageCode())

@@ -19,13 +19,13 @@
 package model
 
 import (
-    "errors"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	"errors"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
-func KnxDatapointParse(io *spi.ReadBuffer, mainNumber uint16, subNumber uint16) (api.PlcValue, error) {
+func KnxDatapointParse(io *utils.ReadBuffer, mainNumber uint16, subNumber uint16) (api.PlcValue, error) {
     switch {
         case mainNumber == 1: // BOOL
 

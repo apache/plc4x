@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetServiceAckReadPropertyMultiple struct {
 // The corresponding interface
 type IBACnetServiceAckReadPropertyMultiple interface {
     IBACnetServiceAck
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetServiceAckReadPropertyMultiple) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetServiceAckReadPropertyMultipleParse(io *spi.ReadBuffer) (BACnetServiceAckInitializer, error) {
+func BACnetServiceAckReadPropertyMultipleParse(io *utils.ReadBuffer) (BACnetServiceAckInitializer, error) {
 
     // Create the instance
     return NewBACnetServiceAckReadPropertyMultiple(), nil
 }
 
-func (m BACnetServiceAckReadPropertyMultiple) Serialize(io spi.WriteBuffer) error {
+func (m BACnetServiceAckReadPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -36,7 +37,7 @@ type ModbusPDUReadWriteMultipleHoldingRegistersRequest struct {
 // The corresponding interface
 type IModbusPDUReadWriteMultipleHoldingRegistersRequest interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -113,7 +114,7 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) LengthInBytes() uint1
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Simple Field (readStartingAddress)
     readStartingAddress, _readStartingAddressErr := io.ReadUint16(16)
@@ -161,7 +162,7 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(io *spi.ReadBuffer) 
     return NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress, readQuantity, writeStartingAddress, writeQuantity, value), nil
 }
 
-func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUReadWriteMultipleHoldingRegistersRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (readStartingAddress)

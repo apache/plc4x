@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type Status uint8
 
 type IStatus interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -90,12 +93,12 @@ func (m Status) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func StatusParse(io *spi.ReadBuffer) (Status, error) {
+func StatusParse(io *utils.ReadBuffer) (Status, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e Status) Serialize(io spi.WriteBuffer) error {
+func (e Status) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

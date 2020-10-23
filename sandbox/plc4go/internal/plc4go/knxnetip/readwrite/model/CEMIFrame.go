@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -38,7 +39,7 @@ type ICEMIFrame interface {
     NotAckFrame() bool
     Polling() bool
     StandardFrame() bool
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type CEMIFrameInitializer interface {
@@ -114,7 +115,7 @@ func (m CEMIFrame) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
+func CEMIFrameParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Discriminator Field (standardFrame) (Used as input to a switch field)
     standardFrame, _standardFrameErr := io.ReadBit()
@@ -181,7 +182,7 @@ func CEMIFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(repeated, priority, acknowledgeRequested, errorFlag), nil
 }
 
-func CEMIFrameSerialize(io spi.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func() error) error {
+func CEMIFrameSerialize(io utils.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSerialize func() error) error {
 
     // Discriminator Field (standardFrame) (Used as input to a switch field)
     standardFrame := bool(i.StandardFrame())

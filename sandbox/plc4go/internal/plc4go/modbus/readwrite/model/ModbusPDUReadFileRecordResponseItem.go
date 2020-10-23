@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type ModbusPDUReadFileRecordResponseItem struct {
 // The corresponding interface
 type IModbusPDUReadFileRecordResponseItem interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -85,7 +86,7 @@ func (m ModbusPDUReadFileRecordResponseItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, error) {
+func ModbusPDUReadFileRecordResponseItemParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     dataLength, _dataLengthErr := io.ReadUint8(8)
@@ -116,7 +117,7 @@ func ModbusPDUReadFileRecordResponseItemParse(io *spi.ReadBuffer) (spi.Message, 
     return NewModbusPDUReadFileRecordResponseItem(referenceType, data), nil
 }
 
-func (m ModbusPDUReadFileRecordResponseItem) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUReadFileRecordResponseItem) Serialize(io utils.WriteBuffer) error {
 
     // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     dataLength := uint8(uint8(uint8(len(m.Data))) + uint8(uint8(1)))

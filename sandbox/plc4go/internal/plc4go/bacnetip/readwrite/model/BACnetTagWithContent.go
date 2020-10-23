@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
     "strconv"
 )
 
@@ -44,7 +45,7 @@ type BACnetTagWithContent struct {
 // The corresponding interface
 type IBACnetTagWithContent interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -118,7 +119,7 @@ func (m BACnetTagWithContent) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
+func BACnetTagWithContentParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
@@ -163,7 +164,7 @@ func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
     // Array field (propertyIdentifier)
     // Length array
     propertyIdentifier := make([]uint8, 0)
-    _propertyIdentifierLength := spi.InlineIf(bool(bool((lengthValueType) == ((5)))), uint16((*extLength)), uint16(lengthValueType))
+    _propertyIdentifierLength := utils.InlineIf(bool(bool((lengthValueType) == ((5)))), uint16((*extLength)), uint16(lengthValueType))
     _propertyIdentifierEndPos := io.GetPos() + uint16(_propertyIdentifierLength)
     for ;io.GetPos() < _propertyIdentifierEndPos; {
         _item, _err := io.ReadUint8(8)
@@ -206,7 +207,7 @@ func BACnetTagWithContentParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewBACnetTagWithContent(typeOrTagNumber, contextSpecificTag, lengthValueType, extTagNumber, extLength, propertyIdentifier, value), nil
 }
 
-func (m BACnetTagWithContent) Serialize(io spi.WriteBuffer) error {
+func (m BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber := uint8(m.TypeOrTagNumber)

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type IS7Payload interface {
     spi.Message
     MessageType() uint8
     ParameterParameterType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type S7PayloadInitializer interface {
@@ -84,7 +85,7 @@ func (m S7Payload) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7PayloadParse(io *spi.ReadBuffer, messageType uint8, parameter IS7Parameter) (spi.Message, error) {
+func S7PayloadParse(io *utils.ReadBuffer, messageType uint8, parameter IS7Parameter) (spi.Message, error) {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     var initializer S7PayloadInitializer
@@ -107,7 +108,7 @@ func S7PayloadParse(io *spi.ReadBuffer, messageType uint8, parameter IS7Paramete
     return initializer.initialize(), nil
 }
 
-func S7PayloadSerialize(io spi.WriteBuffer, m S7Payload, i IS7Payload, childSerialize func() error) error {
+func S7PayloadSerialize(io utils.WriteBuffer, m S7Payload, i IS7Payload, childSerialize func() error) error {
 
     // Switch field (Depending on the discriminator values, passes the serialization to a sub-type)
     _typeSwitchErr := childSerialize()

@@ -25,9 +25,9 @@ import (
     "os"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/testutils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/tcp"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
     "strings"
     "testing"
@@ -52,13 +52,13 @@ func test(t *testing.T, rawMessage string, response bool) {
 	if err != nil {
 		t.Errorf("Error decoding test input")
 	}
-	rb := spi.ReadBufferNew(request)
+	rb := utils.ReadBufferNew(request)
 	adu, err := model.ModbusTcpADUParse(rb, response)
 	if err != nil {
 		t.Errorf("Error parsing: %s", err)
 	}
 	if adu != nil {
-		wb := spi.WriteBufferNew()
+		wb := utils.WriteBufferNew()
 		val := model.CastIModbusTcpADU(adu)
 		val.Serialize(*wb)
 		serializedMessage := hex.EncodeToString(wb.GetBytes())
@@ -82,7 +82,7 @@ func Connection(t *testing.T) {
 		Pdu:                   &pdu,
 	}
 
-	wb := spi.WriteBufferNew()
+	wb := utils.WriteBufferNew()
 	adu.Serialize(*wb)
 
 	servAddr := "192.168.23.30:502"
@@ -112,7 +112,7 @@ func Connection(t *testing.T) {
 		os.Exit(1)
 	}
 
-	rb := spi.ReadBufferNew(buffer[0:numBytes])
+	rb := utils.ReadBufferNew(buffer[0:numBytes])
 	response, err := model.ModbusTcpADUParse(rb, true)
 	if err != nil {
 		println("Parsing response failed:", err.Error())

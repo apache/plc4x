@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type BACnetConfirmedServiceACK struct {
 type IBACnetConfirmedServiceACK interface {
     spi.Message
     ServiceChoice() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type BACnetConfirmedServiceACKInitializer interface {
@@ -82,7 +83,7 @@ func (m BACnetConfirmedServiceACK) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKParse(io *spi.ReadBuffer) (spi.Message, error) {
+func BACnetConfirmedServiceACKParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice, _serviceChoiceErr := io.ReadUint8(8)
@@ -131,7 +132,7 @@ func BACnetConfirmedServiceACKParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func BACnetConfirmedServiceACKSerialize(io spi.WriteBuffer, m BACnetConfirmedServiceACK, i IBACnetConfirmedServiceACK, childSerialize func() error) error {
+func BACnetConfirmedServiceACKSerialize(io utils.WriteBuffer, m BACnetConfirmedServiceACK, i IBACnetConfirmedServiceACK, childSerialize func() error) error {
 
     // Discriminator Field (serviceChoice) (Used as input to a switch field)
     serviceChoice := uint8(i.ServiceChoice())

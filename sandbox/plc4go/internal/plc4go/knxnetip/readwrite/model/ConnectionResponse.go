@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -36,7 +37,7 @@ type ConnectionResponse struct {
 // The corresponding interface
 type IConnectionResponse interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -101,7 +102,7 @@ func (m ConnectionResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, error) {
+func ConnectionResponseParse(io *utils.ReadBuffer) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (communicationChannelId)
     communicationChannelId, _communicationChannelIdErr := io.ReadUint8(8)
@@ -149,7 +150,7 @@ func ConnectionResponseParse(io *spi.ReadBuffer) (KNXNetIPMessageInitializer, er
     return NewConnectionResponse(communicationChannelId, status, hpaiDataEndpoint, connectionResponseDataBlock), nil
 }
 
-func (m ConnectionResponse) Serialize(io spi.WriteBuffer) error {
+func (m ConnectionResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (communicationChannelId)

@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) LengthInBytes
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
     // Create the instance
     return NewBACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple(), nil
 }
 
-func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

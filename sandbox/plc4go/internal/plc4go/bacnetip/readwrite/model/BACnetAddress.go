@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type BACnetAddress struct {
 // The corresponding interface
 type IBACnetAddress interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -82,7 +83,7 @@ func (m BACnetAddress) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
+func BACnetAddressParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Array field (address)
     // Count array
@@ -106,7 +107,7 @@ func BACnetAddressParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewBACnetAddress(address, port), nil
 }
 
-func (m BACnetAddress) Serialize(io spi.WriteBuffer) error {
+func (m BACnetAddress) Serialize(io utils.WriteBuffer) error {
 
     // Array Field (address)
     if m.Address != nil {

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type KnxNetRemoteLogging struct {
 // The corresponding interface
 type IKnxNetRemoteLogging interface {
     IServiceId
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -84,7 +85,7 @@ func (m KnxNetRemoteLogging) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KnxNetRemoteLoggingParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) {
+func KnxNetRemoteLoggingParse(io *utils.ReadBuffer) (ServiceIdInitializer, error) {
 
     // Simple Field (version)
     version, _versionErr := io.ReadUint8(8)
@@ -96,7 +97,7 @@ func KnxNetRemoteLoggingParse(io *spi.ReadBuffer) (ServiceIdInitializer, error) 
     return NewKnxNetRemoteLogging(version), nil
 }
 
-func (m KnxNetRemoteLogging) Serialize(io spi.WriteBuffer) error {
+func (m KnxNetRemoteLogging) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (version)

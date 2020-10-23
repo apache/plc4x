@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetConfirmedServiceRequestAtomicReadFile struct {
 // The corresponding interface
 type IBACnetConfirmedServiceRequestAtomicReadFile interface {
     IBACnetConfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetConfirmedServiceRequestAtomicReadFile) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceRequestAtomicReadFileParse(io *spi.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
+func BACnetConfirmedServiceRequestAtomicReadFileParse(io *utils.ReadBuffer) (BACnetConfirmedServiceRequestInitializer, error) {
 
     // Create the instance
     return NewBACnetConfirmedServiceRequestAtomicReadFile(), nil
 }
 
-func (m BACnetConfirmedServiceRequestAtomicReadFile) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceRequestAtomicReadFile) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

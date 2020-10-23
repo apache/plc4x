@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type ModbusPDUReadCoilsRequest struct {
 // The corresponding interface
 type IModbusPDUReadCoilsRequest interface {
     IModbusPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -96,7 +97,7 @@ func (m ModbusPDUReadCoilsRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusPDUReadCoilsRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, error) {
+func ModbusPDUReadCoilsRequestParse(io *utils.ReadBuffer) (ModbusPDUInitializer, error) {
 
     // Simple Field (startingAddress)
     startingAddress, _startingAddressErr := io.ReadUint16(16)
@@ -114,7 +115,7 @@ func ModbusPDUReadCoilsRequestParse(io *spi.ReadBuffer) (ModbusPDUInitializer, e
     return NewModbusPDUReadCoilsRequest(startingAddress, quantity), nil
 }
 
-func (m ModbusPDUReadCoilsRequest) Serialize(io spi.WriteBuffer) error {
+func (m ModbusPDUReadCoilsRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (startingAddress)

@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "strconv"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"strconv"
 )
 
 // Constant values.
@@ -44,7 +45,7 @@ type BACnetUnconfirmedServiceRequestIAm struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestIAm interface {
     IBACnetUnconfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -125,7 +126,7 @@ func (m BACnetUnconfirmedServiceRequestIAm) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestIAmParse(io *spi.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestIAmParse(io *utils.ReadBuffer) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
     // Const Field (objectIdentifierHeader)
     objectIdentifierHeader, _objectIdentifierHeaderErr := io.ReadUint8(8)
@@ -209,7 +210,7 @@ func BACnetUnconfirmedServiceRequestIAmParse(io *spi.ReadBuffer) (BACnetUnconfir
     return NewBACnetUnconfirmedServiceRequestIAm(objectType, objectInstanceNumber, maximumApduLengthAcceptedLength, maximumApduLengthAccepted, segmentationSupported, vendorId), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io spi.WriteBuffer) error {
+func (m BACnetUnconfirmedServiceRequestIAm) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (objectIdentifierHeader)

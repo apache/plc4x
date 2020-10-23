@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "strconv"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"strconv"
 )
 
 // Constant values.
@@ -41,7 +42,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 // The corresponding interface
 type IBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
     IBACnetUnconfirmedServiceRequest
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -113,7 +114,7 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) LengthInBytes
     return m.LengthInBits() / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *spi.ReadBuffer, len uint16) (BACnetUnconfirmedServiceRequestInitializer, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *utils.ReadBuffer, len uint16) (BACnetUnconfirmedServiceRequestInitializer, error) {
 
     // Const Field (vendorIdHeader)
     vendorIdHeader, _vendorIdHeaderErr := io.ReadUint8(8)
@@ -180,7 +181,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferParse(io *spi.Read
     return NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId, serviceNumber, values), nil
 }
 
-func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io spi.WriteBuffer) error {
+func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (vendorIdHeader)

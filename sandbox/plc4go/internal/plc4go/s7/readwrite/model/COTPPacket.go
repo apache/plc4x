@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -35,7 +36,7 @@ type COTPPacket struct {
 type ICOTPPacket interface {
     spi.Message
     TpduCode() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type COTPPacketInitializer interface {
@@ -100,7 +101,7 @@ func (m COTPPacket) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketParse(io *spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
+func COTPPacketParse(io *utils.ReadBuffer, cotpLen uint16) (spi.Message, error) {
     var startPos = io.GetPos()
     var curPos uint16
 
@@ -177,10 +178,10 @@ func COTPPacketParse(io *spi.ReadBuffer, cotpLen uint16) (spi.Message, error) {
     return initializer.initialize(parameters, payload), nil
 }
 
-func COTPPacketSerialize(io spi.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func() error) error {
+func COTPPacketSerialize(io utils.WriteBuffer, m COTPPacket, i ICOTPPacket, childSerialize func() error) error {
 
     // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(spi.InlineIf(bool(bool((m.Payload) != (nil))), uint16((*m.Payload).LengthInBytes()), uint16(uint8(0))))) + uint8(uint8(1)))))
+    headerLength := uint8(uint8(uint8(m.LengthInBytes())) - uint8(uint8(uint8(uint8(utils.InlineIf(bool(bool((m.Payload) != (nil))), uint16((*m.Payload).LengthInBytes()), uint16(uint8(0))))) + uint8(uint8(1)))))
     _headerLengthErr := io.WriteUint8(8, (headerLength))
     if _headerLengthErr != nil {
         return errors.New("Error serializing 'headerLength' field " + _headerLengthErr.Error())

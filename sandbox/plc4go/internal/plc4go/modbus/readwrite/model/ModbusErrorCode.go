@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -84,12 +87,12 @@ func (m ModbusErrorCode) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusErrorCodeParse(io *spi.ReadBuffer) (ModbusErrorCode, error) {
+func ModbusErrorCodeParse(io *utils.ReadBuffer) (ModbusErrorCode, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e ModbusErrorCode) Serialize(io spi.WriteBuffer) error {
+func (e ModbusErrorCode) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }

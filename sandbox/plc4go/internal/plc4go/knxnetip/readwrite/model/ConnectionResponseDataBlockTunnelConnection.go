@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type ConnectionResponseDataBlockTunnelConnection struct {
 // The corresponding interface
 type IConnectionResponseDataBlockTunnelConnection interface {
     IConnectionResponseDataBlock
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -85,7 +86,7 @@ func (m ConnectionResponseDataBlockTunnelConnection) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParse(io *spi.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
+func ConnectionResponseDataBlockTunnelConnectionParse(io *utils.ReadBuffer) (ConnectionResponseDataBlockInitializer, error) {
 
     // Simple Field (knxAddress)
     _knxAddressMessage, _err := KNXAddressParse(io)
@@ -102,7 +103,7 @@ func ConnectionResponseDataBlockTunnelConnectionParse(io *spi.ReadBuffer) (Conne
     return NewConnectionResponseDataBlockTunnelConnection(knxAddress), nil
 }
 
-func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io spi.WriteBuffer) error {
+func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (knxAddress)

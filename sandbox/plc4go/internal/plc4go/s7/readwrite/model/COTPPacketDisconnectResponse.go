@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type COTPPacketDisconnectResponse struct {
 // The corresponding interface
 type ICOTPPacketDisconnectResponse interface {
     ICOTPPacket
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -90,7 +91,7 @@ func (m COTPPacketDisconnectResponse) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func COTPPacketDisconnectResponseParse(io *spi.ReadBuffer) (COTPPacketInitializer, error) {
+func COTPPacketDisconnectResponseParse(io *utils.ReadBuffer) (COTPPacketInitializer, error) {
 
     // Simple Field (destinationReference)
     destinationReference, _destinationReferenceErr := io.ReadUint16(16)
@@ -108,7 +109,7 @@ func COTPPacketDisconnectResponseParse(io *spi.ReadBuffer) (COTPPacketInitialize
     return NewCOTPPacketDisconnectResponse(destinationReference, sourceReference), nil
 }
 
-func (m COTPPacketDisconnectResponse) Serialize(io spi.WriteBuffer) error {
+func (m COTPPacketDisconnectResponse) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (destinationReference)

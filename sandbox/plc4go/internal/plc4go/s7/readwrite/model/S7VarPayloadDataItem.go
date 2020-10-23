@@ -22,6 +22,7 @@ import (
     "errors"
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -35,7 +36,7 @@ type S7VarPayloadDataItem struct {
 // The corresponding interface
 type IS7VarPayloadDataItem interface {
     spi.Message
-    Serialize(io spi.WriteBuffer, lastItem bool) error
+    Serialize(io utils.WriteBuffer, lastItem bool) error
 }
 
 
@@ -84,7 +85,7 @@ func (m S7VarPayloadDataItem) LengthInBits() uint16 {
     }
 
     // Padding Field (padding)
-    _timesPadding := uint8(spi.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2)))))
+    _timesPadding := uint8(utils.InlineIf(false, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2)))))
     for ;_timesPadding > 0; _timesPadding-- {
         lengthInBits += 8
     }
@@ -96,7 +97,7 @@ func (m S7VarPayloadDataItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, error) {
+func S7VarPayloadDataItemParse(io *utils.ReadBuffer, lastItem bool) (spi.Message, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -118,8 +119,8 @@ func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, 
 
     // Array field (data)
     // Count array
-    data := make([]int8, spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength)))
-    for curItem := uint16(0); curItem < uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength))); curItem++ {
+    data := make([]int8, utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength)))
+    for curItem := uint16(0); curItem < uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))), uint16(dataLength))); curItem++ {
 
         _item, _err := io.ReadInt8(8)
         if _err != nil {
@@ -130,7 +131,7 @@ func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, 
 
     // Padding Field (padding)
     {
-        _timesPadding := (spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(data))) % uint8(uint8(2)))))
+        _timesPadding := (utils.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(data))) % uint8(uint8(2)))))
         for ;(io.HasMore(8)) && (_timesPadding > 0);_timesPadding-- {
             // Just read the padding data and ignore it
             _, _err := io.ReadUint8(8)
@@ -144,7 +145,7 @@ func S7VarPayloadDataItemParse(io *spi.ReadBuffer, lastItem bool) (spi.Message, 
     return NewS7VarPayloadDataItem(returnCode, transportSize, data), nil
 }
 
-func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error {
+func (m S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)
@@ -161,7 +162,7 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error
     }
 
     // Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(spi.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(spi.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
+    dataLength := uint16(uint16(uint16(len(m.Data))) * uint16(uint16(utils.InlineIf(bool(bool((m.TransportSize) == (DataTransportSize_BIT))), uint16(uint16(1)), uint16(uint16(utils.InlineIf(transportSize.SizeInBits(), uint16(uint16(8)), uint16(uint16(1)))))))))
     _dataLengthErr := io.WriteUint16(16, (dataLength))
     if _dataLengthErr != nil {
         return errors.New("Error serializing 'dataLength' field " + _dataLengthErr.Error())
@@ -179,7 +180,7 @@ func (m S7VarPayloadDataItem) Serialize(io spi.WriteBuffer, lastItem bool) error
 
     // Padding Field (padding)
     {
-        _timesPadding := uint8(spi.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2)))))
+        _timesPadding := uint8(utils.InlineIf(lastItem, uint16(uint8(0)), uint16(uint8(uint8(len(m.Data))) % uint8(uint8(2)))))
         for ;_timesPadding > 0; _timesPadding-- {
             _paddingValue := uint8(uint8(0))
             _paddingErr := io.WriteUint8(8, (_paddingValue))

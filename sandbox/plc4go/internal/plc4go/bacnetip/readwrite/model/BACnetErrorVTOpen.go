@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetErrorVTOpen struct {
 // The corresponding interface
 type IBACnetErrorVTOpen interface {
     IBACnetError
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetErrorVTOpen) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetErrorVTOpenParse(io *spi.ReadBuffer) (BACnetErrorInitializer, error) {
+func BACnetErrorVTOpenParse(io *utils.ReadBuffer) (BACnetErrorInitializer, error) {
 
     // Create the instance
     return NewBACnetErrorVTOpen(), nil
 }
 
-func (m BACnetErrorVTOpen) Serialize(io spi.WriteBuffer) error {
+func (m BACnetErrorVTOpen) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

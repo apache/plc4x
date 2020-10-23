@@ -22,6 +22,7 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
     "strconv"
 )
@@ -41,7 +42,7 @@ type S7Message struct {
 type IS7Message interface {
     spi.Message
     MessageType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type S7MessageInitializer interface {
@@ -116,7 +117,7 @@ func (m S7Message) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7MessageParse(io *spi.ReadBuffer) (spi.Message, error) {
+func S7MessageParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Const Field (protocolId)
     protocolId, _protocolIdErr := io.ReadUint8(8)
@@ -216,7 +217,7 @@ func S7MessageParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(tpduReference, parameter, payload), nil
 }
 
-func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSerialize func() error) error {
+func S7MessageSerialize(io utils.WriteBuffer, m S7Message, i IS7Message, childSerialize func() error) error {
 
     // Const Field (protocolId)
     _protocolIdErr := io.WriteUint8(8, 0x32)
@@ -247,14 +248,14 @@ func S7MessageSerialize(io spi.WriteBuffer, m S7Message, i IS7Message, childSeri
     }
 
     // Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    parameterLength := uint16(spi.InlineIf(bool((m.Parameter) != (nil)), uint16((*m.Parameter).LengthInBytes()), uint16(uint16(0))))
+    parameterLength := uint16(utils.InlineIf(bool((m.Parameter) != (nil)), uint16((*m.Parameter).LengthInBytes()), uint16(uint16(0))))
     _parameterLengthErr := io.WriteUint16(16, (parameterLength))
     if _parameterLengthErr != nil {
         return errors.New("Error serializing 'parameterLength' field " + _parameterLengthErr.Error())
     }
 
     // Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-    payloadLength := uint16(spi.InlineIf(bool((m.Payload) != (nil)), uint16((*m.Payload).LengthInBytes()), uint16(uint16(0))))
+    payloadLength := uint16(utils.InlineIf(bool((m.Payload) != (nil)), uint16((*m.Payload).LengthInBytes()), uint16(uint16(0))))
     _payloadLengthErr := io.WriteUint16(16, (payloadLength))
     if _payloadLengthErr != nil {
         return errors.New("Error serializing 'payloadLength' field " + _payloadLengthErr.Error())

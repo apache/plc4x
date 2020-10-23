@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -50,7 +51,7 @@ type CEMIDataFrame struct {
 // The corresponding interface
 type ICEMIDataFrame interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -149,7 +150,7 @@ func (m CEMIDataFrame) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIDataFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
+func CEMIDataFrameParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (standardFrame)
     standardFrame, _standardFrameErr := io.ReadBit()
@@ -280,7 +281,7 @@ func CEMIDataFrameParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewCEMIDataFrame(standardFrame, polling, notRepeated, notAckFrame, priority, acknowledgeRequested, errorFlag, groupDestinationAddress, hopCount, extendedFrameFormat, sourceAddress, destinationAddress, dataLength, tcpi, counter, apci, dataFirstByte, data), nil
 }
 
-func (m CEMIDataFrame) Serialize(io spi.WriteBuffer) error {
+func (m CEMIDataFrame) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (standardFrame)
     standardFrame := bool(m.StandardFrame)

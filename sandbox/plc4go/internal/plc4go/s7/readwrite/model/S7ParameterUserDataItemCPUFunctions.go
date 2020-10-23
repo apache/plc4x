@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -39,7 +40,7 @@ type S7ParameterUserDataItemCPUFunctions struct {
 // The corresponding interface
 type IS7ParameterUserDataItemCPUFunctions interface {
     IS7ParameterUserDataItem
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -121,7 +122,7 @@ func (m S7ParameterUserDataItemCPUFunctions) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7ParameterUserDataItemCPUFunctionsParse(io *spi.ReadBuffer) (S7ParameterUserDataItemInitializer, error) {
+func S7ParameterUserDataItemCPUFunctionsParse(io *utils.ReadBuffer) (S7ParameterUserDataItemInitializer, error) {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _itemLengthErr := io.ReadUint8(8)
@@ -196,7 +197,7 @@ func S7ParameterUserDataItemCPUFunctionsParse(io *spi.ReadBuffer) (S7ParameterUs
     return NewS7ParameterUserDataItemCPUFunctions(method, cpuFunctionType, cpuFunctionGroup, cpuSubfunction, sequenceNumber, dataUnitReferenceNumber, lastDataUnit, errorCode), nil
 }
 
-func (m S7ParameterUserDataItemCPUFunctions) Serialize(io spi.WriteBuffer) error {
+func (m S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

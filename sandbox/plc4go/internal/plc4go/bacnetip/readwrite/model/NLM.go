@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -33,7 +34,7 @@ type NLM struct {
 type INLM interface {
     spi.Message
     MessageType() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type NLMInitializer interface {
@@ -88,7 +89,7 @@ func (m NLM) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func NLMParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
+func NLMParse(io *utils.ReadBuffer, apduLength uint16) (spi.Message, error) {
 
     // Discriminator Field (messageType) (Used as input to a switch field)
     messageType, _messageTypeErr := io.ReadUint8(8)
@@ -124,7 +125,7 @@ func NLMParse(io *spi.ReadBuffer, apduLength uint16) (spi.Message, error) {
     return initializer.initialize(vendorId), nil
 }
 
-func NLMSerialize(io spi.WriteBuffer, m NLM, i INLM, childSerialize func() error) error {
+func NLMSerialize(io utils.WriteBuffer, m NLM, i INLM, childSerialize func() error) error {
 
     // Discriminator Field (messageType) (Used as input to a switch field)
     messageType := uint8(i.MessageType())

@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type BACnetConfirmedServiceACKGetEnrollmentSummary struct {
 // The corresponding interface
 type IBACnetConfirmedServiceACKGetEnrollmentSummary interface {
     IBACnetConfirmedServiceACK
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -79,13 +80,13 @@ func (m BACnetConfirmedServiceACKGetEnrollmentSummary) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io *spi.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
+func BACnetConfirmedServiceACKGetEnrollmentSummaryParse(io *utils.ReadBuffer) (BACnetConfirmedServiceACKInitializer, error) {
 
     // Create the instance
     return NewBACnetConfirmedServiceACKGetEnrollmentSummary(), nil
 }
 
-func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io spi.WriteBuffer) error {
+func (m BACnetConfirmedServiceACKGetEnrollmentSummary) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

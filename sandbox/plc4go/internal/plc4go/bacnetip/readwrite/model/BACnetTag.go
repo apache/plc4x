@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -36,7 +37,7 @@ type BACnetTag struct {
 type IBACnetTag interface {
     spi.Message
     ContextSpecificTag() uint8
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type BACnetTagInitializer interface {
@@ -102,7 +103,7 @@ func (m BACnetTag) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func BACnetTagParse(io *spi.ReadBuffer) (spi.Message, error) {
+func BACnetTagParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber, _typeOrTagNumberErr := io.ReadUint8(4)
@@ -185,7 +186,7 @@ func BACnetTagParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(typeOrTagNumber, lengthValueType, extTagNumber, extLength), nil
 }
 
-func BACnetTagSerialize(io spi.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func() error) error {
+func BACnetTagSerialize(io utils.WriteBuffer, m BACnetTag, i IBACnetTag, childSerialize func() error) error {
 
     // Simple Field (typeOrTagNumber)
     typeOrTagNumber := uint8(m.TypeOrTagNumber)

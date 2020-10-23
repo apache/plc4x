@@ -79,7 +79,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getLengthBytes() {
-        return quantity * ModbusDataType.valueOf(dataType).getDataTypeSize();
+        return quantity * ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
     }
 
     public int getLengthWords() {
@@ -96,7 +96,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getDataTypeSize() {
-        return ModbusDataType.valueOf(dataType).getDataTypeSize();
+        return ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
     }
 
     @Override

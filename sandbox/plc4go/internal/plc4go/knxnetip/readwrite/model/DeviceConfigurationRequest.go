@@ -21,7 +21,8 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type DeviceConfigurationRequest struct {
 // The corresponding interface
 type IDeviceConfigurationRequest interface {
     IKNXNetIPMessage
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -89,7 +90,7 @@ func (m DeviceConfigurationRequest) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func DeviceConfigurationRequestParse(io *spi.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
+func DeviceConfigurationRequestParse(io *utils.ReadBuffer, totalLength uint16) (KNXNetIPMessageInitializer, error) {
 
     // Simple Field (deviceConfigurationRequestDataBlock)
     _deviceConfigurationRequestDataBlockMessage, _err := DeviceConfigurationRequestDataBlockParse(io)
@@ -117,7 +118,7 @@ func DeviceConfigurationRequestParse(io *spi.ReadBuffer, totalLength uint16) (KN
     return NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock, cemi), nil
 }
 
-func (m DeviceConfigurationRequest) Serialize(io spi.WriteBuffer) error {
+func (m DeviceConfigurationRequest) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (deviceConfigurationRequestDataBlock)

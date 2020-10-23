@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
 
@@ -36,7 +37,7 @@ type KNXNetIPMessage struct {
 type IKNXNetIPMessage interface {
     spi.Message
     MsgType() uint16
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 type KNXNetIPMessageInitializer interface {
@@ -95,7 +96,7 @@ func (m KNXNetIPMessage) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func KNXNetIPMessageParse(io *spi.ReadBuffer) (spi.Message, error) {
+func KNXNetIPMessageParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     _, _headerLengthErr := io.ReadUint8(8)
@@ -169,7 +170,7 @@ func KNXNetIPMessageParse(io *spi.ReadBuffer) (spi.Message, error) {
     return initializer.initialize(), nil
 }
 
-func KNXNetIPMessageSerialize(io spi.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func() error) error {
+func KNXNetIPMessageSerialize(io utils.WriteBuffer, m KNXNetIPMessage, i IKNXNetIPMessage, childSerialize func() error) error {
 
     // Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
     headerLength := uint8(uint8(6))

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -32,7 +33,7 @@ type S7VarPayloadStatusItem struct {
 // The corresponding interface
 type IS7VarPayloadStatusItem interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -76,7 +77,7 @@ func (m S7VarPayloadStatusItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func S7VarPayloadStatusItemParse(io *spi.ReadBuffer) (spi.Message, error) {
+func S7VarPayloadStatusItemParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Enum field (returnCode)
     returnCode, _returnCodeErr := DataTransportErrorCodeParse(io)
@@ -88,7 +89,7 @@ func S7VarPayloadStatusItemParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewS7VarPayloadStatusItem(returnCode), nil
 }
 
-func (m S7VarPayloadStatusItem) Serialize(io spi.WriteBuffer) error {
+func (m S7VarPayloadStatusItem) Serialize(io utils.WriteBuffer) error {
 
     // Enum field (returnCode)
     returnCode := CastDataTransportErrorCode(m.ReturnCode)

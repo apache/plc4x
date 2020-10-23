@@ -20,6 +20,7 @@ package model
 
 import (
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -30,7 +31,7 @@ type CEMIFramePollingDataExt struct {
 // The corresponding interface
 type ICEMIFramePollingDataExt interface {
     ICEMIFrame
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -91,13 +92,13 @@ func (m CEMIFramePollingDataExt) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIFramePollingDataExtParse(io *spi.ReadBuffer) (CEMIFrameInitializer, error) {
+func CEMIFramePollingDataExtParse(io *utils.ReadBuffer) (CEMIFrameInitializer, error) {
 
     // Create the instance
     return NewCEMIFramePollingDataExt(), nil
 }
 
-func (m CEMIFramePollingDataExt) Serialize(io spi.WriteBuffer) error {
+func (m CEMIFramePollingDataExt) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
         return nil

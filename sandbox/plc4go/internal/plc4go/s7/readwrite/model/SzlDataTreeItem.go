@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -36,7 +37,7 @@ type SzlDataTreeItem struct {
 // The corresponding interface
 type ISzlDataTreeItem interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -94,7 +95,7 @@ func (m SzlDataTreeItem) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SzlDataTreeItemParse(io *spi.ReadBuffer) (spi.Message, error) {
+func SzlDataTreeItemParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Simple Field (itemIndex)
     itemIndex, _itemIndexErr := io.ReadUint16(16)
@@ -136,7 +137,7 @@ func SzlDataTreeItemParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewSzlDataTreeItem(itemIndex, mlfb, moduleTypeId, ausbg, ausbe), nil
 }
 
-func (m SzlDataTreeItem) Serialize(io spi.WriteBuffer) error {
+func (m SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (itemIndex)
     itemIndex := uint16(m.ItemIndex)

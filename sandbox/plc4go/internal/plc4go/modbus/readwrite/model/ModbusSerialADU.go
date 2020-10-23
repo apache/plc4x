@@ -22,6 +22,7 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
 )
 
@@ -37,7 +38,7 @@ type ModbusSerialADU struct {
 // The corresponding interface
 type IModbusSerialADU interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -93,7 +94,7 @@ func (m ModbusSerialADU) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func ModbusSerialADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error) {
+func ModbusSerialADUParse(io *utils.ReadBuffer, response bool) (spi.Message, error) {
 
     // Simple Field (transactionId)
     transactionId, _transactionIdErr := io.ReadUint16(16)
@@ -142,7 +143,7 @@ func ModbusSerialADUParse(io *spi.ReadBuffer, response bool) (spi.Message, error
     return NewModbusSerialADU(transactionId, length, address, pdu), nil
 }
 
-func (m ModbusSerialADU) Serialize(io spi.WriteBuffer) error {
+func (m ModbusSerialADU) Serialize(io utils.WriteBuffer) error {
 
     // Simple Field (transactionId)
     transactionId := uint16(m.TransactionId)

@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
 )
 
@@ -41,7 +42,7 @@ type CEMIAdditionalInformationBusmonitorInfo struct {
 // The corresponding interface
 type ICEMIAdditionalInformationBusmonitorInfo interface {
     ICEMIAdditionalInformation
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -111,7 +112,7 @@ func (m CEMIAdditionalInformationBusmonitorInfo) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func CEMIAdditionalInformationBusmonitorInfoParse(io *spi.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
+func CEMIAdditionalInformationBusmonitorInfoParse(io *utils.ReadBuffer) (CEMIAdditionalInformationInitializer, error) {
 
     // Const Field (len)
     len, _lenErr := io.ReadUint8(8)
@@ -162,7 +163,7 @@ func CEMIAdditionalInformationBusmonitorInfoParse(io *spi.ReadBuffer) (CEMIAddit
     return NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber), nil
 }
 
-func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io spi.WriteBuffer) error {
+func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Const Field (len)

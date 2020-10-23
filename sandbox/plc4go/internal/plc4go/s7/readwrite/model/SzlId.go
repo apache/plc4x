@@ -21,6 +21,7 @@ package model
 import (
     "errors"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
 
 // The data-structure of this message
@@ -34,7 +35,7 @@ type SzlId struct {
 // The corresponding interface
 type ISzlId interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 
@@ -84,7 +85,7 @@ func (m SzlId) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func SzlIdParse(io *spi.ReadBuffer) (spi.Message, error) {
+func SzlIdParse(io *utils.ReadBuffer) (spi.Message, error) {
 
     // Enum field (typeClass)
     typeClass, _typeClassErr := SzlModuleTypeClassParse(io)
@@ -108,7 +109,7 @@ func SzlIdParse(io *spi.ReadBuffer) (spi.Message, error) {
     return NewSzlId(typeClass, sublistExtract, sublistList), nil
 }
 
-func (m SzlId) Serialize(io spi.WriteBuffer) error {
+func (m SzlId) Serialize(io utils.WriteBuffer) error {
 
     // Enum field (typeClass)
     typeClass := CastSzlModuleTypeClass(m.TypeClass)

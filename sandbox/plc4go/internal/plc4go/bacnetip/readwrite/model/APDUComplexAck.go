@@ -22,7 +22,8 @@ import (
     "errors"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "reflect"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"reflect"
 )
 
 // The data-structure of this message
@@ -39,7 +40,7 @@ type APDUComplexAck struct {
 // The corresponding interface
 type IAPDUComplexAck interface {
     IAPDU
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 // Accessors for discriminator values.
@@ -113,7 +114,7 @@ func (m APDUComplexAck) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func APDUComplexAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
+func APDUComplexAckParse(io *utils.ReadBuffer) (APDUInitializer, error) {
 
     // Simple Field (segmentedMessage)
     segmentedMessage, _segmentedMessageErr := io.ReadBit()
@@ -184,7 +185,7 @@ func APDUComplexAckParse(io *spi.ReadBuffer) (APDUInitializer, error) {
     return NewAPDUComplexAck(segmentedMessage, moreFollows, originalInvokeId, sequenceNumber, proposedWindowSize, serviceAck), nil
 }
 
-func (m APDUComplexAck) Serialize(io spi.WriteBuffer) error {
+func (m APDUComplexAck) Serialize(io utils.WriteBuffer) error {
     ser := func() error {
 
     // Simple Field (segmentedMessage)

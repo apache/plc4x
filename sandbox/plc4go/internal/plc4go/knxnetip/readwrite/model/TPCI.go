@@ -18,13 +18,16 @@
 //
 package model
 
-import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+import (
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+)
 
 type TPCI uint8
 
 type ITPCI interface {
     spi.Message
-    Serialize(io spi.WriteBuffer) error
+    Serialize(io utils.WriteBuffer) error
 }
 
 const(
@@ -66,12 +69,12 @@ func (m TPCI) LengthInBytes() uint16 {
     return m.LengthInBits() / 8
 }
 
-func TPCIParse(io *spi.ReadBuffer) (TPCI, error) {
+func TPCIParse(io *utils.ReadBuffer) (TPCI, error) {
     // TODO: Implement ...
     return 0, nil
 }
 
-func (e TPCI) Serialize(io spi.WriteBuffer) error {
+func (e TPCI) Serialize(io utils.WriteBuffer) error {
     // TODO: Implement ...
     return nil
 }
