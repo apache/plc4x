@@ -67,7 +67,7 @@ public abstract class ModbusField implements PlcField {
             throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : "INT";
-        ModbusDataTypeSizes.valueOf(this.dataType);
+        ModbusDataTypeSizes.enumForValue(this.dataType);
     }
 
     public int getAddress() {
@@ -83,7 +83,7 @@ public abstract class ModbusField implements PlcField {
     }
 
     public int getLengthWords() {
-        return (int) (quantity * ((float) ModbusDataType.valueOf(dataType).getDataTypeSize())/2.0f);
+        return (int) (quantity * ((float) ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize())/2.0f);
     }
 
     public String getDataType() {

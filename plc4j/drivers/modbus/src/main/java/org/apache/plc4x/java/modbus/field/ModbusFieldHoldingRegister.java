@@ -71,7 +71,8 @@ public class ModbusFieldHoldingRegister extends ModbusField {
         }
 
         String datatypeTemp = matcher.group("datatype");
-        String datatype = datatypeTemp != null ? datatypeTemp : "INT";
+        String datatype = "IEC61131_" + (datatypeTemp != null ? datatypeTemp : "INT");
+
 
         return new ModbusFieldHoldingRegister(address, quantity, datatype.toUpperCase());
     }

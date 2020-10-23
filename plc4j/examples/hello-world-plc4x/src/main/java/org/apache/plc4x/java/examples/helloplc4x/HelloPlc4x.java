@@ -74,7 +74,7 @@ public class HelloPlc4x {
             printResponse(syncResponse);
 
             PlcValue asPlcValue = syncResponse.getAsPlcValue();
-            System.out.println(asPlcValue);
+            System.out.println(asPlcValue.toString());
 
             //////////////////////////////////////////////////////////
             // Read asynchronously ...
