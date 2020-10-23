@@ -337,7 +337,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     }
 
     private PlcValue toPlcValue(ModbusPDU request, ModbusPDU response, String dataType) throws ParseException {
-        Short fieldDataTypeSize = ModbusDataType.valueOf(dataType).getDataTypeSize();
+        Short fieldDataTypeSize = ModbusDataTypeSizes.enumForValue(dataType).getDataTypeSize();
 
         if (request instanceof ModbusPDUReadDiscreteInputsRequest) {
             if (!(response instanceof ModbusPDUReadDiscreteInputsResponse)) {
