@@ -409,7 +409,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 Term b = tt.getB();
                 Term c = tt.getC();
                 // TODO: This is not quite correct with the cast to uint16
-                return "spi.InlineIf(" + toExpression(new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
+                return "utils.InlineIf(" + toExpression(new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
                     "uint16(" + toExpression(fieldType, b, parserArguments, serializerArguments, serialize, false) + "), " +
                     "uint16(" + toExpression(fieldType, c, parserArguments, serializerArguments, serialize, false) + "))";
             } else {
@@ -707,6 +707,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
 
         imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi\"");
+        imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils\"");
 
         // "Fields with complex type": "reflect"
         if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
