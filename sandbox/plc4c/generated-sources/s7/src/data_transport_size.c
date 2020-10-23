@@ -30,25 +30,25 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
 
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_of(char* value_string) {
     if(strcmp(value_string, "NULL") == 0) {
-        return 0x00;
+        return plc4c_s7_read_write_data_transport_size_NULL;
     }
     if(strcmp(value_string, "BIT") == 0) {
-        return 0x03;
+        return plc4c_s7_read_write_data_transport_size_BIT;
     }
     if(strcmp(value_string, "BYTE_WORD_DWORD") == 0) {
-        return 0x04;
+        return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
     if(strcmp(value_string, "INTEGER") == 0) {
-        return 0x05;
+        return plc4c_s7_read_write_data_transport_size_INTEGER;
     }
     if(strcmp(value_string, "DINTEGER") == 0) {
-        return 0x06;
+        return plc4c_s7_read_write_data_transport_size_DINTEGER;
     }
     if(strcmp(value_string, "REAL") == 0) {
-        return 0x07;
+        return plc4c_s7_read_write_data_transport_size_REAL;
     }
     if(strcmp(value_string, "OCTET_STRING") == 0) {
-        return 0x09;
+        return plc4c_s7_read_write_data_transport_size_OCTET_STRING;
     }
     return -1;
 }
@@ -60,25 +60,25 @@ int plc4c_s7_read_write_data_transport_size_num_values() {
 plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_value_for_index(int index) {
     switch(index) {
       case 0: {
-        return 0x00;
+        return plc4c_s7_read_write_data_transport_size_NULL;
       }
       case 1: {
-        return 0x03;
+        return plc4c_s7_read_write_data_transport_size_BIT;
       }
       case 2: {
-        return 0x04;
+        return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
       }
       case 3: {
-        return 0x05;
+        return plc4c_s7_read_write_data_transport_size_INTEGER;
       }
       case 4: {
-        return 0x06;
+        return plc4c_s7_read_write_data_transport_size_DINTEGER;
       }
       case 5: {
-        return 0x07;
+        return plc4c_s7_read_write_data_transport_size_REAL;
       }
       case 6: {
-        return 0x09;
+        return plc4c_s7_read_write_data_transport_size_OCTET_STRING;
       }
       default: {
         return -1;
@@ -88,25 +88,25 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_data_transport_size_
 
 bool plc4c_s7_read_write_data_transport_size_get_size_in_bits(plc4c_s7_read_write_data_transport_size value) {
   switch(value) {
-    case 0: { /* '0x00' */
+    case plc4c_s7_read_write_data_transport_size_NULL: { /* '0x00' */
       return false;
     }
-    case 3: { /* '0x03' */
+    case plc4c_s7_read_write_data_transport_size_BIT: { /* '0x03' */
       return true;
     }
-    case 4: { /* '0x04' */
+    case plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD: { /* '0x04' */
       return true;
     }
-    case 5: { /* '0x05' */
+    case plc4c_s7_read_write_data_transport_size_INTEGER: { /* '0x05' */
       return true;
     }
-    case 6: { /* '0x06' */
+    case plc4c_s7_read_write_data_transport_size_DINTEGER: { /* '0x06' */
       return false;
     }
-    case 7: { /* '0x07' */
+    case plc4c_s7_read_write_data_transport_size_REAL: { /* '0x07' */
       return false;
     }
-    case 9: { /* '0x09' */
+    case plc4c_s7_read_write_data_transport_size_OCTET_STRING: { /* '0x09' */
       return false;
     }
     default: {
