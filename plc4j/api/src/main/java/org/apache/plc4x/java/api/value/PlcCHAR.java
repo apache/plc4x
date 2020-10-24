@@ -156,7 +156,12 @@ public class PlcCHAR extends PlcIECValue<Short> {
     public PlcCHAR(String value) {
         super();
         try {
-            Short val = (short) value.charAt(0);
+            //If there is a extra space around the character trim it, unless you are actually sending a space
+            String s = value.trim();
+            if (s.length() == 0) {
+                s = " ";
+            }
+            Short val = (short) s.charAt(0);
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = (short) val;
                 this.isNullable = false;

@@ -73,42 +73,62 @@ import org.apache.plc4x.java.opcuaserver.backend.Plc4xNamespace;
 public class OPCUAServer {
 
     private Configuration config;
+    private PasswordConfiguration passwordConfig;
+    private CommandLine cmd = null;
 
     static {
         // Required for SecurityPolicy.Aes256_Sha256_RsaPss
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private void checkPasswordsExist(boolean reset) {
+    private void setPasswords() {
         Console cnsl = System.console();
-        //Checking if the security password has been set.
-        if (config.getSecurityPassword() == null || reset) {
-            System.out.println("Please enter password for certificate:- ");
-            try {
-                config.setSecurityPassword(String.valueOf(cnsl.readPassword()));
-            } catch (IOException e) {
-                System.out.println("Unable to save config file after setting security password");
-            }
+
+        System.out.println("Please enter password for certificate:- ");
+        try {
+            passwordConfig.setSecurityPassword(String.valueOf(cnsl.readPassword()));
+        } catch (IOException e) {
+            System.out.println("Unable to save config file after setting security password");
         }
 
-        //Checking if the Admin username has been set.
-        if (config.getAdminUserName() == null || reset) {
-            System.out.println("Please enter a username for the OPC UA server admin account:- ");
-            try {
-                config.setAdminUserName(String.valueOf(cnsl.readLine()));
-            } catch (IOException e) {
-                System.out.println("Unable to save config file after setting admin username");
-            }
+        System.out.println("Please enter a username for the OPC UA server admin account:- ");
+        try {
+            String username = String.valueOf(cnsl.readLine());
+            System.out.println("Please enter a password for the OPC UA server admin account:- ");
+            String password = String.valueOf(cnsl.readPassword());
+            passwordConfig.createUser(username, password, "admin-group");
+        } catch (IOException e) {
+            System.out.println("Unable to save config file after setting admin username");
         }
 
-        //Checking if the Admin username has been set.
-        if (config.getAdminPassword() == null | reset) {
-            System.out.println("Please enter a password for the OPC UA server " + config.getAdminUserName() + " account:- ");
-            try {
-                config.setAdminPassword(String.valueOf(cnsl.readPassword()));
-            } catch (IOException e) {
-                System.out.println("Unable to save config file after setting " + config.getAdminUserName() + " password");
+    }
+
+    private void readPasswordConfig() {
+        //Read Config File
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        mapper.findAndRegisterModules();
+        try {
+            Path path = FileSystems.getDefault().getPath(config.getDir()).resolve("security/.jibberish");
+            File file = path.toFile();
+            if (file.isFile()) {
+                passwordConfig = mapper.readValue(file, PasswordConfiguration.class);
+                passwordConfig.setPasswordConfigFile(path);
+            } else {
+                if (cmd.hasOption("interactive")) {
+                    passwordConfig = new PasswordConfiguration();
+                    passwordConfig.setVersion("0.1");
+                    passwordConfig.setPasswordConfigFile(path);
+                    setPasswords();
+                } else {
+                    LoggerFactory.getLogger(getClass()).info("Please re-run with the -i switch to setup the config file");
+                    System.exit(1);
+                }
             }
+            if (cmd.hasOption("set-passwords")) {
+                setPasswords();
+            }
+        } catch (IOException e) {
+            System.out.println("Error parsing password file " + e);
         }
     }
 
@@ -123,9 +143,13 @@ public class OPCUAServer {
         setPassword.setRequired(false);
         options.addOption(setPassword);
 
+        Option interactive = new Option("i", "interactive", false, "Interactively get asked to setup the config file from the console");
+        interactive.setRequired(false);
+        options.addOption(interactive);
+
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
-        CommandLine cmd = null;
+        cmd = null;
 
         try {
             cmd = parser.parse(options, args);
@@ -148,7 +172,8 @@ public class OPCUAServer {
             if (config.getDir() == null) {
                 throw new IOException("Please set the dir in the config file");
             }
-            checkPasswordsExist(cmd.hasOption("set-passwords"));
+
+            readPasswordConfig();
         } catch (IOException e) {
             System.out.println("Error parsing config file " + e);
         }
@@ -169,7 +194,7 @@ public class OPCUAServer {
 
         readCommandLineArgs(args);
 
-        KeyStoreLoader loader = new KeyStoreLoader(config);
+        KeyStoreLoader loader = new KeyStoreLoader(config, passwordConfig, cmd.hasOption("interactive"));
 
         DefaultCertificateManager certificateManager = new DefaultCertificateManager(
             loader.getServerKeyPair(),
@@ -193,13 +218,11 @@ public class OPCUAServer {
         UsernameIdentityValidator identityValidator = new UsernameIdentityValidator(
             true,
             authChallenge -> {
-                String username = authChallenge.getUsername();
-                String password = authChallenge.getPassword();
-                //TODO: This shouldn't be hard coded or stored in PTF
-                boolean userOk = "user".equals(username) && "password1".equals(password);
-                boolean adminOk = config.getAdminUserName().equals(username) && config.getAdminPassword().equals(password);
-
-                return userOk || adminOk;
+                boolean check = passwordConfig.checkPassword(authChallenge.getUsername(), authChallenge.getPassword());
+                if (!check) {
+                    LoggerFactory.getLogger(getClass()).info("Invalid password for user:- " + authChallenge.getUsername());
+                }
+                return check;
             }
         );
 
@@ -222,11 +245,11 @@ public class OPCUAServer {
 
         OpcUaServerConfig serverConfig = OpcUaServerConfig.builder()
             .setApplicationUri(applicationUri)
-            .setApplicationName(LocalizedText.english(config.getName()))
+            .setApplicationName(LocalizedText.english(applicationUri))
             .setEndpoints(endpointConfigurations)
             .setBuildInfo(
                 new BuildInfo(
-                    "org:apache:plc4x:java:opcuaserver",
+                    "urn:eclipse:milo:plc4x:server",
                     "org.apache.plc4x",
                     config.getName(),
                     OpcUaServer.SDK_VERSION,
@@ -237,7 +260,7 @@ public class OPCUAServer {
             .setHttpsKeyPair(httpsKeyPair)
             .setHttpsCertificate(httpsCertificate)
             .setIdentityValidator(new CompositeValidator(identityValidator, x509IdentityValidator))
-            .setProductUri("org:apache:plc4x:java:opcuaserver")
+            .setProductUri("urn:eclipse:milo:plc4x:server")
             .build();
 
         server = new OpcUaServer(serverConfig);

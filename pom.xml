@@ -149,7 +149,7 @@
     <logstash.version>7.4.0</logstash.version>
     <lucene.version>8.3.0</lucene.version>
     <metrics-core.version>3.1.2</metrics-core.version>
-    <milo.version>0.5.1</milo.version>
+    <milo.version>0.5.2</milo.version>
     <mockito.version>2.24.5</mockito.version>
     <netty.version>4.1.47.Final</netty.version>
     <owasp-dependency-check.version>6.0.0</owasp-dependency-check.version>
@@ -227,6 +227,11 @@
       <dependency>
         <groupId>com.fasterxml.jackson.dataformat</groupId>
         <artifactId>jackson-dataformat-cbor</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.dataformat</groupId>
+        <artifactId>jackson-dataformat-csv</artifactId>
         <version>${jackson.version}</version>
       </dependency>
       <dependency>

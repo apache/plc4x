@@ -69,4 +69,17 @@ public interface PlcField {
         return "";
     }
 
+    /**
+     * Returns the number of elements to expect of the response one can expect from this field.
+     *
+     *
+     * @return The number of elements to expect.
+     */
+    @JsonIgnore
+    default int getNumberOfElements() {
+        return 1;
+    }
+
+
+
 }

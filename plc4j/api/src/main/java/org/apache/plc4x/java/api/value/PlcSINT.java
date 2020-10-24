@@ -133,7 +133,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
     public PlcSINT(String value) {
         super();
         try {
-            this.value = Byte.valueOf(value);
+            this.value = Byte.valueOf(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {

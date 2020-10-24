@@ -139,7 +139,7 @@ public class PlcUDINT extends PlcIECValue<Long> {
     public PlcUDINT(String value) {
         super();
         try {
-            long val = Long.parseLong(value);
+            long val = Long.parseLong(value.trim());
             if (val >= minValue && val <= maxValue) {
                 this.value = val;
                 this.isNullable = false;

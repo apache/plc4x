@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opcuaserver.backend;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
@@ -86,6 +87,8 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
@@ -95,12 +98,79 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 public class Plc4xCommunication {
 
     private PlcDriverManager driverManager;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public Plc4xCommunication () {
         driverManager = new PooledPlcDriverManager();
     }
 
-    public Object getValue(String tag, String connectionString) {
+    public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
+        return driverManager.getDriver(connectionString).prepareField(tag);
+    }
+
+    public static NodeId getNodeId(String plcValue) {
+        switch (plcValue) {
+            case "BOOL":
+            case "BIT":
+                return Identifiers.Boolean;
+            case "BYTE":
+            case "BITARR8":
+                return Identifiers.Byte;
+            case "SINT":
+            case "INT8":
+                return Identifiers.SByte;
+            case "USINT":
+            case "UINT8":
+            case "BIT8":
+                return Identifiers.Byte;
+            case "INT":
+            case "INT16":
+                return Identifiers.Int16;
+            case "UINT":
+            case "UINT16":
+                return Identifiers.UInt16;
+            case "WORD":
+            case "BITARR16":
+                return Identifiers.UInt16;
+            case "DINT":
+            case "INT32":
+                return Identifiers.Int32;
+            case "UDINT":
+            case "UINT32":
+                return Identifiers.UInt32;
+            case "DWORD":
+            case "BITARR32":
+                return Identifiers.UInt32;
+            case "LINT":
+            case "INT64":
+                return Identifiers.Int64;
+            case "ULINT":
+            case "UINT64":
+                return Identifiers.UInt64;
+            case "LWORD":
+            case "BITARR64":
+                return Identifiers.UInt64;
+            case "REAL":
+            case "FLOAT":
+                return Identifiers.Float;
+            case "LREAL":
+            case "DOUBLE":
+                return Identifiers.Double;
+            case "CHAR":
+                return Identifiers.String;
+            case "WCHAR":
+                return Identifiers.String;
+            case "STRING":
+                return Identifiers.String;
+            case "WSTRING":
+            case "STRING16":
+                return Identifiers.String;
+            default:
+                return Identifiers.BaseDataType;
+        }
+    }
+
+    public Variant getValue(String tag, String connectionString) {
         PlcConnection connection = null;
         try {
           connection = driverManager.getConnection(connectionString);
@@ -121,21 +191,19 @@ public class Plc4xCommunication {
           System.out.println("Failed" + e);
         }
 
-        Object resp = null;
+        Variant resp = null;
 
         for (String fieldName : response.getFieldNames()) {
           if(response.getResponseCode(fieldName) == PlcResponseCode.OK) {
               int numValues = response.getNumberOfValues(fieldName);
-              // If it's just one element, output just one single line.
               if(numValues == 1) {
-                  resp = response.getObject(fieldName);
+                  resp = new Variant(response.getObject(fieldName));
               } else {
-                //TODO: Possibly create a new node for each item in the array. We would then need to pass the connection string with the Fields in each protocol which I'm not keen on doing.
-                resp = "[" + response.getObject(fieldName, 0).toString();
-                for (int i = 1; i < numValues; i++) {
-                    resp = resp + "," + response.getObject(fieldName, i).toString();
+                Object array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                for (int i = 0; i < numValues; i++) {
+                    Array.set(array, i, response.getObject(fieldName, i));
                 }
-                resp = resp + "]";
+                resp = new Variant(array);
               }
           }
         }
@@ -158,7 +226,16 @@ public class Plc4xCommunication {
         // Create a new read request:
         // - Give the single item requested an alias name
         final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-        builder.addItem(tag, tag, value);
+
+        //If an array value is passed instead of a single value then convert to a String array
+        if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
+            String[] values = value.substring(1,value.length() - 1).split(",");
+            logger.info("Adding Tag " + Arrays.toString(values));
+            builder.addItem(tag, tag, values);
+        } else {
+            builder.addItem(tag, tag, value);
+        }
+
         PlcWriteRequest writeRequest = builder.build();
 
         try {

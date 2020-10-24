@@ -17,82 +17,105 @@
 
 == Introduction
 
-The Plc4x OPC UA server integration is an Eclipse Milo OPC UA server that is able to use
-Plc4x drivers to communicate.
-
+The Plc4x OPC UA server integration is an Eclipse Milo OPC UA server, using PLC4X communication drivers. This allows it
+to act as an OPC UA gateway server.
 
 == Building the server
 
-The OPC UA server can be built using maven as part of the Plc4x build by using the with-opcua-server switch.
+The OPC UA server can be built using maven as part of the PLC4X build by using the with-opcua-server switch.
 ```
 mvn install -P with-sandbox,with-opcua-server
 ```
 
+This creates a target directory within plc4x/sandbox/opcua-server containing a jar file which is the main java
+executable.
+
+== Configuration File
+
+The config.yml file is used to configure the server. The following root level settings should be configured.
+
+- *version:* The version is just an internal check to confirm that the right version of the configuration file
+is being used.
+- *dir:* This is the directory to the security directory. This is where all configuration is stored including certificates.
+- *name:* This is the name of the OPC UA server. It can be anything but shouldn't contain spaces.
+- *tcpPort:* this can be used to change the opc.tcp port.
+- *httpPort:* this can be used to change the http.tcp port.
+- *devices:* is a list of PLC's or devices that the server should communicate with. Each device should included a
+name:, connectionString:, and a list of tags:.
+
+For each device within devices the following settings should be configured.
+
+- *name:* This is the name of the device. It can anything as long as it doesn't contain spaces.
+- *connectionString:* Can be any valid Plc4x connection string.
+
+For each tag with tags the following settings should be configured:-
+
+- *alias:* This is the name of tag it can be anything but shouldn't have spaces. This will be shown as the tag name within
+the OPC UA server tree.
+- *address:* This is any valid Plc4x address that matches the connection type.
+
+An example configuration file is shown below.
+
+```
+---
+version: "0.1"
+dir: {path-to-security-dir}
+name: "Plc4xOPCUAServer"
+devices:
+    - name: "ModbusDevice"
+      connectionString: "modbus://127.0.0.1:502"
+      tags:
+        - alias: "TemporaryBOOLARRAY"
+          address: "000001:BOOL[10]"
+        - alias: "TemporaryWORD2"
+          address: "400002:WORD"
+        - alias: "TemporaryUINT3"
+          address: "400003:UINT"
+        - alias: "TemporaryINT4"
+          address: "400004:INT"
+        - alias: "TemporaryDINT5"
+          address: "400005:DINT[4]"
+        - alias: "TemporaryREAL6"
+          address: "400006:REAL"
+        - alias: "TemporaryREAL7"
+          address: "400007:REAL"
+        - alias: "TemporaryREAL8"
+          address: "400008:REAL"
+- name: "SimulationDevice"
+    connectionString: "simulated://127.0.0.1"
+    tags:
+        - alias: "Temporary"
+          address: "RANDOM/Temporary:Integer"
+tcpPort: 12687
+httpPort: 8445
+```
+
 == Running
 
-Once the OPC UA server is running you are able to connect to it from your favorite OPC UA client using the connection string
+To run the java executable execute:-
+```
+java -jar plc4x-opcua-server-0.8.0-SNAPSHOT-uber-jar.jar -c {path-to-config-file} -i
+```
+This will start the OPC UA server with the interactive switch (-i). This prompts the server to ask for usernames and
+passwords upon startup. However, during normal operation the -i switch should be left out.
+
+If a certificate isn't available at *{path-to-security-dir}/security/plc4x-opcuaserver.pfx* then a self signed is
+created. This certificate is password protected with the security password given during startup.
+
+If you place another certificate here make sure it is password protected and set the password by running the server
+again with --set-password switch.
+```
+java -jar plc4x-opcua-server-0.8.0-SNAPSHOT-uber-jar.jar -c {path-to-config-file} -i -s
+```
+
+Once the OPC UA server is running you are able to connect to it from your favorite OPC UA client using the connection
+string.
 ```
 opc.tcp://{ip.address}:12687/plc4x
 ```
 Replacing the {ip.address} with the servers IP address.
 
-== Configuration File
+If you want to use an encrypted connection be sure to move the client certificate created in
+*{path-to-security-dir}/security/pki/rejected* to the trusted directory.
 
-The config.yml file is used to configure the server.
 
-version: The version is just an check to confirm that the right version of the configuration file is being used.
-
-dir: Before using it the `dir` that is used to store the security certificates should be defined.
-
-name: This is the name of the OPC UA server. It can be anything but shouldn't contain spaces.
-
-tcpPort: this can be used to change the opc.tcp port that is used.
-
-httpPort: this can be used to change the http.tcp port that is used.
-
-devices: is a list of PLC's or devices that the server should communicate with. Each device should included a name:, connectionString:, and a list of tags:.
-
-name: This is the name of the device. It can anything as long as it doesn't contain spaces.
-connectionString: Can be any valid Plc4x connection string.
-
-For each tag the alias: and address: should be defined.
-
-alias: This is the name of tag it can be anything but shouldn't have spaces.
-
-address: This is any valid Plc4x address.
-
-An example configuration file is shown below.
-
-```
-
-version: 0.1
-dir: {security.directory}
-name: Plc4x.OPC.UA.Server
-tcpPort: 12687
-httpPort: 8445
-devices:
-      - name: ModbusDevice01
-        connectionString: modbus://127.0.0.1:5467
-        tags:
-            -   alias: TemporaryREAL1
-                address: 400001:REAL
-            -   alias: TemporaryWORD2
-                address: 400002:WORD
-            -   alias: TemporaryUINT3
-                address: 400003:UINT
-            -   alias: TemporaryINT4
-                address: 400004:INT
-            -   alias: TemporaryREAL5
-                address: 400005:REAL
-            -   alias: TemporaryREAL6
-                address: 400006:REAL
-            -   alias: TemporaryREAL7
-                address: 400007:REAL
-            -   alias: TemporaryREAL8
-                address: 400008:REAL
-      - name: ModbusDevice02
-        connectionString: modbus://127.0.0.1:5467
-        tags:
-            -   alias: TemporaryREAL1
-                address: 400001:REAL
-```

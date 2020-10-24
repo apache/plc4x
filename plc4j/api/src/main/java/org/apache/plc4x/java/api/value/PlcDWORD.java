@@ -140,7 +140,7 @@ public class PlcDWORD extends PlcIECValue<Long> {
     public PlcDWORD(String value) {
         super();
         try {
-            long val = Long.parseLong(value);
+            long val = Long.parseLong(value.trim());
             if (val >= minValue && val <= maxValue) {
                 this.value = val;
                 this.isNullable = false;

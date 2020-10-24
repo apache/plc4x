@@ -61,11 +61,11 @@ class KeyStoreLoader {
     private KeyPair serverKeyPair;
 
     private Configuration config;
+    private PasswordConfiguration passwordConfig;
 
-
-
-    public KeyStoreLoader(Configuration c) {
-        config = c;
+    public KeyStoreLoader(Configuration config, PasswordConfiguration passwordConfig, Boolean interactive) {
+        this.config = config;
+        this.passwordConfig = passwordConfig;
 
         File securityTempDir = new File(config.getDir(), "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
@@ -75,7 +75,7 @@ class KeyStoreLoader {
         LoggerFactory.getLogger(getClass()).info("security dir: {}", securityTempDir.getAbsolutePath());
 
         try {
-            load(securityTempDir);
+            load(securityTempDir, interactive);
         } catch (Exception e) {
             System.out.println("Error loading the key store " + e);
             System.exit(1);
@@ -84,22 +84,27 @@ class KeyStoreLoader {
 
 
 
-    public KeyStoreLoader load(File baseDir) throws Exception {
+    public KeyStoreLoader load(File baseDir, boolean interactive) throws Exception {
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
 
         File serverKeyStore = baseDir.toPath().resolve(certificateFileName).toFile();
 
         if (!serverKeyStore.exists()) {
+            if (!interactive) {
+                logger.info("Please re-run with the -i switch to setup the security certificate key store");
+                System.exit(1);
+            }
+
             logger.info("Creating keystore at {}", serverKeyStore);
-            keyStore.load(null, config.getSecurityPassword().toCharArray());
+            keyStore.load(null, passwordConfig.getSecurityPassword().toCharArray());
 
             logger.info("Creating self signed certiciate {}", serverKeyStore);
             KeyPair keyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
 
-            String applicationUri = "org:apache:plc4x:java:opcuaserver" + UUID.randomUUID();
+            String applicationUri = "urn:eclipse:milo:plc4x:server" + UUID.randomUUID();
 
             SelfSignedCertificateBuilder builder = new SelfSignedCertificateBuilder(keyPair)
-                .setCommonName(config.getName())
+                .setCommonName(applicationUri)
                 .setOrganization("org.apache")
                 .setOrganizationalUnit("plc4x")
                 .setLocalityName("Wakefield")
@@ -113,6 +118,8 @@ class KeyStoreLoader {
                 HostnameUtil.getHostnames("0.0.0.0", false)
             );
 
+            logger.info("using IP address/hostnames {}", hostnames.toString());
+
             for (String hostname : hostnames) {
                 if (IP_ADDR_PATTERN.matcher(hostname).matches()) {
                     builder.addIpAddress(hostname);
@@ -123,17 +130,17 @@ class KeyStoreLoader {
 
             X509Certificate certificate = builder.build();
 
-            keyStore.setKeyEntry(config.getName(), keyPair.getPrivate(), config.getSecurityPassword().toCharArray(), new X509Certificate[]{certificate});
-            keyStore.store(new FileOutputStream(serverKeyStore), config.getSecurityPassword().toCharArray());
+            keyStore.setKeyEntry(config.getName(), keyPair.getPrivate(), passwordConfig.getSecurityPassword().toCharArray(), new X509Certificate[]{certificate});
+            keyStore.store(new FileOutputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
 
             logger.info("Self signed certificate created. Replace {} and update config file passwords if not using a signed certificate.", serverKeyStore);
 
         } else {
             logger.info("Loading KeyStore at {}", serverKeyStore);
-            keyStore.load(new FileInputStream(serverKeyStore), config.getSecurityPassword().toCharArray());
+            keyStore.load(new FileInputStream(serverKeyStore), passwordConfig.getSecurityPassword().toCharArray());
         }
 
-        Key serverPrivateKey = keyStore.getKey(config.getName(), config.getSecurityPassword().toCharArray());
+        Key serverPrivateKey = keyStore.getKey(config.getName(), passwordConfig.getSecurityPassword().toCharArray());
         if (serverPrivateKey instanceof PrivateKey) {
             serverCertificate = (X509Certificate) keyStore.getCertificate(config.getName());
 

@@ -32,21 +32,35 @@
 
   <build>
     <plugins>
-      <!--
-        I was getting really strange random classloading errors from this module.
-        As it wasn't touched or continuned for quite some time, I disabled the tests.
-      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <usedDependencies combine.children="append">
+              <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
+          </usedDependencies>
         </configuration>
       </plugin>
     </plugins>
   </build>
 
   <dependencies>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-test-junit5</artifactId>        
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+      </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>

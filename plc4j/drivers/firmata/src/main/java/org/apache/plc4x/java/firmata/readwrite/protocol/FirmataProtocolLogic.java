@@ -206,10 +206,10 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
                         FirmataFieldAnalog analogField = (FirmataFieldAnalog) subscriptionHandle.getField();
                         // Check if this field would include the current pin.
                         if((analogField.getAddress() <= pin) &&
-                            (analogField.getAddress() + analogField.getQuantity() >= pin)) {
+                            (analogField.getAddress() + analogField.getNumberOfElements() >= pin)) {
                             // Build an update event containing the current values for all subscribed fields.
-                            List<PlcValue> values = new ArrayList<>(analogField.getQuantity());
-                            for(int i = analogField.getAddress(); i < analogField.getAddress() + analogField.getQuantity(); i++) {
+                            List<PlcValue> values = new ArrayList<>(analogField.getNumberOfElements());
+                            for(int i = analogField.getAddress(); i < analogField.getAddress() + analogField.getNumberOfElements(); i++) {
                                 if(analogValues.containsKey(i)) {
                                     values.add(new PlcDINT(analogValues.get(i).intValue()));
                                 }

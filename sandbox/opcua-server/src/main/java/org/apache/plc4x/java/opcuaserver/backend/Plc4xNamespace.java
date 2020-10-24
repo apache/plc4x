@@ -22,6 +22,7 @@ package org.apache.plc4x.java.opcuaserver.backend;
 import org.apache.plc4x.java.opcuaserver.*;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -76,6 +77,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
@@ -83,7 +87,7 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
-    public static final String NAMESPACE_URI = "org:apache:plc4x:java:opcuaserver";
+    public static final String NAMESPACE_URI = "urn:eclipse:milo:plc4x:server";
 
     private Configuration config;
 
@@ -150,41 +154,80 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
         final String connectionString = c.getConnectionString();
         for (int i = 0; i < tags.size(); i++) {
             logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
-            logger.info("Connection String " + connectionString);
             String name = tags.get(i).getAlias();
-            final String tag = tags.get(i).getAddress();            
-            NodeId typeId = Identifiers.BaseDataType;
-            Variant variant = new Variant(0);
+            final String tag = tags.get(i).getAddress();
+
+            Class datatype = null;
+            NodeId typeId = Identifiers.String;
+            UaVariableNode node = null;
+            Variant variant = null;
+            try {
+                datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
+                final int length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
+                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcDataType());
 
 
-            UaVariableNode node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                .setNodeId(newNodeId(name))
-                .setAccessLevel(AccessLevel.READ_WRITE)
-                .setBrowseName(newQualifiedName(name))
-                .setDisplayName(LocalizedText.english(name))
-                .setDataType(typeId)
-                .setTypeDefinition(Identifiers.BaseDataVariableType)
-                .build();
+                if (length > 1) {
+                    node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                        .setNodeId(newNodeId(name))
+                        .setAccessLevel(AccessLevel.READ_WRITE)
+                        .setUserAccessLevel(AccessLevel.READ_WRITE)
+                        .setBrowseName(newQualifiedName(name))
+                        .setDisplayName(LocalizedText.english(name))
+                        .setDataType(typeId)
+                        .setTypeDefinition(Identifiers.BaseDataVariableType)
+                        .setValueRank(ValueRank.OneDimension.getValue())
+                        .setArrayDimensions(new UInteger[]{uint(length)})
+                        .build();
 
-            node.setValue(new DataValue(variant));
+                    Object array = Array.newInstance(datatype, length);
+                    for (int j = 0; j < length; j++) {
+                        Array.set(array, j, false);
+                    }
+                    variant = new Variant(array);
+                } else {
+                    node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
+                        .setNodeId(newNodeId(name))
+                        .setAccessLevel(AccessLevel.READ_WRITE)
+                        .setUserAccessLevel(AccessLevel.READ_WRITE)
+                        .setBrowseName(newQualifiedName(name))
+                        .setDisplayName(LocalizedText.english(name))
+                        .setDataType(typeId)
+                        .setTypeDefinition(Identifiers.BaseDataVariableType)
+                        .build();
+                    variant = new Variant(0);
+                }
 
-            AttributeLoggingFilter filter = new AttributeLoggingFilter();
+                node.setValue(new DataValue(variant));
 
-            node.getFilterChain().addLast(
-                filter,
-                AttributeFilters.getValue(
-                    ctx ->
-                        new DataValue(new Variant(plc4xServer.getValue(tag, connectionString)))
-                )
-            );
+                AttributeLoggingFilter filter = new AttributeLoggingFilter();
 
-            node.getFilterChain().addLast(
-                filter,
-                AttributeFilters.setValue(
-                    (ctx, value) ->
-                        plc4xServer.setValue(tag, value.toString(), connectionString)
-                )
-            );
+                node.getFilterChain().addLast(
+                    filter,
+                    AttributeFilters.getValue(
+                        ctx ->
+                            new DataValue(plc4xServer.getValue(tag, connectionString))
+                    )
+                );
+
+                node.getFilterChain().addLast(
+                    filter,
+                    AttributeFilters.setValue(
+                        (ctx, value) -> {
+                            if (length > 1) {
+                                plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
+                            } else {
+                                plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
+                            }
+
+                        }
+                    )
+                );
+
+            } catch (PlcConnectionException e) {
+                logger.info("Couldn't find data type");
+                System.exit(1);
+            }
 
             getNodeManager().addNode(node);
             rootNode.addOrganizes(node);

@@ -140,7 +140,7 @@ public class PlcBYTE extends PlcIECValue<Short> {
     public PlcBYTE(String value) {
         super();
         try {
-            short val = Short.parseShort(value);
+            short val = Short.parseShort(value.trim());
             if ((val >= minValue) && (val <= maxValue)) {
                 this.value = val;
                 this.isNullable = false;

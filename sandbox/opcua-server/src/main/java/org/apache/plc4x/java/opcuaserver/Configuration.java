@@ -44,15 +44,6 @@ public class Configuration {
     private String name;
 
     @JsonProperty
-    private String adminUserName;
-
-    @JsonProperty
-    private String adminPassword;
-
-    @JsonProperty
-    private String securityPassword;
-
-    @JsonProperty
     private List<DeviceConfiguration> devices;
 
     @JsonProperty
@@ -70,41 +61,6 @@ public class Configuration {
 
     public String getName() {
         return name;
-    }
-
-    public String getAdminUserName() {
-        return adminUserName;
-    }
-
-    public String getAdminPassword() {
-        return adminPassword;
-    }
-
-    public String getSecurityPassword() {
-        return securityPassword;
-    }
-
-    @JsonIgnore
-    public void setAdminUserName(String value) throws IOException {
-        adminUserName = value;
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
-        om.writeValue(new File(configFile), this);
-    }
-
-    @JsonIgnore
-    public void setAdminPassword(String value) throws IOException {
-        //TODO: This need to be encrypted
-        adminPassword = value;
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
-        om.writeValue(new File(configFile), this);
-    }
-
-    @JsonIgnore
-    public void setSecurityPassword(String value) throws IOException {
-        //TODO: This need to be encrypted
-        securityPassword = value;
-        ObjectMapper om = new ObjectMapper(new YAMLFactory());
-        om.writeValue(new File(configFile), this);
     }
 
     public String getDir() {
