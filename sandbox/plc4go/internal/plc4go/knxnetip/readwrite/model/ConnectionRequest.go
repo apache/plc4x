@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -161,3 +163,70 @@ func (m ConnectionRequest) Serialize(io utils.WriteBuffer) error {
     }
     return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }
+
+func (m *ConnectionRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "hpaiDiscoveryEndpoint":
+                var data *HPAIDiscoveryEndpoint
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HpaiDiscoveryEndpoint = CastIHPAIDiscoveryEndpoint(data)
+            case "hpaiDataEndpoint":
+                var data *HPAIDataEndpoint
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HpaiDataEndpoint = CastIHPAIDataEndpoint(data)
+            case "connectionRequestInformation":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationDeviceManagement":
+                        var dt *ConnectionRequestInformationDeviceManagement
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ConnectionRequestInformation = dt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequestInformationTunnelConnection":
+                        var dt *ConnectionRequestInformationTunnelConnection
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ConnectionRequestInformation = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m ConnectionRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionRequest"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HpaiDiscoveryEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiDiscoveryEndpoint"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HpaiDataEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiDataEndpoint"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ConnectionRequestInformation, xml.StartElement{Name: xml.Name{Local: "connectionRequestInformation"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

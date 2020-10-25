@@ -687,21 +687,30 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public List<String> getRequiredImports() {
+        ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) getThisTypeDefinition();
         List<String> imports = new ArrayList<>();
 
+        if(complexTypeDefinition.getAllPropertyFields().stream().anyMatch(field -> isArrayField(field) && getLanguageTypeNameForField(field).equals("int8"))) {
+            imports.add("\"encoding/base64\"");
+        }
+
+        imports.add("\"encoding/xml\"");
+
         // For "Fields with complex type", constant, typeSwitch,  fields: "errors"
-        if(!((ComplexTypeDefinition) getThisTypeDefinition()).getFields().isEmpty()) {
+        if(!complexTypeDefinition.getFields().isEmpty()) {
             imports.add("\"errors\"");
         }
 
+        imports.add("\"io\"");
+
         // At least one reserved field or simple field with complex type
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+        if(complexTypeDefinition.getFields().stream().anyMatch(field ->
             (field instanceof ReservedField))) {
             imports.add("log \"github.com/sirupsen/logrus\"");
         }
 
         // For CEIL functions: "math"
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+        if(complexTypeDefinition.getFields().stream().anyMatch(field ->
             FieldUtils.contains(field, "CEIL"))) {
             imports.add("\"math\"");
         }
@@ -710,15 +719,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         imports.add("\"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils\"");
 
         // "Fields with complex type": "reflect"
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
+        if(complexTypeDefinition.getFields().stream().anyMatch(field ->
             !(field instanceof EnumField) &&
             ((field instanceof TypedField) && ((TypedField) field).getType() instanceof ComplexTypeReference))) {
             imports.add("\"reflect\"");
         }
 
         // For Constant field: "strconv"
-        if(((ComplexTypeDefinition) getThisTypeDefinition()).getFields().stream().anyMatch(field ->
-            (field instanceof ConstField))) {
+        if(complexTypeDefinition.getFields().stream().anyMatch(field ->
+            (field instanceof ConstField))/* || complexTypeDefinition.getAllPropertyFields().stream().anyMatch(
+                propertyField -> isSimpleField(propertyField))*/) {
             imports.add("\"strconv\"");
         }
 

@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -222,3 +224,88 @@ func (m S7AddressAny) Serialize(io utils.WriteBuffer) error {
     }
     return S7AddressSerialize(io, m.S7Address, CastIS7Address(m), ser)
 }
+
+func (m *S7AddressAny) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "transportSize":
+                var data *TransportSize
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TransportSize = data
+            case "numberOfElements":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.NumberOfElements = data
+            case "dbNumber":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DbNumber = data
+            case "area":
+                var data *MemoryArea
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Area = data
+            case "byteAddress":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ByteAddress = data
+            case "bitAddress":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.BitAddress = data
+            }
+        }
+    }
+}
+
+func (m S7AddressAny) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7AddressAny"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TransportSize, xml.StartElement{Name: xml.Name{Local: "transportSize"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.NumberOfElements, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DbNumber, xml.StartElement{Name: xml.Name{Local: "dbNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Area, xml.StartElement{Name: xml.Name{Local: "area"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ByteAddress, xml.StartElement{Name: xml.Name{Local: "byteAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.BitAddress, xml.StartElement{Name: xml.Name{Local: "bitAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

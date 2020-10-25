@@ -20,6 +20,7 @@ package drivers
 
 import (
     "encoding/hex"
+    "encoding/xml"
     "fmt"
     "net"
     "os"
@@ -46,7 +47,7 @@ func TestModbus(t *testing.T) {
 }
 
 func test(t *testing.T, rawMessage string, response bool) {
-	// Create the input data
+	// Cr9edz47r4eate the input data
 	// "000a 0000 0006 01 03 00 00 00 04"
 	request, err := hex.DecodeString(rawMessage)
 	if err != nil {
@@ -58,8 +59,17 @@ func test(t *testing.T, rawMessage string, response bool) {
 		t.Errorf("Error parsing: %s", err)
 	}
 	if adu != nil {
+	    serialized, err := xml.Marshal(adu)
+	    if err != nil {
+	        fmt.Println("Hurz!" + err.Error())
+	        return
+        }
+        fmt.Println(string(serialized))
+	    var deserializedAdu *model.ModbusTcpADU
+	    xml.Unmarshal(serialized, &deserializedAdu)
+
 		wb := utils.WriteBufferNew()
-		val := model.CastIModbusTcpADU(adu)
+		val := model.CastIModbusTcpADU(deserializedAdu)
 		val.Serialize(*wb)
 		serializedMessage := hex.EncodeToString(wb.GetBytes())
 		if strings.ToUpper(serializedMessage) != strings.ToUpper(rawMessage) {

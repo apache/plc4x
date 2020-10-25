@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -197,3 +200,72 @@ func (m ModbusPDUGetComEventLogResponse) Serialize(io utils.WriteBuffer) error {
     }
     return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }
+
+func (m *ModbusPDUGetComEventLogResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "status":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Status = data
+            case "eventCount":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.EventCount = data
+            case "messageCount":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MessageCount = data
+            case "events":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Events = data
+            }
+        }
+    }
+}
+
+func (m ModbusPDUGetComEventLogResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUGetComEventLogResponse"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Status, xml.StartElement{Name: xml.Name{Local: "status"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.EventCount, xml.StartElement{Name: xml.Name{Local: "eventCount"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MessageCount, xml.StartElement{Name: xml.Name{Local: "messageCount"}}); err != nil {
+        return err
+    }
+    _encodedEvents := make([]byte, base64.StdEncoding.EncodedLen(len(m.Events)))
+    base64.StdEncoding.Encode(_encodedEvents, utils.Int8ToByte(m.Events))
+    if err := e.EncodeElement(_encodedEvents, xml.StartElement{Name: xml.Name{Local: "events"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

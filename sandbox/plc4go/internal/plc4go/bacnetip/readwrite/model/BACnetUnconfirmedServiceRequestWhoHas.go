@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
@@ -250,3 +253,72 @@ func (m BACnetUnconfirmedServiceRequestWhoHas) Serialize(io utils.WriteBuffer) e
     }
     return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }
+
+func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "deviceInstanceLowLimit":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DeviceInstanceLowLimit = data
+            case "deviceInstanceHighLimit":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DeviceInstanceHighLimit = data
+            case "objectNameCharacterSet":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ObjectNameCharacterSet = data
+            case "objectName":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ObjectName = data
+            }
+        }
+    }
+}
+
+func (m BACnetUnconfirmedServiceRequestWhoHas) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestWhoHas"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DeviceInstanceLowLimit, xml.StartElement{Name: xml.Name{Local: "deviceInstanceLowLimit"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DeviceInstanceHighLimit, xml.StartElement{Name: xml.Name{Local: "deviceInstanceHighLimit"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ObjectNameCharacterSet, xml.StartElement{Name: xml.Name{Local: "objectNameCharacterSet"}}); err != nil {
+        return err
+    }
+    _encodedObjectName := make([]byte, base64.StdEncoding.EncodedLen(len(m.ObjectName)))
+    base64.StdEncoding.Encode(_encodedObjectName, utils.Int8ToByte(m.ObjectName))
+    if err := e.EncodeElement(_encodedObjectName, xml.StartElement{Name: xml.Name{Local: "objectName"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

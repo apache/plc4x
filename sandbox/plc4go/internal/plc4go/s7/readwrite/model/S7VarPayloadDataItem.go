@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "math"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -192,3 +195,63 @@ func (m S7VarPayloadDataItem) Serialize(io utils.WriteBuffer, lastItem bool) err
 
     return nil
 }
+
+func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "returnCode":
+                var data *DataTransportErrorCode
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ReturnCode = data
+            case "transportSize":
+                var data *DataTransportSize
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TransportSize = data
+            case "data":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Data = data
+            }
+        }
+    }
+}
+
+func (m S7VarPayloadDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7VarPayloadDataItem"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ReturnCode, xml.StartElement{Name: xml.Name{Local: "returnCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TransportSize, xml.StartElement{Name: xml.Name{Local: "transportSize"}}); err != nil {
+        return err
+    }
+    _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

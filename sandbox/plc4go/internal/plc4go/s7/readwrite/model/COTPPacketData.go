@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -130,3 +132,52 @@ func (m COTPPacketData) Serialize(io utils.WriteBuffer) error {
     }
     return COTPPacketSerialize(io, m.COTPPacket, CastICOTPPacket(m), ser)
 }
+
+func (m *COTPPacketData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "eot":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Eot = data
+            case "tpduRef":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TpduRef = data
+            }
+        }
+    }
+}
+
+func (m COTPPacketData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacketData"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Eot, xml.StartElement{Name: xml.Name{Local: "eot"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TpduRef, xml.StartElement{Name: xml.Name{Local: "tpduRef"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

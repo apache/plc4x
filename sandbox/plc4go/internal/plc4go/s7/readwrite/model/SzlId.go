@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -134,3 +136,61 @@ func (m SzlId) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *SzlId) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "typeClass":
+                var data *SzlModuleTypeClass
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TypeClass = data
+            case "sublistExtract":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SublistExtract = data
+            case "sublistList":
+                var data *SzlSublist
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SublistList = data
+            }
+        }
+    }
+}
+
+func (m SzlId) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlId"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TypeClass, xml.StartElement{Name: xml.Name{Local: "typeClass"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SublistExtract, xml.StartElement{Name: xml.Name{Local: "sublistExtract"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SublistList, xml.StartElement{Name: xml.Name{Local: "sublistList"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

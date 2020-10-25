@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -281,3 +283,184 @@ func (m BACnetTagWithContent) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *BACnetTagWithContent) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "typeOrTagNumber":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TypeOrTagNumber = data
+            case "contextSpecificTag":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ContextSpecificTag = data
+            case "lengthValueType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LengthValueType = data
+            case "extTagNumber":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExtTagNumber = data
+            case "extLength":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExtLength = data
+            case "propertyIdentifier":
+                var data []uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.PropertyIdentifier = data
+            case "value":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationNull":
+                        var dt *BACnetTagApplicationNull
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBoolean":
+                        var dt *BACnetTagApplicationBoolean
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationUnsignedInteger":
+                        var dt *BACnetTagApplicationUnsignedInteger
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationSignedInteger":
+                        var dt *BACnetTagApplicationSignedInteger
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationReal":
+                        var dt *BACnetTagApplicationReal
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble":
+                        var dt *BACnetTagApplicationDouble
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationOctetString":
+                        var dt *BACnetTagApplicationOctetString
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationCharacterString":
+                        var dt *BACnetTagApplicationCharacterString
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationBitString":
+                        var dt *BACnetTagApplicationBitString
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationEnumerated":
+                        var dt *BACnetTagApplicationEnumerated
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDate":
+                        var dt *BACnetTagApplicationDate
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationTime":
+                        var dt *BACnetTagApplicationTime
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationObjectIdentifier":
+                        var dt *BACnetTagApplicationObjectIdentifier
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagContext":
+                        var dt *BACnetTagContext
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.Value = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m BACnetTagWithContent) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagWithContent"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TypeOrTagNumber, xml.StartElement{Name: xml.Name{Local: "typeOrTagNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ContextSpecificTag, xml.StartElement{Name: xml.Name{Local: "contextSpecificTag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.LengthValueType, xml.StartElement{Name: xml.Name{Local: "lengthValueType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtTagNumber, xml.StartElement{Name: xml.Name{Local: "extTagNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtLength, xml.StartElement{Name: xml.Name{Local: "extLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.PropertyIdentifier, xml.StartElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "propertyIdentifier"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

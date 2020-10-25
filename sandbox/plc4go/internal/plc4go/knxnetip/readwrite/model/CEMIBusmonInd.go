@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -170,3 +172,105 @@ func (m CEMIBusmonInd) Serialize(io utils.WriteBuffer) error {
     }
     return CEMISerialize(io, m.CEMI, CastICEMI(m), ser)
 }
+
+func (m *CEMIBusmonInd) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "additionalInformationLength":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.AdditionalInformationLength = data
+            case "additionalInformation":
+                var _values []ICEMIAdditionalInformation
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo":
+                        var dt *CEMIAdditionalInformationBusmonitorInfo
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationRelativeTimestamp":
+                        var dt *CEMIAdditionalInformationRelativeTimestamp
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    }
+                    m.AdditionalInformation = _values
+            case "cemiFrame":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameAck":
+                        var dt *CEMIFrameAck
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.CemiFrame = dt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameData":
+                        var dt *CEMIFrameData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.CemiFrame = dt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingData":
+                        var dt *CEMIFramePollingData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.CemiFrame = dt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrameDataExt":
+                        var dt *CEMIFrameDataExt
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.CemiFrame = dt
+                    case "org.apache.plc4x.java.knxnetip.readwrite.CEMIFramePollingDataExt":
+                        var dt *CEMIFramePollingDataExt
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.CemiFrame = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m CEMIBusmonInd) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIBusmonInd"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.AdditionalInformationLength, xml.StartElement{Name: xml.Name{Local: "additionalInformationLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.AdditionalInformation, xml.StartElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "additionalInformation"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.CemiFrame, xml.StartElement{Name: xml.Name{Local: "cemiFrame"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

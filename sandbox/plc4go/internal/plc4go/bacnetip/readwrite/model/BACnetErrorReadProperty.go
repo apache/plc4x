@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
@@ -225,3 +228,74 @@ func (m BACnetErrorReadProperty) Serialize(io utils.WriteBuffer) error {
     }
     return BACnetErrorSerialize(io, m.BACnetError, CastIBACnetError(m), ser)
 }
+
+func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "errorClassLength":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorClassLength = data
+            case "errorClass":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorClass = data
+            case "errorCodeLength":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorCodeLength = data
+            case "errorCode":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorCode = data
+            }
+        }
+    }
+}
+
+func (m BACnetErrorReadProperty) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetErrorReadProperty"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ErrorClassLength, xml.StartElement{Name: xml.Name{Local: "errorClassLength"}}); err != nil {
+        return err
+    }
+    _encodedErrorClass := make([]byte, base64.StdEncoding.EncodedLen(len(m.ErrorClass)))
+    base64.StdEncoding.Encode(_encodedErrorClass, utils.Int8ToByte(m.ErrorClass))
+    if err := e.EncodeElement(_encodedErrorClass, xml.StartElement{Name: xml.Name{Local: "errorClass"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ErrorCodeLength, xml.StartElement{Name: xml.Name{Local: "errorCodeLength"}}); err != nil {
+        return err
+    }
+    _encodedErrorCode := make([]byte, base64.StdEncoding.EncodedLen(len(m.ErrorCode)))
+    base64.StdEncoding.Encode(_encodedErrorCode, utils.Int8ToByte(m.ErrorCode))
+    if err := e.EncodeElement(_encodedErrorCode, xml.StartElement{Name: xml.Name{Local: "errorCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

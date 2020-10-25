@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -99,22 +101,12 @@ func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (spi.M
         initializer, typeSwitchError = BACnetConfirmedServiceRequestAcknowledgeAlarmParse(io)
     case serviceChoice == 0x01:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationParse(io, len)
-    case serviceChoice == 0x1F:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleParse(io)
     case serviceChoice == 0x02:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestConfirmedEventNotificationParse(io)
     case serviceChoice == 0x04:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(io)
-    case serviceChoice == 0x1D:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestGetEventInformationParse(io)
-    case serviceChoice == 0x1B:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestLifeSafetyOperationParse(io)
     case serviceChoice == 0x05:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVParse(io)
-    case serviceChoice == 0x1C:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(io)
-    case serviceChoice == 0x1E:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParse(io)
     case serviceChoice == 0x06:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestAtomicReadFileParse(io)
     case serviceChoice == 0x07:
@@ -131,8 +123,6 @@ func BACnetConfirmedServiceRequestParse(io *utils.ReadBuffer, len uint16) (spi.M
         initializer, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyParse(io)
     case serviceChoice == 0x0E:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestReadPropertyMultipleParse(io)
-    case serviceChoice == 0x1A:
-        initializer, typeSwitchError = BACnetConfirmedServiceRequestReadRangeParse(io)
     case serviceChoice == 0x0F:
         initializer, typeSwitchError = BACnetConfirmedServiceRequestWritePropertyParse(io, len)
     case serviceChoice == 0x10:
@@ -195,3 +185,34 @@ func BACnetConfirmedServiceRequestSerialize(io utils.WriteBuffer, m BACnetConfir
 
     return nil
 }
+
+func (m *BACnetConfirmedServiceRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            }
+        }
+    }
+}
+
+func (m BACnetConfirmedServiceRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequest"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

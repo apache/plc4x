@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -289,3 +291,115 @@ func S7MessageSerialize(io utils.WriteBuffer, m S7Message, i IS7Message, childSe
 
     return nil
 }
+
+func (m *S7Message) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "tpduReference":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TpduReference = data
+            case "parameter":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterSetupCommunication":
+                        var dt *S7ParameterSetupCommunication
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarRequest":
+                        var dt *S7ParameterReadVarRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterReadVarResponse":
+                        var dt *S7ParameterReadVarResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarRequest":
+                        var dt *S7ParameterWriteVarRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterWriteVarResponse":
+                        var dt *S7ParameterWriteVarResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7ParameterUserData":
+                        var dt *S7ParameterUserData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Parameter = dt
+                    }
+            case "payload":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadReadVarResponse":
+                        var dt *S7PayloadReadVarResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarRequest":
+                        var dt *S7PayloadWriteVarRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadWriteVarResponse":
+                        var dt *S7PayloadWriteVarResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData":
+                        var dt *S7PayloadUserData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m S7Message) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7Message"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TpduReference, xml.StartElement{Name: xml.Name{Local: "tpduReference"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Parameter, xml.StartElement{Name: xml.Name{Local: "parameter"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

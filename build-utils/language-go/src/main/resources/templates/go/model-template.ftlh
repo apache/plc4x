@@ -879,4 +879,111 @@ func (m ${type.name}) Serialize(io utils.WriteBuffer<#if helper.getSerializerArg
     return nil
     </#if>
 }
+
+func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+    <#if type.propertyFields?has_content>
+        <#list type.propertyFields as field>
+            case "${field.name}":
+            <#if helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
+                <#if helper.isArrayField(field)>
+                var _values []<#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
+                </#if>
+                switch tok.Attr[0].Value {
+                <#list helper.getSubTypeDefinitions(helper.getTypeDefinitionForTypeReference(field.type)) as subtype>
+                    case "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${subtype.name}":
+                        var dt *${subtype.name}
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                    <#if helper.isArrayField(field)>
+                        _values = append(_values, dt)
+                    <#else>
+                        <#if helper.isOptionalField(field)>*</#if>m.${field.name?cap_first} = dt
+                    </#if>
+                </#list>
+                    }
+                <#if helper.isArrayField(field)>
+                    m.${field.name?cap_first} = _values
+                </#if>
+            <#elseif helper.isArrayField(field)>
+                var data []<#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.${field.name?cap_first} = data
+            <#elseif helper.isOptionalField(field)>
+                var data *<#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForField(field)}
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.${field.name?cap_first} = data
+            <#else>
+                var data <#if helper.isComplexTypeReference(field.type)>*</#if>${helper.getLanguageTypeNameForField(field)}
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                <#if helper.isComplexTypeReference(field.type) && !helper.isEnumField(field)>
+                m.${field.name?cap_first} = CastI${helper.getLanguageTypeNameForField(field)}(data)
+                <#else>
+                m.${field.name?cap_first} = data
+                </#if>
+            </#if>
+        </#list>
+    </#if>
+            }
+        }
+    }
+}
+
+func (m ${type.name}) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.${protocolName}.${outputFlavor?replace("-","")}.${type.name}"},
+        }}); err != nil {
+        return err
+    }
+    <#if type.propertyFields?has_content>
+        <#list type.propertyFields as field>
+            <#-- int8 arrays are serialized in Base64 encoding -->
+            <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
+    _encoded${field.name?cap_first} := make([]byte, base64.StdEncoding.EncodedLen(len(m.${field.name?cap_first})))
+    base64.StdEncoding.Encode(_encoded${field.name?cap_first}, utils.Int8ToByte(m.${field.name?cap_first}))
+    if err := e.EncodeElement(_encoded${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+        return err
+    }
+            <#-- normal arrays have one element with the same name wrapping them -->
+            <#elseif helper.isArrayField(field)>
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+        return err
+    }
+            <#else>
+    if err := e.EncodeElement(m.${field.name?cap_first}, xml.StartElement{Name: xml.Name{Local: "${field.name}"}}); err != nil {
+        return err
+    }
+            </#if>
+        </#list>
+    </#if>
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+
 </#outputformat>

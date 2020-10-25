@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -161,3 +163,61 @@ func (m SearchResponse) Serialize(io utils.WriteBuffer) error {
     }
     return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }
+
+func (m *SearchResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "hpaiControlEndpoint":
+                var data *HPAIControlEndpoint
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HpaiControlEndpoint = CastIHPAIControlEndpoint(data)
+            case "dibDeviceInfo":
+                var data *DIBDeviceInfo
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DibDeviceInfo = CastIDIBDeviceInfo(data)
+            case "dibSuppSvcFamilies":
+                var data *DIBSuppSvcFamilies
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DibSuppSvcFamilies = CastIDIBSuppSvcFamilies(data)
+            }
+        }
+    }
+}
+
+func (m SearchResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.SearchResponse"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HpaiControlEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiControlEndpoint"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DibDeviceInfo, xml.StartElement{Name: xml.Name{Local: "dibDeviceInfo"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DibSuppSvcFamilies, xml.StartElement{Name: xml.Name{Local: "dibSuppSvcFamilies"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

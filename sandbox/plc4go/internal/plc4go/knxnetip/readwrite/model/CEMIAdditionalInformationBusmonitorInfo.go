@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
@@ -218,3 +220,88 @@ func (m CEMIAdditionalInformationBusmonitorInfo) Serialize(io utils.WriteBuffer)
     }
     return CEMIAdditionalInformationSerialize(io, m.CEMIAdditionalInformation, CastICEMIAdditionalInformation(m), ser)
 }
+
+func (m *CEMIAdditionalInformationBusmonitorInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "frameErrorFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.FrameErrorFlag = data
+            case "bitErrorFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.BitErrorFlag = data
+            case "parityErrorFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ParityErrorFlag = data
+            case "unknownFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.UnknownFlag = data
+            case "lostFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LostFlag = data
+            case "sequenceNumber":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SequenceNumber = data
+            }
+        }
+    }
+}
+
+func (m CEMIAdditionalInformationBusmonitorInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIAdditionalInformationBusmonitorInfo"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.FrameErrorFlag, xml.StartElement{Name: xml.Name{Local: "frameErrorFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.BitErrorFlag, xml.StartElement{Name: xml.Name{Local: "bitErrorFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ParityErrorFlag, xml.StartElement{Name: xml.Name{Local: "parityErrorFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.UnknownFlag, xml.StartElement{Name: xml.Name{Local: "unknownFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.LostFlag, xml.StartElement{Name: xml.Name{Local: "lostFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SequenceNumber, xml.StartElement{Name: xml.Name{Local: "sequenceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+
