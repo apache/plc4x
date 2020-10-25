@@ -606,7 +606,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
         if(transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
-            int stringLength = ((S7StringField) s7Field).getStringLength();
+            int stringLength = (s7Field instanceof S7StringField) ? ((S7StringField) s7Field).getStringLength() : 254;
             numElements = numElements * (stringLength + 2);
         }
         return new S7AddressAny(transportSize, numElements, s7Field.getBlockNumber(),
