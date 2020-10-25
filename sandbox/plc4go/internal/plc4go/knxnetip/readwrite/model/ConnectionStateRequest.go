@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -160,3 +162,52 @@ func (m ConnectionStateRequest) Serialize(io utils.WriteBuffer) error {
     }
     return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }
+
+func (m *ConnectionStateRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "communicationChannelId":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.CommunicationChannelId = data
+            case "hpaiControlEndpoint":
+                var data *HPAIControlEndpoint
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HpaiControlEndpoint = CastIHPAIControlEndpoint(data)
+            }
+        }
+    }
+}
+
+func (m ConnectionStateRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionStateRequest"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.CommunicationChannelId, xml.StartElement{Name: xml.Name{Local: "communicationChannelId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HpaiControlEndpoint, xml.StartElement{Name: xml.Name{Local: "hpaiControlEndpoint"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

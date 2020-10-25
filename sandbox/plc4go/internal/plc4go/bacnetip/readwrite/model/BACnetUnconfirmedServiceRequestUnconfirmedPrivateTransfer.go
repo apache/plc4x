@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "strconv"
@@ -236,3 +239,63 @@ func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) Serialize(io 
     }
     return BACnetUnconfirmedServiceRequestSerialize(io, m.BACnetUnconfirmedServiceRequest, CastIBACnetUnconfirmedServiceRequest(m), ser)
 }
+
+func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "vendorId":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.VendorId = data
+            case "serviceNumber":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ServiceNumber = data
+            case "values":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Values = data
+            }
+        }
+    }
+}
+
+func (m BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.VendorId, xml.StartElement{Name: xml.Name{Local: "vendorId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ServiceNumber, xml.StartElement{Name: xml.Name{Local: "serviceNumber"}}); err != nil {
+        return err
+    }
+    _encodedValues := make([]byte, base64.StdEncoding.EncodedLen(len(m.Values)))
+    base64.StdEncoding.Encode(_encodedValues, utils.Int8ToByte(m.Values))
+    if err := e.EncodeElement(_encodedValues, xml.StartElement{Name: xml.Name{Local: "values"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

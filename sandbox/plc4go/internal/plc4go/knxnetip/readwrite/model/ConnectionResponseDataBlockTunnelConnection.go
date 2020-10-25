@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -117,3 +119,43 @@ func (m ConnectionResponseDataBlockTunnelConnection) Serialize(io utils.WriteBuf
     }
     return ConnectionResponseDataBlockSerialize(io, m.ConnectionResponseDataBlock, CastIConnectionResponseDataBlock(m), ser)
 }
+
+func (m *ConnectionResponseDataBlockTunnelConnection) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "knxAddress":
+                var data *KNXAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxAddress = CastIKNXAddress(data)
+            }
+        }
+    }
+}
+
+func (m ConnectionResponseDataBlockTunnelConnection) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.ConnectionResponseDataBlockTunnelConnection"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.KnxAddress, xml.StartElement{Name: xml.Name{Local: "knxAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

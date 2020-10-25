@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -154,3 +156,52 @@ func (m APDUReject) Serialize(io utils.WriteBuffer) error {
     }
     return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }
+
+func (m *APDUReject) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "originalInvokeId":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.OriginalInvokeId = data
+            case "rejectReason":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.RejectReason = data
+            }
+        }
+    }
+}
+
+func (m APDUReject) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUReject"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.OriginalInvokeId, xml.StartElement{Name: xml.Name{Local: "originalInvokeId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.RejectReason, xml.StartElement{Name: xml.Name{Local: "rejectReason"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

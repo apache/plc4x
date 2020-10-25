@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -417,3 +420,200 @@ func (m CEMIDataFrame) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *CEMIDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "standardFrame":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.StandardFrame = data
+            case "polling":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Polling = data
+            case "notRepeated":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.NotRepeated = data
+            case "notAckFrame":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.NotAckFrame = data
+            case "priority":
+                var data *CEMIPriority
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Priority = data
+            case "acknowledgeRequested":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.AcknowledgeRequested = data
+            case "errorFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorFlag = data
+            case "groupDestinationAddress":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.GroupDestinationAddress = data
+            case "hopCount":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HopCount = data
+            case "extendedFrameFormat":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExtendedFrameFormat = data
+            case "sourceAddress":
+                var data *KNXAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SourceAddress = CastIKNXAddress(data)
+            case "destinationAddress":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DestinationAddress = data
+            case "dataLength":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DataLength = data
+            case "tcpi":
+                var data *TPCI
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Tcpi = data
+            case "counter":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Counter = data
+            case "apci":
+                var data *APCI
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Apci = data
+            case "dataFirstByte":
+                var data int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DataFirstByte = data
+            case "data":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Data = data
+            }
+        }
+    }
+}
+
+func (m CEMIDataFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIDataFrame"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.StandardFrame, xml.StartElement{Name: xml.Name{Local: "standardFrame"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Polling, xml.StartElement{Name: xml.Name{Local: "polling"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.NotRepeated, xml.StartElement{Name: xml.Name{Local: "notRepeated"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.NotAckFrame, xml.StartElement{Name: xml.Name{Local: "notAckFrame"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Priority, xml.StartElement{Name: xml.Name{Local: "priority"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.AcknowledgeRequested, xml.StartElement{Name: xml.Name{Local: "acknowledgeRequested"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ErrorFlag, xml.StartElement{Name: xml.Name{Local: "errorFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.GroupDestinationAddress, xml.StartElement{Name: xml.Name{Local: "groupDestinationAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HopCount, xml.StartElement{Name: xml.Name{Local: "hopCount"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtendedFrameFormat, xml.StartElement{Name: xml.Name{Local: "extendedFrameFormat"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
+        return err
+    }
+    _encodedDestinationAddress := make([]byte, base64.StdEncoding.EncodedLen(len(m.DestinationAddress)))
+    base64.StdEncoding.Encode(_encodedDestinationAddress, utils.Int8ToByte(m.DestinationAddress))
+    if err := e.EncodeElement(_encodedDestinationAddress, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DataLength, xml.StartElement{Name: xml.Name{Local: "dataLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Tcpi, xml.StartElement{Name: xml.Name{Local: "tcpi"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Counter, xml.StartElement{Name: xml.Name{Local: "counter"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Apci, xml.StartElement{Name: xml.Name{Local: "apci"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DataFirstByte, xml.StartElement{Name: xml.Name{Local: "dataFirstByte"}}); err != nil {
+        return err
+    }
+    _encodedData := make([]byte, base64.StdEncoding.EncodedLen(len(m.Data)))
+    base64.StdEncoding.Encode(_encodedData, utils.Int8ToByte(m.Data))
+    if err := e.EncodeElement(_encodedData, xml.StartElement{Name: xml.Name{Local: "data"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

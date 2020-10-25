@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -146,3 +149,45 @@ func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) Serialize(io utils.W
     }
     return ModbusPDUSerialize(io, m.ModbusPDU, CastIModbusPDU(m), ser)
 }
+
+func (m *ModbusPDUReadWriteMultipleHoldingRegistersResponse) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "value":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Value = data
+            }
+        }
+    }
+}
+
+func (m ModbusPDUReadWriteMultipleHoldingRegistersResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse"},
+        }}); err != nil {
+        return err
+    }
+    _encodedValue := make([]byte, base64.StdEncoding.EncodedLen(len(m.Value)))
+    base64.StdEncoding.Encode(_encodedValue, utils.Int8ToByte(m.Value))
+    if err := e.EncodeElement(_encodedValue, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

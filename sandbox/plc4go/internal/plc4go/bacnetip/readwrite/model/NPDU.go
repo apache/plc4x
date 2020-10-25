@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -490,3 +492,235 @@ func (m NPDU) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *NPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "protocolVersionNumber":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ProtocolVersionNumber = data
+            case "messageTypeFieldPresent":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MessageTypeFieldPresent = data
+            case "destinationSpecified":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DestinationSpecified = data
+            case "sourceSpecified":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SourceSpecified = data
+            case "expectingReply":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExpectingReply = data
+            case "networkPriority":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.NetworkPriority = data
+            case "destinationNetworkAddress":
+                var data *uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DestinationNetworkAddress = data
+            case "destinationLength":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DestinationLength = data
+            case "destinationAddress":
+                var data []uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DestinationAddress = data
+            case "sourceNetworkAddress":
+                var data *uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SourceNetworkAddress = data
+            case "sourceLength":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SourceLength = data
+            case "sourceAddress":
+                var data []uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SourceAddress = data
+            case "hopCount":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HopCount = data
+            case "nlm":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMWhoIsRouterToNetwork":
+                        var dt *NLMWhoIsRouterToNetwork
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Nlm = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.NLMIAmRouterToNetwork":
+                        var dt *NLMIAmRouterToNetwork
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Nlm = dt
+                    }
+            case "apdu":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest":
+                        var dt *APDUConfirmedRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUUnconfirmedRequest":
+                        var dt *APDUUnconfirmedRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSimpleAck":
+                        var dt *APDUSimpleAck
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUComplexAck":
+                        var dt *APDUComplexAck
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUSegmentAck":
+                        var dt *APDUSegmentAck
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUError":
+                        var dt *APDUError
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUReject":
+                        var dt *APDUReject
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.APDUAbort":
+                        var dt *APDUAbort
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Apdu = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m NPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.NPDU"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ProtocolVersionNumber, xml.StartElement{Name: xml.Name{Local: "protocolVersionNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MessageTypeFieldPresent, xml.StartElement{Name: xml.Name{Local: "messageTypeFieldPresent"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DestinationSpecified, xml.StartElement{Name: xml.Name{Local: "destinationSpecified"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SourceSpecified, xml.StartElement{Name: xml.Name{Local: "sourceSpecified"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExpectingReply, xml.StartElement{Name: xml.Name{Local: "expectingReply"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.NetworkPriority, xml.StartElement{Name: xml.Name{Local: "networkPriority"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DestinationNetworkAddress, xml.StartElement{Name: xml.Name{Local: "destinationNetworkAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DestinationLength, xml.StartElement{Name: xml.Name{Local: "destinationLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DestinationAddress, xml.StartElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "destinationAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SourceNetworkAddress, xml.StartElement{Name: xml.Name{Local: "sourceNetworkAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SourceLength, xml.StartElement{Name: xml.Name{Local: "sourceLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SourceAddress, xml.StartElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "sourceAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HopCount, xml.StartElement{Name: xml.Name{Local: "hopCount"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Nlm, xml.StartElement{Name: xml.Name{Local: "nlm"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Apdu, xml.StartElement{Name: xml.Name{Local: "apdu"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

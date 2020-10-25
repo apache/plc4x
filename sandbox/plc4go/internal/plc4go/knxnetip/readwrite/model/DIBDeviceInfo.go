@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -300,3 +303,119 @@ func (m DIBDeviceInfo) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *DIBDeviceInfo) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "descriptionType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DescriptionType = data
+            case "knxMedium":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxMedium = data
+            case "deviceStatus":
+                var data *DeviceStatus
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DeviceStatus = CastIDeviceStatus(data)
+            case "knxAddress":
+                var data *KNXAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxAddress = CastIKNXAddress(data)
+            case "projectInstallationIdentifier":
+                var data *ProjectInstallationIdentifier
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ProjectInstallationIdentifier = CastIProjectInstallationIdentifier(data)
+            case "knxNetIpDeviceSerialNumber":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxNetIpDeviceSerialNumber = data
+            case "knxNetIpDeviceMulticastAddress":
+                var data *IPAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxNetIpDeviceMulticastAddress = CastIIPAddress(data)
+            case "knxNetIpDeviceMacAddress":
+                var data *MACAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.KnxNetIpDeviceMacAddress = CastIMACAddress(data)
+            case "deviceFriendlyName":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DeviceFriendlyName = data
+            }
+        }
+    }
+}
+
+func (m DIBDeviceInfo) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DIBDeviceInfo"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DescriptionType, xml.StartElement{Name: xml.Name{Local: "descriptionType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.KnxMedium, xml.StartElement{Name: xml.Name{Local: "knxMedium"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DeviceStatus, xml.StartElement{Name: xml.Name{Local: "deviceStatus"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.KnxAddress, xml.StartElement{Name: xml.Name{Local: "knxAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ProjectInstallationIdentifier, xml.StartElement{Name: xml.Name{Local: "projectInstallationIdentifier"}}); err != nil {
+        return err
+    }
+    _encodedKnxNetIpDeviceSerialNumber := make([]byte, base64.StdEncoding.EncodedLen(len(m.KnxNetIpDeviceSerialNumber)))
+    base64.StdEncoding.Encode(_encodedKnxNetIpDeviceSerialNumber, utils.Int8ToByte(m.KnxNetIpDeviceSerialNumber))
+    if err := e.EncodeElement(_encodedKnxNetIpDeviceSerialNumber, xml.StartElement{Name: xml.Name{Local: "knxNetIpDeviceSerialNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.KnxNetIpDeviceMulticastAddress, xml.StartElement{Name: xml.Name{Local: "knxNetIpDeviceMulticastAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.KnxNetIpDeviceMacAddress, xml.StartElement{Name: xml.Name{Local: "knxNetIpDeviceMacAddress"}}); err != nil {
+        return err
+    }
+    _encodedDeviceFriendlyName := make([]byte, base64.StdEncoding.EncodedLen(len(m.DeviceFriendlyName)))
+    base64.StdEncoding.Encode(_encodedDeviceFriendlyName, utils.Int8ToByte(m.DeviceFriendlyName))
+    if err := e.EncodeElement(_encodedDeviceFriendlyName, xml.StartElement{Name: xml.Name{Local: "deviceFriendlyName"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -237,3 +239,70 @@ func BACnetTagSerialize(io utils.WriteBuffer, m BACnetTag, i IBACnetTag, childSe
 
     return nil
 }
+
+func (m *BACnetTag) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "typeOrTagNumber":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TypeOrTagNumber = data
+            case "lengthValueType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LengthValueType = data
+            case "extTagNumber":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExtTagNumber = data
+            case "extLength":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ExtLength = data
+            }
+        }
+    }
+}
+
+func (m BACnetTag) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTag"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TypeOrTagNumber, xml.StartElement{Name: xml.Name{Local: "typeOrTagNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.LengthValueType, xml.StartElement{Name: xml.Name{Local: "lengthValueType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtTagNumber, xml.StartElement{Name: xml.Name{Local: "extTagNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ExtLength, xml.StartElement{Name: xml.Name{Local: "extLength"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

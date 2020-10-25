@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -179,3 +182,72 @@ func (m ModbusPDUWriteFileRecordRequestItem) Serialize(io utils.WriteBuffer) err
 
     return nil
 }
+
+func (m *ModbusPDUWriteFileRecordRequestItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "referenceType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ReferenceType = data
+            case "fileNumber":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.FileNumber = data
+            case "recordNumber":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.RecordNumber = data
+            case "recordData":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.RecordData = data
+            }
+        }
+    }
+}
+
+func (m ModbusPDUWriteFileRecordRequestItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.modbus.readwrite.ModbusPDUWriteFileRecordRequestItem"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ReferenceType, xml.StartElement{Name: xml.Name{Local: "referenceType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.FileNumber, xml.StartElement{Name: xml.Name{Local: "fileNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.RecordNumber, xml.StartElement{Name: xml.Name{Local: "recordNumber"}}); err != nil {
+        return err
+    }
+    _encodedRecordData := make([]byte, base64.StdEncoding.EncodedLen(len(m.RecordData)))
+    base64.StdEncoding.Encode(_encodedRecordData, utils.Int8ToByte(m.RecordData))
+    if err := e.EncodeElement(_encodedRecordData, xml.StartElement{Name: xml.Name{Local: "recordData"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

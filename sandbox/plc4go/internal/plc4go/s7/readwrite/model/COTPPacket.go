@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -222,3 +224,108 @@ func COTPPacketSerialize(io utils.WriteBuffer, m COTPPacket, i ICOTPPacket, chil
 
     return nil
 }
+
+func (m *COTPPacket) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "parameters":
+                var _values []ICOTPParameter
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterTpduSize":
+                        var dt *COTPParameterTpduSize
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterCallingTsap":
+                        var dt *COTPParameterCallingTsap
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterCalledTsap":
+                        var dt *COTPParameterCalledTsap
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterChecksum":
+                        var dt *COTPParameterChecksum
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.s7.readwrite.COTPParameterDisconnectAdditionalInformation":
+                        var dt *COTPParameterDisconnectAdditionalInformation
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    }
+                    m.Parameters = _values
+            case "payload":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageRequest":
+                        var dt *S7MessageRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageResponse":
+                        var dt *S7MessageResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageResponseData":
+                        var dt *S7MessageResponseData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    case "org.apache.plc4x.java.s7.readwrite.S7MessageUserData":
+                        var dt *S7MessageUserData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        *m.Payload = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m COTPPacket) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.COTPPacket"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Parameters, xml.StartElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "parameters"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Payload, xml.StartElement{Name: xml.Name{Local: "payload"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

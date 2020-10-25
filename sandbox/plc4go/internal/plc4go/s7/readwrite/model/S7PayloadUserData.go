@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -134,3 +136,60 @@ func (m S7PayloadUserData) Serialize(io utils.WriteBuffer) error {
     }
     return S7PayloadSerialize(io, m.S7Payload, CastIS7Payload(m), ser)
 }
+
+func (m *S7PayloadUserData) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "items":
+                var _values []IS7PayloadUserDataItem
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlRequest":
+                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlRequest
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    case "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItemCpuFunctionReadSzlResponse":
+                        var dt *S7PayloadUserDataItemCpuFunctionReadSzlResponse
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        _values = append(_values, dt)
+                    }
+                    m.Items = _values
+            }
+        }
+    }
+}
+
+func (m S7PayloadUserData) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadUserData"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Items, xml.StartElement{Name: xml.Name{Local: "items"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "items"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

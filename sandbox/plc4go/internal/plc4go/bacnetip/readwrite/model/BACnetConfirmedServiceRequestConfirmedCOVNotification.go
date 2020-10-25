@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -378,3 +381,114 @@ func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) Serialize(io util
     }
     return BACnetConfirmedServiceRequestSerialize(io, m.BACnetConfirmedServiceRequest, CastIBACnetConfirmedServiceRequest(m), ser)
 }
+
+func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "subscriberProcessIdentifier":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SubscriberProcessIdentifier = data
+            case "monitoredObjectType":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MonitoredObjectType = data
+            case "monitoredObjectInstanceNumber":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MonitoredObjectInstanceNumber = data
+            case "issueConfirmedNotificationsType":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.IssueConfirmedNotificationsType = data
+            case "issueConfirmedNotificationsInstanceNumber":
+                var data uint32
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.IssueConfirmedNotificationsInstanceNumber = data
+            case "lifetimeLength":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LifetimeLength = data
+            case "lifetimeSeconds":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LifetimeSeconds = data
+            case "notifications":
+                var data []IBACnetTagWithContent
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Notifications = data
+            }
+        }
+    }
+}
+
+func (m BACnetConfirmedServiceRequestConfirmedCOVNotification) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotification"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SubscriberProcessIdentifier, xml.StartElement{Name: xml.Name{Local: "subscriberProcessIdentifier"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MonitoredObjectType, xml.StartElement{Name: xml.Name{Local: "monitoredObjectType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MonitoredObjectInstanceNumber, xml.StartElement{Name: xml.Name{Local: "monitoredObjectInstanceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IssueConfirmedNotificationsType, xml.StartElement{Name: xml.Name{Local: "issueConfirmedNotificationsType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IssueConfirmedNotificationsInstanceNumber, xml.StartElement{Name: xml.Name{Local: "issueConfirmedNotificationsInstanceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.LifetimeLength, xml.StartElement{Name: xml.Name{Local: "lifetimeLength"}}); err != nil {
+        return err
+    }
+    _encodedLifetimeSeconds := make([]byte, base64.StdEncoding.EncodedLen(len(m.LifetimeSeconds)))
+    base64.StdEncoding.Encode(_encodedLifetimeSeconds, utils.Int8ToByte(m.LifetimeSeconds))
+    if err := e.EncodeElement(_encodedLifetimeSeconds, xml.StartElement{Name: xml.Name{Local: "lifetimeSeconds"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "notifications"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Notifications, xml.StartElement{Name: xml.Name{Local: "notifications"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "notifications"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

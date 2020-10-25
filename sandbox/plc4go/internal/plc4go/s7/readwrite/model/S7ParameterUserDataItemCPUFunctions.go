@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -276,3 +278,106 @@ func (m S7ParameterUserDataItemCPUFunctions) Serialize(io utils.WriteBuffer) err
     }
     return S7ParameterUserDataItemSerialize(io, m.S7ParameterUserDataItem, CastIS7ParameterUserDataItem(m), ser)
 }
+
+func (m *S7ParameterUserDataItemCPUFunctions) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "method":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Method = data
+            case "cpuFunctionType":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.CpuFunctionType = data
+            case "cpuFunctionGroup":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.CpuFunctionGroup = data
+            case "cpuSubfunction":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.CpuSubfunction = data
+            case "sequenceNumber":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SequenceNumber = data
+            case "dataUnitReferenceNumber":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DataUnitReferenceNumber = data
+            case "lastDataUnit":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.LastDataUnit = data
+            case "errorCode":
+                var data *uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorCode = data
+            }
+        }
+    }
+}
+
+func (m S7ParameterUserDataItemCPUFunctions) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7ParameterUserDataItemCPUFunctions"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Method, xml.StartElement{Name: xml.Name{Local: "method"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.CpuFunctionType, xml.StartElement{Name: xml.Name{Local: "cpuFunctionType"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.CpuFunctionGroup, xml.StartElement{Name: xml.Name{Local: "cpuFunctionGroup"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.CpuSubfunction, xml.StartElement{Name: xml.Name{Local: "cpuSubfunction"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SequenceNumber, xml.StartElement{Name: xml.Name{Local: "sequenceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DataUnitReferenceNumber, xml.StartElement{Name: xml.Name{Local: "dataUnitReferenceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.LastDataUnit, xml.StartElement{Name: xml.Name{Local: "lastDataUnit"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ErrorCode, xml.StartElement{Name: xml.Name{Local: "errorCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

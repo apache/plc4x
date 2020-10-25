@@ -19,7 +19,10 @@
 package model
 
 import (
+    "encoding/base64"
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -179,3 +182,81 @@ func (m SzlDataTreeItem) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *SzlDataTreeItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "itemIndex":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ItemIndex = data
+            case "mlfb":
+                var data []int8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Mlfb = data
+            case "moduleTypeId":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ModuleTypeId = data
+            case "ausbg":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Ausbg = data
+            case "ausbe":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Ausbe = data
+            }
+        }
+    }
+}
+
+func (m SzlDataTreeItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.SzlDataTreeItem"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ItemIndex, xml.StartElement{Name: xml.Name{Local: "itemIndex"}}); err != nil {
+        return err
+    }
+    _encodedMlfb := make([]byte, base64.StdEncoding.EncodedLen(len(m.Mlfb)))
+    base64.StdEncoding.Encode(_encodedMlfb, utils.Int8ToByte(m.Mlfb))
+    if err := e.EncodeElement(_encodedMlfb, xml.StartElement{Name: xml.Name{Local: "mlfb"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ModuleTypeId, xml.StartElement{Name: xml.Name{Local: "moduleTypeId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Ausbg, xml.StartElement{Name: xml.Name{Local: "ausbg"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Ausbe, xml.StartElement{Name: xml.Name{Local: "ausbe"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

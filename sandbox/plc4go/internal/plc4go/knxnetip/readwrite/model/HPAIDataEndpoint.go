@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -156,3 +158,61 @@ func (m HPAIDataEndpoint) Serialize(io utils.WriteBuffer) error {
 
     return nil
 }
+
+func (m *HPAIDataEndpoint) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "hostProtocolCode":
+                var data *HostProtocolCode
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.HostProtocolCode = data
+            case "ipAddress":
+                var data *IPAddress
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.IpAddress = CastIIPAddress(data)
+            case "ipPort":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.IpPort = data
+            }
+        }
+    }
+}
+
+func (m HPAIDataEndpoint) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.HPAIDataEndpoint"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.HostProtocolCode, xml.StartElement{Name: xml.Name{Local: "hostProtocolCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IpAddress, xml.StartElement{Name: xml.Name{Local: "ipAddress"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.IpPort, xml.StartElement{Name: xml.Name{Local: "ipPort"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

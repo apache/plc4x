@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     log "github.com/sirupsen/logrus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
@@ -299,3 +301,298 @@ func (m APDUConfirmedRequest) Serialize(io utils.WriteBuffer) error {
     }
     return APDUSerialize(io, m.APDU, CastIAPDU(m), ser)
 }
+
+func (m *APDUConfirmedRequest) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "segmentedMessage":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SegmentedMessage = data
+            case "moreFollows":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MoreFollows = data
+            case "segmentedResponseAccepted":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SegmentedResponseAccepted = data
+            case "maxSegmentsAccepted":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MaxSegmentsAccepted = data
+            case "maxApduLengthAccepted":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.MaxApduLengthAccepted = data
+            case "invokeId":
+                var data uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.InvokeId = data
+            case "sequenceNumber":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SequenceNumber = data
+            case "proposedWindowSize":
+                var data *uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ProposedWindowSize = data
+            case "serviceRequest":
+                switch tok.Attr[0].Value {
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAcknowledgeAlarm":
+                        var dt *BACnetConfirmedServiceRequestAcknowledgeAlarm
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotification":
+                        var dt *BACnetConfirmedServiceRequestConfirmedCOVNotification
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedEventNotification":
+                        var dt *BACnetConfirmedServiceRequestConfirmedEventNotification
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEnrollmentSummary":
+                        var dt *BACnetConfirmedServiceRequestGetEnrollmentSummary
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOV":
+                        var dt *BACnetConfirmedServiceRequestSubscribeCOV
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicReadFile":
+                        var dt *BACnetConfirmedServiceRequestAtomicReadFile
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAtomicWriteFile":
+                        var dt *BACnetConfirmedServiceRequestAtomicWriteFile
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestAddListElement":
+                        var dt *BACnetConfirmedServiceRequestAddListElement
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemoveListElement":
+                        var dt *BACnetConfirmedServiceRequestRemoveListElement
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestCreateObject":
+                        var dt *BACnetConfirmedServiceRequestCreateObject
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeleteObject":
+                        var dt *BACnetConfirmedServiceRequestDeleteObject
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadProperty":
+                        var dt *BACnetConfirmedServiceRequestReadProperty
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadPropertyMultiple":
+                        var dt *BACnetConfirmedServiceRequestReadPropertyMultiple
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWriteProperty":
+                        var dt *BACnetConfirmedServiceRequestWriteProperty
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestWritePropertyMultiple":
+                        var dt *BACnetConfirmedServiceRequestWritePropertyMultiple
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestDeviceCommunicationControl":
+                        var dt *BACnetConfirmedServiceRequestDeviceCommunicationControl
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedPrivateTransfer":
+                        var dt *BACnetConfirmedServiceRequestConfirmedPrivateTransfer
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedTextMessage":
+                        var dt *BACnetConfirmedServiceRequestConfirmedTextMessage
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReinitializeDevice":
+                        var dt *BACnetConfirmedServiceRequestReinitializeDevice
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTOpen":
+                        var dt *BACnetConfirmedServiceRequestVTOpen
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTClose":
+                        var dt *BACnetConfirmedServiceRequestVTClose
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestVTData":
+                        var dt *BACnetConfirmedServiceRequestVTData
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedAuthenticate":
+                        var dt *BACnetConfirmedServiceRequestRemovedAuthenticate
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedRequestKey":
+                        var dt *BACnetConfirmedServiceRequestRemovedRequestKey
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestRemovedReadPropertyConditional":
+                        var dt *BACnetConfirmedServiceRequestRemovedReadPropertyConditional
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestReadRange":
+                        var dt *BACnetConfirmedServiceRequestReadRange
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestLifeSafetyOperation":
+                        var dt *BACnetConfirmedServiceRequestLifeSafetyOperation
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVProperty":
+                        var dt *BACnetConfirmedServiceRequestSubscribeCOVProperty
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestGetEventInformation":
+                        var dt *BACnetConfirmedServiceRequestGetEventInformation
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple":
+                        var dt *BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    case "org.apache.plc4x.java.bacnetip.readwrite.BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple":
+                        var dt *BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
+                        if err := d.DecodeElement(&dt, &tok); err != nil {
+                            return err
+                        }
+                        m.ServiceRequest = dt
+                    }
+            }
+        }
+    }
+}
+
+func (m APDUConfirmedRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.APDUConfirmedRequest"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SegmentedMessage, xml.StartElement{Name: xml.Name{Local: "segmentedMessage"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MoreFollows, xml.StartElement{Name: xml.Name{Local: "moreFollows"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SegmentedResponseAccepted, xml.StartElement{Name: xml.Name{Local: "segmentedResponseAccepted"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MaxSegmentsAccepted, xml.StartElement{Name: xml.Name{Local: "maxSegmentsAccepted"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.MaxApduLengthAccepted, xml.StartElement{Name: xml.Name{Local: "maxApduLengthAccepted"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.InvokeId, xml.StartElement{Name: xml.Name{Local: "invokeId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SequenceNumber, xml.StartElement{Name: xml.Name{Local: "sequenceNumber"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ProposedWindowSize, xml.StartElement{Name: xml.Name{Local: "proposedWindowSize"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ServiceRequest, xml.StartElement{Name: xml.Name{Local: "serviceRequest"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -115,3 +117,43 @@ func (m BACnetTagApplicationDouble) Serialize(io utils.WriteBuffer) error {
     }
     return BACnetTagSerialize(io, m.BACnetTag, CastIBACnetTag(m), ser)
 }
+
+func (m *BACnetTagApplicationDouble) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "value":
+                var data float64
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Value = data
+            }
+        }
+    }
+}
+
+func (m BACnetTagApplicationDouble) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BACnetTagApplicationDouble"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Value, xml.StartElement{Name: xml.Name{Local: "value"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

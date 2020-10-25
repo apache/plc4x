@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -117,3 +119,43 @@ func (m DeviceConfigurationAck) Serialize(io utils.WriteBuffer) error {
     }
     return KNXNetIPMessageSerialize(io, m.KNXNetIPMessage, CastIKNXNetIPMessage(m), ser)
 }
+
+func (m *DeviceConfigurationAck) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "deviceConfigurationAckDataBlock":
+                var data *DeviceConfigurationAckDataBlock
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.DeviceConfigurationAckDataBlock = CastIDeviceConfigurationAckDataBlock(data)
+            }
+        }
+    }
+}
+
+func (m DeviceConfigurationAck) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.DeviceConfigurationAck"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.DeviceConfigurationAckDataBlock, xml.StartElement{Name: xml.Name{Local: "deviceConfigurationAckDataBlock"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

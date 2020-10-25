@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 )
@@ -241,3 +243,70 @@ func CEMIFrameSerialize(io utils.WriteBuffer, m CEMIFrame, i ICEMIFrame, childSe
 
     return nil
 }
+
+func (m *CEMIFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "repeated":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Repeated = data
+            case "priority":
+                var data *CEMIPriority
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Priority = data
+            case "acknowledgeRequested":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.AcknowledgeRequested = data
+            case "errorFlag":
+                var data bool
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ErrorFlag = data
+            }
+        }
+    }
+}
+
+func (m CEMIFrame) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.knxnetip.readwrite.CEMIFrame"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Repeated, xml.StartElement{Name: xml.Name{Local: "repeated"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Priority, xml.StartElement{Name: xml.Name{Local: "priority"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.AcknowledgeRequested, xml.StartElement{Name: xml.Name{Local: "acknowledgeRequested"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ErrorFlag, xml.StartElement{Name: xml.Name{Local: "errorFlag"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

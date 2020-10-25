@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -199,3 +201,70 @@ func S7PayloadUserDataItemSerialize(io utils.WriteBuffer, m S7PayloadUserDataIte
 
     return nil
 }
+
+func (m *S7PayloadUserDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "returnCode":
+                var data *DataTransportErrorCode
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.ReturnCode = data
+            case "transportSize":
+                var data *DataTransportSize
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.TransportSize = data
+            case "szlId":
+                var data *SzlId
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SzlId = CastISzlId(data)
+            case "szlIndex":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.SzlIndex = data
+            }
+        }
+    }
+}
+
+func (m S7PayloadUserDataItem) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.s7.readwrite.S7PayloadUserDataItem"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.ReturnCode, xml.StartElement{Name: xml.Name{Local: "returnCode"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.TransportSize, xml.StartElement{Name: xml.Name{Local: "transportSize"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SzlId, xml.StartElement{Name: xml.Name{Local: "szlId"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.SzlIndex, xml.StartElement{Name: xml.Name{Local: "szlIndex"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+

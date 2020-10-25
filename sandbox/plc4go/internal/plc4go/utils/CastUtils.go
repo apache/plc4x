@@ -26,3 +26,10 @@ func Int8ToUint8(input []int8) []uint8 {
     return output
 }
 
+func Int8ToByte(input []int8) []byte {
+    output := make([]byte, len(input))
+    for i, _val := range input {
+        output[i] = byte(_val)
+    }
+    return output
+}

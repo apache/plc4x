@@ -19,7 +19,9 @@
 package model
 
 import (
+    "encoding/xml"
     "errors"
+    "io"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "reflect"
@@ -162,3 +164,67 @@ func (m BVLCForwardedNPDU) Serialize(io utils.WriteBuffer) error {
     }
     return BVLCSerialize(io, m.BVLC, CastIBVLC(m), ser)
 }
+
+func (m *BVLCForwardedNPDU) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+    for {
+        token, err := d.Token()
+        if err != nil {
+            if err == io.EOF {
+                return nil
+            }
+            return err
+        }
+        switch token.(type) {
+        case xml.StartElement:
+            tok := token.(xml.StartElement)
+            switch tok.Name.Local {
+            case "ip":
+                var data []uint8
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Ip = data
+            case "port":
+                var data uint16
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Port = data
+            case "npdu":
+                var data *NPDU
+                if err := d.DecodeElement(&data, &tok); err != nil {
+                    return err
+                }
+                m.Npdu = CastINPDU(data)
+            }
+        }
+    }
+}
+
+func (m BVLCForwardedNPDU) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+    if err := e.EncodeToken(xml.StartElement{Name: start.Name, Attr: []xml.Attr{
+            {Name: xml.Name{Local: "className"}, Value: "org.apache.plc4x.java.bacnetip.readwrite.BVLCForwardedNPDU"},
+        }}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Ip, xml.StartElement{Name: xml.Name{Local: "ip"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "ip"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Port, xml.StartElement{Name: xml.Name{Local: "port"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeElement(m.Npdu, xml.StartElement{Name: xml.Name{Local: "npdu"}}); err != nil {
+        return err
+    }
+    if err := e.EncodeToken(xml.EndElement{Name: start.Name}); err != nil {
+        return err
+    }
+    return nil
+}
+
