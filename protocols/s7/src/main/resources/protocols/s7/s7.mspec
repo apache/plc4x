@@ -333,11 +333,11 @@
         // -----------------------------------------
         // Characters & Strings
         // -----------------------------------------
-        ['41' STRING
-            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, '1', _type.encoding)' '1']
+        ['41' CHAR
+            [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '1']
         ]
-        ['42' STRING
-            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, '1', _type.encoding)' '2']
+        ['42' CHAR
+            [manual string 'UTF-16' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7Char", io, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7Char", io, _value, _type.encoding)' '2']
         ]
         ['43' STRING
             [manual string 'UTF-8' 'value' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.parseS7String", io, stringLength, _type.encoding)' 'STATIC_CALL("org.apache.plc4x.java.s7.utils.StaticHelper.serializeS7String", io, _value, stringLength, _type.encoding)' '_value.length + 2']
@@ -433,7 +433,7 @@
     ['0x03' CHAR             ['B'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '41'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
     ['0x13' WCHAR            ['X'              , '2'                 , 'null'                  , 'null'                               , '42'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
     ['0x03' STRING           ['X'              , '1'                 , 'null'                  , 'DataTransportSize.BYTE_WORD_DWORD'  , '43'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]
-    ['0x00' WSTRING          ['X'              , '1'                 , 'null'                  , 'null'                               , '44'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
+    ['0x00' WSTRING          ['X'              , '2'                 , 'null'                  , 'null'                               , '44'                   , 'false'               , 'false'               , 'true'                 , 'true'                 , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to reqite queries for these types to reading bytes or we'll get "Data type not supported" errors)
     ['0x0B' TIME             ['X'              , '4'                 , 'null'                  , 'null'                               , '51'                   , 'true'                , 'true'                , 'true'                 , 'true'                 , 'true'              ]]

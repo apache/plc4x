@@ -106,6 +106,8 @@ public class StaticHelper {
             int minute = io.readByte(8);
             int second = io.readByte(8);
             int nanosecond = io.readUnsignedInt(24);
+            // Skip day-of-week
+            io.readByte(8);
 
             return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
         } catch (Exception e) {
@@ -115,6 +117,11 @@ public class StaticHelper {
 
     public static void serializeTiaDateTime(WriteBuffer io, PlcValue value) {
         throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
+    }
+
+    public static String parseS7Char(ReadBuffer io, Object encoding) {
+        // Read the full size of the string.
+        return io.readString(8, (String) encoding);
     }
 
     public static String parseS7String(ReadBuffer io, int stringLength, Object encoding) {
@@ -130,6 +137,11 @@ public class StaticHelper {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static void serializeS7Char(WriteBuffer io, PlcValue value, Object encoding) {
+        // TODO: Need to implement the serialization or we can't write strings
+        throw new NotImplementedException("Serializing STRING not implemented");
     }
 
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, Object encoding) {
