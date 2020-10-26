@@ -191,6 +191,16 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* io,
                 *data_item = plc4c_data_create_double_data(value);
 
         } else 
+        if(dataProtocolId == 41) { /* CHAR */
+
+                    // Manual Field (value)
+                    char* value = (char*) (plc4c_s7_read_write_parse_s7_char(io, "UTF-8"));
+        } else 
+        if(dataProtocolId == 42) { /* CHAR */
+
+                    // Manual Field (value)
+                    char* value = (char*) (plc4c_s7_read_write_parse_s7_char(io, "UTF-16"));
+        } else 
         if(dataProtocolId == 43) { /* STRING */
 
                     // Manual Field (value)
