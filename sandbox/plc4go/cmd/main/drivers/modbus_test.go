@@ -26,7 +26,6 @@ import (
     "os"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/testutils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/tcp"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
@@ -35,9 +34,6 @@ import (
 )
 
 func TestModbus(t *testing.T) {
-
-	testutils.RunParserSerializerTestsuite("")
-
 	test(t, "000000000006ff0408d20002", false)
 	test(t, "7cfe000000c9ff04c600000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000004000000000000000000000000000001db000001d600004a380000000000000000000000000000000000000000000000000000000000006461696d006e0000000000000000000000000000303100300000000000000000000000000000000000000000000000000000000000000000000000000000", true)
 	test(t, "000a0000001101140e060003270e000206000400000008", false)
@@ -155,7 +151,7 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:0:REAL[2]")
+	rrb.AddItem("field", "holding-register:0:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -175,5 +171,5 @@ func TestPlc4goDriver(t *testing.T) {
 	// Do something with the response
     value := rrr.Response.GetValue("field")
 
-	fmt.Printf("\n\nResult: %d\n", value.GetInt32())
+	fmt.Printf("\n\nResult: %f\n", value.GetFloat32())
 }
