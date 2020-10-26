@@ -19,18 +19,185 @@
 package testutils
 
 import (
-	"fmt"
-	"log"
+    "encoding/hex"
+    "encoding/xml"
+    "errors"
+    "fmt"
+    "github.com/ajankovic/xdiff"
+    "github.com/ajankovic/xdiff/parser"
+    "github.com/subchen/go-xmldom"
 	"os"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+    "strconv"
+    "strings"
+    "testing"
 )
 
-type ParserSerializerTestsuite struct {
+func RunParserSerializerTestsuite(t *testing.T, testPath string) {
+    // Get the current working directory
+    path, err := os.Getwd()
+    if err != nil {
+        t.Error(err)
+    }
+
+    // Check if the test-file is available
+    info, err := os.Stat(path + "/../../../../" + testPath)
+    if os.IsNotExist(err) {
+        t.Error("Test-File doesn't exist")
+    }
+    if info.IsDir() {
+        t.Error("Test-File refers to a directory")
+    }
+
+    // Open a reader for this file
+    dat, err := os.Open(path + "/../../../../" + testPath)
+    if err != nil {
+        t.Error("Error opening file")
+    }
+
+    // Read the xml
+    node := xmldom.Must(xmldom.Parse(dat)).Root
+
+    if node.Name != "testsuite" {
+        t.Error("Invalid document structure")
+    }
+    var testsuiteName string
+    for _, childPtr := range node.Children {
+        curFailed := false
+        child := *childPtr
+        if child.Name == "name" {
+            testsuiteName = child.Text
+        } else if child.Name != "testcase" {
+            t.Error("Invalid document structure")
+            curFailed = true
+        } else {
+            t.Logf("running testsuite: %s test: %s", testsuiteName, (*(child.FindOneByName("name"))).Text)
+            rawInputText := (*(child.FindOneByName("raw"))).Text
+            rootType := (*(child.FindOneByName("root-type"))).Text
+            parserArgumentsXml := child.FindOneByName("parser-arguments")
+            var parserArguments []string
+            if parserArgumentsXml != nil {
+                for _, parserArgumentXml := range parserArgumentsXml.Children {
+                    parserArguments = append(parserArguments, parserArgumentXml.Text)
+                }
+            }
+            referenceXml := child.FindOneByName("xml")
+            normalizeXml(referenceXml)
+            referenceSerialized := referenceXml.FirstChild().XML()
+
+            // Get the raw input by decoding the hex-encoded binary input
+            rawInput, err := hex.DecodeString(rawInputText)
+            if err != nil {
+                t.Errorf("Error decoding test input")
+                t.Fail()
+                curFailed = true
+            }
+            readBuffer := utils.ReadBufferNew(rawInput)
+
+            // Parse the input according to the settings of the testcase
+            helper := new(model.ModbusParserHelper)
+            msg, err := helper.Parse(rootType, parserArguments, readBuffer)
+            if err != nil {
+                t.Error("Error parsing input data: " + err.Error())
+                t.Fail()
+                curFailed = true
+            }
+
+            // Serialize the parsed object to XML
+            actualSerialized, err := xml.Marshal(msg)
+            if err != nil {
+                t.Error("Error serializing the actual message: " + err.Error())
+                t.Fail()
+                curFailed = true
+            }
+
+            // Compare the actual and the expected xml
+            err = compareResults(actualSerialized, []byte(referenceSerialized))
+            if err != nil {
+                t.Error("Error comparing the results: " + err.Error())
+                t.Fail()
+                curFailed = true
+            }
+
+            // If all was ok, serialize the object again
+            s, ok := msg.(utils.Serializable)
+            if !ok {
+                t.Error("Couldn't cast message to Serializable")
+                t.Fail()
+                curFailed = true
+            }
+            writeBuffer := utils.WriteBufferNew()
+            err = s.Serialize(*writeBuffer)
+            if !ok {
+                t.Error("Couldn't serialize message back to byte array")
+                t.Fail()
+                curFailed = true
+            }
+
+            // Check if the output matches in size and content
+            rawOutput := writeBuffer.GetBytes()
+            if len(rawInput) != len(rawOutput) {
+                t.Error("Couldn't serialize message back to byte array")
+                t.Fail()
+                curFailed = true
+            }
+            for i, val := range rawInput {
+                if rawOutput[i] != val {
+                    t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
+                    t.Fail()
+                    curFailed = true
+                }
+            }
+
+            if curFailed {
+                // All worked
+                t.Logf("FAILED")
+            } else {
+                // All worked
+                t.Logf("SUCCESS")
+            }
+        }
+    }
+    fmt.Printf("name = %v\n", node.Name)
 }
 
-func NewParserSerializerTestsuite(testPath string) {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(dir)
+// Mainly remove linebreaks from text content.
+func normalizeXml(input *xmldom.Node) {
+    if len(input.Children) > 0 {
+        for _, child := range input.Children {
+            normalizeXml(child)
+        }
+    }
+    if len(input.Text) > 0 {
+        if strings.Contains(input.Text, "\n") {
+            input.Text = strings.Replace(input.Text, "\n", "", -1)
+        }
+    }
+}
+
+func compareResults(actualString []byte, referenceString []byte) error {
+    // Now parse the xml strings of the actual and the reference in xdiff's dom
+    p := parser.New()
+    actual, err := p.ParseBytes(actualString)
+    if err != nil {
+        return errors.New("Error parsing actual input: " + err.Error())
+    }
+    reference, err := p.ParseBytes(referenceString)
+    if err != nil {
+        return errors.New("Error parsing reference input: " + err.Error())
+    }
+    // Use XDiff to actually do the comparison
+    diff, err := xdiff.Compare(actual, reference)
+    if err != nil {
+        return errors.New("Error comparing xml trees: " + err.Error())
+    }
+    if diff != nil {
+        enc := xdiff.NewTextEncoder(os.Stdout)
+        if err := enc.Encode(diff); err != nil {
+            return errors.New("Error outputting results: " + err.Error())
+        }
+        return errors.New("there were differences")
+    }
+    return nil
 }

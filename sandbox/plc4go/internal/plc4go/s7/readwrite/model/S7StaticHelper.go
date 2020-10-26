@@ -135,3 +135,7 @@ func StaticHelperParseS7String(io *utils.ReadBuffer, stringLength int32, encodin
     }*/
     return "", nil
 }
+
+func StaticHelperParseS7Char(io *utils.ReadBuffer, encoding string) (uint8, error) {
+    return 0, nil
+}
