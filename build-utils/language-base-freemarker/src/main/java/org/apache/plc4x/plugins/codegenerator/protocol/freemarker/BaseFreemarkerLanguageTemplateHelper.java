@@ -98,8 +98,13 @@ public abstract class BaseFreemarkerLanguageTemplateHelper implements Freemarker
         return flavorName;
     }
 
-    protected Map<String, TypeDefinition> getTypeDefinitions() {
+    public Map<String, TypeDefinition> getTypeDefinitions() {
         return types;
+    }
+
+    public List<TypeDefinition> getComplexTypeRootDefinitions() {
+        return types.values().stream().filter(typeDefinition -> (typeDefinition instanceof ComplexTypeDefinition) &&
+            !(typeDefinition instanceof DiscriminatedComplexTypeDefinition)).collect(Collectors.toList());
     }
 
     protected static Map<String, SimpleTypeReference> getBuiltInFieldTypes() {

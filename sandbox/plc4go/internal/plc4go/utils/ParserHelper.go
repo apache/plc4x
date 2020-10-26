@@ -16,14 +16,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-module plc4x.apache.org/plc4go-modbus-driver/v0
+package utils
 
-go 1.15
+import "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 
-require github.com/sirupsen/logrus v1.7.0
+type ParserHelper interface {
 
-require (
-	github.com/ajankovic/xdiff v0.0.1
-	github.com/icza/bitio v1.0.0
-	github.com/subchen/go-xmldom v1.1.2
-)
+    Parse(typeName string, arguments []string, io ReadBuffer) (spi.Message, error)
+
+}

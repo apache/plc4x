@@ -166,6 +166,22 @@ func DataItemParse(io *utils.ReadBuffer, dataProtocolId uint8, stringLength int3
                 return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
             }
             return values.NewPlcLREAL(value), nil
+        case dataProtocolId == 41: // CHAR
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseS7Char(io, "UTF-8")
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcCHAR(value), nil
+        case dataProtocolId == 42: // CHAR
+
+            // Manual Field (value)
+            value, _valueErr := StaticHelperParseS7Char(io, "UTF-16")
+            if _valueErr != nil {
+                return nil, errors.New("Error parsing 'value' field " + _valueErr.Error())
+            }
+            return values.NewPlcCHAR(value), nil
         case dataProtocolId == 43: // STRING
 
             // Manual Field (value)
