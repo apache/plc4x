@@ -43,8 +43,8 @@ pipeline {
     }
 
     tools {
-        maven 'Maven 3 (latest)'
-        jdk 'JDK 11 (latest)'
+        maven 'maven_3_latest'
+        jdk 'jdk_11_latest'
     }
 
     options {
