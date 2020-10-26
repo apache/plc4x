@@ -115,7 +115,7 @@ public class S7Field implements PlcField {
         return bitOffset;
     }
 
-    public int getNumElements() {
+    public int getNumberOfElements() {
         return numElements;
     }
 

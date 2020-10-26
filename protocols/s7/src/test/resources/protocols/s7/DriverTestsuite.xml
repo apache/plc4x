@@ -291,7 +291,6 @@
               <blockNumber>0</blockNumber>
               <byteOffset>0</byteOffset>
               <bitOffset>0</bitOffset>
-              <numElements>1</numElements>
             </hurz>
           </request>
           <hurz>
@@ -367,8 +366,7 @@
               <memoryArea>OUTPUTS</memoryArea>
               <blockNumber>0</blockNumber>
               <byteOffset>0</byteOffset>
-              <bitOffset>0</bitOffset>
-              <numElements>1</numElements>
+              <bitOffset>0</bitOffset>              
             </hurz>
           </request>
           <hurz>

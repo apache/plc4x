@@ -57,15 +57,15 @@ public class FirmataDriverContext implements DriverContext {
 
             FirmataFieldDigital digitalField = (FirmataFieldDigital) writeRequest.getField(fieldName);
             final PlcValue plcValue = internalPlcWriteRequest.getPlcValue(fieldName);
-            if((digitalField.getQuantity() > 1) && plcValue.isList()) {
+            if((digitalField.getNumberOfElements() > 1) && plcValue.isList()) {
                 final PlcList plcList = (PlcList) plcValue;
-                if(plcList.getList().size() != digitalField.getQuantity()) {
+                if(plcList.getList().size() != digitalField.getNumberOfElements()) {
                     throw new PlcRuntimeException(
-                        "Required " + digitalField.getQuantity() + " but got " + plcList.getList().size());
+                        "Required " + digitalField.getNumberOfElements() + " but got " + plcList.getList().size());
                 }
             }
 
-            for(int i = 0; i < digitalField.getQuantity(); i++) {
+            for(int i = 0; i < digitalField.getNumberOfElements(); i++) {
                 int pin = digitalField.getAddress() + i;
                 if(!digitalPins.containsKey(pin)) {
                     digitalPins.put(pin, PinMode.PinModeOutput);
@@ -98,12 +98,12 @@ public class FirmataDriverContext implements DriverContext {
                 if(!(fieldPinMode.equals(PinMode.PinModeInput) || fieldPinMode.equals(PinMode.PinModePullup))) {
                     throw new PlcInvalidFieldException("Subscription field must be of type 'INPUT' (default) or 'PULLUP'");
                 }
-                for(int pin = fieldDigital.getAddress(); pin < fieldDigital.getAddress() + fieldDigital.getQuantity(); pin++) {
+                for(int pin = fieldDigital.getAddress(); pin < fieldDigital.getAddress() + fieldDigital.getNumberOfElements(); pin++) {
                     requestDigitalFieldPinModes.put(pin, fieldPinMode);
                 }
             } else if(field instanceof FirmataFieldAnalog) {
                 FirmataFieldAnalog fieldAnalog = (FirmataFieldAnalog) field;
-                for(int pin = fieldAnalog.getAddress(); pin < fieldAnalog.getAddress() + fieldAnalog.getQuantity(); pin++) {
+                for(int pin = fieldAnalog.getAddress(); pin < fieldAnalog.getAddress() + fieldAnalog.getNumberOfElements(); pin++) {
                     requestAnalogFieldPinModes.put(pin, PinMode.PinModeInput);
                 }
             } else {

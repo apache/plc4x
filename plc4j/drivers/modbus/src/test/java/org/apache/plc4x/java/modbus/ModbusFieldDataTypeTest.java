@@ -37,7 +37,7 @@ public class ModbusFieldDataTypeTest {
         for(int i = 0; i< datatypes.length; i++){
             ModbusFieldHoldingRegister holdingregister = ModbusFieldHoldingRegister.of("holding-register:1:" + datatypes[i][0]);
             Assertions.assertEquals("IEC61131_" + datatypes[i][0], holdingregister.getDataType());
-            Assertions.assertEquals(1, holdingregister.getQuantity());
+            Assertions.assertEquals(1, holdingregister.getNumberOfElements());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, holdingregister.getLengthBytes());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), holdingregister.getLengthWords());
         }
@@ -52,7 +52,7 @@ public class ModbusFieldDataTypeTest {
         for(int i = 0; i< datatypes.length; i++){
             ModbusFieldInputRegister inputregister = ModbusFieldInputRegister.of("input-register:1:" + datatypes[i][0]);
             Assertions.assertEquals("IEC61131_" + datatypes[i][0], inputregister.getDataType());
-            Assertions.assertEquals(1, inputregister.getQuantity());
+            Assertions.assertEquals(1, inputregister.getNumberOfElements());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, inputregister.getLengthBytes());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), inputregister.getLengthWords());
         }
@@ -68,7 +68,7 @@ public class ModbusFieldDataTypeTest {
         for(int i = 0; i< datatypes.length; i++){
             ModbusExtendedRegister extendedregister = ModbusExtendedRegister.of("extended-register:1:" + datatypes[i][0]);
             Assertions.assertEquals("IEC61131_" + datatypes[i][0], extendedregister.getDataType());
-            Assertions.assertEquals(1, extendedregister.getQuantity());
+            Assertions.assertEquals(1, extendedregister.getNumberOfElements());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]) * 2, extendedregister.getLengthBytes());
             Assertions.assertEquals(Integer.parseInt(datatypes[i][1]), extendedregister.getLengthWords());
         }
@@ -81,7 +81,7 @@ public class ModbusFieldDataTypeTest {
         for(int i = 0; i< datatypes.length; i++){
             ModbusFieldCoil coil = ModbusFieldCoil.of("coil:1:" + datatypes[i][0]);
             Assertions.assertEquals("IEC61131_" + datatypes[i][0], coil.getDataType());
-            Assertions.assertEquals(1, coil.getQuantity());
+            Assertions.assertEquals(1, coil.getNumberOfElements());
         }
     }
 
@@ -92,7 +92,7 @@ public class ModbusFieldDataTypeTest {
         for(int i = 0; i< datatypes.length; i++){
             ModbusFieldDiscreteInput discrete = ModbusFieldDiscreteInput.of("discrete-input:1:" + datatypes[i][0]);
             Assertions.assertEquals("IEC61131_" + datatypes[i][0], discrete.getDataType());
-            Assertions.assertEquals(1, discrete.getQuantity());
+            Assertions.assertEquals(1, discrete.getNumberOfElements());
         }
     }
 }

@@ -38,6 +38,9 @@ a|image::users/companies/logo-pragmatic-industries.svg[pi, 200, 200] |https://ww
 
 a|image::users/companies/logo-pragmatic-minds.svg[pm, 200, 200] |https://www.pragmaticminds.de[pragmatic minds GmbH^,opts=nofollow] |Big Data / Analytics |We use PLC4X to collect data from different types of PLCs as preliminary step for data analytics and visualization.
 
+a|image::users/companies/logo_record_evolution_single_dark_bgfont.png[re, 200, 200]|https://www.record-evolution.de/en/home-en/[Record Evolution GmbH^,opts=nofollow] | Iot / Industry 4.0 / Data Science |We developed a platform for IoT development and Data Science. We are using PLC4X  to enable IoT devices in our platform to extract data from PLCs of different vendors, using different protocols.
+
+
 // TODO: Add your company in alphabetical order ...
 
 |===

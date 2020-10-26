@@ -140,10 +140,10 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         super();
         try {
             try {
-                this.value = Integer.parseInt(value) > 0;
+                this.value = Integer.parseInt(value.trim()) > 0;
             } catch(NumberFormatException e) {
                 //parseBoolean expects a string "true" or "false"
-                this.value = Boolean.parseBoolean(value);
+                this.value = Boolean.parseBoolean(value.trim());
             }
             this.isNullable = false;
         }

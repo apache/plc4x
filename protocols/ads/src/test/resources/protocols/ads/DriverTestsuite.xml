@@ -151,7 +151,6 @@
               <indexGroup>4040</indexGroup>
               <indexOffset>8</indexOffset>
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
             </hurz>
           </request>
           <hurz>
@@ -292,13 +291,11 @@
               <indexGroup>4040</indexGroup>
               <indexOffset>8</indexOffset>
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
             </hurz1>
             <hurz2 className="org.apache.plc4x.java.ads.field.DirectAdsField">
               <indexGroup>4040</indexGroup>
               <indexOffset>12</indexOffset>
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
             </hurz2>
           </request>
           <hurz1>
@@ -514,7 +511,6 @@
           <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
             <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
               <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
             </hurz1>
           </request>
@@ -724,7 +720,6 @@
           <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
             <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
               <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
             </hurz1>
           </request>
@@ -837,7 +832,6 @@
           <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
             <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
               <adsDataType>BOOL</adsDataType>
-              <numberOfElements>1</numberOfElements>
               <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
             </hurz1>
           </request>

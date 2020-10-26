@@ -37,13 +37,25 @@
         <artifactId>plc4x-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>test</id>
+            <id>generate-ams-structs</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>generate-driver</goal>
             </goals>
             <configuration>
               <protocolName>ads</protocolName>
+              <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ams-discovery-structs</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>ads.discovery</protocolName>
               <languageName>java</languageName>
               <outputFlavor>read-write</outputFlavor>
             </configuration>

@@ -64,7 +64,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = value.intValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -76,7 +76,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = value.intValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -88,7 +88,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = value.intValue();
             this.isNullable = false;
         } else {
-            throw new PlcInvalidFieldException("Value of type " + value +
+            throw new PlcInvalidFieldException("Value " + value +
               " is out of range " + minValue + " - " + maxValue + " or has decimal places for a " +
               this.getClass().getSimpleName() + " Value");
         }
@@ -100,7 +100,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = value.intValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
+          throw new PlcInvalidFieldException("Value " + value +
             " is out of range " + minValue + " - " + maxValue + " for a " +
             this.getClass().getSimpleName() + " Value");
         }
@@ -112,7 +112,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
             this.value = value.intValue();
             this.isNullable = true;
         } else {
-          throw new PlcInvalidFieldException("Value of type " + value +
+          throw new PlcInvalidFieldException("Value " + value +
             " is out of range " + minValue + " - " + maxValue + " for a " +
             this.getClass().getSimpleName() + " Value");
         }
@@ -121,12 +121,12 @@ public class PlcDINT extends PlcIECValue<Integer> {
     public PlcDINT(String value) {
         super();
         try {
-            this.value = Integer.parseInt(value);
+            this.value = Integer.parseInt(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {
-            throw new IllegalArgumentException("Value of type " + value +
-            " is out of range " + minValue + " - " + maxValue + " for a " +
+            throw new IllegalArgumentException("Value ''" + value +
+            "'' is out of range " + minValue + " - " + maxValue + " for a " +
             this.getClass().getSimpleName() + " Value");
         }
     }

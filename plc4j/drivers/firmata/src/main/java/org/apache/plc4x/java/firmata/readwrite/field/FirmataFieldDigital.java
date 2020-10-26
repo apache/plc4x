@@ -37,7 +37,7 @@ public class FirmataFieldDigital extends FirmataField {
         super(address, quantity);
         // Translate the address into a bit-set.
         bitSet = new BitSet();
-        for(int i = getAddress(); i < getAddress() + getQuantity(); i++) {
+        for(int i = getAddress(); i < getAddress() + getNumberOfElements(); i++) {
             bitSet.set(i, true);
         }
         this.pinMode = pinMode;

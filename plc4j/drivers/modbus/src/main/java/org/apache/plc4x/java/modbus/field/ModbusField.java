@@ -74,7 +74,7 @@ public abstract class ModbusField implements PlcField {
         return address;
     }
 
-    public int getQuantity() {
+    public int getNumberOfElements() {
         return quantity;
     }
 

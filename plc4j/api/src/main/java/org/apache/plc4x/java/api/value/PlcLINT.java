@@ -115,7 +115,7 @@ public class PlcLINT extends PlcIECValue<Long> {
     public PlcLINT(String value) {
         super();
         try {
-            this.value = Long.parseLong(value);
+            this.value = Long.parseLong(value.trim());
             this.isNullable = false;
         }
         catch(Exception e) {
