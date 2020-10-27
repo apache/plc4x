@@ -1045,7 +1045,7 @@
             <configuration>
               <outputDirectory>${project.build.directory}/site</outputDirectory>
               <resources>
-                <!-- Copy the tesources for the testsuites -->
+                <!-- Copy the resources for the test-suites -->
                 <resource>
                   <directory>${project.basedir}/plc4j/utils/test-utils/src/main/resources/schemas</directory>
                   <targetPath>${project.build.directory}/site/schemas</targetPath>
