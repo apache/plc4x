@@ -1030,6 +1030,29 @@
               </resources>
             </configuration>
           </execution>
+          <!--
+            Copy the schemas that might be distributed throughout the codebase to a central "schemas"
+            directory so IDEs can automatically pull them in.
+          -->
+          <execution>
+            <id>copy-schemas</id>
+            <!-- Only execute this for the parent module -->
+            <inherited>false</inherited>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <!-- Copy the tesources for the testsuites -->
+                <resource>
+                  <directory>${project.basedir}/plc4j/utils/test-utils/src/main/resources/schemas</directory>
+                  <targetPath>${project.build.directory}/site/schemas</targetPath>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
