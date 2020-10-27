@@ -95,10 +95,16 @@ public class ${type.name}IO implements <#if outputFlavor != "passive">MessageIO<
             throw new PlcRuntimeException("Wrong number of arguments, expected ${type.parserArguments?size}, but got " + args.length);
         }
         <#list type.parserArguments as parserArgument>
-        if(!(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)})) {
-            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} but was " + args[${parserArgument?index}].getClass().getName());
+        ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name};
+        if(args[${parserArgument?index}] instanceof ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) {
+            ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
+            <#if helper.isSimpleTypeReference(parserArgument.type)>
+        } else if (args[${parserArgument?index}] instanceof String) {
+            ${parserArgument.name} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}.valueOf((String) args[${parserArgument?index}]);
+            </#if>
+        } else {
+            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} or a string which is parseable but was " + args[${parserArgument?index}].getClass().getName());
         }
-        ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name} = (${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}) args[${parserArgument?index}];
         </#list>
         </#if>
         return ${type.name}IO.staticParse(io<#if type.parserArguments?has_content>, <#list type.parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
