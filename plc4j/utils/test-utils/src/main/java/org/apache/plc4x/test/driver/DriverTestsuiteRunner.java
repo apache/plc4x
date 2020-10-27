@@ -222,7 +222,7 @@ public class DriverTestsuiteRunner {
                     // Prepare a ByteBuf that contains the data which would have been sent to the PLC.
                     final byte[] data = getOutboundBytes(embeddedChannel);
                     // Validate the data actually matches the expected message.
-                    validateMessage(payload, data, bigEndian);
+                    validateMessage(payload, testStep.getParserArguments(), data, bigEndian);
                     break;
                 }
                 case INCOMING_PLC_BYTES: {
@@ -291,15 +291,28 @@ public class DriverTestsuiteRunner {
         LOGGER.info("    Done");
     }
 
-    private TestStep parseTestStep(Element curElement) {
+    private TestStep parseTestStep(Element curElement) throws DriverTestsuiteException {
         final String elementName = curElement.getName();
         final StepType stepType = StepType.valueOf(elementName.toUpperCase().replace("-", "_"));
         final String stepName = curElement.attributeValue(new QName("name"));
-        Element definition = null;
-        if(curElement.hasMixedContent()) {
-            definition = curElement.elementIterator().next();
+        Element parserArgumentsNode = null;
+        Element definitionNode = null;
+        for (Element element : curElement.elements()) {
+            if(element.getName().equals("parser-arguments")) {
+                parserArgumentsNode = element;
+            } else if (definitionNode == null) {
+                definitionNode = element;
+            } else {
+                throw new DriverTestsuiteException("Error processing the xml. Only one content node allowed.");
+            }
         }
-        return new TestStep(stepType, stepName, definition);
+        final List<String> parserArguments = new ArrayList<>();
+        if(parserArgumentsNode != null) {
+            for (Element parserArgumentNode : parserArgumentsNode.elements()) {
+                parserArguments.add(parserArgumentNode.getTextTrim());
+            }
+        }
+        return new TestStep(stepType, stepName, parserArguments, definitionNode);
     }
 
     private Plc4xEmbeddedChannel getEmbeddedChannel(PlcConnection plcConnection) {
@@ -384,13 +397,13 @@ public class DriverTestsuiteRunner {
         // TODO: Implement this ...
     }
 
-    private void validateMessage(Element referenceXml, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
+    private void validateMessage(Element referenceXml, List<String> parserArguments, byte[] data, boolean bigEndian) throws DriverTestsuiteException {
         final ObjectMapper mapper = new XmlMapper().enableDefaultTyping();
         final ReadBuffer readBuffer = new ReadBuffer(data, !bigEndian);
         try {
             final String className = referenceXml.attributeValue(new QName("className"));
             final MessageIO<?,?> messageIO = getMessageIOType(className).newInstance();
-            final Object parsedOutput = messageIO.parse(readBuffer);
+            final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray(new String[0]));
             final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
             final String referenceXmlString = referenceXml.asXML();
             final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
