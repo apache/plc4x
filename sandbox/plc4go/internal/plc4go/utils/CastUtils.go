@@ -36,6 +36,14 @@ func Int8ToByte(input []int8) []byte {
     return output
 }
 
+func ByteToInt8(input []byte) []int8 {
+    output := make([]int8, len(input))
+    for i, _val := range input {
+        output[i] = int8(_val)
+    }
+    return output
+}
+
 func StrToBool(str string) (bool, error) {
     boolVal, err := strconv.ParseBool(str)
     if err != nil {

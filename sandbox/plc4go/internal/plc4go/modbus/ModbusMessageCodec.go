@@ -153,4 +153,6 @@ func work(codec *ModbusMessageCodec) {
     }
 }
 
-
+func (m ModbusMessageCodec) GetTransportInstance() transports.TransportInstance {
+    return m.transportInstance
+}

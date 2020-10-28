@@ -24,6 +24,10 @@ import (
 	"strconv"
 )
 
+const (
+    MODBUS_PROTOCOL_ADDRESS_OFFSET = 1
+)
+
 type ModbusPlcField struct {
 	FieldType uint8
 	Address   uint16
@@ -34,7 +38,7 @@ type ModbusPlcField struct {
 func NewModbusPlcField(fieldType uint8, address uint16, quantity uint16, datatype string) ModbusPlcField {
 	return ModbusPlcField{
 		FieldType: fieldType,
-		Address:   address,
+		Address:   address - MODBUS_PROTOCOL_ADDRESS_OFFSET,
 		Quantity:  quantity,
 		Datatype:  datatype,
 	}

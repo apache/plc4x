@@ -61,7 +61,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
     private Duration requestTimeout;
     private short unitIdentifier;
     private RequestTransactionManager tm;
-    private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(10);
+    private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     private final static int FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH = 2;
     private final static int FC_EXTENDED_REGISTERS_FILE_RECORD_LENGTH = 10000;
 
@@ -70,7 +70,6 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = (short) configuration.getUnitIdentifier();
         this.tm = new RequestTransactionManager(1);
-        this.transactionIdentifierGenerator = new AtomicInteger(10);
     }
 
     @Override

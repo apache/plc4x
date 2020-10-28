@@ -222,11 +222,16 @@ func (m *S7VarPayloadDataItem) UnmarshalXML(d *xml.Decoder, start xml.StartEleme
                 }
                 m.TransportSize = data
             case "data":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.Data = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.Data = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

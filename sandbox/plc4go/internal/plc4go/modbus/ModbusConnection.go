@@ -21,6 +21,7 @@ package modbus
 import (
     internalModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
     "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
     "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 )
@@ -106,3 +107,11 @@ func (m ModbusConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequ
 func (m ModbusConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
 	panic("implement me")
 }
+
+func (m ModbusConnection) GetTransportInstance() transports.TransportInstance {
+    if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
+        return mc.GetTransportInstance()
+    }
+    return nil
+}
+

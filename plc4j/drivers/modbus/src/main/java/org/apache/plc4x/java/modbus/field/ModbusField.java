@@ -60,11 +60,11 @@ public abstract class ModbusField implements PlcField {
     protected ModbusField(int address, Integer quantity, String dataType) {
         this.address = address;
         if ((this.address + PROTOCOL_ADDRESS_OFFSET) <= 0) {
-            throw new IllegalArgumentException("address must be greater then zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
+            throw new IllegalArgumentException("address must be greater than zero. Was " + (this.address + PROTOCOL_ADDRESS_OFFSET));
         }
         this.quantity = quantity != null ? quantity : 1;
         if (this.quantity <= 0) {
-            throw new IllegalArgumentException("quantity must be greater then zero. Was " + this.quantity);
+            throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : "INT";
         ModbusDataTypeSizes.enumForValue(this.dataType);

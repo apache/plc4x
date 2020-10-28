@@ -896,7 +896,19 @@ func (m *${type.name}) UnmarshalXML(d *xml.Decoder, start xml.StartElement) erro
     <#if type.propertyFields?has_content>
         <#list type.propertyFields as field>
             case "${field.name}":
-            <#if helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
+            <#-- int8 arrays are serialized in Base64 encoding -->
+            <#if helper.isArrayField(field) && (helper.getLanguageTypeNameForField(field) == 'int8')>
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
+                    return err
+                }
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.${field.name?cap_first} = utils.ByteToInt8(_decoded[0:_len])
+            <#elseif helper.isComplexTypeReference(field.type) && helper.isDiscriminatedParentTypeDefinition(helper.getTypeDefinitionForTypeReference(field.type))>
                 <#if helper.isArrayField(field)>
                 var _values []<#if helper.isComplexTypeReference(field.type)>I</#if>${helper.getLanguageTypeNameForTypeReference(field.type)}
                 </#if>

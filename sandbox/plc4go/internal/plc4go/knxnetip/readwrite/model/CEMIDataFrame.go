@@ -501,11 +501,16 @@ func (m *CEMIDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.SourceAddress = CastIKNXAddress(data)
             case "destinationAddress":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.DestinationAddress = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.DestinationAddress = utils.ByteToInt8(_decoded[0:_len])
             case "dataLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -537,11 +542,16 @@ func (m *CEMIDataFrame) UnmarshalXML(d *xml.Decoder, start xml.StartElement) err
                 }
                 m.DataFirstByte = data
             case "data":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.Data = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.Data = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

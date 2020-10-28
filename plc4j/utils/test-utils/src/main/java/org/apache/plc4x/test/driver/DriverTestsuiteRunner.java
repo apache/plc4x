@@ -406,7 +406,9 @@ public class DriverTestsuiteRunner {
             final Object parsedOutput = messageIO.parse(readBuffer, parserArguments.toArray(new String[0]));
             final String xmlString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsedOutput);
             final String referenceXmlString = referenceXml.asXML();
-            final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(xmlString).ignoreComments().ignoreWhitespace().build();
+            final Diff diff = DiffBuilder.compare(referenceXmlString)
+                .withTest(xmlString).checkForSimilar().ignoreComments().ignoreWhitespace()
+                .build();
             if (diff.hasDifferences()) {
                 LOGGER.warn(xmlString);
                 LOGGER.warn(diff.toString());
@@ -419,9 +421,12 @@ public class DriverTestsuiteRunner {
 
     private void validateApiMessage(Element referenceXml, String apiMessage) throws DriverTestsuiteException {
         final String referenceXmlString = referenceXml.asXML();
-        final Diff diff = DiffBuilder.compare(referenceXmlString).withTest(apiMessage).ignoreComments().ignoreWhitespace().build();
+        final Diff diff = DiffBuilder.compare(referenceXmlString)
+            .withTest(apiMessage).checkForSimilar().ignoreComments().ignoreWhitespace()
+            .build();
         if (diff.hasDifferences()) {
             LOGGER.warn(apiMessage);
+            LOGGER.warn(diff.toString());
             throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
         }
     }
