@@ -286,11 +286,16 @@ func (m *BACnetUnconfirmedServiceRequestWhoHas) UnmarshalXML(d *xml.Decoder, sta
                 }
                 m.ObjectNameCharacterSet = data
             case "objectName":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.ObjectName = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.ObjectName = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

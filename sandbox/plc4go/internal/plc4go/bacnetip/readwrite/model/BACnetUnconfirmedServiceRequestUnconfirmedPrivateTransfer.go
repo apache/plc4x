@@ -266,11 +266,16 @@ func (m *BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) UnmarshalXML
                 }
                 m.ServiceNumber = data
             case "values":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.Values = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.Values = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

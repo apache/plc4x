@@ -432,11 +432,16 @@ func (m *BACnetConfirmedServiceRequestConfirmedCOVNotification) UnmarshalXML(d *
                 }
                 m.LifetimeLength = data
             case "lifetimeSeconds":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.LifetimeSeconds = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.LifetimeSeconds = utils.ByteToInt8(_decoded[0:_len])
             case "notifications":
                 var data []IBACnetTagWithContent
                 if err := d.DecodeElement(&data, &tok); err != nil {

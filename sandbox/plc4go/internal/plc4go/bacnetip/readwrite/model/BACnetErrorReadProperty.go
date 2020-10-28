@@ -249,11 +249,16 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 }
                 m.ErrorClassLength = data
             case "errorClass":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.ErrorClass = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.ErrorClass = utils.ByteToInt8(_decoded[0:_len])
             case "errorCodeLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -261,11 +266,16 @@ func (m *BACnetErrorReadProperty) UnmarshalXML(d *xml.Decoder, start xml.StartEl
                 }
                 m.ErrorCodeLength = data
             case "errorCode":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.ErrorCode = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.ErrorCode = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

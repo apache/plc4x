@@ -41,8 +41,9 @@ public class GoLanguageOutput extends FreemarkerLanguageOutput {
 
     @Override
     protected List<Template> getSpecTemplates(Configuration freemarkerConfiguration) throws IOException {
-        return Collections.singletonList(
-            freemarkerConfiguration.getTemplate("templates/go/parser-factory-template.ftlh"));
+        return Arrays.asList(
+            freemarkerConfiguration.getTemplate("templates/go/parser-factory-template.ftlh"),
+            freemarkerConfiguration.getTemplate("templates/go/xml-parser-factory-template.ftlh"));
     }
 
     @Override

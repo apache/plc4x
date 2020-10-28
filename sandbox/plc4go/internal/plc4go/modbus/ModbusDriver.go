@@ -40,7 +40,7 @@ type ModbusDriver struct {
 
 func NewModbusDriver() *ModbusDriver {
 	return &ModbusDriver{
-	    transactionIdCounter: 1,
+	    transactionIdCounter: 0,
 		fieldHandler: NewFieldHandler(),
 		valueHandler: NewValueHandler(),
 	}

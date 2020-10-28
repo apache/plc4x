@@ -249,11 +249,16 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
                 }
                 m.DeviceInstanceRangeLowLimitLength = data
             case "deviceInstanceRangeLowLimit":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.DeviceInstanceRangeLowLimit = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.DeviceInstanceRangeLowLimit = utils.ByteToInt8(_decoded[0:_len])
             case "deviceInstanceRangeHighLimitLength":
                 var data uint8
                 if err := d.DecodeElement(&data, &tok); err != nil {
@@ -261,11 +266,16 @@ func (m *BACnetUnconfirmedServiceRequestWhoIs) UnmarshalXML(d *xml.Decoder, star
                 }
                 m.DeviceInstanceRangeHighLimitLength = data
             case "deviceInstanceRangeHighLimit":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.DeviceInstanceRangeHighLimit = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.DeviceInstanceRangeHighLimit = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

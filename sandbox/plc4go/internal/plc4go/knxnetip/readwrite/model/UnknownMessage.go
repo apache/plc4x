@@ -140,11 +140,16 @@ func (m *UnknownMessage) UnmarshalXML(d *xml.Decoder, start xml.StartElement) er
             tok := token.(xml.StartElement)
             switch tok.Name.Local {
             case "unknownData":
-                var data []int8
-                if err := d.DecodeElement(&data, &tok); err != nil {
+                var _encoded string
+                if err := d.DecodeElement(&_encoded, &tok); err != nil {
                     return err
                 }
-                m.UnknownData = data
+                _decoded := make([]byte, base64.StdEncoding.DecodedLen(len(_encoded)))
+                _len, err := base64.StdEncoding.Decode(_decoded, []byte(_encoded))
+                if err != nil {
+                    return err
+                }
+                m.UnknownData = utils.ByteToInt8(_decoded[0:_len])
             }
         }
     }

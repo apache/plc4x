@@ -194,7 +194,3 @@ func (m *TcpTransportInstance) Write(data []uint8) error {
     }
     return errors.New("error writing to transport. No writer available")
 }
-
-
-
-
