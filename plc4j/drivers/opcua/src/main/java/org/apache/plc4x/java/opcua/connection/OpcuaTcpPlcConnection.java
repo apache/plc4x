@@ -19,7 +19,6 @@
  */
 package org.apache.plc4x.java.opcua.connection;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -33,7 +32,6 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.apache.plc4x.java.spi.values.*;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
@@ -65,7 +63,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
@@ -358,7 +355,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
-/*        unsubscriptionRequest.getPlcSubscriptionHandles().forEach(o -> {
+        unsubscriptionRequest.getSubscriptionHandles().forEach(o -> {
             OpcuaSubsriptionHandle opcSubHandle = (OpcuaSubsriptionHandle) o;
             try {
                 client.getSubscriptionManager().deleteSubscription(opcSubHandle.getClientHandle()).get();
@@ -368,7 +365,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             } catch (ExecutionException e) {
                 logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
             }
-        });*/
+        });
 
         return null;
     }
