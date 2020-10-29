@@ -29,11 +29,9 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcNull;
+import org.apache.plc4x.java.spi.values.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
-import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
@@ -50,8 +48,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.slf4j.Logger;
@@ -183,11 +179,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             null);
 
         // Just send a single response and chain it as Response
-        return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(s7MessageRequest));
+        return toPlcReadResponse(readRequest, readInternal(s7MessageRequest));
     }
 
     /** Maps the S7ReadResponse of a PlcReadRequest to a PlcReadResponse */
-    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<S7Message> response) {
+    private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest, CompletableFuture<S7Message> response) {
         return response
             .thenApply(p -> {
                 try {
@@ -272,7 +268,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
                 try {
-                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest))));
+                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, writeRequest)));
                 } catch (PlcProtocolException e) {
                     LOGGER.warn(String.format("Error sending 'write' message: '%s'", e.getMessage()), e);
                 }
@@ -358,7 +354,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }, null, (short) 0x0000, (short) 0x000F, COTPProtocolClass.CLASS_0);
     }
 
-    private PlcResponse decodeReadResponse(S7Message responseMessage, InternalPlcReadRequest plcReadRequest) throws PlcProtocolException {
+    private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         short errorClass;
         short errorCode;
@@ -429,7 +425,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
-    private PlcResponse decodeWriteResponse(S7Message responseMessage, InternalPlcWriteRequest plcWriteRequest) throws PlcProtocolException {
+    private PlcResponse decodeWriteResponse(S7Message responseMessage, PlcWriteRequest plcWriteRequest) throws PlcProtocolException {
         Map<String, PlcResponseCode> responses = new HashMap<>();
         short errorClass;
         short errorCode;

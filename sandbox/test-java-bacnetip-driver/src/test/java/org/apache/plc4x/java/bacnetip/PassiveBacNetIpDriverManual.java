@@ -20,7 +20,7 @@ package org.apache.plc4x.java.bacnetip;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.value.PlcStruct;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 
 public class PassiveBacNetIpDriverManual {

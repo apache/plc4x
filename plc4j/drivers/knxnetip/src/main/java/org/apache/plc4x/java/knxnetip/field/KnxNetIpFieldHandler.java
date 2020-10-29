@@ -20,14 +20,9 @@ package org.apache.plc4x.java.knxnetip.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.api.value.PlcValues;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-public class KnxNetIpFieldHandler extends DefaultPlcFieldHandler {
+public class KnxNetIpFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {

@@ -20,6 +20,10 @@ package org.apache.plc4x.java.bacnetip.ede.model;
 
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcDINT;
+import org.apache.plc4x.java.spi.values.PlcLREAL;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
 
 import java.util.HashMap;
 import java.util.Map;

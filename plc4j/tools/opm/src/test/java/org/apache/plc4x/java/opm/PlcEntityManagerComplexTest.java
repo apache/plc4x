@@ -28,16 +28,16 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcDINT;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -226,7 +226,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
                     Function.identity(),
                     s -> new ResponseItem<>(PlcResponseCode.OK, Objects.requireNonNull(responses.get(s), s + " not found"))
                 ));
-            return CompletableFuture.completedFuture(new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, map));
+            return CompletableFuture.completedFuture(new DefaultPlcReadResponse(readRequest, map));
         };
         when(connection.readRequestBuilder()).then(invocation -> new DefaultPlcReadRequest.Builder(reader, getFieldHandler()));
         PlcWriter writer = writeRequest -> {
@@ -235,7 +235,7 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
                     Function.identity(),
                     s -> PlcResponseCode.OK
                 ));
-            return CompletableFuture.completedFuture(new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, map));
+            return CompletableFuture.completedFuture(new DefaultPlcWriteResponse(writeRequest, map));
         };
         when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler(), getValueHandler()));
 
@@ -246,11 +246,11 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         return new NoOpPlcFieldHandler();
     }
 
-    private PlcFieldHandler getValueHandler() {
-        return new NoOpPlcFieldHandler();
+    private PlcValueHandler getValueHandler() {
+        return new NoOpPlcValueHandler();
     }
 
-    private static class NoOpPlcFieldHandler extends DefaultPlcFieldHandler {
+    private static class NoOpPlcFieldHandler implements PlcFieldHandler {
         @Override
         public org.apache.plc4x.java.api.model.PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
             return new org.apache.plc4x.java.api.model.PlcField() {
@@ -258,11 +258,15 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
         }
     }
 
-    private static class NoOpPlcValueHandler extends IEC61131Valuehandler {
+    private static class NoOpPlcValueHandler implements PlcValueHandler {
         @Override
-        public org.apache.plc4x.java.api.model.PlcValue newPlcValue(PlcField field, Object value) throws PlcUnsuppportedDataTypeException {
-            throw PlcUnsuppportedDataTypeException("Data Type " + field.getPlcDataType())
-                + "Is not supported");
+        public PlcValue of(Object value) {
+            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
+        }
+
+        @Override
+        public PlcValue of(Object[] values) {
+            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }
 

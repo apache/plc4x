@@ -37,6 +37,7 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +106,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             CipReadRequest req = new CipReadRequest(getRequestSize(tag), toAnsi(tag), elements);
             requests.add(req);
         }
-        return toPlcReadResponse((InternalPlcReadRequest) readRequest, readInternal(requests));
+        return toPlcReadResponse(readRequest, readInternal(requests));
     }
 
     private byte getRequestSize(String tag) {
@@ -177,7 +178,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return buffer.array();
     }
 
-    private CompletableFuture<PlcReadResponse> toPlcReadResponse(InternalPlcReadRequest readRequest, CompletableFuture<CipService> response) {
+    private CompletableFuture<PlcReadResponse> toPlcReadResponse(PlcReadRequest readRequest, CompletableFuture<CipService> response) {
         return response
             .thenApply(p -> {
                 return ((PlcReadResponse) decodeReadResponse(p, readRequest));
@@ -250,7 +251,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return future;
     }
 
-    private PlcResponse decodeReadResponse(CipService p, InternalPlcReadRequest readRequest) {
+    private PlcResponse decodeReadResponse(CipService p, PlcReadRequest readRequest) {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         // only 1 field
         if (p instanceof CipReadResponse) {
@@ -421,7 +422,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 .check(p -> p.getExchange().getService() instanceof CipWriteResponse)
                 .unwrap(p -> (CipWriteResponse) p.getExchange().getService())
                 .handle(p -> {
-                    future.complete((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest)));
+                    future.complete((PlcWriteResponse) decodeWriteResponse(p, writeRequest));
                     transaction.endRequest();
                 })
             );
@@ -462,7 +463,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 .unwrap(p -> (MultipleServiceResponse) p)
                 .check(p -> p.getServiceNb() == nb)
                 .handle(p -> {
-                    future.complete((PlcWriteResponse) decodeWriteResponse(p, ((InternalPlcWriteRequest) writeRequest)));
+                    future.complete((PlcWriteResponse) decodeWriteResponse(p, writeRequest));
                     // Finish the request-transaction.
                     transaction.endRequest();
                 }));
@@ -470,7 +471,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         return future;
     }
 
-    private PlcResponse decodeWriteResponse(CipService p, InternalPlcWriteRequest writeRequest) {
+    private PlcResponse decodeWriteResponse(CipService p, PlcWriteRequest writeRequest) {
         Map<String, PlcResponseCode> responses = new HashMap<>();
 
         if (p instanceof CipWriteResponse) {

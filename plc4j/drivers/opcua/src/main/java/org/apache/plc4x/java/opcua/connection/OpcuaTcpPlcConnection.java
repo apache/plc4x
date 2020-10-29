@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.*;
@@ -31,7 +32,9 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaSubsriptionHandle;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.values.*;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
@@ -283,75 +286,71 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
-        InternalPlcSubscriptionRequest internalPlcSubscriptionRequest = checkInternal(subscriptionRequest, InternalPlcSubscriptionRequest.class);
         CompletableFuture<PlcSubscriptionResponse> future = CompletableFuture.supplyAsync(() -> {
-            Map<String, ResponseItem<PlcSubscriptionHandle>> responseItems = internalPlcSubscriptionRequest.getSubscriptionPlcFieldMap().entrySet().stream()
-                .map(subscriptionPlcFieldEntry -> {
-                    final String plcFieldName = subscriptionPlcFieldEntry.getKey();
-                    final SubscriptionPlcField subscriptionPlcField = subscriptionPlcFieldEntry.getValue();
-                    final OpcuaField field = (OpcuaField) Objects.requireNonNull(subscriptionPlcField.getPlcField());
-                    long cycleTime = subscriptionPlcField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
-                    NodeId idNode = generateNodeId(field);
-                    ReadValueId readValueId = new ReadValueId(
-                        idNode,
-                        AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
-                    UInteger clientHandle = uint(clientHandles.getAndIncrement());
+            Map<String, ResponseItem<PlcSubscriptionHandle>> responseItems = new HashMap<>();
+            for (String fieldName : subscriptionRequest.getFieldNames()) {
+                final PlcSubscriptionField subscriptionField = subscriptionRequest.getField(fieldName);
+                final OpcuaField field = (OpcuaField) Objects.requireNonNull(subscriptionField);
+                long cycleTime = subscriptionField.getDuration().orElse(Duration.ofSeconds(1)).toMillis();
+                NodeId idNode = generateNodeId(field);
+                ReadValueId readValueId = new ReadValueId(
+                    idNode,
+                    AttributeId.Value.uid(), null, QualifiedName.NULL_VALUE);
+                UInteger clientHandle = uint(clientHandles.getAndIncrement());
 
-                    MonitoringParameters parameters = new MonitoringParameters(
-                        clientHandle,
-                        (double) cycleTime,     // sampling interval
-                        null,       // filter, null means use default
-                        uint(1),   // queue size
-                        true        // discard oldest
-                    );
-                    MonitoringMode monitoringMode;
-                    switch (subscriptionPlcField.getPlcSubscriptionType()) {
-                        case CYCLIC:
-                            monitoringMode = MonitoringMode.Sampling;
-                            break;
-                        case CHANGE_OF_STATE:
-                            monitoringMode = MonitoringMode.Reporting;
-                            break;
-                        case EVENT:
-                            monitoringMode = MonitoringMode.Reporting;
-                            break;
-                        default:
-                            monitoringMode = MonitoringMode.Reporting;
-                    }
+                MonitoringParameters parameters = new MonitoringParameters(
+                    clientHandle,
+                    (double) cycleTime,     // sampling interval
+                    null,       // filter, null means use default
+                    uint(1),   // queue size
+                    true        // discard oldest
+                );
+                MonitoringMode monitoringMode;
+                switch (subscriptionField.getPlcSubscriptionType()) {
+                    case CYCLIC:
+                        monitoringMode = MonitoringMode.Sampling;
+                        break;
+                    case CHANGE_OF_STATE:
+                        monitoringMode = MonitoringMode.Reporting;
+                        break;
+                    case EVENT:
+                        monitoringMode = MonitoringMode.Reporting;
+                        break;
+                    default:
+                        monitoringMode = MonitoringMode.Reporting;
+                }
 
-                    PlcSubscriptionHandle subHandle = null;
-                    PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
-                    try {
-                        UaSubscription subscription = client.getSubscriptionManager().createSubscription(cycleTime).get();
+                PlcSubscriptionHandle subHandle = null;
+                PlcResponseCode responseCode = PlcResponseCode.ACCESS_DENIED;
+                try {
+                    UaSubscription subscription = client.getSubscriptionManager().createSubscription(cycleTime).get();
 
-                        MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                            readValueId, monitoringMode, parameters);
-                        List<MonitoredItemCreateRequest> requestList = new LinkedList<>();
-                        requestList.add(request);
-                        OpcuaSubsriptionHandle subsriptionHandle = new OpcuaSubsriptionHandle(plcFieldName, clientHandle);
-                        BiConsumer<UaMonitoredItem, Integer> onItemCreated =
-                            (item, id) -> item.setValueConsumer(subsriptionHandle::onSubscriptionValue);
+                    MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
+                        readValueId, monitoringMode, parameters);
+                    List<MonitoredItemCreateRequest> requestList = new LinkedList<>();
+                    requestList.add(request);
+                    OpcuaSubsriptionHandle subsriptionHandle = new OpcuaSubsriptionHandle(fieldName, clientHandle);
+                    BiConsumer<UaMonitoredItem, Integer> onItemCreated =
+                        (item, id) -> item.setValueConsumer(subsriptionHandle::onSubscriptionValue);
 
-                        List<UaMonitoredItem> items = subscription.createMonitoredItems(
-                            TimestampsToReturn.Both,
-                            requestList,
-                            onItemCreated
-                        ).get();
+                    List<UaMonitoredItem> items = subscription.createMonitoredItems(
+                        TimestampsToReturn.Both,
+                        requestList,
+                        onItemCreated
+                    ).get();
 
-                        subHandle = subsriptionHandle;
-                        responseCode = PlcResponseCode.OK;
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
-                    } catch (ExecutionException e) {
-                        logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
-                    }
+                    subHandle = subsriptionHandle;
+                    responseCode = PlcResponseCode.OK;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
+                } catch (ExecutionException e) {
+                    logger.warn("Unable to subscribe Elements because of: {}", e.getMessage());
+                }
 
-
-                    return Pair.of(plcFieldName, new ResponseItem(responseCode, subHandle));
-                })
-                .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-            return new DefaultPlcSubscriptionResponse(internalPlcSubscriptionRequest, responseItems);
+                responseItems.put(fieldName, new ResponseItem(responseCode, subHandle));
+            }
+            return new DefaultPlcSubscriptionResponse(subscriptionRequest, responseItems);
         });
 
         return future;
@@ -359,8 +358,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
-        InternalPlcUnsubscriptionRequest internalPlcUnsubscriptionRequest = checkInternal(unsubscriptionRequest, InternalPlcUnsubscriptionRequest.class);
-        internalPlcUnsubscriptionRequest.getInternalPlcSubscriptionHandles().forEach(o -> {
+/*        unsubscriptionRequest.getPlcSubscriptionHandles().forEach(o -> {
             OpcuaSubsriptionHandle opcSubHandle = (OpcuaSubsriptionHandle) o;
             try {
                 client.getSubscriptionManager().deleteSubscription(opcSubHandle.getClientHandle()).get();
@@ -370,17 +368,21 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             } catch (ExecutionException e) {
                 logger.warn("Unable to unsubscribe Elements because of: {}", e.getMessage());
             }
-        });
+        });*/
 
         return null;
     }
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        List<PlcConsumerRegistration> unregisters = new LinkedList<>();
-        handles.forEach(plcSubscriptionHandle -> unregisters.add(plcSubscriptionHandle.register(consumer)));
+        List<PlcConsumerRegistration> registrations = new LinkedList<>();
+        // Register the current consumer for each of the given subscription handles
+        for (PlcSubscriptionHandle subscriptionHandle : handles) {
+            final PlcConsumerRegistration consumerRegistration = subscriptionHandle.register(consumer);
+            registrations.add(consumerRegistration);
+        }
 
-        return () -> unregisters.forEach(PlcConsumerRegistration::unregister);
+        return new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
     }
 
     @Override
@@ -425,8 +427,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
 
 
             }
-            InternalPlcReadRequest internalPlcReadRequest = checkInternal(readRequest, InternalPlcReadRequest.class);
-            return new DefaultPlcReadResponse(internalPlcReadRequest, fields);
+            return new DefaultPlcReadResponse(readRequest, fields);
         });
 
         return future;
@@ -437,9 +438,6 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future;
         future = CompletableFuture.supplyAsync(() -> {
-
-            InternalPlcWriteRequest internalPlcWriteRequest = (InternalPlcWriteRequest) writeRequest;
-
             List<PlcField> writePLCValues = writeRequest.getFields();
             LinkedList<DataValue> values = new LinkedList<>();
             LinkedList<NodeId> ids = new LinkedList<>();
@@ -448,7 +446,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
             for (String fieldName : writeRequest.getFieldNames()) {
                 OpcuaField uaField = (OpcuaField) writeRequest.getField(fieldName);
                 NodeId idNode = generateNodeId(uaField);
-                Object valueObject = internalPlcWriteRequest.getPlcValue(fieldName).getObject();
+                Object valueObject = writeRequest.getPlcValue(fieldName).getObject();
                 // Added small work around for handling BigIntegers as input type for UInt64
                 if (valueObject instanceof BigInteger) valueObject = ulong((BigInteger) valueObject);
                 Variant var = new Variant(valueObject);
@@ -492,8 +490,7 @@ public class OpcuaTcpPlcConnection extends BaseOpcuaPlcConnection {
                 }
                 fieldResponse.put(names.get(counter), resultCode);
             }
-            InternalPlcWriteRequest internalPlcReadRequest = checkInternal(writeRequest, InternalPlcWriteRequest.class);
-            PlcWriteResponse response = new DefaultPlcWriteResponse(internalPlcReadRequest, fieldResponse);
+            PlcWriteResponse response = new DefaultPlcWriteResponse(writeRequest, fieldResponse);
             return response;
         });
 

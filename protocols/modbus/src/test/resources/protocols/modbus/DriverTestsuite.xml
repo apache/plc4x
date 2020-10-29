@@ -108,6 +108,69 @@
           <fields>
             <field className="org.apache.plc4x.test.driver.model.api.TestField">
               <name>hurz</name>
+              <address>holding-register:1:REAL</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send Modbus Input-Register Read Request">
+        <!-- 000a00000006010300000004 -->
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>1</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
+            <startingAddress>0</startingAddress>
+            <quantity>2</quantity>
+          </pdu>
+        </ModbusTcpADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Modbus Input-Register Read Response">
+        <!-- 000b0000000b0103080000000000000000 -->
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>1</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
+            <value>QEkP20BJD9s=</value>
+          </pdu>
+        </ModbusTcpADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <ModbusFieldHoldingRegister>
+                  <address>0</address>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>IEC61131_REAL</dataType>
+                </ModbusFieldHoldingRegister>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcREAL>3.1415927</PlcREAL>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Array element read request</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz</name>
               <address>holding-register:1:REAL[2]</address>
             </field>
           </fields>
@@ -141,33 +204,27 @@
         </ModbusTcpADU>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister">
-              <address>0</address>
-              <dataType>IEC61131_REAL</dataType>
-              <lengthWords>4</lengthWords>
-              <dataTypeSize>4</dataTypeSize>
-              <lengthBytes>8</lengthBytes>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <ModbusFieldHoldingRegister>
+                  <address>0</address>
+                  <numberOfElements>2</numberOfElements>
+                  <dataType>IEC61131_REAL</dataType>
+                </ModbusFieldHoldingRegister>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcList>
+                <PlcREAL>3.1415927</PlcREAL>
+                <PlcREAL>3.1415927</PlcREAL>
+              </PlcList>
             </hurz>
-          </request>
-          <hurz>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcList">
-              <object>java.util.Collections..UnmodifiableRandomAccessList</object>
-              <object>org.apache.plc4x.java.api.value.PlcREAL</object>
-              <object>
-                <object>java.lang.Float</object>
-                <object>3.1415927</object>
-              </object>
-              <object>org.apache.plc4x.java.api.value.PlcREAL</object>
-              <object>
-                <object>java.lang.Float</object>
-                <object>3.1415927</object>
-              </object>
-            </value>
-          </hurz>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>

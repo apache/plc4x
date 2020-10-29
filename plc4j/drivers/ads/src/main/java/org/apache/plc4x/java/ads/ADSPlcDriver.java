@@ -23,7 +23,7 @@ import org.apache.plc4x.java.ads.field.AdsFieldHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.ads.readwrite.io.AmsTCPPacketIO;
-import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;

@@ -24,7 +24,7 @@ import org.apache.plc4x.java.eip.readwrite.field.EipField;
 import org.apache.plc4x.java.eip.readwrite.field.EipFieldHandler;
 import org.apache.plc4x.java.eip.readwrite.io.EipPacketIO;
 import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;

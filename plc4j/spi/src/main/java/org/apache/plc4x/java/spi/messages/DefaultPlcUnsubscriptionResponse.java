@@ -21,21 +21,30 @@ package org.apache.plc4x.java.spi.messages;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Element;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcUnsubscriptionResponse implements InternalPlcUnsubscriptionResponse {
+public class DefaultPlcUnsubscriptionResponse implements PlcUnsubscriptionResponse, PlcResponse, XmlSerializable {
 
-    private final InternalPlcUnsubscriptionRequest request;
+    private final PlcUnsubscriptionRequest request;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcUnsubscriptionResponse(@JsonProperty("request") InternalPlcUnsubscriptionRequest request) {
+    public DefaultPlcUnsubscriptionResponse(@JsonProperty("request") PlcUnsubscriptionRequest request) {
         this.request = request;
     }
 
     @Override
     public PlcUnsubscriptionRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        // TODO: Implement
     }
 
 }

@@ -145,21 +145,25 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.ads.field.DirectAdsField">
-              <indexGroup>4040</indexGroup>
-              <indexOffset>8</indexOffset>
-              <adsDataType>BOOL</adsDataType>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <DirectAdsField>
+                  <indexGroup>4040</indexGroup>
+                  <indexOffset>8</indexOffset>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </DirectAdsField>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcBOOL>true</PlcBOOL>
             </hurz>
-          </request>
-          <hurz>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>true</object>
-            </value>
-          </hurz>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
       <delay>1000</delay>
     </steps>
@@ -285,32 +289,36 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz1 className="org.apache.plc4x.java.ads.field.DirectAdsField">
-              <indexGroup>4040</indexGroup>
-              <indexOffset>8</indexOffset>
-              <adsDataType>BOOL</adsDataType>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz1>
+                <DirectAdsField>
+                  <indexGroup>4040</indexGroup>
+                  <indexOffset>8</indexOffset>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </DirectAdsField>
+              </hurz1>
+              <hurz2>
+                <DirectAdsField>
+                  <indexGroup>4040</indexGroup>
+                  <indexOffset>12</indexOffset>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </DirectAdsField>
+              </hurz2>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz1 result="OK">
+              <PlcBOOL>true</PlcBOOL>
             </hurz1>
-            <hurz2 className="org.apache.plc4x.java.ads.field.DirectAdsField">
-              <indexGroup>4040</indexGroup>
-              <indexOffset>12</indexOffset>
-              <adsDataType>BOOL</adsDataType>
+            <hurz2 result="OK">
+              <PlcBOOL>true</PlcBOOL>
             </hurz2>
-          </request>
-          <hurz1>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>true</object>
-            </value>
-          </hurz1>
-          <hurz2>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>true</object>
-            </value>
-          </hurz2>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
       <delay>1000</delay>
     </steps>
@@ -507,20 +515,24 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
-              <adsDataType>BOOL</adsDataType>
-              <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz1>
+                <SymbolicAdsField>
+                  <symbolicAddress>main.f_trigDateiGelesen.M</symbolicAddress>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </SymbolicAdsField>
+              </hurz1>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz1 result="OK">
+              <PlcBOOL>false</PlcBOOL>
             </hurz1>
-          </request>
-          <hurz1>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>false</object>
-            </value>
-          </hurz1>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>
@@ -716,20 +728,24 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
-              <adsDataType>BOOL</adsDataType>
-              <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz1>
+                <SymbolicAdsField>
+                  <symbolicAddress>main.f_trigDateiGelesen.M</symbolicAddress>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </SymbolicAdsField>
+              </hurz1>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz1 result="OK">
+              <PlcBOOL>false</PlcBOOL>
             </hurz1>
-          </request>
-          <hurz1>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>false</object>
-            </value>
-          </hurz1>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
       <delay>500</delay>
       <api-request name="Receive a second Read Request for the same resource from application">
@@ -828,20 +844,24 @@
         </AmsTCPPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application again">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz1 className="org.apache.plc4x.java.ads.field.SymbolicAdsField">
-              <adsDataType>BOOL</adsDataType>
-              <symbolicField>main.f_trigDateiGelesen.M</symbolicField>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz1>
+                <SymbolicAdsField>
+                  <symbolicAddress>main.f_trigDateiGelesen.M</symbolicAddress>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>BOOL</dataType>
+                </SymbolicAdsField>
+              </hurz1>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz1 result="OK">
+              <PlcBOOL>false</PlcBOOL>
             </hurz1>
-          </request>
-          <hurz1>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>false</object>
-            </value>
-          </hurz1>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>

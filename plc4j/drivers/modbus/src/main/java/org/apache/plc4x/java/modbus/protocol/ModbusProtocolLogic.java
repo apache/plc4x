@@ -46,6 +46,8 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcList;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -440,7 +442,7 @@ public class ModbusProtocolLogic extends Plc4xProtocolBase<ModbusTcpADU> impleme
         // they are ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
         // Luckily it turns out that this is exactly how BitSet parses byte[]
         BitSet bits = BitSet.valueOf(data);
-        List<PlcBOOL> result = new ArrayList<>(count);
+        List<PlcValue> result = new ArrayList<>(count);
         for(int i = 0; i < count; i++) {
             result.add(new PlcBOOL(bits.get(i)));
         }

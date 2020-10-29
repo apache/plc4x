@@ -18,17 +18,13 @@
 */
 package org.apache.plc4x.java.opcua.protocol;
 
-
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-
-import java.util.ArrayList;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
 /**
  */
-public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
+public class OpcuaPlcFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -38,17 +34,4 @@ public class OpcuaPlcFieldHandler extends DefaultPlcFieldHandler {
         throw new PlcInvalidFieldException(fieldQuery);
     }
 
-    @Override
-    public PlcValue encodeString(PlcField field, Object[] values) {
-        OpcuaField opcField = (OpcuaField) field;
-        ArrayList<String> resultSet = new ArrayList<>();
-        for (Object item : values) {
-            resultSet.add(item.toString());
-        }
-        if(resultSet.size() == 1) {
-            return new PlcSTRING(resultSet.get(0));
-        } else {
-            return new PlcList(resultSet);
-        }
-    }
 }

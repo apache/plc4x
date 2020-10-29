@@ -44,10 +44,9 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,7 +284,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     values.put(fieldName, parsePlcValue(field, readBuffer));
                 }
             }
-            return new DefaultPlcReadResponse((InternalPlcReadRequest) readRequest, values);
+            return new DefaultPlcReadResponse(readRequest, values);
         }
         return null;
     }
@@ -332,7 +331,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         if(directAdsFieldsFuture.isDone()) {
             final List<DirectAdsField> fields = directAdsFieldsFuture.getNow(null);
             if(fields != null) {
-                return executeWrite((InternalPlcWriteRequest) writeRequest, fields);
+                return executeWrite(writeRequest, fields);
             } else {
                 final CompletableFuture<PlcWriteResponse> errorFuture = new CompletableFuture<>();
                 errorFuture.completeExceptionally(new PlcException("Error"));
@@ -351,7 +350,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             directAdsFieldsFuture.handle((directAdsFields, throwable) -> {
                 if(directAdsFields != null) {
                     final CompletableFuture<PlcWriteResponse> delayedResponse =
-                        executeWrite((InternalPlcWriteRequest) writeRequest, directAdsFields);
+                        executeWrite(writeRequest, directAdsFields);
                     delayedResponse.handle((plcReadResponse, throwable1) -> {
                         if (plcReadResponse != null) {
                             delayedWrite.complete(plcReadResponse);
@@ -369,7 +368,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    protected CompletableFuture<PlcWriteResponse> executeWrite(InternalPlcWriteRequest writeRequest,
+    protected CompletableFuture<PlcWriteResponse> executeWrite(PlcWriteRequest writeRequest,
                                                              List<DirectAdsField> directAdsFields) {
         // Depending on the number of fields, use a single item request or a sum-request
         if (directAdsFields.size() == 1) {
@@ -382,7 +381,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
     }
 
-    protected CompletableFuture<PlcWriteResponse> singleWrite(InternalPlcWriteRequest writeRequest, DirectAdsField directAdsField) {
+    protected CompletableFuture<PlcWriteResponse> singleWrite(PlcWriteRequest writeRequest, DirectAdsField directAdsField) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
 
         final String fieldName = writeRequest.getFieldNames().iterator().next();
@@ -423,7 +422,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         return future;
     }
 
-    protected CompletableFuture<PlcWriteResponse> multiWrite(InternalPlcWriteRequest writeRequest, List<DirectAdsField> directAdsFields) {
+    protected CompletableFuture<PlcWriteResponse> multiWrite(PlcWriteRequest writeRequest, List<DirectAdsField> directAdsFields) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
 
         // Calculate the size of all fields together.
@@ -502,7 +501,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
         }
 
-        return new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, responseCodes);
+        return new DefaultPlcWriteResponse(writeRequest, responseCodes);
     }
 
     @Override

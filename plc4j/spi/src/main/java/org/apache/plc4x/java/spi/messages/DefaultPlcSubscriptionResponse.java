@@ -24,25 +24,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcSubscriptionField;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Element;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionResponse {
+public class DefaultPlcSubscriptionResponse implements PlcSubscriptionResponse, PlcResponse, XmlSerializable {
 
-    private final InternalPlcSubscriptionRequest request;
+    private final PlcSubscriptionRequest request;
 
     private final Map<String, ResponseItem<PlcSubscriptionHandle>> values;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcSubscriptionResponse(@JsonProperty("request") InternalPlcSubscriptionRequest request,
+    public DefaultPlcSubscriptionResponse(@JsonProperty("request") PlcSubscriptionRequest request,
                                           @JsonProperty("values") Map<String, ResponseItem<PlcSubscriptionHandle>> values) {
         this.request = request;
         this.values = values;
@@ -69,7 +74,7 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
 
     @Override
     @JsonIgnore
-    public PlcField getField(String name) {
+    public PlcSubscriptionField getField(String name) {
         throw new PlcNotImplementedException("field access not possible as these come async");
     }
 
@@ -94,9 +99,13 @@ public class DefaultPlcSubscriptionResponse implements InternalPlcSubscriptionRe
         return values.values().stream().map(ResponseItem<PlcSubscriptionHandle>::getValue).collect(Collectors.toList());
     }
 
-    @Override
     public Map<String, ResponseItem<PlcSubscriptionHandle>> getValues() {
         return values;
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        // TODO: Implement
     }
 
 }

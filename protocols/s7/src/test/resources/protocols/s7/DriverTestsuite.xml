@@ -283,23 +283,27 @@
         </TPKTPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.s7.readwrite.field.S7Field">
-              <dataType>BOOL</dataType>
-              <memoryArea>OUTPUTS</memoryArea>
-              <blockNumber>0</blockNumber>
-              <byteOffset>0</byteOffset>
-              <bitOffset>0</bitOffset>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <S7Field>
+                  <memoryArea>OUTPUTS</memoryArea>
+                  <blockNumber>0</blockNumber>
+                  <byteOffset>0</byteOffset>
+                  <bitOffset>0</bitOffset>
+                  <numElements>1</numElements>
+                  <dataType>BOOL</dataType>
+                </S7Field>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="OK">
+              <PlcBOOL>true</PlcBOOL>
             </hurz>
-          </request>
-          <hurz>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcBOOL">
-              <object>true</object>
-            </value>
-          </hurz>
-        </DefaultPlcReadResponse>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>
@@ -359,21 +363,25 @@
         </TPKTPacket>
       </incoming-plc-message>
       <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.s7.readwrite.field.S7Field">
-              <dataType>BOOL</dataType>
-              <memoryArea>OUTPUTS</memoryArea>
-              <blockNumber>0</blockNumber>
-              <byteOffset>0</byteOffset>
-              <bitOffset>0</bitOffset>              
-            </hurz>
-          </request>
-          <hurz>
-            <code>ACCESS_DENIED</code>
-            <value/>
-          </hurz>
-        </DefaultPlcReadResponse>
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz>
+                <S7Field>
+                  <memoryArea>OUTPUTS</memoryArea>
+                  <blockNumber>0</blockNumber>
+                  <byteOffset>0</byteOffset>
+                  <bitOffset>0</bitOffset>
+                  <numElements>1</numElements>
+                  <dataType>BOOL</dataType>
+                </S7Field>
+              </hurz>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz result="ACCESS_DENIED"/>
+          </values>
+        </PlcReadResponse>
       </api-response>
     </steps>
   </testcase>

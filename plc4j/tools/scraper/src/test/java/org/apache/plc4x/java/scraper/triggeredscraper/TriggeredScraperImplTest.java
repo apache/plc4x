@@ -21,8 +21,8 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcBOOL;
-import org.apache.plc4x.java.api.value.PlcLINT;
+import org.apache.plc4x.java.spi.values.PlcBOOL;
+import org.apache.plc4x.java.spi.values.PlcLINT;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;

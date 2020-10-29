@@ -26,7 +26,7 @@ import org.apache.plc4x.java.firmata.readwrite.field.FirmataField;
 import org.apache.plc4x.java.firmata.readwrite.field.FirmataFieldHandler;
 import org.apache.plc4x.java.firmata.readwrite.io.FirmataMessageIO;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
-import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;

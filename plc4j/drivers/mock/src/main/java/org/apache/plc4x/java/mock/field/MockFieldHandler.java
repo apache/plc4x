@@ -20,79 +20,13 @@
 package org.apache.plc4x.java.mock.field;
 
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-public class MockFieldHandler extends DefaultPlcFieldHandler {
+public class MockFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
         return new MockField(fieldQuery);
-    }
-
-    @Override
-    public PlcValue encodeBoolean(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeByte(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeShort(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeInteger(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeBigInteger(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeLong(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeFloat(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeBigDecimal(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeDouble(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeString(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeTime(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeDate(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
-    }
-
-    @Override
-    public PlcValue encodeDateTime(PlcField field, Object[] values) {
-        return new MockPlcValue(values);
     }
 
 }

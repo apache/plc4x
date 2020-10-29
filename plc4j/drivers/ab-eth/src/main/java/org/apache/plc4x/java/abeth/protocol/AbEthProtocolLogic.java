@@ -31,14 +31,14 @@ import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.PlcINT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -208,7 +208,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
         }
 
         // TODO: Double check if it's really a InternalPlcReadRequest ...
-        return new DefaultPlcReadResponse((InternalPlcReadRequest) plcReadRequest, values);
+        return new DefaultPlcReadResponse(plcReadRequest, values);
     }
 
     private PlcResponseCode decodeResponseCode(short status) {

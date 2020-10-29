@@ -25,7 +25,7 @@ import org.apache.plc4x.java.modbus.field.ModbusFieldHandler;
 import org.apache.plc4x.java.modbus.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.readwrite.io.ModbusTcpADUIO;
-import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;

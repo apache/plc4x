@@ -49,8 +49,9 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
+import org.apache.plc4x.java.spi.values.PlcSTRING;
+import org.apache.plc4x.java.spi.values.PlcStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -516,13 +517,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             }
         }
         return CompletableFuture.completedFuture(
-            new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, values));
+            new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
         final DefaultPlcConsumerRegistration consumerRegistration =
-            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new InternalPlcSubscriptionHandle[0]));
+            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new PlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }
@@ -544,7 +545,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KNXNetIPMessage> im
             final DefaultPlcConsumerRegistration registration = entry.getKey();
             final Consumer<PlcSubscriptionEvent> consumer = entry.getValue();
             // Only if the current data point matches the subscription, publish the event to it.
-            for (InternalPlcSubscriptionHandle handle : registration.getAssociatedHandles()) {
+            for (PlcSubscriptionHandle handle : registration.getSubscriptionHandles()) {
                 if(handle instanceof KnxNetIpSubscriptionHandle) {
                     KnxNetIpSubscriptionHandle subscriptionHandle = (KnxNetIpSubscriptionHandle) handle;
                     // Check if the subscription matches this current event.

@@ -33,6 +33,9 @@ import org.apache.plc4x.java.s7.readwrite.types.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.types.TransportSize;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,7 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public class S7Field implements PlcField {
+public class S7Field implements PlcField, XmlSerializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
@@ -370,4 +373,36 @@ public class S7Field implements PlcField {
             ", numElements=" + numElements +
             '}';
     }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+
+        Element memoryAreaElement = doc.createElement("memoryArea");
+        memoryAreaElement.appendChild(doc.createTextNode(getMemoryArea().name()));
+        messageElement.appendChild(memoryAreaElement);
+
+        Element blockNumberElement = doc.createElement("blockNumber");
+        blockNumberElement.appendChild(doc.createTextNode(Integer.toString(getBlockNumber())));
+        messageElement.appendChild(blockNumberElement);
+
+        Element byteOffsetElement = doc.createElement("byteOffset");
+        byteOffsetElement.appendChild(doc.createTextNode(Integer.toString(getByteOffset())));
+        messageElement.appendChild(byteOffsetElement);
+
+        Element bitOffsetElement = doc.createElement("bitOffset");
+        bitOffsetElement.appendChild(doc.createTextNode(Integer.toString(getBitOffset())));
+        messageElement.appendChild(bitOffsetElement);
+
+        Element numElementsElement = doc.createElement("numElements");
+        numElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(numElementsElement);
+
+        Element dataTypeElement = doc.createElement("dataType");
+        dataTypeElement.appendChild(doc.createTextNode(getDataType().name()));
+        messageElement.appendChild(dataTypeElement);
+    }
+
 }
