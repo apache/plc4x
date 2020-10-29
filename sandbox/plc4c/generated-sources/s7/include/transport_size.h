@@ -85,7 +85,7 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_type(plc4c_s7_read_write_transport_size value);
 
-uint8_t plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_write_transport_size value);
+char* plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_write_transport_size value);
 
 #ifdef __cplusplus
 }

@@ -129,7 +129,7 @@ public class StaticHelper {
             // This is the maximum number of bytes a string can be long.
             short maxLength = io.readUnsignedShort(8);
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
-            short totalStringLength = io.readShort(8);
+            short totalStringLength = io.readUnsignedShort(8);
             // Read the full size of the string.
             String str = io.readString(stringLength * 8, (String) encoding);
             // Cut off the parts that don't belong to it.

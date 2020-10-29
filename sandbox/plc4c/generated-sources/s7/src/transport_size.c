@@ -646,55 +646,55 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_t
   }
 }
 
-uint8_t plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_write_transport_size value) {
+char* plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_write_transport_size value) {
   switch(value) {
     case plc4c_s7_read_write_transport_size_LWORD: { /* '0x00' */
-      return 14;
+      return "IEC61131_LWORD";
     }
     case plc4c_s7_read_write_transport_size_BOOL: { /* '0x01' */
-      return 01;
+      return "IEC61131_BOOL";
     }
     case plc4c_s7_read_write_transport_size_BYTE: { /* '0x02' */
-      return 11;
+      return "IEC61131_BYTE";
     }
     case plc4c_s7_read_write_transport_size_CHAR: { /* '0x03' */
-      return 41;
+      return "IEC61131_CHAR";
     }
     case plc4c_s7_read_write_transport_size_WORD: { /* '0x04' */
-      return 12;
+      return "IEC61131_WORD";
     }
     case plc4c_s7_read_write_transport_size_INT: { /* '0x05' */
-      return 23;
+      return "IEC61131_INT";
     }
     case plc4c_s7_read_write_transport_size_DWORD: { /* '0x06' */
-      return 13;
+      return "IEC61131_DWORD";
     }
     case plc4c_s7_read_write_transport_size_DINT: { /* '0x07' */
-      return 25;
+      return "IEC61131_DINT";
     }
     case plc4c_s7_read_write_transport_size_REAL: { /* '0x08' */
-      return 31;
+      return "IEC61131_REAL";
     }
     case plc4c_s7_read_write_transport_size_DATE: { /* '0x09' */
-      return 54;
+      return "IEC61131_DATE";
     }
     case plc4c_s7_read_write_transport_size_TIME_OF_DAY: { /* '0x0A' */
-      return 55;
+      return "IEC61131_TIME_OF_DAY";
     }
     case plc4c_s7_read_write_transport_size_TIME: { /* '0x0B' */
-      return 51;
+      return "IEC61131_TIME";
     }
     case plc4c_s7_read_write_transport_size_S5TIME: { /* '0x0C' */
-      return 52;
+      return "S7_S5TIME";
     }
     case plc4c_s7_read_write_transport_size_DATE_AND_TIME: { /* '0x0F' */
-      return 56;
+      return "IEC61131_DATE_AND_TIME";
     }
     case plc4c_s7_read_write_transport_size_WCHAR: { /* '0x13' */
-      return 42;
+      return "IEC61131_WCHAR";
     }
     case plc4c_s7_read_write_transport_size_LREAL: { /* '0x30' */
-      return 32;
+      return "IEC61131_LREAL";
     }
     default: {
       return 0;
