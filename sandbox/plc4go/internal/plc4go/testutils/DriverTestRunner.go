@@ -123,14 +123,14 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
                 return errors.New("no read response expected")
             }
             readResponse := <- testcase.readRequestResultChannel
-            // TODO: Implement this ...
+            // TODO: Implement comparing of the results ...
             fmt.Println(readResponse)
         case "DefaultPlcWriteResponse":
             if testcase.writeRequestResultChannel == nil {
                 return errors.New("no write response expected")
             }
             writeResponse := <- testcase.writeRequestResultChannel
-            // TODO: Implement this ...
+            // TODO: Implement comparing of the results ...
             fmt.Println(writeResponse)
         }
     case StepType_OUTGOING_PLC_MESSAGE:

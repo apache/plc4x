@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
-import java.util.Properties;
 
 /**
  * Adapter with sensible defaults for a Netty Based Channel Factory.
@@ -41,13 +40,11 @@ import java.util.Properties;
 public abstract class NettyChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
-    private static final int PING_TIMEOUT_MS = 1_000;
 
     /**
      * TODO should be removed together with the Constructor.
      */
     private SocketAddress address;
-    private Properties properties;
 
     public NettyChannelFactory(SocketAddress address) {
         this.address = address;
@@ -126,50 +123,9 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             }
 
             return channel;
-/*        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new PlcConnectionException("Error creating channel.", e);*/
         } catch (Exception e) {
             throw new PlcConnectionException("Error creating channel.", e);
         }
     }
-
-    // TODO do we want to keep this like that?
-    /*@Override
-    public void ping() throws PlcException {
-        // TODO: Replace this check with a more accurate one ...
-        InetSocketAddress address = new InetSocketAddress(getAddress(), getPort());
-        try (Socket s = new Socket()) {
-            s.connect(address, PING_TIMEOUT_MS);
-            // TODO keep the address for a (timely) next request???
-            s.setReuseAddress(true);
-        } catch (Exception e) {
-            throw new PlcConnectionException("Unable to ping remote host");
-        }
-    }
-
-    public Properties getProperties() {
-        // Null Safety for older implementations
-        if (properties == null) {
-            return new Properties();
-        }
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    protected String getProperty(String key) {
-        return ((String) getProperties().get(key));
-    }
-
-    protected boolean hasProperty(String key) {
-        return getProperties().contains(key);
-    }
-
-    protected String getPropertyOrDefault(String key, String defaultValue) {
-        return getProperties().getProperty(key, defaultValue);
-    }*/
 
 }

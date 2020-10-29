@@ -18,13 +18,8 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.PlcValue;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcWriteRequest extends PlcFieldRequest {
@@ -34,13 +29,15 @@ public interface PlcWriteRequest extends PlcFieldRequest {
 
     int getNumberOfValues(String name);
 
+    PlcValue getPlcValue(String name);
+
     interface Builder extends PlcRequestBuilder {
 
         @Override
         PlcWriteRequest build();
 
-        <T> PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values);
-        <T> PlcWriteRequest.Builder addItem(String name, PlcField fieldQuery, Object... values);
+        PlcWriteRequest.Builder addItem(String name, String fieldQuery, Object... values);
+
     }
 
 }

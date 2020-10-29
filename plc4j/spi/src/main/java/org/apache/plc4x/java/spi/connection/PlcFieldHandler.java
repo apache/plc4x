@@ -18,15 +18,13 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcValue;
 
 /**
  * Field Handler which handles the parsing of string to {@link PlcField} and the encoding of retrieved plc values.
  */
 public interface PlcFieldHandler {
 
-    PlcField createField(String fieldQuery) throws PlcInvalidFieldException;
+    PlcField createField(String fieldQuery);
 
 }

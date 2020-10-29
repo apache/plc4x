@@ -112,21 +112,6 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         }
     }
 
-    /*@Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        try {
-            // Relay the actual pinging to the channel factory ...
-            channelFactory.ping();
-            // If we got here, the ping was successful.
-            future.complete(null);
-        } catch (PlcException e) {
-            // If we got here, something went wrong.
-            future.completeExceptionally(e);
-        }
-        return future;
-    }*/
-
     @Override
     public void close() throws PlcConnectionException {
         // TODO call protocols close method

@@ -20,15 +20,9 @@ package org.apache.plc4x.java.firmata.readwrite.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.LinkedList;
-import java.util.List;
-
-public class FirmataFieldHandler extends DefaultPlcFieldHandler {
+public class FirmataFieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) {
@@ -39,4 +33,5 @@ public class FirmataFieldHandler extends DefaultPlcFieldHandler {
         }
         throw new PlcInvalidFieldException(fieldQuery);
     }
+
 }

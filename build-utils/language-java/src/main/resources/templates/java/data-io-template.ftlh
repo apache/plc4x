@@ -73,6 +73,7 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.*;
 import ${helper.packageName(protocolName, languageName, outputFlavor)}.types.*;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +106,7 @@ public class ${type.name}IO {
             if(${helper.toParseExpression(field, field.loopExpression, type.parserArguments)} > Integer.MAX_VALUE) {
                 throw new ParseException("Array count of " + (${helper.toParseExpression(field, field.loopExpression, type.parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
             }
-            List<Plc${case.name}> ${field.name};
+            List<PlcValue> ${field.name};
             {
                 int itemCount = (int) ${helper.toParseExpression(field, field.loopExpression, type.parserArguments)};
                 ${field.name} = new LinkedList<>();

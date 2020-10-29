@@ -20,14 +20,13 @@ package org.apache.plc4x.java.df1.field;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.connection.DefaultPlcFieldHandler;
-import org.apache.plc4x.java.df1.field.Df1Field;
+import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 
-public class Df1FieldHandler extends DefaultPlcFieldHandler {
+public class Df1FieldHandler implements PlcFieldHandler {
 
     @Override
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
         return Df1Field.of(fieldQuery);
     }
+
 }

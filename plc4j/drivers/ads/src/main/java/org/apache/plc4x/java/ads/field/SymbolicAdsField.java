@@ -20,6 +20,8 @@ package org.apache.plc4x.java.ads.field;
 
 import org.apache.plc4x.java.ads.readwrite.types.AdsDataType;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -108,5 +110,24 @@ public class SymbolicAdsField implements AdsField {
         return "SymbolicAdsField{" +
             "symbolicAddress='" + symbolicAddress + '\'' +
             '}';
+    }
+
+    @Override
+    public void xmlSerialize(Element parent) {
+        Document doc = parent.getOwnerDocument();
+        Element messageElement = doc.createElement(getClass().getSimpleName());
+        parent.appendChild(messageElement);
+
+        Element symbolicAddressElement = doc.createElement("symbolicAddress");
+        symbolicAddressElement.appendChild(doc.createTextNode(getSymbolicField()));
+        messageElement.appendChild(symbolicAddressElement);
+
+        Element numberOfElementsElement = doc.createElement("numberOfElements");
+        numberOfElementsElement.appendChild(doc.createTextNode(Integer.toString(getNumberOfElements())));
+        messageElement.appendChild(numberOfElementsElement);
+
+        Element datatypeElement = doc.createElement("dataType");
+        datatypeElement.appendChild(doc.createTextNode(getPlcDataType()));
+        messageElement.appendChild(datatypeElement);
     }
 }

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.field.BacNetIpFieldHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
@@ -29,6 +30,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.function.Consumer;

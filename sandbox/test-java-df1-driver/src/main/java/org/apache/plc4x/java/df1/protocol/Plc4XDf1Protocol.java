@@ -26,12 +26,11 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcField;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcDINT;
+import org.apache.plc4x.java.spi.values.PlcDINT;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.df1.field.Df1Field;
 import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.df1.readwrite.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
@@ -95,8 +94,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
             logger.warn("Received a response NAK, notify all requests");
             for (Map.Entry<Integer, PlcRequestContainer> entry : requests.entrySet()) {
                 entry.getValue().getResponseFuture().complete(
-                    new DefaultPlcReadResponse(
-                        ((InternalPlcReadRequest) entry.getValue().getRequest()),
+                    new DefaultPlcReadResponse((PlcReadRequest) entry.getValue().getRequest(),
                         Collections.singletonMap("erster",
                             new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcDINT(-1)))
                     ));
@@ -156,7 +154,7 @@ public class Plc4XDf1Protocol extends PlcMessageToMessageCodec<DF1Symbol, PlcReq
                 default:
                     throw new NotImplementedException("The DataType " + field.getDataType() + " is currently not implemented!");
             }
-            response = new DefaultPlcReadResponse(((InternalPlcReadRequest) request),
+            response = new DefaultPlcReadResponse(((PlcReadRequest) request),
                 Collections.singletonMap(fieldName,
                     new ResponseItem<>(responseCode, responseItem)));
         } else if (request instanceof PlcWriteRequest) {

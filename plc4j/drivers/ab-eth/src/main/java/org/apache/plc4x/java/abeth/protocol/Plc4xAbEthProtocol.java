@@ -33,13 +33,12 @@ import org.apache.plc4x.java.spi.PlcMessageToMessageCodec;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.PlcRequestContainer;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
     private PlcResponse decodeReadResponse(
         CIPEncapsulationReadResponse plcReadResponse, PlcRequestContainer requestContainer) {
 
-        InternalPlcReadRequest plcReadRequest = (InternalPlcReadRequest) requestContainer.getRequest();
+        PlcReadRequest plcReadRequest = (PlcReadRequest) requestContainer.getRequest();
 
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
         for (String fieldName : plcReadRequest.getFieldNames()) {

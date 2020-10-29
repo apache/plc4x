@@ -37,12 +37,11 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
-import org.apache.plc4x.java.spi.messages.InternalPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
+import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -219,21 +218,21 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
             values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK, new DefaultPlcSubscriptionHandle(this)));
         }
         return CompletableFuture.completedFuture(
-            new DefaultPlcSubscriptionResponse((InternalPlcSubscriptionRequest) subscriptionRequest, values));
+            new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
     }
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> collection) {
         final DefaultPlcConsumerRegistration consumerRegistration =
-            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new InternalPlcSubscriptionHandle[0]));
-        consumerIdMap.put(consumerRegistration.getConsumerHash(), consumer);
+            new DefaultPlcConsumerRegistration(this, consumer, collection.toArray(new PlcSubscriptionHandle[0]));
+        consumerIdMap.put(consumerRegistration.getConsumerId(), consumer);
         return consumerRegistration;
     }
 
     @Override
     public void unregister(PlcConsumerRegistration plcConsumerRegistration) {
         DefaultPlcConsumerRegistration consumerRegistration = (DefaultPlcConsumerRegistration) plcConsumerRegistration;
-        consumerIdMap.remove(consumerRegistration.getConsumerHash());
+        consumerIdMap.remove(consumerRegistration.getConsumerId());
     }
 
     protected void publishEvent(BacNetIpField field, PlcValue plcValue) {

@@ -21,15 +21,7 @@ package org.apache.plc4x.java.spi.connection;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
-import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
@@ -38,7 +30,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcUnsubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.InternalPlcMessage;
 import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
@@ -47,7 +38,6 @@ import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -195,23 +185,6 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public void unregister(PlcConsumerRegistration registration) {
         throw new NotImplementedException("");
-    }
-
-    /**
-     * Can be used to check and cast a parameter to its required internal type (can be used for general type checking too).
-     *
-     * @param o     the object to be checked against target {@code clazz}.
-     * @param clazz the expected {@code clazz}.
-     * @param <T>   the type of the expected {@code clazz}.
-     * @return the cast type of {@code clazz}.
-     */
-    protected <T extends InternalPlcMessage> T checkInternal(Object o, Class<T> clazz) {
-        Objects.requireNonNull(o);
-        Objects.requireNonNull(clazz);
-        if (!clazz.isInstance(o)) {
-            throw new IllegalArgumentException("illegal type " + o.getClass() + ". Expected " + clazz);
-        }
-        return clazz.cast(o);
     }
 
 }

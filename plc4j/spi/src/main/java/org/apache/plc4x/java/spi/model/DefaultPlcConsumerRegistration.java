@@ -19,34 +19,36 @@
 package org.apache.plc4x.java.spi.model;
 
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
+import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class DefaultPlcConsumerRegistration implements InternalPlcConsumerRegistration {
+public class DefaultPlcConsumerRegistration implements PlcConsumerRegistration {
 
     private final PlcSubscriber plcSubscriber;
 
-    private final Collection<InternalPlcSubscriptionHandle> handles;
+    private final List<PlcSubscriptionHandle> handles;
 
     private final int consumerHash;
 
-    public DefaultPlcConsumerRegistration(PlcSubscriber plcSubscriber, Consumer<PlcSubscriptionEvent> consumer, InternalPlcSubscriptionHandle... handles) {
+    public DefaultPlcConsumerRegistration(PlcSubscriber plcSubscriber, Consumer<PlcSubscriptionEvent> consumer, PlcSubscriptionHandle... handles) {
         this.plcSubscriber = plcSubscriber;
         this.handles = Arrays.asList(Objects.requireNonNull(handles));
         this.consumerHash = Objects.requireNonNull(consumer).hashCode();
     }
 
     @Override
-    public int getConsumerHash() {
+    public Integer getConsumerId() {
         return consumerHash;
     }
 
     @Override
-    public Collection<InternalPlcSubscriptionHandle> getAssociatedHandles() {
+    public List<PlcSubscriptionHandle> getSubscriptionHandles() {
         return handles;
     }
 

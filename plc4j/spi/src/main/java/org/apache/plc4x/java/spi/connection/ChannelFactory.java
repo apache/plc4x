@@ -34,6 +34,4 @@ public interface ChannelFactory {
         // Intentionally do Nothing
     }
 
-    //void ping() throws PlcException;
-
 }

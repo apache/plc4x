@@ -35,6 +35,7 @@ import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.java.spi.utils.XmlSerializable;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.apache.plc4x.test.driver.model.DriverTestsuite;
 import org.apache.plc4x.test.driver.model.StepType;
@@ -56,8 +57,15 @@ import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -272,7 +280,7 @@ public class DriverTestsuiteRunner {
 
                     // Reset the future.
                     responseFuture = null;
-                    final String serializedResponse = mapper.writeValueAsString(plcResponse);
+                    final String serializedResponse = serializeToXmlString((XmlSerializable) plcResponse);
                     validateApiMessage(payload, serializedResponse);
 
                     break;
@@ -441,6 +449,33 @@ public class DriverTestsuiteRunner {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new DriverTestsuiteException("Interrupted during delay.");
+        }
+    }
+
+    private String serializeToXmlString(XmlSerializable value) {
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            org.w3c.dom.Document doc = builder.newDocument();
+            org.w3c.dom.Element root = doc.createElement("root");
+            doc.appendChild(root);
+            value.xmlSerialize(root);
+            DOMSource domSource = new DOMSource(doc.getDocumentElement().getFirstChild());
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.setOutputProperty("omit-xml-declaration", "yes");
+            transformer.transform(domSource, result);
+            return writer.toString();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         }
     }
 

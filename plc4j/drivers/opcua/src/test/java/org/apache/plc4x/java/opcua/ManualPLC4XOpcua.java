@@ -28,7 +28,7 @@ import org.apache.plc4x.java.opcua.connection.OpcuaTcpPlcConnection;
 import org.apache.plc4x.java.opcua.protocol.OpcuaField;
 import org.apache.plc4x.java.opcua.protocol.OpcuaPlcFieldHandler;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
-import org.apache.plc4x.java.spi.model.SubscriptionPlcField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
 import org.eclipse.milo.examples.server.ExampleServer;
 
 import java.math.BigInteger;
@@ -135,7 +135,7 @@ public class ManualPLC4XOpcua {
                 opcuaConnection,
                 new LinkedHashMap<>(
                     Collections.singletonMap("field1",
-                        new SubscriptionPlcField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
+                        new DefaultPlcSubscriptionField(PlcSubscriptionType.CHANGE_OF_STATE, OpcuaField.of(STRING_IDENTIFIER), Duration.of(1, ChronoUnit.SECONDS)))
                 )
             )).get();
 
