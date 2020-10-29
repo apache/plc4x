@@ -26,6 +26,8 @@ import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.abeth.readwrite.io.CIPEncapsulationPacketIO;
 import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -61,6 +63,11 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     @Override
     protected AbEthFieldHandler getFieldHandler() {
         return new AbEthFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
     }
 
     @Override

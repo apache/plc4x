@@ -32,6 +32,14 @@ public class PlcSTRING extends PlcSimpleValue<String> {
 
     static int maxLength = 254;
 
+    public static PlcSTRING of(Object value) {
+        if (value instanceof String) {
+            return new PlcSTRING((String) value);
+        } else {
+            return new PlcSTRING((String) value);
+        }
+    }
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public PlcSTRING(@JsonProperty("value") String value) {
         super(value, true);

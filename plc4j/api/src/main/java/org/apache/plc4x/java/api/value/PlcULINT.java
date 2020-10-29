@@ -32,6 +32,30 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     static BigInteger minValue = BigInteger.valueOf(0);
     static BigInteger maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
+    public static PlcULINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcULINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcULINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcULINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcULINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcULINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcULINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcULINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcULINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcULINT((BigDecimal) value);
+        } else {
+            return new PlcULINT((String) value);
+        }
+    }
+
     public PlcULINT(Boolean value) {
         super();
         this.value = value ? BigInteger.valueOf(1) : BigInteger.valueOf(0);

@@ -17,24 +17,28 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.spi.connection;
+package org.apache.plc4x.java.api.value;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.model.PlcField;
-import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.BitSet;
-import java.util.LinkedList;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Base Implementation of {@link PlcFieldHandler} which throws a {@link PlcRuntimeException} for all
- * encodeXXX methods.
+ * Base Valuehandler
  */
-public abstract class DefaultPlcFieldHandler implements PlcFieldHandler {
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
+public interface PlcValueHandler {
 
+    public PlcValue of(Object value);
+    public PlcValue of(Object[] values);
 
 }

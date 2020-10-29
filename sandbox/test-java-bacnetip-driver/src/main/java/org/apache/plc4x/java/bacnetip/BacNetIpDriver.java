@@ -80,6 +80,11 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    @Override
     protected ProtocolStackConfigurer<BVLC> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(BVLC.class, BVLCIO.class)
             .withProtocol(BacNetIpProtocolLogic.class)

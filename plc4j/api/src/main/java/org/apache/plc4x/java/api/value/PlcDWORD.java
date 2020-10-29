@@ -35,6 +35,30 @@ public class PlcDWORD extends PlcIECValue<Long> {
     static Long minValue = (long) 0;
     static Long maxValue = (long) Integer.MAX_VALUE * 2 + 1;
 
+    public static PlcDWORD of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcDWORD((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcDWORD((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcDWORD((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcDWORD((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcDWORD((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcDWORD((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcDWORD((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcDWORD((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcDWORD((BigDecimal) value);
+        } else {
+            return new PlcDWORD((String) value);
+        }
+    }
+
     public PlcDWORD(Boolean value) {
         super();
         this.value = value ? (long) 1 : (long) 0;
