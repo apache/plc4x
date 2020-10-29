@@ -34,6 +34,30 @@ public class PlcUSINT extends PlcIECValue<Short> {
     static Short minValue = 0;
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
+    public static PlcUSINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcUSINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcUSINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcUSINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcUSINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcUSINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcUSINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcUSINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcUSINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcUSINT((BigDecimal) value);
+        } else {
+            return new PlcUSINT((String) value);
+        }
+    }
+
     public PlcUSINT(Boolean value) {
         super();
         this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);

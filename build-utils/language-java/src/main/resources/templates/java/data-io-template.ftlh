@@ -216,7 +216,7 @@ public class ${type.name}IO {
             <#if case.name == "Struct">
             Map<String, PlcValue> _map = new HashMap<>();
                 <#list case.fields as field>
-            _map.put("${field.name}", PlcValues.of(${field.name}));
+            _map.put("${field.name}", IEC61131ValueHandler.newPlcValue(${field.name}));
                 </#list>
             </#if>
             <#if !skipReturn>

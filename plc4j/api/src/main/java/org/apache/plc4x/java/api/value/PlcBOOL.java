@@ -34,6 +34,30 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     static int minValue = 0;
     static int maxValue = 1;
 
+    public static PlcBOOL of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcBOOL((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcBOOL((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcBOOL((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcBOOL((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcBOOL((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcBOOL((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcBOOL((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcBOOL((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcBOOL((BigDecimal) value);
+        } else {
+            return new PlcBOOL((String) value);
+        }
+    }
+
     public PlcBOOL(Boolean value) {
         super();
         this.value = value;

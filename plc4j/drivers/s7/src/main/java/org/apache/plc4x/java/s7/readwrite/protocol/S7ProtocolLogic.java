@@ -32,6 +32,8 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcNull;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.field.S7StringField;
@@ -523,7 +525,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return PlcValues.of(resultItems);
+                return IEC61131ValueHandler.newPlcValue(resultItems);
             }
         } catch (ParseException e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);

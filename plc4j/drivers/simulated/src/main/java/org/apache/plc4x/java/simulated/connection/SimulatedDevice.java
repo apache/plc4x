@@ -22,6 +22,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValues;
+import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.simulated.field.SimulatedField;
 import org.apache.plc4x.java.spi.model.InternalPlcSubscriptionHandle;
 
@@ -94,31 +96,31 @@ public class SimulatedDevice {
         Object result = null;
 
         if (type.equals(Byte.class)) {
-            return PlcValues.of((byte) random.nextInt(1 << 8));
+            return IEC61131ValueHandler.newPlcValue((byte) random.nextInt(1 << 8));
         }
 
         if (type.equals(Short.class)) {
-            return PlcValues.of((short) random.nextInt(1 << 16));
+            return IEC61131ValueHandler.newPlcValue((short) random.nextInt(1 << 16));
         }
 
         if (type.equals(Integer.class)) {
-            return PlcValues.of(random.nextInt());
+            return IEC61131ValueHandler.newPlcValue(random.nextInt());
         }
 
         if (type.equals(Long.class)) {
-            return PlcValues.of(random.nextLong());
+            return IEC61131ValueHandler.newPlcValue(random.nextLong());
         }
 
         if (type.equals(Float.class)) {
-            return PlcValues.of(random.nextFloat());
+            return IEC61131ValueHandler.newPlcValue(random.nextFloat());
         }
 
         if (type.equals(Double.class)) {
-            return PlcValues.of(random.nextDouble());
+            return IEC61131ValueHandler.newPlcValue(random.nextDouble());
         }
 
         if (type.equals(Boolean.class)) {
-            return PlcValues.of(random.nextBoolean());
+            return IEC61131ValueHandler.newPlcValue(random.nextBoolean());
         }
 
         if (type.equals(String.class)) {
@@ -128,7 +130,7 @@ public class SimulatedDevice {
                 char c = (char) ('a' + random.nextInt(26));
                 sb.append(c);
             }
-            return PlcValues.of(sb.toString());
+            return IEC61131ValueHandler.newPlcValue(sb.toString());
         }
 
         return null;

@@ -38,6 +38,30 @@ public class PlcCHAR extends PlcIECValue<Short> {
     static Short minValue = 0;
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
+    public static PlcCHAR of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcCHAR((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcCHAR((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcCHAR((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcCHAR((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcCHAR((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcCHAR((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcCHAR((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcCHAR((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcCHAR((BigDecimal) value);
+        } else {
+            return new PlcCHAR((String) value);
+        }
+    }
+
     public PlcCHAR(Boolean value) {
         super();
         this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);

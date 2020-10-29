@@ -34,6 +34,30 @@ public class PlcLINT extends PlcIECValue<Long> {
     static Long minValue = (long) 0;
     static Long maxValue = Long.MAX_VALUE;
 
+    public static PlcLINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcLINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcLINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcLINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcLINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcLINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcLINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcLINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcLINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLINT((BigDecimal) value);
+        } else {
+            return new PlcLINT((String) value);
+        }
+    }
+
     public PlcLINT(Boolean value) {
         super();
         this.value = value ? (long) 1 : (long) 0;

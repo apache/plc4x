@@ -43,6 +43,8 @@ import org.apache.plc4x.java.spi.messages.PlcReader;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.PlcWriter;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
+
 
 import java.util.Collection;
 import java.util.Objects;
@@ -61,6 +63,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canWrite = false;
     private boolean canSubscribe = false;
     private PlcFieldHandler fieldHandler;
+    private PlcValueHandler valueHandler;
     private Plc4xProtocolBase<?> protocol;
     private BaseOptimizer optimizer;
 
@@ -71,12 +74,13 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     public AbstractPlcConnection() {
     }
 
-    public AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler,
+    public AbstractPlcConnection(boolean canRead, boolean canWrite, boolean canSubscribe, PlcFieldHandler fieldHandler, PlcValueHandler valueHandler,
                                  BaseOptimizer optimizer) {
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.fieldHandler = fieldHandler;
+        this.valueHandler = valueHandler;
         this.optimizer = optimizer;
     }
 
@@ -115,6 +119,10 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return this.fieldHandler;
     }
 
+    public PlcValueHandler getPlcValueHandler() {
+        return this.valueHandler;
+    }
+
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
         if (!canRead()) {
@@ -128,7 +136,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         if (!canWrite()) {
             throw new PlcUnsupportedOperationException("The connection does not support writing");
         }
-        return new DefaultPlcWriteRequest.Builder(this, getPlcFieldHandler());
+        return new DefaultPlcWriteRequest.Builder(this, getPlcFieldHandler(), getPlcValueHandler());
     }
 
     @Override

@@ -34,6 +34,30 @@ public class PlcREAL extends PlcIECValue<Float> {
     static Float minValue = -Float.MAX_VALUE;
     static Float maxValue = Float.MAX_VALUE;
 
+    public static PlcREAL of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcREAL((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcREAL((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcREAL((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcREAL((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcREAL((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcREAL((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcREAL((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcREAL((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcREAL((BigDecimal) value);
+        } else {
+            return new PlcREAL((String) value);
+        }
+    }
+
     public PlcREAL(Boolean value) {
         super();
         this.value = value ? (Float) 1.0f : (Float) 0.0f;

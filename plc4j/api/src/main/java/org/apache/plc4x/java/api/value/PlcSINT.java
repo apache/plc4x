@@ -34,6 +34,30 @@ public class PlcSINT extends PlcIECValue<Byte> {
     static Byte minValue = Byte.MIN_VALUE;
     static Byte maxValue = Byte.MAX_VALUE;
 
+    public static PlcSINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcSINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcSINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcSINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcSINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcSINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcSINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcSINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcSINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcSINT((BigDecimal) value);
+        } else {
+            return new PlcSINT((String) value);
+        }
+    }
+
     public PlcSINT(Boolean value) {
         super();
         this.value = value ? Byte.valueOf((byte) 1) : Byte.valueOf((byte) 0);
