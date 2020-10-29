@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* buf, uint8_t dataProtocolId, int32_t stringLength, plc4c_data** data_item);
+plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4c_spi_read_buffer* buf, char* dataProtocolId, int32_t stringLength, plc4c_data** data_item);
 
 plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4c_spi_write_buffer* buf, plc4c_data** data_item);
 

@@ -415,7 +415,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             PlcValue plcValue = null;
             ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
-                plcValue = parsePlcValue(field, data);
+                try {
+                    plcValue = parsePlcValue(field, data);
+                } catch(Exception e) {
+                    throw new PlcProtocolException("Error decoding PlcValue", e);
+                }
             }
             ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
             values.put(fieldName, result);
