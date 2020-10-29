@@ -49,7 +49,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Boolean[values.size()]));
                 }
             }
             case BIT8: {
@@ -61,7 +61,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Boolean[values.size()]));
                 }
             }
             case BITARR8: {
@@ -74,7 +74,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case BITARR16: {
@@ -87,7 +87,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case BITARR32: {
@@ -100,7 +100,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case INT8: {
@@ -112,7 +112,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcSINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Byte[values.size()]));
                 }
             }
             case INT16: {
@@ -124,7 +124,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case INT32: {
@@ -136,7 +136,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcDINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case INT64: {
@@ -148,7 +148,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcLINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case UINT8: {
@@ -160,7 +160,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUSINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case UINT16: {
@@ -172,7 +172,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case UINT32: {
@@ -184,7 +184,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUDINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case ULINT:
@@ -200,7 +200,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcULINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new BigInteger[values.size()]));
                 }
             }
             case FLOAT: {
@@ -214,7 +214,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcREAL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Float[values.size()]));
                 }
             }
             case DOUBLE: {
@@ -228,7 +228,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcLREAL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Double[values.size()]));
                 }
             }
             case BOOL: {
@@ -240,7 +240,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Boolean[values.size()]));
                 }
             }
             case BYTE: {
@@ -253,7 +253,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case WORD: {
@@ -266,7 +266,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case DWORD: {
@@ -279,7 +279,7 @@ public class LittleEndianDecoder {
                     // TODO: Double-Check this ...
                     return new PlcBOOL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case SINT: {
@@ -291,7 +291,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcSINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Byte[values.size()]));
                 }
             }
             case USINT: {
@@ -303,7 +303,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUSINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case INT: {
@@ -315,7 +315,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Short[values.size()]));
                 }
             }
             case UINT: {
@@ -327,7 +327,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case DINT: {
@@ -339,7 +339,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcDINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Integer[values.size()]));
                 }
             }
             case UDINT: {
@@ -351,7 +351,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcUDINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case LINT: {
@@ -363,7 +363,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcLINT(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Long[values.size()]));
                 }
             }
             case REAL: {
@@ -377,7 +377,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcREAL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Float[values.size()]));
                 }
             }
             case LREAL: {
@@ -391,7 +391,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcLREAL(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new Double[values.size()]));
                 }
             }
             case STRING: {
@@ -407,7 +407,7 @@ public class LittleEndianDecoder {
                 if(values.size() == 1) {
                     return new PlcSTRING(values.get(0));
                 } else {
-                    return new PlcList(values);
+                    return IEC61131ValueHandler.newPlcValue(values.toArray(new String[values.size()]));
                 }
             }
 /*            case TIME: {

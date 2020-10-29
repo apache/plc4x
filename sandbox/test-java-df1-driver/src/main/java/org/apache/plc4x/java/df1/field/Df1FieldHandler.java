@@ -30,10 +30,4 @@ public class Df1FieldHandler extends DefaultPlcFieldHandler {
     public PlcField createField(String fieldQuery) throws PlcInvalidFieldException {
         return Df1Field.of(fieldQuery);
     }
-
-    @Override
-    public PlcValue encodeByte(PlcField field, Object[] values) {
-        return super.encodeByte(field, values);
-    }
-
 }

@@ -30,6 +30,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -65,6 +66,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     }
 
     protected abstract PlcFieldHandler getFieldHandler();
+
+    protected abstract PlcValueHandler getValueHandler();
 
     protected abstract String getDefaultTransport();
 
@@ -138,6 +141,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         return new DefaultNettyPlcConnection(
             canRead(), canWrite(), canSubscribe(),
             getFieldHandler(),
+            getValueHandler(),
             configuration,
             channelFactory,
             awaitSetupComplete,

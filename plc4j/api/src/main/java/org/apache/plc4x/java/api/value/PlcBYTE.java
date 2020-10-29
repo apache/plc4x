@@ -35,6 +35,30 @@ public class PlcBYTE extends PlcIECValue<Short> {
     static Short minValue = 0;
     static Short maxValue = (short) Byte.MAX_VALUE * 2 + 1;
 
+    public static PlcBYTE of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcBYTE((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcBYTE((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcBYTE((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcBYTE((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcBYTE((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcBYTE((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcBYTE((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcBYTE((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcBYTE((BigDecimal) value);
+        } else {
+            return new PlcBYTE((String) value);
+        }
+    }
+
     public PlcBYTE(Boolean value) {
         super();
         this.value = value ? Short.valueOf((short) 1) : Short.valueOf((short) 0);

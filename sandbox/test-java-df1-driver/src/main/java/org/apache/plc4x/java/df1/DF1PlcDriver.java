@@ -59,6 +59,11 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
     }
 
     @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
+    }
+
+    @Override
     protected ProtocolStackConfigurer<DF1Command> getStackConfigurer() {
         return SingleProtocolStackConfigurer.builder(DF1Command.class, DF1CommandIO.class)
             .withProtocol(Df1ProtocolLogic.class)

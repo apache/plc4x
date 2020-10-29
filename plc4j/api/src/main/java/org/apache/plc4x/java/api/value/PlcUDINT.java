@@ -34,6 +34,30 @@ public class PlcUDINT extends PlcIECValue<Long> {
     static Long minValue = (long) 0;
     static Long maxValue = (long) Integer.MAX_VALUE * 2 + 1;
 
+    public static PlcUDINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcUDINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcUDINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcUDINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcUDINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcUDINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcUDINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcUDINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcUDINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcUDINT((BigDecimal) value);
+        } else {
+            return new PlcUDINT((String) value);
+        }
+    }
+
     public PlcUDINT(Boolean value) {
         super();
         this.value = value ? (long) 1 : (long) 0;

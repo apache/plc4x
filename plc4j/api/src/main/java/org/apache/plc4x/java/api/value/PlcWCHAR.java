@@ -34,6 +34,30 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
     static Integer minValue = 0;
     static Integer maxValue = Short.MAX_VALUE * 2 + 1;
 
+    public static PlcWCHAR of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcWCHAR((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcWCHAR((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcWCHAR((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcWCHAR((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcWCHAR((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcWCHAR((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcWCHAR((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcWCHAR((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcWCHAR((BigDecimal) value);
+        } else {
+            return new PlcWCHAR((String) value);
+        }
+    }
+
     public PlcWCHAR(Boolean value) {
         super();
         this.value = value ? (Integer) 1 : (Integer) 0;

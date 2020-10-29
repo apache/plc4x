@@ -128,26 +128,26 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, PlcValue> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", PlcValues.of(true));
-        map.put(prefix + "byteVar", PlcValues.of((byte) 1));
-        map.put(prefix + "shortVar", PlcValues.of((short) 1));
-        map.put(prefix + "intVar", PlcValues.of(1));
-        map.put(prefix + "longVar", PlcValues.of(1L));
-        map.put(prefix + "boxedBoolVar", PlcValues.of(1L));
-        map.put(prefix + "boxedByteVar", PlcValues.of((byte) 1));
-        map.put(prefix + "boxedShortVar", PlcValues.of((short) 1));
-        map.put(prefix + "boxedIntegerVar", PlcValues.of(1));
-        map.put(prefix + "boxedLongVar", PlcValues.of(1L));
-        map.put(prefix + "bigIntegerVar", PlcValues.of(BigInteger.ONE));
-        map.put(prefix + "floatVar", PlcValues.of(1f));
-        map.put(prefix + "doubleVar", PlcValues.of(1d));
-        map.put(prefix + "bigDecimalVar", PlcValues.of(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", PlcValues.of(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", PlcValues.of(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", PlcValues.of(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", PlcValues.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", PlcValues.of(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", PlcValues.of("Hallo"));
+        map.put(prefix + "boolVar", IEC61131ValueHandler.newPlcValue(true));
+        map.put(prefix + "byteVar", IEC61131ValueHandler.newPlcValue((byte) 1));
+        map.put(prefix + "shortVar", IEC61131ValueHandler.newPlcValue((short) 1));
+        map.put(prefix + "intVar", IEC61131ValueHandler.newPlcValue(1));
+        map.put(prefix + "longVar", IEC61131ValueHandler.newPlcValue(1L));
+        map.put(prefix + "boxedBoolVar", IEC61131ValueHandler.newPlcValue(1L));
+        map.put(prefix + "boxedByteVar", IEC61131ValueHandler.newPlcValue((byte) 1));
+        map.put(prefix + "boxedShortVar", IEC61131ValueHandler.newPlcValue((short) 1));
+        map.put(prefix + "boxedIntegerVar", IEC61131ValueHandler.newPlcValue(1));
+        map.put(prefix + "boxedLongVar", IEC61131ValueHandler.newPlcValue(1L));
+        map.put(prefix + "bigIntegerVar", IEC61131ValueHandler.newPlcValue(BigInteger.ONE));
+        map.put(prefix + "floatVar", IEC61131ValueHandler.newPlcValue(1f));
+        map.put(prefix + "doubleVar", IEC61131ValueHandler.newPlcValue(1d));
+        map.put(prefix + "bigDecimalVar", IEC61131ValueHandler.newPlcValue(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", IEC61131ValueHandler.newPlcValue(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", IEC61131ValueHandler.newPlcValue(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", IEC61131ValueHandler.newPlcValue(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", IEC61131ValueHandler.newPlcValue(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", IEC61131ValueHandler.newPlcValue(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "stringVar", IEC61131ValueHandler.newPlcValue("Hallo"));
         return getPlcEntityManager(map);
     }
 
@@ -237,12 +237,16 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
                 ));
             return CompletableFuture.completedFuture(new DefaultPlcWriteResponse((InternalPlcWriteRequest) writeRequest, map));
         };
-        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler()));
+        when(connection.writeRequestBuilder()).then(invocation -> new DefaultPlcWriteRequest.Builder(writer, getFieldHandler(), getValueHandler()));
 
         return new PlcEntityManager(mock);
     }
 
     private PlcFieldHandler getFieldHandler() {
+        return new NoOpPlcFieldHandler();
+    }
+
+    private PlcFieldHandler getValueHandler() {
         return new NoOpPlcFieldHandler();
     }
 
@@ -252,70 +256,13 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
             return new org.apache.plc4x.java.api.model.PlcField() {
             };
         }
+    }
 
+    private static class NoOpPlcValueHandler extends IEC61131Valuehandler {
         @Override
-        public PlcValue encodeBoolean(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeByte(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeShort(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeBigInteger(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeLong(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeFloat(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeBigDecimal(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeDouble(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeString(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeDate(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
-        }
-
-        @Override
-        public PlcValue encodeDateTime(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
-            return null;
+        public org.apache.plc4x.java.api.model.PlcValue newPlcValue(PlcField field, Object value) throws PlcUnsuppportedDataTypeException {
+            throw PlcUnsuppportedDataTypeException("Data Type " + field.getPlcDataType())
+                + "Is not supported");
         }
     }
 

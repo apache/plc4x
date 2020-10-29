@@ -33,6 +33,30 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     static BigInteger minValue = BigInteger.valueOf(0);
     static BigInteger maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
+    public static PlcLWORD of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcLWORD((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcLWORD((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcLWORD((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcLWORD((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcLWORD((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcLWORD((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcLWORD((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcLWORD((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcLWORD((BigDecimal) value);
+        } else {
+            return new PlcLWORD((String) value);
+        }
+    }
+
     public PlcLWORD(Boolean value) {
         super();
         this.value = value ? BigInteger.valueOf(1) : BigInteger.valueOf(0);

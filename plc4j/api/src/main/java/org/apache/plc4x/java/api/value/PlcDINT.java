@@ -34,6 +34,30 @@ public class PlcDINT extends PlcIECValue<Integer> {
     static Integer minValue = Integer.MIN_VALUE;
     static Integer maxValue = Integer.MAX_VALUE;
 
+    public static PlcDINT of(Object value) {
+        if (value instanceof Boolean) {
+            return new PlcDINT((Boolean) value);
+        } else if (value instanceof Byte) {
+            return new PlcDINT((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcDINT((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcDINT((Integer) value);
+        } else if (value instanceof Long) {
+            return new PlcDINT((Long) value);
+        } else if (value instanceof Float) {
+            return new PlcDINT((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcDINT((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcDINT((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcDINT((BigDecimal) value);
+        } else {
+            return new PlcDINT((String) value);
+        }
+    }
+
     public PlcDINT(Boolean value) {
         super();
         this.value = value ? 1 : 0;

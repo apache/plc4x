@@ -27,6 +27,8 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.field.KnxNetIpFieldHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.knxnetip.readwrite.KNXNetIPMessage;
+import org.apache.plc4x.java.api.value.IEC61131ValueHandler;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcFieldHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -83,6 +85,11 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KNXNetIPMessage> {
     @Override
     protected PlcFieldHandler getFieldHandler() {
         return new KnxNetIpFieldHandler();
+    }
+
+    @Override
+    protected PlcValueHandler getValueHandler() {
+        return new IEC61131ValueHandler();
     }
 
     @Override

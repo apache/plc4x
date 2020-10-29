@@ -181,7 +181,7 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 if(data.length == 1) {
                                     plcValue = new PlcINT(data[0]);
                                 } else {
-                                    plcValue = new PlcList(Arrays.asList(data));
+                                    plcValue = IEC61131ValueHandler.newPlcValue(data);
                                 }
                             }
                             break;
@@ -190,9 +190,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[1]>> 7) & 1) == 0)  {
-                                    plcValue = PlcValues.of((data[1] << 8) + data[0]);  // positive number
+                                    plcValue = IEC61131ValueHandler.newPlcValue((data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    plcValue = PlcValues.of((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.newPlcValue((((~data[1] & 0b01111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -201,9 +201,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (((data[3]>> 7) & 1) == 0)  {
-                                    plcValue = PlcValues.of((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
+                                    plcValue = IEC61131ValueHandler.newPlcValue((data[3] << 24) + (data[2] << 16) + (data[1] << 8) + data[0]);  // positive number
                                 } else {
-                                    plcValue = PlcValues.of((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
+                                    plcValue = IEC61131ValueHandler.newPlcValue((((~data[3] & 0b01111111) << 24) + ((~(data[2]-1) & 0b11111111) << 16)+ ((~(data[1]-1) & 0b11111111) << 8) + (~(data[0]-1) & 0b11111111))  * -1);  // negative number
                                 }
                             }
                             break;
@@ -212,9 +212,9 @@ public class Plc4xAbEthProtocol extends PlcMessageToMessageCodec<CIPEncapsulatio
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 short[] data = df1PTLR.getData();
                                 if (field.getBitNumber() < 8) {
-                                    plcValue = PlcValues.of((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
+                                    plcValue = IEC61131ValueHandler.newPlcValue((data[0] & (1 <<  field.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = PlcValues.of((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = IEC61131ValueHandler.newPlcValue((data[1] & (1 << (field.getBitNumber() - 8) )) != 0);   // read from second byte
                                 }
                             }
                             break;

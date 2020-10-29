@@ -26,24 +26,30 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcList extends PlcValueAdapter {
 
-    private final List<PlcValue> listItems;
+    private List<PlcValue> listItems;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcList(@JsonProperty("listItems") List<?> listItems) {
+    public PlcList() {
+        listItems = new ArrayList<>();
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PlcList(@JsonProperty("listItems") List<PlcValue> listItems) {
         List<PlcValue> safelist = listItems.stream().map(plcValue -> {
             // to avoid unwrapped list cause of type erasure
-            if (plcValue instanceof PlcValue) {
-                return (PlcValue) plcValue;
-            } else {
-                return PlcValues.of(plcValue);
-            }
+            return plcValue;
         }).collect(Collectors.toList());
         this.listItems = Collections.unmodifiableList(safelist);
+    }
+
+    public void add(PlcValue value) {
+        listItems.add(value);        
     }
 
     @Override
@@ -71,7 +77,7 @@ public class PlcList extends PlcValueAdapter {
 
     @Override
     @JsonIgnore
-    public List<? extends PlcValue> getList() {
+    public List<PlcValue> getList() {
         return listItems;
     }
 
