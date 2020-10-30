@@ -17,7 +17,7 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== Modbus (TCP/Serial)
+== Modbus (TCP/UDP/Serial)
 
 === Connection String Options
 
@@ -46,9 +46,7 @@
 
 |Compatible Transports:
 2+| - `tcp` (Default Port: 502)
-#- `serial`
-#- `raw-socket`
-#- `pcap-replay`
+- `udp` (Default Port: 502)
 
 3+|Supported Operations
 
@@ -74,6 +72,17 @@
 
 === Individual Resource Address Format
 
+==== Connection String
+
+Modbus has the following connection string format:-
+----
+modbus:{transport}://{ip-address}:{port}?{options}
+----
+An example connection string would look like:-
+----
+modbus:tcp://127.0.0.1:502
+----
+Note the transport, port and option fields are optional.
 
 
 ==== General Format
@@ -142,11 +151,6 @@ The following data types are supported
 - LREAL (double)
 - CHAR (char)
 - WCHAR (2 byte char)
-
-This may have partial support but more testing is required.
-
-- STRING (char[]) - When reading returns an unsigned byte array.
-- WSTRING (2 byte char[]) - When reading returns an unsigned word array.
 
 ==== Some useful tips
 
