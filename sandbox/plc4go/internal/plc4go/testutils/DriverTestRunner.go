@@ -27,6 +27,7 @@ import (
 	"os"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/test"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
@@ -54,20 +55,33 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		return errors.New("error getting a connection: " + connectionResult.Err.Error())
 	}
 
+	fmt.Printf("\n\n-------------------------------------------------------\nExecuting testcase: %s \n", testcase.name)
+
 	// Run the setup steps
 	for _, testStep := range m.setupSteps {
-		m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		if err != nil {
+			return errors.New("error in setup step " + testStep.name + ": " + err.Error())
+		}
 	}
 
 	// Run the actual scenario steps
 	for _, testStep := range testcase.steps {
-		m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		if err != nil {
+			return errors.New("error in step " + testStep.name + ": " + err.Error())
+		}
 	}
 
 	// Run the teardown steps
 	for _, testStep := range m.teardownSteps {
-		m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		err := m.ExecuteStep(connectionResult.Connection, &testcase, testStep)
+		if err != nil {
+			return errors.New("error in teardown step " + testStep.name + ": " + err.Error())
+		}
 	}
+
+	fmt.Printf("-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
 
 	return nil
 }
@@ -77,7 +91,12 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
 	}
-	transportInstance := mc.GetTransportInstance()
+	testTransportInstance, ok := mc.GetTransportInstance().(transports.TestTransportInstance)
+	if !ok {
+		return errors.New("transport must be of type TestTransport")
+	}
+
+	fmt.Printf(" - Executing step: %s \n", step.name)
 
 	switch step.stepType {
 	case StepType_API_REQUEST:
@@ -167,7 +186,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Serialize the model into bytes
 		ser, ok := message.(utils.Serializable)
 		if !ok {
-			return errors.New("error converting type into Serializable type: " + err.Error())
+			return errors.New("error converting type into Serializable type")
 		}
 		wb := utils.WriteBufferNew()
 		err = ser.Serialize(*wb)
@@ -177,7 +196,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		expectedRawOutput := wb.GetBytes()
 
 		// Read exactly this amount of bytes from the transport
-		rawOutput, err := transportInstance.Read(uint32(len(expectedRawOutput)))
+		rawOutput, err := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawOutput)))
 		if err != nil {
 			return errors.New("error getting bytes from transport: " + err.Error())
 		}
@@ -195,7 +214,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if err != nil {
 			return errors.New("error decoding hex-encoded byte data: " + err.Error())
 		}
-		rawInput, err := transportInstance.Read(uint32(len(expectedRawInput)))
+		rawInput, err := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawInput)))
 		if err != nil {
 			return errors.New("error getting bytes from transport: " + err.Error())
 		}
@@ -220,7 +239,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		// Serialize the model into bytes
 		ser, ok := message.(utils.Serializable)
 		if !ok {
-			return errors.New("error converting type into Serializable type: " + err.Error())
+			return errors.New("error converting type into Serializable type")
 		}
 		wb := utils.WriteBufferNew()
 		err = ser.Serialize(*wb)
@@ -229,7 +248,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		// Send these bytes to the transport
-		err = transportInstance.Write(wb.GetBytes())
+		err = testTransportInstance.FillReadBuffer(wb.GetBytes())
 		if err != nil {
 			return errors.New("error writing data to transport: " + err.Error())
 		}
@@ -241,7 +260,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 
 		// Send these bytes to the transport
-		err = transportInstance.Write(rawInput)
+		err = testTransportInstance.FillReadBuffer(rawInput)
 		if err != nil {
 			return errors.New("error writing data to transport: " + err.Error())
 		}
@@ -255,7 +274,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		time.Sleep(time.Duration(delay))
 	case StepType_TERMINATE:
 		// Simply close the transport connection
-		err := transportInstance.Close()
+		err := testTransportInstance.Close()
 		if err != nil {
 			return errors.New("error closing transport: " + err.Error())
 		}
@@ -318,7 +337,11 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string) 
 	driverManager.RegisterDriver(driver)
 
 	for _, testcase := range testsuite.testcases {
-		testsuite.Run(driverManager, testcase)
+		err := testsuite.Run(driverManager, testcase)
+		if err != nil {
+			fmt.Printf("-------------------------------------------------------\nFailure\n%s\n-------------------------------------------------------\n", err.Error())
+			t.Fail()
+		}
 	}
 	// Execute the tests in the testsuite
 	fmt.Printf(testsuite.name)
