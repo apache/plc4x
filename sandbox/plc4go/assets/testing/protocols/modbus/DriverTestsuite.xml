@@ -26,80 +26,6 @@
 
   <driver-name>modbus</driver-name>
 
-  <!-- Single element read BOOL (Coil) -->
-
-
-  <!--testcase>
-    <name>Single element read BOOL</name>
-    <steps>
-      <api-request name="Receive Read Request from application">
-        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
-          <fields>
-            <field className="org.apache.plc4x.test.driver.model.api.TestField">
-              <name>hurz</name>
-              <address>holding-register:1:BOOL</address>
-            </field>
-          </fields>
-        </TestReadRequest>
-      </api-request>
-      <outgoing-plc-message name="Send Modbus Input-Register Read Request">
-        <parser-arguments>
-          <response>false</response>
-        </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>10</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
-            <startingAddress>0</startingAddress>
-            <quantity>4</quantity>
-          </pdu>
-        </ModbusTcpADU>
-      </outgoing-plc-message>
-      <incoming-plc-message name="Receive Modbus Input-Register Read Response">
-        <parser-arguments>
-          <response>true</response>
-        </parser-arguments>
-        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
-          <transactionIdentifier>10</transactionIdentifier>
-          <unitIdentifier>1</unitIdentifier>
-          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
-            <value>QEkP20BJD9s=</value>
-          </pdu>
-        </ModbusTcpADU>
-      </incoming-plc-message>
-      <api-response name="Report Read Response to application">
-        <DefaultPlcReadResponse className="org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse">
-          <request className="org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest">
-            <hurz className="org.apache.plc4x.java.modbus.field.ModbusFieldHoldingRegister">
-              <address>0</address>
-              <dataType>IEC61131_REAL</dataType>
-              <lengthBytes>8</lengthBytes>
-              <lengthWords>4</lengthWords>
-              <dataTypeSize>4</dataTypeSize>
-            </hurz>
-          </request>
-          <hurz>
-            <code>OK</code>
-            <value className="org.apache.plc4x.java.api.value.PlcList">
-              <object>java.util.Collections..UnmodifiableRandomAccessList</object>
-              <object>org.apache.plc4x.java.api.value.PlcREAL</object>
-              <object>
-                <object>java.lang.Float</object>
-                <object>3.1415927</object>
-              </object>
-              <object>org.apache.plc4x.java.api.value.PlcREAL</object>
-              <object>
-                <object>java.lang.Float</object>
-                <object>3.1415927</object>
-              </object>
-            </value>
-          </hurz>
-        </DefaultPlcReadResponse>
-      </api-response>
-    </steps>
-  </testcase-->
-
-
   <testcase>
     <name>Single element read request</name>
     <steps>
@@ -114,7 +40,6 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
-        <!-- 000a00000006010300000004 -->
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
@@ -128,7 +53,6 @@
         </ModbusTcpADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Read Response">
-        <!-- 000b0000000b0103080000000000000000 -->
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
@@ -177,7 +101,6 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send Modbus Input-Register Read Request">
-        <!-- 000a00000006010300000004 -->
         <parser-arguments>
           <response>false</response>
         </parser-arguments>
@@ -191,7 +114,6 @@
         </ModbusTcpADU>
       </outgoing-plc-message>
       <incoming-plc-message name="Receive Modbus Input-Register Read Response">
-        <!-- 000b0000000b0103080000000000000000 -->
         <parser-arguments>
           <response>true</response>
         </parser-arguments>
@@ -223,6 +145,108 @@
                 <PlcREAL>3.1415927</PlcREAL>
               </PlcList>
             </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
+    </steps>
+  </testcase>
+
+  <testcase>
+    <name>Multi element read request</name>
+    <steps>
+      <api-request name="Receive Read Request from application">
+        <TestReadRequest className="org.apache.plc4x.test.driver.model.api.TestReadRequest">
+          <fields>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz1</name>
+              <address>holding-register:1:REAL</address>
+            </field>
+            <field className="org.apache.plc4x.test.driver.model.api.TestField">
+              <name>hurz2</name>
+              <address>holding-register:3:REAL</address>
+            </field>
+          </fields>
+        </TestReadRequest>
+      </api-request>
+      <outgoing-plc-message name="Send First Item Modbus Input-Register Read Request">
+        <!-- 000a00000006010300000004 -->
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>1</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
+            <startingAddress>0</startingAddress>
+            <quantity>2</quantity>
+          </pdu>
+        </ModbusTcpADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive First Item Modbus Input-Register Read Response">
+        <!-- 000b0000000b0103080000000000000000 -->
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>1</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
+            <value>QEkP20BJD9s=</value>
+          </pdu>
+        </ModbusTcpADU>
+      </incoming-plc-message>
+      <outgoing-plc-message name="Send Second Item Modbus Input-Register Read Request">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>2</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest">
+            <startingAddress>2</startingAddress>
+            <quantity>2</quantity>
+          </pdu>
+        </ModbusTcpADU>
+      </outgoing-plc-message>
+      <incoming-plc-message name="Receive Second Item Modbus Input-Register Read Response">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
+        <ModbusTcpADU className="org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU">
+          <transactionIdentifier>1</transactionIdentifier>
+          <unitIdentifier>2</unitIdentifier>
+          <pdu className="org.apache.plc4x.java.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse">
+            <value>QEkP20BJD9s=</value>
+          </pdu>
+        </ModbusTcpADU>
+      </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <PlcReadRequest>
+            <fields>
+              <hurz1>
+                <ModbusFieldHoldingRegister>
+                  <address>0</address>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>IEC61131_REAL</dataType>
+                </ModbusFieldHoldingRegister>
+              </hurz1>
+              <hurz2>
+                <ModbusFieldHoldingRegister>
+                  <address>2</address>
+                  <numberOfElements>1</numberOfElements>
+                  <dataType>IEC61131_REAL</dataType>
+                </ModbusFieldHoldingRegister>
+              </hurz2>
+            </fields>
+          </PlcReadRequest>
+          <values>
+            <hurz1 result="OK">
+              <PlcREAL>3.1415927</PlcREAL>
+            </hurz1>
+            <hurz2 result="OK">
+              <PlcREAL>3.1415927</PlcREAL>
+            </hurz2>
           </values>
         </PlcReadResponse>
       </api-response>

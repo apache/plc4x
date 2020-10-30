@@ -19,74 +19,87 @@
 package test
 
 import (
-    "errors"
-    "net/url"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+	"errors"
+	"net/url"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
 )
 
 type TestTransport struct {
-    transports.Transport
+	transports.Transport
 }
 
 func NewTestTransport() *TestTransport {
-    return &TestTransport{}
+	return &TestTransport{}
 }
 
 func (m TestTransport) GetTransportCode() string {
-    return "test"
+	return "test"
 }
 
 func (m TestTransport) GetTransportName() string {
-    return "Test Transport"
+	return "Test Transport"
 }
 
 func (m TestTransport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-    transportInstance := NewTestTransportInstance(&m)
+	transportInstance := NewTestTransportInstance(&m)
 
-    castFunc := func(typ interface{}) (transports.TransportInstance, error) {
-        if transportInstance, ok := typ.(transports.TransportInstance); ok {
-            return transportInstance, nil
-        }
-        return nil, errors.New("couldn't cast to TransportInstance")
-    }
-    return castFunc(transportInstance)
+	castFunc := func(typ interface{}) (transports.TransportInstance, error) {
+		if transportInstance, ok := typ.(transports.TransportInstance); ok {
+			return transportInstance, nil
+		}
+		return nil, errors.New("couldn't cast to TransportInstance")
+	}
+	return castFunc(transportInstance)
 }
 
 type TestTransportInstance struct {
-    buffer []byte
-    transport *TestTransport
+	readBuffer  []byte
+	writeBuffer []byte
+	transport   *TestTransport
 }
 
 func NewTestTransportInstance(transport *TestTransport) *TestTransportInstance {
-    return &TestTransportInstance {
-        buffer: []byte{},
-        transport: transport,
-    }
+	return &TestTransportInstance{
+		readBuffer:  []byte{},
+		writeBuffer: []byte{},
+		transport:   transport,
+	}
 }
 
 func (m *TestTransportInstance) Connect() error {
-    return nil
+	return nil
 }
 
 func (m *TestTransportInstance) Close() error {
-    return nil
+	return nil
 }
 
 func (m *TestTransportInstance) GetNumReadableBytes() (uint32, error) {
-    return uint32(len(m.buffer)), nil
+	return uint32(len(m.readBuffer)), nil
 }
 
 func (m *TestTransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
-    return m.buffer[0:numBytes], nil
+	return m.readBuffer[0:numBytes], nil
 }
 
 func (m *TestTransportInstance) Read(numBytes uint32) ([]uint8, error) {
-    data := m.buffer[0:int(numBytes)]
-    m.buffer = m.buffer[int(numBytes):]
-    return data, nil
+	data := m.readBuffer[0:int(numBytes)]
+	m.readBuffer = m.readBuffer[int(numBytes):]
+	return data, nil
 }
 
 func (m *TestTransportInstance) Write(data []uint8) error {
-    m.buffer = append(m.buffer, data...)
-    return nil
+	m.writeBuffer = append(m.writeBuffer, data...)
+	return nil
+}
+
+func (m *TestTransportInstance) FillReadBuffer(data []uint8) error {
+	m.readBuffer = append(m.readBuffer, data...)
+	return nil
+}
+
+func (m *TestTransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
+	data := m.writeBuffer[0:int(numBytes)]
+	m.writeBuffer = m.writeBuffer[int(numBytes):]
+	return data, nil
 }

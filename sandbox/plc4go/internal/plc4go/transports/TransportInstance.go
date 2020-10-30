@@ -19,15 +19,18 @@
 package transports
 
 type TransportInstance interface {
+	Connect() error
+	Close() error
 
-    Connect() error
-    Close() error
+	GetNumReadableBytes() (uint32, error)
+	PeekReadableBytes(numBytes uint32) ([]uint8, error)
+	Read(numBytes uint32) ([]uint8, error)
 
-    GetNumReadableBytes() (uint32, error)
-    PeekReadableBytes(numBytes uint32) ([]uint8, error)
-    Read(numBytes uint32) ([]uint8, error)
-
-    Write(data []uint8) error
-
+	Write(data []uint8) error
 }
 
+type TestTransportInstance interface {
+	TransportInstance
+	FillReadBuffer(data []uint8) error
+	DrainWriteBuffer(numBytes uint32) ([]uint8, error)
+}

@@ -38,15 +38,15 @@ type ModbusReader struct {
 	spi.PlcReader
 }
 
-func NewModbusReader(transactionIdentifier uint16, messageCodec spi.MessageCodec) ModbusReader {
-	return ModbusReader{
+func NewModbusReader(transactionIdentifier uint16, messageCodec spi.MessageCodec) *ModbusReader {
+	return &ModbusReader{
 		transactionIdentifier: transactionIdentifier,
 		unitIdentifier:        0,
 		messageCodec:          messageCodec,
 	}
 }
 
-func (m ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
+func (m *ModbusReader) Read(readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	result := make(chan model.PlcReadRequestResult)
 	// If we are requesting only one field, use a
 	if len(readRequest.GetFieldNames()) == 1 {

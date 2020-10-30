@@ -144,7 +144,7 @@ func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "Fields"}}); err != nil {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
 		return err
 	}
 	for fieldName, field := range m.Fields {
@@ -158,7 +158,7 @@ func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "Fields"}}); err != nil {
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
 		return err
 	}
 

@@ -46,7 +46,7 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 		if err := enc.Encode(diff); err != nil {
 			return errors.New("Error outputting results: " + err.Error())
 		}
-		return errors.New("there were differences")
+		return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
 	}
 	return nil
 }
