@@ -17,7 +17,7 @@
 
 == Getting Started
 
-=== Using the PLC4X API directly
+=== Using the PLC4J API directly
 
 In order to write a valid PLC4X Java application, all you need, is to add a dependency to the `api module`.
 When using Maven, all you need to do is add this dependency:
@@ -32,7 +32,7 @@ When using Maven, all you need to do is add this dependency:
 ----
 
 This will allow you to write a valid application, that compiles fine.
-However in order to actually connect to a device using a given protocol, you need to add this protocol implementation to the classpath.
+However, in order to actually connect to a device using a given protocol, you need to add this protocol implementation to the classpath.
 
 For example in order to communicate with an `S7 device` using the `S7 Protocol`, you would need to add the following dependency:
 
