@@ -146,6 +146,14 @@ func TestPlc4goDriver(t *testing.T) {
 	}
 	connection := connectionResult.Connection
 
+	// Try to ping the remote device
+	pingResultChannel := connection.Ping()
+	pingResult := <-pingResultChannel
+	if pingResult.Err != nil {
+		t.Errorf("couldn't ping device: %s", pingResult.Err.Error())
+		return
+	}
+
 	// Make sure the connection is closed at the end
 	defer connection.Close()
 
