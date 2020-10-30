@@ -19,23 +19,24 @@
 package modbus
 
 import (
+	"encoding/xml"
 	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 	"strconv"
 )
 
 const (
-    MODBUS_PROTOCOL_ADDRESS_OFFSET = 1
+	MODBUS_PROTOCOL_ADDRESS_OFFSET = 1
 )
 
 type ModbusPlcField struct {
-	FieldType uint8
+	FieldType ModbusFieldType
 	Address   uint16
 	Quantity  uint16
 	Datatype  string
 }
 
-func NewModbusPlcField(fieldType uint8, address uint16, quantity uint16, datatype string) ModbusPlcField {
+func NewModbusPlcField(fieldType ModbusFieldType, address uint16, quantity uint16, datatype string) ModbusPlcField {
 	return ModbusPlcField{
 		FieldType: fieldType,
 		Address:   address - MODBUS_PROTOCOL_ADDRESS_OFFSET,
@@ -44,7 +45,7 @@ func NewModbusPlcField(fieldType uint8, address uint16, quantity uint16, datatyp
 	}
 }
 
-func NewModbusPlcFieldFromStrings(fieldType uint8, addressString string, quantityString string, datatype string) (model.PlcField, error) {
+func NewModbusPlcFieldFromStrings(fieldType ModbusFieldType, addressString string, quantityString string, datatype string) (model.PlcField, error) {
 	address, err := strconv.Atoi(addressString)
 	if err != nil {
 		return nil, errors.New("Couldn't parse address string '" + addressString + "' into an int")
@@ -57,12 +58,33 @@ func NewModbusPlcFieldFromStrings(fieldType uint8, addressString string, quantit
 }
 
 func (m ModbusPlcField) GetTypeName() string {
-    return m.Datatype
+	return m.Datatype
 }
 
 func CastFromPlcField(plcField model.PlcField) (ModbusPlcField, error) {
-    if modbusField, ok := plcField.(ModbusPlcField); ok {
-        return modbusField, nil
-    }
-    return ModbusPlcField{}, errors.New("coudln't cast to ModbusPlcField")
+	if modbusField, ok := plcField.(ModbusPlcField); ok {
+		return modbusField, nil
+	}
+	return ModbusPlcField{}, errors.New("couldn't cast to ModbusPlcField")
+}
+
+func (m ModbusPlcField) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeElement(m.Address, xml.StartElement{Name: xml.Name{Local: "address"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.Quantity, xml.StartElement{Name: xml.Name{Local: "numberOfElements"}}); err != nil {
+		return err
+	}
+	if err := e.EncodeElement(m.Datatype, xml.StartElement{Name: xml.Name{Local: "dataType"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: m.FieldType.GetName()}}); err != nil {
+		return err
+	}
+	return nil
 }

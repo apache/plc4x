@@ -19,12 +19,13 @@
 package values
 
 import (
-    "time"
+	"encoding/xml"
+	"time"
 )
 
 type PlcTIME struct {
 	value uint32
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcTIME(value uint32) PlcTIME {
@@ -36,6 +37,14 @@ func NewPlcTIME(value uint32) PlcTIME {
 func (m PlcTIME) IsDuration() bool {
 	return true
 }
+
 func (m PlcTIME) GetDuration() time.Duration {
 	return time.Duration(m.value)
+}
+
+func (m PlcTIME) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcTIME"}}); err != nil {
+		return err
+	}
+	return nil
 }

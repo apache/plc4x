@@ -19,12 +19,13 @@
 package values
 
 import (
-    "math"
+	"encoding/xml"
+	"math"
 )
 
 type PlcDINT struct {
 	value int32
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcDINT(value int32) PlcDINT {
@@ -122,4 +123,11 @@ func (m PlcDINT) GetFloat32() float32 {
 func (m PlcDINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetInt32())
+}
+
+func (m PlcDINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDINT"}}); err != nil {
+		return err
+	}
+	return nil
 }

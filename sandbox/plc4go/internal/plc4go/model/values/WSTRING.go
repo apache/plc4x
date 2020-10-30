@@ -19,12 +19,13 @@
 package values
 
 import (
-    "unicode/utf16"
+	"encoding/xml"
+	"unicode/utf16"
 )
 
 type PlcWSTRING struct {
 	value []rune
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcWSTRING(value []uint16) PlcWSTRING {
@@ -39,4 +40,11 @@ func (m PlcWSTRING) IsString() bool {
 
 func (m PlcWSTRING) GetString() string {
 	return string(m.value)
+}
+
+func (m PlcWSTRING) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcWSTRING"}}); err != nil {
+		return err
+	}
+	return nil
 }

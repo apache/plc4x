@@ -19,12 +19,13 @@
 package values
 
 import (
-    "math"
+	"encoding/xml"
+	"math"
 )
 
 type PlcUSINT struct {
 	value uint8
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcUSINT(value uint8) PlcUSINT {
@@ -87,4 +88,11 @@ func (m PlcUSINT) GetFloat32() float32 {
 func (m PlcUSINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetUint8())
+}
+
+func (m PlcUSINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcUSINT"}}); err != nil {
+		return err
+	}
+	return nil
 }

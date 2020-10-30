@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcBYTE struct {
 	value uint8
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcBYTE(value uint8) PlcBYTE {
@@ -53,4 +55,11 @@ func (m PlcBYTE) GetBooleanArray() []bool {
 		m.value>>2&1 == 1, m.value>>3&1 == 1,
 		m.value>>4&1 == 1, m.value>>5&1 == 1,
 		m.value>>6&1 == 1, m.value>>7&1 == 1}
+}
+
+func (m PlcBYTE) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBYTE"}}); err != nil {
+		return err
+	}
+	return nil
 }

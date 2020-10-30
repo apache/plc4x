@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcLWORD struct {
 	value uint64
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcLWORD(value uint64) PlcLWORD {
@@ -81,4 +83,11 @@ func (m PlcLWORD) GetBooleanArray() []bool {
 		m.value>>58&1 == 1, m.value>>59&1 == 1,
 		m.value>>60&1 == 1, m.value>>61&1 == 1,
 		m.value>>62&1 == 1, m.value>>63&1 == 1}
+}
+
+func (m PlcLWORD) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcLWORD"}}); err != nil {
+		return err
+	}
+	return nil
 }

@@ -18,7 +18,10 @@
 //
 package values
 
-import api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+import (
+	"encoding/xml"
+	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+)
 
 type PlcStruct struct {
 	values map[string]api.PlcValue
@@ -59,4 +62,21 @@ func (m PlcStruct) GetValue(key string) api.PlcValue {
 
 func (m PlcStruct) GetStruct() map[string]api.PlcValue {
 	return m.values
+}
+
+func (m PlcStruct) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
+		return err
+	}
+
+	for fieldName, fieldValue := range m.values {
+		if err := e.EncodeElement(fieldValue, xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcNULL"}}); err != nil {
+		return err
+	}
+	return nil
 }

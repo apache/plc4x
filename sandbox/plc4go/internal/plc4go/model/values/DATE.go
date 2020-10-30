@@ -19,12 +19,13 @@
 package values
 
 import (
-    "time"
+	"encoding/xml"
+	"time"
 )
 
 type PlcDATE struct {
 	value time.Time
-    PlcValueAdapter
+	PlcValueAdapter
 }
 
 func NewPlcDATE(value time.Time) PlcDATE {
@@ -39,4 +40,11 @@ func (m PlcDATE) IsTime() bool {
 }
 func (m PlcDATE) GetTime() time.Time {
 	return m.value
+}
+
+func (m PlcDATE) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcDATE"}}); err != nil {
+		return err
+	}
+	return nil
 }

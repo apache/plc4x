@@ -18,7 +18,10 @@
 //
 package values
 
-import api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+import (
+	"encoding/xml"
+	api "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+)
 
 type PlcList struct {
 	values []api.PlcValue
@@ -45,4 +48,21 @@ func (m PlcList) GetIndex(i uint32) api.PlcValue {
 
 func (m PlcList) GetList() []api.PlcValue {
 	return m.values
+}
+
+func (m PlcList) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcList"}}); err != nil {
+		return err
+	}
+
+	for _, value := range m.values {
+		if err := e.EncodeElement(value, xml.StartElement{Name: xml.Name{Local: "-set-by-element-"}}); err != nil {
+			return err
+		}
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcList"}}); err != nil {
+		return err
+	}
+	return nil
 }

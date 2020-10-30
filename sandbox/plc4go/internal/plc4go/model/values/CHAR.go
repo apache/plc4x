@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcCHAR struct {
 	value []byte
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcCHAR(value uint8) PlcCHAR {
@@ -35,4 +37,11 @@ func (m PlcCHAR) IsString() bool {
 
 func (m PlcCHAR) GetString() string {
 	return string(m.value)
+}
+
+func (m PlcCHAR) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcCHAR"}}); err != nil {
+		return err
+	}
+	return nil
 }

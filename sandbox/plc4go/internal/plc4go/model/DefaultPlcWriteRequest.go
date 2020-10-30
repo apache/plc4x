@@ -19,6 +19,7 @@
 package model
 
 import (
+	"encoding/xml"
 	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
@@ -80,4 +81,33 @@ type DefaultPlcWriteRequest struct {
 
 func (m DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {
 	return m.writer.Write(m)
+}
+
+func (m DefaultPlcWriteRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcWriteRequest"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
+	for fieldName, field := range m.fields {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcWriteRequest"}}); err != nil {
+		return err
+	}
+	return nil
 }
