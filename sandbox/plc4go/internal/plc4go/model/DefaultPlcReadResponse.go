@@ -19,22 +19,78 @@
 package model
 
 import (
+	"encoding/xml"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/values"
 )
 
 type DefaultPlcReadResponse struct {
-	values map[string]values.PlcValue
+	request       model.PlcReadRequest
+	responseCodes map[string]model.PlcResponseCode
+	values        map[string]values.PlcValue
 	model.PlcReadResponse
 }
 
-func NewDefaultPlcReadResponse(values map[string]values.PlcValue) DefaultPlcReadResponse {
-    return DefaultPlcReadResponse {
-        values: values,
-    }
+func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) DefaultPlcReadResponse {
+	return DefaultPlcReadResponse{
+		request:       request,
+		responseCodes: responseCodes,
+		values:        values,
+	}
+}
+
+func (m DefaultPlcReadResponse) GetFieldNames() []string {
+	var fieldNames []string
+	for fieldName, _ := range m.values {
+		fieldNames = append(fieldNames, fieldName)
+	}
+	return fieldNames
+}
+
+func (m DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
+	return m.request
+}
+
+func (m DefaultPlcReadResponse) GetResponseCode(name string) model.PlcResponseCode {
+	return m.responseCodes[name]
 }
 
 func (m DefaultPlcReadResponse) GetValue(name string) values.PlcValue {
-    return m.values[name]
+	return m.values[name]
 }
 
+func (m DefaultPlcReadResponse) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcReadResponse"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeElement(m.request, xml.StartElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "values"}}); err != nil {
+		return err
+	}
+	for _, fieldName := range m.GetFieldNames() {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName},
+			Attr: []xml.Attr{
+				{Name: xml.Name{Local: "result"}, Value: m.GetResponseCode(fieldName).GetName()},
+			}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(m.GetValue(fieldName), xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "values"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcReadResponse"}}); err != nil {
+		return err
+	}
+	return nil
+}

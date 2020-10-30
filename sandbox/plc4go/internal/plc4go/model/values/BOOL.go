@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcBOOL struct {
 	value bool
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcBOOL(value bool) PlcBOOL {
@@ -50,4 +52,11 @@ func (m PlcBOOL) GetBooleanAt(index uint32) bool {
 
 func (m PlcBOOL) GetBooleanArray() []bool {
 	return []bool{m.value}
+}
+
+func (m PlcBOOL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcBOOL"}}); err != nil {
+		return err
+	}
+	return nil
 }

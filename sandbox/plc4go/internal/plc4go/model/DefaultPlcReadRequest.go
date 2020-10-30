@@ -19,6 +19,7 @@
 package model
 
 import (
+	"encoding/xml"
 	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
@@ -70,16 +71,45 @@ func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
 }
 
 func (m DefaultPlcReadRequest) GetFieldNames() []string {
-    fieldNames := []string{}
-    for name := range m.fields {
-        fieldNames = append(fieldNames, name)
-    }
-    return fieldNames
+	fieldNames := []string{}
+	for name := range m.fields {
+		fieldNames = append(fieldNames, name)
+	}
+	return fieldNames
 }
 
 func (m DefaultPlcReadRequest) GetField(name string) model.PlcField {
-    if field, ok := m.fields[name]; ok {
-        return field
-    }
-    return nil
+	if field, ok := m.fields[name]; ok {
+		return field
+	}
+	return nil
+}
+
+func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
+	for fieldName, field := range m.fields {
+		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+		if err := e.EncodeElement(field, xml.StartElement{Name: xml.Name{Local: "field"}}); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: fieldName}}); err != nil {
+			return err
+		}
+	}
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+		return err
+	}
+
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "PlcReadRequest"}}); err != nil {
+		return err
+	}
+	return nil
 }

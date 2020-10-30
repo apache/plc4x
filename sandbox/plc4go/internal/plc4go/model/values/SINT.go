@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcSINT struct {
 	value int8
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcSINT(value int8) PlcSINT {
@@ -104,4 +106,11 @@ func (m PlcSINT) GetFloat32() float32 {
 func (m PlcSINT) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetInt8())
+}
+
+func (m PlcSINT) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcSINT"}}); err != nil {
+		return err
+	}
+	return nil
 }

@@ -18,9 +18,11 @@
 //
 package values
 
+import "encoding/xml"
+
 type PlcSTRING struct {
 	value string
-    PlcSimpleValueAdapter
+	PlcSimpleValueAdapter
 }
 
 func NewPlcSTRING(value string) PlcSTRING {
@@ -35,4 +37,11 @@ func (m PlcSTRING) IsString() bool {
 
 func (m PlcSTRING) GetString() string {
 	return m.value
+}
+
+func (m PlcSTRING) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcSTRING"}}); err != nil {
+		return err
+	}
+	return nil
 }

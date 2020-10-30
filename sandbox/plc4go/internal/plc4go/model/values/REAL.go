@@ -19,12 +19,13 @@
 package values
 
 import (
-    "math"
+	"encoding/xml"
+	"math"
 )
 
 type PlcREAL struct {
 	value float32
-    PlcSimpleNumericValueAdapter
+	PlcSimpleNumericValueAdapter
 }
 
 func NewPlcREAL(value float32) PlcREAL {
@@ -135,4 +136,11 @@ func (m PlcREAL) GetFloat32() float32 {
 func (m PlcREAL) GetFloat64() float64 {
 	//TODO: Check if this is ok
 	return float64(m.GetFloat32())
+}
+
+func (m PlcREAL) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if err := e.EncodeElement(m.value, xml.StartElement{Name: xml.Name{Local: "PlcREAL"}}); err != nil {
+		return err
+	}
+	return nil
 }
