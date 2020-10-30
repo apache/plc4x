@@ -38,7 +38,9 @@ import java.util.Set;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcValueHandler {
 
-    public PlcValue of(Object value);
-    public PlcValue of(Object[] values);
+    public PlcValue newPlcValue(Object value);
+    public PlcValue newPlcValue(Object[] values);
+    public PlcValue newPlcValue(PlcField field, Object value);
+    public PlcValue newPlcValue(PlcField field, Object[] values);
 
 }

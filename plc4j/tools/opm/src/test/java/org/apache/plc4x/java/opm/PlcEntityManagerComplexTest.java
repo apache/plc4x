@@ -128,26 +128,26 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
     private PlcEntityManager getInitializedEntityManager() throws PlcConnectionException {
         Map<String, PlcValue> map = new HashMap<>();
         String prefix = ConnectedEntity.class.getName() + ".";
-        map.put(prefix + "boolVar", IEC61131ValueHandler.newPlcValue(true));
-        map.put(prefix + "byteVar", IEC61131ValueHandler.newPlcValue((byte) 1));
-        map.put(prefix + "shortVar", IEC61131ValueHandler.newPlcValue((short) 1));
-        map.put(prefix + "intVar", IEC61131ValueHandler.newPlcValue(1));
-        map.put(prefix + "longVar", IEC61131ValueHandler.newPlcValue(1L));
-        map.put(prefix + "boxedBoolVar", IEC61131ValueHandler.newPlcValue(1L));
-        map.put(prefix + "boxedByteVar", IEC61131ValueHandler.newPlcValue((byte) 1));
-        map.put(prefix + "boxedShortVar", IEC61131ValueHandler.newPlcValue((short) 1));
-        map.put(prefix + "boxedIntegerVar", IEC61131ValueHandler.newPlcValue(1));
-        map.put(prefix + "boxedLongVar", IEC61131ValueHandler.newPlcValue(1L));
-        map.put(prefix + "bigIntegerVar", IEC61131ValueHandler.newPlcValue(BigInteger.ONE));
-        map.put(prefix + "floatVar", IEC61131ValueHandler.newPlcValue(1f));
-        map.put(prefix + "doubleVar", IEC61131ValueHandler.newPlcValue(1d));
-        map.put(prefix + "bigDecimalVar", IEC61131ValueHandler.newPlcValue(BigDecimal.ONE));
-        map.put(prefix + "localTimeVar", IEC61131ValueHandler.newPlcValue(LocalTime.of(1, 1)));
-        map.put(prefix + "localDateVar", IEC61131ValueHandler.newPlcValue(LocalDate.of(1, 1, 1)));
-        map.put(prefix + "localDateTimeVar", IEC61131ValueHandler.newPlcValue(LocalDateTime.of(1, 1, 1, 1, 1)));
-        map.put(prefix + "byteArrayVar", IEC61131ValueHandler.newPlcValue(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "bigByteArrayVar", IEC61131ValueHandler.newPlcValue(new Byte[]{0x0, 0x1}));
-        map.put(prefix + "stringVar", IEC61131ValueHandler.newPlcValue("Hallo"));
+        map.put(prefix + "boolVar", IEC61131ValueHandler.of(true));
+        map.put(prefix + "byteVar", IEC61131ValueHandler.of((byte) 1));
+        map.put(prefix + "shortVar", IEC61131ValueHandler.of((short) 1));
+        map.put(prefix + "intVar", IEC61131ValueHandler.of(1));
+        map.put(prefix + "longVar", IEC61131ValueHandler.of(1L));
+        map.put(prefix + "boxedBoolVar", IEC61131ValueHandler.of(1L));
+        map.put(prefix + "boxedByteVar", IEC61131ValueHandler.of((byte) 1));
+        map.put(prefix + "boxedShortVar", IEC61131ValueHandler.of((short) 1));
+        map.put(prefix + "boxedIntegerVar", IEC61131ValueHandler.of(1));
+        map.put(prefix + "boxedLongVar", IEC61131ValueHandler.of(1L));
+        map.put(prefix + "bigIntegerVar", IEC61131ValueHandler.of(BigInteger.ONE));
+        map.put(prefix + "floatVar", IEC61131ValueHandler.of(1f));
+        map.put(prefix + "doubleVar", IEC61131ValueHandler.of(1d));
+        map.put(prefix + "bigDecimalVar", IEC61131ValueHandler.of(BigDecimal.ONE));
+        map.put(prefix + "localTimeVar", IEC61131ValueHandler.of(LocalTime.of(1, 1)));
+        map.put(prefix + "localDateVar", IEC61131ValueHandler.of(LocalDate.of(1, 1, 1)));
+        map.put(prefix + "localDateTimeVar", IEC61131ValueHandler.of(LocalDateTime.of(1, 1, 1, 1, 1)));
+        map.put(prefix + "byteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "bigByteArrayVar", IEC61131ValueHandler.of(new Byte[]{0x0, 0x1}));
+        map.put(prefix + "stringVar", IEC61131ValueHandler.of("Hallo"));
         return getPlcEntityManager(map);
     }
 
@@ -260,12 +260,22 @@ public class PlcEntityManagerComplexTest implements WithAssertions {
 
     private static class NoOpPlcValueHandler implements PlcValueHandler {
         @Override
-        public PlcValue of(Object value) {
+        public PlcValue newPlcValue(Object value) {
             throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
         }
 
         @Override
-        public PlcValue of(Object[] values) {
+        public PlcValue newPlcValue(Object[] values) {
+            throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
+        }
+
+        @Override
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object value) {
+            throw new RuntimeException("Data Type " + value.getClass().getSimpleName() + "Is not supported");
+        }
+
+        @Override
+        public PlcValue newPlcValue(org.apache.plc4x.java.api.model.PlcField field, Object[] values) {
             throw new RuntimeException("Data Type " + values.getClass().getSimpleName() + "Is not supported");
         }
     }

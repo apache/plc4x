@@ -173,7 +173,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, XmlSerializable 
                 String fieldQuery = fieldValues.getLeft();
                 PlcField field = fieldHandler.createField(fieldQuery);
                 Object[] value = fieldValues.getRight();
-                PlcValue plcValue = valueHandler.of(value);
+                PlcValue plcValue = valueHandler.newPlcValue(field, value);
                 parsedFields.put(name, new FieldValueItem(field, plcValue));
             });
             return new DefaultPlcWriteRequest(writer, parsedFields);

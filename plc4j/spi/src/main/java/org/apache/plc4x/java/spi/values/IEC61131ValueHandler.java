@@ -33,19 +33,27 @@ import java.time.LocalTime;
 public class IEC61131ValueHandler implements PlcValueHandler {
 
 
-    public PlcValue of(Object value) {
-        return newPlcValue(new Object[] {value});
+    public PlcValue newPlcValue(Object value) {
+        return of(new Object[] {value});
     }
 
-    public PlcValue of(Object[] values) {
-        return newPlcValue(values);
+    public PlcValue newPlcValue(Object[] values) {
+        return of(values);
     }
 
-    public static PlcValue newPlcValue(Object value) {
-        return newPlcValue(new Object[] {value});
+    public PlcValue newPlcValue(PlcField field, Object value) {
+        return of(field, new Object[] {value});
     }
 
-    public static PlcValue newPlcValue(Object[] values) {
+    public PlcValue newPlcValue(PlcField field, Object[] values) {
+        return of(field, values);
+    }
+
+    public static PlcValue of(Object value) {
+        return of(new Object[] {value});
+    }
+
+    public static PlcValue of(Object[] values) {
         if (values.length == 1) {
             Object value = values[0];
             if (value instanceof Boolean) {
@@ -81,19 +89,19 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         } else {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(newPlcValue(new Object[] {value}));
+                list.add(of(new Object[] {value}));
             }
             return list;
         }
     }
 
 
-    public static PlcValue newPlcValue(PlcField field, Object value) {
-        return newPlcValue(field, new Object[] {value});
+    public static PlcValue of(PlcField field, Object value) {
+        return of(field, new Object[] {value});
     }
 
 
-    public static PlcValue newPlcValue(PlcField field, Object[] values) {
+    public static PlcValue of(PlcField field, Object[] values) {
         if(values.length == 1) {
             Object value = values[0];
             switch (field.getPlcDataType().toUpperCase()) {
@@ -158,14 +166,13 @@ public class IEC61131ValueHandler implements PlcValueHandler {
         } else {
             PlcList list = new PlcList();
             for (Object value : values) {
-                list.add(newPlcValue(field, new Object[] {value}));
+                list.add(of(field, new Object[] {value}));
             }
             return list;
         }
     }
 
     public static PlcValue customDataType(PlcField field, Object[] values) {
-        throw new PlcUnsupportedDataTypeException("Data Type " + field.getPlcDataType()
-            + "Is not supported");
+        return of(values);
     }
 }

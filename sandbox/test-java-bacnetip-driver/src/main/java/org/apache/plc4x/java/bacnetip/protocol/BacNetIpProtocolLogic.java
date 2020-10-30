@@ -144,15 +144,15 @@ public class BacNetIpProtocolLogic extends Plc4xProtocolBase<BVLC> implements Ha
                             enrichedPlcValue.put("address", new PlcSTRING(toString(curField)));
 
                             // From the original BACNet tag
-                            enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.newPlcValue(baCnetTag.getTypeOrTagNumber()));
-                            enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.newPlcValue(baCnetTag.getLengthValueType()));
+                            enrichedPlcValue.put("typeOrTagNumber", IEC61131ValueHandler.of(baCnetTag.getTypeOrTagNumber()));
+                            enrichedPlcValue.put("lengthValueType", IEC61131ValueHandler.of(baCnetTag.getLengthValueType()));
                             if(baCnetTag.getExtTagNumber() != null) {
-                                enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.newPlcValue(baCnetTag.getExtTagNumber()));
+                                enrichedPlcValue.put("extTagNumber", IEC61131ValueHandler.of(baCnetTag.getExtTagNumber()));
                             } else {
                                 enrichedPlcValue.put("extTagNumber", new PlcNull());
                             }
                             if(baCnetTag.getExtLength() != null) {
-                                enrichedPlcValue.put("extLength", IEC61131ValueHandler.newPlcValue(baCnetTag.getExtLength()));
+                                enrichedPlcValue.put("extLength", IEC61131ValueHandler.of(baCnetTag.getExtLength()));
                             } else {
                                 enrichedPlcValue.put("extLength", new PlcNull());
                             }
