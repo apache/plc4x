@@ -313,7 +313,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return new ResponseItem<>(PlcResponseCode.OK, IEC61131ValueHandler.newPlcValue(resultItems));
+                return new ResponseItem<>(PlcResponseCode.OK, IEC61131ValueHandler.of(resultItems));
             }
         } catch (Exception e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getAdsDataType()), e);

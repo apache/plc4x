@@ -95,31 +95,31 @@ public class SimulatedDevice {
         Object result = null;
 
         if (type.equals(Byte.class)) {
-            return IEC61131ValueHandler.newPlcValue((byte) random.nextInt(1 << 8));
+            return IEC61131ValueHandler.of((byte) random.nextInt(1 << 8));
         }
 
         if (type.equals(Short.class)) {
-            return IEC61131ValueHandler.newPlcValue((short) random.nextInt(1 << 16));
+            return IEC61131ValueHandler.of((short) random.nextInt(1 << 16));
         }
 
         if (type.equals(Integer.class)) {
-            return IEC61131ValueHandler.newPlcValue(random.nextInt());
+            return IEC61131ValueHandler.of(random.nextInt());
         }
 
         if (type.equals(Long.class)) {
-            return IEC61131ValueHandler.newPlcValue(random.nextLong());
+            return IEC61131ValueHandler.of(random.nextLong());
         }
 
         if (type.equals(Float.class)) {
-            return IEC61131ValueHandler.newPlcValue(random.nextFloat());
+            return IEC61131ValueHandler.of(random.nextFloat());
         }
 
         if (type.equals(Double.class)) {
-            return IEC61131ValueHandler.newPlcValue(random.nextDouble());
+            return IEC61131ValueHandler.of(random.nextDouble());
         }
 
         if (type.equals(Boolean.class)) {
-            return IEC61131ValueHandler.newPlcValue(random.nextBoolean());
+            return IEC61131ValueHandler.of(random.nextBoolean());
         }
 
         if (type.equals(String.class)) {
@@ -129,7 +129,7 @@ public class SimulatedDevice {
                 char c = (char) ('a' + random.nextInt(26));
                 sb.append(c);
             }
-            return IEC61131ValueHandler.newPlcValue(sb.toString());
+            return IEC61131ValueHandler.of(sb.toString());
         }
 
         return null;

@@ -525,7 +525,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     }
                     return null;
                 }).toArray(PlcValue[]::new);
-                return IEC61131ValueHandler.newPlcValue(resultItems);
+                return IEC61131ValueHandler.of(resultItems);
             }
         } catch (ParseException e) {
             LOGGER.warn(String.format("Error parsing field item of type: '%s'", field.getDataType().name()), e);
