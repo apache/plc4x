@@ -23,20 +23,27 @@ import (
 	"errors"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	"time"
 )
 
 type DefaultPlcReadRequestBuilder struct {
-	reader       spi.PlcReader
-	fieldHandler spi.PlcFieldHandler
-	queries      map[string]string
+	reader                 spi.PlcReader
+	fieldHandler           spi.PlcFieldHandler
+	queries                map[string]string
+	readRequestInterceptor ReadRequestInterceptor
 	model.PlcReadRequestBuilder
 }
 
 func NewDefaultPlcReadRequestBuilder(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader) *DefaultPlcReadRequestBuilder {
+	return NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler, reader, nil)
+}
+
+func NewDefaultPlcReadRequestBuilderWithInterceptor(fieldHandler spi.PlcFieldHandler, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) *DefaultPlcReadRequestBuilder {
 	return &DefaultPlcReadRequestBuilder{
-		reader:       reader,
-		fieldHandler: fieldHandler,
-		queries:      map[string]string{},
+		reader:                 reader,
+		fieldHandler:           fieldHandler,
+		queries:                map[string]string{},
+		readRequestInterceptor: readRequestInterceptor,
 	}
 }
 
@@ -55,31 +62,78 @@ func (m *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 		fields[name] = field
 	}
 	return DefaultPlcReadRequest{
-		fields: fields,
-		reader: m.reader,
+		Fields:                 fields,
+		Reader:                 m.reader,
+		ReadRequestInterceptor: m.readRequestInterceptor,
 	}, nil
 }
 
 type DefaultPlcReadRequest struct {
-	fields map[string]model.PlcField
-	reader spi.PlcReader
+	Fields                 map[string]model.PlcField
+	Reader                 spi.PlcReader
+	ReadRequestInterceptor ReadRequestInterceptor
 	model.PlcReadRequest
 }
 
+func NewDefaultPlcReadRequest(fields map[string]model.PlcField, reader spi.PlcReader, readRequestInterceptor ReadRequestInterceptor) DefaultPlcReadRequest {
+	return DefaultPlcReadRequest{
+		Fields:                 fields,
+		Reader:                 reader,
+		ReadRequestInterceptor: readRequestInterceptor,
+	}
+}
+
 func (m DefaultPlcReadRequest) Execute() <-chan model.PlcReadRequestResult {
-	return m.reader.Read(m)
+	// Shortcut, if no interceptor is defined
+	if m.ReadRequestInterceptor == nil {
+		return m.Reader.Read(m)
+	}
+
+	// Split the requests up into multiple ones.
+	readRequests := m.ReadRequestInterceptor.InterceptReadRequest(m)
+	// Shortcut for single-request-requests
+	if len(readRequests) == 1 {
+		return m.Reader.Read(readRequests[0])
+	} else {
+		// Create a sub-result-channel slice
+		var subResultChannels []<-chan model.PlcReadRequestResult
+
+		// Iterate over all requests and add the result-channels to the list
+		for _, subRequest := range readRequests {
+			subResultChannels = append(subResultChannels, m.Reader.Read(subRequest))
+			// TODO: Replace this with a real queueing of requests.
+			time.Sleep(time.Millisecond * 20)
+		}
+
+		// Create a new result-channel, which completes as soon as all sub-result-channels have returned
+		resultChannel := make(chan model.PlcReadRequestResult)
+		go func() {
+			var subResults []model.PlcReadRequestResult
+			// Iterate over all sub-results
+			for _, subResultChannel := range subResultChannels {
+				subResult := <-subResultChannel
+				subResults = append(subResults, subResult)
+			}
+			// As soon as all are done, process the results
+			result := m.ReadRequestInterceptor.ProcessReadResponses(m, subResults)
+			// Return the final result
+			resultChannel <- result
+		}()
+
+		return resultChannel
+	}
 }
 
 func (m DefaultPlcReadRequest) GetFieldNames() []string {
-	fieldNames := []string{}
-	for name := range m.fields {
+	var fieldNames []string
+	for name := range m.Fields {
 		fieldNames = append(fieldNames, name)
 	}
 	return fieldNames
 }
 
 func (m DefaultPlcReadRequest) GetField(name string) model.PlcField {
-	if field, ok := m.fields[name]; ok {
+	if field, ok := m.Fields[name]; ok {
 		return field
 	}
 	return nil
@@ -90,10 +144,10 @@ func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 		return err
 	}
 
-	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: "Fields"}}); err != nil {
 		return err
 	}
-	for fieldName, field := range m.fields {
+	for fieldName, field := range m.Fields {
 		if err := e.EncodeToken(xml.StartElement{Name: xml.Name{Local: fieldName}}); err != nil {
 			return err
 		}
@@ -104,7 +158,7 @@ func (m DefaultPlcReadRequest) MarshalXML(e *xml.Encoder, start xml.StartElement
 			return err
 		}
 	}
-	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "fields"}}); err != nil {
+	if err := e.EncodeToken(xml.EndElement{Name: xml.Name{Local: "Fields"}}); err != nil {
 		return err
 	}
 

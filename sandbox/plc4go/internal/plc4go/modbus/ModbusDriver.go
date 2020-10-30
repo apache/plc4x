@@ -19,30 +19,28 @@
 package modbus
 
 import (
-    "encoding/json"
-    "errors"
-    "fmt"
-    "math"
-    "net/url"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-    "sync/atomic"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math"
+	"net/url"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+	"sync/atomic"
 )
 
 type ModbusDriver struct {
-    transactionIdCounter int32
-	fieldHandler spi.PlcFieldHandler
-	valueHandler spi.PlcValueHandler
+	transactionIdCounter int32
+	fieldHandler         spi.PlcFieldHandler
 	plc4go.PlcDriver
 }
 
 func NewModbusDriver() *ModbusDriver {
 	return &ModbusDriver{
-	    transactionIdCounter: 0,
-		fieldHandler: NewFieldHandler(),
-		valueHandler: NewValueHandler(),
+		transactionIdCounter: 0,
+		fieldHandler:         NewFieldHandler(),
 	}
 }
 
@@ -55,7 +53,7 @@ func (m ModbusDriver) GetProtocolName() string {
 }
 
 func (m ModbusDriver) GetDefaultTransport() string {
-    return "tcp"
+	return "tcp"
 }
 
 func (m ModbusDriver) CheckQuery(query string) error {
@@ -64,46 +62,46 @@ func (m ModbusDriver) CheckQuery(query string) error {
 }
 
 func (m ModbusDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-    // Get an the transport specified in the url
-    transport, ok := transports[transportUrl.Scheme]
-    if !ok {
-        ch := make(chan plc4go.PlcConnectionConnectResult)
-        ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't find transport for given transport url " + transportUrl.String()))
-        return ch
-    }
-    // Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-    options["defaultTcpPort"] = []string{"502"}
-    // Have the transport create a new transport-instance.
-    transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
-    if err != nil {
-        ch := make(chan plc4go.PlcConnectionConnectResult)
-        ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url " + transportUrl.String()))
-        return ch
-    }
-    // Generate a new transaction id
-    transactionId := atomic.AddInt32(&m.transactionIdCounter, 1)
-    if transactionId > math.MaxUint16 {
-        transactionId = 1
-        atomic.StoreInt32(&m.transactionIdCounter, 1)
-    }
+	// Get an the transport specified in the url
+	transport, ok := transports[transportUrl.Scheme]
+	if !ok {
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't find transport for given transport url "+transportUrl.String()))
+		return ch
+	}
+	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
+	options["defaultTcpPort"] = []string{"502"}
+	// Have the transport create a new transport-instance.
+	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
+	if err != nil {
+		ch := make(chan plc4go.PlcConnectionConnectResult)
+		ch <- plc4go.NewPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
+		return ch
+	}
+	// Generate a new transaction id
+	transactionId := atomic.AddInt32(&m.transactionIdCounter, 1)
+	if transactionId > math.MaxUint16 {
+		transactionId = 1
+		atomic.StoreInt32(&m.transactionIdCounter, 1)
+	}
 
-    // Create a new codec for taking care of encoding/decoding of messages
-    defaultChanel := make(chan interface{})
-    go func() {
-        for {
-            msg := <-defaultChanel
-            adu := model.CastModbusTcpADU(msg)
-            serialized, err := json.Marshal(adu)
-            if err != nil {
-                fmt.Errorf("got error serializing adu: %s\n", err.Error())
-            } else {
-                fmt.Printf("got message in the default handler %s\n", serialized)
-            }
-        }
-    }()
-    codec := NewModbusMessageCodec(transportInstance, nil)
+	// Create a new codec for taking care of encoding/decoding of messages
+	defaultChanel := make(chan interface{})
+	go func() {
+		for {
+			msg := <-defaultChanel
+			adu := model.CastModbusTcpADU(msg)
+			serialized, err := json.Marshal(adu)
+			if err != nil {
+				fmt.Errorf("got error serializing adu: %s\n", err.Error())
+			} else {
+				fmt.Printf("got message in the default handler %s\n", serialized)
+			}
+		}
+	}()
+	codec := NewModbusMessageCodec(transportInstance, nil)
 
-    // Create the new connection
-	connection := NewModbusConnection(uint16(transactionId), codec, options, m.fieldHandler, m.valueHandler)
+	// Create the new connection
+	connection := NewModbusConnection(uint16(transactionId), codec, options, m.fieldHandler)
 	return connection.Connect()
 }

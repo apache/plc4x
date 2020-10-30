@@ -180,6 +180,8 @@ func toPlc4xResponse(requestAdu modbusModel.ModbusTcpADU, responseAdu modbusMode
 	case modbusModel.ModbusPDUReadHoldingRegistersResponse:
 		pdu := modbusModel.CastModbusPDUReadHoldingRegistersResponse(responseAdu.Pdu)
 		data = utils.Int8ToUint8(pdu.Value)
+	case modbusModel.ModbusPDUError:
+		return nil, errors.New("got an error from remote")
 	default:
 		return nil, errors.New("unsupported response type")
 	}

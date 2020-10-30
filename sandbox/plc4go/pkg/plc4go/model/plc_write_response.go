@@ -18,5 +18,5 @@
 //
 package model
 
-type PlcWriteResponse struct {
+type PlcWriteResponse interface {
 }
