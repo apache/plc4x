@@ -19,18 +19,18 @@
 package drivers
 
 import (
-    "encoding/hex"
-    "encoding/xml"
-    "fmt"
-    "net"
-    "os"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/tcp"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-    "strings"
-    "testing"
+	"encoding/hex"
+	"encoding/xml"
+	"fmt"
+	"net"
+	"os"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/modbus/readwrite/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports/tcp"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/utils"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+	"strings"
+	"testing"
 )
 
 func TestModbus(t *testing.T) {
@@ -55,14 +55,14 @@ func test(t *testing.T, rawMessage string, response bool) {
 		t.Errorf("Error parsing: %s", err)
 	}
 	if adu != nil {
-	    serialized, err := xml.Marshal(adu)
-	    if err != nil {
-	        fmt.Println("Hurz!" + err.Error())
-	        return
-        }
-        fmt.Println(string(serialized))
-	    var deserializedAdu *model.ModbusTcpADU
-	    xml.Unmarshal(serialized, &deserializedAdu)
+		serialized, err := xml.Marshal(adu)
+		if err != nil {
+			fmt.Println("Hurz!" + err.Error())
+			return
+		}
+		fmt.Println(string(serialized))
+		var deserializedAdu *model.ModbusTcpADU
+		xml.Unmarshal(serialized, &deserializedAdu)
 
 		wb := utils.WriteBufferNew()
 		val := model.CastIModbusTcpADU(deserializedAdu)
@@ -151,7 +151,8 @@ func TestPlc4goDriver(t *testing.T) {
 
 	// Prepare a read-request
 	rrb := connection.ReadRequestBuilder()
-	rrb.AddItem("field", "holding-register:0:REAL")
+	rrb.AddItem("field1", "holding-register:1:REAL")
+	rrb.AddItem("field2", "holding-register:3:REAL")
 	readRequest, err := rrb.Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -169,7 +170,7 @@ func TestPlc4goDriver(t *testing.T) {
 	}
 
 	// Do something with the response
-    value := rrr.Response.GetValue("field")
+	value := rrr.Response.GetValue("field")
 
-	fmt.Printf("\n\nResult: %f\n", value.GetFloat32())
+	fmt.Printf("\n\nResult: %f\n", value)
 }

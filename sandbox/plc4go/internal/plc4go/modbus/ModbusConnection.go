@@ -19,11 +19,12 @@
 package modbus
 
 import (
-    internalModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
-    "plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
+	internalModel "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi/interceptors"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/transports"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go"
+	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 )
 
 type ConnectionMetadata struct {
@@ -43,29 +44,31 @@ func (m ConnectionMetadata) CanSubscribe() bool {
 }
 
 type ModbusConnection struct {
-    transactionIdentifier uint16
-    messageCodec spi.MessageCodec
-    options map[string][]string
-	fieldHandler spi.PlcFieldHandler
-	valueHandler spi.PlcValueHandler
+	transactionIdentifier uint16
+	messageCodec          spi.MessageCodec
+	options               map[string][]string
+	fieldHandler          spi.PlcFieldHandler
+	valueHandler          spi.PlcValueHandler
+	requestInterceptor    internalModel.RequestInterceptor
 	plc4go.PlcConnection
 }
 
-func NewModbusConnection(transactionIdentifier uint16, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler, valueHandler spi.PlcValueHandler) ModbusConnection {
+func NewModbusConnection(transactionIdentifier uint16, messageCodec spi.MessageCodec, options map[string][]string, fieldHandler spi.PlcFieldHandler) ModbusConnection {
 	return ModbusConnection{
-        transactionIdentifier: transactionIdentifier,
-        messageCodec: messageCodec,
-	    options: options,
-		fieldHandler: fieldHandler,
-		valueHandler: valueHandler,
+		transactionIdentifier: transactionIdentifier,
+		messageCodec:          messageCodec,
+		options:               options,
+		fieldHandler:          fieldHandler,
+		valueHandler:          NewValueHandler(),
+		requestInterceptor:    interceptors.NewSingleItemRequestInterceptor(),
 	}
 }
 
 func (m ModbusConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
-	    err := m.messageCodec.Connect()
-        ch <- plc4go.NewPlcConnectionConnectResult(m, err)
+		err := m.messageCodec.Connect()
+		ch <- plc4go.NewPlcConnectionConnectResult(m, err)
 	}()
 	return ch
 }
@@ -92,12 +95,13 @@ func (m ModbusConnection) GetMetadata() model.PlcConnectionMetadata {
 }
 
 func (m ModbusConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(m.fieldHandler,
-	    NewModbusReader(m.transactionIdentifier, m.messageCodec))
+	return internalModel.NewDefaultPlcReadRequestBuilderWithInterceptor(m.fieldHandler,
+		NewModbusReader(m.transactionIdentifier, m.messageCodec), m.requestInterceptor)
 }
 
 func (m ModbusConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	return internalModel.NewDefaultPlcWriteRequestBuilder(m.fieldHandler, m.valueHandler, NewModbusWriter())
+	return internalModel.NewDefaultPlcWriteRequestBuilder(
+		m.fieldHandler, m.valueHandler, NewModbusWriter(m.requestInterceptor))
 }
 
 func (m ModbusConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
@@ -109,9 +113,8 @@ func (m ModbusConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscription
 }
 
 func (m ModbusConnection) GetTransportInstance() transports.TransportInstance {
-    if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
-        return mc.GetTransportInstance()
-    }
-    return nil
+	if mc, ok := m.messageCodec.(spi.TransportInstanceExposer); ok {
+		return mc.GetTransportInstance()
+	}
+	return nil
 }
-

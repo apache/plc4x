@@ -16,25 +16,23 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-package modbus
+package model
 
 import (
-	model2 "plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/model"
-	"plc4x.apache.org/plc4go-modbus-driver/v0/internal/plc4go/spi"
 	"plc4x.apache.org/plc4go-modbus-driver/v0/pkg/plc4go/model"
 )
 
-type ModbusWriter struct {
-	writeRequestInterceptor model2.WriteRequestInterceptor
-	spi.PlcWriter
+type ReadRequestInterceptor interface {
+	InterceptReadRequest(readRequest model.PlcReadRequest) []model.PlcReadRequest
+	ProcessReadResponses(readRequest model.PlcReadRequest, readResults []model.PlcReadRequestResult) model.PlcReadRequestResult
 }
 
-func NewModbusWriter(writeRequestInterceptor model2.WriteRequestInterceptor) ModbusWriter {
-	return ModbusWriter{
-		writeRequestInterceptor: writeRequestInterceptor,
-	}
+type WriteRequestInterceptor interface {
+	InterceptWriteRequest(writeRequest model.PlcWriteRequest) []model.PlcWriteRequest
+	ProcessWriteResponses(writeRequest model.PlcWriteRequest, writeResults []model.PlcWriteRequestResult) model.PlcWriteRequestResult
 }
 
-func (m ModbusWriter) Write(writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	return make(chan model.PlcWriteRequestResult)
+type RequestInterceptor interface {
+	ReadRequestInterceptor
+	WriteRequestInterceptor
 }

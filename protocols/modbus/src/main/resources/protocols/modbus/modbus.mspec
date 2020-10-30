@@ -60,7 +60,7 @@
     [discriminator uint 7      'functionFlag']
     [typeSwitch 'errorFlag','functionFlag','response'
         ['true'                     ModbusPDUError
-            [simple     uint 8      'exceptionCode']
+            [enum ModbusErrorCode  'exceptionCode']
         ]
 
         // Bit Access

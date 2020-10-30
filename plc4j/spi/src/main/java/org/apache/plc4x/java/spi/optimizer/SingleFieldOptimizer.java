@@ -62,7 +62,7 @@ public class SingleFieldOptimizer extends BaseOptimizer {
         List<PlcRequest> subRequests = new ArrayList<>(writeRequest.getNumberOfFields());
         for (String fieldName : writeRequest.getFieldNames()) {
             PlcField field = writeRequest.getField(fieldName);
-            PlcValue value = ((DefaultPlcWriteRequest) writeRequest).getPlcValue(fieldName);
+            PlcValue value = writeRequest.getPlcValue(fieldName);
             PlcWriteRequest subRequest = new DefaultPlcWriteRequest(
                 ((DefaultPlcWriteRequest) writeRequest).getWriter(),
                 new LinkedHashMap<>(Collections.singletonMap(fieldName, new FieldValueItem(field, value))));
